@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="10dp">
+    <data >
+        <import type="android.view.View"/>
+        <variable name="detalle"
+            type="com.example.comprasmu.data.modelos.ListaCompraDetalle"></variable>
+        <variable
+            name="mostrarAgregar"
+            type="Boolean" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+
+            android:id="@+id/ldcardview"
+            android:layout_width="394dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.083"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.041">
+
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="horizontal"
+                tools:layout_editor_absoluteX="196dp"
+                tools:layout_editor_absoluteY="221dp">
+
+                <LinearLayout
+
+                    android:id="@+id/cajatexto"
+                    android:layout_width="239dp"
+                    android:layout_height="123dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtfecha"
+
+                        style="@style/textolista1"
+                        android:layout_width="235dp"
+                        android:layout_height="wrap_content"
+                        android:text="@{detalle.productoNombre}" />
+
+                    <TextView
+                        android:id="@+id/txttienda"
+
+                        style="@style/textolista1"
+                        android:layout_width="235dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="4dp"
+
+                        android:text="@{detalle.tamanio+' '+detalle.empaque}" />
+
+                    <TextView
+                        android:id="@+id/txtdicomprados"
+                        style="@style/textolistagrisb"
+                        android:layout_width="72dp"
+                        android:layout_height="27dp"
+
+                        android:text="@{String.valueOf(detalle.comprados)}"
+                        android:textAlignment="textEnd"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txtdicantidad"
+                        style="@style/textolistagrisb"
+                        android:layout_width="72dp"
+                        android:layout_height="27dp"
+
+                        android:text="@{String.valueOf(detalle.cantidad)}"
+                        android:textAlignment="textEnd"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txtanalisis"
+                        style="@style/textolistagris"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@{detalle.tipoAnalisis}" />
+
+                    <TextView
+                        android:id="@+id/txtldtipoMuestra"
+                        style="@style/textolistagris"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{detalle.nombreTipoMuestra}" />
+
+                    <Button
+                        android:id="@+id/btncodigos"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_marginBottom="4dp"
+                        android:minWidth="0dp"
+
+                        android:text="Ver códigos no permitidos>"
+                        android:textColor="@color/blue_subtitle"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/txtcodigos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="@{detalle.codigosNoPermitidos.replace(';','\n')}" />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtcantidad"
+                    style="@style/textolistagrisb"
+                    android:layout_width="72dp"
+                    android:layout_height="27dp"
+
+                    android:text="@{String.valueOf(detalle.comprados)+'/'+String.valueOf(detalle.cantidad)}"
+                    android:textAlignment="textEnd" />
+
+
+                <ImageButton
+                    android:id="@+id/btnldagregar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                     app:srcCompat="@drawable/ic_baseline_add_24" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

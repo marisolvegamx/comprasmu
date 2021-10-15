@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+
+xmlns:tools="http://schemas.android.com/tools">
+<data>
+    <variable
+        name="mviewModel"
+        type="com.example.comprasmu.ui.informe.VerInformeViewModel" />
+    <variable
+        name="informe"
+        type="com.example.comprasmu.data.modelos.InformeCompra" />
+    <variable
+        name="directorio"
+        type="String" />
+    <variable
+        name="consulta"
+        type="Boolean" />
+
+
+</data>
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.informe.VerInformeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <LinearLayout
+                android:id="@+id/content_generic"
+                android:layout_width="389dp"
+                android:layout_height="681dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vidatosgen">
+
+
+                <LinearLayout
+                    android:id="@+id/vidatosgen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/foto_fachada" />
+
+                    <ImageView
+                        android:id="@+id/ivvifoto_fachada"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:misrc="@{directorio+mviewModel.fotoFachada.ruta}"
+
+                        tools:src="@tools:sample/avatars" />
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/comentarios" />
+
+                    <TextView
+                        android:id="@+id/txtvicomentarios"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine"
+                        android:text="@{informe.comentarios}" />
+
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/ticket_compra" />
+
+                    <ImageView
+                        android:id="@+id/ivuiticket_compra"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:misrc="@{directorio+mviewModel.fotoTicket}"
+                        tools:srcCompat="@tools:sample/avatars" />
+                    <TextView
+                        android:id="@+id/textView100"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@{directorio+mviewModel.fotoTicket}" />
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/condiciones" />
+
+
+                    <ImageView
+                        android:id="@+id/ivuicondiciones"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:misrc="@{directorio+mviewModel.fotocondiciones.ruta}"
+                        tools:src="@tools:sample/avatars" />
+
+                    <TextView
+                        android:id="@+id/textView21"
+                        style="@style/subtitulo1"
+                        android:layout_width="match_parent"
+                        android:layout_height="41dp"
+                        android:layout_weight="1"
+                        android:text="@string/muestras"
+                        android:textStyle="bold" />
+
+                    <include
+                        android:id="@+id/vicontentmuestras"
+                        layout="@layout/lista_muestras"
+
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
+</layout>

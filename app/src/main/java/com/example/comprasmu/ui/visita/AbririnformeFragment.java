@@ -1,0 +1,962 @@
+package com.example.comprasmu.ui.visita;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.net.Uri;
+import android.os.Bundle;
+
+import android.os.Looper;
+import android.provider.MediaStore;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+
+import com.example.comprasmu.R;
+
+import com.example.comprasmu.data.dao.ProductoExhibidoDao;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeCompra;
+
+import com.example.comprasmu.data.modelos.ProductoExhibido;
+import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.data.modelos.Visita;
+
+import com.example.comprasmu.ui.BackActivity;
+import com.example.comprasmu.ui.RevisarFotoActivity;
+import com.example.comprasmu.ui.informe.FotoExhibicionAdapter;
+import com.example.comprasmu.ui.informe.NuevaFotoExhibFragment;
+import com.example.comprasmu.ui.informe.NuevaFotoExhibViewModel;
+import com.example.comprasmu.ui.informe.NuevoinformeFragment;
+import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
+
+import com.example.comprasmu.utils.CampoForm;
+import com.example.comprasmu.utils.Constantes;
+import com.example.comprasmu.utils.CreadorFormulario;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+
+import java.io.File;
+
+import java.io.IOException;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import java.util.List;
+import java.util.Locale;
+
+import static android.app.Activity.RESULT_OK;
+public class AbririnformeFragment extends Fragment implements Validator.ValidationListener, FotoExhibicionAdapter.AdapterCallback {
+
+    private static final int REQUEST_CHECK_SETTINGS =0 ;
+    protected Validator validator;
+    protected boolean validated;
+
+    private NuevoinformeViewModel mViewModel;
+    private NuevaFotoExhibViewModel feviewModel;
+    CreadorFormulario cf2;
+    List<CampoForm> camposForm;
+    List<CampoForm> camposTienda;
+    private FusedLocationProviderClient fusedLocationClient; //cliente servicio de ubicación
+    LocationRequest locationRequest;
+    private String country;
+    Button guardar;
+ //   Button continuar;
+    View root;
+    boolean nuevaTienda=true;
+    Tienda tienda;
+    int nuevoId;
+
+
+    EditText txtubicacion;
+    public static String EXTRAPREINFORME_ID="comprasmu.preinformeid";
+    private CreadorFormulario cf1;
+    private static final int SELECT_FILE = 1;
+    public static  int REQUEST_CODE_TAKE_PHOTO=1;
+    public static  int REQUEST_CODE_2=2;
+    public static  int REQUEST_CODE_PROD=3;
+    private static final String TAG="AbrirInformeFragment";
+    private EditText foto1;
+    private CreadorFormulario cf3;
+    private ImageView imageView;
+    private int totClientes=0;
+    private RecyclerView recycler;
+    private Visita visitaEdi;
+    private List<InformeCompra> fotosExhibido;//para ir guardando las fotos de producto exhibido
+    private ImagenDetalle efotoFachada;
+    private FotoExhibicionAdapter mListAdapter;
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        mViewModel =
+                new ViewModelProvider(this).get(NuevoinformeViewModel.class);
+        feviewModel =
+                new ViewModelProvider(this).get(NuevaFotoExhibViewModel.class);
+
+        /*inicio databinding
+        mBinding = DataBindingUtil.setContentView(getActivity(), R.layout.fragment_abririnforme);
+        mBinding.setInfviewModel(mViewModel);
+        mBinding.setLifecycleOwner(this);*/
+
+        root = inflater.inflate(R.layout.fragment_abririnforme, container, false);
+
+        TextView indice = root.findViewById(R.id.txtaiindice);
+        indice.setText(Constantes.INDICEACTUAL);
+
+        loadData();
+
+        //camposFotosProd();
+      //  LinearLayout sv2 = root.findViewById(R.id.content_main2);
+      //  sv2.addView(cf3.crearFormulario());
+        //   createLocationRequest();
+        validator = new Validator(this);
+        validator.setValidationListener(this);
+        guardar=(Button)root.findViewById(R.id.aibtnguardar);
+       // continuar=(Button)root.findViewById(R.id.aibtnguardarcont);
+       Button fotoexhibido=(Button)root.findViewById(R.id.btnaifotoexhibido);
+        guardar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            //      validator.validate();
+                if(mViewModel.mIsNew)
+                    sologuardar();
+                else
+                    actualizar();
+            }
+        });
+      /*  continuar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                guardarContinuar();
+            }
+        });*/
+        fotoexhibido.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                irAProductoEx();
+            }
+        });
+       Button ubicar=(Button)root.findViewById(R.id.btnaiubicar);
+        ImageButton fotofachada=(ImageButton)root.findViewById(R.id.btnaifotofachada);
+        fotofachada.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tomarFoto(R.id.txtaifotofachada,R.id.ivaifachada);
+            }
+        });
+        ubicar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                probarUbicacion();
+            }
+        });
+        /*para obtener la localizacion*/
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        setupSnackbar();
+     //   initUi();
+         txtubicacion = root.findViewById(R.id.txtaiubicacion);
+        return root;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+
+        Bundle datosRecuperados = getArguments();
+        if (datosRecuperados != null&&getArguments().getInt(EXTRAPREINFORME_ID)>0) {
+            // No hay datos, manejar excepción
+
+            Log.d(TAG,"******* es edicion");
+            getActivity().setTitle(R.string.editar_informe);
+        }
+
+        // Y ahora puedes recuperar usando get en lugar de put
+      //  nuevaTienda= datosRecuperados.getBoolean("nuevatienda");
+        if(!nuevaTienda)// es una tienda existente
+        {
+
+            tienda=new Tienda();
+            tienda.setTiendaId(datosRecuperados.getInt("idtienda"));
+            tienda.setTiendaNombre(datosRecuperados.getString("nombretienda"));
+            tienda.setTipoTienda(datosRecuperados.getString("tipotienda"));
+            tienda.setDireccion(datosRecuperados.getString("direccion"));
+        }
+
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            //  requestPermissionLauncher.launch(
+            //        Manifest.permission.REQUESTED_PERMISSION);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+
+        } else {
+            // rastreoGPS();
+            locationStart();
+        }
+        setupListAdapter();
+        feviewModel.cargarfotos(nuevoId).observe(getViewLifecycleOwner(), myProducts -> {
+
+            //   mBinding.paradebug1.setText(myProducts.size()+"");
+
+
+            if (myProducts != null&&myProducts.size()>0) {
+
+
+                mListAdapter.setProductoExhibidoList(myProducts,getActivity().getExternalFilesDir(null)+"/");
+                mListAdapter.notifyDataSetChanged();
+            } else {
+                //  mBinding.setIsLoading(true);
+            }
+            // espresso does not know how to wait for data binding's loop so we execute changes
+            // sync.
+            //  mBinding.executePendingBindings();
+        });
+
+    }
+    /***para la edicion***/
+    private void loadData() {
+        Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolbar);
+
+
+        if (getArguments() != null) {
+            //es edicion
+            int categoryId = getArguments().getInt(EXTRAPREINFORME_ID);
+            nuevoId=mViewModel.start(categoryId);
+            //lleno los campos
+            mViewModel.visitaEdicion.observe(getViewLifecycleOwner(), new Observer<Visita>() {
+                @Override
+                public void onChanged(Visita visita) {
+                    crearFormulario(visita);
+                    ponerDatos(visita);
+                    LinearLayout sv = root.findViewById(R.id.content_main);
+                    sv.addView(cf1.crearFormulario());
+                    sv.addView(cf2.crearFormulario());
+                    visitaEdi=visita;
+
+
+                }
+            });
+
+
+        } else {
+            //es nuevo
+            nuevoId= mViewModel.start(0);
+            crearFormulario(new Visita());
+
+            LinearLayout sv = root.findViewById(R.id.content_main);
+            sv.addView(cf1.crearFormulario());
+            sv.addView(cf2.crearFormulario());
+            getActivity().setTitle(R.string.nuevo_informe);
+           // toolbar.setTitle(R.string.nuevo_informe);
+        }
+
+    }
+
+    public void ponerDatos(Visita visita){
+        if(visita.getTiendaId()>0) {
+            nuevaTienda=false;
+        }else
+            nuevaTienda=true;
+
+       EditText fotofachada= root.findViewById(R.id.txtaifotofachada);
+       mViewModel.getFoto(visita.getFotoFachada()).observe(this, new Observer<ImagenDetalle>() {
+           @Override
+           public void onChanged(ImagenDetalle s) {
+               fotofachada.setText(s.getRuta());
+               ImageView foto=root.findViewById(R.id.ivaifachada);
+               Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + s.getRuta());
+
+               foto.setImageBitmap(bitmap1);
+               efotoFachada=s;
+           }
+       });
+
+
+       EditText ubicacion=root.findViewById(R.id.txtaiubicacion);
+       ubicacion.setText(visita.getGeolocalizacion());
+
+    }
+    private void setupListAdapter() {
+        RecyclerView listaproductosex=root.findViewById(R.id.rvaiproductoex);
+        mListAdapter = new FotoExhibicionAdapter(this);
+        //mBinding.detalleList.setAdapter(mListAdapter);
+        listaproductosex.setLayoutManager(new LinearLayoutManager(getActivity()));
+        listaproductosex.setHasFixedSize(true);
+        listaproductosex.setAdapter(mListAdapter);
+
+    }
+    private void locationStart() {
+        if(mViewModel.mIsNew) {
+            LocationManager mlocManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Localizacion Local = new Localizacion();
+
+
+            final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if (!gpsEnabled) {
+                Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(settingsIntent);
+            }
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+                return;
+            } else if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 10, (LocationListener) Local);
+            }
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+                return;
+            } else {
+                if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+                    if (Local == null) { //Validación que evita NullPointerException
+                        //Requiere actualización
+                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, (LocationListener) Local, Looper.getMainLooper());
+                    } else
+                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, (LocationListener) Local);
+                    //  input11.setText("Localización aqui");
+
+                } else
+                    Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
+
+    }
+    private void setupSnackbar() {
+        // Mostrar snackbar en resultados positivos de operaciones (crear, editar y eliminar)
+        mViewModel.getSnackbarText().observe(getActivity(), integerEvent -> {
+            Integer stringId = integerEvent.getContentIfNotHandled();
+            if (stringId != null) {
+                Snackbar.make(getActivity().findViewById(R.id.coordinator),
+                        stringId, Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+    public void crearFormulario(Visita visita){
+        if(nuevaTienda) {
+            camposTienda = new ArrayList<CampoForm>();
+            CampoForm campo = new CampoForm();
+            campo.label = getString(R.string.nombre_tienda);
+            campo.nombre_campo = "tiendaNombre";
+            campo.type = "inputtext";
+            campo.value =visita.getTiendaNombre() ;
+            campo.required = "required";
+            campo.id = 1001;
+            camposTienda.add(campo);
+
+           /* campo = new CampoForm();
+            campo.label = "Direccion";
+            campo.nombre_campo = "direccion";
+            campo.type = "inputtext";
+            campo.value = visita.getDireccion();
+            campo.required = "required";
+            campo.id = 1002;
+            camposTienda.add(campo);
+         /*   campo = new CampoForm();
+            campo.label = "Complmento dirección";
+            campo.nombre_campo = "complementodireccion";
+            campo.type = "inputtext";
+            campo.value = null;
+            campo.required = "required";
+            campo.id = 1003;
+            camposTienda.add(campo);*/
+         /*   campo = new CampoForm();
+            campo.label = "Punto cardinal";
+            campo.nombre_campo = "puntoCardinal";
+            campo.type = "inputtext";
+            campo.value = visita.getPuntoCardinal();
+            campo.required = "required";
+            campo.id = 1004;
+            camposTienda.add(campo);
+            campo = new CampoForm();
+            campo.label = "Tipo tienda";
+            campo.nombre_campo = "tipoTienda";
+            campo.type = "select";
+            campo.value = visita.getTipoId();
+            HashMap tipotienda=new HashMap<>();
+            tipotienda.put(1,"Grande");
+            tipotienda.put(2,"Mediana");
+            tipotienda.put(3,"Chica");
+            campo.select=tipotienda;
+            campo.required = "required";
+            campo.id = 1005;
+            camposTienda.add(campo);
+            campo = new CampoForm();
+            campo.label = "Cadena comercial";
+            campo.nombre_campo = "cadenaComercial";
+            campo.type = "inputtext";
+            campo.value = visita!=null?visita.getCadenaComercial():null;
+            campo.required = "required";
+            campo.id = 1006;
+            camposTienda.add(campo);*/
+
+
+
+
+        }else //ya existe
+        {
+            camposTienda = new ArrayList<CampoForm>();
+            CampoForm campo = new CampoForm();
+            campo.label = getString(R.string.nombre_tienda);
+            campo.nombre_campo = "tiendaNombre";
+            campo.type = "inputtext";
+            campo.value = visita!=null?visita.getTiendaNombre():tienda.getTiendaNombre();
+            campo.required = "required";
+            campo.id = 1001;
+            camposTienda.add(campo);
+
+            campo = new CampoForm();
+            campo.label = getString(R.string.direccion);
+            campo.nombre_campo = "direccion";
+            campo.type = "inputtext";
+            campo.value = visita!=null?visita.getDireccion():tienda.getDireccion();
+            campo.required = "required";
+            campo.id = 1002;
+            camposTienda.add(campo);
+            campo = new CampoForm();
+            campo.label =getString(R.string.tipo_tienda) ;
+            campo.nombre_campo = "tipoTienda";
+            campo.type = "inputtext";
+            campo.value =visita!=null?visita.getTipoTienda(): tienda.getTipoTienda();
+            campo.required = "required";
+            campo.id = 1005;
+            camposTienda.add(campo);
+
+        }
+     /***finaliza campos de tienda***/
+        camposForm = new ArrayList<CampoForm>();
+        CampoForm campo2 = new CampoForm();
+        campo2.label=getString(R.string.ciudad);
+        campo2.nombre_campo = "ciudad";
+        campo2.type = "inputtext";
+        campo2.value = null;
+        campo2.required = "required";
+        campo2.id = 1007;
+        camposForm.add(campo2);
+        campo2 = new CampoForm();
+
+        campo2.nombre_campo = "pais";
+        campo2.type = "inputtext";
+        campo2.value = null;
+        campo2.required = "required";
+        campo2.id = 1008;
+        camposForm.add(campo2);
+
+
+
+        cf1=new CreadorFormulario(camposTienda,getActivity());
+        cf2=new CreadorFormulario(camposForm,getActivity());
+
+
+
+    }
+
+  /*  public void camposFotosProd(){
+        List<CampoForm> camposForm=new ArrayList<>();
+        //busco el num de clientes
+        ListaCompraRepositoryImpl listaRepo=ListaCompraRepositoryImpl.getInstance(ComprasDataBase.getInstance(getActivity()).getListaCompraDao());
+
+        listaRepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,Constantes.IDCIUDADTRABAJO)
+                .observeForever(new Observer<List<ListaCompra>>() {
+                    @Override
+                    public void onChanged(List<ListaCompra> listaCompras) {
+                        int i=0;
+                        totClientes=listaCompras.size();
+                        for (ListaCompra compra: listaCompras) {
+
+                            CampoForm campo2=new CampoForm();
+                            campo2.label="Foto exhibición "+compra.getClienteNombre();
+                            campo2.nombre_campo="producto_exhibido";
+                            campo2.type="agregarImagen";
+                            campo2.value=null;
+                            campo2.id=1030+i;
+                            CampoForm finalCampo = campo2;
+                            int finali=i;
+                            campo2.funcionOnClick=new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    tomarFoto(finalCampo.id,1040+finali);
+                                }
+                            };
+                            campo2.tomarFoto=true;
+                            campo2.required="required";
+
+                            camposForm.add(campo2);
+                            campo2=new CampoForm();
+                            campo2.nombre_campo="producto_exhibido";
+                            campo2.type="imagenView";
+
+                            campo2.id=1040+i;
+
+
+                            camposForm.add(campo2);
+                            campo2=new CampoForm();
+                            campo2.nombre_campo="cliente";
+                            campo2.type="inputtext";
+                            campo2.id=1050+i;
+
+                            i++;
+
+                            camposForm.add(campo2);
+                        }
+
+
+                    }
+                });
+        cf3=new CreadorFormulario(camposForm,getActivity());
+
+
+    }*/
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+     /*   savedInstanceState.putString(IMG_PATH1, foto1.getText().toString());
+        savedInstanceState.putString(DESCRIPCION, descripcion1.getText().toString());
+        savedInstanceState.putString(TXTUBICACION, ubicacion.getText().toString());
+       */ // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void probarUbicacion() {
+        //
+        //    createLocationRequest();
+        // GPS_ACTIVE = 1;
+        //  obtenerUbicacion();
+        Log.d("AbrirInformeFragment","presione boton");
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            //  requestPermissionLauncher.launch(
+            //        Manifest.permission.REQUESTED_PERMISSION);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            return;
+        } else {
+            // rastreoGPS();
+            locationStart();
+        }
+
+    }
+    public boolean guardar(){
+
+        /*AwesomeValidation mAwesomeValidation = new AwesomeValidation(UNDERLABEL);
+        mAwesomeValidation.setContext(this);*/
+     //   AwesomeValidation mAwesomeValidation = new AwesomeValidation(COLORATION);
+      //  mAwesomeValidation.addValidation(this, R.id., RegexTemplate.NOT_EMPTY, R.string.invalid_name);
+        EditText input7 = root.findViewById(1007);
+        EditText input8 = root.findViewById(1008);
+
+        EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
+       // EditText input13 = root.findViewById(1013);
+         mViewModel.visita=new Visita();
+        mViewModel.visita.setId(nuevoId);
+        if (txtubicacion.getText().toString().equals("")) {
+            Toast.makeText(getActivity(), "Falta activar la ubicación", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (fotofachada.getText().toString().equals("")) {
+            Toast.makeText(getActivity(), "Falta foto de fachada", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(mListAdapter.getItemCount()<=0){
+            Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else {
+            if(nuevaTienda){
+                EditText input1 = root.findViewById(1001);
+                EditText input2 = root.findViewById(1002);
+
+                EditText input4 = root.findViewById(1004);
+                Spinner input5 = root.findViewById(1005);
+                EditText input6 = root.findViewById(1006);
+
+
+
+                mViewModel.visita.setTiendaNombre(input1.getText().toString());
+               // mViewModel.visita.setTipoTienda(String.valueOf(input5.getSelectedItem()));
+
+               // mViewModel.informe.setTiendaId(input5.getText().toString());
+               // mViewModel.visita.setDireccion(input2.getText().toString());
+
+               // mViewModel.visita.setCadenaComercial(input6.getText().toString());
+                //mViewModel.visita.setPuntoCardinal(input4.getText().toString());
+
+
+            }else
+            {//ya existe
+
+                EditText input5 = root.findViewById(1005);
+                EditText input1 = root.findViewById(1001);
+                EditText input2 = root.findViewById(1002);
+
+                mViewModel.visita.setTiendaId(tienda.getTiendaId());
+                mViewModel.visita.setTiendaNombre(tienda.getTiendaNombre());
+
+            }
+            EditText input3 = root.findViewById(R.id.txtaicomplementodir);
+            mViewModel.visita.setComplementodireccion(input3.getText().toString());
+            mViewModel.visita.setIndice(Constantes.INDICEACTUAL);
+            //guardo la foto
+            //guardar imagen
+
+            mViewModel.fotoFachada=new ImagenDetalle();
+            mViewModel.fotoFachada.setRuta(fotofachada.getText().toString());
+            mViewModel.fotoFachada.setDescripcion("Foto fachada");
+            mViewModel.fotoFachada.setEstatus(1);
+
+            mViewModel.fotoFachada.setEstatusSync(0);
+            mViewModel.fotoFachada.setCreatedAt(new Date());
+            //la ciudad y el pais en el que está se definen en las propiedades
+
+            mViewModel.visita.setCiudadId(Constantes.IDCIUDADTRABAJO);
+            mViewModel.visita.setCiudad(Constantes.CIUDADTRABAJO);
+            mViewModel.visita.setPaisId(Constantes.IDPAISTRABAJO);
+            mViewModel.visita.setPais(Constantes.PAISTRABAJO);
+
+            mViewModel.visita.setClaveUsuario(Constantes.CLAVEUSUARIO);
+
+         //   EditText input2 = root.findViewById(1001);
+        //    mViewModel.informe.setNombreTemporal(nombreTemporal.getText().toString());
+            mViewModel.visita.setEstatus(1);
+            mViewModel.visita.setEstatusSync(0);
+            mViewModel.visita.setCreatedAt(new Date());
+            mViewModel.visita.setGeolocalizacion(txtubicacion.getText().toString());
+
+
+            mViewModel.guardarVisita();
+
+
+        }
+        return true;
+    }
+
+    public void sologuardar(){
+        if(guardar()) {
+
+
+            NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
+        }
+    }
+    public void guardarContinuar(){
+        if(guardar()) {
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(NuevoinformeFragment.INFORMESEL, mViewModel.idVisita);
+            /* bundle.putString("plantaNombre", listaSeleccionable.get(i).getNombre());*/
+            /*   NavHostFragment.findNavController(this).navigate(R.id.action_selclientetolistacompras,bundle);
+             */
+            NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
+        }
+    }
+
+    public void actualizar(){
+        EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
+    Log.d("AbrirOnformeFragment.actualizar","nueva?"+nuevaTienda);
+        if (txtubicacion.getText().toString().equals("")) {
+            Toast.makeText(getActivity(), "Falta activar la ubicación", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (fotofachada.getText().toString().equals("")) {
+            Toast.makeText(getActivity(), "Falta foto de fachada", Toast.LENGTH_SHORT).show();
+            return ;
+        }
+        //actualizo campos
+        if(nuevaTienda){
+            EditText input1 = root.findViewById(1001);
+            EditText input2 = root.findViewById(1002);
+
+            EditText input4 = root.findViewById(1004);
+            Spinner input5 = root.findViewById(1005);
+            EditText input6 = root.findViewById(1006);
+
+
+
+            visitaEdi.setTiendaNombre(input1.getText().toString());
+          //  visitaEdi.setTipoTienda(String.valueOf(input5.getSelectedItem()));
+
+            // mViewModel.informe.setTiendaId(input5.getText().toString());
+           // visitaEdi.setDireccion(input2.getText().toString());
+
+            //visitaEdi.setCadenaComercial(input6.getText().toString());
+            //visitaEdi.setPuntoCardinal( input4.getText().toString());
+
+
+        }
+        EditText input3 = root.findViewById(R.id.txtaicomplementodir);
+        visitaEdi.setComplementodireccion(input3.getText().toString());
+        mViewModel.fotoFachada=efotoFachada;
+        mViewModel.fotoFachada.setRuta(fotofachada.getText().toString());
+        mViewModel.fotoFachada.setEstatus(1);
+        mViewModel.fotoFachada.setEstatusSync(0);
+        mViewModel.fotoFachada.setUpdatedAt(new Date());
+        //la ciudad y el pais en el que está se definen en las propiedades
+
+
+        //   EditText input2 = root.findViewById(1001);
+        //    mViewModel.informe.setNombreTemporal(nombreTemporal.getText().toString());
+        visitaEdi.setEstatus(1);
+        visitaEdi.setEstatusSync(0);
+        visitaEdi.setUpdatedAt(new Date());
+        visitaEdi.setGeolocalizacion(txtubicacion.getText().toString());
+        mViewModel.visita=visitaEdi;
+        mViewModel.actualizarVisita();
+        NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
+
+    }
+
+    @Override
+    public void onClickEliminar(ProductoExhibidoDao.ProductoExhibidoFoto foto) {
+        //para eliminar las fotos exhibicion
+        //Pregunto si está seguro
+        feviewModel.eliminarFoto(foto);
+
+    }
+
+
+    public class Localizacion implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location loc) {
+            // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
+            // debido a la deteccion de un cambio de ubicacion
+            if(getActivity()!=null)
+            mostrarPosicion(loc);
+
+             //this.mainActivity.setLocation(loc);
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+            // Este metodo se ejecuta cuando el GPS es desactivado
+
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+            // Este metodo se ejecuta cuando el GPS es activado
+            Log.d("debug", "---------------gps activado");
+        }
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            switch (status) {
+                case LocationProvider.AVAILABLE:
+                    Log.d("debug", "LocationProvider.AVAILABLE");
+                    break;
+                case LocationProvider.OUT_OF_SERVICE:
+                    Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
+                    break;
+                case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                    Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
+                    break;
+            }
+        }
+
+
+    }
+    public void mostrarPosicion(Location location){
+        String latitude = String.valueOf(location.getLatitude());
+        String longitude = String.valueOf(location.getLongitude());
+       Log.d(TAG,"****Ya tengo la ubicacion" + latitude + "," + longitude);
+        //buscar direccion
+        try {
+            TextView mensaje=root.findViewById(R.id.txtaimensajeubicacion);
+            mensaje.setText("Ubicación registrada");
+            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+            List<Address> list = geocoder.getFromLocation(
+                    location.getLatitude(), location.getLongitude(), 1);
+            if (!list.isEmpty()) {
+                Address DirCalle = list.get(0);
+                String state = DirCalle.getAdminArea();
+                country = DirCalle.getCountryName();
+
+                mensaje.setText(DirCalle.getAddressLine(0));
+                //   ubicacion.setText(state+","+country);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        EditText input1 = root.findViewById(R.id.txtaiubicacion);
+        input1.setText(latitude + "," + longitude);
+
+      //  mViewModel.visita.setGeolocalizacion(latitude + "," + longitude);
+
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+       guardar();
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        for (ValidationError error : errors) {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(getActivity());
+
+            // Display error messages ;)
+            if (view instanceof EditText) {
+                ((EditText) view).setError(message);
+            } else {
+                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        if (requestCode == 1000) {
+            if (grantResults.length>0&&grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationStart();
+                return;
+            }
+        }
+    }
+
+    public void irAProductoEx(){
+        Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+
+        String dateString = format.format(new Date());
+        File foto=null;
+        try{
+            nombre_foto = "img_" + dateString + ".jpg";
+            foto = new File(getActivity().getExternalFilesDir(null), nombre_foto);
+            Log.e(TAG, "****"+foto.getAbsolutePath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Toast.makeText(getActivity(), "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+
+
+        }
+        Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                "com.example.comprasmu.fileprovider",
+                foto);
+        intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+        startActivityForResult(intento1, REQUEST_CODE_PROD);
+    }
+    String nombre_foto;
+    public   void tomarFoto(int origen, int destino) {
+        Activity activity=this.getActivity();
+        Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+
+        String dateString = format.format(new Date());
+        File foto=null;
+        try{
+            nombre_foto = "img_" + dateString + ".jpg";
+            foto = new File(activity.getExternalFilesDir(null), nombre_foto);
+            Log.e(TAG, "****"+foto.getAbsolutePath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+
+
+        }
+        Uri photoURI = FileProvider.getUriForFile(activity,
+                "com.example.comprasmu.fileprovider",
+                foto);
+        intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+        //intento1.putExtra("origen", origen);
+         foto1=root.findViewById(origen);
+         if(destino!=0) {
+             imageView = root.findViewById(destino);
+             startActivityForResult(intento1, REQUEST_CODE_TAKE_PHOTO);
+         }
+         else{
+             startActivityForResult(intento1, REQUEST_CODE_2);
+         }
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+     //   Log.d(TAG,"vars"+requestCode +"=="+ REQUEST_CODE_TAKE_PHOTO+"--"+ resultCode+" =="+ RESULT_OK);
+        if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode==REQUEST_CODE_2) && resultCode == RESULT_OK) {
+
+            File file = new File(getActivity().getExternalFilesDir(null), nombre_foto);
+            if (file.exists()) {
+                if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
+                    //envio a la actividad dos para ver la foto
+                    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
+                    intento1.putExtra("ei.archivo", nombre_foto);
+
+                    foto1.setText(nombre_foto);
+                    Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+
+                    imageView.setImageBitmap(bitmap1);
+                }
+                if(requestCode == REQUEST_CODE_2) {
+                    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
+                    intento1.putExtra("ei.archivo", nombre_foto);
+                    intento1.putExtra("ei.opcionfoto", "exhibicion");
+
+                    startActivity(intento1);
+                }
+
+            }
+            else{
+                Log.d(TAG,"Algo salió mal???");
+            }
+
+
+        }if (requestCode == REQUEST_CODE_PROD && resultCode == RESULT_OK) {
+
+            File file = new File(getActivity().getExternalFilesDir(null), nombre_foto);
+            if (file.exists()) {
+
+                //envio a la actividad dos para ver la foto
+                Intent intento1 = new Intent(getContext(), BackActivity.class);
+                intento1.putExtra(NuevoinformeFragment.ARG_FOTOPRODUCTO,nombre_foto);
+                intento1.putExtra(NuevaFotoExhibFragment.ARG_VISITASID,nuevoId);
+                intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_PRODUCTOEX);
+                startActivity(intento1);
+            }
+
+
+
+        }else{
+            Log.d(TAG,"Algo salió muy mal");
+        }
+    }
+
+}

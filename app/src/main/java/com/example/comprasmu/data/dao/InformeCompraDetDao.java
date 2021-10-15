@@ -1,0 +1,96 @@
+package com.example.comprasmu.data.dao;
+
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.PrimaryKey;
+import androidx.room.Query;
+import androidx.room.RawQuery;
+import androidx.room.Transaction;
+import androidx.sqlite.db.SupportSQLiteQuery;
+
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+
+
+import java.util.Date;
+import java.util.List;
+
+@Dao
+public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle> {
+
+    @RawQuery(observedEntities = InformeCompraDetalle.class)
+    public abstract LiveData<List<InformeCompraDetalle>> getInformeCompraDetByFiltros(SupportSQLiteQuery query);
+
+
+
+    @Query("SELECT * FROM informe_detalle where informesId=:informe")
+    public  abstract LiveData<List<InformeCompraDetalle>> findAll(int informe);
+
+    @Query("SELECT * FROM informe_detalle where informesId=:informe")
+    public  abstract List<InformeCompraDetalle> getAllSencillo(int informe);
+
+    @Query("delete from informe_detalle where informesId=:informe and estatusSync=2")
+    public  abstract  void deleteByInforme(int informe);
+
+
+
+    @Query("update  informe_detalle set estatus=0, estatusSync=0 where informesId=:informe")
+    public  abstract void cancelAll(int informe);
+
+    @Query("update informe_detalle set estatusSync=:estatus WHERE id=:id")
+    public abstract void actualizarEstatusSync(int id, int estatus);
+
+    @Query("update informe_detalle set estatusSync=:estatus WHERE informesId=:id")
+    public abstract void actualizarEstatusSyncxInfo(int id, int estatus);
+
+    @Query("SELECT * FROM informe_detalle where id=:id")
+    public abstract LiveData<InformeCompraDetalle> find( int id);
+
+    @Query("SELECT informe_detalle.foto_codigo_produccion FROM informe_detalle " +
+            "            WHERE id =:id " +
+            "union select energia FROM informe_detalle " +
+            "       WHERE id =:id" +
+            "     union select " +
+
+            "informe_detalle.foto_num_tienda FROM informe_detalle " +
+            "                 WHERE id =:id" +
+            "     union select  " +
+            "     informe_detalle.marca_traslape FROM informe_detalle" +
+            "                 WHERE id =:id" +
+            "       union select" +
+
+            " foto_atributoa FROM informe_detalle " +
+            "                WHERE id =:id" +
+            "    union select" +
+
+            "   foto_atributob FROM informe_detalle " +
+            "                WHERE id =:id" +
+            "      union select" +
+
+            "     foto_atributoc FROM informe_detalle " +
+            "               WHERE id =:id" +
+            "   union select" +
+            "    etiqueta_evaluacion " +
+            "FROM informe_detalle " +
+            "WHERE id =:id")
+    public abstract List<Integer> getInformesWithImagen(int id);
+
+    public class InformeDetalleImagenes {
+
+        public int id;
+
+        public int foto_codigo_produccion;
+        public int energia;
+        public int producto_exhibido;
+        public int foto_num_tienda;
+        public int marca_traslape;
+
+        public int foto_atributoa;
+
+        public int foto_atributob;
+
+        public int foto_atributoc;
+        public int etiqueta_evaluacion;
+
+
+    }
+}

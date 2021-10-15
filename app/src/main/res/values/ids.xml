@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="plantasId" type="id"/>
+    <item name="plantaNombre" type="id"/>
+    <item name="clientesId" type="id"/>
+    <item name="clienteNombre" type="id"/>
+    <item name="createdBy" type="id"/>
+    <item name="indice" type="id"/>
+
+</resources>

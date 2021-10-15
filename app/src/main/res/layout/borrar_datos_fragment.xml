@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.mantenimiento.BorrarDatosFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:text="Selecciona el indice"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="89dp" />
+
+        <Spinner
+            android:id="@+id/eispindice"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="52dp" />
+
+        <Button
+            android:id="@+id/btnrfrotar"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/borrar"
+            tools:layout_editor_absoluteY="156dp" />
+
+        <EditText
+            android:id="@+id/eitxttipo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</FrameLayout>

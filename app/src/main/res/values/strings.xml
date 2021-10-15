@@ -1,0 +1,150 @@
+<resources>
+    <string name="app_name">Comprasmu</string>
+    <string name="empty_state_text">No hay datos que mostrar</string>
+    <string name="codigos_no_per">CÓDIGOS NO PERMITIDOS</string>
+    <string name="producto">PRODUCTO</string>
+    <string name="tamanio">TAMAñO</string>
+    <string name="empaque">EMPAQUE</string>
+    <string name="analisis">ANÁLISIS</string>
+    <string name="total">TOTAL</string>
+    <string name="ciudad">CIUDAD</string>
+    <string name="siglas">SIGLAS</string>
+    <string name="fecha_caducidad">FECHA CADUCIDAD</string>
+    <string name="codigo_producto">CÓDIGO PRODUCTO</string>
+    <string name="cliente">CLIENTE</string>
+    <string name="origen">TOMADO DE</string>
+    <string name="costo">COSTO</string>
+     <string name="foto_codigo_produccion">FOTO CÓDIGO PRODUCCIÓN</string>
+     <string name="energia">ENERGÍA</string>
+     <string name="producto_exhibido">PRODUCTO EXHIBIDO</string>
+     <string name="foto_num_tienda">NUMERO DE TIENDA</string>
+     <string name="marca_traslape">MARCA TRASLAPE</string>
+    <string name="atributoa">ATRIBUTO A</string>
+     <string name="foto_atributoa">FOTO ATRIBUTO A</string>
+    <string name="atributob">ATRIBUTO B</string>
+     <string name="foto_atributob">FOTO ATRIBUTO B</string>
+    <string name="atributoc">ATRIBUTO C</string>
+     <string name="foto_atributoc">FOTO ATRIBUTO C</string>
+     <string name="etiqueta_evaluacion">ETIQUETA EVALUACIÓN</string>
+    <string name="se_compro_producto">¿SE COMPRÓ PRODUCTO?</string>
+    <string name="se_compro_segunda">¿SE COMPRÓ SEGUNDA MUESTRA?</string>
+    <string name="se_compro_terc">¿SE COMPRÓ TERCERA MUESTRA?</string>
+    <string name="planta">PLANTA</string>
+
+
+
+
+    <string name="tipo_tienda">TIPO TIENDA</string>
+    <string name="nombre_tienda">NOMBRE TIENDA</string>
+    <string name="direccion">DIRECCIÓN</string>
+    <string name="buscar">BUSCAR</string>
+    <string name="buscar_tienda">BUSCAR TIENDA</string>
+    <string name="title_activity_lista_detalle">ListaDetalleActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="cancelar">CANCELAR</string>
+    <string name="agregar">AGREGAR</string>
+    <string name="title_activity_navigation_darawer">NavigationDarawerActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Configuración</string>
+
+    <string name="menu_configuracion">Configuración</string>
+    <string name="menu_descargar">Descargar lista de compras</string>
+    <string name="menu_ver_lista">Ver lista compras</string>
+    <string name="menu_abrir_informe">Abrir informe</string>
+    <string name="menu_lista_informe">Lista informes</string>
+    <string name="menu_borrar">Borrar datos</string>
+    <string name="menu_borrar_lista">Lista de compras por índice</string>
+    <string name="menu_borrar_informe">Informes por índice</string>
+    <string name="guardar">GUARDAR</string>
+    <string name="guardarcont">GUARDAR Y CONTINUAR</string>
+    <string name="agregar_producto">AGREGAR PRODUCTO</string>
+    <string name="ubicar">UBICAR</string>
+    <string name="si">SI</string>
+    <string name="no">NO</string>
+    <string name="added_informe_message">El informe se guardó correctamente</string>
+    <string name="added_informe_error">No se guardó intente de nuevo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_imagen">Error al subir la imagen</string>
+    <string name="action_subirfotos">Enviar</string>
+    <string name="pregunta_eliminar_mensaje">¿Está seguro de eliminar este informe?</string>
+    <string name="importante">Importante</string>
+    <string name="resp_cancelar_sinconexion">Se eliminó el informe</string>
+
+
+    <string-array name="form_detalle_producto">
+        <item>origen</item>
+        <item>energia</item>
+        <item>costo</item>
+        <item>foto_codigo_produccion</item>
+        <item>producto_exhibido</item>
+        <item>foto_num_tienda</item>
+        <item>marca_traslape</item>
+        <item>atributoa</item>
+        <item>foto_atributoa</item>
+        <item>atributob</item>
+        <item>foto_atributob</item>
+        <item>atributoc</item>
+        <item>foto_atributoc</item>
+        <item>etiqueta_evaluacion</item>
+        <item>comentarios</item>
+
+    </string-array>
+
+    <string name="form_detalle_producto_origen">origen</string>
+    <string name="form_detalle_producto_energia">energia</string>
+    <string name="form_detalle_producto_costo">costo</string>
+    <string name="form_detalle_producto_foto_cod">foto_codigo_produccion</string>
+    <string name="form_detalle_producto_prodexhibido">producto_exhibido</string>
+    <string name="form_detalle_producto_foto_num">foto_num_tienda</string>
+    <string name="form_detalle_producto_marca_tras">marca_traslape</string>
+    <string name="form_detalle_producto_atributo_a">atributoa</string>
+    <string name="form_detalle_producto_foto_atributoa">foto_atributoa</string>
+    <string name="form_detalle_producto_atributob">atributob</string>
+    <string name="form_detalle_producto_foto_atributob">foto_atributob</string>
+    <string name="form_detalle_producto_atributoc">atributoc</string>
+    <string name="form_detalle_producto_foto_atributoc">foto_atributoc</string>
+    <string name="form_detalle_producto_etiqueta">etiqueta_evaluacion</string>
+    <string name="form_detalle_producto_comentarios">comentarios</string>
+
+    <string name="form_informe_primeramuestra">primeraMuestra</string>
+    <string name="form_informe_segundamuestra">segundaMuestra</string>
+    <string name="form_informe_comentarios">comentarios</string>
+    <string name="form_informe_ticketcompra">ticket_compra</string>
+    <string name="form_informe_terceramuestra">terceraMuestra</string>
+    <string name="form_informe_condiciones">condiciones_traslado</string>
+    <string name="informe_finalizado">Informe finalizado</string>
+    <string name="title_activity_revisar_foto">RevisarFotoActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+
+    <string name="title_activity_filtrar_lista">FiltrarListaActivity</string>
+    <string name="indice">INDICE</string>
+    <string name="borrar">BORRAR</string>
+    <string name="pregunta_eliminar_informes">Una vez borrados los datos no podrán eliminarse. ¿Está seguro de eliminar?</string>
+    <string name="comentarios">COMENTARIOS</string>
+    <string name="ticket_compra">TICKET DE COMPRA</string>
+    <string name="condiciones">CONDICIONES DE TRASLADO</string>
+    <string name="menu_editarinforme">EDITAR INFORME</string>
+    <string name="menu_lista_visitas">Preinformes</string>
+    <string name="foto_fachada">FOTO FACHADA</string>
+    <string name="ubicación">UBICACION</string>
+    <string name="agregar_exhibido">AGREGAR PRODUCTO EXHIBIDO</string>
+    <string name="muestras">MUESTRAS</string>
+    <string name="menu_nuevo_informe">Nuevo Informe</string>
+    <string name="editar_informe">EDITAR PREINFORME</string>
+    <string name="nuevo_informe">NUEVO PREINFORME</string>
+    <string name="delete_muestra_message">La muestra se eliminó correctamente</string>
+    <string name="pregunta_mas_clientes">¿Va a capturar otro informe? Si elige que no el preinforme se cerrará y no podrá capturar otro informe</string>
+    <string name="menu_ciudad_trabajo">Ciudad de trabajo</string>
+    <string name="informes">INFORMES</string>
+    <string name="no_eliminar_visita">No puede eliminar este informe</string>
+
+</resources>

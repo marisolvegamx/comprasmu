@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="10dp">
+    <data >
+        <variable
+            name="directorio"
+            type="String" />
+
+        <variable name="detalle"
+            type="com.example.comprasmu.data.dao.ProductoExhibidoDao.ProductoExhibidoFoto"></variable>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivfefoto"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:misrc="@{directorio+detalle.ruta}"
+
+            tools:srcCompat="@tools:sample/avatars" />
+
+
+        <TextView
+            android:id="@+id/txtfeid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@{Integer.toString(detalle.idprodex)}" />
+
+        <TextView
+            android:id="@+id/txtfecliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:text="@{detalle.nombreCliente}" />
+
+
+        <ImageButton
+            android:id="@+id/btnfeeliminar"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@android:drawable/ic_delete" />
+
+
+    </LinearLayout>
+</layout>

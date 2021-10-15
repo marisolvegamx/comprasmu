@@ -1,0 +1,186 @@
+package com.example.comprasmu.data.remote;
+
+import android.content.Context;
+import android.util.Log;
+
+
+import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.services.SubirFotoService;
+import com.example.comprasmu.utils.Constantes;
+
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.ServerResponse;
+import net.gotev.uploadservice.UploadInfo;
+import net.gotev.uploadservice.UploadStatusDelegate;
+
+
+
+
+public class SubirFoto {
+    MultipartUploadRequest upload;
+    String URL_SUBIRPICTURE="https://muesmerc.mx/postmixv3/api/Subirfotos.php";
+    private ArrayList<SubirFotoService.SubirFotoListener> observadores = new ArrayList<SubirFotoService.SubirFotoListener>();
+    ImagenDetRepositoryImpl idrepo;
+
+    public void agregarObservador(SubirFotoService.SubirFotoListener o)
+    {
+        observadores.add(o);
+
+    }
+    public void notificarObservadores()
+    {
+        // Enviar la notificación a cada observador a través de su propio método
+        for (SubirFotoService.SubirFotoListener obj : observadores) {
+            obj.onSuccess();
+        }
+    }
+    public void notificarAvance(int progress)
+    {
+        // Enviar la notificación a cada observador a través de su propio método
+        for (SubirFotoService.SubirFotoListener obj : observadores) {
+            obj.onProgress(progress);
+        }
+    }
+
+
+//    public void subirFoto(List<String> uploadFileArrayList,String idusuario, Context context){
+//
+////filenameGaleria=getFilename();
+//
+//            try {
+//                 upload= new MultipartUploadRequest(context,URL_SUBIRPICTURE)
+//                        .setMaxRetries(2)
+//                          .addParameter("idusuario", idusuario)
+//                         .setUtf8Charset();
+//
+//                upload.setDelegate(new UploadStatusDelegate(){
+//
+//                            @Override
+//                            public void onProgress(UploadInfo uploadInfo) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onError(UploadInfo uploadInfo, Exception exception) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
+//                               /* File eliminar = new File(rutaFotoCamaraGaleria.getPath());
+//                                if (eliminar.exists()) {
+//                                    if (eliminar.delete()) {
+//                                        System.out.println(“archivo eliminado:” + rutaFotoCamaraGaleria.getPath());
+//                                    } else {
+//                                        System.out.println(“archivo no eliminado” + rutaFotoCamaraGaleria.getPath());
+//                                    }*/
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(UploadInfo uploadInfo) {
+//
+//                            }
+//
+//
+//                        });
+//
+//                 int i=0;
+//                for (String uf : uploadFileArrayList) {
+//                    addFileToUploadRequest(uf,i++);
+//                }
+//                upload.startUpload();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//    }
+
+    public void subirFoto( String idusuario, ImagenDetalle imagen,  Context context) throws Exception {
+
+//filenameGaleria=getFilename();
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String uploadFileArrayList=context.getExternalFilesDir(null)+ "/" + imagen.getRuta();
+            upload= new MultipartUploadRequest(context,URL_SUBIRPICTURE)
+                    .setMaxRetries(2)
+                    .addParameter ("ruta", imagen.getRuta())
+                   // .addParameter ("descripcion1", (imagen.getId_descripcion()!=null&& imagen.getId_descripcion()!="")?imagen.getId_descripcion():"")
+                    .addParameter ("idlocalim", imagen.getId() + "")
+                    .addParameter ("idusuario", idusuario)
+
+                  //  .addParameter("idlocalrep", imagen.getId_reporte() + "")
+                  //  .addParameter("recolector", recolector)
+                  //  .addParameter("planta", planta)
+
+                    .setUtf8Charset();
+            upload.setDelegate(new UploadStatusDelegate(){
+
+                @Override
+                public void onProgress(UploadInfo uploadInfo) {
+                    Log.d("ejemplo","Subiendo foto....."+uploadFileArrayList);
+                    notificarAvance(uploadInfo.getProgressPercent());
+                }
+
+                @Override
+                public void onError(UploadInfo uploadInfo, Exception exception) {
+                    Log.d("ejemplo","Error al subir"+uploadInfo.getUploadedBytes());
+                }
+
+                @Override
+                public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
+                    Log.d("ejemploimagen","Respuesta->"+serverResponse.getHttpCode());
+                    Log.d("ejemploimagen","Respuesta->"+serverResponse.getBodyAsString());
+                    if(serverResponse.getHttpCode()==200) {
+                        actualizarEstado(imagen);
+                    }else { //hubo un error
+                        //lo registro en el log
+                        Log.d(Constantes.TAG,"Hubo un error al subir imagen "+serverResponse.getBodyAsString());
+                    }
+                      Log.d("ejemplo", "terminó de subir");
+                      notificarObservadores();
+
+
+                }
+
+                @Override
+                public void onCancelled(UploadInfo uploadInfo) {
+                    Log.d("ejemplo", "se cancelo");
+                }
+
+
+            });
+
+            int i=0;
+
+            addFileToUploadRequest(uploadFileArrayList,1);
+
+            upload.startUpload();
+        } catch (Exception e) {
+            throw e;
+        }
+
+    }
+    public void actualizarEstado(ImagenDetalle imagen){
+        //  for(Imagen imagen:lista){
+        imagen.setEstatusSync(2);
+        idrepo.insert(imagen);
+
+    }
+
+    public void addFileToUploadRequest(String uf,int i) throws Exception {
+        try {
+            upload.addFileToUpload(uf, "file_"+i);
+        } catch (FileNotFoundException e) {
+            throw new Exception("No se encontró el archivo "+uf+" Verifique");
+        }
+    }
+
+
+}
