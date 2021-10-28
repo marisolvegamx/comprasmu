@@ -26,10 +26,7 @@ public class Constantes {
     public static final String ID_GASTO = "idGasto";
     public static String []meses={"Enero","Febrero","Marzo","Abril", "Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"};
     public static String []anios={"2021","2022","2023","2024", "2025","2026","2027","2028","2029","2030"};
-    public static final String ROOT_URL = "http://mobiplay.cl/ncadmin/";
-    public static final String REST_API = "restserver/";
-    public static final String GET_URL ="https://muesmerc.mx/postmixv3/api/Subirfotos.php" ;
-    public static final String SUCCESS ="1" ;
+     public static final String SUCCESS ="1" ;
     public static final String FAILED = "2";
     public static final int PENDIENTE =0 ;
 
@@ -37,11 +34,11 @@ public class Constantes {
     public static final int ENVIADO =2;
     public static SimpleDateFormat  vistasdf=new SimpleDateFormat("dd-MM-yy HH:mm:ss");
     public static String []listaindices;
-    public static final String INSERT_URL ="https://muesmerc.mx/postmixv3/api/Subirfotos.php" ;
     public static final String ACCOUNT_TYPE ="com.example.ejemploimagen.account" ;
     public static String[] ESTATUSINFORME={"CANCELADO","ABIERTO","FINALIZADO","ENVIADO"};
     public static String[] ESTATUSSYNC={"PENDIENTE","ENVIANDO","ENVIADO"};
 
     public static List<DescripcionGenerica> clientesAsignados;
     public static HashMap<Integer,String> plantasAsignadas;
+    public static String ni_clientesel;
 }

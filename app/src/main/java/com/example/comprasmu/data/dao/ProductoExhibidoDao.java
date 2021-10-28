@@ -41,6 +41,11 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
             " where visitasId=:idVisita")
     public abstract LiveData<List<ImagenDetalle>> getImagenByVisita(int idVisita);
 
+    @Query("SELECT  imagen_detalle.id, descripcion,ruta,estatus,producto_exhibido.estatusSync,indice FROM imagen_detalle " +
+            " inner join    producto_exhibido on producto_exhibido.imagenId=imagen_detalle.id" +
+            " where visitasId=:idVisita")
+    public abstract List<ImagenDetalle> getImagenByVisitasimple(int idVisita);
+
     @Query("delete FROM producto_exhibido where visitasId=:idVisita")
     public abstract void deleteByVisita(int idVisita);
 

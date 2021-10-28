@@ -29,11 +29,19 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
       return dao.findAll();
     }
 
+    @Override
+    public List<ImagenDetalle> getAllsimple() {
+        return dao.findAllsimple();
+    }
 
 
     @Override
     public LiveData<ImagenDetalle> find(int id) {
         return dao.find(id);
+    }
+
+    public ImagenDetalle findsimple(int id) {
+        return dao.findsimple(id);
     }
 
   //  public ImagenDetalle findsimple(int id) {

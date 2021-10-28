@@ -39,6 +39,8 @@ public class InformeCompraDetalle {
     private int foto_atributob;
     private String atributoc;
     private int foto_atributoc;
+    private int azucares;
+    private int qr;
     private int etiqueta_evaluacion;
     private int tipoMuestra;
     private String nombreTipoMuestra;
@@ -47,6 +49,17 @@ public class InformeCompraDetalle {
     private int numMuestra;
 
     private String comentarios;
+    private int comprasId;
+    private int comprasDetId;
+
+    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
+    @TypeConverters(Converters.class)
+    private Date createdAt;
+
+    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
+    @TypeConverters(Converters.class)
+    private Date updatedAt;
+
 
     public int getId() {
         return id;
@@ -245,14 +258,6 @@ public class InformeCompraDetalle {
         this.updatedAt = updatedAt;
     }
 
-    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
-    @TypeConverters(Converters.class)
-    private Date createdAt;
-
-    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
-    @TypeConverters(Converters.class)
-    private Date updatedAt;
-
     public boolean isSinproducto() {
         return sinproducto;
     }
@@ -317,6 +322,22 @@ public class InformeCompraDetalle {
         this.nombreTipoMuestra = nombreTipoMuestra;
     }
 
+    public int getAzucares() {
+        return azucares;
+    }
+
+    public void setAzucares(int azucares) {
+        this.azucares = azucares;
+    }
+
+    public int getQr() {
+        return qr;
+    }
+
+    public void setQr(int qr) {
+        this.qr = qr;
+    }
+
     public int getTipoAnalisis() {
         return tipoAnalisis;
     }
@@ -331,6 +352,22 @@ public class InformeCompraDetalle {
 
     public void setNombreAnalisis(String nombreAnalisis) {
         this.nombreAnalisis = nombreAnalisis;
+    }
+
+    public int getComprasId() {
+        return comprasId;
+    }
+
+    public void setComprasId(int comprasId) {
+        this.comprasId = comprasId;
+    }
+
+    public int getComprasDetId() {
+        return comprasDetId;
+    }
+
+    public void setComprasDetId(int comprasDetId) {
+        this.comprasDetId = comprasDetId;
     }
 }
 

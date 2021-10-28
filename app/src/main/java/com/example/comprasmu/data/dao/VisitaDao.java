@@ -26,9 +26,12 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
 
     @Query("select max(id) from visitas")
     public abstract int getUltimoId();
-
     @Query("SELECT * FROM visitas")
-    public  abstract LiveData<List<Visita>> findAll();
+    public  abstract LiveData<List<Visita>>findAll();
+    @Query("SELECT * FROM visitas")
+    public  abstract List<Visita> findAllsimple();
+    @Query("SELECT * FROM visitas where id=:id")
+    public  abstract Visita findsimple(int id);
 
     @Query("SELECT * FROM visitas where indice=:indice")
     public  abstract LiveData<List<Visita>> findAllByIndice(String indice);

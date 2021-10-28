@@ -4,16 +4,20 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.data.remote.CatalogosResponse;
 import com.example.comprasmu.data.remote.GenericResponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TiendasResponse;
+import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
@@ -24,6 +28,7 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -36,31 +41,31 @@ public class PeticionesServidor {
     ServiceGenerator apiClient;
     String usuario;
     static final String TABLA_LISTA="pr_listacompra";
+    static final String TAG="PeticionesServidor";
     static final String TABLA_DETALLE="pr_listacompradetalle";
-    LiveData<ArrayList<Tienda>> lista;
-    public PeticionesServidor(String usuario) {
+    MutableLiveData<List<Tienda>> lista;
+    public PeticionesServidor(String usuario ) {
         this.usuario = usuario;
-
+        lista=new MutableLiveData<>();
     }
 
-    public void getCatalogos(CatalogoDetalleRepositoryImpl catRep) {
+    public void getCatalogos(CatalogoDetalleRepositoryImpl catRep,TablaVersionesRepImpl trepo,AtributoRepositoryImpl atRepo) {
 
-        final Call<GenericResponse<CatalogoDetalle>> batch = apiClient.getApiService().getCatalogosNuevoInforme(usuario);
+        final Call<CatalogosResponse> batch = apiClient.getApiService().getCatalogosNuevoInforme(usuario);
 
-        batch.enqueue(new Callback<GenericResponse<CatalogoDetalle>>() {
+        batch.enqueue(new Callback<CatalogosResponse>() {
             @Override
-            public void onResponse(@Nullable Call<GenericResponse<CatalogoDetalle>> call, @Nullable Response<GenericResponse<CatalogoDetalle>> response) {
+            public void onResponse(@Nullable Call<CatalogosResponse> call, @Nullable Response<CatalogosResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    GenericResponse<CatalogoDetalle> respuestaCats = response.body();
-                    List<CatalogoDetalle> lista=respuestaCats.getDatos();
-                    catRep.insertAll(lista);
-
+                    CatalogosResponse respuestaCats = response.body();
+                    Log.d("PeticionesServidor","leyendo cats "+respuestaCats.getCatalogos().size());
+                    insertarCatalogos(respuestaCats,catRep,trepo,atRepo);
 
                 }
             }
 
             @Override
-            public void onFailure(@Nullable Call<GenericResponse<CatalogoDetalle>> call, @Nullable Throwable t) {
+            public void onFailure(@Nullable Call<CatalogosResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
 
@@ -69,16 +74,21 @@ public class PeticionesServidor {
         });
     }
 
-    public   LiveData<ArrayList<Tienda>> getTiendas(String ciudad, String tipo, String nombre ) {
+    public  void getTiendas(String ciudad, String tipo, String nombre ) {
 
         final Call<TiendasResponse> batch = apiClient.getApiService().getTiendas(ciudad,tipo,nombre,usuario);
 
         batch.enqueue(new Callback<TiendasResponse>() {
             @Override
             public void onResponse(@Nullable Call<TiendasResponse> call, @Nullable Response<TiendasResponse> response) {
+               Log.d(TAG,"llego algo"+response.body());
                 if (response.isSuccessful() && response.body() != null) {
                     TiendasResponse respuestaTiendas = response.body();
-                     lista=respuestaTiendas.getTiendas();
+
+                      lista.setValue(respuestaTiendas.getTiendas());
+                   // lista.setValue(respuestaTiendas);
+
+                    Log.d(TAG,"ya lo asigné"+respuestaTiendas.getTiendas().get(0).getUne_descripcion());
                 //  return lista;
 
 
@@ -93,46 +103,38 @@ public class PeticionesServidor {
                 }
             }
         });
-        return lista;
+
     }
 
     public void getListasdeCompra(TablaVersionesRepImpl tvrepo, String indice, ListaCompraDetRepositoryImpl lcdrepo){
         //busco la version de la app
-         LiveData<TablaVersiones> version=tvrepo.getVersionByNombreTabla("pr_listacompradetalle");
+         TablaVersiones tablaVersiones=tvrepo.getVersionByNombreTabla("pr_listacompradetalle");
          SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");
-         version.observeForever(new Observer<TablaVersiones>() {
-                                    @Override
-                                    public void onChanged(TablaVersiones tablaVersiones) {
-                                        PeticionLista peticion = new PeticionLista();
-                                        if (tablaVersiones != null && tablaVersiones.getVersion() != null) {
+
+        PeticionLista peticion = new PeticionLista();
+        if (tablaVersiones != null && tablaVersiones.getVersion() != null) {
 
 
-                                            peticion.version_detalle = sdf.format(tablaVersiones.getVersion());
-                                            LiveData<TablaVersiones> version2 = tvrepo.getVersionByNombreTabla(TABLA_LISTA);
+            peticion.version_detalle = sdf.format(tablaVersiones.getVersion());
+            TablaVersiones version2 = tvrepo.getVersionByNombreTabla(TABLA_LISTA);
 
-                                            version2.observeForever(new Observer<TablaVersiones>() {
-                                                @Override
-                                                public void onChanged(TablaVersiones tablaVersiones) {
+            peticion.version_lista = sdf.format(tablaVersiones.getVersion());
+            peticion.indice = indice;
+            peticion.usuario = usuario;
+            //hago la peticion
+            pedirLista(peticion, lcdrepo, tvrepo);
 
-                                                    peticion.version_lista = sdf.format(tablaVersiones.getVersion());
-                                                    peticion.indice = indice;
-                                                    peticion.usuario = usuario;
-                                                    //hago la peticion
-                                                    pedirLista(peticion, lcdrepo, tvrepo);
-                                                }
-                                            });//fin version2
-                                        }else //el la 1a vez
-                                        {
-                                            peticion.version_detalle ="";
+        }else //es la 1a vez
+        {
+            peticion.version_detalle ="";
 
-                                            peticion.version_lista = "";
-                                            peticion.indice = indice;
-                                            peticion.usuario = usuario;
-                                            //hago la peticion
-                                            pedirLista(peticion, lcdrepo, tvrepo);
-                                        }
-                                    }
-                                });
+            peticion.version_lista = "";
+            peticion.indice = indice;
+            peticion.usuario = usuario;
+            //hago la peticion
+            pedirLista(peticion, lcdrepo, tvrepo);
+        }
+
 
 
     }
@@ -199,8 +201,39 @@ public class PeticionesServidor {
         });
     }
 
+    public void insertarCatalogos(CatalogosResponse respuestaCats, CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atrRepo){
+        List<CatalogoDetalle> lista=respuestaCats.getCatalogos();
+        //borro los catalogos que traigo
+        catRep.deletexIdCat(2);
+        catRep.deletexIdCat(8);
+        catRep.deletexIdCat(15);
+        catRep.insertAll(lista);
+        List<Atributo> lista2=respuestaCats.getAtributos();
+        //borro los catalogos que traigo
+       // atrRepo.delete();
+        atrRepo.insertAll(lista2);
+        //actualizo tabla versiones para hacerlo 1 vez al dia
+        TablaVersiones tv=new TablaVersiones();
+        tv.setNombreTabla("catalogos");
+        tv.setTipo("C");
+        tv.setVersion(new Date());
+        trepo.insertUpdate(tv);
+        TablaVersiones tv2=new TablaVersiones();
+        tv2.setNombreTabla("atributos");
+        tv2.setTipo("C");
+        tv2.setVersion(new Date());
+        trepo.insertUpdate(tv2);
+    }
 
-   public class PeticionLista{
+    public MutableLiveData<List<Tienda>> getLista() {
+        return lista;
+    }
+
+    public void setLista(MutableLiveData<List<Tienda>> lista) {
+        this.lista = lista;
+    }
+
+    public class PeticionLista{
         String indice;
         String usuario;
         String version_lista;

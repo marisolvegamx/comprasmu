@@ -94,7 +94,7 @@ public class InformeCompraAdapter extends RecyclerView.Adapter<InformeCompraAdap
             binding.liBtnsubir.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                        callback.onClickSubir(Integer.parseInt(binding.liTxtid.getText().toString()));
                 }
             });
 

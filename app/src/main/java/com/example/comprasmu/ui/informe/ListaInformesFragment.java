@@ -27,16 +27,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 
+import com.example.comprasmu.SubirInformeTask;
 import com.example.comprasmu.data.dao.InformeCompraDao;
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.data.modelos.InformeCompra;
-import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+
+import com.example.comprasmu.data.remote.InformeEnvio;
+
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
 import com.example.comprasmu.ui.BackActivity;
-import com.example.comprasmu.ui.RevisarFotoActivity;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
+
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -66,11 +67,10 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
 
     public static ListaInformesFragment newInstance()
     {
-     //   ListaInformesFragment fragment = new ListaInformesFragment();
+      //  ListaInformesFragment fragment = new ListaInformesFragment();
       //  Bundle bundle = new Bundle();
       //  bundle.putInt(ARG_CLIENTEID, cliente);
-
-       // fragment.setArguments(bundle);
+      //  fragment.setArguments(bundle);
       //  clienteid=cliente;
         return new ListaInformesFragment();
     }
@@ -242,9 +242,14 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
     }
 
     @Override
-    public void onClickSubir(int id) {
-
+    public void onClickSubir(int informe) {
+      NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
+       InformeEnvio informeenv=niViewModel.preparaInforme(informe);
+      /*  SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informeenv,getActivity());
+        miTareaAsincrona.execute();*/
+        NuevoinformeFragment.subirFotos(getActivity(),informeenv);
     }
+
 
 
 }

@@ -8,6 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.example.comprasmu.data.dao.AtributoDao;
 import com.example.comprasmu.data.dao.BaseDao;
 import com.example.comprasmu.data.dao.CatalogoDetalleDao;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
@@ -19,6 +20,7 @@ import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.dao.ReactivoDao;
 import com.example.comprasmu.data.dao.TablaVersionesDao;
 import com.example.comprasmu.data.dao.VisitaDao;
+import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -45,7 +47,7 @@ import java.util.Map;
         TablaVersiones.class,
         Visita.class,
         ProductoExhibido.class,
-        CatalogoDetalle.class},views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=1, exportSchema = false)
+        CatalogoDetalle.class, Atributo.class},views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -59,7 +61,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
     public abstract ReactivoDao getReactivoDao();
     public abstract CatalogoDetalleDao getCatalogoDao();
     public abstract ProductoExhibidoDao getProductoExhibidoDao();
-
+    public abstract AtributoDao getAtributoDao();
     public abstract InformeCompraDao getInformeCompraDao();
     public static ComprasDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
@@ -122,55 +124,61 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lc.setCiudadNombre("Cd Juarez");
         lc.setClienteNombre("pepsi");
         lc.setPlantaNombre("juarez");
+        lc.setSiglas("pj");
         lc.setIndice("julio 2021");
         lc.setEstatus(1);
         dao.insert(lc);
 
         lc=new ListaCompra();
-        lc.setClientesId(1);
-        lc.setPlantasId(1);
+        lc.setClientesId(2);
+        lc.setPlantasId(2);
         lc.setClienteNombre("peñafiel");
         lc.setPlantaNombre("acapulco");
-        lc.setIndice("junio 2021");
+        lc.setSiglas("pa");
+        lc.setIndice("noviembre 2021");
         lc.setEstatus(1);
         lc.setCiudadesId(2);
         lc.setCiudadNombre("Cd Acapulco");
         dao.insert(lc);
         lc=new ListaCompra();
-        lc.setClientesId(1);
-        lc.setPlantasId(1);
+        lc.setClientesId(2);
+        lc.setPlantasId(3);
         lc.setClienteNombre("peñafiel");
         lc.setPlantaNombre("juarez");
-        lc.setIndice("junio 2021");
+        lc.setSiglas("pj");
+        lc.setIndice("noviembre 2021");
         lc.setCiudadesId(1);
         lc.setCiudadNombre("Cd Juarez");
         lc.setEstatus(1);
         dao.insert(lc);
         lc=new ListaCompra();
         lc.setClientesId(1);
-        lc.setPlantasId(1);
+        lc.setPlantasId(4);
         lc.setClienteNombre("pepsi");
         lc.setPlantaNombre("monterrey");
-        lc.setIndice("junio 2021");
+        lc.setSiglas("pm");
+        lc.setIndice("noviembre 2021");
         lc.setCiudadesId(3);
         lc.setCiudadNombre("Nuevo leon");
         lc.setEstatus(1);
         dao.insert(lc);
         lc=new ListaCompra();
-        lc.setClientesId(1);
-        lc.setPlantasId(1);
+        lc.setClientesId(2);
+        lc.setPlantasId(5);
         lc.setClienteNombre("peñafiel");
         lc.setPlantaNombre("monterrey");
-        lc.setIndice("junio 2021");
+        lc.setSiglas("ppm");
+        lc.setIndice("noviembre 2021");
         lc.setCiudadesId(3);
         lc.setCiudadNombre("Nuevo leon");
         lc.setEstatus(1);
         dao.insert(lc);
         lc=new ListaCompra();
         lc.setClientesId(1);
-        lc.setPlantasId(1);
+        lc.setPlantasId(6);
         lc.setClienteNombre("pepsi");
         lc.setPlantaNombre("acapulco");
+        lc.setSiglas("pa");
         lc.setCiudadesId(2);
         lc.setCiudadNombre(" cd. acapulco");
         lc.setEstatus(1);

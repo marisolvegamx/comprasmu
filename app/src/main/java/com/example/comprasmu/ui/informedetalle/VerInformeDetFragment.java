@@ -88,9 +88,9 @@ public class VerInformeDetFragment extends Fragment {
         startui();
         niViewModel=new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
-        Log.d("DetalleProductoFragment1","creando fragment");
+        Log.d("DetalleProdFragment1","creando fragment");
 
-        sdf=new SimpleDateFormat("dd-MM-yy");
+        sdf=new SimpleDateFormat("dd-MMM-yyyy");
         // Inflate the layout for this fragment
         dViewModel.cargarCatalogos();
 
@@ -129,7 +129,7 @@ public class VerInformeDetFragment extends Fragment {
                                   public void onChanged(Integer integer) {
                                       if(integer==8) {
                                           crearFormulario();
-                                          sv.addView(cf.crearFormulario());
+                                          sv.addView(cf.crearTabla());
                                       }
                                   }
                               });
@@ -147,7 +147,7 @@ public class VerInformeDetFragment extends Fragment {
     MutableLiveData<Integer> cont;
     public void ponerDatos(InformeCompraDetalle informe) {
         cont=new MutableLiveData<>();
-        fotos= new ImagenDetalle[8];
+        fotos= new ImagenDetalle[10];
         i=0;
 
 
@@ -160,6 +160,8 @@ public class VerInformeDetFragment extends Fragment {
         ponerFoto(informe.getFoto_atributob());
         ponerFoto(informe.getFoto_atributoc());
         ponerFoto(informe.getEtiqueta_evaluacion());
+        ponerFoto(informe.getQr());
+        ponerFoto(informe.getAzucares());
 
 
 
@@ -170,7 +172,7 @@ public class VerInformeDetFragment extends Fragment {
     //objeto imagendetalle
     int i;
     public void ponerFoto( int idfoto){
-        niViewModel.getFoto(idfoto).observe(this, new Observer<ImagenDetalle>() {
+        niViewModel.getFotoLD(idfoto).observe(this, new Observer<ImagenDetalle>() {
                 @Override
                 public void onChanged(ImagenDetalle s) {
                     if(s!=null) {
@@ -193,16 +195,15 @@ public class VerInformeDetFragment extends Fragment {
 
         camposForm= new ArrayList<CampoForm>();
         this.crearCampo("NUM. MUESTRA",informeSel.getValue().getNumMuestra()+"");
-        this.crearCampo("",informeSel.getValue().getProducto());
-        this.crearCampo("",informeSel.getValue().getEmpaque()+" "+informeSel.getValue().getPresentacion());
-        this.crearCampo("",informeSel.getValue().getNombreAnalisis());
-        this.crearCampo("",informeSel.getValue().getNombreTipoMuestra());
+        this.crearCampo("PRODUCTO",informeSel.getValue().getProducto()+" "+informeSel.getValue().getEmpaque()+" "+informeSel.getValue().getPresentacion());
+        this.crearCampo("ANALISIS",informeSel.getValue().getNombreAnalisis());
+        this.crearCampo("TIPO MUESTRA",informeSel.getValue().getNombreTipoMuestra());
 
         CampoForm campo=new CampoForm();
         campo.label=getString(R.string.fecha_caducidad);
         campo.nombre_campo=Contrato.TablaInformeDet.COSTO;
         campo.type="label";
-        campo.value=informeSel.getValue().getCosto();
+        campo.value=sdf.format(informeSel.getValue().getCaducidad());
 
         camposForm.add(campo);
 
@@ -231,7 +232,13 @@ public class VerInformeDetFragment extends Fragment {
 
 
         camposForm.add(campo);
+        campo=new CampoForm();
+        campo.label=getString(R.string.azucareS);
 
+        campo.type="imagenView";
+        campo.value=fotos[9]!=null?directorio+fotos[9].getRuta():"";
+
+        camposForm.add(campo);
         campo=new CampoForm();
         campo.label=getString(R.string.energia);
         campo.nombre_campo=Contrato.TablaInformeDet.ENERGIA;
@@ -307,6 +314,12 @@ public class VerInformeDetFragment extends Fragment {
 
 
         campo=new CampoForm();
+        campo.label="QR";
+
+        campo.type="imagenView";
+        campo.value=fotos[8]!=null?directorio+fotos[8].getRuta():"";
+
+        camposForm.add(campo);
         campo.label=getString(R.string.etiqueta_evaluacion);
 
         campo.type="imagenView";

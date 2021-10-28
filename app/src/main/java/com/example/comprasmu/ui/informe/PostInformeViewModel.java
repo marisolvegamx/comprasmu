@@ -29,7 +29,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostInformeViewModel extends AndroidViewModel {
+public class PostInformeViewModel {
     private ServiceGenerator apiClient;;
     Post post;
     public final ObservableField<String> mensaje = new ObservableField<>();
@@ -41,24 +41,30 @@ public class PostInformeViewModel extends AndroidViewModel {
    ProductoExhibidoRepositoryImpl prodeRepo;
    Context context;
 
-    public PostInformeViewModel(@NonNull Application application) {
-        super(application);
-        this.context=application;
+    public PostInformeViewModel(@NonNull Context context) {
+
+        this.context=context;
 
 
     }
 
 
     public void sendInforme(InformeEnvio informeCompra) {
+        //TODO manejar el response
+        Log.d("Informe", "kkkkkkkkkk"+informeCompra.toJson(informeCompra));
         apiClient.getApiService().saveInformeEnvio(informeCompra).enqueue(new Callback<InformeEnvio>() {
             @Override
             public void onResponse(Call<InformeEnvio> call, Response<InformeEnvio> response) {
-
+                Log.d("POstInformeVM", "jjjjjjjjj"+response.body());
+              //  { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
                 if(response.isSuccessful()) {
+
                     mensaje.set(response.body().toString());
                     //actualizo el estatus
                     iniciarConexiones();
                    actualizarEstatusInforme(informeCompra);
+
                   //listo para subir fotos
 
                 }

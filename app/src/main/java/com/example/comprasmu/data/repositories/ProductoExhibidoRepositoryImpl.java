@@ -29,14 +29,23 @@ public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhib
         return dao.findAll();
     }
 
+    @Override
+    public List<ProductoExhibido> getAllsimple() {
+        return null;
+    }
+
     public LiveData<List<ProductoExhibido>> getByVisita(int idVisita) {
       return dao.findByVisita( idVisita);
     }
     public void deleteByVisita(int idVisita) {
          dao.deleteByVisita( idVisita);
     }
+
     public LiveData<List<ImagenDetalle>> getImagenByVisita(int idVisita) {
         return dao.getImagenByVisita( idVisita);
+    }
+    public List<ImagenDetalle> getImagenByVisitasimple(int idVisita) {
+        return dao.getImagenByVisitasimple( idVisita);
     }
 
 
@@ -46,6 +55,10 @@ public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhib
         return dao.find(id);
     }
 
+    @Override
+    public ProductoExhibido findsimple(int id) {
+        return null;
+    }
 
 
     @Override

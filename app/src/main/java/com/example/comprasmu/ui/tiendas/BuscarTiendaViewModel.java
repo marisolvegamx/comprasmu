@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.comprasmu.data.PeticionesServidor;
@@ -33,10 +35,10 @@ import retrofit2.Response;
 
 public class BuscarTiendaViewModel extends AndroidViewModel {
 
-    public MutableLiveData<String> nombreTienda;
-    public MutableLiveData<String> ciudad;
-    public MutableLiveData<String> tipoTienda;
-    private LiveData<ArrayList<Tienda>> listaTiendas;
+
+
+
+    private MutableLiveData<List<Tienda>> listaTiendas;
      private  LiveData<Integer> size;
     private MutableLiveData<HashMap<Integer,String>> listaCiudades;
     private MutableLiveData<HashMap<Integer,String>> tiposTienda;
@@ -52,21 +54,30 @@ public class BuscarTiendaViewModel extends AndroidViewModel {
         super(context);
         this.context=context;
         ps =new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        listaTiendas=new MutableLiveData<>();
+        listadescripcion=new MutableLiveData<>();
 
     }
 
     private void getCatalogosBT() {
-     ps.getCatalogos(new CatalogoDetalleRepositoryImpl(context));
+   //  ps.getCatalogos(new CatalogoDetalleRepositoryImpl(context));
 
     }
 
 
-    public void getTiendas() {
-        if((ciudad.getValue()!=null&&!ciudad.getValue().equals(""))||(tipoTienda.getValue()!=null&&!tipoTienda.getValue().equals(""))||(nombreTienda.getValue()!=null&&!nombreTienda.getValue().equals("")))
+    public void getTiendas(String ciudad, String nombreTienda, String tipoTienda, LifecycleOwner lo) {
+        if((ciudad!=null&&!ciudad.equals(""))||(nombreTienda!=null&&!nombreTienda.equals("")))
+                //||(tipoTienda!=null&&!tipoTienda.getValue().equals("")))
         {
-            listaTiendas=ps.getTiendas(ciudad.getValue(),tipoTienda.getValue(),nombreTienda.getValue());
+            ps.getTiendas(ciudad,tipoTienda,nombreTienda);
+           ps.getLista().observeForever( new Observer<List<Tienda>>() {
+                @Override
+                public void onChanged(List<Tienda> tiendas) {
+                    Log.d("BuscarTiendaViewModel","llegué aquí"+tiendas.size());
+                    tiendaToDescripcion(tiendas);
+                }
+            });
 
-            tiendaToDescrion();
 
 
         }
@@ -76,45 +87,24 @@ public class BuscarTiendaViewModel extends AndroidViewModel {
         }
     }
 
-    public void tiendaToDescrion(){
-        listadescripcion=new MutableLiveData<List<DescripcionGenerica>>();
+    public void tiendaToDescripcion(List<Tienda> listaTiendas){
+
         List<DescripcionGenerica> lista=new ArrayList<DescripcionGenerica>();
-        for(Tienda tienda:listaTiendas.getValue()){
+        for(Tienda tienda:listaTiendas){
+            Log.d("BuscarTiendaVM","llegué aquí"+ tienda.getUne_descripcion());
+
+
             DescripcionGenerica desc=new DescripcionGenerica();
-            desc.id=tienda.getTiendaId();
-            desc.nombre=tienda.getTiendaNombre();
-            desc.descripcion=tienda.getDireccion();
+            desc.id=tienda.getUne_id();
+            desc.nombre=tienda.getUne_descripcion();
+            desc.descripcion=tienda.getUne_direccion();
 
             lista.add(desc);
         }
         listadescripcion.setValue(lista);
 
     }
-    public MutableLiveData<String> getNombreTienda() {
-        return nombreTienda;
-    }
-
-    public void setNombreTienda(MutableLiveData<String> nombreTienda) {
-        this.nombreTienda = nombreTienda;
-    }
-
-    public MutableLiveData<String> getCiudad() {
-        return ciudad;
-    }
-
-    public void setCiudad(MutableLiveData<String> ciudad) {
-        this.ciudad = ciudad;
-    }
-
-    public MutableLiveData<String> getTipoTienda() {
-        return tipoTienda;
-    }
-
-    public void setTipoTienda(MutableLiveData<String> tipoTienda) {
-        this.tipoTienda = tipoTienda;
-    }
-
-    public MutableLiveData<List<DescripcionGenerica>> getListadescripcion() {
+     public MutableLiveData<List<DescripcionGenerica>> getListadescripcion() {
         return listadescripcion;
     }
 

@@ -25,6 +25,8 @@ public class ListaCompraDetalle {
     private int comprados;
     private int tipoMuestra;
     private String nombreTipoMuestra;
+    private int categoriaid;
+    private String categoria;
 
 
 
@@ -152,5 +154,19 @@ public class ListaCompraDetalle {
         this.nombreTipoMuestra = nombreTipoMuestra;
     }
 
+    public int getCategoriaid() {
+        return categoriaid;
+    }
 
+    public void setCategoriaid(int categoriaid) {
+        this.categoriaid = categoriaid;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
 }

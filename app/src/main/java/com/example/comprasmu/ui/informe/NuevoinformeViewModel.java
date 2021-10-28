@@ -19,6 +19,7 @@ import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
+import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
@@ -69,6 +70,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public LiveData<InformeCompra> informeEdicion;
     public int idVisita;
     public boolean mIsNew;
+    public String TAG="NuevoInformeVM";
 
 
     public NuevoinformeViewModel(@NonNull Application application) {
@@ -156,50 +158,61 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return imagenDetRepository.findRuta(idfoto);
 
     }
-    public LiveData<ImagenDetalle> getFoto(int idfoto){
+    public ImagenDetalle getFoto(int idfoto){
+        return imagenDetRepository.findsimple(idfoto);
+
+    }
+    public LiveData<ImagenDetalle> getFotoLD(int idfoto){
         return imagenDetRepository.find(idfoto);
 
     }
+    /**para envio***/
+    public InformeEnvio preparaInforme(int informe){
+        InformeWithDetalle info=repository.getInformeWithDetalleByIdsimple(informe);
+        Log.d(TAG,"wwwwwwwww"+info.informe.getId()+info.informe.getVisitasId());
+
+        InformeEnvio envio=new InformeEnvio();
+        //busco la visita
+        //   VisitaRepositoryImpl vrepo=new VisitaRepositoryImpl(getContext());
+        Visita visita=visitaRepository.findsimple(info.informe.getVisitasId());
+        Log.d(TAG,"wwwwwwwww"+info.informe.getId()+"---"+visita.getTiendaNombre());
+        envio.setVisita(visita);
+        envio.setInformeCompra(info.informe);
+        //busco los detalles
+        List<InformeCompraDetalle> detalles=detalleRepo.getAllSencillo(info.informe.getId());
+        envio.setInformeCompraDetalles(detalles);
+        envio.setImagenDetalles(buscarImagenes(visita,info.informe,detalles));
+        return envio;
+    }
+
 
     public List<ImagenDetalle> buscarImagenes(Visita visita, InformeCompra informe, List<InformeCompraDetalle> detalles){
         //todas las fotos aqui
         List<ImagenDetalle> fotosinfo=new ArrayList<>();
         //la visita
-        getFoto(visita.getFotoFachada()).observeForever(new Observer<ImagenDetalle>() {
-            @Override
-            public void onChanged(ImagenDetalle imagenDetalle) {
-                fotosinfo.add(imagenDetalle);
-            }
-        });
+        ImagenDetalle imagenDetalle=getFoto(visita.getFotoFachada());
+        fotosinfo.add(imagenDetalle);
+
         //las del informe
         List<Integer> arrFotos=new ArrayList<>();
         arrFotos.add(informe.getCondiciones_traslado());
         arrFotos.add(informe.getTicket_compra());
-        imagenDetRepository.findList(arrFotos).observeForever(new Observer<List<ImagenDetalle>>() {
-            @Override
-            public void onChanged(List<ImagenDetalle> imagenDetalles) {
-                fotosinfo.addAll(imagenDetalles);
-            }
-        });
+        List<ImagenDetalle> imagenDetalles=imagenDetRepository.findListsencillo(arrFotos);
+        fotosinfo.addAll(imagenDetalles);
+
         //las del los detalles
         for(InformeCompraDetalle detalle:detalles) {
             List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
-            imagenDetRepository.findList(fotos).observeForever(new Observer<List<ImagenDetalle>>() {
-                @Override
-                public void onChanged(List<ImagenDetalle> imagenDetalles) {
-                    fotosinfo.addAll(imagenDetalles);
-                }
-            });
+            List<ImagenDetalle> imagenDetalles2=imagenDetRepository.findListsencillo(fotos);
+            fotosinfo.addAll(imagenDetalles2);
+
         }
 
         //las de producto ex
-        prodRepo.getImagenByVisita(visita.getId()).observeForever( new Observer<List<ImagenDetalle>>(){
-                @Override
-            public void onChanged(List<ImagenDetalle> productoExhibidos) {
-                    fotosinfo.addAll(productoExhibidos);
-            }
-        });
-    return fotosinfo;
+        List<ImagenDetalle> productoExhibidos=prodRepo.getImagenByVisitasimple(visita.getId());
+        fotosinfo.addAll(productoExhibidos);
+
+       return fotosinfo;
 
 
     }
@@ -260,7 +273,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
             mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
         }catch(Exception ex){
-            Log.e("NuevoInformeViewModel.actualizarvisita",ex.getMessage());
+            Log.e("NuevoInformeVM",ex.getMessage());
             mSnackbarText.setValue(new Event<>(R.string.added_informe_error));
         }
 

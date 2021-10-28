@@ -148,6 +148,9 @@ public class InformeCompraRepositoryImpl   {
         return icDao.getInformeWithDetalleById(id);
     }
 
+    public InformeWithDetalle getInformeWithDetalleByIdsimple(int id) {
+        return icDao.getInformeWithDetalleByIdsimple(id);
+    }
     public LiveData<InformeCompra> getInformeCompra(int id) {
         return icDao.getInforme(id);
     }
@@ -157,7 +160,7 @@ public class InformeCompraRepositoryImpl   {
         return icDao.getInformeWithDetalleByVisita(visita);
     }
 
-    public LiveData<List<InformeCompra>> getInformesByIndice(int visita) {
+    public LiveData<List<InformeCompra>> getInformesByVisita(int visita) {
         return icDao.getInformesByVisita(visita);
     }
 
@@ -183,8 +186,8 @@ public class InformeCompraRepositoryImpl   {
             filtros.add("%"+planta+"%");
         }
         if(cliente!=null&&!cliente.equals("")) {
-            query = query + " and clienteNombre like '%?%'";
-            filtros.add(cliente);
+            query = query + " and clienteNombre like ?";
+            filtros.add("%"+cliente+"%");
         }
 
         Object[] params=filtros.toArray();

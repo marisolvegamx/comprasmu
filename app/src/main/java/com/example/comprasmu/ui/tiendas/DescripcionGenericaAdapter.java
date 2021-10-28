@@ -20,12 +20,12 @@ public class DescripcionGenericaAdapter extends RecyclerView.Adapter<Descripcion
 
     private List<DescripcionGenerica> mDescripcionGenericaList;
 
-    private final ViewModel mViewModel;
+
     private DescripcionGenericaAdapter.AdapterCallback callback;
 
-    public DescripcionGenericaAdapter(ViewModel viewModel, DescripcionGenericaAdapter.AdapterCallback callback) {
+    public DescripcionGenericaAdapter( DescripcionGenericaAdapter.AdapterCallback callback) {
 
-        this.mViewModel=viewModel;
+
         this.callback = callback;
     }
 
@@ -54,7 +54,7 @@ public class DescripcionGenericaAdapter extends RecyclerView.Adapter<Descripcion
        // holder.binding.setViewModel(mViewModel);
         holder.binding.setDetalle(mDescripcionGenericaList.get(position));
 
-        holder.binding.executePendingBindings();
+      //  holder.binding.executePendingBindings();
 
     }
 

@@ -39,14 +39,29 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
          dao.cancelAll(idInforme);
     }
 
+
+    public LiveData<List<InformeCompraDetalle>> getByProductoAna(String indice, int planta,int producto, int analisis, int presentacion, String tamanio ) {
+        return dao.getByProductoAna(indice, planta,producto,analisis,presentacion,tamanio);
+    }
+
     @Override
     public LiveData<List<InformeCompraDetalle>> getAll() {
         return null;
     }
 
     @Override
+    public List<InformeCompraDetalle> getAllsimple() {
+        return null;
+    }
+
+    @Override
     public LiveData<InformeCompraDetalle> find(int id) {
         return dao.find(id);
+    }
+
+    @Override
+    public InformeCompraDetalle findsimple(int id) {
+        return null;
     }
 
     @Override

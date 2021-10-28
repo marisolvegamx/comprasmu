@@ -11,8 +11,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 
+import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.modelos.Atributo;
+import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.TablaVersiones;
+import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
+import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.informe.BuscarInformeFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
@@ -103,6 +110,8 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
         rcv = new SubirFotoProgressReceiver();
         registerReceiver(rcv, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(rcv, filter);
+        descargasIniciales();
       /*  if(inicio.equals("listainforme")){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment fragment = new BuscarInformeFragment();
@@ -133,12 +142,14 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
           /*  case R.id.action_save:
                 guardarInforme();
                 return true;
 */
             case R.id.action_enviar_fotos:
+              //  Log.d(TAG,"hice click en"+item.getItemId());
                    subirImagenes();
                 return true;
 
@@ -174,15 +185,19 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             public void onChanged(List<ImagenDetalle> imagenDetalles) {
                 if(imagenDetalles!=null&&imagenDetalles.size()>0){
                     for(ImagenDetalle imagen:imagenDetalles){
+                        Log.d(TAG," subiendo a"+imagen.getDescripcion());
                         //subo cada una
                         Intent msgIntent = new Intent(NavigationDrawerActivity.this, SubirFotoService.class);
                         msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
                         msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
 
+                        msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_IMG);
                         startService(msgIntent);
                         //cambio su estatus a subiendo
                         imagen.setEstatusSync(1);
-                        imagenRepo.insert(imagen);
+                        imagenesPend.removeObserver(this);
+                      //  imagenRepo.insert(imagen);
+
                     }
 
                 }
@@ -194,6 +209,11 @@ public class NavigationDrawerActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(rcv);
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(rcv);
     }
     public class SubirFotoProgressReceiver extends BroadcastReceiver {
@@ -241,7 +261,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         }
 
        // Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
-        Constantes.INDICEACTUAL="junio 2021";
+        Constantes.INDICEACTUAL="noviembre 2021";
         //TODO falta pais trabajo
       //  Constantes.CIUDADTRABAJO="Cd Juarez";
         Constantes.PAISTRABAJO=     "Mexico";
@@ -260,12 +280,43 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
 
         });
-        mViewModel.cargarPestañas(Constantes.CIUDADTRABAJO).observe(this, data -> {
+        mViewModel.cargarPestañas(Constantes.CIUDADTRABAJO,0).observe(this, data -> {
             Log.d(TAG,"regresó de la consulta "+ data.size());
             Constantes.plantasAsignadas=ComprasUtils.convertirListaaPlantas(data);
 
 
         });
+
+    }
+    SimpleDateFormat sdfdias=new SimpleDateFormat("dd-MM-yyyy");
+    public void descargasIniciales(){
+        //todo hacerlo en un servicio que esté constantemente verficando la conexion hasta que
+        //pueda descargar
+        //Inicio un servicio que se encargue de descargar
+        Log.d(TAG,"comprobando vers catalog");
+
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getApplicationContext());
+        AtributoRepositoryImpl atRepo=new AtributoRepositoryImpl(getApplicationContext());
+        LiveData<TablaVersiones> cats=tvRepo.getVersionByNombreTablasmd("catalogos");
+        cats.observe(this, new Observer<TablaVersiones>() {
+            @Override
+            public void onChanged(TablaVersiones tablaVersiones) {
+                if(tablaVersiones!=null){
+                    //si hoy ya se actualizó no actualizo
+                    Log.d(TAG,"comprobando vers catalog"+sdfdias.format(tablaVersiones.getVersion())+"--"+(sdfdias.format(new Date())));
+                    if(!sdfdias.format(tablaVersiones.getVersion()).equals(sdfdias.format(new Date()))){
+                        ps.getCatalogos(new CatalogoDetalleRepositoryImpl(getApplicationContext()),tvRepo, atRepo);
+
+                    }
+                }else
+                    //primera vez
+                    ps.getCatalogos(new CatalogoDetalleRepositoryImpl(getApplicationContext()),tvRepo,atRepo);
+                cats.removeObserver(this);
+            }
+
+        });
+
 
     }
 

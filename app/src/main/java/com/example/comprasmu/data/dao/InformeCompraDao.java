@@ -78,6 +78,10 @@ public interface InformeCompraDao {
     @RawQuery(observedEntities = InformeCompravisita.class)
     public abstract LiveData<List<InformeCompravisita>> getInformesWithVisita(SupportSQLiteQuery query);
 
+    @Transaction
+    @Query("SELECT * FROM informe_compras WHERE id = :id ")
+    public abstract  InformeWithDetalle getInformeWithDetalleByIdsimple(int id);
+
    /* @Query("SELECT indice, createdAt as fecha,clienteNombre, plantaNombre, " +
             "informe_compras.estatus as estatusinforme, informe_compras.id as idinforme  " +
             "FROM informe_compras, visitas " +

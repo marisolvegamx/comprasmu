@@ -7,6 +7,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.comprasmu.data.remote.InformeEnvio;
+import com.example.comprasmu.ui.informe.PostInformeViewModel;
+
 import java.util.ArrayList;
 
 public class SimpleTask extends AsyncTask<Void, Integer, Void> {
@@ -49,6 +54,8 @@ public class SimpleTask extends AsyncTask<Void, Integer, Void> {
     protected void onPreExecute() {
 
     }
+
+
 
     /*
   Ejecución del ordenamiento y transmision de progreso

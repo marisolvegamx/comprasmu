@@ -14,7 +14,9 @@ public abstract class BaseRepository<T> {
 
 
     public abstract LiveData<List<T>> getAll() ;
+    public abstract List<T> getAllsimple() ;
     public abstract LiveData<T> find(int id);
+    public abstract T findsimple(int id);
 
 //    public LiveData<List<T>> getAll() {
 //        return dao.findAll();

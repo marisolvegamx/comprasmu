@@ -14,10 +14,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
+import com.example.comprasmu.ui.informe.NuevoinformeFragment;
+import com.example.comprasmu.ui.visita.AbririnformeFragment;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,14 +35,24 @@ public class RevisarFotoActivity extends AppCompatActivity {
     Bitmap rotatedBitmap;
     private TextView foto1;
     private static final String IMG_PATH1 = "comprasmu.img_path1";
+    private static final int IMG_RESULT_OK = 201;
     private static final String TAG = RevisarFotoActivity.class.getSimpleName();
     private static final int INTERVALO = 3000; //2 segundos para salir
     private long tiempoPrimerClick;
+    private Toolbar myChildToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_revisar_foto);
+        myChildToolbar =
+                (Toolbar) findViewById(R.id.my_child_toolbar3);
+        setSupportActionBar(myChildToolbar);
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
 
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
         Bundle extras = getIntent().getExtras(); // Aquí es null
         nombre_foto = extras.getString("ei.archivo");
         imagen1=findViewById(R.id.ivrfimagen);
@@ -56,7 +70,7 @@ public class RevisarFotoActivity extends AppCompatActivity {
         btnrotar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rotarImagen(view);
+                rotarImagen(getExternalFilesDir(null) + "/" + nombre_foto,imagen1);
             }
         });
 
@@ -86,21 +100,16 @@ public class RevisarFotoActivity extends AppCompatActivity {
                 finish();
                 return;
             }else {
-                Toast.makeText(this, "Sí sale sin guardar la información esta se perderá. Vuelve a presionar para salir", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Sí sale sin guardar la información se perderá. Vuelve a presionar para salir", Toast.LENGTH_LONG).show();
             }
             tiempoPrimerClick = System.currentTimeMillis();
         }
 
 
-        public void rotarImagen(View v){
-           if( getAvailableMemory().lowMemory)
-           {
-               Toast.makeText(this, "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+        public static void rotarImagen(String nombre_foto,ImageView imagen1){ //conla ruta
 
-               return;
-           }
 
-            Bitmap bitmapOrg=BitmapFactory.decodeFile(getExternalFilesDir(null)+"/"+nombre_foto);
+            Bitmap bitmapOrg=BitmapFactory.decodeFile(nombre_foto);
 
             int width=bitmapOrg.getWidth();
             int height=bitmapOrg.getHeight();
@@ -111,16 +120,16 @@ public class RevisarFotoActivity extends AppCompatActivity {
 
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, width, height, true);
 
-            rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
             //comprimir imagen
-            File file = new File(getExternalFilesDir(null)+"/"+nombre_foto);
+            File file = new File(nombre_foto);
             OutputStream os = null;
             try {
                 os = new FileOutputStream(file);
             } catch (FileNotFoundException e) {
                 Log.d("Compras",e.getMessage());
-                Toast.makeText(this, "Error al guardar la foto", Toast.LENGTH_SHORT).show();
-
+               // Toast.makeText(, "Error al guardar la foto", Toast.LENGTH_SHORT).show();
+                return;
             }
             rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
 
@@ -129,6 +138,7 @@ public class RevisarFotoActivity extends AppCompatActivity {
 
         }
     public void agregar(View v) {
+        Log.d(TAG, "click en agregar");
         //reviso si hay datos
         try {
 
@@ -149,9 +159,14 @@ public class RevisarFotoActivity extends AppCompatActivity {
 
                         }
                         bitmapOrg.compress(Bitmap.CompressFormat.JPEG, 45, os);
-   limpiarCampos();
+                        limpiarCampos();
                                                 //volver a actividad principal
-                      finish();
+                         Intent resultIntent = new Intent();
+
+                        resultIntent.putExtra(AbririnformeFragment.ARG_FOTONUEVA, nombre_foto);
+                        setResult(IMG_RESULT_OK, resultIntent);
+                        finish();
+
 
                     }
                     else

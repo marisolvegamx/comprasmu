@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
 
-    private static final String BASE_URL = "https://api.github.com/";
+    private static final String BASE_URL = "https://muesmerc.mx/comprasv1/api/public/";
 
     private static APIService servicio;
 

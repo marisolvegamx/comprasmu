@@ -104,8 +104,18 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     }
 
     @Override
+    public List<ListaCompra> getAllsimple() {
+        return null;
+    }
+
+    @Override
     public LiveData<ListaCompra> find(int id) {
         return dao.find(id);
+    }
+
+    @Override
+    public ListaCompra findsimple(int id) {
+        return null;
     }
 
 

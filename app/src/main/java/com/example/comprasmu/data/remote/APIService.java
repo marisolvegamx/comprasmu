@@ -7,6 +7,7 @@ import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.Tienda;
 
 
 import java.util.ArrayList;
@@ -29,18 +30,18 @@ import retrofit2.http.Query;
 
 
 public interface APIService {
-    @POST("/informe")
+    @POST("informe")
     @FormUrlEncoded
     Call<InformeWithDetalle> saveInforme(@Body InformeCompra item);
 
-    @POST("/informe")
+    @POST("informe/create")
     @Headers({
             "Accept: application/json",
             "Content-Type: application/json"
     })
     Call<InformeEnvio> saveInformeEnvio(@Body InformeEnvio item);
 
-    @POST("/imagenes")
+    @POST("imagenes")
     @FormUrlEncoded
     Call<ImagenDetalle> saveImagen(@Body ImagenDetalle item);
 
@@ -49,13 +50,13 @@ public interface APIService {
     Single<ResponseBody> onFileUpload(@Part("email") RequestBody mEmail,
                                       @Part MultipartBody.Part file);
 
-    @GET("/tiendas")
-    Call<TiendasResponse> getTiendas(@Query("ciudad") String ciudad, @Query("tipo") String tipo, @Query("nombre") String nombre,@Query("usuario") String usuario);
+    @GET("tiendas")
+    Call<TiendasResponse> getTiendas(@Query("ciudad") String ciudad, @Query("tipo") String tipo, @Query("nombre") String nombre, @Query("usuario") String usuario);
 
-    @GET("/catsnuevoinforme")
-    Call<GenericResponse<CatalogoDetalle>> getCatalogosNuevoInforme(@Query("usuario") String usuario);
+    @GET("catalogos")
+    Call<CatalogosResponse> getCatalogosNuevoInforme(@Query("usuario") String usuario);
 
-    @POST("/listacompras")
+    @POST("listacompras")
     @FormUrlEncoded
     Call<ListaCompraResponse> getListasCompra( @Body PeticionesServidor.PeticionLista peticion );
     @Headers({

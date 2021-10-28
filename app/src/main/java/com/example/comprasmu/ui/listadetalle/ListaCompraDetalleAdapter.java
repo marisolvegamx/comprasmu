@@ -30,16 +30,21 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
     private final ListaDetalleViewModel mViewModel;
     private AdapterCallback callback;
     private final static String TAG=ListaCompraDetalleAdapter.class.getName();
+    int numtienda;
+    boolean isbu, ismuestra;//para saber si ya estoy en lista de bu o agregando muestra
 
     public ListaCompraDetalleAdapter(ListaDetalleViewModel viewModel, AdapterCallback callback) {
 
         mViewModel = viewModel;
         this.callback=callback;
+
     }
 
-    public void setListaCompraDetalleList(List<ListaCompraDetalle> categoriesList) {
+    public void setListaCompraDetalleList(List<ListaCompraDetalle> categoriesList,int numtienda, boolean isbu,boolean ismuestra) {
         mListaCompraDetalleList = categoriesList;
-
+        this.numtienda=numtienda;
+        this.isbu=isbu;
+        this.ismuestra=ismuestra;
       //  notifyDataSetChanged();
     }
     @NonNull
@@ -48,9 +53,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
         ListaDetalleItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.lista_detalle_item, parent, false);
-      /*  PruebarecyclerBinding binding = DataBindingUtil
-                .inflate(LayoutInflater.from(parent.getContext()),
-                        R.layout.pruebarecycler, parent, false);*/
+
         return new ListaCompraDetalleViewHolder(binding,mViewModel.isNuevaMuestra(),callback);
     }
 
@@ -59,6 +62,9 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
     //    holder.binding.setViewModel(mViewModel);
        // holder.binding.setVariable(BR.detalle,mListaCompraDetalleList.get(position));
        holder.binding.setDetalle(mListaCompraDetalleList.get(position));
+       holder.binding.setNumTienda(numtienda);
+       holder.binding.setIsBu(isbu);
+       holder.binding.setMostrarAgregar(ismuestra);
      //  Log.d(TAG,"mostar agregar "+mListaCompraDetalleList.get(position).getComprados()+"--"+mListaCompraDetalleList.get(position).getCantidad());
       /*  if(mListaCompraDetalleList.get(position).getComprados()==mListaCompraDetalleList.get(position).getCantidad()){
             holder.binding.setMostrarAgregar(false);
@@ -96,25 +102,31 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
             // if(!binding.txtdicomprados.getText().toString().equals("")&&Integer.parseInt(binding.txtdicomprados.getText().toString())<Integer.parseInt(binding.txtdicantidad.getText().toString()))
 
             //
+           altoini=binding.ldcardview.getLayoutParams();
 
-
-           binding.txtcodigos.setVisibility(View.GONE);
+          // binding.txtcodigos.setVisibility(View.GONE);
             binding.btncodigos.setOnClickListener(new View.OnClickListener() {
+
                @Override
                public void onClick(View view) {
                    switch (view.getId()) {
                        case R.id.btncodigos:
-                           //  Log.d("Se seleccionó a ", binding.txtfecha.getText().toString());
+                             Log.d("Se seleccionó a ", binding.txtfecha.getText().toString());
                            //   Toast.makeText(context, "Se seleccionó a " + txtid.getText().toString(), Toast.LENGTH_SHORT).show();
                            //amplio el card view
                            if(binding.txtcodigos.getVisibility()==View.GONE) {
 
                                binding.txtcodigos.setVisibility(View.VISIBLE);
                                int nvoalto= binding.txtcodigos.getHeight();
-                               altoini=binding.ldcardview.getLayoutParams();
-                               binding.ldcardview.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 900));
+
+                            //   binding.ldcardview.setLayoutParams(new ConstraintLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 900));
                                LinearLayout rLGreen = ((LinearLayout) binding.cajatexto);
-                               rLGreen.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 900));
+                               ViewGroup.LayoutParams params = rLGreen.getLayoutParams();
+// Changes the height and width to the specified *pixels*
+                               params.height = 900;
+                               params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                              // rLGreen.setLayoutParams(params);
+                           //    rLGreen.setLayoutParams(new LinearLayout.LayoutParams(, 900));
                            //    LinearLayout rLGreen2 = ((LinearLayout) rLGreen.getParent());
                              //  rLGreen.setLayoutParams(new LinearLayout.LayoutParams(, 900));
 
@@ -122,9 +134,12 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                            {
                                Log.d(TAG,"haciendo chiquito");
                                binding.txtcodigos.setVisibility(View.GONE);
-                               binding.ldcardview.setLayoutParams(altoini);
+                              // binding.ldcardview.setLayoutParams(altoini);
                                LinearLayout rLGreen = ((LinearLayout) binding.btncodigos.getParent());
-                               rLGreen.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                               ViewGroup.LayoutParams params=rLGreen.getLayoutParams();
+                               params.width=LinearLayout.LayoutParams.MATCH_PARENT;
+                               params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+                               //rLGreen.setLayoutParams(new ViewGroup.LayoutParams(, ));
                               // LinearLayout rLGreen2 = ((LinearLayout) rLGreen.getParent());
                                //rLGreen.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -144,6 +159,14 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                     }
                 }
             });
+           binding.btnldbackup.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   if (view.getId()==R.id.btnldbackup) {
+                       callback.verBackup(binding.getDetalle());
+                   }
+               }
+           });
         }
        /*  public void setOnClickListeners() {
              btncodigos.setOnClickListener(this);
@@ -160,6 +183,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
     public interface AdapterCallback {
         void onClickCallback(View view);
         void agregarMuestra(View view,ListaCompraDetalle productoSel);
+        void verBackup(ListaCompraDetalle productoSel);
     }
 
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
@@ -41,6 +43,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
+import com.example.comprasmu.SubirInformeTask;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -416,9 +419,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
     }
     public void ponerFoto( int idfoto,int fotoinput,int imageview,String detalle) {
 
-    mViewModel.getFoto(idfoto).observe(this, new Observer<ImagenDetalle>() {
-            @Override
-            public void onChanged(ImagenDetalle s) {
+        ImagenDetalle s=mViewModel.getFoto(idfoto);
                 if(s!=null) {
 
                     Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + s.getRuta());
@@ -439,8 +440,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                     ivfoto.setImageBitmap(bitmap1);
                 }
 
-            }
-        });
+
     }
 
 
@@ -771,13 +771,36 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
 
         mViewModel.finalizarInforme();
         try {
-            enviarReporte();
+            InformeEnvio informe=preparaInforme();
+            SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informe,getActivity());
+            miTareaAsincrona.execute();
+
+
+            subirFotos(getActivity(),informe);
         }catch(Exception ex){
             ex.getStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
 
+
+    }
+    public static void subirFotos(Activity activity, InformeEnvio informe){
+        //las imagenes
+        for(ImagenDetalle imagen:informe.getImagenDetalles()){
+            //subo cada una
+            Intent msgIntent = new Intent(activity, SubirFotoService.class);
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
+            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getVisita().getIndice());
+           // Constantes.INDICEACTUAL
+            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+            activity.startService(msgIntent);
+            //cambio su estatus a subiendo
+
+
+
+        }
 
     }
 
@@ -793,7 +816,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
          */
         //NavHostFragment.findNavController(this).navigate(R.id.action_lista compra);
         Intent intento1=new Intent(getActivity(), BackActivity.class);
-        Bundle bundle = new Bundle();
+
         //ya existe el informe
         intento1.putExtra(NuevoinformeFragment.ARG_NUEVOINFORME,mViewModel.getIdInformeNuevo() );
         intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_LISTACOMPRA);
@@ -801,6 +824,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         intento1.putExtra("ciudadNombre",visitaCont.getCiudad());
         DescripcionGenerica opcionsel=(DescripcionGenerica)spclientes.getSelectedItem();
         clienteSel=opcionsel.getId();
+        Constantes.ni_clientesel=opcionsel.getNombre();
         intento1.putExtra(ARG_CLIENTESEL,clienteSel);
         intento1.putExtra(NuevoinformeFragment.NUMMUESTRA,nummuestra );
 
@@ -880,7 +904,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
             //capturé muestra
             if(resultCode==DetalleProductoFragment1.NUEVO_RESULT_OK) {
                 Log.d(TAG,"ssssssssssssssssss"+data.getIntExtra(ARG_NUEVOINFORME, 0));
-                if( mViewModel.informe.getId()==0) {
+               // if( mViewModel.informe.getId()==0) {
                  //   mViewModel.informe.setId(data.getIntExtra(ARG_NUEVOINFORME, 0));
                     //lo busco y cargo
                     mViewModel.buscarInforme(data.getIntExtra(ARG_NUEVOINFORME, 0)).observe(getViewLifecycleOwner(), new Observer<InformeCompra>() {
@@ -928,7 +952,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                         }
                     });
                     mBinding.setInforme(mViewModel.informe);
-                }
+             //   }
 
 
             }
@@ -955,35 +979,10 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         return envio;
     }
 
-    public void enviarReporte() {
-        //reviso si tengo conexion
-        if(NavigationDrawerActivity.isOnlineNet()) {
-            postviewModel = new ViewModelProvider(this).get(PostInformeViewModel.class);
-            InformeEnvio envio = preparaInforme();
-            postviewModel.sendInforme(envio);
-            subirFotos(envio);
-            String result = postviewModel.getMensaje().get();
-            Log.d(TAG, result);
-        }
-    }
 
 
-    public void subirFotos(InformeEnvio informe){
-        //las imagenes
-        for(ImagenDetalle imagen:informe.getImagenDetalles()){
-            //subo cada una
-            Intent msgIntent = new Intent(requireActivity(), SubirFotoService.class);
-            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
-            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
-
-            requireActivity().startService(msgIntent);
-            //cambio su estatus a subiendo
 
 
-            postviewModel.actualizarEstatusFoto(imagen);
-        }
-
-    }
 
     @Override
     public void onClickCancelar(InformeCompraDetalle iddet) {
@@ -1033,4 +1032,5 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         startActivityForResult(intento1, BackActivity.REQUEST_CODE);
         //  startActivity(intento1);
     }
+
 }

@@ -1,14 +1,15 @@
 package com.example.comprasmu.data.modelos;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName="catalogos_detalle")
+@Entity(tableName="catalogos_detalle",primaryKeys = {"cad_idcatalogo", "cad_idopcion"})
 public class CatalogoDetalle {
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
+
     private int cad_idcatalogo;
+    @ColumnInfo(name="cad_nombrecatalogo")
     private String cad_nombreCatalogo;
     private int cad_idopcion;
     private String cad_descripcionesp;

@@ -2,31 +2,35 @@ package com.example.comprasmu.data.modelos;
 
 public class Tienda {
 
-    private int tiendaId;
-    private String tiendaNombre;
+    private int une_id;
+    private String une_descripcion;
     private String tipoTienda;
-    private String tipoId;
-    private String direccion;
+    private String une_tipotienda;
+    private String une_direccion;
     private String ciudad;
-    private int ciudadId;
+    private int une_cla_ciudad;
     private String pais;
-    private int paisId;
-    private String zona;
+    private int une_cla_pais;
+    private String une_puntocardinal;
+    private int une_estatus;
+    private String une_coordenadasxy;
+    private int une_cadenacomercial;
+    private String une_dir_referencia;
 
-    public int getTiendaId() {
-        return tiendaId;
+    public int getUne_id() {
+        return une_id;
     }
 
-    public void setTiendaId(int tiendaId) {
-        this.tiendaId = tiendaId;
+    public void setUne_id(int une_id) {
+        this.une_id = une_id;
     }
 
-    public String getTiendaNombre() {
-        return tiendaNombre;
+    public String getUne_descripcion() {
+        return une_descripcion;
     }
 
-    public void setTiendaNombre(String tiendaNombre) {
-        this.tiendaNombre = tiendaNombre;
+    public void setUne_descripcion(String une_descripcion) {
+        this.une_descripcion = une_descripcion;
     }
 
     public String getTipoTienda() {
@@ -37,20 +41,20 @@ public class Tienda {
         this.tipoTienda = tipoTienda;
     }
 
-    public String getTipoId() {
-        return tipoId;
+    public String getUne_tipotienda() {
+        return une_tipotienda;
     }
 
-    public void setTipoId(String tipoId) {
-        this.tipoId = tipoId;
+    public void setUne_tipotienda(String une_tipotienda) {
+        this.une_tipotienda = une_tipotienda;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getUne_direccion() {
+        return une_direccion;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setUne_direccion(String une_direccion) {
+        this.une_direccion = une_direccion;
     }
 
     public String getCiudad() {
@@ -61,12 +65,12 @@ public class Tienda {
         this.ciudad = ciudad;
     }
 
-    public int getCiudadId() {
-        return ciudadId;
+    public int getUne_cla_ciudad() {
+        return une_cla_ciudad;
     }
 
-    public void setCiudadId(int ciudadId) {
-        this.ciudadId = ciudadId;
+    public void setUne_cla_ciudad(int une_cla_ciudad) {
+        this.une_cla_ciudad = une_cla_ciudad;
     }
 
     public String getPais() {
@@ -77,19 +81,51 @@ public class Tienda {
         this.pais = pais;
     }
 
-    public int getPaisId() {
-        return paisId;
+    public int getUne_cla_pais() {
+        return une_cla_pais;
     }
 
-    public void setPaisId(int paisId) {
-        this.paisId = paisId;
+    public void setUne_cla_pais(int une_cla_pais) {
+        this.une_cla_pais = une_cla_pais;
     }
 
-    public String getZona() {
-        return zona;
+    public String getUne_puntocardinal() {
+        return une_puntocardinal;
     }
 
-    public void setZona(String zona) {
-        this.zona = zona;
+    public void setUne_puntocardinal(String une_puntocardinal) {
+        this.une_puntocardinal = une_puntocardinal;
+    }
+
+    public int getUne_estatus() {
+        return une_estatus;
+    }
+
+    public void setUne_estatus(int une_estatus) {
+        this.une_estatus = une_estatus;
+    }
+
+    public String getUne_coordenadasxy() {
+        return une_coordenadasxy;
+    }
+
+    public void setUne_coordenadasxy(String une_coordenadasxy) {
+        this.une_coordenadasxy = une_coordenadasxy;
+    }
+
+    public int getUne_cadenacomercial() {
+        return une_cadenacomercial;
+    }
+
+    public void setUne_cadenacomercial(int une_cadenacomercial) {
+        this.une_cadenacomercial = une_cadenacomercial;
+    }
+
+    public String getUne_dir_referencia() {
+        return une_dir_referencia;
+    }
+
+    public void setUne_dir_referencia(String une_dir_referencia) {
+        this.une_dir_referencia = une_dir_referencia;
     }
 }

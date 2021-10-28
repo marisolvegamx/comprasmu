@@ -82,14 +82,14 @@ public class InformeDetalleAdapter extends  RecyclerView.Adapter<InformeDetalleA
 
           //      binding.btnmeditar.setVisibility(View.VISIBLE);
 
-                binding.btnmeditar.setOnClickListener(new View.OnClickListener() {
+              /*  binding.btnmeditar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (view.getId() == R.id.btnmeditar)
                             callback.onClickEditar(Integer.parseInt(binding.txtmid.getText().toString()));
 
                     }
-                });
+                });*/
             binding.btnmver.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

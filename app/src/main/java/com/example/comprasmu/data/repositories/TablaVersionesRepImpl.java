@@ -31,10 +31,19 @@ public class TablaVersionesRepImpl extends BaseRepository<TablaVersiones> {
     }
 
     @Override
+    public List<TablaVersiones> getAllsimple() {
+        return null;
+    }
+
+    @Override
     public LiveData<TablaVersiones> find(int id) {
         return dao.find(id);
     }
 
+    @Override
+    public TablaVersiones findsimple(int id) {
+        return null;
+    }
 
 
     @Override
@@ -47,9 +56,16 @@ public class TablaVersionesRepImpl extends BaseRepository<TablaVersiones> {
         dao.insertAll(objects);
     }
 
+    public void insertUpdate(TablaVersiones object) {
+        dao.insertUpdate(object);
+    }
 
-    public LiveData<TablaVersiones> getVersionByNombreTabla(String nombre) {
+
+    public TablaVersiones getVersionByNombreTabla(String nombre) {
         return dao.getVersionByNombreTabla(nombre);
+    }
+    public LiveData<TablaVersiones> getVersionByNombreTablasmd(String nombre) {
+        return dao.getVersionByNombreTablamd(nombre);
     }
     @Override
     public long insert(TablaVersiones object) {

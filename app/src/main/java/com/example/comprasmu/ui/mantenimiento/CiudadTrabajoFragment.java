@@ -83,6 +83,9 @@ public class CiudadTrabajoFragment extends Fragment {
                         spciudades.setSelection(getIndex(spciudades,ciudadsel ));
                     }
                 }
+                else{
+                    Toast.makeText(getContext(),"No hay información para trabajar, verfique que descargó las listas de compra del indice "+Constantes.INDICEACTUAL,Toast.LENGTH_LONG);
+                }
             }
         };
 

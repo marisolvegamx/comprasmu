@@ -21,6 +21,7 @@ import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
+import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
@@ -60,6 +61,8 @@ public class ListaInformesViewModel extends AndroidViewModel {
         imrepository=new ImagenDetRepositoryImpl(application);
          detrepository = new InformeComDetRepositoryImpl(application);
         visitaRepo = new VisitaRepositoryImpl(application);
+
+
     }
 
 

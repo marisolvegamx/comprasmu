@@ -7,13 +7,13 @@ import com.example.comprasmu.data.modelos.Tienda;
 import java.util.ArrayList;
 
 public class TiendasResponse {
-    LiveData<ArrayList<Tienda>> tiendas;
+    ArrayList<Tienda> tiendas;
 
-    public LiveData<ArrayList<Tienda>> getTiendas() {
+    public ArrayList<Tienda> getTiendas() {
         return tiendas;
     }
 
-    public void setTiendas(LiveData<ArrayList<Tienda>> tiendas) {
+    public void setTiendas(ArrayList<Tienda> tiendas) {
         this.tiendas = tiendas;
     }
 }

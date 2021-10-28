@@ -18,7 +18,10 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.SubirFoto;
+import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.ui.informe.PostInformeViewModel;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -26,35 +29,41 @@ import java.util.List;
 public class SubirFotoService extends IntentService
 {
     private static final String TAG = "SubirFotoService";
-    Context context;
+    public static String EXTRA_INDICE="comprasmu.extraindice";
 
-    String userId;
+
+    String userId, indiceimagen;
     ImagenDetalle imagenSubir;
+    PostInformeViewModel pvm;
 
     public static final String ACTION_UPLOAD_IMG = "com.example.comprasmu.intentservice.action.PROGRESO";
 
-    public static final String EXTRA_IMG_PATH = "com.example.comprasmu.intentservice.extra.IMG_PATH";
-    public static final String EXTRA_IMAGE_ID = "com.example.comprasmu.intentservice.extra.IMG_PATH";
+    public static final String EXTRA_IMG_PATH = "com.example.comprasmu.intentservice.extra.EXTRA_IMG_PATH";
+    public static final String EXTRA_IMAGE_ID = "com.example.comprasmu.intentservice.extra.EXTRA_IMAGE_ID";
     private NotificationCompat.Builder notificationBuilder;
     private NotificationManager notificationManager;
 
     public SubirFotoService()
     {
         super("SubirFotoService");
+        pvm=new PostInformeViewModel(getApplication());
     }
     @Override
     protected void onHandleIntent(Intent intent)
     {
+        //Log.d(TAG,"action");
         if (intent != null)
         {
             final String action = intent.getAction();
+           // intent.setAction(ACTION_UPLOAD_IMG);
 
             if (ACTION_UPLOAD_IMG.equals(action))
             {
+                Log.d(TAG,"action"+action);
                 imagenSubir=new ImagenDetalle();
                 imagenSubir.setRuta(intent.getStringExtra(EXTRA_IMG_PATH));
                 imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
-
+                indiceimagen=intent.getStringExtra(EXTRA_INDICE);
                 handleUploadImg();
             }
         }
@@ -71,13 +80,18 @@ public class SubirFotoService extends IntentService
                 notificar();
                 SubirFoto sf = new SubirFoto();
                 sf.agregarObservador(objObservador);
+                Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                sf.subirFoto(userId, imagenSubir, context);
-
-
+                String dir=   this.getExternalFilesDir(null)+"/";
+                ImagenDetRepositoryImpl idrepo=new ImagenDetRepositoryImpl(this);
+                sf.subirFoto(userId,dir, imagenSubir,indiceimagen, this,idrepo);
+               // pvm.actualizarEstatusFoto(imagenSubir);
+               // Thread.sleep(10000);
                 // enviarOtra();
             }catch (Exception ex){
-                ex.getStackTrace();
+
+                Log.e(TAG,"error"+ex.getMessage());
+                ex.printStackTrace();
             }
 
 
@@ -86,13 +100,13 @@ public class SubirFotoService extends IntentService
     public void onCreate()
     {
         super.onCreate();
-        Log.e("TAG","onCreate");
+        Log.e(TAG,"onCreate");
     }
     @Override
     public void onDestroy()
     {
         super.onDestroy();
-        Log.e("TAG","onDestroy");
+        Log.e(TAG,"onDestroy");
     }
     @Override
     public void onTaskRemoved(Intent rootIntent) {
@@ -126,13 +140,14 @@ public class SubirFotoService extends IntentService
 
 
         notificationBuilder = new NotificationCompat.Builder(this, "id")
-                .setSmallIcon(android.R.drawable.stat_sys_download)
-                .setContentTitle("Download")
-                .setContentText("Downloading Image")
+                .setSmallIcon(android.R.drawable.stat_sys_upload
+                )
+                .setContentTitle("Subiendo")
+                .setContentText("Subiendo imagen")
                 .setDefaults(0)
                 .setAutoCancel(true);
         notificationManager.notify(0, notificationBuilder.build());
-
+        sendBroadcastMeaasge("terminé");
     }
 
 

@@ -12,6 +12,7 @@ import androidx.lifecycle.Transformations;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
+import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
@@ -20,6 +21,7 @@ import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListaDetalleViewModel extends AndroidViewModel {
@@ -30,10 +32,14 @@ public class ListaDetalleViewModel extends AndroidViewModel {
   //  private final LiveData<ListaWithDetalle> filter = new LiveData<ListaWithDetalle>("*");
 
     private  LiveData<List<ListaWithDetalle>> listas;
+    private  LiveData<List<ListaCompraDetalle>> detallebu;
+    private  LiveData<List<ListaCompra>> listaSelbu;
     private final MutableLiveData<Event<Integer>> mOpenListaCompraEvent = new MutableLiveData<>();
     private  LiveData<Integer> size;
 
     private  LiveData<Boolean> empty;
+    private int idListaSel;
+    private  ListaCompraDetalle detallebuSel;
     public ListaCompra listaSelec;
     private int clienteSel;
     private int plantaSel;
@@ -47,6 +53,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         super(application);
         ListaCompraDao dao=ComprasDataBase.getInstance(application).getListaCompraDao();
         repository = ListaCompraRepositoryImpl.getInstance(dao);
+        detRepo=new ListaCompraDetRepositoryImpl(application);
         context=application;
     }
 
@@ -59,8 +66,11 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
     }
 
-    public  LiveData<List<ListaCompra>>  cargarPestañas(String ciudadSel){
-
+    public  LiveData<List<ListaCompra>>  cargarPestañas(String ciudadSel,int clienteSel){
+        if(clienteSel>0){
+            //ya elegi cliente vengo de muestra
+            return repository.getAllByIndiceCiudadCliente(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
+        }else
         return repository.getAllByIndiceCiudad(Constantes.INDICEACTUAL,ciudadSel);
 
 
@@ -68,6 +78,112 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public  LiveData<List<ListaCompra>>  cargarClientes(String ciudadSel){
 
         return repository.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadSel);
+
+
+    }
+    public List<DescripcionGenerica> cargarOpcionesAnalisis(int idanalisis){
+        List<DescripcionGenerica> opciones=new ArrayList<>();
+        opciones.add(new DescripcionGenerica(1,"Opción 1"));
+        opciones.add(new DescripcionGenerica(2,"Opción 2"));
+
+        switch (idanalisis){
+            case 1: case 4: //fisico
+                opciones.add(new DescripcionGenerica(3,"Opción 3"));
+                opciones.add(new DescripcionGenerica(4,"Opción 4"));
+                break;
+
+            case 3: //torque
+                opciones.add(new DescripcionGenerica(3,"Opción 3"));
+                break;
+        }
+        return  opciones;
+    }
+
+    //para las colsultas de bu
+    public void consultasBackup(int idlista,int opcionsel,String categoria, String productoNombre, String empaque,String tamanio,int analisisid, String analisis ){
+      switch (analisisid){
+          case 1: //fisico
+                consultaFisico(idlista, opcionsel, categoria, productoNombre, empaque, analisis);
+                break;
+          case 2: //sensorial
+              consultaSensorial(idlista, opcionsel, categoria, productoNombre, empaque, analisis);
+              break;
+          case 3: //torque
+              consultaTorque(idlista, opcionsel, categoria, productoNombre, empaque, analisis);
+              break;
+          case 4: //micro
+              consultaMicro(idlista, opcionsel, categoria, productoNombre, empaque, analisis);
+              break;
+      }
+
+    }
+    public void consultaFisico(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ){
+        switch (opcionsel) {
+            case 1:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "");
+                break;
+            case 2:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, "", "", "");
+                break;
+            case 3:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria,"" , "", "", "");
+                break;
+            case 4: default: //la misma lista
+                detallebu = detRepo.getAllByLista(idlista);
+                break;
+        }
+
+
+
+    }
+    public void consultaSensorial(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ){
+        switch (opcionsel) {
+            case 1:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "");
+                break;
+            case 2: default:
+                detallebu = detRepo.getAllByLista(idlista);
+                break;
+
+        }
+
+
+
+    }
+    public void consultaTorque(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ){
+        switch (opcionsel) {
+            case 1:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "");
+                break;
+            case 2:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, "", empaque, "", "");
+                break;
+
+            case 3: default: //la misma lista
+                detallebu = detRepo.getAllByLista(idlista);
+                break;
+        }
+
+
+
+    }
+    public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ){
+        switch (opcionsel) {
+            case 1:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", analisis);
+                break;
+            case 2:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, "", "", analisis);
+                break;
+            case 3:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, "", "", "", analisis);
+                break;
+
+            case 4: default: //la misma lista
+                detallebu = detRepo.getAllByLista(idlista);
+                break;
+        }
+
 
 
     }
@@ -142,5 +258,29 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     public void setPlantaSel(int plantaSel) {
         this.plantaSel = plantaSel;
+    }
+
+    public int getIdListaSel() {
+        return idListaSel;
+    }
+
+    public void setIdListaSel(int idListaSel) {
+        this.idListaSel = idListaSel;
+    }
+
+    public ListaCompraDetalle getDetallebuSel() {
+        return detallebuSel;
+    }
+
+    public void setDetallebuSel(ListaCompraDetalle detallebuSel) {
+        this.detallebuSel = detallebuSel;
+    }
+
+    public LiveData<List<ListaCompraDetalle>> getDetallebu() {
+        return detallebu;
+    }
+
+    public void setDetallebu(LiveData<List<ListaCompraDetalle>> detallebu) {
+        this.detallebu = detallebu;
     }
 }

@@ -139,8 +139,18 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
     }
 
     @Override
+    public List<Visita> getAllsimple() {
+        return icDao.findAllsimple();
+    }
+
+    @Override
     public LiveData<Visita> find(int id) {
         return icDao.find(id);
+    }
+
+    @Override
+    public Visita findsimple(int id) {
+        return icDao.findsimple(id);
     }
 
     @Override

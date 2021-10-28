@@ -41,6 +41,9 @@ public abstract class CatalogoDetalleDao {
     @Delete
     public abstract void delete(CatalogoDetalle object);
 
+    @Query("DELETE  FROM catalogos_detalle where cad_idcatalogo=:idcat")
+    public abstract void deletexIdCat(int idcat);
+
 
 
 

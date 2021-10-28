@@ -1,5 +1,6 @@
 package com.example.comprasmu.data.remote;
 
+import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 
 import java.util.ArrayList;
@@ -11,11 +12,11 @@ public class CatalogosResponse {
     /* ArrayList<CatalogoDetalle> clientes;
     ArrayList<CatalogoDetalle> plantas;
     ArrayList<CatalogoDetalle> tipo_tienda;
-    ArrayList<CatalogoDetalle> cadena_comercial;
-    ArrayList<CatalogoDetalle> tomado_de;
-    ArrayList<CatalogoDetalle> atributos;
+    ArrayList<CatalogoDetalle> cadena_comercial;*/
+    ArrayList<CatalogoDetalle> catalogos;
+    ArrayList<Atributo> atributos;
 
-    public ArrayList<CatalogoDetalle> getClientes() {
+  /*  public ArrayList<CatalogoDetalle> getClientes() {
         return clientes;
     }
 
@@ -53,13 +54,21 @@ public class CatalogosResponse {
 
     public void setTomado_de(ArrayList<CatalogoDetalle> tomado_de) {
         this.tomado_de = tomado_de;
-    }
+    }*/
 
-    public ArrayList<CatalogoDetalle> getAtributos() {
+    public ArrayList<Atributo> getAtributos() {
         return atributos;
     }
 
-    public void setAtributos(ArrayList<CatalogoDetalle> atributos) {
+    public void setAtributos(ArrayList<Atributo> atributos) {
         this.atributos = atributos;
-    }*/
+    }
+
+    public ArrayList<CatalogoDetalle> getCatalogos() {
+        return catalogos;
+    }
+
+    public void setCatalogos(ArrayList<CatalogoDetalle> catalogos) {
+        this.catalogos = catalogos;
+    }
 }

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -23,6 +24,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,9 +66,13 @@ public class CreadorFormulario<T> {
 
     public LinearLayout crearFormulario(){
         LinearLayout formulario=new LinearLayout(context);
-        formulario.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, 20, 0, 20);
+        formulario.setLayoutParams(lp);
         formulario.setOrientation(LinearLayout.VERTICAL);
         formulario.setGravity(Gravity.CENTER);
+
         this.listaCampos = listaCampos;
 
 
@@ -80,6 +86,7 @@ public class CreadorFormulario<T> {
           //  formulario.addView();
             //crear el label
             TextView tv=new TextView(context);
+           // tv.setText(Html.fromHtml("<b>"+this.infocampo.label+"</b>"));
             tv.setText(this.infocampo.label);
             formulario.addView(tv);
             try {
@@ -103,6 +110,60 @@ public class CreadorFormulario<T> {
                 Log.e(Constantes.TAG,"Hubo un error al crear la vista "+this.infocampo.nombre_campo+"  "+e.getMessage());
             }
         }
+
+        return  formulario;
+
+    }
+
+    public LinearLayout crearTabla(){
+        TableLayout formulario=new TableLayout(context);
+        formulario.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        formulario.setOrientation(LinearLayout.VERTICAL);
+        formulario.setGravity(Gravity.CENTER);
+        this.listaCampos = listaCampos;
+
+
+        for(CampoForm campo :listaCampos){
+            this.infocampo=campo;
+            this.required=(infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
+            this.readonly=infocampo.readonly!=null?true:false;
+            this.disabled=(this.infocampo.disabled!=null)?"disabled":"";
+            //    echo "<br>".this.infocampo["nombre_campo"];
+            //  func=this.infocampo["type"];
+            //  formulario.addView();
+            //crear el label
+            TextView tv=new TextView(context);
+            tv.setText(Html.fromHtml("<b>"+this.infocampo.label+"</b>:   "));
+            tv.setGravity(Gravity.END);
+            formulario.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT,1f));
+
+            TableRow row=new TableRow(context);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(0, 40, 0, 20);
+            row.addView(tv);
+            try {
+                Class claseCargada = this.getClass();
+                Method metodo = null;
+                Log.d(Constantes.TAG,"nombre campo: " +this.infocampo.type);
+                metodo = claseCargada.getDeclaredMethod(this.infocampo.type);
+                Object obj = metodo.invoke(this);
+                if(this.infocampo.type.equals("radiobutton")){ //para radiobutton es vertical
+                    LinearLayout linea=new LinearLayout(context);
+                    linea.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    linea.setOrientation(LinearLayout.HORIZONTAL);
+                    linea.addView((View)obj);
+                    obj=linea;
+                }
+//Ejecucion del m?todo pasandole la clase de este y los parametros.
+
+                row.addView((View)obj);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+                Log.e(Constantes.TAG,"Hubo un error al crear la vista "+this.infocampo.nombre_campo+"  "+e.getMessage());
+            }
+            formulario.addView(row);
+        }
+
 
         return  formulario;
 
@@ -200,6 +261,16 @@ public class CreadorFormulario<T> {
 
         return layout;
 
+    }
+    public ImageButton botonMicro(){
+        ImageButton button=new ImageButton(context);
+        Drawable replacer = context.getResources().getDrawable(R.drawable.ic_baseline_mic_24);
+
+
+        button.setImageDrawable(replacer);
+        button.setBackgroundColor(context.getColor(R.color.blue_principal));
+
+       return button;
     }
 
     public void botonGaleria(){
@@ -463,6 +534,61 @@ public class CreadorFormulario<T> {
                 // Get the value selected by the user
                 // e.g. to store it as a field or immediately call a method
                 DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+
+
+
+    }
+    public static void cargarSpinnerCat(Context context,Spinner mySpinner,List<CatalogoDetalle> selectcat){
+        ArrayAdapter catAdapter = new ArrayAdapter<CatalogoDetalle>(context, android.R.layout.simple_spinner_dropdown_item, selectcat) {
+
+
+            // And the "magic" goes here
+            // This is for the "passive" state of the spinner
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
+                TextView label = (TextView) super.getView(position, convertView, parent);
+                label.setTextColor(Color.BLACK);
+                // Then you can get the current item using the values array (Users array) and the current position
+                // You can NOW reference each method you has created in your bean object (User class)
+                CatalogoDetalle item = getItem(position);
+                label.setText(item.getCad_descripcionesp());
+                //TODO elegir idioma
+
+                // And finally return your dynamic (or custom) view for each spinner item
+                return label;
+            }
+
+            // And here is when the "chooser" is popped up
+            // Normally is the same view, but you can customize it if you want
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                TextView label = (TextView) super.getDropDownView(position, convertView, parent);
+                label.setTextColor(Color.BLACK);
+                CatalogoDetalle item = getItem(position);
+                label.setText(item.getCad_descripcionesp());
+
+                return label;
+            }
+        };
+
+
+        mySpinner.setAdapter(catAdapter);
+        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Get the value selected by the user
+                // e.g. to store it as a field or immediately call a method
+                CatalogoDetalle opcion = (CatalogoDetalle) parent.getSelectedItem();
             }
 
             @Override

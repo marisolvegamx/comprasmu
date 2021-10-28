@@ -3,6 +3,8 @@ package com.example.comprasmu.data.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
+import androidx.room.RawQuery;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -32,4 +34,7 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
 
     @Query("update lista_compras_detalle set comprados=comprados+:cantidad WHERE id = :id")
     public abstract void actualizarCompra(int id,int cantidad);
+
+    @RawQuery(observedEntities = ListaCompraDetalle.class)
+    public abstract LiveData<List<ListaCompraDetalle>> getDetallesByFiltros(SupportSQLiteQuery query);
 }

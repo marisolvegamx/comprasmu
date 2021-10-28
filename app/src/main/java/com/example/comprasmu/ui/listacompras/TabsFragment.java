@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -79,6 +80,8 @@ public class TabsFragment extends Fragment {
 
             if(bundle.getString(ARG_MUESTRA)!=null&&bundle.getString(ARG_MUESTRA).equals("true")) {
             //vengo de agregar muestra
+                Bundle bundle2 =getActivity().getIntent().getExtras();
+                clienteSel=bundle2.getInt(ARG_CLIENTESEL)+"";
                 mViewModel.setClienteSel(Integer.parseInt(clienteSel));
                 mViewModel.setNuevaMuestra(true);
 
@@ -93,8 +96,8 @@ public class TabsFragment extends Fragment {
         tabs.setupWithViewPager(viewPager);
         //busco los clientes y las plantas
 
-        mViewModel.cargarPestañas(ciudadNombre).observe(getViewLifecycleOwner(), words -> {
-            Log.d(TAG,"Cargando pestañas "+Constantes.INDICEACTUAL+"--"+ciudadSel);
+        mViewModel.cargarPestañas(ciudadNombre,Integer.parseInt(clienteSel)).observe(getViewLifecycleOwner(), words -> {
+            Log.d(TAG,"Cargando pestañas "+words.size());
             convertirLista(words);
             configureTabLayout();
 
@@ -114,10 +117,6 @@ public class TabsFragment extends Fragment {
        // getFragmentManager()
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(   getChildFragmentManager(),clientes, mViewModel,clientesplan);
         viewPager.setAdapter(sectionsPagerAdapter);
-        Log.d("clientes array", viewPager.getCurrentItem()+"--"+sectionsPagerAdapter.getCount());
-        if(viewPager.getCurrentItem()==0&&sectionsPagerAdapter.getCount()>0){
-            sectionsPagerAdapter.getItem(0);
-        }
 
         viewPager.addOnPageChangeListener(new
                 TabLayout.TabLayoutOnPageChangeListener(tabs));
@@ -125,11 +124,12 @@ public class TabsFragment extends Fragment {
                TabLayout.OnTabSelectedListener() {
                @Override
                public void onTabSelected(TabLayout.Tab tab) {
+                   Log.d("clientes array", clientesplan[tab.getPosition()][0]+"--"+clientesplan[tab.getPosition()][1]);
 
-                  mViewModel.setPlantaSel(Integer.parseInt(clientesplan[tab.getPosition()][0]));
+                   mViewModel.setPlantaSel(Integer.parseInt(clientesplan[tab.getPosition()][0]));
                  //  mViewModel.setPlantaSel(tab.getPosition());
                    mViewModel.nombrePlantaSel=clientesplan[tab.getPosition()][1];
-
+                 //  sectionsPagerAdapter.getItem(tab.getPosition());
                    viewPager.setCurrentItem(tab.getPosition());
                }
 

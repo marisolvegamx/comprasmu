@@ -74,6 +74,14 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "WHERE id =:id")
     public abstract List<Integer> getInformesWithImagen(int id);
 
+    @Query("SELECT * FROM informe_detalle " +
+            " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
+            " inner join visitas on visitas.id=informe_compras.visitasId" +
+            " where productoId=:producto and presentacion=:tamanio" +
+            " and empaque=:empaque and tipoAnalisis=:analisis " +
+            " and visitas.indice=:indice and informe_compras.plantasId=:planta" )
+    public abstract LiveData<List<InformeCompraDetalle>> getByProductoAna(String indice, int planta,int producto, int analisis, int empaque, String tamanio);
+
     public class InformeDetalleImagenes {
 
         public int id;

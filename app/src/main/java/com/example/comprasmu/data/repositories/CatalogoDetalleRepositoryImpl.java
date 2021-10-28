@@ -9,6 +9,7 @@ import com.example.comprasmu.data.ComprasDataBase;
 
 import com.example.comprasmu.data.dao.CatalogoDetalleDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 
 
@@ -38,10 +39,10 @@ public class CatalogoDetalleRepositoryImpl  extends BaseRepository<CatalogoDetal
                 idcat=1;
                 break;
             case "ubicacion_muestra":
-                idcat=2;
+                idcat= Contrato.CatalogosId.TOMADOSDE;
                 break;
             case "tipo tienda":
-                idcat=4;
+                idcat=Contrato.CatalogosId.TIPODETIENDA;
                 break;
         }
         Log.d("hola hola","<<<"+idcat);
@@ -58,7 +59,17 @@ public class CatalogoDetalleRepositoryImpl  extends BaseRepository<CatalogoDetal
     }
 
     @Override
+    public List<CatalogoDetalle> getAllsimple() {
+        return null;
+    }
+
+    @Override
     public LiveData<CatalogoDetalle> find(int id) {
+        return null;
+    }
+
+    @Override
+    public CatalogoDetalle findsimple(int id) {
         return null;
     }
 
@@ -73,9 +84,14 @@ public class CatalogoDetalleRepositoryImpl  extends BaseRepository<CatalogoDetal
         dao.insertAll(object);
     }
 
+
     @Override
     public void delete(CatalogoDetalle object) {
         dao.delete(object);
+    }
+
+    public void deletexIdCat(int idcat) {
+        dao.deletexIdCat(idcat);
     }
 
 

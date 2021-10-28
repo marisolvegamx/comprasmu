@@ -24,9 +24,10 @@ import net.gotev.uploadservice.UploadStatusDelegate;
 
 public class SubirFoto {
     MultipartUploadRequest upload;
-    String URL_SUBIRPICTURE="https://muesmerc.mx/postmixv3/api/Subirfotos.php";
+    String URL_SUBIRPICTURE="https://muesmerc.mx/comprasv1/api/public/subirfoto";
     private ArrayList<SubirFotoService.SubirFotoListener> observadores = new ArrayList<SubirFotoService.SubirFotoListener>();
     ImagenDetRepositoryImpl idrepo;
+    private String TAG="SubirFoto";
 
     public void agregarObservador(SubirFotoService.SubirFotoListener o)
     {
@@ -101,21 +102,23 @@ public class SubirFoto {
 //
 //    }
 
-    public void subirFoto( String idusuario, ImagenDetalle imagen,  Context context) throws Exception {
+    public void subirFoto( String idusuario,String dir, ImagenDetalle imagen,String indice,  Context context, ImagenDetRepositoryImpl idrepo) throws Exception {
 
 //filenameGaleria=getFilename();
 
         try {
+            this.idrepo=idrepo;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String uploadFileArrayList=context.getExternalFilesDir(null)+ "/" + imagen.getRuta();
+            String uploadFileArrayList=dir + imagen.getRuta();
+            Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList);
             upload= new MultipartUploadRequest(context,URL_SUBIRPICTURE)
                     .setMaxRetries(2)
                     .addParameter ("ruta", imagen.getRuta())
                    // .addParameter ("descripcion1", (imagen.getId_descripcion()!=null&& imagen.getId_descripcion()!="")?imagen.getId_descripcion():"")
                     .addParameter ("idlocalim", imagen.getId() + "")
                     .addParameter ("idusuario", idusuario)
-
-                  //  .addParameter("idlocalrep", imagen.getId_reporte() + "")
+                    .addParameter("indice",indice)
+                   // .addParameter("indice", imagen.getIndice());
                   //  .addParameter("recolector", recolector)
                   //  .addParameter("planta", planta)
 
@@ -169,14 +172,16 @@ public class SubirFoto {
     }
     public void actualizarEstado(ImagenDetalle imagen){
         //  for(Imagen imagen:lista){
+        ImagenDetalle imagenedit=idrepo.findsimple(imagen.getId());
         imagen.setEstatusSync(2);
         idrepo.insert(imagen);
+
 
     }
 
     public void addFileToUploadRequest(String uf,int i) throws Exception {
         try {
-            upload.addFileToUpload(uf, "file_"+i);
+            upload.addFileToUpload(uf, "file").setMethod("POST");
         } catch (FileNotFoundException e) {
             throw new Exception("No se encontró el archivo "+uf+" Verifique");
         }

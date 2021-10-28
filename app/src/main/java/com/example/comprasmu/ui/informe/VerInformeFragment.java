@@ -110,7 +110,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
                     @Override
                     public void onChanged(Visita visita) {
                         crearFormulario();
-                        mBinding.vidatosgen.addView(cf1.crearFormulario());
+                        mBinding.vidatosgen.addView(cf1.crearTabla());
                     }
                 });
 
@@ -134,39 +134,45 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         List<CampoForm> camposTienda = new ArrayList<CampoForm>();
         CampoForm campo = new CampoForm();
 
+        campo.label="Consecutivo";
 
         campo.type = "label";
-        campo.value = "<b>Consecutivo:</b>"+informeCompra.getConsecutivo()+"";
+        campo.value = informeCompra.getConsecutivo()+"";
         camposTienda.add(campo);
          campo = new CampoForm();
 
 
+        campo.label= "Indice";
         campo.type = "label";
-        campo.value =  "Indice:"+mViewModel.getVisita().getValue().getIndice();
+        campo.value = mViewModel.getVisita().getValue().getIndice();
 
         camposTienda.add(campo);
          campo = new CampoForm();
 
 
+        campo.label="Fecha";
         campo.type = "label";
-        campo.value =  "Fecha:"+Constantes.vistasdf.format( mViewModel.getVisita().getValue().getCreatedAt());
+        campo.value =  Constantes.vistasdf.format( mViewModel.getVisita().getValue().getCreatedAt());
 
         camposTienda.add(campo);
         campo = new CampoForm();
+        campo.label="Ciudad";
         campo.type = "label";
-        campo.value = "Ciudad:"+mViewModel.getVisita().getValue().getCiudad();
+        campo.value = mViewModel.getVisita().getValue().getCiudad();
 
         camposTienda.add(campo);
         campo = new CampoForm();
+        campo.label="Cliente";
         campo.type = "label";
-        campo.value = "Cliente:"+informeCompra.getClienteNombre();
+        campo.value = informeCompra.getClienteNombre();
 
 
         camposTienda.add(campo);
         campo = new CampoForm();
 
+        campo.label="Planta";
         campo.type = "label";
-        campo.value =  "Planta:"+informeCompra.getPlantaNombre();
+        campo.value =  informeCompra.getPlantaNombre();
 
 
 
@@ -174,19 +180,22 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         campo = new CampoForm();
 
         campo.nombre_campo = "tiendaNombre";
+        campo.label="Nombre tienda";
         campo.type = "label";
-        campo.value ="Nombre tienda:"+ mViewModel.getVisita().getValue().getTiendaNombre();
+        campo.value = mViewModel.getVisita().getValue().getTiendaNombre();
 
         camposTienda.add(campo);
         campo = new CampoForm();
+        campo.label="Dirección";
         campo.type = "label";
-        campo.value ="Dirección:"+mViewModel.getVisita().getValue().getDireccion();
+        campo.value =mViewModel.getVisita().getValue().getDireccion();
         camposTienda.add(campo);
         campo = new CampoForm();
 
         campo.nombre_campo = "complementodireccion";
+        campo.label="Complemento dirección";
         campo.type = "label";
-        campo.value ="Complemento dirección:"+mViewModel.getVisita().getValue().getComplementodireccion();
+        campo.value =mViewModel.getVisita().getValue().getComplementodireccion();
 
 
         camposTienda.add(campo);
@@ -194,22 +203,25 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
 
         campo = new CampoForm();
 
+        campo.label="Comentarios";
         campo.type = "label";
-        campo.value = Html.fromHtml( "<b>Comentarios:</b>"+informeCompra.getComentarios())+"";
+        campo.value =informeCompra.getComentarios()+"";
 
         camposTienda.add(campo);
         campo = new CampoForm();
 
 
+        campo.label="Estatus informe";
         campo.type = "label";
-        campo.value ="Estatus informe:"+ Constantes.ESTATUSINFORME[informeCompra.getEstatus()];
+        campo.value = Constantes.ESTATUSINFORME[informeCompra.getEstatus()];
 
         camposTienda.add(campo);
         campo = new CampoForm();
 
         campo.nombre_campo = "tiendaNombre";
+        campo.label="Estatus envio";
         campo.type = "label";
-        campo.value = "Estatus envio:"+Constantes.ESTATUSSYNC[informeCompra.getEstatusSync()];
+        campo.value = Constantes.ESTATUSSYNC[informeCompra.getEstatusSync()];
         camposTienda.add(campo);
         mViewModel.getProductoExhib().observe(getViewLifecycleOwner(), new Observer<List<ProductoExhibidoDao.ProductoExhibidoFoto>>() {
             @Override

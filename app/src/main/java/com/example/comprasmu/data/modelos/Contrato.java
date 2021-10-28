@@ -12,9 +12,11 @@ public  class Contrato {
         public static int ESTATUSSYNC_SUBIENDO = 1;
         public static int ESTATUSSYNC_ACTUALIZADO = 2;
 
-    interface  CatalogosId{
-        int ATRIBUTOS=1;
-        int TOMADOSDE=2;
+    public static class  CatalogosId{
+
+        public static int TOMADOSDE=8;
+        public static int TIPODEMUESTRA=12;
+        public static int TIPODETIENDA=2;
     }
     interface ColumnasInformeDetalle{
 
@@ -48,10 +50,12 @@ public  class Contrato {
         String TICKET_COMPRA = "ticket_compra";
         String CONDICIONES_TRASLADO = "condiciones_traslado";
         String COMENTARIOS = "comentarios";
-
+        String AZUCARES = "azucares";
+        String QR = "qr";
     }
     public static class TablaInformeDet
             implements  ColumnasInformeDetalle {
+
 
     }
 }

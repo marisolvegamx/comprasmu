@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibFragment;
@@ -26,6 +27,9 @@ public class BackActivity extends AppCompatActivity {
     public static final int REQUEST_CODE=1003;
     public static final String OP_PRODUCTOEX="productoex";
     Toolbar myChildToolbar;
+    private static final int INTERVALO = 3000; //2 segundos para salir
+    private long tiempoPrimerClick;
+    String opcionSel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +50,7 @@ public class BackActivity extends AppCompatActivity {
 
         //para saber que fragment cargar
         Bundle datosRecuperados = getIntent().getExtras();
-        String opcionSel;
+
         if (datosRecuperados != null) {
             // No hay datos, manejar excepción
             //no debería estar aqui
@@ -104,6 +108,21 @@ public class BackActivity extends AppCompatActivity {
 
 
     }
+   /* @Override
+    public void onBackPressed(){
+        if(opcionSel.equals(OP_DETALLE_PRODUCTO)||opcionSel.equals(OP_PRODUCTOEX)) {
+            if (tiempoPrimerClick + INTERVALO > System.currentTimeMillis()) {
+                super.onBackPressed();
+                return;
+            } else {
+                Toast.makeText(this, "Sí sale sin guardar la información  se perderá. Vuelve a presionar para salir", Toast.LENGTH_LONG).show();
+            }
+            tiempoPrimerClick = System.currentTimeMillis();
+        }else
+            super.onBackPressed();
+    }*/
+    // Create an anonymous implementation of OnClickListener
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

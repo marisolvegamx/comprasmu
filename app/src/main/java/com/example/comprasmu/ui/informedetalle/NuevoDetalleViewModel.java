@@ -4,12 +4,11 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
@@ -21,13 +20,12 @@ import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
-import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.Event;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 
@@ -35,6 +33,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
 
     public InformeCompraDetalle icdNuevo;
+
     private ReactivoRepositoryImpl repositoryReac;
     CreadorFormulario cf;
     List<CampoForm> camposForm;
@@ -47,6 +46,8 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public ImagenDetalle foto_atributoc;
     public ImagenDetalle marca_traslape;
     public ImagenDetalle etiqueta_evaluacion;
+    public ImagenDetalle fotoazucares;
+    public ImagenDetalle fotoqr;
     private ImagenDetRepositoryImpl imagenDetRepository;
     private int iddetalleNuevo;
     private InformeComDetRepositoryImpl detalleRepo;
@@ -117,6 +118,16 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
             icdNuevo.setEtiqueta_evaluacion(idet);
         }
+        if(fotoazucares!=null) { //guardo las fotos
+            int idet = (int) imagenDetRepository.insertImg(fotoazucares);
+
+            icdNuevo.setAzucares(idet);
+        }
+        if(fotoqr!=null) { //guardo las fotos
+            int idet = (int) imagenDetRepository.insertImg(fotoqr);
+
+            icdNuevo.setQr(idet);
+        }
        int id=(int) detalleRepo.insert(icdNuevo);
         Log.d("NuevoDetalleViewModel","El informe se creo correctamente");
         mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
@@ -138,6 +149,25 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         mSnackbarText.setValue(new Event<>(R.string.delete_muestra_message));
 
     }
+    public MutableLiveData<Boolean> buscarMuestraCodigo(String indice, int planta, ProductoSel productosel, String codigonvo, Date caducidad, LifecycleOwner lco){
+        MutableLiveData<Boolean> res=new MutableLiveData<>();
+        res.setValue(false);
+        //busco en los informes
+        detalleRepo.getByProductoAna(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion).observe(lco, new Observer<List<InformeCompraDetalle>>() {
+            @Override
+            public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
+               for(InformeCompraDetalle det:informeCompraDetalles)
+                   //recorro el informe buscando
+                 if(det.getCaducidad().equals(caducidad)){
+
+                      res.setValue(true); //tengo uno
+                     break;
+                 }
+            }
+        });
+
+        return res;
+    }
     public void setProductoSel(ListaCompraDetalle productoSel,String nombrePlanta,int plantaSel,int clienteSel,String clienteNombre, String siglas) {
         this.productoSel=new ProductoSel();
         this.productoSel.producto=productoSel.getProductoNombre();
@@ -158,6 +188,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.clienteNombre=clienteNombre;
         this.productoSel.clienteSel=clienteSel;
         this.productoSel.siglas=siglas;
+        this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
     }
     public void setProductoSel(InformeCompraDetalle productoSel,String nombrePlanta,int plantaSel) {
         this.productoSel=new ProductoSel();
@@ -257,6 +288,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         public int tipoMuestra;
         public String nombreTipoMuestra;
         public String siglas;
+        public String codigosnop;
 
         public ProductoSel() {
 

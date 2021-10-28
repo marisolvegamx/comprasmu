@@ -28,6 +28,9 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
     @Query("SELECT * FROM imagen_detalle")
     public  abstract LiveData<List<ImagenDetalle>> findAll();
 
+    @Query("SELECT * FROM imagen_detalle")
+    public  abstract List<ImagenDetalle> findAllsimple();
+
     @Query("SELECT * FROM imagen_detalle WHERE id IN (:filterValues)")
     public  abstract LiveData<List<ImagenDetalle>> findinList(List<Integer> filterValues);
     @Query("SELECT * FROM imagen_detalle WHERE id IN (:filterValues)")
@@ -38,6 +41,9 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
 
     @Query("SELECT * FROM imagen_detalle where id=:id")
     public  abstract LiveData<ImagenDetalle> find( int id);
+
+    @Query("SELECT * FROM imagen_detalle where id=:id")
+    public  abstract ImagenDetalle findsimple( int id);
     @Query("delete FROM imagen_detalle where id=:id")
     public  abstract void deleteById( int id);
     @Query("SELECT ruta FROM imagen_detalle where id=:id")
