@@ -83,17 +83,17 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     }
     public List<DescripcionGenerica> cargarOpcionesAnalisis(int idanalisis){
         List<DescripcionGenerica> opciones=new ArrayList<>();
-        opciones.add(new DescripcionGenerica(1,"Opción 1"));
-        opciones.add(new DescripcionGenerica(2,"Opción 2"));
+        opciones.add(new DescripcionGenerica(1,"Criterio 1"));
+        opciones.add(new DescripcionGenerica(2,"Criterio 2"));
 
         switch (idanalisis){
             case 1: case 4: //fisico
-                opciones.add(new DescripcionGenerica(3,"Opción 3"));
-                opciones.add(new DescripcionGenerica(4,"Opción 4"));
+                opciones.add(new DescripcionGenerica(3,"Criterio 3"));
+                opciones.add(new DescripcionGenerica(4,"Criterio 4"));
                 break;
 
             case 3: //torque
-                opciones.add(new DescripcionGenerica(3,"Opción 3"));
+                opciones.add(new DescripcionGenerica(3,"Criterio 3"));
                 break;
         }
         return  opciones;
@@ -188,22 +188,23 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
     //actualiza comprados y codigos no permitidos
-    public void comprarMuestra(int idDetalle,String nuevoCodigo){
+    public void comprarMuestraPepsi(int idlista,int idDetalle,String nuevoCodigo, String isbu){
         detRepo=new ListaCompraDetRepositoryImpl(context);
-        ListaCompraDetalle listaCompraDetalle=detRepo.findsimple(idDetalle);
+        ListaCompraDetalle listaCompraDetalle=detRepo.findsimple(idlista,idDetalle);
+        Log.d(TAG,"1seguimiento muestras "+listaCompraDetalle.getCantidad()+" "+listaCompraDetalle.getComprados());
+        //valido que se pueda comprar y no sea bu
+        if(!isbu.equals("BACKUP")&&listaCompraDetalle.getCantidad()>=listaCompraDetalle.getComprados()+1){
+          //  detRepo.actualizarComprados(idDetalle,1);
+            listaCompraDetalle.setComprados(listaCompraDetalle.getComprados()+1);
 
-                //valido que se pueda comprar
-                if(listaCompraDetalle.getCantidad()>=listaCompraDetalle.getComprados()+1){
-                  //  detRepo.actualizarComprados(idDetalle,1);
-                    listaCompraDetalle.setComprados(1);
-                    //lo pongo al inicio porque viene de manera descendente
-                    String listaCodigos=nuevoCodigo+";"+listaCompraDetalle.getCodigosNoPermitidos();
-                    listaCompraDetalle.setCodigosNoPermitidos(listaCodigos);
-                    //actualizo
-                    detRepo.insert(listaCompraDetalle);
-                    //agrego codigo no permitido
-                 //   detRepo.find(idDetalle).removeObserver(this);
-                }
+        }
+
+            //no aumento el comprado solo el codigo
+            String listaCodigos=nuevoCodigo+";"+listaCompraDetalle.getNvoCodigo();
+            listaCompraDetalle.setNvoCodigo(listaCodigos);
+            //actualizo
+            detRepo.insert(listaCompraDetalle);
+
 
 
         Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);

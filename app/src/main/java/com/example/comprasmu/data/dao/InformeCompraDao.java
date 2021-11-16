@@ -37,9 +37,7 @@ public interface InformeCompraDao {
     @Query("SELECT * FROM informe_compras WHERE id = :uuid")
     LiveData<InformeCompra>  getInforme(int uuid);
 
-   /* @Query("SELECT * FROM informe_compras WHERE indice=:indice and estatusSync=2")
-    LiveData<List<InformeCompra>> getInformesByIndice(String indice);
-*/
+
     @RawQuery(observedEntities = InformeCompra.class)
     LiveData<List<InformeCompra>> getInformesByFiltros(SupportSQLiteQuery query);
 
@@ -75,12 +73,16 @@ public interface InformeCompraDao {
     @Query("SELECT * FROM informe_compras WHERE visitasId =:visitaId")
     abstract LiveData<List<InformeCompra>> getInformesByVisita(int visitaId);
 
+    @Query("SELECT * FROM informe_compras WHERE visitasId =:visitaId")
+    abstract List<InformeCompra> getInformesByVisitasimple(int visitaId);
+
     @RawQuery(observedEntities = InformeCompravisita.class)
     public abstract LiveData<List<InformeCompravisita>> getInformesWithVisita(SupportSQLiteQuery query);
 
     @Transaction
     @Query("SELECT * FROM informe_compras WHERE id = :id ")
     public abstract  InformeWithDetalle getInformeWithDetalleByIdsimple(int id);
+
 
    /* @Query("SELECT indice, createdAt as fecha,clienteNombre, plantaNombre, " +
             "informe_compras.estatus as estatusinforme, informe_compras.id as idinforme  " +

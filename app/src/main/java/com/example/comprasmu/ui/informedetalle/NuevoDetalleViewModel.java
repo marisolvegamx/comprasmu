@@ -11,11 +11,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
@@ -49,11 +51,12 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public ImagenDetalle fotoazucares;
     public ImagenDetalle fotoqr;
     private ImagenDetRepositoryImpl imagenDetRepository;
+    private AtributoRepositoryImpl atrRepo;
     private int iddetalleNuevo;
     private InformeComDetRepositoryImpl detalleRepo;
     private final MutableLiveData<Event<Integer>> mSnackbarText = new MutableLiveData<>();
     public ProductoSel productoSel;
-    public LiveData<List<CatalogoDetalle>> atributos;
+    public LiveData<List<Atributo>> atributos;
     public LiveData<List<CatalogoDetalle>> tomadoDe;
     private CatalogoDetalleRepositoryImpl catRepo;
 
@@ -65,9 +68,16 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
         this.detalleRepo=new InformeComDetRepositoryImpl(application);
         this.catRepo=new CatalogoDetalleRepositoryImpl(application);
+        this.atrRepo=new AtributoRepositoryImpl(application);
+    }
+    public void cargarCatalogos(String empaque, int empaqueid, int cliente){
+        atributos=atrRepo.getByEmpaque(empaqueid,cliente);
+        tomadoDe=catRepo.getxCatalogo("ubicacion_muestra");
+
     }
     public void cargarCatalogos(){
-        atributos=catRepo.getxCatalogo("atributos");
+
+        atributos=atrRepo.getAll();
         tomadoDe=catRepo.getxCatalogo("ubicacion_muestra");
 
     }

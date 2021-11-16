@@ -17,6 +17,7 @@ import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
+import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
 import java.util.Date;
@@ -43,6 +44,7 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
             foto.setEstatusSync(0);
             foto.setEstatus(0);
             foto.setDescripcion("foto producto exhibido");
+            foto.setIndice(Constantes.INDICEACTUAL);
             foto.setCreatedAt(new Date());
             int idfoto = (int) imagenDetRepository.insert(foto);
 

@@ -10,40 +10,71 @@ import java.util.List;
 public class ListaCompraResponse {
 
     private List<TablaVersiones> versiones;
+    private String status;
+    private String data;
+    private Componente inserts;
+    private Componente updates;
 
-    private String actualizacion;
-    private List<ListaCompra> compras;
-    private List<ListaCompraDetalle> detalles;
 
-    public List<TablaVersiones> getVersiones() {
-        return versiones;
+   // public List<TablaVersiones> getVersiones() {
+      //  return versiones;
+    //}
+
+    //public void setVersiones(ArrayList<TablaVersiones> versiones) {
+      //  this.versiones = versiones;
+    //}
+
+
+    public String getStatus() {
+        return status;
     }
 
-    public void setVersiones(ArrayList<TablaVersiones> versiones) {
-        this.versiones = versiones;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getActualizacion() {
-        return actualizacion;
+    public String getData() {
+        return data;
     }
 
-    public void setActualizacion(String actualizacion) {
-        this.actualizacion = actualizacion;
+    public void setData(String data) {
+        this.data = data;
     }
 
-    public List<ListaCompra> getCompras() {
-        return compras;
+    public Componente getInserts() {
+        return inserts;
     }
 
-    public void setCompras(List<ListaCompra> compras) {
-        this.compras = compras;
+    public void setInserts(Componente inserts) {
+        this.inserts = inserts;
     }
 
-    public List<ListaCompraDetalle> getDetalles() {
-        return detalles;
+    public Componente getUpdates() {
+        return updates;
     }
 
-    public void setDetalles(ArrayList<ListaCompraDetalle> detalles) {
-        this.detalles = detalles;
+    public void setUpdates(Componente updates) {
+        this.updates = updates;
+    }
+
+    public class Componente{
+        private List<ListaCompra> ListaCompra;
+        private List<ListaCompraDetalle> ListaCompraDetalle;
+
+        public List<com.example.comprasmu.data.modelos.ListaCompra> getListaCompra() {
+            return ListaCompra;
+        }
+
+        public void setListaCompra(List<com.example.comprasmu.data.modelos.ListaCompra> listaCompra) {
+            ListaCompra = listaCompra;
+        }
+
+        public List<com.example.comprasmu.data.modelos.ListaCompraDetalle> getListaCompraDetalle() {
+            return ListaCompraDetalle;
+        }
+
+        public void setListaCompraDetalle(List<com.example.comprasmu.data.modelos.ListaCompraDetalle> listaCompraDetalle) {
+            ListaCompraDetalle = listaCompraDetalle;
+        }
     }
 }

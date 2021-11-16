@@ -24,8 +24,10 @@
         <androidx.cardview.widget.CardView
 
             android:id="@+id/mcardview"
-            android:layout_width="394dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp"
             app:cardUseCompatPadding="true"
@@ -38,39 +40,43 @@
 
 
             <LinearLayout
-                android:id="@+id/linearLayout2"
+
+                android:id="@+id/cajatexto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:orientation="horizontal"
-                tools:layout_editor_absoluteX="196dp"
-                tools:layout_editor_absoluteY="221dp">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtmid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{Integer.toString(detalle.id)}"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/txtmproducto"
+
+                    style="@style/textolista1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{detalle.producto}" />
+
+                <TextView
+                    android:id="@+id/txtmpresentacion"
+
+                    style="@style/textolista1"
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="4dp"
+
+                    android:text='@{detalle.presentacion+" "+detalle.empaque}' />
 
                 <LinearLayout
-
-                    android:id="@+id/cajatexto"
-                    android:layout_width="239dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txtmproducto"
-
-                        style="@style/textolista1"
-                        android:layout_width="235dp"
-                        android:layout_height="wrap_content"
-                        android:text="@{detalle.producto}" />
-
-                    <TextView
-                        android:id="@+id/txtmpresentacion"
-
-                        style="@style/textolista1"
-                        android:layout_width="235dp"
-                        android:layout_height="18dp"
-                        android:layout_marginTop="4dp"
-
-                        android:text="@{detalle.presentacion}" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/txtmanalisis"
@@ -79,6 +85,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:layout_weight="1"
                         android:text='@{detalle.nombreAnalisis}' />
 
                     <TextView
@@ -88,18 +95,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:layout_weight="1"
                         android:text='@{detalle.caducidad!=null?sdf.format(detalle.caducidad):""}' />
+                </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/txtmid"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{Integer.toString(detalle.id)}" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/txtmestatussync"
-                        android:layout_width="match_parent"
+                        android:layout_width="193dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="gone"
                         android:text="@{Integer.toString(detalle.estatusSync)}" />
 
                     <TextView
@@ -107,29 +117,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="@{Integer.toString(estatusparent)}" />
+                        android:layout_weight="1"
+                        android:text="@{Integer.toString(estatusparent)}"
+                        android:visibility="gone" />
 
-
+                    <ImageButton
+                        android:id="@+id/btnmver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="@{consulta? View.VISIBLE: View.GONE}"
+                        app:srcCompat="@android:drawable/ic_menu_view" />
                 </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/btnmeditar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="@{consulta? View.GONE: View.VISIBLE}"
-                    app:srcCompat="@android:drawable/ic_menu_edit" />
-
-                <ImageButton
-                    android:id="@+id/btnmver"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="@{consulta? View.VISIBLE: View.GONE}"
-                    app:srcCompat="@android:drawable/ic_menu_view" />
 
 
             </LinearLayout>
+
+
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

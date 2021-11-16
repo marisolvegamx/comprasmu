@@ -10,17 +10,24 @@
         <variable
             name="mostrarAgregar"
             type="Boolean" />
+        <variable
+            name="isBu"
+            type="Boolean" />
+        <variable
+            name="numTienda"
+            type="Integer" />
     </data>
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
 
             android:id="@+id/ldcardview"
-            android:layout_width="394dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp"
@@ -34,119 +41,171 @@
 
 
             <LinearLayout
-                android:id="@+id/linearLayout2"
+
+                android:id="@+id/cajatexto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:orientation="horizontal"
-                tools:layout_editor_absoluteX="196dp"
-                tools:layout_editor_absoluteY="221dp">
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
 
                 <LinearLayout
-
-                    android:id="@+id/cajatexto"
-                    android:layout_width="239dp"
-                    android:layout_height="123dp"
-                    android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/txtfecha"
 
                         style="@style/textolista1"
-                        android:layout_width="235dp"
+                        android:layout_width="181dp"
                         android:layout_height="wrap_content"
                         android:text="@{detalle.productoNombre}" />
 
                     <TextView
-                        android:id="@+id/txttienda"
-
-                        style="@style/textolista1"
-                        android:layout_width="235dp"
-                        android:layout_height="18dp"
-                        android:layout_marginTop="4dp"
-
-                        android:text="@{detalle.tamanio+' '+detalle.empaque}" />
-
-                    <TextView
-                        android:id="@+id/txtdicomprados"
+                        android:id="@+id/txtcantidad"
                         style="@style/textolistagrisb"
-                        android:layout_width="72dp"
-                        android:layout_height="27dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
 
-                        android:text="@{String.valueOf(detalle.comprados)}"
-                        android:textAlignment="textEnd"
-                        android:visibility="gone" />
+                        android:text="@{String.valueOf(detalle.comprados)+'/'+String.valueOf(detalle.cantidad)}"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/txtdicantidad"
-                        style="@style/textolistagrisb"
-                        android:layout_width="72dp"
-                        android:layout_height="27dp"
+                <TextView
+                    android:id="@+id/txttienda"
 
-                        android:text="@{String.valueOf(detalle.cantidad)}"
-                        android:textAlignment="textEnd"
-                        android:visibility="gone" />
+                    style="@style/textolista1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+
+                    android:text="@{detalle.tamanio+' '+detalle.empaque}" />
+
+                <TextView
+                    android:id="@+id/txtdicomprados"
+                    style="@style/textolistagrisb"
+                    android:layout_width="72dp"
+                    android:layout_height="27dp"
+
+                    android:text="@{String.valueOf(detalle.comprados)}"
+                    android:textAlignment="textEnd"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/txtdicantidad"
+                    style="@style/textolistagrisb"
+                    android:layout_width="72dp"
+                    android:layout_height="27dp"
+
+                    android:text="@{String.valueOf(detalle.cantidad)}"
+                    android:textAlignment="textEnd"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/txtanalisis"
                         style="@style/textolistagris"
 
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_weight="2"
                         android:text="@{detalle.tipoAnalisis}" />
 
                     <TextView
                         android:id="@+id/txtldtipoMuestra"
                         style="@style/textolistagris"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{detalle.nombreTipoMuestra}" />
-
-                    <Button
-                        android:id="@+id/btncodigos"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="match_parent"
-                        android:layout_height="32dp"
-                        android:layout_marginBottom="4dp"
-                        android:minWidth="0dp"
-
-                        android:text="Ver códigos no permitidos>"
-                        android:textColor="@color/blue_subtitle"
-                        android:textSize="10sp" />
-
-                    <TextView
-                        android:id="@+id/txtcodigos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@{detalle.nombreTipoMuestra}" />
 
-                        android:text="@{detalle.codigosNoPermitidos.replace(';','\n')}" />
+                    <ImageButton
+                        android:id="@+id/btnldbackup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+
+                        android:theme="@android:style/Widget.Material.Button.Small"
+
+                        android:visibility="@{numTienda>10&amp;&amp;!isBu&amp;&amp;mostrarAgregar?View.VISIBLE:View.GONE}"
+                        app:srcCompat="@drawable/ic_baseline_repeat_24" />
+
+                    <ImageButton
+                        android:id="@+id/btnldagregar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+
+                        android:textAlignment="textEnd"
+
+                        android:visibility="@{(detalle.comprados+1&lt;=detalle.cantidad)&amp;&amp;mostrarAgregar?View.VISIBLE:View.GONE}"
+                        app:srcCompat="@drawable/ic_baseline_add_24" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView23"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5" />
+
+                    <TextView
+                        android:id="@+id/txtldisbu2"
+                        android:layout_width="59dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text='@{numTienda+" "+isBu+" "+mostrarAgregar+"--"}'
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/txtldisbu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text='@{numTienda>10&amp;&amp;isBu?"backup":""}'
+                        android:visibility="invisible" />
 
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtcantidad"
-                    style="@style/textolistagrisb"
-                    android:layout_width="72dp"
-                    android:layout_height="27dp"
-
-                    android:text="@{String.valueOf(detalle.comprados)+'/'+String.valueOf(detalle.cantidad)}"
-                    android:textAlignment="textEnd" />
-
-
-                <ImageButton
-                    android:id="@+id/btnldagregar"
+                <Button
+                    android:id="@+id/btncodigos"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_height="32dp"
+                    android:layout_marginBottom="4dp"
+                    android:minWidth="0dp"
 
-                     app:srcCompat="@drawable/ic_baseline_add_24" />
+                    android:text="Ver códigos no permitidos>"
+                    android:textColor="@color/blue_subtitle"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/txtcodigos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@{detalle.codigosNoPermitidos.replace(';','\n')}" />
+
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
 
 </layout>

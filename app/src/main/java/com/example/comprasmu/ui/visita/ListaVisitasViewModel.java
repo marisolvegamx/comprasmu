@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -90,6 +91,19 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         });
 
 
+
+    }
+
+    public Visita tieneInforme(Visita visita, LifecycleOwner owner){
+
+        InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(application);
+        List<InformeCompra> informeCompras=infoRepo.getAllByVisitasimple(visita.getId());
+        if(informeCompras!=null&&informeCompras.size()>0)
+                    //ya tiene informe
+                    visita.setEstatus(3);
+
+
+       return visita;
 
     }
 

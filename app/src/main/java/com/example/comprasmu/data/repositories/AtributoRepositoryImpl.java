@@ -28,8 +28,8 @@ public class AtributoRepositoryImpl extends BaseRepository<Atributo> {
     public LiveData<List<Atributo>> getAll(int cat) {
         return dao.findAll();
     }
-    public  LiveData<Atributo> getByEmpaque( int id){
-     return dao.getByEmpaque(id);
+    public  LiveData<List<Atributo>> getByEmpaque( int id, int cliente){
+     return dao.getByEmpaqueCliente(id,cliente );
     }
 
 

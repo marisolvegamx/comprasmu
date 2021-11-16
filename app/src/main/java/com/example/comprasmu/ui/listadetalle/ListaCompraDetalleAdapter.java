@@ -104,7 +104,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
             //
            altoini=binding.ldcardview.getLayoutParams();
 
-          // binding.txtcodigos.setVisibility(View.GONE);
+           binding.txtcodigos.setVisibility(View.GONE);
             binding.btncodigos.setOnClickListener(new View.OnClickListener() {
 
                @Override
@@ -117,28 +117,28 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                            if(binding.txtcodigos.getVisibility()==View.GONE) {
 
                                binding.txtcodigos.setVisibility(View.VISIBLE);
-                               int nvoalto= binding.txtcodigos.getHeight();
+                              // int nvoalto= binding.txtcodigos.getHeight();
 
-                            //   binding.ldcardview.setLayoutParams(new ConstraintLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 900));
-                               LinearLayout rLGreen = ((LinearLayout) binding.cajatexto);
-                               ViewGroup.LayoutParams params = rLGreen.getLayoutParams();
+                               //binding.ldcardview.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 900));
+                               //LinearLayout rLGreen = ((LinearLayout) binding.cajatexto);
+                               //ViewGroup.LayoutParams params = rLGreen.getLayoutParams();
 // Changes the height and width to the specified *pixels*
-                               params.height = 900;
-                               params.width = LinearLayout.LayoutParams.MATCH_PARENT;
-                              // rLGreen.setLayoutParams(params);
+                               //params.height = 900;
+                               //params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                              //  rLGreen.setLayoutParams(params);
                            //    rLGreen.setLayoutParams(new LinearLayout.LayoutParams(, 900));
                            //    LinearLayout rLGreen2 = ((LinearLayout) rLGreen.getParent());
-                             //  rLGreen.setLayoutParams(new LinearLayout.LayoutParams(, 900));
+                               //rLGreen.setLayoutParams(new LinearLayout.LayoutParams(, 900));
 
                            }else
                            {
                                Log.d(TAG,"haciendo chiquito");
                                binding.txtcodigos.setVisibility(View.GONE);
-                              // binding.ldcardview.setLayoutParams(altoini);
-                               LinearLayout rLGreen = ((LinearLayout) binding.btncodigos.getParent());
-                               ViewGroup.LayoutParams params=rLGreen.getLayoutParams();
-                               params.width=LinearLayout.LayoutParams.MATCH_PARENT;
-                               params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+                           //    binding.ldcardview.setLayoutParams(altoini);
+                            //   LinearLayout rLGreen = ((LinearLayout) binding.btncodigos.getParent());
+                              // ViewGroup.LayoutParams params=rLGreen.getLayoutParams();
+                               //params.width=LinearLayout.LayoutParams.MATCH_PARENT;
+                               //params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
                                //rLGreen.setLayoutParams(new ViewGroup.LayoutParams(, ));
                               // LinearLayout rLGreen2 = ((LinearLayout) rLGreen.getParent());
                                //rLGreen.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

@@ -54,6 +54,7 @@ public class VerInformeViewModel extends AndroidViewModel {
         imagenDetRepository=new ImagenDetRepositoryImpl(context);
 
 
+
     }
 
     public void buscarInforme(int idInformeNuevo){
@@ -61,58 +62,52 @@ public class VerInformeViewModel extends AndroidViewModel {
         prodRepo=new ProductoExhibidoRepositoryImpl(context);
         //busco toda la info
         informeCompraSel=icrepo.getInformeWithDetalleById(idInformeNuevo,0);
-        informeCompraSel.observeForever(new Observer<InformeWithDetalle>() {
+       /* informeCompraSel.observeForever(new Observer<InformeWithDetalle>() {
             @Override
             public void onChanged(InformeWithDetalle informeWithDetalle) {
-                visita=visitaRepo.find(informeWithDetalle.informe.getVisitasId());
+               // visita=visitaRepo.find(informeWithDetalle.informe.getVisitasId());
 
                 getFotoVisita();
 
                 getRutaFotos(informeWithDetalle.informe);
                 Log.d(TAG,"ya tengo el informe"+informeWithDetalle.informe.getId());
             }
-        });
+        });*/
 
 
 
 
     }
 
-
-    public void getRutaFotos(InformeCompra informe){
-
-        fotocondiciones=imagenDetRepository.find(informe.getCondiciones_traslado());
-        LiveData<ImagenDetalle> ifotoTicket=imagenDetRepository.find(informe.getTicket_compra());
-        ifotoTicket.observeForever(new Observer<ImagenDetalle>() {
-            @Override
-            public void onChanged(ImagenDetalle imagenDetalle) {
-              //  fotoTicket=new MutableLiveData<>();
-                fotoTicket=imagenDetalle.getRuta();
-                Log.d(TAG,"*ya tengo las fotos informe "+imagenDetalle.getRuta());
-            }
-        });
-        Log.d(TAG,"ya tengo las fotos informe");
-       /* imagenDetRepository.find(informe.getFotoFachada())
-                .observeForever(new Observer<ImagenDetalle>() {
-                                    @Override
-                                    public void onChanged(ImagenDetalle imagenDetalle) {
-                                        fotoFachada=imagenDetalle.getRuta();
-                                    }
-                                }
-                );*/
+    public LiveData<Visita> getVisita(int idVisita){
+        visita=visitaRepo.find(idVisita);
+      return visita;
     }
-    public void getFotoVisita(){
 
-            visita.observeForever(new Observer<Visita>() {
-                @Override
-                public void onChanged(Visita visita) {
 
-                    fotoFachada=imagenDetRepository.find(visita.getFotoFachada());
+    public  LiveData<ImagenDetalle>  getfotocondiciones(InformeCompra informe) {
 
+       return  imagenDetRepository.find(informe.getCondiciones_traslado());
+    }
+    public  LiveData<ImagenDetalle>  getfotoTicket(InformeCompra informe) {
+      return  imagenDetRepository.find(informe.getTicket_compra());
+
+    }
+
+
+
+
+
+    public LiveData<ImagenDetalle> getFotoVisita(int idfoto) {
+
+        //return imagenDetRepository.find(visita.getFotoFachada());
+        return imagenDetRepository.find(idfoto);
+    }
+    public LiveData<List<ProductoExhibidoDao.ProductoExhibidoFoto>> getproductoExhib(int idvisita, int cliente) {
+       // return prodRepo.getAllByVisita(visita.getId());
                     //fotos prod exhibido
-                    productoExhib=prodRepo.getAllByVisita(visita.getId());
-                }
-            });
+        return prodRepo.getAllByVisitaCli(idvisita,cliente);
+
 
 
     }
@@ -190,4 +185,5 @@ public class VerInformeViewModel extends AndroidViewModel {
     public void setProductoExhib(LiveData<List<ProductoExhibidoDao.ProductoExhibidoFoto>> productoExhib) {
         this.productoExhib = productoExhib;
     }
+
 }

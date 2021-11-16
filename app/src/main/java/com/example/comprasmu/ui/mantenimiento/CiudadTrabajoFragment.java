@@ -37,7 +37,7 @@ public class CiudadTrabajoFragment extends Fragment {
     private static ArrayList<DescripcionGenerica> listaCiudadesEnv;
 
     Spinner spciudades;
-  boolean isEdit=false;
+    boolean isEdit=false;
 
 
     public static CiudadTrabajoFragment newInstance() {

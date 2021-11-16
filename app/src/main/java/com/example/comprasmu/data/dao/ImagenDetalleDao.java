@@ -56,6 +56,9 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
     public abstract void cancelar(int id, int estatus);
     @Query("delete FROM imagen_detalle where indice=:indice")
     public abstract void deleteByIndice(int indice);
+
+    @Query("SELECT * FROM imagen_detalle WHERE estatus =:estatus and estatusSync=:estatusSync")
+    public abstract List<ImagenDetalle> getImagenByEstSyncsimple(int estatus, int estatusSync);
 //    @Query("SELECT * FROM imagen_detalle WHERE informesId=:informe")
  //   public abstract LiveData<List<ImagenDetalle>> getImagenesByInforme(int informe);
 

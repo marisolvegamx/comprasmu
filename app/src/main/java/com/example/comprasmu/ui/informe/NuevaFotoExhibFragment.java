@@ -31,6 +31,8 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.Visita;
+import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 
@@ -54,7 +56,7 @@ public class NuevaFotoExhibFragment extends Fragment {
       private static final String TAG = NuevaFotoExhibFragment.class.getName();
      private static final int INTERVALO = 3000; //2 segundos para salir
     private long tiempoPrimerClick;
-
+    private ListaDetalleViewModel lViewModel;
     String nombre_foto;
     Bitmap rotatedBitmap;
     Spinner spinn;
@@ -82,6 +84,8 @@ public class NuevaFotoExhibFragment extends Fragment {
         Bundle extras = getActivity().getIntent().getExtras();
         nombre_foto=extras.getString(NuevoinformeFragment.ARG_FOTOPRODUCTO);
         visitasId=extras.getInt(NuevaFotoExhibFragment.ARG_VISITASID);
+        lViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
+        cargarClientes();
         File file = new File(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
         if (file.exists()) {
             //   Bitmap imageBitmap = (Bitmap) extras.get("data");
@@ -128,7 +132,15 @@ public class NuevaFotoExhibFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(NuevaFotoExhibViewModel.class);
 
     }
+    public void cargarClientes() {
+        if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
+            lViewModel.cargarClientes(Constantes.CIUDADTRABAJO).observe(getViewLifecycleOwner(), data -> {
+                Log.d(TAG, "regresó de la consulta " + data.size());
+                Constantes.clientesAsignados = ComprasUtils.convertirListaaClientes(data);
 
+
+            });
+    }
 
    public void guardarFotoExhibido(){
         if(ruta1.getText().toString().equals("")){

@@ -24,6 +24,7 @@ import com.example.comprasmu.ui.informe.PostInformeViewModel;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Random;
 
 /****un servicio x foto****/
 public class SubirFotoService extends IntentService
@@ -51,7 +52,7 @@ public class SubirFotoService extends IntentService
     @Override
     protected void onHandleIntent(Intent intent)
     {
-        //Log.d(TAG,"action");
+        Log.d(TAG,"action");
         if (intent != null)
         {
             final String action = intent.getAction();
@@ -138,15 +139,17 @@ public class SubirFotoService extends IntentService
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+        assert notificationManager != null;
         notificationBuilder = new NotificationCompat.Builder(this, "id")
                 .setSmallIcon(android.R.drawable.stat_sys_upload
                 )
-                .setContentTitle("Subiendo")
+                .setContentTitle("Compras")
                 .setContentText("Subiendo imagen")
                 .setDefaults(0)
                 .setAutoCancel(true);
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(m, notificationBuilder.build());
         sendBroadcastMeaasge("terminé");
     }
 
@@ -177,7 +180,9 @@ public class SubirFotoService extends IntentService
 
         notificationManager.cancel(0);
         notificationBuilder.setProgress(0, 0, false);
-        notificationBuilder.setContentText("Image Download Complete");
+        notificationBuilder.setSmallIcon(android.R.drawable.stat_sys_upload_done);
+
+        notificationBuilder.setContentText("Envio completado");
         notificationManager.notify(0, notificationBuilder.build());
 
     }

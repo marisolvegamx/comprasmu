@@ -4,12 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "lista_compras_detalle")
+@Entity(tableName = "lista_compras_detalle",primaryKeys = {"id", "listaId"})
 public class ListaCompraDetalle {
 
-    @PrimaryKey(autoGenerate = true)
+
     @NonNull
     private int id;
+    @NonNull
     private int listaId;
     private int productosId;
     private String productoNombre;
@@ -21,12 +22,15 @@ public class ListaCompraDetalle {
     private int analisisId;
     private int cantidad;
     private String codigosNoPermitidos;
+    private String nvoCodigo;
     private int estatus;
     private int comprados;
     private int tipoMuestra;
     private String nombreTipoMuestra;
     private int categoriaid;
     private String categoria;
+    private String lid_fechapremitida;
+    private String lis_fecharestringida;
 
 
 
@@ -168,5 +172,29 @@ public class ListaCompraDetalle {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public String getLid_fechapremitida() {
+        return lid_fechapremitida;
+    }
+
+    public void setLid_fechapremitida(String lid_fechapremitida) {
+        this.lid_fechapremitida = lid_fechapremitida;
+    }
+
+    public String getLis_fecharestringida() {
+        return lis_fecharestringida;
+    }
+
+    public void setLis_fecharestringida(String lis_fecharestringida) {
+        this.lis_fecharestringida = lis_fecharestringida;
+    }
+
+    public String getNvoCodigo() {
+        return nvoCodigo;
+    }
+
+    public void setNvoCodigo(String nvoCodigo) {
+        this.nvoCodigo = nvoCodigo;
     }
 }

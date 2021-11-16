@@ -23,13 +23,14 @@
         <item
             android:id="@+id/nav_nuevoinforme"
             android:icon="?attr/actionModePasteDrawable"
-            android:title="@string/menu_abrir_informe" />
+            android:title="@string/menu_nuevo_informe" />
         <item
             android:id="@+id/nav_listarvisitas"
             android:icon="@drawable/ic_baseline_note_24"
-            android:title="@string/menu_lista_visitas" />
+            android:title="@string/menu_continuar_informe" />
         <item
             android:id="@+id/nav_listar"
+            android:icon="?attr/actionModePasteDrawable"
             android:title="@string/menu_lista_informe" />
 
         <item
@@ -46,6 +47,11 @@
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="@string/menu_borrar_lista" />
         </menu>
+
         </item>
+        <item
+            android:id="@+id/nav_tiendas"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/buscar_tienda" />
     </group>
 </menu>

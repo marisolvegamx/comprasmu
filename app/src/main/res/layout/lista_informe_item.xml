@@ -5,7 +5,7 @@
     android:layout_marginBottom="10dp">
     <data >
         <import type="com.example.comprasmu.utils.Constantes"/>
-
+        <import type="android.view.View"/>
         <variable name="detalle"
             type="com.example.comprasmu.data.dao.InformeCompraDao.InformeCompravisita"></variable>
         <variable
@@ -20,125 +20,129 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="10dp"
         app:cardCornerRadius="4dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="142dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="252dp"
-
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/li_txtid"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{String.valueOf(detalle.idinforme)}"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/txtliindice"
                     style="@style/textolista1"
-                    android:layout_width="0dp"
+                    android:layout_width="139dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="5"
                     android:text="@{detalle.indice}"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.005" />
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/txtfecha"
                     style="@style/textolista1"
-                    android:layout_width="0dp"
+                    android:layout_width="133dp"
                     android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:layout_weight="5"
                     android:text='@{sdf.format(detalle.createdAt)}'
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtliindice" />
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/txtlicliente"
-                    style="@style/textolista1"
-                    android:layout_width="0dp"
+                    style="@style/textolista2"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{detalle.clienteNombre}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtfecha" />
+                    android:layout_weight="1"
+                    android:text="@{detalle.clienteNombre}" />
 
                 <TextView
                     android:id="@+id/txtliplanta"
-                    style="@style/textolista1"
+                    style="@style/textolista2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{detalle.plantaNombre}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtlicliente" />
+                    android:layout_span="2"
+                    android:layout_weight="1"
+                    android:text="@{detalle.plantaNombre}" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/txttienda"
-                    style="@style/textolista1"
-                    android:layout_width="0dp"
+                    style="@style/textolista2"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_span="3"
+                    android:layout_weight="1"
                     android:text="@{detalle.tiendaNombre}"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtliplanta"
-                    app:layout_constraintVertical_bias="0.098" />
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/txtestatus"
                     style="@style/textolistagrisb"
-                    android:layout_width="0dp"
+                    android:layout_width="168dp"
                     android:layout_height="wrap_content"
-                    android:text="@{Constantes.ESTATUSINFORME[detalle.estatus]}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txttienda"
-                    app:layout_constraintVertical_bias="0.6" />
+                    android:layout_span="2"
+                    android:layout_weight="4"
+                    android:text="@{Constantes.ESTATUSSYNC[detalle.estatusSync]}" />
 
+                <ImageButton
+                    android:id="@+id/li_btnsubir"
+                    android:layout_width="66dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:visibility="@{detalle.estatusSync>0?View.GONE: View.VISIBLE }"
+                    app:srcCompat="@drawable/ic_baseline_cloud_upload_24" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <ImageButton
-                android:id="@+id/li_btnsubir"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/ic_baseline_cloud_upload_24" />
-
-            <ImageButton
-                android:id="@+id/li_btnedit"
-                android:layout_width="41dp"
-                android:layout_height="39dp"
-                android:layout_weight="1"
-                android:visibility="visible"
-                app:srcCompat="@android:drawable/ic_menu_view" />
-
-            <TextView
-                android:id="@+id/li_txtid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@{String.valueOf(detalle.idinforme)}" />
-
-
+                <ImageButton
+                    android:id="@+id/li_btnedit"
+                    android:layout_width="41dp"
+                    android:layout_height="39dp"
+                    android:layout_weight="1"
+                    android:visibility="visible"
+                    app:srcCompat="@android:drawable/ic_menu_view" />
+            </LinearLayout>
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 </layout>

@@ -40,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@{productoSel.plantaNombre}" />
+                    android:text='@{productoSel.plantaNombre+" "+productoSel.siglas}' />
             </TableRow>
 
             <TableRow
@@ -53,16 +53,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@{productoSel.producto}" />
+                    android:text='@{productoSel.producto+" "+productoSel.presentacion+" "+productoSel.empaque}' />
 
-                <TextView
-                    android:id="@+id/tvdppresentacion"
-                    style="@style/subtitulo1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@{productoSel.presentacion}"
-                    android:textAlignment="textStart" />
             </TableRow>
 
             <TableRow
@@ -82,10 +74,10 @@
 
         <ScrollView
             android:id="@+id/scrollView2"
-            android:layout_width="415dp"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -99,12 +91,13 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/siglas" />
+                        android:text="@string/siglas_planta" />
                 </TableRow>
 
                 <TableRow
@@ -113,6 +106,7 @@
 
                     <EditText
                         android:id="@+id/txtdpsiglas"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -121,16 +115,27 @@
                         android:text="" />
 
                     <ImageButton
-                        android:id="@+id/imageButton3"
+                        android:id="@+id/btnmicsiglas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_baseline_mic_24" />
+                        android:backgroundTint="#CCCDCD"
+                        app:srcCompat="@drawable/ic_baseline_mic_24"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnchecksiglas"
+                        style="@android:style/Widget.Material.Light.ImageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        app:srcCompat="@drawable/ic_baseline_check_24" />
 
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
 
                     <TextView
                         android:id="@+id/textView13"
@@ -153,16 +158,23 @@
                         android:text="" />
 
                     <ImageButton
-                        android:id="@+id/imageButton4"
+                        android:id="@+id/btnmiccad"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:srcCompat="@drawable/ic_baseline_mic_24" />
+
+                    <ImageButton
+                        android:id="@+id/btncheckcaducidad"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_baseline_check_24" />
 
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
 
                     <TextView
                         android:id="@+id/textView14"
@@ -182,7 +194,73 @@
                         android:layout_weight="1" />
 
                     <ImageButton
-                        android:id="@+id/imageButton5"
+                        android:id="@+id/btnmiccod"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_baseline_mic_24" />
+
+                    <ImageButton
+                        android:id="@+id/btncheckcodigo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_baseline_check_24" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="12dp">
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/origen" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Spinner
+                        android:id="@+id/spdporigen"
+                        android:layout_width="match_parent"
+                        android:layout_height="47dp"
+                        android:layout_margin="@dimen/dp_10"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"></Spinner>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="12dp">
+
+                    <TextView
+                        android:id="@+id/textView22"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/costo" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <EditText
+                        android:id="@+id/txtdpcosto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="numberDecimal" />
+
+                    <ImageButton
+                        android:id="@+id/btnmiccosto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:srcCompat="@drawable/ic_baseline_mic_24" />
@@ -190,7 +268,8 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="12dp">
 
                     <LinearLayout
                         android:id="@+id/dpcontentform"
@@ -203,8 +282,16 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
 
+                    <SurfaceView
+                        android:id="@+id/camera_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="400dp"
+                        android:layout_marginTop="20dp"
+
+                        android:visibility="visible" />
                     <Button
                         android:id="@+id/btndpvalidar"
                         android:layout_width="match_parent"

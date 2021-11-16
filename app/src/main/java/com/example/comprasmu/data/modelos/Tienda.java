@@ -5,7 +5,7 @@ public class Tienda {
     private int une_id;
     private String une_descripcion;
     private String tipoTienda;
-    private String une_tipotienda;
+    private int une_tipotienda;
     private String une_direccion;
     private String ciudad;
     private int une_cla_ciudad;
@@ -41,11 +41,11 @@ public class Tienda {
         this.tipoTienda = tipoTienda;
     }
 
-    public String getUne_tipotienda() {
+    public int getUne_tipotienda() {
         return une_tipotienda;
     }
 
-    public void setUne_tipotienda(String une_tipotienda) {
+    public void setUne_tipotienda(int une_tipotienda) {
         this.une_tipotienda = une_tipotienda;
     }
 

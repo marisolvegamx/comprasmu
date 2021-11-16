@@ -153,6 +153,10 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
         return icDao.findsimple(id);
     }
 
+  /*  public Visita findsimpleest(int id, int estatus) {
+        return icDao.findsimpleest(id,estatus);
+    }*/
+
     @Override
     public long insert(Visita object) {
 

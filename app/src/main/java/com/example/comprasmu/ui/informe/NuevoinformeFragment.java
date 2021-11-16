@@ -57,9 +57,12 @@ import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
 import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
+import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.CampoForm;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
+import com.example.comprasmu.utils.Preguntasino;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
@@ -79,6 +82,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
 
     public static final String ARG_FOTOPRODUCTO ="comprasmu.ni.fotoprod" ;
     private static final String CLIENTESEL ="clientesel" ;
+    private static final String ARG_TOTALLISTA ="comprasmu.ni.totallista" ;
 
     public static String NUMMUESTRA="comprasmu.ni.nummuestra";
     private NuevoinformeViewModel mViewModel;
@@ -90,14 +94,17 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
     Visita visitaCont;
 
     MenuItem fav;
-    RadioButton primera ;
-    RadioButton segunda ;
-    RadioButton tercera ;
+    Preguntasino primera ;
+    Preguntasino segunda ;
+    Preguntasino tercera ;
+    ImageButton rotar2;
+    ImageButton rotar1;
+
     int clienteSel;
-    private int[] arrCampos={2001,2002,2003,2004,2005,2006,R.id.tblnifotos};
+    private int[] arrCampos={2001,2002,2003,R.id.tblnifotos};
 
     File ruta;
-    private int totalLista=17;
+    private int totalLista=0;
     public final static String INFORMESEL="comprasmu.ni_informesel";
     public final static String ISEDIT="comprasmu.ni_isedit";
     public final static String ISCOMPLETE="comprasmu.ni_complete";
@@ -178,11 +185,27 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                 tomarFoto(R.id.txtuicondiciones,R.id.ivuicondiciones);
             }
         });
+        rotar1=(ImageButton)root.findViewById(R.id.btnnirotar1);
+        rotar1.setVisibility(View.GONE);
+
+        rotar1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(R.id.ivuiticket_compra);
+            }
+        });
+        rotar2=(ImageButton)root.findViewById(R.id.btnnirotcond);
+        rotar2.setVisibility(View.GONE);
+        rotar2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(R.id.ivuicondiciones);
+            }
+        });
 
         if(Constantes.clientesAsignados!=null) {
 
             //busco los clientes
-            //TODO proceso para llenar clientes y plantas de la lista de compras
 
             Log.d(TAG,Constantes.clientesAsignados.size()+"pppppp");
 
@@ -243,6 +266,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                     //busco la visita
                     mViewModel.visitaEdicion=mViewModel.buscarVisita(informe.getVisitasId());
                   //  visitaCont=mViewModel.visitaEdicion;
+                  //  Constantes.DP_TIPOTIENDA=  mViewModel.visitaEdicion.getTipoId();
                     ponerDatos();
                     mBinding.setInforme(informe);
 
@@ -255,50 +279,72 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                 }
             });
 
-        }else
-
-         {
+        }else {
 
 
             //es nuevo
-            Bundle datosRecuperados=getArguments();
-            int idinformeSel= datosRecuperados.getInt(INFORMESEL);
-            Log.d(TAG,"informe creado="+idinformeSel);
+            Bundle datosRecuperados = getArguments();
+            int idinformeSel = datosRecuperados.getInt(INFORMESEL);
+            Log.d(TAG, "informe creado=" + idinformeSel);
             //busco la visita
             mViewModel.buscarVisita(idinformeSel).observeForever(new Observer<Visita>() {
                 @Override
                 public void onChanged(Visita visita) {
-                    visitaCont =visita;
-                    Log.d(TAG,"VISITA "+visita.getCiudad());
-                   mBinding.setVisita(visita);
+                    visitaCont = visita;
+                     Constantes.DP_TIPOTIENDA= visita.getTipoId();
+                    Log.d(TAG, "VISITA " + visita.getCiudad());
+                    Log.d(TAG,"tipo tienda -----------*"+Constantes.DP_TIPOTIENDA);
+
+                    mBinding.setVisita(visita);
 
                 }
             });
 
 
+            crearFormulario();
 
-             crearFormulario();
-
-             if(getActivity()!=null) {
-                 cf = new CreadorFormulario(camposForm, getActivity());
-                 contentmain.addView(cf.crearFormulario());
-             }else
-             {
-                 Log.d(TAG,"porque no hay actividad");
-             }
+            if (getActivity() != null) {
+                cf = new CreadorFormulario(camposForm, getActivity());
+                contentmain.addView(cf.crearFormulario());
+            } else {
+                Log.d(TAG, "porque no hay actividad");
+            }
             guardar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     guardar();
                 }
             });
-             //deshabilito casi todos los campos
-             for(i=2;i<arrCampos.length;i++) {
-                 View v = root.findViewById(arrCampos[i]);
-                 if(v!=null)
-                 v.setEnabled(false);
-             }
-             for(i=0;i<4;i=i+2) {
+            habilitarDes(false,true,true,true);
+
+        }
+        primera =root.findViewById(2001);
+
+        segunda = root.findViewById(2002);
+        tercera = root.findViewById(2003);
+        tercera.setVisible(View.GONE);
+
+    }
+        public void habilitarDes(boolean valor, boolean preg2, boolean preg3, boolean fotos) {
+            //deshabilito casi todos los campos
+                if(preg2) {
+                    Preguntasino v = root.findViewById(2002);
+                    if (v != null)
+                        v.setEnabled(valor);
+                }
+               if(preg3) {
+                   Preguntasino v2 = root.findViewById(2003);
+                   if (v2 != null)
+                       v2.setEnabled(valor);
+               }
+            if(fotos) {
+                LinearLayout layout = (LinearLayout) root.findViewById(R.id.tblnifotos);
+                ComprasUtils.loopViews(layout, valor);
+            }
+
+        }
+
+          /*   for(i=0;i<4;i=i+2) {
                  if(i%2==0){
                      j=i+2;
                      k=i+3;
@@ -331,7 +377,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                  });
              }
              for(i=1;i<4;i=i+2) {
-                
+
                      j=i+1;
                      k=i+2;
 
@@ -366,14 +412,19 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                          }
                      }
                  });
-             }
-        }
-        primera =root.findViewById(2001);
-        segunda = root.findViewById(2003);
-        tercera = root.findViewById(2005);
+             }*/
 
+
+    public void rotar(int idfoto){
+        ImageView foto = root.findViewById(idfoto);
+        if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+        {
+            Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+
+            return;
+        }else
+            RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(null) + "/" +nombre_foto,foto);
     }
-
     public void ponerDatos(){
 
 
@@ -443,9 +494,88 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
 
     }
 
+    public void crearFormulario() {
+        CampoForm campo = new CampoForm();
+        campo.label = getString(R.string.se_compro_producto);
+        campo.nombre_campo = "3001";
+        campo.type = "preguntasino";
+        campo.value = null;
+        campo.id=2001;
+        campo.required = "required";
+        campo.funcionOnClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                habilitarDes(true,true,false,false);
+                onRadioButtonClicked(view,1);
 
+            }
+        };
+        campo.funcionOnClick2 = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"click en no");
+                habilitarDes(false,true,true,true);
 
-    public void crearFormulario(){
+                habilitarDes(true,false,false,true);
+
+            }
+        };
+        camposForm = new ArrayList<CampoForm>();
+        camposForm.add(campo);
+        campo = new CampoForm();
+        campo.label = getString(R.string.se_compro_segunda);
+        campo.nombre_campo = "3002";
+        campo.id = 2002;
+        campo.type = "preguntasino";
+        campo.value = null;
+
+        campo.funcionOnClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                habilitarDes(true,true,true,totalLista<16);
+                onRadioButtonClicked(view,2);
+
+            }
+        };
+        campo.funcionOnClick2 = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                habilitarDes(false,false,true,true);
+                habilitarDes(true,false,false,true);
+            }
+        };
+        campo.required = "required";
+
+        camposForm.add(campo);
+
+            campo = new CampoForm();
+            campo.label = getString(R.string.se_compro_terc);
+            campo.nombre_campo = "3003";
+            campo.type = "preguntasino";
+            campo.value = null;
+            campo.id = 2003;
+            campo.funcionOnClick = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    habilitarDes(true,true,true,true);
+
+                    onRadioButtonClicked(view,3);
+                }
+            };
+            campo.funcionOnClick2 = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    habilitarDes(true,true,true,true);
+
+                    onNoClicked(view);
+                }
+            };
+            campo.required = "required";
+            camposForm.add(campo);
+
+    }
+
+   /* public void crearFormulario(){
         CampoForm campo=new CampoForm();
         campo.label=getString(R.string.se_compro_producto);
         campo.nombre_campo="3001";
@@ -532,32 +662,29 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         camposForm.add(campo);*/
 
 
-    }
+    //}
 
-    public void onRadioButtonClicked(View view) {
+    public void onRadioButtonClicked(View view,int nummuestra) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
         Log.d(TAG,"CLICK EN RADIOBUTTON ID="+view.getId());
-        int nummuestra=1;
+
         // Check which radio button was clicked
         switch(view.getId()) {
-            case 2001:
+            case R.id.cvrbsi:
                 if (checked)
                     // fue si mostrar lista de compra
                     verListaCompra(nummuestra);
                 break;
-                case 2003: nummuestra=2;
-                    if (checked)
-                        // fue si mostrar lista de compra
-                        verListaCompra(nummuestra);
-                    break;
-                    case 2005:nummuestra=3;
-                if (checked)
-                    // fue si mostrar lista de compra
-                    verListaCompra(nummuestra);
-                    break;
+
             default: break;
         }
+    }
+    public void onNoClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        Log.d(TAG, "CLICK EN RADIOBUTTON ID=" + view.getId());
+
     }
 
 
@@ -606,7 +733,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         }
 
 
-        if(!primera.isChecked()){
+        if(!primera.getRespuesta()){
             //pido el cliente y planta
 
 
@@ -619,7 +746,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                 return;
             }
         }
-        if(segunda.isChecked()) {
+        if(segunda.getRespuesta()) {
             //reviso que ya tenga detalles
             if(mListAdapter.getItemCount()<2){
 
@@ -627,7 +754,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                 return;
             }
         }
-        if(tercera!=null&&tercera.isChecked()) {
+        if(tercera!=null&&tercera.getRespuesta()) {
             //reviso que ya tenga detalles
             if(mListAdapter.getItemCount()<3){
 
@@ -640,9 +767,9 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         nuevoInforme.setVisitasId(visitaCont.getId());*/
 
         mViewModel.informe.setComentarios(comentarios.getText().toString());
-        mViewModel.informe.setPrimeraMuestra(primera.isChecked());
-        mViewModel.informe.setSegundaMuestra(segunda.isChecked());
-        mViewModel.informe.setTerceraMuestra(tercera.isChecked());
+        mViewModel.informe.setPrimeraMuestra(primera.getRespuesta());
+        mViewModel.informe.setSegundaMuestra(segunda.getRespuesta());
+        mViewModel.informe.setTerceraMuestra(tercera.getRespuesta());
         mViewModel.informe.setVisitasId(visitaCont.getId());
         DescripcionGenerica clientesop=(DescripcionGenerica) spclientes.getSelectedItem();
         mViewModel.informe.setClienteNombre(clientesop.getNombre());
@@ -656,7 +783,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
            mViewModel.ticket_compra.setRuta(ticket.getText().toString());
            mViewModel.ticket_compra.setDescripcion("ticket compra");
            mViewModel.ticket_compra.setEstatus(1);
-
+           mViewModel.ticket_compra.setIndice(visitaCont.getIndice());
            mViewModel.ticket_compra.setEstatusSync(0);
            mViewModel.ticket_compra.setCreatedAt(new Date());
 
@@ -664,7 +791,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
            mViewModel.condiciones_traslado.setRuta(condiciones.getText().toString());
            mViewModel.condiciones_traslado.setDescripcion("condiciones traslado");
            mViewModel.condiciones_traslado.setEstatus(1);
-
+           mViewModel.condiciones_traslado.setIndice(visitaCont.getIndice());
            mViewModel.condiciones_traslado.setEstatusSync(0);
            mViewModel.condiciones_traslado.setCreatedAt(new Date());
          //  mViewModel.informe = nuevoInforme;
@@ -882,8 +1009,12 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
 
                     foto1.setText(nombre_foto);
                     Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-
+                    //comprimir
+                    ComprasUtils cu=new ComprasUtils();
+                    cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                     imageView.setImageBitmap(bitmap1);
+                    rotar1.setVisibility(View.VISIBLE);
+                    rotar2.setVisibility(View.VISIBLE);
                 }
                 if(requestCode == REQUEST_CODE_2) {
                     Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
@@ -904,10 +1035,17 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
             //capturé muestra
             if(resultCode==DetalleProductoFragment1.NUEVO_RESULT_OK) {
                 Log.d(TAG,"ssssssssssssssssss"+data.getIntExtra(ARG_NUEVOINFORME, 0));
+               // totalLista=data.getIntExtra(ARG_TOTALLISTA, 0);
+                //muestro el de 3a muestra
+                if(Constantes.NM_TOTALISTA>=16)
+                    tercera.setVisible(View.VISIBLE);
+                spclientes.setEnabled(false); //para que no cambie el cliente
                // if( mViewModel.informe.getId()==0) {
                  //   mViewModel.informe.setId(data.getIntExtra(ARG_NUEVOINFORME, 0));
                     //lo busco y cargo
-                    mViewModel.buscarInforme(data.getIntExtra(ARG_NUEVOINFORME, 0)).observe(getViewLifecycleOwner(), new Observer<InformeCompra>() {
+
+
+                mViewModel.buscarInforme(data.getIntExtra(ARG_NUEVOINFORME, 0)).observe(getViewLifecycleOwner(), new Observer<InformeCompra>() {
                         @Override
                         public void onChanged(InformeCompra informeCompra) {
                             mViewModel.informe=informeCompra;
@@ -934,16 +1072,16 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                                 mListAdapter.setInformeCompraDetalleList(detalles,false);
                                 mListAdapter.notifyDataSetChanged();
                                 //si ya tengo muestra no puedo cambiar el radiobutton
-                                root.findViewById(2001).setEnabled(false);
-                                root.findViewById(2002).setEnabled(false);
+                                primera.setEnabled(false);
+                              //  root.findViewById(2002).setEnabled(false);
                                 spclientes.setEnabled(false);
                                 if (detalles.size() > 1) {
-                                    root.findViewById(2003).setEnabled(false);
-                                    root.findViewById(2004).setEnabled(false);
+                                    segunda.setEnabled(false);
+                                   // root.findViewById(2004).setEnabled(false);
                                 }
                                 if (detalles.size() > 2 && totalLista >= 16) {
-                                    root.findViewById(2005).setEnabled(false);
-                                    root.findViewById(2006).setEnabled(false);
+                                    tercera.setEnabled(false);
+                                   // root.findViewById(2006).setEnabled(false);
                                 }
                             }
 

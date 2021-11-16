@@ -1,17 +1,23 @@
 package com.example.comprasmu;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.view.Window;
 
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -19,16 +25,22 @@ import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.services.SubirFotoService;
+import com.example.comprasmu.services.SubirPendService;
+import com.example.comprasmu.ui.home.HomeFragment;
 import com.example.comprasmu.ui.informe.BuscarInformeFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
@@ -36,6 +48,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
+import androidx.navigation.NavInflater;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -60,22 +74,21 @@ public class NavigationDrawerActivity extends AppCompatActivity {
     SimpleDateFormat sdfparaindice2=new SimpleDateFormat("MMM yyyy");
 
     public static final String PROGRESS_UPDATE = "progress_update";
-
+    public static final String PROGRESS_PEND = "progress_pend";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        definirTrabajo();
         setContentView(R.layout.activity_navigation_darawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
-        inicializarVarsGlobales();
+
       //  FloatingActionButton fab = findViewById(R.id.fab);
         //busco el mes actual y le agrego 1
+         mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
 
 
-
-        mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-
-        definirTrabajo();
      /*   fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,6 +99,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         });*/
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -104,6 +118,12 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        NavInflater navInflater = navController.getNavInflater();
+
+        NavGraph graph = navInflater.inflate(R.navigation.mobile_navigation);
+
+
+
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(SubirFotoService.ACTION_UPLOAD_IMG);
@@ -111,7 +131,39 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         rcv = new SubirFotoProgressReceiver();
         registerReceiver(rcv, filter);
         LocalBroadcastManager.getInstance(this).registerReceiver(rcv, filter);
-        descargasIniciales();
+
+        if( Constantes.CLAVEUSUARIO.equals("")){
+            graph.setStartDestination(R.id.nav_configurar);
+            //cargo todos o le digo que la configure?
+//            AlertDialog.Builder builder=new AlertDialog.Builder(this);
+//            builder.setCancelable(false);
+//
+//            builder.setTitle("IMPORTANTE");
+//            builder.setMessage("Es necesario configurar su clave de usuario");
+//            //builder.setInverseBackgroundForced(true);
+//            builder.setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface builder, int id) {
+//                    //  dialogo1.cancel();
+//                    //envio a la lista
+//                   // FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                    //HomeFragment fragconfig=new HomeFragment();
+//                    //ft.add(R.id.nav_host_fragment, fragconfig);
+//                    //ft.commit();
+//                    graph.setStartDestination(R.id.nav_host_fragment);
+//
+//                }
+//            });
+//            AlertDialog alert=builder.create();
+//
+//            alert.show();
+
+
+
+        }else {
+            descargasIniciales();
+            graph.setStartDestination(R.id.nav_sel_planta);
+        }
+        navController.setGraph(graph);
       /*  if(inicio.equals("listainforme")){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment fragment = new BuscarInformeFragment();
@@ -119,11 +171,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             ft.commit();
         }*/
     }
-    public void inicializarVarsGlobales(){
 
-
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -176,7 +224,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         return false;
     }
     public void subirImagenes(){
-
+        subirPendientes();
         //busco las imagenes pendientes de subir
         ImagenDetRepositoryImpl imagenRepo=new ImagenDetRepositoryImpl(this);
         LiveData<List<ImagenDetalle>> imagenesPend=imagenRepo.getImagenDetallePendientesSync();
@@ -206,6 +254,12 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
 
     }
+    private void subirPendientes(){
+        Intent msgIntent = new Intent(NavigationDrawerActivity.this, SubirPendService.class);
+
+        msgIntent.setAction(SubirPendService.ACTION_UPLOAD_PEND);
+        startService(msgIntent);
+    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -228,97 +282,88 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         }
     }
 
-    private void definirTrabajo(){
-        SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
-        Constantes.CIUDADTRABAJO=prefe.getString("ciudadtrabajo","");
-      //  prefe.getString("ciudadtrabajo","");
+    private void definirTrabajo() {
+        SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        Constantes.CIUDADTRABAJO = prefe.getString("ciudadtrabajo", "");
+        Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
+        //  prefe.getString("ciudadtrabajo","");
     /*    Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");
         Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
         Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
         Constantes.CLAVEUSUARIO=prefe.getString("claveusuario","");
 */
         //obtengo solo mes
-        String mesactual=sdfparaindice.format(new Date());
+        String mesactual = sdfparaindice.format(new Date());
 
-        Log.d(TAG, "***** hoy "+mesactual);
-        String aux[]=mesactual.split("-");
-        int mes=Integer.parseInt(aux[0]);
-        int anio=Integer.parseInt(aux[1]);
+        Log.d(TAG, "***** hoy " + mesactual);
+        String aux[] = mesactual.split("-");
+        int mes = Integer.parseInt(aux[0]);
+        int anio = Integer.parseInt(aux[1]);
 
-        Constantes.listaindices=new String[4];
-        int j=3;
-        int nuevomes=mes;
+        Constantes.listaindices = new String[4];
+        int j = 3;
+        int nuevomes = mes;
         for (int i = 1; i < 5; i++) {
-            Constantes.listaindices[j] =ComprasUtils.mesaLetra(nuevomes+"") +" "+anio+"";
+            Constantes.listaindices[j] = ComprasUtils.mesaLetra(nuevomes + "") + " " + anio + "";
 
-            nuevomes=nuevomes-1;
-            if(nuevomes==0) //empezo en 1
+            nuevomes = nuevomes - 1;
+            if (nuevomes == 0) //empezo en 1
             {
                 nuevomes = 12;
-                anio = anio-1;
+                anio = anio - 1;
             }
             j--;
         }
 
-       // Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
-        Constantes.INDICEACTUAL="noviembre 2021";
+        // Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
+        Constantes.INDICEACTUAL = "1.2022";
         //TODO falta pais trabajo
-      //  Constantes.CIUDADTRABAJO="Cd Juarez";
-        Constantes.PAISTRABAJO=     "Mexico";
+        //  Constantes.CIUDADTRABAJO="Cd Juarez";
+        Constantes.PAISTRABAJO = "Mexico";
         //Constantes.IDCIUDADTRABAJO=1;
-        Constantes.IDPAISTRABAJO=   1;
-        Constantes.CLAVEUSUARIO="marisol";
+        Constantes.IDPAISTRABAJO = 1;
+        //  Constantes.CLAVEUSUARIO="marisol";
         //inicio catalogo clientes y plantas
-        if( Constantes.CIUDADTRABAJO.equals("")){
-            //cargo todos o le digo que la configure?
-
-
-        }
-        mViewModel.cargarClientes( Constantes.CIUDADTRABAJO).observe(this, data -> {
-            Log.d(TAG,"regresó de la consulta "+ data.size());
-            Constantes.clientesAsignados=ComprasUtils.convertirListaaClientes(data);
-
-
-        });
-        mViewModel.cargarPestañas(Constantes.CIUDADTRABAJO,0).observe(this, data -> {
-            Log.d(TAG,"regresó de la consulta "+ data.size());
-            Constantes.plantasAsignadas=ComprasUtils.convertirListaaPlantas(data);
-
-
-        });
-
     }
-    SimpleDateFormat sdfdias=new SimpleDateFormat("dd-MM-yyyy");
+
+
     public void descargasIniciales(){
         //todo hacerlo en un servicio que esté constantemente verficando la conexion hasta que
         //pueda descargar
         //Inicio un servicio que se encargue de descargar
-        Log.d(TAG,"comprobando vers catalog");
-
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        CatalogoDetalleRepositoryImpl cdrepo=new CatalogoDetalleRepositoryImpl(getApplicationContext());
         TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getApplicationContext());
+
         AtributoRepositoryImpl atRepo=new AtributoRepositoryImpl(getApplicationContext());
-        LiveData<TablaVersiones> cats=tvRepo.getVersionByNombreTablasmd("catalogos");
-        cats.observe(this, new Observer<TablaVersiones>() {
-            @Override
-            public void onChanged(TablaVersiones tablaVersiones) {
-                if(tablaVersiones!=null){
-                    //si hoy ya se actualizó no actualizo
-                    Log.d(TAG,"comprobando vers catalog"+sdfdias.format(tablaVersiones.getVersion())+"--"+(sdfdias.format(new Date())));
-                    if(!sdfdias.format(tablaVersiones.getVersion()).equals(sdfdias.format(new Date()))){
-                        ps.getCatalogos(new CatalogoDetalleRepositoryImpl(getApplicationContext()),tvRepo, atRepo);
+        ListaCompraDao dao= ComprasDataBase.getInstance(getApplicationContext()).getListaCompraDao();
+        ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
+        ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
 
-                    }
-                }else
-                    //primera vez
-                    ps.getCatalogos(new CatalogoDetalleRepositoryImpl(getApplicationContext()),tvRepo,atRepo);
-                cats.removeObserver(this);
-            }
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo);
 
-        });
+        task.execute("cat");
+      /*  AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setIcon(android.R.drawable.stat_sys_download);
+        builder.setTitle("Descargando");
+        builder.setMessage("Por favor mantengase en la aplicación hasta que termine la descarga");
+        builder.setInverseBackgroundForced(true);
 
+        AlertDialog alert=builder.create();
+        alert.show();*/
+
+      /*  Dialog builder = new Dialog(act);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.setCancelable(false);
+*/
 
     }
+
+
+
+
+
+
 
 
 }

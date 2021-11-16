@@ -5,6 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.RevisarFotoActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_child_toolbar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <!--    <data>-->
     <!--        <variable android:name="post" android:type="com.example.comprasmu.modelos.Post"/>-->
     <!--    </data>-->
@@ -62,6 +71,7 @@
 
             <Button
                 android:id="@+id/btnrfrotar"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="rotarImagen"
@@ -81,17 +91,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
 
+                android:onClick="agregar"
                 android:text="agregar" />
 
             <Button
                 android:id="@+id/btnrfcancelar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="cancelar"
-                android:text="CANCELAR"
 
-                />
+                android:text="CANCELAR" />
         </TableRow>
 
 

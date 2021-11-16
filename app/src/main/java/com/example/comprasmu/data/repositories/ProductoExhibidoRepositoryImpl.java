@@ -34,6 +34,11 @@ public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhib
         return null;
     }
 
+
+    public List<ProductoExhibido> getAllsimple(int visita) {
+        return dao.getByVisitasimple(visita);
+    }
+
     public LiveData<List<ProductoExhibido>> getByVisita(int idVisita) {
       return dao.findByVisita( idVisita);
     }
@@ -100,6 +105,8 @@ public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhib
     public  LiveData<List<ProductoExhibidoDao.ProductoExhibidoFoto>> getAllByVisita(int id){
        return  dao.getAllByVisita(id);
     }
-
+    public  LiveData<List<ProductoExhibidoDao.ProductoExhibidoFoto>> getAllByVisitaCli(int id, int cliente){
+        return  dao.getAllByVisitaCliente(id,cliente);
+    }
 
 }

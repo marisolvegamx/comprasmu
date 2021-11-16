@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -14,7 +15,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 
 import androidx.fragment.app.Fragment;
@@ -32,6 +35,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -39,10 +43,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -55,9 +63,15 @@ import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.CampoForm;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
+import com.example.comprasmu.utils.Preguntasino;
+import com.example.comprasmu.utils.RPResultListener;
+import com.example.comprasmu.utils.RuntimePermissionUtil;
+import com.google.gson.internal.bind.ArrayTypeAdapter;
 
 import java.io.File;
 import java.text.ParseException;
@@ -70,12 +84,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
 
 
 public class DetalleProductoFragment1 extends Fragment {
     public static final int EDIT_RESULT_OK = 101;
     public static final int NUEVO_RESULT_OK =102 ;
+    private  final int IDCAMPOSA =1090 ;
+    private  final int IDCAMPOSB =1091 ;
+    private  final int IDCAMPOSC =1092 ;
     private NuevoinformeViewModel mViewModel;
     private NuevoDetalleViewModel dViewModel;
     CreadorFormulario cf;
@@ -92,7 +111,14 @@ public class DetalleProductoFragment1 extends Fragment {
     public static final String ARG_IDMUESTRA="comprasmu.argidmuestra";
     public static final String ARG_IDINFORME="comprasmu.argidinforme";
     public static final Integer RecordAudioRequestCode = 1;
+    // User Interface
+    private TextView textqr;
 
+    // QREader
+    private SurfaceView mySurfaceView;
+   // private QREader qrEader;
+    private boolean hasCameraPermission = false;
+    private static final String cameraPerm = Manifest.permission.CAMERA;
     private EditText foto1;
     EditText fecha;
     EditText codigo;
@@ -116,6 +142,10 @@ public class DetalleProductoFragment1 extends Fragment {
             R.string.form_detalle_producto_atributo_a,R.string.form_detalle_producto_atributob,R.string.form_detalle_producto_atributoc,
             R.string.form_detalle_producto_etiqueta
     };
+    private int[] grupoatr1={IDCAMPOSA,R.string.form_detalle_producto_atributo_a};
+
+    private int[] grupoatr2={IDCAMPOSB,R.string.form_detalle_producto_atributob,1003};
+    private int[] grupoatr3={IDCAMPOSC,R.string.form_detalle_producto_atributoc,1004};
 
     private FragmentDetalleProducto1Binding mBinding;
     private boolean isEdit; //para saber si es nuevo o edición
@@ -132,6 +162,9 @@ public class DetalleProductoFragment1 extends Fragment {
         if(getContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
             checkPermission();
         }
+        hasCameraPermission = RuntimePermissionUtil.checkPermissonGranted(getContext(), cameraPerm);
+
+
 
     }
 
@@ -144,7 +177,7 @@ public class DetalleProductoFragment1 extends Fragment {
 
         mViewModel = new ViewModelProvider(requireActivity()).get(NuevoinformeViewModel.class);
         dViewModel=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
-        dViewModel.cargarCatalogos();
+        dViewModel.cargarCatalogos(dViewModel.productoSel.empaque,dViewModel.productoSel.idempaque,dViewModel.productoSel.clienteSel);
         root=mBinding.getRoot();
         sv = root.findViewById(R.id.dpcontentform);
         startui();
@@ -164,6 +197,12 @@ public class DetalleProductoFragment1 extends Fragment {
         Log.d("DetalleProductoFrag1","creando fragment");
 
         sdf=new SimpleDateFormat("dd-MM-yyyy");
+        // 1. When the app starts, request Camera permission
+
+        textqr = root.findViewById(R.string.form_detalle_producto_qr);
+        mySurfaceView = root.findViewById(R.id.camera_view);
+
+
         // Inflate the layout for this fragment
         return root;
     }
@@ -185,6 +224,12 @@ public class DetalleProductoFragment1 extends Fragment {
             @Override
             public void onClick(View view) {
                 if(validarSiglas()) {
+                    ImageButton bton=(ImageButton)view;
+                    // bton.setSupportButtonTintList(ContextCompat.getColorStateList(getActivity(), R.color.botonvalido));
+                  //  bton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.botonvalido));
+                    ViewCompat.setBackgroundTintList(
+                            bton,
+                            ColorStateList.valueOf(getContext().getResources().getColor(R.color.botonvalido)));
                     mBinding.btnmiccad.setEnabled(true);
 
                     mBinding.txtdpfechaCaducidad.setEnabled(true);
@@ -194,7 +239,14 @@ public class DetalleProductoFragment1 extends Fragment {
         mBinding.btncheckcaducidad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validarFecha()) {
+                if(validarFecha(view)) {
+                    ImageButton bton=(ImageButton)view;
+                    // bton.setSupportButtonTintList(ContextCompat.getColorStateList(getActivity(), R.color.botonvalido));
+                   // bton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.botonvalido));
+                    ViewCompat.setBackgroundTintList(
+                            bton,
+                            ColorStateList.valueOf(getContext().getResources().getColor(R.color.botonvalido)));
+
                     mBinding.btnmiccod.setEnabled(true);
                     mBinding.txtdpcodigoProducto.setEnabled(true);
                 }
@@ -203,21 +255,40 @@ public class DetalleProductoFragment1 extends Fragment {
         mBinding.btncheckcodigo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 validarCodigoprod().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean aBoolean) {
-                        if(aBoolean)
+                        if(aBoolean) {
+                            ImageButton bton=(ImageButton)view;
+                            // bton.setSupportButtonTintList(ContextCompat.getColorStateList(getActivity(), R.color.botonvalido));
+                         //   bton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.botonvalido));
+                            ViewCompat.setBackgroundTintList(
+                                    bton,
+                                    ColorStateList.valueOf(getContext().getResources().getColor(R.color.botonvalido)));
+
                             habilitarCampos();
+
+                        }
                     }
                 });
 
             }
         });
-
-
+        Log.d(TAG,"tipo tienda -----------*"+Constantes.DP_TIPOTIENDA);
+        tipoTienda=Constantes.DP_TIPOTIENDA;
         //    mViewModel.icdNuevo.setPlantaNombre("planta1");
         //   mViewModel.icdNuevo.setPlantasId(1);
-
+        if (hasCameraPermission) {
+            // Setup QREader
+            setupQREader();
+        } else {
+            RuntimePermissionUtil.requestPermission(
+                    getActivity(),
+                    cameraPerm,
+                    100
+            );
+        }
         }
 
     String nombrePlanta;
@@ -228,11 +299,11 @@ public class DetalleProductoFragment1 extends Fragment {
         //busco los datos del vmodel
         if(dViewModel.productoSel!=null&&dViewModel.productoSel.compradetalleSel>0) {
             isEdit=false;
-            dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<CatalogoDetalle>>() {
+            dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<Atributo>>() {
                 @Override
-                public void onChanged(List<CatalogoDetalle> catalogoDetalles) {
+                public void onChanged(List<Atributo> atrs) {
 
-                    atributos = catalogoDetalles;
+                    atributos = atributoaCat(atrs);
                     dViewModel.tomadoDe.observe(getViewLifecycleOwner(), new Observer<List<CatalogoDetalle>>() {
                         @Override
                         public void onChanged(List<CatalogoDetalle> catalogoDetalles) {
@@ -253,7 +324,7 @@ public class DetalleProductoFragment1 extends Fragment {
             dViewModel.icdNuevo.setEmpaque(dViewModel.productoSel.empaque);
             dViewModel.icdNuevo.setEmpaquesId(dViewModel.productoSel.idempaque);
           //  siglas.setText(dViewModel.productoSel.siglas);
-            //TODO COMO le haremos par el backup
+
             dViewModel.icdNuevo.setTipoMuestra(dViewModel.productoSel.tipoMuestra);
             dViewModel.icdNuevo.setNombreTipoMuestra(dViewModel.productoSel.nombreTipoMuestra);
             dViewModel.icdNuevo.setTipoAnalisis(dViewModel.productoSel.tipoAnalisis);
@@ -301,11 +372,11 @@ public class DetalleProductoFragment1 extends Fragment {
 
                         mBinding.setProductoSel(dViewModel.productoSel);
                         // mBinding.setNuevaMuestra();
-                        dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<CatalogoDetalle>>() {
+                        dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<Atributo>>() {
                             @Override
-                            public void onChanged(List<CatalogoDetalle> catalogoDetalles) {
+                            public void onChanged(List<Atributo> catalogoDetalles) {
 
-                                atributos = catalogoDetalles;
+                                atributos = atributoaCat(catalogoDetalles);
                                 dViewModel.tomadoDe.observe(getViewLifecycleOwner(), new Observer<List<CatalogoDetalle>>() {
                                     @Override
                                     public void onChanged(List<CatalogoDetalle> catalogoDetalles) {
@@ -448,7 +519,17 @@ public class DetalleProductoFragment1 extends Fragment {
 
 
     }
-
+    private List<CatalogoDetalle> atributoaCat(List<Atributo> latributos){
+        List<CatalogoDetalle> nuevocat=new ArrayList<CatalogoDetalle>();
+        for(Atributo atri:latributos){
+            CatalogoDetalle cat=new CatalogoDetalle();
+            cat.setCad_idopcion(atri.getId_atributo());
+            cat.setCad_descripcionesp(atri.getAt_nombre());
+            //cat.setCad_descripcioning(atri.get);
+            nuevocat.add(cat);
+        }
+        return  nuevocat;
+    }
     public SpeechRecognizer grabarVoz(EditText destino,ImageButton micButton){
         SpeechRecognizer speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getActivity());
         final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -536,6 +617,11 @@ public class DetalleProductoFragment1 extends Fragment {
         mBinding.btnmiccosto.setEnabled(false);
         LinearLayout layout = (LinearLayout) root.findViewById(R.id.dpcontentform);
         loopViews(layout,false);
+        //oculto los de daños
+        mostrarOculCampos(grupoatr1,GONE);
+        mostrarOculCampos(grupoatr2,GONE);
+        mostrarOculCampos(grupoatr3,GONE);
+
     }
     public void loopViews( LinearLayout layout ,boolean opcion){
 
@@ -575,6 +661,23 @@ public class DetalleProductoFragment1 extends Fragment {
         mBinding.spdporigen.setEnabled(true);
         mBinding.txtdpcosto.setEnabled(true);
         mBinding.btnmiccosto.setEnabled(true);
+    }
+
+    public void mostrarOculCampos(int[] arrecampos, int valor){
+
+        for (int i = 0; i < arrecampos.length; i++) {
+            View child = root.findViewById(arrecampos[i]);
+            if(child!=null)
+            if (child instanceof Preguntasino) {
+                Preguntasino campo = (Preguntasino) child;
+
+                // Do something
+                campo.setVisible(valor);
+            } else
+
+                child.setVisibility(valor);
+        }
+
     }
     int consecutivo =1;
     public void guardarMuestra(){
@@ -675,7 +778,7 @@ public class DetalleProductoFragment1 extends Fragment {
                 if (nuevoid > 0) {
                     //si ya se guardó lo agrego en la lista de compra
                     ListaDetalleViewModel lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-                    lcviewModel.comprarMuestra(dViewModel.productoSel.compradetalleSel,fecha.getText().toString());
+                    lcviewModel.comprarMuestraPepsi(dViewModel.productoSel.compradetalleSel,dViewModel.productoSel.compradetalleSel,fecha.getText().toString(),dViewModel.productoSel.nombreTipoMuestra);
                     Log.d(TAG, "guardando>>" + mViewModel.informe.getId());
                     Intent resultIntent = new Intent();
 
@@ -952,11 +1055,17 @@ public class DetalleProductoFragment1 extends Fragment {
         camposForm.add(campo);
         CampoForm campo2=new CampoForm();
         campo2.nombre_campo="foto_codigo";
-        campo2.type="imagenView";
+        campo2.type="imagenViewr";
         campo2.value=null;
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1041);
+            }
+        };
         campo2.id=1041;
 
-
+        campo2.visible=false;
         camposForm.add(campo2);
         campo=new CampoForm();
         campo.label=getString(R.string.azucareS);
@@ -974,8 +1083,13 @@ public class DetalleProductoFragment1 extends Fragment {
         campo.id=R.string.form_detalle_producto_azucares;
         camposForm.add(campo);
         campo2=new CampoForm();
-        campo2.type="imagenView";
-
+        campo2.type="imagenViewr";
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1049);
+            }
+        };
         campo2.id=1049;
 
         camposForm.add(campo2);
@@ -997,8 +1111,13 @@ public class DetalleProductoFragment1 extends Fragment {
         campo.id=R.string.form_detalle_producto_energia;
         camposForm.add(campo);
         campo2=new CampoForm();
-        campo2.type="imagenView";
-
+        campo2.type="imagenViewr";
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1042);
+            }
+        };
         campo2.id=1042;
 
 
@@ -1019,8 +1138,13 @@ public class DetalleProductoFragment1 extends Fragment {
         campo.id=R.string.form_detalle_producto_foto_num;
         camposForm.add(campo);
         campo2=new CampoForm();
-        campo2.type="imagenView";
-
+        campo2.type="imagenViewr";
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1043);
+            }
+        };
         campo2.id=1043;
 
 
@@ -1041,12 +1165,40 @@ public class DetalleProductoFragment1 extends Fragment {
         campo.id=R.string.form_detalle_producto_marca_tras;
         camposForm.add(campo);
         campo2=new CampoForm();
-        campo2.type="imagenView";
-
+        campo2.type="imagenViewr";
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1044);
+            }
+        };
         campo2.id=1044;
-
-
         camposForm.add(campo2);
+        campo = new CampoForm();
+        campo.label = getString(R.string.danio1);
+        campo.nombre_campo="123";
+        campo.type = "preguntasino";
+        campo.value = null;
+
+        campo.id=1065;
+
+        campo.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onRadioButtonClicked2(view,new int[]{IDCAMPOSA,R.string.form_detalle_producto_atributo_a,1003});
+            }
+        };
+        campo.funcionOnClick2=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onNoClicked(view,new int[]{IDCAMPOSA,R.string.form_detalle_producto_atributo_a,1003,IDCAMPOSB,IDCAMPOSC});
+            }
+        };
+        campo.required = "required";
+        camposForm.add(campo);
+        List<CampoForm> lla= new ArrayList<CampoForm>();
         campo=new CampoForm();
         campo.label=getString(R.string.atributoa);
         campo.nombre_campo=Contrato.TablaInformeDet.ATRIBUTOA;
@@ -1054,8 +1206,11 @@ public class DetalleProductoFragment1 extends Fragment {
         campo.value=informeEdit.getAtributoa();
         campo.required="required";
         campo.id=R.string.form_detalle_producto_atributo_a;
+        //paso los atributos a catalogogen
         campo.selectcat=atributos;
-        camposForm.add(campo);
+        lla.add(campo);
+
+
         campo=new CampoForm();
         campo.label=getString(R.string.foto_atributoa);
         campo.nombre_campo=Contrato.TablaInformeDet.FOTO_ATRIBUTOA;
@@ -1070,14 +1225,49 @@ public class DetalleProductoFragment1 extends Fragment {
         campo.value=null;
         campo.required="required";
         campo.id=R.string.form_detalle_producto_foto_atributoa;
-        camposForm.add(campo);
+        lla.add(campo);
         campo2=new CampoForm();
-        campo2.type="imagenView";
-
+        campo2.type="imagenViewr";
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1045);
+            }
+        };
         campo2.id=1045;
 
+        lla.add(campo2);
+        CampoForm campol = new CampoForm();
+        campol.listadatos=lla;
+        campol.id=IDCAMPOSA;
+       campol.type="lista";
+        camposForm.add(campol);
+        campo = new CampoForm();
+        campo.label = getString(R.string.danio2);
+        campo.id=1003;
+        campo.nombre_campo="123";
+        campo.type = "preguntasino";
+        campo.value = null;
 
-        camposForm.add(campo2);
+
+        campo.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onRadioButtonClicked2(view,new int[]{IDCAMPOSA,R.string.form_detalle_producto_atributob,1004});
+
+            }
+        };
+        campo.funcionOnClick2=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onNoClicked(view,new int[]{R.string.form_detalle_producto_atributob,1004});
+            }
+        };
+        campo.required = "required";
+        camposForm.add(campo);
+        List<CampoForm> llb= new ArrayList<CampoForm>();
         campo=new CampoForm();
         campo.label=getString(R.string.atributob);
         campo.nombre_campo=Contrato.TablaInformeDet.ATRIBUTOB;
@@ -1086,7 +1276,7 @@ public class DetalleProductoFragment1 extends Fragment {
         campo.value=informeEdit.getAtributob();
         campo.required="required";
         campo.id=R.string.form_detalle_producto_atributob;
-        camposForm.add(campo);
+        llb.add(campo);
         campo=new CampoForm();
         campo.label=getString(R.string.foto_atributob);
         campo.nombre_campo=Contrato.TablaInformeDet.FOTO_ATRIBUTOB;
@@ -1101,14 +1291,47 @@ public class DetalleProductoFragment1 extends Fragment {
         };
         campo.required="required";
         campo.id=R.string.form_detalle_producto_foto_atributob;
-        camposForm.add(campo);
+        llb.add(campo);
         campo2=new CampoForm();
-        campo2.type="imagenView";
-
+        campo2.type="imagenViewr";
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1046);
+            }
+        };
         campo2.id=1046;
+        llb.add(campo2);
+         campol = new CampoForm();
+        campol.listadatos=llb;
+        campol.id=IDCAMPOSB;
+        campol.type="lista";
+        camposForm.add(campol);
+        campo = new CampoForm();
+        campo.label = getString(R.string.danio3);
+        campo.id=1004;
+        campo.nombre_campo="123";
+        campo.type = "preguntasino";
+        campo.value = null;
 
+        campo.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        camposForm.add(campo2);
+                onRadioButtonClicked2(view,new int[]{R.string.form_detalle_producto_atributoc,0});
+
+            }
+        };
+        campo.funcionOnClick2=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onNoClicked(view,new int[]{0});
+            }
+        };
+        campo.required = "required";
+        camposForm.add(campo);
+        List<CampoForm> llc= new ArrayList<CampoForm>();
         campo=new CampoForm();
         campo.label=getString(R.string.atributoc);
         campo.nombre_campo=Contrato.TablaInformeDet.ATRIBUTOC;
@@ -1117,7 +1340,7 @@ public class DetalleProductoFragment1 extends Fragment {
         campo.value=null;
         campo.required="required";
         campo.id=R.string.form_detalle_producto_atributoc;
-        camposForm.add(campo);
+        llc.add(campo);
         campo=new CampoForm();
         campo.label=getString(R.string.foto_atributoc);
         campo.nombre_campo=Contrato.TablaInformeDet.FOTO_ATRIBUTOC;
@@ -1132,36 +1355,59 @@ public class DetalleProductoFragment1 extends Fragment {
         };
         campo.required="required";
         campo.id=R.string.form_detalle_producto_foto_atributoc;
-        camposForm.add(campo);
+        llc.add(campo);
         campo2=new CampoForm();
-        campo2.type="imagenView";
-
+        campo2.type="imagenViewr";
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1047);
+            }
+        };
         campo2.id=1047;
 
 
-        camposForm.add(campo2);
+        llc.add(campo2);
+        campol = new CampoForm();
+        campol.listadatos=llc;
+        campol.id=IDCAMPOSC;
+        campol.type="lista";
+        camposForm.add(campol);
+
         campo=new CampoForm();
         campo.label="QR";
         campo.nombre_campo=Contrato.TablaInformeDet.QR;
-        campo.type="agregarImagen";
+        campo.type="botonqr";
         campo.value=null;
-        CampoForm finalCampo9=campo;
+
         campo.funcionOnClick=new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tomarFoto(finalCampo9.id,1050);
+                /*if (qrEader.isCameraRunning()) {
+                   // stateBtn.setText("Start QREader");
+                    qrEader.stop();
+                } else {
+                   // stateBtn.setText("Stop QREader");
+                    qrEader.start();
+                }*/
             }
         };
         campo.required="required";
         campo.id=R.string.form_detalle_producto_qr;
         camposForm.add(campo);
-        campo2=new CampoForm();
-        campo2.type="imagenView";
 
+      /*  campo2=new CampoForm();
+        campo2.type="imagenViewr";
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1050);
+            }
+        };
         campo2.id=1050;
 
 
-        camposForm.add(campo2);
+        camposForm.add(campo2);*/
         campo=new CampoForm();
         campo.label=getString(R.string.etiqueta_evaluacion);
         campo.nombre_campo=Contrato.TablaInformeDet.ETIQUETA_EVALUACION;
@@ -1178,8 +1424,13 @@ public class DetalleProductoFragment1 extends Fragment {
         campo.id=R.string.form_detalle_producto_etiqueta;
         camposForm.add(campo);
         campo2=new CampoForm();
-        campo2.type="imagenView";
-
+        campo2.type="imagenViewr";
+        campo2.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(1048);
+            }
+        };
         campo2.id=1048;
 
 
@@ -1192,7 +1443,38 @@ public class DetalleProductoFragment1 extends Fragment {
     public void regresar(){
 
     }
+    public void onNoClicked(View view, int[] idsiguientes) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        Log.d(TAG, "CLICK EN RADIOBUTTON ID=" + view.getId());
+        // Check which radio button was clicked
 
+        if (checked){
+            mostrarOculCampos(idsiguientes, GONE);
+        }
+
+
+
+    }
+
+    public void onRadioButtonClicked2(View view, int[] idsiguiente) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        Log.d(TAG, "CLICK EN RADIOBUTTON ID=" + view.getId());
+        int nummuestra = 1;
+        // Check which radio button was clicked
+
+        if (checked){
+
+           mostrarOculCampos(idsiguiente,View.VISIBLE);
+            //textqr=root.findViewById(R.string.form_detalle_producto_qr);
+            view.setFocusableInTouchMode(true);
+            view.requestFocus();
+        }
+
+
+
+    }
 
 
     public ImagenDetalle crearImagen(String ruta, String descripcion){
@@ -1203,7 +1485,7 @@ public class DetalleProductoFragment1 extends Fragment {
         foto.setRuta(ruta);
         foto.setDescripcion(descripcion);
         foto.setEstatus(1);
-
+        foto.setIndice(Constantes.INDICEACTUAL);
         foto.setEstatusSync(0);
         foto.setCreatedAt(new Date());
         return foto;
@@ -1214,6 +1496,7 @@ public class DetalleProductoFragment1 extends Fragment {
         return true;
     }
     String nombre_foto;
+    ImageButton botonrot;
     public   void tomarFoto(int origen, int destino) {
         Activity activity=this.getActivity();
         Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -1239,6 +1522,7 @@ public class DetalleProductoFragment1 extends Fragment {
         foto1=root.findViewById(origen);
         if(destino!=0) {
             imageView = root.findViewById(destino);
+            botonrot=root.findViewById(destino+500);
             if(imageView==null) Log.e(TAG,"no encontré a "+destino);
             startActivityForResult(intento1, REQUEST_CODE_TAKE_PHOTO);
         }
@@ -1248,7 +1532,16 @@ public class DetalleProductoFragment1 extends Fragment {
 
     }
 
+    public void rotar(int idfoto){
+        ImageView foto = root.findViewById(idfoto);
+        if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+        {
+            Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
+            return;
+        }else
+            RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(null) + "/" +nombre_foto,foto);
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1264,15 +1557,25 @@ public class DetalleProductoFragment1 extends Fragment {
 
                     foto1.setText(nombre_foto);
                     Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                    ComprasUtils cu=new ComprasUtils();
+                    bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
 
                     imageView.setImageBitmap(bitmap1);
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                    imageView.setVisibility(View.VISIBLE);
+
+                    botonrot.setVisibility(View.VISIBLE);
+                    botonrot.setFocusableInTouchMode(true);
+                    botonrot.requestFocus();
+
+
                 }
                 if(requestCode == REQUEST_CODE_2) {
                     Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
                     intento1.putExtra("ei.archivo", nombre_foto);
                     intento1.putExtra("ei.opcionfoto", "exhibicion");
 
-                    startActivity(intento1);
+                    //startActivity(intento1);
                 }
 
             }
@@ -1290,17 +1593,19 @@ public class DetalleProductoFragment1 extends Fragment {
     public boolean validarSiglas(){
         if(dViewModel.productoSel.clienteNombre.toUpperCase().equals("PEPSI"))
         if(!siglas.getText().toString().equals("")){
-           if(dViewModel.productoSel.siglas!=null&&!dViewModel.productoSel.siglas.equals(siglas.getText().toString())){
+            String siglaslis=dViewModel.productoSel.siglas;
+           if(dViewModel.productoSel.siglas!=null&&!siglaslis.toUpperCase().equals(siglas.getText().toString().toUpperCase())){
                Toast.makeText(getActivity(), getString(R.string.error_siglas), Toast.LENGTH_LONG).show();
                 return false;
            }
         }
+
         return true;
     }
     Date fechacad = null;
     MutableLiveData<Boolean> res;
     //validar siglas
-    public boolean validarFecha(){
+    public boolean validarFecha(View view){
         Date hoy=new Date();
 
         if (!fecha.getText().toString().equals("")) {
@@ -1312,12 +1617,17 @@ public class DetalleProductoFragment1 extends Fragment {
                 Toast.makeText(getActivity(), getString(R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
                return false;
             }
-
+            if (!sdf.format(fechacad).equals(fecha.getText().toString()))
+            {
+                Toast.makeText(getActivity(), getString(R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
+                return false;
+            }
             if (dViewModel.productoSel.clienteNombre.toUpperCase().equals("PEPSI")) {
 
                 Calendar cal = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
                 cal.setTime(hoy);
                 cal.add(Calendar.DAY_OF_MONTH, +30);
+                Log.d(TAG,"tipo tienda ------------"+tipoTienda);
                if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
 
                     //TODO necesito el tipo de tienda
@@ -1325,7 +1635,13 @@ public class DetalleProductoFragment1 extends Fragment {
                         Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca), Toast.LENGTH_LONG).show();
                         return false;
                     }
-                 else return true;
+                 else {
+                       ImageButton bton=(ImageButton)view;
+                      // bton.setSupportButtonTintList(ContextCompat.getColorStateList(getActivity(), R.color.botonvalido));
+                       bton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.botonvalido));
+
+                        return true;
+                    }
 
                 }else if (fechacad.compareTo(cal.getTime())<0) { //hoy+30>fechacad
                     Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca_prox), Toast.LENGTH_LONG).show();
@@ -1420,12 +1736,73 @@ public class DetalleProductoFragment1 extends Fragment {
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 Toast.makeText(getActivity(),"Permission Granted",Toast.LENGTH_SHORT).show();
         }
+        if (requestCode == 100) {
+            RuntimePermissionUtil.onRequestPermissionsResult(grantResults, new RPResultListener() {
+                @Override
+                public void onPermissionGranted() {
+                    if ( RuntimePermissionUtil.checkPermissonGranted(getActivity(), cameraPerm)) {
+                        //   restartActivity();
+                    }
+                }
+
+                @Override
+                public void onPermissionDenied() {
+                    // Do nothing
+                }
+            });
+        }
     }
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.RECORD_AUDIO},RecordAudioRequestCode);
         }
     }
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (hasCameraPermission) {
+
+            // Cleanup in onPause()
+            // --------------------
+          //  qrEader.releaseAndCleanup();
+        }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (hasCameraPermission) {
+
+            // Init and Start with SurfaceView
+            // -------------------------------
+            //qrEader.initAndStart(mySurfaceView);
+        }
+    }
+
+
+
+    void setupQREader() {
+        // Init QREader
+        // ------------
+       /* qrEader = new QREader.Builder(getContext(), mySurfaceView, new QRDataListener() {
+            @Override
+            public void onDetected(final String data) {
+                Log.d("QREader", "Value : " + data);
+                textqr.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        textqr.setText(data);
+                    }
+                });
+            }
+        }).facing(QREader.BACK_CAM)
+                .enableAutofocus(true)
+                .height(mySurfaceView.getHeight())
+                .width(mySurfaceView.getWidth())
+                .build();*/
+    }
+
 
 
     //para asegurarme de que guarda

@@ -11,6 +11,9 @@ public class Atributo {
         private int id_tipoempaque;
         private String nombre_empaqueesp;
         private String nombre_empaque_ing;
+       /* private int at_idcliente;
+        private int at_idclasificaciondano;
+        private int at_idponderaciondano;*/
 
     public int getId_atributo() {
         return id_atributo;

@@ -56,7 +56,7 @@ public class InformeDetalleAdapter extends  RecyclerView.Adapter<InformeDetalleA
     public void onBindViewHolder(@NonNull InformeDetalleAdapter.InformeCompraDetalleViewHolder holder, int position) {
       //  holder.binding.setViewModel(mViewModel);
         holder.binding.setDetalle(mInformeCompraDetalleList.get(position));
-        holder.binding.setSdf(Constantes.vistasdf);
+        holder.binding.setSdf(Constantes.sdfcaducidad);
         holder.binding.setConsulta(consulta);
       //  holder.binding.executePendingBindings();
 

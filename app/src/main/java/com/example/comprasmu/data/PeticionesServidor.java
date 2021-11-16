@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
@@ -61,13 +62,15 @@ public class PeticionesServidor {
                     Log.d("PeticionesServidor","leyendo cats "+respuestaCats.getCatalogos().size());
                     insertarCatalogos(respuestaCats,catRep,trepo,atRepo);
 
-                }
+                }else
+                    Log.e("PeticionesServidor", "algo salio mal en peticio catalogo");
+
             }
 
             @Override
             public void onFailure(@Nullable Call<CatalogosResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e("PeticionesServidor", "algo salio mal en peticio catalogo"+t.getMessage());
 
                 }
             }
@@ -106,60 +109,68 @@ public class PeticionesServidor {
 
     }
 
-    public void getListasdeCompra(TablaVersionesRepImpl tvrepo, String indice, ListaCompraDetRepositoryImpl lcdrepo){
+    public void getListasdeCompra(TablaVersiones comp, TablaVersiones version2, String indice, DescargasIniAsyncTask.DescargaIniListener listener){
         //busco la version de la app
-         TablaVersiones tablaVersiones=tvrepo.getVersionByNombreTabla("pr_listacompradetalle");
          SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");
 
         PeticionLista peticion = new PeticionLista();
-        if (tablaVersiones != null && tablaVersiones.getVersion() != null) {
+        if (comp != null && comp.getVersion() != null) {
 
 
-            peticion.version_detalle = sdf.format(tablaVersiones.getVersion());
-            TablaVersiones version2 = tvrepo.getVersionByNombreTabla(TABLA_LISTA);
+            peticion.version_detalle = sdf.format(version2.getVersion());
 
-            peticion.version_lista = sdf.format(tablaVersiones.getVersion());
+
+            peticion.version_lista = sdf.format(comp.getVersion());
             peticion.indice = indice;
             peticion.usuario = usuario;
-            //hago la peticion
-            pedirLista(peticion, lcdrepo, tvrepo);
+            //
+
 
         }else //es la 1a vez
         {
-            peticion.version_detalle ="";
+            peticion.version_detalle ="1999-09-09"; //una fecha muy antigua
 
-            peticion.version_lista = "";
+            peticion.version_lista = "1999-09-09";
             peticion.indice = indice;
             peticion.usuario = usuario;
-            //hago la peticion
-            pedirLista(peticion, lcdrepo, tvrepo);
+
         }
+       // hago la peticion
+        pedirLista(peticion, listener);
 
 
 
     }
 
-    public void pedirLista(PeticionLista peticion,ListaCompraDetRepositoryImpl lcdrepo,TablaVersionesRepImpl tvrepo){
+    public void pedirLista(PeticionLista peticion, DescargasIniAsyncTask.DescargaIniListener listener){
 
-        ListaCompraRepositoryImpl lcrepo=new ListaCompraRepositoryImpl();
+        Log.d("PeticionesServidor","haciendo petición");
 
-        final Call<ListaCompraResponse> batch = apiClient.getApiService().getListasCompra(peticion);
+        final Call<ListaCompraResponse> batch = apiClient.getApiService().getListasCompra(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle);
 
         batch.enqueue(new Callback<ListaCompraResponse>() {
             @Override
             public void onResponse(@Nullable Call<ListaCompraResponse> call, @Nullable Response<ListaCompraResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+
+
                     ListaCompraResponse compraResp = response.body();
+                    Log.d("PeticionesServidor","resp>>"+compraResp.getStatus());
                    //reviso si está actualizado
-                    if(compraResp.getActualizacion().equals("0")) //falta actualizar
+                    if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
-                        lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
+                        listener.actualizar(compraResp);
+                        /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
                         lcdrepo.insertAll(compraResp.getDetalles());
                         //actualizar version en tabla
                         tvrepo.insertAll(compraResp.getVersiones());
-
+*/
                     }
-
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
+                        listener.noactualizar(compraResp.getData());
+                    }
 
                 }
             }

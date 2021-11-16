@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+//TODO idremoto, lis_nota
 @Entity(tableName="lista_compras")
 public class ListaCompra {
     @PrimaryKey(autoGenerate = true)

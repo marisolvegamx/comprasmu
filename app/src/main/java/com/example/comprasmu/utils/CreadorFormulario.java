@@ -49,7 +49,7 @@ import java.util.Set;
 import static android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE;
 import static android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
 
-public class CreadorFormulario<T> {
+public class CreadorFormulario {
 
     private CampoForm infocampo;
     private List<CampoForm> listaCampos;
@@ -68,7 +68,7 @@ public class CreadorFormulario<T> {
         LinearLayout formulario=new LinearLayout(context);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, 20, 0, 20);
+        lp.setMargins(0, 30, 0, 30);
         formulario.setLayoutParams(lp);
         formulario.setOrientation(LinearLayout.VERTICAL);
         formulario.setGravity(Gravity.CENTER);
@@ -77,10 +77,23 @@ public class CreadorFormulario<T> {
 
 
         for(CampoForm campo :listaCampos){
-           this.infocampo=campo;
+            this.infocampo=campo;
+            Log.d(Constantes.TAG,"nombre campo: " +this.infocampo.type);
+            try {
+
+            if(this.infocampo.type.equals("lista")) {
+                //es otro layout
+                CreadorFormulario layout=new CreadorFormulario(this.infocampo.listadatos,context);
+                LinearLayout ll=layout.crearFormulario();
+                ll.setId(this.infocampo.id);
+                formulario.addView(ll);
+                continue;
+            }
+
             this.required=(infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
             this.readonly=infocampo.readonly!=null?true:false;
             this.disabled=(this.infocampo.disabled!=null)?"disabled":"";
+
             //    echo "<br>".this.infocampo["nombre_campo"];
           //  func=this.infocampo["type"];
           //  formulario.addView();
@@ -88,6 +101,61 @@ public class CreadorFormulario<T> {
             TextView tv=new TextView(context);
            // tv.setText(Html.fromHtml("<b>"+this.infocampo.label+"</b>"));
             tv.setText(this.infocampo.label);
+
+            if(!this.infocampo.type.equals("preguntasino")) {
+                formulario.addView(tv);
+            }
+
+                Class claseCargada = this.getClass();
+                Method metodo = null;
+
+                metodo = claseCargada.getDeclaredMethod(this.infocampo.type);
+                View obj = (View)metodo.invoke(this);
+                if(this.infocampo.type.equals("radiobutton")){ //para radiobutton es vertical
+                    LinearLayout linea=new LinearLayout(context);
+                    linea.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    linea.setOrientation(LinearLayout.HORIZONTAL);
+                    linea.addView(obj);
+                    obj=linea;
+                }
+//Ejecucion del m?todo pasandole la clase de este y los parametros.
+
+                formulario.addView(obj);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+                Log.e(Constantes.TAG,"Hubo un error al crear la vista "+this.infocampo.nombre_campo+"  "+e.getMessage());
+            }
+        }
+
+        return  formulario;
+
+    }
+
+    public LinearLayout crearTabla(){
+        LinearLayout formulario=new LinearLayout(context);
+      //  formulario.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        formulario.setOrientation(LinearLayout.VERTICAL);
+        formulario.setGravity(Gravity.CENTER);
+        this.listaCampos = listaCampos;
+
+
+        for(CampoForm campo :listaCampos){
+            this.infocampo=campo;
+            this.required=(infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
+            this.readonly=infocampo.readonly!=null?true:false;
+            this.disabled=(this.infocampo.disabled!=null)?"disabled":"";
+            //    echo "<br>".this.infocampo["nombre_campo"];
+            //  func=this.infocampo["type"];
+            //  formulario.addView();
+            //crear el label
+            TextView tv=new TextView(context);
+            tv.setText(Html.fromHtml("<b>"+this.infocampo.label+"</b>:   "));
+          //  tv.setGravity(Gravity.END);
+            //formulario.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+           // tv.setTextAppearance(context, R.style.textolista1);
+
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(0, 20, 0, 20);
             formulario.addView(tv);
             try {
                 Class claseCargada = this.getClass();
@@ -109,59 +177,7 @@ public class CreadorFormulario<T> {
                 e.printStackTrace();
                 Log.e(Constantes.TAG,"Hubo un error al crear la vista "+this.infocampo.nombre_campo+"  "+e.getMessage());
             }
-        }
-
-        return  formulario;
-
-    }
-
-    public LinearLayout crearTabla(){
-        TableLayout formulario=new TableLayout(context);
-        formulario.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
-        formulario.setOrientation(LinearLayout.VERTICAL);
-        formulario.setGravity(Gravity.CENTER);
-        this.listaCampos = listaCampos;
-
-
-        for(CampoForm campo :listaCampos){
-            this.infocampo=campo;
-            this.required=(infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
-            this.readonly=infocampo.readonly!=null?true:false;
-            this.disabled=(this.infocampo.disabled!=null)?"disabled":"";
-            //    echo "<br>".this.infocampo["nombre_campo"];
-            //  func=this.infocampo["type"];
-            //  formulario.addView();
-            //crear el label
-            TextView tv=new TextView(context);
-            tv.setText(Html.fromHtml("<b>"+this.infocampo.label+"</b>:   "));
-            tv.setGravity(Gravity.END);
-            formulario.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT,1f));
-
-            TableRow row=new TableRow(context);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(0, 40, 0, 20);
-            row.addView(tv);
-            try {
-                Class claseCargada = this.getClass();
-                Method metodo = null;
-                Log.d(Constantes.TAG,"nombre campo: " +this.infocampo.type);
-                metodo = claseCargada.getDeclaredMethod(this.infocampo.type);
-                Object obj = metodo.invoke(this);
-                if(this.infocampo.type.equals("radiobutton")){ //para radiobutton es vertical
-                    LinearLayout linea=new LinearLayout(context);
-                    linea.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    linea.setOrientation(LinearLayout.HORIZONTAL);
-                    linea.addView((View)obj);
-                    obj=linea;
-                }
-//Ejecucion del m?todo pasandole la clase de este y los parametros.
-
-                row.addView((View)obj);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-                Log.e(Constantes.TAG,"Hubo un error al crear la vista "+this.infocampo.nombre_campo+"  "+e.getMessage());
-            }
-            formulario.addView(row);
+           // formulario.addView(formulario);
         }
 
 
@@ -241,7 +257,7 @@ public class CreadorFormulario<T> {
         input.setId(this.infocampo.id);
         input.setText(valor);
         input.setEnabled(!this.readonly);
-        input.setLayoutParams(new LinearLayout.LayoutParams(298, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
+        input.setVisibility(View.GONE);
 
         //  ".this.required." "..
         layout.addView(input);
@@ -250,12 +266,57 @@ public class CreadorFormulario<T> {
         //Pongo el boton
         ImageButton button=new ImageButton(context);
         Drawable replacer = context.getResources().getDrawable(R.drawable.ic_menu_camera);
-
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+        lp.setMargins(0, 30, 0, 30);
         button.setImageDrawable(replacer);
 
          button.setOnClickListener(infocampo.funcionOnClick);
          button.setBackgroundColor(context.getColor(R.color.blue_principal));
-        button.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
+        button.setLayoutParams(lp);
+
+        layout.addView(button);
+
+        return layout;
+
+    }
+
+    public LinearLayout botonqr(){
+        //   return '<div class="form-group">'.
+        //readonly=isset(this.infocampo["readonly"])?;
+        //,,this.infocampo["disabled"]
+        LinearLayout layout=new LinearLayout(context);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        // layout.setGravity(Gravity.CENTER);
+        String valor="";
+        if(this.infocampo.value!=null&&!this.infocampo.value.equals(""))
+            valor=this.infocampo.value;
+        //  else
+        //      valor=this.instance[this.infocampo["nombre_campo"]];
+        required=(this.infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
+        EditText input=new EditText(context);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+
+        input.setLayoutParams(lp1);
+        input.setId(this.infocampo.id);
+        input.setText(valor);
+        input.setEnabled(!this.readonly);
+        //input.setVisibility(View.GONE);
+
+        //  ".this.required." "..
+        layout.addView(input);
+        // setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        //Pongo el boton
+        ImageButton button=new ImageButton(context);
+        Drawable replacer = context.getResources().getDrawable(R.drawable.ic_baseline_qr_code_scanner_24);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+        lp.setMargins(0, 30, 0, 30);
+        button.setImageDrawable(replacer);
+
+        button.setOnClickListener(infocampo.funcionOnClick);
+        button.setBackgroundColor(context.getColor(R.color.blue_principal));
+        button.setLayoutParams(lp);
 
         layout.addView(button);
 
@@ -432,7 +493,25 @@ public class CreadorFormulario<T> {
             radiogrupo.addView(rb);
 
         }
-        radiogrupo.setId((Integer.parseInt(infocampo.nombre_campo)));
+        radiogrupo.setId(infocampo.id);
+        return radiogrupo;
+
+
+    }
+
+    public Preguntasino preguntasino(){
+        Preguntasino radiogrupo=new Preguntasino(context);
+        radiogrupo.setmLabel(infocampo.label);
+              //  if(this.infocampo.value!=null&&this.infocampo.value.equals(registro.getValue())) {
+          //      rb.setChecked(true);
+
+           // }
+        radiogrupo.onclicksi(infocampo.funcionOnClick);
+        radiogrupo.onclickno(infocampo.funcionOnClick2);
+
+
+       // }
+        radiogrupo.setId((infocampo.id));
         return radiogrupo;
 
 
@@ -481,6 +560,38 @@ public class CreadorFormulario<T> {
         imagen.setId(infocampo.id);
         imagen.setLayoutParams(new ViewGroup.LayoutParams(350,150));
         return  imagen;
+    }
+    public LinearLayout imagenViewr(){
+        LinearLayout layout=new LinearLayout(context);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        ImageView imagen=new ImageView(context);
+        if(infocampo.value!=null&&!infocampo.value.equals("")) {
+            Bitmap bitmap1 = BitmapFactory.decodeFile(infocampo.value);
+            imagen.setImageBitmap(bitmap1);
+        }
+        imagen.setVisibility(!infocampo.visible?View.GONE:View.VISIBLE);
+        imagen.setId(infocampo.id);
+        imagen.setLayoutParams(new ViewGroup.LayoutParams(900,500));
+        layout.addView(imagen);
+        //Pongo el boton
+        ImageButton button=new ImageButton(context);
+        Drawable replacer = context.getDrawable(R.drawable.ic_baseline_loop_24);
+
+        button.setImageDrawable(replacer);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+       // ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) button.getLayoutParams();
+        //params.rightMargin = 100; params.topMargin = 100;
+        button.setVisibility(View.GONE);
+       // LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, 97, 80, 0);
+        button.setLayoutParams(lp);
+        button.setOnClickListener(infocampo.funcionOnClick);
+        button.setId(infocampo.id+500);
+       // button.setBackgroundColor(context.getColor(R.color.blue_principal));
+        button.setLayoutParams(lp);
+        layout.addView(button);
+        return  layout;
     }
 
     public RecyclerView recyclerView(){

@@ -80,6 +80,10 @@ public class InformeCompraRepositoryImpl   {
         return  icDao.getInformesByVisita(visitaId);
 
     }
+    public List<InformeCompra> getAllByVisitasimple(int visitaId) {
+        return  icDao.getInformesByVisitasimple(visitaId);
+
+    }
     public int getLastConsecutivoInforme(String indice, int cliente) {
 
          return  icDao.getLastConsecutivoInforme( indice, cliente);

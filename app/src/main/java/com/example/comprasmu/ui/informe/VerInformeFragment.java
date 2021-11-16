@@ -3,6 +3,7 @@ package com.example.comprasmu.ui.informe;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -46,6 +47,8 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     InformeCompra informeCompra;
     private CreadorFormulario cf1;
     private CreadorFormulario cf2;
+    ImagenDetalle fotocondiciones;
+    ImagenDetalle fotoFachada;
     CampoForm campo2;
     private VerInformeFragmentBinding mBinding;
     private InformeDetalleAdapter mListAdapter;
@@ -59,16 +62,18 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding= DataBindingUtil.inflate(inflater,R.layout.ver_informe_fragment, container, false);
-        mViewModel = new ViewModelProvider(this).get(VerInformeViewModel.class);
-        mBinding.setMviewModel(mViewModel);
+
+     //   mBinding.setMviewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
         Bundle datosRecuperados = getActivity().getIntent().getExtras();
+        mViewModel = new ViewModelProvider(this).get(VerInformeViewModel.class);
         mBinding.setDirectorio(getActivity().getExternalFilesDir(null)+"/");
         if (datosRecuperados != null) {
             // No hay datos, manejar excepción
             //no debería estar aqui
             informeSel = datosRecuperados.getInt(NuevoinformeFragment.INFORMESEL);
             //busco el informe
+
             mViewModel.buscarInforme(informeSel);
 
 
@@ -101,24 +106,32 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         Log.d(TAG,"llenndo detalles");
         mViewModel.informeCompraSel.observe(getViewLifecycleOwner(), new Observer<InformeWithDetalle>() {
             @Override
-            public void onChanged(InformeWithDetalle informe) {
-                if(mViewModel.informeCompraSel.getValue()!=null){
-                mListAdapter.setInformeCompraDetalleList(mViewModel.informeCompraSel.getValue().informeDetalle,true);
-                mListAdapter.notifyDataSetChanged();
-                mBinding.setInforme(mViewModel.informeCompraSel.getValue().informe);
-                mViewModel.visita.observe(getViewLifecycleOwner(), new Observer<Visita>() {
-                    @Override
-                    public void onChanged(Visita visita) {
-                        crearFormulario();
-                        mBinding.vidatosgen.addView(cf1.crearTabla());
-                    }
-                });
+            public void onChanged(InformeWithDetalle informeWithDetalle) {
+                if (mViewModel.informeCompraSel.getValue() != null) {
+                    mListAdapter.setInformeCompraDetalleList(mViewModel.informeCompraSel.getValue().informeDetalle, true);
+                    mListAdapter.notifyDataSetChanged();
+
+                    mViewModel.getVisita(informeWithDetalle.informe.getVisitasId()).observe(getViewLifecycleOwner(), new Observer<Visita>() {
+                        @Override
+                        public void onChanged(Visita visita) {
+                            llenarFotos( informeWithDetalle.informe,visita);
+                            crearFormulario();
+                            mBinding.vidatosgen.addView(cf1.crearTabla());
+                        }
+                    });
+
+                    mBinding.setInforme(informeWithDetalle.informe);
+
 
                 }
             }
-        });
+                });
+
+
+
 
     }
+
     private void setupListAdapter() {
         mListAdapter = new InformeDetalleAdapter(this);
         mBinding.vicontentmuestras.rvnimuestras.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -126,7 +139,35 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         mBinding.vicontentmuestras.rvnimuestras.setAdapter(mListAdapter);
 
     }
-
+   public void llenarFotos(InformeCompra informe,Visita visita){
+       mViewModel.getfotoTicket(informe).observeForever(new Observer<ImagenDetalle>() {
+           @Override
+           public void onChanged(ImagenDetalle imagenDetalle) {
+               //  fotoTicket=new MutableLiveData<>();
+               mBinding.setFotoTicket(imagenDetalle.getRuta());
+               Log.d(TAG,"*ya tengo las fotos informe "+imagenDetalle.getRuta());
+           }
+       });
+       mViewModel.getFotoVisita(visita.getId()).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+           @Override
+           public void onChanged(ImagenDetalle imagenDetalle) {
+               mBinding.setFotoFachada(imagenDetalle);
+           }
+       });
+       mViewModel.getfotocondiciones(informe).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+           @Override
+           public void onChanged(ImagenDetalle imagenDetalle) {
+               mBinding.setFotocondiciones(imagenDetalle);
+           }
+       });
+       mViewModel.getproductoExhib(visita.getId(),informe.getClientesId()).observe(getViewLifecycleOwner(), new Observer<List<ProductoExhibidoDao.ProductoExhibidoFoto>>() {
+           @Override
+           public void onChanged(List<ProductoExhibidoDao.ProductoExhibidoFoto> productoExhibidoFotos) {
+              if(productoExhibidoFotos!=null&&productoExhibidoFotos.size()>0)
+               mBinding.setProdex(productoExhibidoFotos.get(0));
+           }
+       });
+   }
     public void crearFormulario(){
 
         informeCompra=mViewModel.getInformeCompraSel().getValue().informe;
@@ -134,7 +175,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         List<CampoForm> camposTienda = new ArrayList<CampoForm>();
         CampoForm campo = new CampoForm();
 
-        campo.label="Consecutivo";
+        campo.label=getString(R.string.consecutivo);
 
         campo.type = "label";
         campo.value = informeCompra.getConsecutivo()+"";
@@ -142,7 +183,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
          campo = new CampoForm();
 
 
-        campo.label= "Indice";
+        campo.label=getString(R.string.indice);
         campo.type = "label";
         campo.value = mViewModel.getVisita().getValue().getIndice();
 
@@ -150,19 +191,19 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
          campo = new CampoForm();
 
 
-        campo.label="Fecha";
+        campo.label=getString(R.string.fecha);
         campo.type = "label";
         campo.value =  Constantes.vistasdf.format( mViewModel.getVisita().getValue().getCreatedAt());
 
         camposTienda.add(campo);
         campo = new CampoForm();
-        campo.label="Ciudad";
+        campo.label=getString(R.string.ciudad);
         campo.type = "label";
         campo.value = mViewModel.getVisita().getValue().getCiudad();
 
         camposTienda.add(campo);
         campo = new CampoForm();
-        campo.label="Cliente";
+        campo.label=getString(R.string.cliente);
         campo.type = "label";
         campo.value = informeCompra.getClienteNombre();
 
@@ -170,7 +211,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         camposTienda.add(campo);
         campo = new CampoForm();
 
-        campo.label="Planta";
+        campo.label=getString(R.string.planta);
         campo.type = "label";
         campo.value =  informeCompra.getPlantaNombre();
 
@@ -180,20 +221,20 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         campo = new CampoForm();
 
         campo.nombre_campo = "tiendaNombre";
-        campo.label="Nombre tienda";
+        campo.label=getString(R.string.nombre_tienda);
         campo.type = "label";
         campo.value = mViewModel.getVisita().getValue().getTiendaNombre();
 
         camposTienda.add(campo);
         campo = new CampoForm();
-        campo.label="Dirección";
+        campo.label=getString(R.string.direccion);
         campo.type = "label";
         campo.value =mViewModel.getVisita().getValue().getDireccion();
         camposTienda.add(campo);
         campo = new CampoForm();
 
         campo.nombre_campo = "complementodireccion";
-        campo.label="Complemento dirección";
+        campo.label=getString(R.string.complementodir);
         campo.type = "label";
         campo.value =mViewModel.getVisita().getValue().getComplementodireccion();
 
@@ -201,29 +242,29 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         camposTienda.add(campo);
 
 
-        campo = new CampoForm();
+      /*  campo = new CampoForm();
 
-        campo.label="Comentarios";
+        campo.label=getString(R.string.comentarios);
         campo.type = "label";
         campo.value =informeCompra.getComentarios()+"";
 
-        camposTienda.add(campo);
-        campo = new CampoForm();
+        camposTienda.add(campo);*/
+      /*  campo = new CampoForm();
 
 
-        campo.label="Estatus informe";
+        campo.label=getString(R.string.estatus);
         campo.type = "label";
         campo.value = Constantes.ESTATUSINFORME[informeCompra.getEstatus()];
 
-        camposTienda.add(campo);
+        camposTienda.add(campo);*/
         campo = new CampoForm();
 
         campo.nombre_campo = "tiendaNombre";
-        campo.label="Estatus envio";
+        campo.label=getString(R.string.estatus_envio);
         campo.type = "label";
         campo.value = Constantes.ESTATUSSYNC[informeCompra.getEstatusSync()];
         camposTienda.add(campo);
-        mViewModel.getProductoExhib().observe(getViewLifecycleOwner(), new Observer<List<ProductoExhibidoDao.ProductoExhibidoFoto>>() {
+        /*        mViewModel.getProductoExhib().observe(getViewLifecycleOwner(), new Observer<List<ProductoExhibidoDao.ProductoExhibidoFoto>>() {
             @Override
             public void onChanged(List<ProductoExhibidoDao.ProductoExhibidoFoto> productoExhibidoFotos) {
                 for(ProductoExhibidoDao.ProductoExhibidoFoto imagen:productoExhibidoFotos){
@@ -236,7 +277,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
                     camposTienda.add(campo);
                 }
             }
-        });
+        });*/
 
 
         cf1=new CreadorFormulario(camposTienda,getActivity());

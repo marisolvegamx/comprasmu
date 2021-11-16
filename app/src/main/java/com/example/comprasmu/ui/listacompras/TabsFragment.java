@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
+import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -76,7 +77,7 @@ public class TabsFragment extends Fragment {
             //busco ciudad seleccionada
             mViewModel.ciudadSel=Integer.parseInt(ciudadSel);
             mViewModel.nombreCiudadSel=ciudadNombre;
-            Log.d(Constantes.TAG,"arg_muestra"+bundle.getString(ARG_MUESTRA));
+         //   Log.d(Constantes.TAG,"arg_muestra"+bundle.getString(ARG_MUESTRA));
 
             if(bundle.getString(ARG_MUESTRA)!=null&&bundle.getString(ARG_MUESTRA).equals("true")) {
             //vengo de agregar muestra
@@ -89,7 +90,7 @@ public class TabsFragment extends Fragment {
 
             Constantes.CIUDADSEL=Integer.parseInt(ciudadSel);
         }
-        Log.d(Constantes.TAG,"cidad sel"+ciudadSel+"--"+ciudadNombre);
+      //  Log.d(Constantes.TAG,"cidad sel"+ciudadSel+"--"+ciudadNombre);
         viewPager = view.findViewById(R.id.view_pager);
 
         tabs = view.findViewById(R.id.tabs);
@@ -97,7 +98,7 @@ public class TabsFragment extends Fragment {
         //busco los clientes y las plantas
 
         mViewModel.cargarPestañas(ciudadNombre,Integer.parseInt(clienteSel)).observe(getViewLifecycleOwner(), words -> {
-            Log.d(TAG,"Cargando pestañas "+words.size());
+       //     Log.d(TAG,"Cargando pestañas "+words.size());
             convertirLista(words);
             configureTabLayout();
 
@@ -116,15 +117,18 @@ public class TabsFragment extends Fragment {
         //clientes2={"Cliente1","cliente2","cliente3"};
        // getFragmentManager()
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(   getChildFragmentManager(),clientes, mViewModel,clientesplan);
+        for(int pos=0;pos<clientesplan.length;pos++) {
+            Fragment fragment = new ListaCompraFragment(Integer.parseInt(clientesplan[pos][0]), clientesplan[pos][1]);
+
+            sectionsPagerAdapter.addFragment(fragment, clientesplan[pos][1]);
+        }
         viewPager.setAdapter(sectionsPagerAdapter);
 
-        viewPager.addOnPageChangeListener(new
-                TabLayout.TabLayoutOnPageChangeListener(tabs));
-        tabs.addOnTabSelectedListener(new
-               TabLayout.OnTabSelectedListener() {
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
+     /*   tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                @Override
                public void onTabSelected(TabLayout.Tab tab) {
-                   Log.d("clientes array", clientesplan[tab.getPosition()][0]+"--"+clientesplan[tab.getPosition()][1]);
+                   Log.d(TAG, "------------"+clientesplan[tab.getPosition()][0]+"--"+clientesplan[tab.getPosition()][1]);
 
                    mViewModel.setPlantaSel(Integer.parseInt(clientesplan[tab.getPosition()][0]));
                  //  mViewModel.setPlantaSel(tab.getPosition());
@@ -143,7 +147,7 @@ public class TabsFragment extends Fragment {
 
                }
 
-           });
+           });*/
     }
 /****lista de clientes y plantas****/
     private  void convertirLista(List<ListaCompra> lista){

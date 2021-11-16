@@ -11,11 +11,17 @@ import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.Constantes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
 public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+    private final List<Fragment> mFragments = new ArrayList<>();
+  //  private final List<String> mFragmentTitles = new ArrayList<>();
+
 
     private ListaDetalleViewModel mViewModel;
     //private  final String[][] TAB_TITLES;
@@ -39,13 +45,16 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
      //   Fragment fragment = ListaCompraFragment.newInstance(Integer.parseInt(TAB_TITLES[position][0]));
-        Log.d("SECTIONSPAGERADAPTER","creando el fragment");
-        Fragment fragment = ListaCompraFragment.newInstance(Integer.parseInt(plantas[position][0]),plantas[position][1]);
+        Log.d("SECTIONSPAGERADAPTER","creando el fragment "+position);
+     //   Fragment fragment = ListaCompraFragment.newInstance(Integer.parseInt(plantas[position][0]),plantas[position][1]);
+       // Fragment fragment = new ListaCompraFragment(Integer.parseInt(plantas[position][0]),plantas[position][1]);
 
+        return  mFragments.get(position);
 
-
-        return fragment;
-
+    }
+    public void addFragment(Fragment fragment, String title) {
+        mFragments.add(fragment);
+      //  mFragmentTitles.add(title);
     }
 
     @Nullable

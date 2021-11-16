@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.comprasmu">
-
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -15,11 +20,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Comprasmu">
+
         <service
             android:name=".services.SubirFotoService"
             android:enabled="true"
             android:exported="true" >
         </service>
+        <service android:name=".services.SubirPendService" />
+
         <activity android:name=".ui.BackActivity"></activity>
         <activity android:name=".utils.ui.FiltrarListaActivity" />
         <activity
@@ -27,7 +35,7 @@
             android:label="@string/title_activity_revisar_foto" />
         <activity
             android:name=".NavigationDrawerActivity"
-            android:label="@string/title_activity_navigation_darawer"
+            android:label="@string/app_name"
             android:theme="@style/Theme.Comprasmu.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -36,6 +36,7 @@ import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 
@@ -47,13 +48,13 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
 
     private static final String ISBACKUP = "comprasmu.isbackup";
-    private static int plantaSel;
+    private  int plantaSel;
 
     private ListaDetalleViewModel mViewModel;
     private ListaCompraFragmentBinding mBinding;
     private ListaCompraDetalleAdapter mListAdapter;
     TextView paraDebug;
-    static String nombrePlanta;
+     String nombrePlanta;
     ListaWithDetalle lista;
 
     private String siglas;
@@ -66,11 +67,10 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
 
 
-    public static ListaCompraFragment newInstance(int planta,String onombrePlanta) {
-        ListaCompraFragment fragment = new ListaCompraFragment();
+    public  ListaCompraFragment(int planta,String onombrePlanta) {
+      //  ListaCompraFragment fragment = new ListaCompraFragment();
         plantaSel=planta;
         nombrePlanta=onombrePlanta;
-        return fragment;
 
 
     }
@@ -92,17 +92,17 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Log.d("aquiiiiii","********"+mViewModel.isNuevaMuestra());
+    //    Log.d("aquiiiiii","********"+mViewModel.isNuevaMuestra());
         mViewModel.setPlantaSel(plantaSel);
         mViewModel.nombrePlantaSel=nombrePlanta;
         Bundle bundle2 =getActivity().getIntent().getExtras();
         if(bundle2!=null)
         mViewModel.setClienteSel(bundle2.getInt(ARG_CLIENTESEL));
         ismuestra=mViewModel.isNuevaMuestra();
-        Log.d(Constantes.TAG,"cliente y planta sel"+mViewModel.isNuevaMuestra());
+        Log.d(Constantes.TAG,"cliente y planta sel"+Constantes.INDICEACTUAL);
         TextView etindice=mBinding.getRoot().findViewById(R.id.txtlcindice);
         etsiglas=mBinding.getRoot().findViewById(R.id.txtlcsiglas);
-        etindice.setText(Constantes.INDICEACTUAL);
+        etindice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
         TextView etciudad=mBinding.getRoot().findViewById(R.id.txtlcciudad);
         etciudad.setText(mViewModel.nombreCiudadSel);
         TextView ettotal=mBinding.getRoot().findViewById(R.id.txtlctotal);
@@ -121,7 +121,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             if(isbu) {
                 //reviso que traiga el detalle
                 if(mViewModel.getDetallebuSel()!=null) {
-                    Log.d(TAG,"rrrrrrrrrrrrrrr"+isbu);
+                  //  Log.d(TAG,"rrrrrrrrrrrrrrr"+isbu);
 
                     spopciones.setVisibility(View.VISIBLE);
                     mBinding.txtlcelegir.setVisibility(View.VISIBLE);
@@ -288,7 +288,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 productoSel.setNombreTipoMuestra("Backup");
             }
             nuevoInf.setProductoSel(productoSel,mViewModel.nombrePlantaSel,mViewModel.getPlantaSel(), mViewModel.getClienteSel(),clienteNombre,mViewModel.listaSelec.getSiglas());
-
+            Constantes.NM_TOTALISTA=mListAdapter.getItemCount();
             Fragment fragment = new DetalleProductoFragment1();
 // Obtener el administrador de fragmentos a través de la actividad
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -319,7 +319,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
        //paso los params que necesito
         mViewModel.setIdListaSel(lista.user.getId());
         mViewModel.setDetallebuSel(productoSel);
-        Fragment fragment = new ListaCompraFragment();
+        Fragment fragment = new ListaCompraFragment(plantaSel,nombrePlanta);
 // Obtener el administrador de fragmentos a través de la actividad
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción

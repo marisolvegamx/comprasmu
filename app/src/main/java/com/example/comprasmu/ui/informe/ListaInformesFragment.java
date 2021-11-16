@@ -245,10 +245,11 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
     public void onClickSubir(int informe) {
       NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
        InformeEnvio informeenv=niViewModel.preparaInforme(informe);
-      /*  SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informeenv,getActivity());
-        miTareaAsincrona.execute();*/
+        SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informeenv,getActivity());
+        miTareaAsincrona.execute();
         NuevoinformeFragment.subirFotos(getActivity(),informeenv);
     }
+
 
 
 

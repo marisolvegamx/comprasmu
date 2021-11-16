@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.AsyncTask;
@@ -19,6 +20,8 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 import com.example.comprasmu.utils.Constantes;
 
@@ -31,14 +34,16 @@ public class SelPlantaFragment extends ListaSelecFragment {
     private LiveData<List<ListaCompra>> listaCiudades;
     private static ArrayList<DescripcionGenerica> listaCiudadesEnv;
     ListaCompraRepositoryImpl lcrepo;
-
+    private static String TAG="SelPlantaFragment";
+    private ListaDetalleViewModel mViewModel;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //busco los datos y los convierto al tipo String[]
         super.onCreate(savedInstanceState);
         ListaCompraDao dao=ComprasDataBase.getInstance(getContext()).getListaCompraDao();
-         lcrepo = ListaCompraRepositoryImpl.getInstance(dao);
-
+        lcrepo = ListaCompraRepositoryImpl.getInstance(dao);
+        mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
+        cargarClientes();
 
     }
     @Override
@@ -50,6 +55,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
 
         }
 */
+        Log.d(TAG,"indice..............."+Constantes.INDICEACTUAL);
         // Create the observer which updates the UI.
         final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
@@ -57,15 +63,18 @@ public class SelPlantaFragment extends ListaSelecFragment {
                 Log.d(Constantes.TAG, "YA cargo la lista " + lista.size());
                 SelPlantaFragment.convertirLista(lista);
                 setLista(listaCiudadesEnv);
-                if(lista.size()>1) {
 
+                if(lista.size()>1) {
                     // Update the UI, in this case, a TextView.
 
                     setupListAdapter();
-                }else
-                { //voy directo a la lista
+                }else if(lista.size()>0)
+                {
+                    //voy directo a la lista
                     siguiente(0);
                 }
+                else
+                    Log.d(TAG,"algo salió mal con la consulta de listas");
             }
         };
 
@@ -98,6 +107,23 @@ public class SelPlantaFragment extends ListaSelecFragment {
                 startActivity(intent);
 */
             }
+        });
+
+    }
+    public void cargarClientes(){
+        if( Constantes.clientesAsignados==null||Constantes.clientesAsignados.size()<1)
+        mViewModel.cargarClientes( Constantes.CIUDADTRABAJO).observe(this, data -> {
+            Log.d(TAG,"regresó de la consulta "+ data.size());
+            Constantes.clientesAsignados= ComprasUtils.convertirListaaClientes(data);
+
+
+        });
+        if( Constantes.plantasAsignadas==null)
+        mViewModel.cargarPestañas(Constantes.CIUDADTRABAJO,0).observe(this, data -> {
+            Log.d(TAG,"regresó de la consulta "+ data.size());
+            Constantes.plantasAsignadas=ComprasUtils.convertirListaaPlantas(data);
+
+
         });
 
     }

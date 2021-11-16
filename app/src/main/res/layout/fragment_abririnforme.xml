@@ -24,13 +24,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center|start"
-            android:text="TextView"
+            android:text=""
             android:textColor="@color/gray" />
 
     </LinearLayout>
 
     <ScrollView
-        android:layout_width="404dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,6 +42,8 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:orientation="vertical">
 
 
@@ -63,7 +65,9 @@
                     android:id="@+id/textView10"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/foto_fachada" />
+                    android:layout_marginTop="20dp"
+                    android:text="@string/foto_fachada"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -72,11 +76,13 @@
 
                     <EditText
                         android:id="@+id/txtaifotofachada"
+                        style="@style/MyEditTextStyle"
                         android:layout_width="98dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:inputType="textPersonName" />
+                        android:inputType="textPersonName"
+                        android:visibility="gone" />
 
                     <ImageButton
                         android:id="@+id/btnaifotofachada"
@@ -88,17 +94,37 @@
 
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/ivaifachada"
-                    android:layout_width="111dp"
-                    android:layout_height="99dp"
-                    tools:src="@tools:sample/avatars" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ivaifachada"
+                        android:layout_width="111dp"
+                        android:layout_height="99dp"
+                        android:layout_marginTop="20dp"
+                        tools:src="@tools:sample/avatars" />
+
+                    <ImageButton
+                        android:id="@+id/btnairotar1"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="87dp"
+                        android:layout_marginEnd="190dp"
+                        android:background="@color/dark_grey"
+                        android:contentDescription="rotar"
+                        android:src="@drawable/ic_baseline_loop_24" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView15"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/ubicación" />
+                    android:layout_marginTop="20dp"
+                    android:text="@string/ubicación"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -118,23 +144,29 @@
                         android:id="@+id/txtaimensajeubicacion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:maxWidth="100dp"
+                        android:maxHeight="100dp" />
 
                     <Button
                         android:id="@+id/btnaiubicar"
-                        android:layout_width="75dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:minWidth="0dp"
+                        android:layout_weight="3"
+                        android:minWidth="30dp"
                         android:minHeight="0dp"
-                        android:text="@string/ubicar" />
+                        android:text="@string/ubicar"
+                        android:textColor="@color/blue_principal" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView19"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="COMPLEMENTO DIRECCION" />
+                    android:layout_marginTop="20dp"
+                    android:text="COMPLEMENTO DIRECCION"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/txtaicomplementodir"
@@ -147,14 +179,17 @@
 
             <Button
                 android:id="@+id/btnaifotoexhibido"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/agregar_exhibido" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvaiproductoex"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp" />
 
             <Button
                 android:id="@+id/aibtnguardar"
@@ -163,6 +198,7 @@
                 android:layout_width="match_parent"
 
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/guardar" />
 
 

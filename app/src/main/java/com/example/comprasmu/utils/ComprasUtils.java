@@ -7,7 +7,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -74,6 +79,30 @@ public class ComprasUtils {
 
 
     }
+    public Bitmap comprimirImagen(String nombre_foto){
+        Bitmap bitmapOrg=BitmapFactory.decodeFile(nombre_foto);
+
+        int width=bitmapOrg.getWidth();
+        int height=bitmapOrg.getHeight();
+
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, width, height, true);
+
+        //comprimir imagen
+        File file = new File(nombre_foto);
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            Log.d("Compras",e.getMessage());
+            // Toast.makeText(, "Error al guardar la foto", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+
+       return scaledBitmap;
+
+    }
 
     public static HashMap<Integer,String> catalogoToHashMap(List<CatalogoDetalle> lista){
         HashMap<Integer,String> mapa=new HashMap<>();
@@ -112,35 +141,36 @@ public class ComprasUtils {
         return mapa;
     }
     static public String indiceLetra(String fecha){
-       String[] mifecha=fecha.split("-");
+        fecha=fecha.replace("\\.","-");
+       String[] mifecha=fecha.split("");
        String strMes="",lafecha;
         switch (mifecha[0])
         {
-            case "01":
+            case "01": case "1":
                 strMes="Enero";
                 break;
-            case "02":
+            case "02": case "2":
                 strMes="Febrero";
                 break;
-            case "03":
+            case "03": case "3":
                 strMes="Marzo";
                 break;
-            case "04":
+            case "04": case "4":
                 strMes="Abril";
                 break;
-            case "05":
+            case "05": case "5":
                 strMes="Mayo";
                 break;
-            case "06":
+            case "06": case "6":
                 strMes="Junio";
                 break;
-            case "07":
+            case "07": case "7":
                 strMes="Julio";
                 break;
-            case "08":
+            case "08": case "8":
                 strMes="Agosto";
                 break;
-            case "09":
+            case "09": case "9":
                 strMes="Septiembre";
                 break;
             case "10":
@@ -200,6 +230,37 @@ public class ComprasUtils {
         }
 
         return strMes;
+    }
+
+    public static void loopViews( LinearLayout layout ,boolean opcion){
+
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+
+
+            if (child instanceof EditText) {
+                // Do something
+                child.setEnabled(opcion);
+            }  if (child instanceof Button) {
+                // Do something
+                child.setEnabled(opcion);
+            }  if (child instanceof ImageButton) {
+                // Do something
+                child.setEnabled(opcion);
+            }  if (child instanceof Spinner) {
+                // Do something
+                child.setEnabled(opcion);
+            } else  if (child instanceof LinearLayout) {
+
+                loopViews((LinearLayout) child,opcion);
+            }
+            /*if (child instanceof ViewGroup) {
+
+                this.loopViews((ViewGroup) child);
+            }*/
+
+
+        }
     }
 
 }

@@ -18,7 +18,7 @@ public class Visita {
     private int tiendaId; //si no tengo id es nueva
     private String tiendaNombre;
     private String tipoTienda;
-    private String tipoId;
+    private int tipoId;
     private String direccion;
     private String cadenaComercial;
     private String complementodireccion;
@@ -90,11 +90,11 @@ public class Visita {
         this.tipoTienda = tipoTienda;
     }
 
-    public String getTipoId() {
+    public int getTipoId() {
         return tipoId;
     }
 
-    public void setTipoId(String tipoId) {
+    public void setTipoId(int tipoId) {
         this.tipoId = tipoId;
     }
 

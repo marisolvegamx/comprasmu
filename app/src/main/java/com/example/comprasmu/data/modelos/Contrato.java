@@ -2,15 +2,10 @@ package com.example.comprasmu.data.modelos;
 
 public  class Contrato {
 
-    public static  class Informe {
-       public static int ESTATUS_ABIERTO = 1;
-        public static int ESTATUS_CANCELADO = 0;
-        public static int ESTATUS_FINALIZADO = 2;
-    }
+  public static String TBLLISTACOMPRAS="lista_compras";
+    public static String TBLLISTACOMPRASDET="lista_compras_detalle";
+  //  public static String TBLLISTACOMPRAS="lista_compras";
 
-        public static int ESTATUSSYNC_PENDIENTE = 0;
-        public static int ESTATUSSYNC_SUBIENDO = 1;
-        public static int ESTATUSSYNC_ACTUALIZADO = 2;
 
     public static class  CatalogosId{
 

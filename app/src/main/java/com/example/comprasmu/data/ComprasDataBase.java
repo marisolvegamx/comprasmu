@@ -76,7 +76,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
 
                             .build();
-                    INSTANCE.cargandodatos();
+                  //  INSTANCE.cargandodatos();
                 }
             }
         }
@@ -104,8 +104,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
                         //no tengo datos
 
 
-                        prepopulatelc();
-                        prepopulatedetc();
+                       // prepopulatelc();
+                        //prepopulatedetc();
                         prepopulateder();
                         catalogos();
 
@@ -116,31 +116,43 @@ public abstract class ComprasDataBase extends RoomDatabase {
     }
 
     private  void prepopulatelc(  ) {
-        ListaCompra lc=new ListaCompra();
+        ListaCompra lc1=new ListaCompra();
         ListaCompraDao dao=getListaCompraDao();
-        lc.setClientesId(1);
-        lc.setPlantasId(1);
-        lc.setCiudadesId(1);
-        lc.setCiudadNombre("Cd Juarez");
-        lc.setClienteNombre("pepsi");
-        lc.setPlantaNombre("juarez");
-        lc.setSiglas("pj");
-        lc.setIndice("julio 2021");
-        lc.setEstatus(1);
-        dao.insert(lc);
 
-        lc=new ListaCompra();
-        lc.setClientesId(2);
-        lc.setPlantasId(2);
-        lc.setClienteNombre("peñafiel");
-        lc.setPlantaNombre("acapulco");
-        lc.setSiglas("pa");
-        lc.setIndice("noviembre 2021");
-        lc.setEstatus(1);
-        lc.setCiudadesId(2);
-        lc.setCiudadNombre("Cd Acapulco");
-        dao.insert(lc);
-        lc=new ListaCompra();
+        String clientenom="PEPSI";
+       // clientes.put(2,"PEñAFIEL");
+        String planta="ACAPULCO";
+        String ciudad2="ZACATECAS";
+        String planta2="CALERA";
+        int idplanta=4, idciudad=12, i;
+        String ciudad="ACAPULCO";
+        String siglas="ACA";
+        String siglas2="ZAC";
+        String indice="noviembre 2021";
+        lc1.setClientesId(1);
+        lc1.setPlantasId(idplanta);
+        lc1.setCiudadesId(idciudad);
+        lc1.setCiudadNombre(ciudad);
+        lc1.setClienteNombre(clientenom);
+        lc1.setPlantaNombre(planta);
+        lc1.setSiglas(siglas);
+        lc1.setIndice(indice);
+        lc1.setEstatus(1);
+        dao.insert(lc1);
+
+        ListaCompra lc2=new ListaCompra();
+        lc2.setClientesId(1);
+        lc2.setPlantasId(20);
+        int idciudad2=22;
+        lc2.setClienteNombre(clientenom);
+        lc2.setPlantaNombre(planta2);
+        lc2.setSiglas(siglas2);
+        lc2.setIndice("noviembre 2021");
+        lc2.setEstatus(1);
+        lc2.setCiudadesId(22);
+        lc2.setCiudadNombre(ciudad2);
+        dao.insert(lc2);
+   /*     lc=new ListaCompra();
         lc.setClientesId(2);
         lc.setPlantasId(3);
         lc.setClienteNombre("peñafiel");
@@ -183,7 +195,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lc.setCiudadNombre(" cd. acapulco");
         lc.setEstatus(1);
         lc.setIndice("julio 2021");
-        dao.insert(lc);
+        dao.insert(lc);*/
     }
 
     private  void prepopulatedetc( ) {
@@ -194,13 +206,13 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEmpaquesId(1);
         lcd.setEmpaque("pet");
         lcd.setTamanio("200ml");
-        lcd.setTipoAnalisis("fisico");
-        lcd.setAnalisisId(1);
+        lcd.setTipoAnalisis("sensorial");
+        lcd.setAnalisisId(2);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
         lcd.setCantidad(2);
         lcd.setEstatus(1);
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(1);
@@ -209,13 +221,13 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEmpaquesId(1);
         lcd.setEmpaque("pet");
         lcd.setTamanio("2l");
-        lcd.setTipoAnalisis("fisico");
-        lcd.setAnalisisId(1);
+        lcd.setTipoAnalisis("micro");
+        lcd.setAnalisisId(4);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
         lcd.setCantidad(2);
         lcd.setEstatus(1);
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(1);
@@ -225,12 +237,12 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEmpaque("pet");
         lcd.setTamanio("200ml");
         lcd.setTipoAnalisis("fisico");
-        lcd.setAnalisisId(2);
+        lcd.setAnalisisId(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
         lcd.setCantidad(2);
         lcd.setEstatus(1);
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(1);
@@ -240,12 +252,12 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEmpaque("lata");
         lcd.setTamanio("200ml");
         lcd.setTipoAnalisis("torque");
-        lcd.setAnalisisId(2);
+        lcd.setAnalisisId(3);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
         lcd.setCantidad(1);
         lcd.setEstatus(1);
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(1);
@@ -260,7 +272,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(1);
@@ -270,12 +282,12 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEmpaque("pet");
         lcd.setTamanio("2l");
         lcd.setTipoAnalisis("torque");
-        lcd.setAnalisisId(1);
+        lcd.setAnalisisId(3);
         lcd.setCantidad(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
         lcd.setEstatus(1);
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(2);
@@ -290,7 +302,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(2);
@@ -305,7 +317,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(2);
@@ -314,13 +326,13 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEmpaquesId(1);
         lcd.setEmpaque("pet");
         lcd.setTamanio("200ml");
-        lcd.setTipoAnalisis("fisico");
+        lcd.setTipoAnalisis("sensorial");
         lcd.setAnalisisId(2);
         lcd.setCantidad(2);
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(2);
@@ -329,13 +341,13 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEmpaquesId(3);
         lcd.setEmpaque("lata");
         lcd.setTamanio("200ml");
-        lcd.setTipoAnalisis("torque");
+        lcd.setTipoAnalisis("sensorial");
         lcd.setAnalisisId(2);
         lcd.setCantidad(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
         lcd.setEstatus(1);
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(2);
@@ -350,7 +362,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(2);
@@ -360,16 +372,16 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEmpaque("pet");
         lcd.setTamanio("2l");
         lcd.setTipoAnalisis("torque");
-        lcd.setAnalisisId(1);
+        lcd.setAnalisisId(3);
         lcd.setCantidad(1);
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
 
         lcd=new ListaCompraDetalle();
-        lcd.setListaId(3);
+        lcd.setListaId(2);
         lcd.setProductosId(1);
         lcd.setProductoNombre("PEPSI");
         lcd.setEmpaquesId(1);
@@ -381,10 +393,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
-        lcd.setListaId(3);
+        lcd.setListaId(2);
         lcd.setProductosId(1);
         lcd.setProductoNombre("PEPSI");
         lcd.setEmpaquesId(1);
@@ -396,40 +408,40 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
-        lcd.setListaId(3);
+        lcd.setListaId(2);
         lcd.setProductosId(2);
         lcd.setProductoNombre("NARANJA");
         lcd.setEmpaquesId(1);
         lcd.setEmpaque("pet");
         lcd.setTamanio("200ml");
-        lcd.setTipoAnalisis("fisico");
+        lcd.setTipoAnalisis("sensorial");
         lcd.setAnalisisId(2);
         lcd.setCantidad(2);
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
-        lcd.setListaId(3);
+        lcd.setListaId(2);
         lcd.setProductosId(3);
         lcd.setProductoNombre("LIMON");
         lcd.setEmpaquesId(3);
         lcd.setEmpaque("lata");
         lcd.setTamanio("200ml");
         lcd.setTipoAnalisis("torque");
-        lcd.setAnalisisId(2);
+        lcd.setAnalisisId(3);
         lcd.setCantidad(1);
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
-        lcd.setListaId(3);
+        lcd.setListaId(2);
         lcd.setProductosId(1);
         lcd.setProductoNombre("pepsi");
         lcd.setEmpaquesId(2);
@@ -441,10 +453,101 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
-        lcd.setListaId(3);
+        lcd.setListaId(2);
+        lcd.setProductosId(2);
+        lcd.setProductoNombre("NARANJA");
+        lcd.setEmpaquesId(1);
+        lcd.setEmpaque("pet");
+        lcd.setTamanio("2l");
+        lcd.setTipoAnalisis("micro");
+        lcd.setAnalisisId(4);
+        lcd.setCantidad(1);
+        lcd.setEstatus(1);
+        lcd.setTipoMuestra(1);
+        lcd.setNombreTipoMuestra("Normal");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
+        getListaCompraDetalleDao().insert(lcd);
+
+     /*   lcd=new ListaCompraDetalle();
+        lcd.setListaId(4);
+        lcd.setProductosId(1);
+        lcd.setProductoNombre("pepsi");
+        lcd.setEmpaquesId(1);
+        lcd.setEmpaque("pet");
+        lcd.setTamanio("200ml");
+        lcd.setTipoAnalisis("fisico");
+        lcd.setAnalisisId(1);
+        lcd.setCantidad(2);
+        lcd.setEstatus(1);
+        lcd.setTipoMuestra(1);
+        lcd.setNombreTipoMuestra("Normal");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
+        getListaCompraDetalleDao().insert(lcd);
+        lcd=new ListaCompraDetalle();
+        lcd.setListaId(4);
+        lcd.setProductosId(1);
+        lcd.setProductoNombre("pepsi");
+        lcd.setEmpaquesId(1);
+        lcd.setEmpaque("pet");
+        lcd.setTamanio("2l");
+        lcd.setTipoAnalisis("fisico");
+        lcd.setAnalisisId(1);
+        lcd.setCantidad(2);
+        lcd.setEstatus(1);
+        lcd.setTipoMuestra(2);
+        lcd.setNombreTipoMuestra("Catchup");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
+        getListaCompraDetalleDao().insert(lcd);
+        lcd=new ListaCompraDetalle();
+        lcd.setListaId(4);
+        lcd.setProductosId(2);
+        lcd.setProductoNombre("NARANJA");
+        lcd.setEmpaquesId(1);
+        lcd.setEmpaque("pet");
+        lcd.setTamanio("200ml");
+        lcd.setTipoAnalisis("fisico");
+        lcd.setAnalisisId(2);
+        lcd.setCantidad(2);
+        lcd.setEstatus(1);
+        lcd.setTipoMuestra(2);
+        lcd.setNombreTipoMuestra("Catchup");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
+        getListaCompraDetalleDao().insert(lcd);
+        lcd=new ListaCompraDetalle();
+        lcd.setListaId(4);
+        lcd.setProductosId(3);
+        lcd.setProductoNombre("LIMON");
+        lcd.setEmpaquesId(3);
+        lcd.setEmpaque("lata");
+        lcd.setTamanio("200ml");
+        lcd.setTipoAnalisis("torque");
+        lcd.setAnalisisId(2);
+        lcd.setCantidad(1);
+        lcd.setEstatus(1);
+        lcd.setTipoMuestra(2);
+        lcd.setNombreTipoMuestra("Catchup");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
+        getListaCompraDetalleDao().insert(lcd);
+        lcd=new ListaCompraDetalle();
+        lcd.setListaId(4);
+        lcd.setProductosId(1);
+        lcd.setProductoNombre("pepsi");
+        lcd.setEmpaquesId(2);
+        lcd.setEmpaque("lata");
+        lcd.setTamanio("200ml");
+        lcd.setTipoAnalisis("fisico");
+        lcd.setAnalisisId(1);
+        lcd.setCantidad(2);
+        lcd.setEstatus(1);
+        lcd.setTipoMuestra(2);
+        lcd.setNombreTipoMuestra("Catchup");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
+        getListaCompraDetalleDao().insert(lcd);
+        lcd=new ListaCompraDetalle();
+        lcd.setListaId(4);
         lcd.setProductosId(2);
         lcd.setProductoNombre("NARANJA");
         lcd.setEmpaquesId(1);
@@ -456,101 +559,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
 
         lcd=new ListaCompraDetalle();
-        lcd.setListaId(4);
-        lcd.setProductosId(1);
-        lcd.setProductoNombre("pepsi");
-        lcd.setEmpaquesId(1);
-        lcd.setEmpaque("pet");
-        lcd.setTamanio("200ml");
-        lcd.setTipoAnalisis("fisico");
-        lcd.setAnalisisId(1);
-        lcd.setCantidad(2);
-        lcd.setEstatus(1);
-        lcd.setTipoMuestra(1);
-        lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
-        getListaCompraDetalleDao().insert(lcd);
-        lcd=new ListaCompraDetalle();
-        lcd.setListaId(4);
-        lcd.setProductosId(1);
-        lcd.setProductoNombre("pepsi");
-        lcd.setEmpaquesId(1);
-        lcd.setEmpaque("pet");
-        lcd.setTamanio("2l");
-        lcd.setTipoAnalisis("fisico");
-        lcd.setAnalisisId(1);
-        lcd.setCantidad(2);
-        lcd.setEstatus(1);
-        lcd.setTipoMuestra(2);
-        lcd.setNombreTipoMuestra("Catchup");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
-        getListaCompraDetalleDao().insert(lcd);
-        lcd=new ListaCompraDetalle();
-        lcd.setListaId(4);
-        lcd.setProductosId(2);
-        lcd.setProductoNombre("NARANJA");
-        lcd.setEmpaquesId(1);
-        lcd.setEmpaque("pet");
-        lcd.setTamanio("200ml");
-        lcd.setTipoAnalisis("fisico");
-        lcd.setAnalisisId(2);
-        lcd.setCantidad(2);
-        lcd.setEstatus(1);
-        lcd.setTipoMuestra(2);
-        lcd.setNombreTipoMuestra("Catchup");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
-        getListaCompraDetalleDao().insert(lcd);
-        lcd=new ListaCompraDetalle();
-        lcd.setListaId(4);
-        lcd.setProductosId(3);
-        lcd.setProductoNombre("LIMON");
-        lcd.setEmpaquesId(3);
-        lcd.setEmpaque("lata");
-        lcd.setTamanio("200ml");
-        lcd.setTipoAnalisis("torque");
-        lcd.setAnalisisId(2);
-        lcd.setCantidad(1);
-        lcd.setEstatus(1);
-        lcd.setTipoMuestra(2);
-        lcd.setNombreTipoMuestra("Catchup");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
-        getListaCompraDetalleDao().insert(lcd);
-        lcd=new ListaCompraDetalle();
-        lcd.setListaId(4);
-        lcd.setProductosId(1);
-        lcd.setProductoNombre("pepsi");
-        lcd.setEmpaquesId(2);
-        lcd.setEmpaque("lata");
-        lcd.setTamanio("200ml");
-        lcd.setTipoAnalisis("fisico");
-        lcd.setAnalisisId(1);
-        lcd.setCantidad(2);
-        lcd.setEstatus(1);
-        lcd.setTipoMuestra(2);
-        lcd.setNombreTipoMuestra("Catchup");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
-        getListaCompraDetalleDao().insert(lcd);
-        lcd=new ListaCompraDetalle();
-        lcd.setListaId(4);
-        lcd.setProductosId(2);
-        lcd.setProductoNombre("NARANJA");
-        lcd.setEmpaquesId(1);
-        lcd.setEmpaque("pet");
-        lcd.setTamanio("2l");
-        lcd.setTipoAnalisis("torque");
-        lcd.setAnalisisId(1);
-        lcd.setCantidad(1);
-        lcd.setEstatus(1);
-        lcd.setTipoMuestra(1);
-        lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
-        getListaCompraDetalleDao().insert(lcd);
-
-        lcd=new ListaCompraDetalle();
         lcd.setListaId(5);
         lcd.setProductosId(1);
         lcd.setProductoNombre("pepsi");
@@ -563,7 +575,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(5);
@@ -578,7 +590,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(5);
@@ -593,7 +605,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(5);
@@ -608,7 +620,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(5);
@@ -623,7 +635,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(1);
         lcd.setNombreTipoMuestra("Normal");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
         lcd=new ListaCompraDetalle();
         lcd.setListaId(5);
@@ -638,9 +650,9 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lcd.setEstatus(1);
         lcd.setTipoMuestra(2);
         lcd.setNombreTipoMuestra("catchup");
-        lcd.setCodigosNoPermitidos("20-may-2021;21-may-2021;20-may-2021;21-jun-2021;20-jun-2021;21-ene-2021;20-ene-2021;21-feb-2021;20-feb-2021;18-may-2021;19-may-2021;21-mar-2021;");
+        lcd.setCodigosNoPermitidos("20-sep-2021;21-sep-2021;20-sep-2021;21-jun-2021;20-jun-2021;21-oct-2021;20-oct-2021;21-ago-2021;20-ago-2021;18-sep-2021;19-sep-2021;21-mar-2021;");
         getListaCompraDetalleDao().insert(lcd);
-
+*/
 
     }
 
@@ -721,7 +733,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lista.add(cat);
         getCatalogoDao().insertAll(lista);
         getCatalogoDao().insertAll(lista);
-        lista=new ArrayList<>();
+       /* lista=new ArrayList<>();
         cat=new CatalogoDetalle();
         cat.setCad_idcatalogo(2);
         cat.setCad_idopcion(1);
@@ -735,12 +747,12 @@ public abstract class ComprasDataBase extends RoomDatabase {
         cat.setCad_descripcionesp("refri");
         cat.setCad_nombreCatalogo("ubicacion_muestra");
         lista.add(cat);
-        getCatalogoDao().insertAll(lista);
+        getCatalogoDao().insertAll(lista);*/
     }
   /*  static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("alter table imagenes add column created_at timestamp");
+            database.execSQL("alter table imagocts add column created_at timestamp");
         }
     };
 */

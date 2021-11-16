@@ -16,7 +16,7 @@ public class CampoForm {
    public String nombre_campo;
    public int id;
     public String type;
-
+   public boolean visible;
     public String value;
     public String required;
     public HashMap<Integer,String> select;
@@ -24,9 +24,11 @@ public class CampoForm {
     public String readonly;
     public String disabled;
     public View.OnClickListener funcionOnClick;
+    public View.OnClickListener funcionOnClick2;
     public Activity actividadAccion;
     public boolean tomarFoto;
     public RecyclerView.Adapter adapter;
+    public List<CampoForm> listadatos;
 
     public CampoForm() {
     }

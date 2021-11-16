@@ -80,6 +80,13 @@ public class VisitaAdapter extends RecyclerView.Adapter<VisitaAdapter.VisitaView
                         callback.onClickEliminar(Integer.parseInt(binding.liTxtid.getText().toString()));
                 }
             });
+            binding.liBtnfin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(view.getId()==R.id.li_btnfin)
+                        callback.onClickFinalizar(Integer.parseInt(binding.liTxtid.getText().toString()));
+                }
+            });
             binding.liBtnagregar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -99,6 +106,7 @@ public class VisitaAdapter extends RecyclerView.Adapter<VisitaAdapter.VisitaView
         void onClickAgregar(int visitaid);
         void onClickEliminar(int id);
         void onClickEditar(int id);
+        void onClickFinalizar(int id);
 
     }
 

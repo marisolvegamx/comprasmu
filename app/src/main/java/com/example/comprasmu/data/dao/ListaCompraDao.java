@@ -43,4 +43,6 @@ public abstract class ListaCompraDao  extends  BaseDao<ListaCompra> {
 
     @Query("SELECT * FROM lista_compras where id=:id")
     public abstract LiveData<ListaCompra> find( int id);
+
+
 }

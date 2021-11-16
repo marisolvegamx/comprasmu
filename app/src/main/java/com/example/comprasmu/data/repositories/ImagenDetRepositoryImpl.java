@@ -101,6 +101,9 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
     public  LiveData<List<ImagenDetalle>> getImagenDetallePendientesSync(){
         return  dao.getImagenDetalleByEstatusSync(1,0);
     }
+    public  List<ImagenDetalle> getImagenPendSyncsimple(){
+        return  dao.getImagenByEstSyncsimple(1,0);
+    }
 
     @Override
     public long insert(ImagenDetalle object) {

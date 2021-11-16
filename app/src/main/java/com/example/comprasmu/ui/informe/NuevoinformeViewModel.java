@@ -6,6 +6,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -19,7 +20,9 @@ import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
+import com.example.comprasmu.data.modelos.VisitaWithInformes;
 import com.example.comprasmu.data.remote.InformeEnvio;
+import com.example.comprasmu.data.remote.TodoEnvio;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
@@ -166,17 +169,38 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return imagenDetRepository.find(idfoto);
 
     }
+
+    public MutableLiveData<Boolean> informesAbiertos(LifecycleOwner observer){
+        MutableLiveData<Boolean> abiertos=new MutableLiveData<>();
+        visitaRepository.getInformesByIndice(Constantes.INDICEACTUAL).observe(observer, new Observer<List<Visita>>() {
+                    @Override
+                    public void onChanged(List<Visita> visitas) {
+                        if(visitas!=null)
+                            for(Visita revvis:visitas){
+                                if(Constantes.ESTATUSINFORME[revvis.getEstatus()].equals("ABIERTO")){
+                                    //ya tengo uno abierto mando aviso
+                                    abiertos.setValue(true);
+                                    break;
+                                }
+                            }
+                    }
+                }
+
+        );
+        return  abiertos;
+    }
     /**para envio***/
     public InformeEnvio preparaInforme(int informe){
         InformeWithDetalle info=repository.getInformeWithDetalleByIdsimple(informe);
         Log.d(TAG,"wwwwwwwww"+info.informe.getId()+info.informe.getVisitasId());
 
         InformeEnvio envio=new InformeEnvio();
-        //busco la visita
+        //busco la visita pero tiene que estar en estatussync pendiente
         //   VisitaRepositoryImpl vrepo=new VisitaRepositoryImpl(getContext());
         Visita visita=visitaRepository.findsimple(info.informe.getVisitasId());
         Log.d(TAG,"wwwwwwwww"+info.informe.getId()+"---"+visita.getTiendaNombre());
-        envio.setVisita(visita);
+        if(visita.getEstatusSync()==0)
+            envio.setVisita(visita);
         envio.setInformeCompra(info.informe);
         //busco los detalles
         List<InformeCompraDetalle> detalles=detalleRepo.getAllSencillo(info.informe.getId());
@@ -184,7 +208,6 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         envio.setImagenDetalles(buscarImagenes(visita,info.informe,detalles));
         return envio;
     }
-
 
     public List<ImagenDetalle> buscarImagenes(Visita visita, InformeCompra informe, List<InformeCompraDetalle> detalles){
         //todas las fotos aqui
@@ -231,17 +254,10 @@ public class NuevoinformeViewModel extends AndroidViewModel {
          idVisita=(int)visitaRepository.insert(visita);
 
          if(idInformeNuevo>0) {
-             //para pruebas
-             ImagenDetalle fotoe=new ImagenDetalle();
-             fotoe.setRuta("algo x aqui");
-             fotoe.setDescripcion("preuba");
-             fotoe.setCreatedAt(new Date());
-             fotoe.setEstatusSync(0);
-             fotoe.setEstatus(1);
 
 
              clientesFoto[0] = "pepsi";
-             fotoExhibicion.add(fotoe);
+
              int i=0;
             //crear los informes y guardar
             for(ImagenDetalle foto:fotoExhibicion) {

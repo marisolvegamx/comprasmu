@@ -143,7 +143,8 @@
                             android:layout_weight="1"
                             android:ems="10"
                             android:inputType="textPersonName"
-                            android:text="@{ruta_ticket}" />
+                            android:text="@{ruta_ticket}"
+                            android:visibility="gone" />
 
                         <ImageButton
                             android:id="@+id/btnni1"
@@ -159,11 +160,22 @@
 
                         <ImageView
                             android:id="@+id/ivuiticket_compra"
-                            android:layout_width="382dp"
-                            android:layout_height="105dp"
-                            android:layout_weight="1"
+                            android:layout_width="210dp"
+                            android:layout_height="97dp"
 
+                            android:layout_weight="1"
                             tools:srcCompat="@tools:sample/avatars" />
+
+                        <ImageButton
+                            android:id="@+id/btnnirotar1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="70dp"
+                            android:layout_marginEnd="190dp"
+                            android:layout_weight="1"
+                            android:background="@color/dark_grey"
+                            android:contentDescription="rotar"
+                            android:src="@drawable/ic_baseline_loop_24" />
                     </TableRow>
 
 
@@ -191,12 +203,13 @@
                             android:layout_weight="1"
                             android:ems="10"
                             android:inputType="textPersonName"
-                            android:text="@{ruta_condiciones}" />
+                            android:text="@{ruta_condiciones}"
+                            android:visibility="gone" />
 
                         <ImageButton
                             android:id="@+id/btnni2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="396dp"
+                            android:layout_height="match_parent"
                             android:src="@drawable/ic_menu_camera" />
 
                     </TableRow>
@@ -207,11 +220,22 @@
 
                         <ImageView
                             android:id="@+id/ivuicondiciones"
-                            android:layout_width="382dp"
-                            android:layout_height="105dp"
+                            android:layout_width="214dp"
+                            android:layout_height="89dp"
                             android:layout_weight="1"
 
                             tools:src="@tools:sample/avatars" />
+
+                        <ImageButton
+                            android:id="@+id/btnnirotcond"
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="78dp"
+                            android:layout_marginEnd="190dp"
+                            android:layout_weight="1"
+                            android:background="@color/dark_grey"
+                            android:contentDescription="rotar"
+                            android:src="@drawable/ic_baseline_loop_24" />
                     </TableRow>
 
                     <TableRow
@@ -246,7 +270,8 @@
                 <View
                     android:id="@+id/divider"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="6dp"
                     android:background="?android:attr/listDivider" />
 
                 <TextView
@@ -258,7 +283,9 @@
 
                 <include
                     android:id="@+id/nicontentmuestras"
-                    layout="@layout/lista_muestras" />
+                    layout="@layout/lista_muestras"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

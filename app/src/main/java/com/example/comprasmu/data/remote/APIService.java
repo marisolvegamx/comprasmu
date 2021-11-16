@@ -41,8 +41,18 @@ public interface APIService {
     })
     Call<InformeEnvio> saveInformeEnvio(@Body InformeEnvio item);
 
+    @POST("informes/create")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> saveInformesPend(@Body TodoEnvio item);
+
     @POST("imagenes")
-    @FormUrlEncoded
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
     Call<ImagenDetalle> saveImagen(@Body ImagenDetalle item);
 
     @Multipart
@@ -56,14 +66,14 @@ public interface APIService {
     @GET("catalogos")
     Call<CatalogosResponse> getCatalogosNuevoInforme(@Query("usuario") String usuario);
 
-    @POST("listacompras")
-    @FormUrlEncoded
-    Call<ListaCompraResponse> getListasCompra( @Body PeticionesServidor.PeticionLista peticion );
+    @GET("listacompras")
+    Call<ListaCompraResponse> getListasCompra( @Query("indice") String indice, @Query("usuario") String usuario, @Query("version_lista") String version_lista, @Query("version_detalle") String version_detalle);
+    
+    @POST("cancelarInforme/{id}")
     @Headers({
             "Accept: application/json",
             "Content-Type: application/json"
     })
-    @POST("cancelarInforme/{id}")
     Call<ResponseBody> cancelarInforme(@Path("id") int informeId, @Body InformeCancelar item);
 
 

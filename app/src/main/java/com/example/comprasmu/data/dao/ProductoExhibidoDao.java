@@ -30,6 +30,9 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
     @Query("SELECT * FROM producto_exhibido where visitasId=:id")
     public  abstract LiveData<List<ProductoExhibido>> findByVisita( int id);
 
+    @Query("SELECT * FROM producto_exhibido where visitasId=:id")
+    public  abstract List<ProductoExhibido> getByVisitasimple( int id);
+
     @Query("update producto_exhibido set estatusSync=:estatus WHERE id=:id")
     public abstract void actualizarEstatusSync(int id, int estatus);
 
@@ -54,6 +57,9 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
 
     @Query("delete  FROM producto_exhibido where id=:id")
     public  abstract void deleteById( int id);
+
+    @Query("SELECT * FROM ProductoExhibidoFoto where visitasId=:id and clienteId=:cliente")
+    public abstract LiveData<List<ProductoExhibidoFoto>> getAllByVisitaCliente(int id, int cliente);
 
     @DatabaseView("SELECT producto_exhibido.id as idprodex, " +
             "producto_exhibido.visitasId, " +

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -28,6 +29,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
+import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 
@@ -97,11 +99,17 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
 
         setupListAdapter();
        // setupSnackbar();
-        mViewModel.getListas().observe(getViewLifecycleOwner(), new Observer<List<Visita>>() {
+        LiveData<List<Visita>> lista=mViewModel.getListas();
+        lista.observe(getViewLifecycleOwner(), new Observer<List<Visita>>() {
 
             @Override
             public void onChanged(List<Visita> visitas) {
                 Log.d(TAG,"YA CARGÓ "+visitas.size());
+                //primero reviso si ya tiene informe para no mostrar el finalizar
+                for(Visita visit:visitas){
+                    visit=mViewModel.tieneInforme(visit,getViewLifecycleOwner());
+                    Log.d(TAG,"qqqqqqqqqq"+visit.getEstatus());
+                }
                 mListAdapter.setVisitaList(visitas);
                 mListAdapter.notifyDataSetChanged();
                 if(visitas!=null&&visitas.size()>0)
@@ -216,7 +224,33 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
 
     }
 
+    @Override
+    public void onClickFinalizar(int idvisita) {
+        //pregunto si habrá más clientes
+        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+        dialogo1.setTitle(R.string.importante);
+        dialogo1.setMessage(R.string.conf_finalizar);
+        dialogo1.setCancelable(false);
+        dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                //Es hora de cerrar el preinforme
+                NuevoinformeViewModel niViewModel =
+                        new ViewModelProvider(ListaVisitasFragment.this).get(NuevoinformeViewModel.class);
+                niViewModel.finalizarVisita(idvisita);
 
+                Toast.makeText(getActivity(), "Se finalizó el preinforme",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                //no hago nada
+                dialogo1.cancel();
+
+            }
+        });
+        dialogo1.show();
+    }
 
 
 }

@@ -3,20 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_configurar">
+   >
 
     <fragment
         android:id="@+id/nav_configurar"
         android:name="com.example.comprasmu.ui.home.HomeFragment"
         android:label="@string/menu_configuracion"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action android:id="@+id/action_conftohome"
+            app:destination="@id/nav_descargar"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
     <fragment
         android:id="@+id/nav_ciudad_trabajo"
         android:name="com.example.comprasmu.ui.mantenimiento.CiudadTrabajoFragment"
         android:label="@string/menu_ciudad_trabajo"
         tools:layout="@layout/ciudad_trabajo_fragment" >
     <action android:id="@+id/action_ciudadtohome"
-        app:destination="@id/nav_configurar"
+        app:destination="@id/nav_descargar"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -25,9 +32,9 @@
 
     <fragment
         android:id="@+id/nav_descargar"
-        android:name="com.example.comprasmu.ui.informe.NuevoinformeFragment"
-        android:label="@string/menu_borrar"
-        tools:layout="@layout/fragment_nuevoinforme" />
+        android:name="com.example.comprasmu.ui.gallery.DescargarLisFragment"
+        android:label="@string/inicio"
+        tools:layout="@layout/fragment_descargarlc" />
 
     <fragment
         android:id="@+id/nav_sel_planta"
@@ -50,7 +57,7 @@
     <fragment
         android:id="@+id/nav_nuevoinforme"
         android:name="com.example.comprasmu.ui.visita.AbririnformeFragment"
-        android:label="@string/menu_abrir_informe"
+        android:label="@string/menu_nuevo_informe"
         tools:layout="@layout/fragment_abririnforme">
         <action android:id="@+id/action_continuar"
             app:destination="@id/nav_continuar"
@@ -60,6 +67,12 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action android:id="@+id/action_nuevotolista"
             app:destination="@id/nav_listarvisitas"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_nuevotociudad"
+            app:destination="@id/nav_ciudad_trabajo"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -76,7 +89,7 @@
     <fragment
         android:id="@+id/nav_listarvisitas"
         android:name="com.example.comprasmu.ui.visita.ListaVisitasFragment"
-        android:label="@string/menu_lista_visitas"
+        android:label="@string/menu_continuar_informe"
         tools:layout="@layout/lista_informes_fragment" >
     <action android:id="@+id/action_visitatonuevo"
         app:destination="@id/nav_continuar"
@@ -127,6 +140,14 @@
             android:name="comprasmu.tipodata"
             app:argType="string"
             android:defaultValue="compra" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/nav_tiendas"
+        android:name="com.example.comprasmu.ui.tiendas.BuscarTiendaFragment"
+        android:label="@string/buscar_tienda"
+        tools:layout="@layout/buscar_tienda_fragment" >
+
 
     </fragment>
 

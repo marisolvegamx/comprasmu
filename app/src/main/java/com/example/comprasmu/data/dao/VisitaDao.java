@@ -50,4 +50,7 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
     public abstract LiveData<VisitaWithInformes> getVisitaWithInformesById(int id);
     @Query("update visitas set estatusSync=:estatus WHERE id=:id")
     public abstract void actualizarEstatusSync(int id, int estatus);
+
+
+
 }

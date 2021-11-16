@@ -17,7 +17,7 @@ import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListaCompraDetRepositoryImpl extends BaseRepository<ListaCompraDetalle> {
+public class ListaCompraDetRepositoryImpl {
 
     private ListaCompraDetalleDao dao;
 
@@ -64,15 +64,14 @@ public class ListaCompraDetRepositoryImpl extends BaseRepository<ListaCompraDeta
 
         return dao.getDetallesByFiltros(sqlquery);
     }
-    @Override
+
     public LiveData<List<ListaCompraDetalle>> getAll() {
       return dao.findAll();
     }
 
-    @Override
-    public List<ListaCompraDetalle> getAllsimple() {
-        return null;
-    }
+
+
+
 
     public LiveData<List<ListaCompraDetalle>> getAllByLista(int listasId) {
         return dao.getListaDetallesByLista(listasId);
@@ -81,33 +80,35 @@ public class ListaCompraDetRepositoryImpl extends BaseRepository<ListaCompraDeta
         return dao.getListaDetallesByListasimple(listasId);
     }
 
-    @Override
-    public LiveData<ListaCompraDetalle> find(int id) {
-        return dao.find(id);
+
+    public LiveData<ListaCompraDetalle> find(int lista,int id) {
+        return dao.find(lista,id);
     }
 
-    public ListaCompraDetalle findsimple(int id) {
-        return dao.findsimple(id);
+    public ListaCompraDetalle findsimple(int lista,int id) {
+        return dao.findsimple(lista,id);
     }
 
 
-    @Override
+
     public void delete(ListaCompraDetalle object) {
         dao.delete(object);
     }
 
-    @Override
+
     public void insertAll(List<ListaCompraDetalle> objects) {
         dao.insertAll(objects);
     }
 
+    public void updateAll(List<ListaCompraDetalle> detalles) {
+        dao.updateAll(detalles);
+    }
 
-    @Override
     public long insert(ListaCompraDetalle object) {
         return dao.insert(object);
     }
-    public void actualizarComprados(int id, int cantidad){
-        dao.actualizarCompra(id, cantidad);
+    public void actualizarComprados(int id,int listaid, int cantidad){
+        dao.actualizarCompra(id,  listaid, cantidad);
     }
 
     public void deleteByLista(int id) {

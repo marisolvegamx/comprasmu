@@ -1,10 +1,12 @@
 package com.example.comprasmu.ui;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -121,6 +123,35 @@ public class BackActivity extends AppCompatActivity {
         }else
             super.onBackPressed();
     }*/
+
+    @Override
+    public void onBackPressed() {
+
+        //revisar que esté en el frgment detalle producto y que haya capturado alas siglas
+        //y la fecha
+        if(opcionSel.equals(OP_DETALLE_PRODUCTO)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.app_name);
+            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setMessage("Sí sale sin guardar la información se perderá seguro?")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+
+        }
+        super.onBackPressed();
+    }
     // Create an anonymous implementation of OnClickListener
 
     @Override
@@ -131,13 +162,12 @@ public class BackActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "mmmmmmmmmmmm estoy muriendo");
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG,"qqqqqqqqqqqqqq mori");
+
     }
 }

@@ -12,6 +12,7 @@ import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 
 
+import java.util.Date;
 import java.util.List;
 
 public class TablaVersionesRepImpl extends BaseRepository<TablaVersiones> {
@@ -56,6 +57,8 @@ public class TablaVersionesRepImpl extends BaseRepository<TablaVersiones> {
         dao.insertAll(objects);
     }
 
+
+
     public void insertUpdate(TablaVersiones object) {
         dao.insertUpdate(object);
     }
@@ -64,7 +67,7 @@ public class TablaVersionesRepImpl extends BaseRepository<TablaVersiones> {
     public TablaVersiones getVersionByNombreTabla(String nombre) {
         return dao.getVersionByNombreTabla(nombre);
     }
-    public LiveData<TablaVersiones> getVersionByNombreTablasmd(String nombre) {
+    public TablaVersiones getVersionByNombreTablasmd(String nombre) {
         return dao.getVersionByNombreTablamd(nombre);
     }
     @Override

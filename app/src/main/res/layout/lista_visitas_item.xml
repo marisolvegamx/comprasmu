@@ -22,8 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginEnd="10dp"
         app:cardCornerRadius="4dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
@@ -31,96 +30,127 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/li_txtid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-                android:text="@{String.valueOf(detalle.id)}" />
+                <TextView
+                    android:id="@+id/li_txtid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="211dp"
-                android:layout_height="wrap_content"
-
-                android:orientation="vertical">
+                    android:text="@{String.valueOf(detalle.id)}"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/txtindice"
                     style="@style/textolista1"
-                    android:layout_width="194dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@{detalle.indice}"
-                    app:layout_constraintStart_toStartOf="@+id/txtciudad"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginTop="14dp"
+                    android:text="@{detalle.indice}" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtfecha"
+                style="@style/textolista2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@{sdf.format(detalle.createdAt)}" />
+
+            <TextView
+                android:id="@+id/txtciudad"
+                style="@style/textolista2"
+                android:layout_width="194dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@{detalle.ciudad}" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txtciudad"
-                    style="@style/textolista1"
-                    android:layout_width="194dp"
+                    android:id="@+id/txtvidtienda"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{detalle.ciudad}"
-                    app:layout_constraintStart_toStartOf="@+id/txtfecha"
-                    app:layout_constraintTop_toBottomOf="@+id/txtindice" />
-
-                <TextView
-                    android:id="@+id/txtfecha"
-                    style="@style/textolista1"
-                    android:layout_width="194dp"
-                    android:layout_height="wrap_content"
-                    android:text="@{sdf.format(detalle.createdAt)}"
-                    app:layout_constraintStart_toStartOf="@+id/txttienda"
-                    app:layout_constraintTop_toBottomOf="@+id/txtciudad" />
+                    android:layout_marginTop="14dp"
+                    android:layout_weight="1"
+                    android:visibility="@{detalle.tiendaId>0?View.VISIBLE:View.GONE}"
+                    android:text='@{detalle.tiendaId+""}'/>
 
                 <TextView
                     android:id="@+id/txttienda"
                     style="@style/textolista1"
                     android:layout_width="194dp"
                     android:layout_height="wrap_content"
-                    android:text="@{detalle.tiendaNombre}"
-                    app:layout_constraintStart_toStartOf="@+id/txtestatus"
-                    app:layout_constraintTop_toBottomOf="@+id/txtfecha" />
+                    android:layout_marginTop="14dp"
+                    android:text='@{detalle.tiendaNombre}' />
+            </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtestatus"
-                    style="@style/textolistagrisb"
-                    android:layout_width="194dp"
-                    android:layout_height="wrap_content"
-                    android:text="@{Constantes.ESTATUSINFORME[detalle.estatus]}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txttienda"
-                    app:layout_constraintVertical_bias="0.039" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <ImageButton
-                android:id="@+id/li_btnagregar"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+            <TextView
+                android:id="@+id/txtestatus"
+                style="@style/textolistagrisb"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_baseline_add_24" />
+                android:text="@{Constantes.ESTATUSINFORME[detalle.estatus]}" />
 
-            <ImageButton
-                android:id="@+id/li_btnedit"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_weight="1"
-                android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}"
-                app:srcCompat="@android:drawable/ic_menu_edit" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="50dp"
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/li_btnborrar"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_weight="1"
-                android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}"
-                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+                <Button
+                    android:id="@+id/li_btnfin"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="#CCCDCD"
+
+                    android:text="@string/finalizar"
+                    android:textColor="@color/gray"
+
+                    tools:visibility='@{detalle.estatus==3?View.VISIBLE:View.GONE}' />
+
+                <ImageButton
+                    android:id="@+id/li_btnagregar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_baseline_add_24" />
+
+                <ImageButton
+                    android:id="@+id/li_btnedit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}"
+                    app:srcCompat="@android:drawable/ic_menu_edit" />
+
+                <ImageButton
+                    android:id="@+id/li_btnborrar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}"
+                    app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text='@{detalle.estatus+""}' />
 
 
         </LinearLayout>

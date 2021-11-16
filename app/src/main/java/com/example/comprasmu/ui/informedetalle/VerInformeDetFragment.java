@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -48,9 +49,10 @@ public class VerInformeDetFragment extends Fragment {
     private NuevoinformeViewModel niViewModel;
    int idInforme;
     CreadorFormulario cf;
+    CreadorFormulario cf2;
     List<CampoForm> camposForm;
     private List<CatalogoDetalle> tomadoDe;
-    private List<CatalogoDetalle>atributos;
+    private List<Atributo>atributos;
 
 
     SimpleDateFormat sdf;
@@ -59,8 +61,8 @@ public class VerInformeDetFragment extends Fragment {
     private static final String TAG="VerInformeDetFRAGMENT";
 
 
-    LinearLayout sv;
-
+    LinearLayout sv2;
+    LinearLayout sv1;
     private int[] arrCampos={R.id.txtdpfecha_caducidad,R.id.txtdpcodigo_producto,R.string.form_detalle_producto_origen,R.string.form_detalle_producto_costo,R.string.form_detalle_producto_foto_cod,
             R.string.form_detalle_producto_energia,R.string.form_detalle_producto_foto_num,R.string.form_detalle_producto_marca_tras,
             R.string.form_detalle_producto_atributo_a,R.string.form_detalle_producto_atributob,R.string.form_detalle_producto_atributoc,
@@ -75,7 +77,7 @@ public class VerInformeDetFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-         root= inflater.inflate(R.layout.fragment_generic, container, false);
+         root= inflater.inflate(R.layout.ver_informe_det_fragment, container, false);
         return  root;
     }
 
@@ -84,11 +86,12 @@ public class VerInformeDetFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(VerInformeDetViewModel.class);
         dViewModel=new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
-        sv=root.findViewById(R.id.content_generic);
+        sv1=root.findViewById(R.id.vpcontentform);
+        sv2=root.findViewById(R.id.vpcontentform2);
         startui();
         niViewModel=new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
-        Log.d("DetalleProdFragment1","creando fragment");
+        Log.d("VerInformeDFragment1","creando fragment");
 
         sdf=new SimpleDateFormat("dd-MMM-yyyy");
         // Inflate the layout for this fragment
@@ -114,9 +117,9 @@ public class VerInformeDetFragment extends Fragment {
         informeSel.observe(getViewLifecycleOwner(), new Observer<InformeCompraDetalle>() {
           @Override
            public void onChanged(InformeCompraDetalle informeCompraDetalle) {
-              dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<CatalogoDetalle>>() {
+              dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<Atributo>>() {
                   @Override
-                  public void onChanged(List<CatalogoDetalle> catalogoDetalles) {
+                  public void onChanged(List<Atributo> catalogoDetalles) {
 
                       atributos = catalogoDetalles;
                       dViewModel.tomadoDe.observe(getViewLifecycleOwner(), new Observer<List<CatalogoDetalle>>() {
@@ -129,7 +132,8 @@ public class VerInformeDetFragment extends Fragment {
                                   public void onChanged(Integer integer) {
                                       if(integer==8) {
                                           crearFormulario();
-                                          sv.addView(cf.crearTabla());
+                                          sv1.addView(cf.crearTabla());
+                                          sv2.addView(cf2.crearTabla());
                                       }
                                   }
                               });
@@ -208,7 +212,8 @@ public class VerInformeDetFragment extends Fragment {
         camposForm.add(campo);
 
        this.crearCampo(getString(R.string.codigo_producto),informeSel.getValue().getCodigo());
-
+        cf=new CreadorFormulario(camposForm,getContext());
+        camposForm= new ArrayList<CampoForm>();
          campo=new CampoForm();
         campo.label=getString(R.string.origen);
         campo.nombre_campo= Contrato.TablaInformeDet.ORIGEN;
@@ -267,7 +272,7 @@ public class VerInformeDetFragment extends Fragment {
         campo.label=getString(R.string.atributoa);
 
          campo.type="label";
-        campo.value= buscarCatValor(informeSel.getValue().getAtributoa(),atributos);
+        campo.value= buscarAtr(informeSel.getValue().getAtributoa(),atributos);
 
         camposForm.add(campo);
         campo=new CampoForm();
@@ -285,7 +290,7 @@ public class VerInformeDetFragment extends Fragment {
         campo.nombre_campo=Contrato.TablaInformeDet.ATRIBUTOB;
          campo.type="label";
 
-        campo.value= buscarCatValor(informeSel.getValue().getAtributob(),atributos);
+        campo.value= buscarAtr(informeSel.getValue().getAtributob(),atributos);
 
         camposForm.add(campo);
         campo=new CampoForm();
@@ -301,7 +306,7 @@ public class VerInformeDetFragment extends Fragment {
         campo.nombre_campo=Contrato.TablaInformeDet.ATRIBUTOC;
          campo.type="label";
 
-        campo.value=buscarCatValor(informeSel.getValue().getAtributoc(),atributos);
+        campo.value=buscarAtr(informeSel.getValue().getAtributoc(),atributos);
 
         camposForm.add(campo);
         campo=new CampoForm();
@@ -328,7 +333,7 @@ public class VerInformeDetFragment extends Fragment {
         camposForm.add(campo);
 
 
-        cf=new CreadorFormulario(camposForm,getContext());
+        cf2=new CreadorFormulario(camposForm,getContext());
 
     }
 
@@ -347,6 +352,16 @@ public class VerInformeDetFragment extends Fragment {
         for(CatalogoDetalle valores:cat){
             if(op==valores.getCad_idopcion()){
                 return valores.getCad_descripcionesp();
+            }
+        }
+        return "";
+
+    }
+    public String buscarAtr(String opcion,List<Atributo> cat){
+        int op= Integer.parseInt(opcion);
+        for(Atributo valores:cat){
+            if(op==valores.getId_atributo()){
+                return valores.getAt_nombre();
             }
         }
         return "";
