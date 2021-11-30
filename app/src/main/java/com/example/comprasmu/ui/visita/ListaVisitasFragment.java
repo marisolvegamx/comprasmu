@@ -26,14 +26,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.R;
 
+import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
+import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
+import com.example.comprasmu.ui.informedetalle.ContinuarInformeActivity;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 
 import java.util.List;
+
+import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
 public class ListaVisitasFragment extends Fragment implements VisitaAdapter.AdapterCallback {
     private ListaVisitasViewModel mViewModel;
@@ -167,10 +172,13 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     @Override
     public void onClickAgregar(int idvisita) {
         Bundle bundle = new Bundle();
-        bundle.putInt(NuevoinformeFragment.INFORMESEL,idvisita);
+        bundle.putInt(ContinuarInformeActivity.INFORMESEL,idvisita);
 
-        NavHostFragment.findNavController(this).navigate(R.id.action_visitatonuevo,bundle);
+        //NavHostFragment.findNavController(this).navigate(R.id.action_visitatonuevo,bundle);
+        Intent intento1=new Intent(getActivity(), ContinuarInformeActivity.class);
+        intento1.putExtras(bundle);
 
+        startActivity(intento1);
 
     }
 

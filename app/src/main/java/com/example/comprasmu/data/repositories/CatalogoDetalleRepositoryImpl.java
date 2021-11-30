@@ -27,11 +27,11 @@ public class CatalogoDetalleRepositoryImpl  extends BaseRepository<CatalogoDetal
         dao=comprasDataBase.getCatalogoDao();
     }
 
-    public LiveData<List<CatalogoDetalle>> getAll(int cat) {
+    public List<CatalogoDetalle> getAll(int cat) {
         return dao.findAll(cat);
     }
 
-    public LiveData<List<CatalogoDetalle>> getxCatalogo(String cat)
+    public List<CatalogoDetalle> getxCatalogo(String cat)
     {
         int idcat=0;
         switch(cat){

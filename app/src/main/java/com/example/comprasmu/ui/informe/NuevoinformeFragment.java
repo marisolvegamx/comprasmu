@@ -81,8 +81,6 @@ import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 public class NuevoinformeFragment extends Fragment implements InformeDetalleAdapter.AdapterCallback {
 
     public static final String ARG_FOTOPRODUCTO ="comprasmu.ni.fotoprod" ;
-    private static final String CLIENTESEL ="clientesel" ;
-    private static final String ARG_TOTALLISTA ="comprasmu.ni.totallista" ;
 
     public static String NUMMUESTRA="comprasmu.ni.nummuestra";
     private NuevoinformeViewModel mViewModel;
@@ -425,23 +423,23 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         }else
             RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(null) + "/" +nombre_foto,foto);
     }
-    public void ponerDatos(){
+    public void ponerDatos() {
 
 
-         ponerFoto( informeEdicion.getTicket_compra(),R.id.txtuiticket_compra,R.id.ivuiticket_compra,"fotofachada");
+        ponerFoto(informeEdicion.getTicket_compra(), R.id.txtuiticket_compra, R.id.ivuiticket_compra, "fotofachada");
 
-        ponerFoto(informeEdicion.getCondiciones_traslado(),R.id.txtuicondiciones,R.id.ivuicondiciones,"fotocondiciones");
+        ponerFoto(informeEdicion.getCondiciones_traslado(), R.id.txtuicondiciones, R.id.ivuicondiciones, "fotocondiciones");
         mViewModel.visitaEdicion.observe(getViewLifecycleOwner(), new Observer<Visita>() {
             @Override
             public void onChanged(Visita visita) {
-                visitaCont=visita;
-                Log.d(TAG,"encontre visita"+visita.getId());
+                visitaCont = visita;
+                Log.d(TAG, "encontre visita" + visita.getId());
                 mBinding.setVisita(visita);
             }
         });
 
-        mViewModel.cargarMuestras();
-        mViewModel.muestras.observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDetalle>>() {
+        // mViewModel.cargarMuestras();
+    /*  mViewModel.muestras.observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDetalle>>() {
             @Override
             public void onChanged(List<InformeCompraDetalle> detalles) {
                 if(detalles.size()>0) {
@@ -461,10 +459,10 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                         root.findViewById(2005).setEnabled(false);
                         root.findViewById(2006).setEnabled(false);
                     }*/
-                }
+              /*  }
 
             }
-        });
+        });*/
 
 
     }
@@ -1062,9 +1060,9 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
 
                     //todo ok;
                     mViewModel.setIdInformeNuevo(mViewModel.informe.getId());
-                    mViewModel.cargarMuestras();
+                //    mViewModel.cargarMuestras();
 
-                    mViewModel.muestras.observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDetalle>>() {
+/*                    mViewModel.muestras.observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDetalle>>() {
                         @Override
                         public void onChanged(List<InformeCompraDetalle> detalles) {
                             if (detalles.size() > 0) {
@@ -1086,7 +1084,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
                             }
 
                         }
-                    });
+                    });*/
                         }
                     });
                     mBinding.setInforme(mViewModel.informe);

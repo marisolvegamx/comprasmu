@@ -12,15 +12,16 @@
 
         <TextView
             android:id="@+id/textView17"
+            style="@style/formlabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Seleccione cliente"
+            android:text="@string/seleccione_cliente"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnnfrotar"
-            app:layout_constraintVertical_bias="0.065" />
+            app:layout_constraintTop_toBottomOf="@+id/ivfefotoproducto"
+            app:layout_constraintVertical_bias="0.048" />
 
         <ImageView
             android:id="@+id/ivfefotoproducto"
@@ -32,16 +33,19 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnnfrotar"
-            android:layout_width="409dp"
+            style="@style/imbutton"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="172dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="Rotar imagen"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivfefotoproducto" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/ivfefotoproducto"
+            app:layout_constraintTop_toTopOf="@+id/ivfefotoproducto"
+            tools:src="@drawable/ic_baseline_loop_24" />
 
         <Button
             android:id="@+id/btnfeguardar"
@@ -49,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_weight="1"
-            android:text="agregar"
+            android:text="@string/agregar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

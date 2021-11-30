@@ -304,16 +304,13 @@ public class DetalleProductoFragment1 extends Fragment {
                 public void onChanged(List<Atributo> atrs) {
 
                     atributos = atributoaCat(atrs);
-                    dViewModel.tomadoDe.observe(getViewLifecycleOwner(), new Observer<List<CatalogoDetalle>>() {
-                        @Override
-                        public void onChanged(List<CatalogoDetalle> catalogoDetalles) {
+                    List<CatalogoDetalle> catalogoDetalles=dViewModel.tomadoDe;
                             tomadoDe = catalogoDetalles;
                             Log.d(TAG,"ya tengo los catalogos"+catalogoDetalles.size());
                             crearFormulario();
                             sv.addView(cf.crearFormulario());
                             deshabilitarCampos();
-                        }
-                    });
+
                 }
             });
             Log.d(TAG,"compra seleccionada"+dViewModel.productoSel.compraSel+"--"+dViewModel.productoSel.compradetalleSel);
@@ -377,17 +374,14 @@ public class DetalleProductoFragment1 extends Fragment {
                             public void onChanged(List<Atributo> catalogoDetalles) {
 
                                 atributos = atributoaCat(catalogoDetalles);
-                                dViewModel.tomadoDe.observe(getViewLifecycleOwner(), new Observer<List<CatalogoDetalle>>() {
-                                    @Override
-                                    public void onChanged(List<CatalogoDetalle> catalogoDetalles) {
-                                        tomadoDe = catalogoDetalles;
-                                        Log.d(TAG,"ya tengo los catalogos");
-                                        crearFormulario();
-                                        sv.addView(cf.crearFormulario());
-                                        ponerDatos();
-                                        deshabilitarCampos();
-                                    }
-                                });
+
+                                tomadoDe = dViewModel.tomadoDe;
+                                Log.d(TAG,"ya tengo los catalogos");
+                                crearFormulario();
+                                sv.addView(cf.crearFormulario());
+                                ponerDatos();
+                                deshabilitarCampos();
+
                             }
                         });
 
@@ -519,7 +513,7 @@ public class DetalleProductoFragment1 extends Fragment {
 
 
     }
-    private List<CatalogoDetalle> atributoaCat(List<Atributo> latributos){
+    private static List<CatalogoDetalle> atributoaCat(List<Atributo> latributos){
         List<CatalogoDetalle> nuevocat=new ArrayList<CatalogoDetalle>();
         for(Atributo atri:latributos){
             CatalogoDetalle cat=new CatalogoDetalle();
@@ -1603,7 +1597,7 @@ public class DetalleProductoFragment1 extends Fragment {
         return true;
     }
     Date fechacad = null;
-    MutableLiveData<Boolean> res;
+    boolean res;
     //validar siglas
     public boolean validarFecha(View view){
         Date hoy=new Date();
@@ -1682,19 +1676,14 @@ public class DetalleProductoFragment1 extends Fragment {
                    }else{
 
                        //busco si hay otra muestra == y si tiene el mismo codigo
-                       buscarMuestraCodigo(dViewModel.productoSel,codigo.getText().toString(),fechacad);
-                       res.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-                           @Override
-                           public void onChanged(Boolean aBoolean) {
-                               if(aBoolean){
+                       res=buscarMuestraCodigo(dViewModel.productoSel,codigo.getText().toString(),fechacad);
+
+                               if(res){
                                    Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido), Toast.LENGTH_LONG).show();
 
 
                                }
-                               resp.setValue(aBoolean);
 
-                           }
-                       });
                    }
                }
 
@@ -1707,14 +1696,14 @@ public class DetalleProductoFragment1 extends Fragment {
 
     }
 
-    public void buscarMuestraCodigo(NuevoDetalleViewModel.ProductoSel productosel,String codigonvo,Date caducidadnva){
+    public boolean buscarMuestraCodigo(NuevoDetalleViewModel.ProductoSel productosel,String codigonvo,Date caducidadnva){
         //busco en el mismo informe
-        res=dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,codigonvo,caducidadnva,getViewLifecycleOwner());
+        return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,codigonvo,caducidadnva,getViewLifecycleOwner());
 
     }
-    public void buscarMuestraCodigoPeñafiel(NuevoDetalleViewModel.ProductoSel productosel,Date caducidadnva){
+    public boolean buscarMuestraCodigoPeñafiel(NuevoDetalleViewModel.ProductoSel productosel,Date caducidadnva){
         //busco en el mismo informe
-        res=dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,"",caducidadnva,getViewLifecycleOwner());
+        return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,"",caducidadnva,getViewLifecycleOwner());
 
     }
     @Override

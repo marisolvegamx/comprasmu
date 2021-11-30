@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 //import com.example.comprasmu.BR;
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 
 import com.example.comprasmu.databinding.ListaDetalleItemBinding;
@@ -32,7 +33,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
     private final static String TAG=ListaCompraDetalleAdapter.class.getName();
     int numtienda;
     boolean isbu, ismuestra;//para saber si ya estoy en lista de bu o agregando muestra
-
+    String cliente;
     public ListaCompraDetalleAdapter(ListaDetalleViewModel viewModel, AdapterCallback callback) {
 
         mViewModel = viewModel;
@@ -40,11 +41,12 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
 
     }
 
-    public void setListaCompraDetalleList(List<ListaCompraDetalle> categoriesList,int numtienda, boolean isbu,boolean ismuestra) {
+    public void setListaCompraDetalleList(List<ListaCompraDetalle> categoriesList, int numtienda, boolean isbu, boolean ismuestra, String cliente) {
         mListaCompraDetalleList = categoriesList;
         this.numtienda=numtienda;
         this.isbu=isbu;
         this.ismuestra=ismuestra;
+        this.cliente=cliente;
       //  notifyDataSetChanged();
     }
     @NonNull
@@ -65,6 +67,8 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
        holder.binding.setNumTienda(numtienda);
        holder.binding.setIsBu(isbu);
        holder.binding.setMostrarAgregar(ismuestra);
+       holder.binding.setCliente(cliente);
+     //  holder.binding.informebudata.setDetallebu(comprabu);
      //  Log.d(TAG,"mostar agregar "+mListaCompraDetalleList.get(position).getComprados()+"--"+mListaCompraDetalleList.get(position).getCantidad());
       /*  if(mListaCompraDetalleList.get(position).getComprados()==mListaCompraDetalleList.get(position).getCantidad()){
             holder.binding.setMostrarAgregar(false);
@@ -105,13 +109,18 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
            altoini=binding.ldcardview.getLayoutParams();
 
            binding.txtcodigos.setVisibility(View.GONE);
-            binding.btncodigos.setOnClickListener(new View.OnClickListener() {
+           if(binding.getDetalle()!=null) {
+               binding.informebudata.setDetallebu(callback.getBackup(binding.getDetalle()));
+                if(binding.informebudata.getDetallebu()!=null)
+                    binding.informebudata.cajatexto.setVisibility(View.VISIBLE);
+           }
+           binding.btncodigos.setOnClickListener(new View.OnClickListener() {
 
                @Override
                public void onClick(View view) {
                    switch (view.getId()) {
                        case R.id.btncodigos:
-                             Log.d("Se seleccionó a ", binding.txtfecha.getText().toString());
+                            // Log.d("Se seleccionó a ", binding.txtfecha.getText().toString());
                            //   Toast.makeText(context, "Se seleccionó a " + txtid.getText().toString(), Toast.LENGTH_SHORT).show();
                            //amplio el card view
                            if(binding.txtcodigos.getVisibility()==View.GONE) {
@@ -151,6 +160,58 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                    }
                }
           });
+           binding.btncodigosper.setOnClickListener(new View.OnClickListener() {
+
+               @Override
+               public void onClick(View view) {
+                   switch (view.getId()) {
+                       case R.id.btncodigosper:
+                          // Log.d("Se seleccionó a ", binding.txtfecha.getText().toString());
+                           //   Toast.makeText(context, "Se seleccionó a " + txtid.getText().toString(), Toast.LENGTH_SHORT).show();
+                           //amplio el card view
+                           if(binding.txtcodigosper.getVisibility()==View.GONE) {
+
+                               binding.txtcodigosper.setVisibility(View.VISIBLE);
+
+                           }else
+                           {
+                               Log.d(TAG,"haciendo chiquito");
+                               binding.txtcodigosper.setVisibility(View.GONE);
+
+                           }
+
+                           break;
+                       default:
+                           break;
+                   }
+               }
+           });
+           binding.btncodigosex.setOnClickListener(new View.OnClickListener() {
+
+               @Override
+               public void onClick(View view) {
+                   switch (view.getId()) {
+                       case R.id.btncodigosex:
+                          // Log.d("Se seleccionó a ", binding.txtfecha.getText().toString());
+                           //   Toast.makeText(context, "Se seleccionó a " + txtid.getText().toString(), Toast.LENGTH_SHORT).show();
+                           //amplio el card view
+                           if(binding.txtcodigosex.getVisibility()==View.GONE) {
+
+                               binding.txtcodigosex.setVisibility(View.VISIBLE);
+
+                           }else
+                           {
+                               Log.d(TAG,"haciendo chiquito");
+                               binding.txtcodigosex.setVisibility(View.GONE);
+
+                           }
+
+                           break;
+                       default:
+                           break;
+                   }
+               }
+           });
             binding.btnldagregar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -184,6 +245,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
         void onClickCallback(View view);
         void agregarMuestra(View view,ListaCompraDetalle productoSel);
         void verBackup(ListaCompraDetalle productoSel);
+        InformeCompraDetalle getBackup(ListaCompraDetalle productoSel);
     }
 
 }

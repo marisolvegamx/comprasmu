@@ -27,6 +27,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -36,6 +37,9 @@ import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.santalu.maskara.Mask;
+import com.santalu.maskara.MaskChangedListener;
+import com.santalu.maskara.MaskStyle;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -56,6 +60,25 @@ public class CreadorFormulario {
     private String required,disabled;
     private boolean readonly;
     private Context context;
+    public static String AGREGARIMAGEN="agregarImagen";
+    public static String BOTON="boton";
+    public static String BOTONMICRO="botonMicro";
+    public static String BOTONQR="botonqr";
+    public static String CHECKBOX="checkbox";
+    public static String HIDDEN="hidden";
+
+    public static String IMAGENVIEW="imagenView";
+    public static String IMAGENVIEWR="imagenViewr";
+    public static String INPUTTEXT="inputtext";
+    public static String LABEL="label";
+    public static String PASSWORD="password";
+    public static String PREGUNTASINO="preguntasino";
+    public static String RADIOBUTTON="radiobutton";
+    public static String PSELECT="select";
+    public static String SELECTCAT="selectCat";
+    public static String SELECTDES="selectDes";
+    public static String TEXTAREA="textarea";
+    public static String FECHAMASK="fechaMask";
 
 
 
@@ -68,7 +91,7 @@ public class CreadorFormulario {
         LinearLayout formulario=new LinearLayout(context);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, 30, 0, 30);
+       // lp.setMargins(0, 20, 0, 50);
         formulario.setLayoutParams(lp);
         formulario.setOrientation(LinearLayout.VERTICAL);
         formulario.setGravity(Gravity.CENTER);
@@ -101,7 +124,9 @@ public class CreadorFormulario {
             TextView tv=new TextView(context);
            // tv.setText(Html.fromHtml("<b>"+this.infocampo.label+"</b>"));
             tv.setText(this.infocampo.label);
-
+            tv.setTextAppearance(context, R.style.formlabel);
+            if(infocampo.style>0)
+                tv.setTextAppearance(context, R.style.formlabel2);
             if(!this.infocampo.type.equals("preguntasino")) {
                 formulario.addView(tv);
             }
@@ -264,14 +289,15 @@ public class CreadorFormulario {
        // setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         //Pongo el boton
-        ImageButton button=new ImageButton(context);
+        ImageButton button=new AppCompatImageButton(context);
         Drawable replacer = context.getResources().getDrawable(R.drawable.ic_menu_camera);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
         lp.setMargins(0, 30, 0, 30);
         button.setImageDrawable(replacer);
 
          button.setOnClickListener(infocampo.funcionOnClick);
-         button.setBackgroundColor(context.getColor(R.color.blue_principal));
+         button.setBackgroundColor(context.getColor(R.color.blue_secondary));
+        // button.set
         button.setLayoutParams(lp);
 
         layout.addView(button);
@@ -309,7 +335,7 @@ public class CreadorFormulario {
 
         //Pongo el boton
         ImageButton button=new ImageButton(context);
-        Drawable replacer = context.getResources().getDrawable(R.drawable.ic_baseline_qr_code_scanner_24);
+        Drawable replacer = context.getDrawable(R.drawable.ic_baseline_qr_code_scanner_24);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
         lp.setMargins(0, 30, 0, 30);
         button.setImageDrawable(replacer);
@@ -332,6 +358,28 @@ public class CreadorFormulario {
         button.setBackgroundColor(context.getColor(R.color.blue_principal));
 
        return button;
+    }
+    public TextInputEditText fechaMask(){
+        Mask mask = new Mask(
+                "__-__-____",
+                 '_',
+                MaskStyle.PERSISTENT
+        );
+        MaskChangedListener listener =new  MaskChangedListener(mask);
+        TextInputEditText textField=new TextInputEditText(context);
+       textField.addTextChangedListener(listener);
+        String valor="";
+        if(this.infocampo.value!=null&&!this.infocampo.value.equals(""))
+            valor=this.infocampo.value;
+        //  else
+        //      valor=this.instance[this.infocampo["nombre_campo"]];
+        required=(this.infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
+
+        textField.setId(this.infocampo.id);
+        textField.setText(valor);
+        textField.setEnabled(!this.readonly);
+       return  textField;
+
     }
 
     public void botonGaleria(){
@@ -469,6 +517,72 @@ public class CreadorFormulario {
         return mySpinner;
 
     }
+
+    public Spinner selectDes() {
+
+        Spinner mySpinner = new Spinner(context);
+        if( this.infocampo.selectdes!=null) {
+            Log.d("CREADORFORM","hola"+ this.infocampo.selectdes.get(0).getNombre());
+
+            ArrayAdapter catAdapter = new ArrayAdapter<DescripcionGenerica>(context, android.R.layout.simple_spinner_dropdown_item, infocampo.selectdes) {
+
+
+                // And the "magic" goes here
+                // This is for the "passive" state of the spinner
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
+                    TextView label = (TextView) super.getView(position, convertView, parent);
+                    label.setTextColor(Color.BLACK);
+                    // Then you can get the current item using the values array (Users array) and the current position
+                    // You can NOW reference each method you has created in your bean object (User class)
+                    DescripcionGenerica item = getItem(position);
+                    label.setText(item.getNombre());
+                    //TODO elegir idioma
+
+                    // And finally return your dynamic (or custom) view for each spinner item
+                    return label;
+                }
+
+                // And here is when the "chooser" is popped up
+                // Normally is the same view, but you can customize it if you want
+                @Override
+                public View getDropDownView(int position, View convertView,
+                                            ViewGroup parent) {
+                    TextView label = (TextView) super.getDropDownView(position, convertView, parent);
+                    label.setTextColor(Color.BLACK);
+                    DescripcionGenerica item = getItem(position);
+                    label.setText(item.getNombre());
+
+                    return label;
+                }
+            };
+
+
+            mySpinner.setAdapter(catAdapter);
+            mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    // Get the value selected by the user
+                    // e.g. to store it as a field or immediately call a method
+                    DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+
+        }
+        else
+            Log.e(Constantes.TAG,"Error creando el select falta definir selectdes");
+
+        mySpinner.setId(this.infocampo.id);
+        //this.required.">
+        return mySpinner;
+
+    }
     public EditText hidden(){
         EditText input=new EditText(context);
          input.setId(this.infocampo.id);
@@ -502,6 +616,10 @@ public class CreadorFormulario {
     public Preguntasino preguntasino(){
         Preguntasino radiogrupo=new Preguntasino(context);
         radiogrupo.setmLabel(infocampo.label);
+        radiogrupo.setStyleLabel(R.style.formlabel);
+        if(infocampo.style>0){
+            radiogrupo.setStyleLabel(infocampo.style);
+        }
               //  if(this.infocampo.value!=null&&this.infocampo.value.equals(registro.getValue())) {
           //      rb.setChecked(true);
 

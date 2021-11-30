@@ -40,7 +40,7 @@ public class InformeCompraDetalle {
     private String atributoc;
     private int foto_atributoc;
     private int azucares;
-    private int qr;
+    private String qr;
     private int etiqueta_evaluacion;
     private int tipoMuestra;
     private String nombreTipoMuestra;
@@ -330,11 +330,11 @@ public class InformeCompraDetalle {
         this.azucares = azucares;
     }
 
-    public int getQr() {
+    public String getQr() {
         return qr;
     }
 
-    public void setQr(int qr) {
+    public void setQr(String qr) {
         this.qr = qr;
     }
 

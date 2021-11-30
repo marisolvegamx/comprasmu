@@ -1,7 +1,10 @@
 package com.example.comprasmu.ui.informe;
 
 import android.app.Application;
+import android.icu.text.IDNA;
+import android.media.Image;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -12,34 +15,39 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.modelos.CatalogoDetalle;
-import com.example.comprasmu.data.modelos.Contrato;
+
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
-import com.example.comprasmu.data.modelos.ListaCompraDetalle;
-import com.example.comprasmu.data.modelos.ProductoExhibido;
+
+import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Visita;
-import com.example.comprasmu.data.modelos.VisitaWithInformes;
+
 import com.example.comprasmu.data.remote.InformeEnvio;
-import com.example.comprasmu.data.remote.TodoEnvio;
+
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.modelos.InformeCompra;
+import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
-import com.example.comprasmu.ui.BackActivity;
+
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.prefs.BackingStoreException;
+
 
 public class NuevoinformeViewModel extends AndroidViewModel {
 
@@ -52,7 +60,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     private final InformeCompraRepositoryImpl repository;
 
     private ImagenDetRepositoryImpl imagenDetRepository;
-    private  CatalogoDetalleRepositoryImpl catsRepo;
+
     private ProductoExhibidoRepositoryImpl prodRepo;
     private VisitaRepositoryImpl visitaRepository;
     public InformeCompra informe;
@@ -65,9 +73,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public String[] clientesFoto;
     private InformeComDetRepositoryImpl detalleRepo;
 
-    public LiveData<List<InformeCompraDetalle>> muestras; //para guardar las muestras que se van creando
     private int idInformeNuevo;
-    private int iddetalleNuevo;
+    public int clienteSel;
     public Visita visita;
     public LiveData<Visita> visitaEdicion;
     public LiveData<InformeCompra> informeEdicion;
@@ -75,30 +82,30 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public boolean mIsNew;
     public String TAG="NuevoInformeVM";
 
+    InformeTempRepositoryImpl itemprepo;
+    public int numMuestra;
+    public List<InformeCompraDetalle> muestrasCap; //voy a gregando las muestras
+
+
 
     public NuevoinformeViewModel(@NonNull Application application) {
         super(application);
         this.repository = new InformeCompraRepositoryImpl(application);
         this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
         this.detalleRepo=new InformeComDetRepositoryImpl(application);
-        this.catsRepo=new CatalogoDetalleRepositoryImpl(application);
+
         this.visitaRepository=new VisitaRepositoryImpl(application);
         prodRepo=new ProductoExhibidoRepositoryImpl(application);
         listaPlantas = new MutableLiveData<>();
         listaClientes = new MutableLiveData<>();
         tiposTienda = new MutableLiveData<>();
         informe     =new InformeCompra();
-        HashMap<Integer,String> plantas=new HashMap();
-        plantas.put(1,"Planta 1");
-        plantas.put(3,"Planta 1");
-        HashMap<Integer,String> clientes=new HashMap();
-        clientes.put(1,"Cliente 1");
-        clientes.put(2,"Cliente 1");
+        itemprepo=new InformeTempRepositoryImpl(application);
         HashMap<Integer,String> tipos=new HashMap();
         tipos.put(1,"Grande");
         tipos.put(2,"Pequeña");
-       listaPlantas.setValue(plantas );
-       listaClientes.setValue(clientes);
+        numMuestra=0;
+        muestrasCap=new ArrayList<>();
        tiposTienda.setValue(tipos);
         Log.d("NuevoInformeViewModel","************************creando viewmodel");
 
@@ -157,6 +164,13 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         return resp+ultimo;
     }
+    public void agregarMuestra(InformeCompraDetalle det){
+        muestrasCap.add(det);
+    }
+    public void cargarMuestras(int id){
+        muestrasCap=detalleRepo.getAllSencillo(id);
+    }
+
     public LiveData<String> getRutaFoto(int idfoto){
         return imagenDetRepository.findRuta(idfoto);
 
@@ -239,11 +253,31 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
 
     }
+    public boolean guardarResp(String resp,String nombrecampo,String tabla,int consecutivo){
+        InformeTemp temporal=new InformeTemp();
+        temporal.setNombre_campo(nombrecampo);
+        temporal.setValor(resp);
+        temporal.setTabla(tabla);
+        temporal.setConsecutivo(consecutivo);
+        try {
+            //reviso si ya existe
+            InformeTemp editar=itemprepo.findByNombre(nombrecampo);
+            if(editar!=null){
+                editar.setNombre_campo(nombrecampo);
+                editar.setValor(resp);
+                editar.setTabla(tabla);
+                editar.setConsecutivo(consecutivo);
+                itemprepo.insert(editar);
+            }else
+            itemprepo.insert(temporal);
+            return true;
+        }catch(Exception ex){
+            Log.e(TAG,ex.getMessage());
+            return false;
+        }
 
-
-    public void cargarMuestras(){
-        muestras=detalleRepo.getAll(idInformeNuevo);
     }
+
 
     public void guardarVisita() {
 
@@ -301,8 +335,67 @@ public class NuevoinformeViewModel extends AndroidViewModel {
       return idInforme;
 
     }
+    public long insertarInfdeTemp(){
+        this.informe=tempToIC();
+        return repository.insertInformeCompra(this.informe);
+    }
+    public void eliminarTblTemp(){
+        itemprepo.deleteAll();
+    }
+    public InformeCompra tempToIC(){
+        //consulto el informe
+        InformeCompra nuevo=new InformeCompra();
+        List<InformeTemp> temps=itemprepo.getAllByTabla("I");
+        for(InformeTemp info:temps){
+            Class claseCargada = InformeCompra.class;
+            Class params[] = new Class[1];
+            params[0] = String.class;
+            try {
+                if(info.getNombre_campo().equals("segundaMuestra")) {
+                    params[0] = Boolean.class;
+                }
+
+                if(info.getNombre_campo().equals("ticket_compra")) {
+                    this.ticket_compra = new ImagenDetalle();
+                //    this.ticket_compra.setIndice(Constantes.INDICEACTUAL);
+                    this.ticket_compra.setRuta(info.getValor());
+
+                    this.ticket_compra.setDescripcion("ticket compra");
+                    this.ticket_compra.setEstatus(1);
+                    this.ticket_compra.setIndice(visita.getIndice());
+                    this.ticket_compra.setEstatusSync(0);
+                    this.ticket_compra.setCreatedAt(new Date());
+                }else
+                if(info.getNombre_campo().equals("condiciones_traslado")) {
+                    this.condiciones_traslado = new ImagenDetalle();
+                    this.condiciones_traslado.setRuta(info.getValor());
+                    this.condiciones_traslado.setDescripcion("condiciones traslado");
+                    this.condiciones_traslado.setEstatus(1);
+                    this.condiciones_traslado.setIndice(visita.getIndice());
+                    this.condiciones_traslado.setEstatusSync(0);
+                    this.condiciones_traslado.setCreatedAt(new Date());
+                }else {
+                    Method metodo = claseCargada.getDeclaredMethod("set" + ComprasUtils.upperCaseFirst(info.getNombre_campo()));
+
+                    metodo.invoke(nuevo, info.getValor());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+        return nuevo;
+    }
 
     public void actualizarInforme() {
+        //conservo el id
+        InformeCompra compra2=tempToIC();
+        //recupero los comentarios
+        informe.setComentarios(compra2.getComentarios());
+
         //validaciones
         int idt= (int) imagenDetRepository.insertImg(ticket_compra);
 

@@ -44,6 +44,11 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
 
     @Query("SELECT * FROM informe_detalle where id=:id")
     public abstract LiveData<InformeCompraDetalle> find( int id);
+    @Query("SELECT * FROM informe_detalle where id=:id")
+    public abstract InformeCompraDetalle findsimple( int id);
+
+    @Query("SELECT * FROM informe_detalle where comprasId=:idcompra and comprasDetId=:iddet")
+    public abstract InformeCompraDetalle findByCompra( int idcompra, int iddet);
 
     @Query("SELECT informe_detalle.foto_codigo_produccion FROM informe_detalle " +
             "            WHERE id =:id " +
@@ -80,7 +85,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " where productoId=:producto and presentacion=:tamanio" +
             " and empaque=:empaque and tipoAnalisis=:analisis " +
             " and visitas.indice=:indice and informe_compras.plantasId=:planta" )
-    public abstract LiveData<List<InformeCompraDetalle>> getByProductoAna(String indice, int planta,int producto, int analisis, int empaque, String tamanio);
+    public abstract List<InformeCompraDetalle> getByProductoAna(String indice, int planta,int producto, int analisis, int empaque, String tamanio);
 
     public class InformeDetalleImagenes {
 

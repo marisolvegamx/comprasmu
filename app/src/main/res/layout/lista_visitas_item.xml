@@ -6,6 +6,7 @@
     <data >
         <import type="android.view.View"/>
         <import type="com.example.comprasmu.utils.Constantes"/>
+        <import type="com.example.comprasmu.utils.ComprasUtils"/>
         <variable name="detalle"
             type="com.example.comprasmu.data.modelos.Visita"></variable>
         <variable
@@ -53,11 +54,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:text="@{detalle.indice}" />
+                    android:text='@{detalle.indice!=null?ComprasUtils.indiceLetra(detalle.indice):""}' />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/txtfecha"
+                android:id="@+id/ldprod"
                 style="@style/textolista2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +88,7 @@
                     android:text='@{detalle.tiendaId+""}'/>
 
                 <TextView
-                    android:id="@+id/txttienda"
+                    android:id="@+id/txtldpres"
                     style="@style/textolista1"
                     android:layout_width="194dp"
                     android:layout_height="wrap_content"
@@ -112,18 +113,17 @@
 
                 <Button
                     android:id="@+id/li_btnfin"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    style="@style/imbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:backgroundTint="#CCCDCD"
 
                     android:text="@string/finalizar"
-                    android:textColor="@color/gray"
 
                     tools:visibility='@{detalle.estatus==3?View.VISIBLE:View.GONE}' />
 
                 <ImageButton
                     android:id="@+id/li_btnagregar"
+                    style="@style/imbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="42dp"
                     android:layout_weight="1"
@@ -131,6 +131,7 @@
 
                 <ImageButton
                     android:id="@+id/li_btnedit"
+                    style="@style/imbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="42dp"
                     android:layout_weight="1"
@@ -139,6 +140,7 @@
 
                 <ImageButton
                     android:id="@+id/li_btnborrar"
+                    style="@style/imbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="42dp"
                     android:layout_weight="1"

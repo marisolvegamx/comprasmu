@@ -40,7 +40,7 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     }
 
 
-    public LiveData<List<InformeCompraDetalle>> getByProductoAna(String indice, int planta,int producto, int analisis, int presentacion, String tamanio ) {
+    public List<InformeCompraDetalle> getByProductoAna(String indice, int planta,int producto, int analisis, int presentacion, String tamanio ) {
         return dao.getByProductoAna(indice, planta,producto,analisis,presentacion,tamanio);
     }
 
@@ -61,9 +61,13 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
 
     @Override
     public InformeCompraDetalle findsimple(int id) {
-        return null;
+        return dao.findsimple(id);
     }
 
+
+    public InformeCompraDetalle findByCompra(int idcompra, int iddet) {
+        return dao.findByCompra(idcompra,iddet);
+    }
     @Override
     public long insert(InformeCompraDetalle object) {
         return dao.insert(object);

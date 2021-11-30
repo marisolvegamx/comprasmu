@@ -5,21 +5,13 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_configurar"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="@string/menu_configuracion" />
+            android:id="@+id/nav_sel_planta"
+            android:icon="@drawable/ic_baseline_checklist_rtl_24"
+            android:title="@string/menu_ver_lista" />
         <item
             android:id="@+id/nav_ciudad_trabajo"
             android:icon="@android:drawable/ic_menu_compass"
             android:title="@string/menu_ciudad_trabajo" />
-        <item
-            android:id="@+id/nav_descargar"
-            android:icon="@android:drawable/stat_sys_download"
-            android:title="@string/menu_descargar" />
-        <item
-            android:id="@+id/nav_sel_planta"
-            android:icon="@drawable/ic_baseline_checklist_rtl_24"
-            android:title="@string/menu_ver_lista" />
         <item
             android:id="@+id/nav_nuevoinforme"
             android:icon="?attr/actionModePasteDrawable"
@@ -28,30 +20,41 @@
             android:id="@+id/nav_listarvisitas"
             android:icon="@drawable/ic_baseline_note_24"
             android:title="@string/menu_continuar_informe" />
+
+
+
         <item
             android:id="@+id/nav_listar"
             android:icon="?attr/actionModePasteDrawable"
             android:title="@string/menu_lista_informe" />
-
         <item
-            android:id="@+id/nav_borrar"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_borrar" >
-        <menu>
-            <item
-                android:id="@+id/nav_borrarinformes"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="@string/menu_borrar_informe" />
-            <item
-                android:id="@+id/nav_borrarcompras"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="@string/menu_borrar_lista" />
-        </menu>
-
-        </item>
+            android:id="@+id/nav_descargar"
+            android:icon="@android:drawable/stat_sys_download"
+            android:title="@string/menu_descargar" />
         <item
-            android:id="@+id/nav_tiendas"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/buscar_tienda" />
+            android:id="@+id/nav_configurar"
+            android:icon="@android:drawable/ic_menu_manage"
+            android:title="@string/menu_configuracion" />
+
+<!--        <item-->
+<!--            android:id="@+id/nav_borrar"-->
+<!--            android:icon="@drawable/ic_menu_slideshow"-->
+<!--            android:title="@string/menu_borrar" >-->
+<!--        <menu>-->
+<!--            <item-->
+<!--                android:id="@+id/nav_borrarinformes"-->
+<!--                android:icon="@drawable/ic_menu_slideshow"-->
+<!--                android:title="@string/menu_borrar_informe" />-->
+<!--            <item-->
+<!--                android:id="@+id/nav_borrarcompras"-->
+<!--                android:icon="@drawable/ic_menu_slideshow"-->
+<!--                android:title="@string/menu_borrar_lista" />-->
+<!--        </menu>-->
+
+<!--        </item>-->
+<!--        <item-->
+<!--            android:id="@+id/nav_tiendas"-->
+<!--            android:icon="@drawable/ic_menu_slideshow"-->
+<!--            android:title="@string/buscar_tienda" />-->
     </group>
 </menu>

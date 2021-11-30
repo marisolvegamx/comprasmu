@@ -5,9 +5,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,11 +13,8 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.comprasmu.R;
@@ -28,11 +22,7 @@ import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-import com.example.comprasmu.databinding.FragmentDetalleProducto1Binding;
-import com.example.comprasmu.ui.informe.DetalleProductoFragment;
-import com.example.comprasmu.ui.informe.NuevoDetalleFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.utils.CampoForm;
@@ -53,11 +43,12 @@ public class VerInformeDetFragment extends Fragment {
     List<CampoForm> camposForm;
     private List<CatalogoDetalle> tomadoDe;
     private List<Atributo>atributos;
-
+    ImagenDetalle[] fotos;
+    MutableLiveData<Integer> cont;
 
     SimpleDateFormat sdf;
     View root;
-
+    int i;
     private static final String TAG="VerInformeDetFRAGMENT";
 
 
@@ -78,7 +69,8 @@ public class VerInformeDetFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
          root= inflater.inflate(R.layout.ver_informe_det_fragment, container, false);
-        return  root;
+        cont=new MutableLiveData<>();
+         return  root;
     }
 
 
@@ -86,30 +78,26 @@ public class VerInformeDetFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(VerInformeDetViewModel.class);
         dViewModel=new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
-        sv1=root.findViewById(R.id.vpcontentform);
-        sv2=root.findViewById(R.id.vpcontentform2);
-        startui();
-        niViewModel=new ViewModelProvider(this).get(NuevoinformeViewModel.class);
+
+
+         niViewModel=new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
         Log.d("VerInformeDFragment1","creando fragment");
 
         sdf=new SimpleDateFormat("dd-MMM-yyyy");
         // Inflate the layout for this fragment
-        dViewModel.cargarCatalogos();
-
+        startui();
 
     }
 
 
     public void startui(){
+        sv1=root.findViewById(R.id.vpcontentform);
+        sv2=root.findViewById(R.id.vpcontentform2);
         Bundle params = getArguments();
 
         idInforme= params.getInt(NuevoinformeFragment.ARG_NUEVOINFORME);
-
-
-
-
-        int idmuestra=params.getInt(DetalleProductoFragment1.ARG_IDMUESTRA);
+       int idmuestra=params.getInt(DetalleProductoFragment1.ARG_IDMUESTRA);
 
 
         informeSel= dViewModel.getMuestra(idmuestra);
@@ -117,56 +105,58 @@ public class VerInformeDetFragment extends Fragment {
         informeSel.observe(getViewLifecycleOwner(), new Observer<InformeCompraDetalle>() {
           @Override
            public void onChanged(InformeCompraDetalle informeCompraDetalle) {
-              dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<Atributo>>() {
-                  @Override
-                  public void onChanged(List<Atributo> catalogoDetalles) {
-
-                      atributos = catalogoDetalles;
-                      dViewModel.tomadoDe.observe(getViewLifecycleOwner(), new Observer<List<CatalogoDetalle>>() {
-                          @Override
-                          public void onChanged(List<CatalogoDetalle> catalogoDetalles) {
-                              tomadoDe = catalogoDetalles;
-                              ponerDatos(informeCompraDetalle);
-                              cont.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-                                  @Override
-                                  public void onChanged(Integer integer) {
-                                      if(integer==8) {
-                                          crearFormulario();
-                                          sv1.addView(cf.crearTabla());
-                                          sv2.addView(cf2.crearTabla());
-                                      }
-                                  }
-                              });
+              ponerDatos(informeCompraDetalle);
 
 
-                          }
-                      });
-                  }
-              });
             }
         });
 
+
+
+
+
     }
-    ImagenDetalle[] fotos;
-    MutableLiveData<Integer> cont;
+
     public void ponerDatos(InformeCompraDetalle informe) {
-        cont=new MutableLiveData<>();
+
         fotos= new ImagenDetalle[10];
         i=0;
 
 
         ponerFoto(informe.getFoto_codigo_produccion());
 
-        ponerFoto(informe.getEnergia());
+       // ponerFoto(informe.getEnergia());
         ponerFoto(informe.getFoto_num_tienda());
         ponerFoto(informe.getMarca_traslape());
         ponerFoto(informe.getFoto_atributoa());
         ponerFoto(informe.getFoto_atributob());
         ponerFoto(informe.getFoto_atributoc());
         ponerFoto(informe.getEtiqueta_evaluacion());
-        ponerFoto(informe.getQr());
+       // ponerFoto(informe.getQr());
         ponerFoto(informe.getAzucares());
+        tomadoDe=dViewModel.cargarCatalogos();
+        dViewModel.atributos=dViewModel.getAtributos();
+        dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<Atributo>>() {
 
+            @Override
+            public void onChanged(List<Atributo> catalogoDetalles) {
+                Log.d(TAG,"ya tengo atributos");
+                atributos = catalogoDetalles;
+
+            cont.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                Log.d(TAG,"cont="+integer);
+                if(integer==8) {
+                    Log.d(TAG,"dibujando form");
+                    crearFormulario(informe);
+                    sv1.addView(cf.crearTabla());
+                    sv2.addView(cf2.crearTabla());
+                }
+            }
+        });
+            }
+        });
 
 
     }
@@ -174,7 +164,7 @@ public class VerInformeDetFragment extends Fragment {
     //id de imagendetalle
     //id imageview
     //objeto imagendetalle
-    int i;
+
     public void ponerFoto( int idfoto){
         niViewModel.getFotoLD(idfoto).observe(this, new Observer<ImagenDetalle>() {
                 @Override
@@ -193,25 +183,25 @@ public class VerInformeDetFragment extends Fragment {
 
 
     }
-    public void crearFormulario(){
+    public void crearFormulario(InformeCompraDetalle detalle){
         String directorio=getActivity().getExternalFilesDir(null) + "/" ;
         Log.d(TAG,"haciendo formulario");
 
         camposForm= new ArrayList<CampoForm>();
-        this.crearCampo("NUM. MUESTRA",informeSel.getValue().getNumMuestra()+"");
-        this.crearCampo("PRODUCTO",informeSel.getValue().getProducto()+" "+informeSel.getValue().getEmpaque()+" "+informeSel.getValue().getPresentacion());
-        this.crearCampo("ANALISIS",informeSel.getValue().getNombreAnalisis());
-        this.crearCampo("TIPO MUESTRA",informeSel.getValue().getNombreTipoMuestra());
+        this.crearCampo("NUM. MUESTRA",detalle.getNumMuestra()+"");
+        this.crearCampo("PRODUCTO",detalle.getProducto()+" "+detalle.getEmpaque()+" "+detalle.getPresentacion());
+        this.crearCampo("ANALISIS",detalle.getNombreAnalisis());
+        this.crearCampo("TIPO MUESTRA",detalle.getNombreTipoMuestra());
 
         CampoForm campo=new CampoForm();
         campo.label=getString(R.string.fecha_caducidad);
         campo.nombre_campo=Contrato.TablaInformeDet.COSTO;
         campo.type="label";
-        campo.value=sdf.format(informeSel.getValue().getCaducidad());
+        campo.value=sdf.format(detalle.getCaducidad());
 
         camposForm.add(campo);
 
-       this.crearCampo(getString(R.string.codigo_producto),informeSel.getValue().getCodigo());
+       this.crearCampo(getString(R.string.codigo_producto),detalle.getCodigo());
         cf=new CreadorFormulario(camposForm,getContext());
         camposForm= new ArrayList<CampoForm>();
          campo=new CampoForm();
@@ -219,14 +209,14 @@ public class VerInformeDetFragment extends Fragment {
         campo.nombre_campo= Contrato.TablaInformeDet.ORIGEN;
          campo.type="label";
 
-        campo.value=buscarCatValor(informeSel.getValue().getOrigen(),tomadoDe);
+        campo.value=buscarCatValor(detalle.getOrigen(),tomadoDe);
 
         camposForm.add(campo);
         campo=new CampoForm();
         campo.label=getString(R.string.costo);
 
          campo.type="label";
-        campo.value= informeSel.getValue().getCosto();
+        campo.value= detalle.getCosto();
 
         camposForm.add(campo);
         campo=new CampoForm();
@@ -241,17 +231,17 @@ public class VerInformeDetFragment extends Fragment {
         campo.label=getString(R.string.azucareS);
 
         campo.type="imagenView";
-        campo.value=fotos[9]!=null?directorio+fotos[9].getRuta():"";
+        campo.value=fotos[7]!=null?directorio+fotos[7].getRuta():"";
 
         camposForm.add(campo);
-        campo=new CampoForm();
+     /*   campo=new CampoForm();
         campo.label=getString(R.string.energia);
         campo.nombre_campo=Contrato.TablaInformeDet.ENERGIA;
         campo.type="imagenView";
         campo.value=fotos[1]!=null?directorio+fotos[1].getRuta():"";
 
         camposForm.add(campo);
-
+*/
         campo=new CampoForm();
         campo.label=getString(R.string.foto_num_tienda);
 
@@ -267,64 +257,68 @@ public class VerInformeDetFragment extends Fragment {
         campo.type="imagenView";
         campo.value=fotos[3]!=null?directorio+fotos[3].getRuta():"";
         camposForm.add(campo);
+        if(detalle.getAtributoa()!=null&&!detalle.getAtributoa().equals("")) {
+            campo = new CampoForm();
+            campo.label = getString(R.string.atributoa);
 
-        campo=new CampoForm();
-        campo.label=getString(R.string.atributoa);
+            campo.type = "label";
 
-         campo.type="label";
-        campo.value= buscarAtr(informeSel.getValue().getAtributoa(),atributos);
+            campo.value = buscarAtr(detalle.getAtributoa(), atributos);
 
-        camposForm.add(campo);
-        campo=new CampoForm();
-        campo.label=getString(R.string.foto_atributoa);
-        campo.nombre_campo=Contrato.TablaInformeDet.FOTO_ATRIBUTOA;
-        campo.type="imagenView";
+            camposForm.add(campo);
+            campo = new CampoForm();
+            campo.label = getString(R.string.foto_atributoa);
+            campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOA;
+            campo.type = "imagenView";
 
-        campo.value=fotos[4]!=null?directorio+fotos[4].getRuta():"";
-
-
-        camposForm.add(campo);
-
-        campo=new CampoForm();
-        campo.label=getString(R.string.atributob);
-        campo.nombre_campo=Contrato.TablaInformeDet.ATRIBUTOB;
-         campo.type="label";
-
-        campo.value= buscarAtr(informeSel.getValue().getAtributob(),atributos);
-
-        camposForm.add(campo);
-        campo=new CampoForm();
-        campo.label=getString(R.string.foto_atributob);
-        campo.nombre_campo=Contrato.TablaInformeDet.FOTO_ATRIBUTOB;
-        campo.type="imagenView";
-        campo.value=fotos[5]!=null?directorio+fotos[5].getRuta():"";
-
-        camposForm.add(campo);
-
-        campo=new CampoForm();
-        campo.label=getString(R.string.atributoc);
-        campo.nombre_campo=Contrato.TablaInformeDet.ATRIBUTOC;
-         campo.type="label";
-
-        campo.value=buscarAtr(informeSel.getValue().getAtributoc(),atributos);
-
-        camposForm.add(campo);
-        campo=new CampoForm();
-        campo.label=getString(R.string.foto_atributoc);
-        campo.nombre_campo=Contrato.TablaInformeDet.FOTO_ATRIBUTOC;
-        campo.type="imagenView";
-        campo.value=fotos[6]!=null?directorio+fotos[6].getRuta():"";
-
-        camposForm.add(campo);
+            campo.value = fotos[4] != null ? directorio + fotos[4].getRuta() : "";
 
 
+            camposForm.add(campo);
+        }
+        if(detalle.getAtributob()!=null&&!detalle.getAtributob().equals("")) {
+            campo = new CampoForm();
+            campo.label = getString(R.string.atributob);
+            campo.nombre_campo = Contrato.TablaInformeDet.ATRIBUTOB;
+            campo.type = "label";
+
+            campo.value = buscarAtr(detalle.getAtributob(), atributos);
+
+            camposForm.add(campo);
+            campo = new CampoForm();
+            campo.label = getString(R.string.foto_atributob);
+            campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOB;
+            campo.type = "imagenView";
+            campo.value = fotos[5] != null ? directorio + fotos[5].getRuta() : "";
+
+            camposForm.add(campo);
+        }
+        if(detalle.getAtributoc()!=null&&!detalle.getAtributoc().equals("")) {
+            campo = new CampoForm();
+            campo.label = getString(R.string.atributoc);
+            campo.nombre_campo = Contrato.TablaInformeDet.ATRIBUTOC;
+            campo.type = "label";
+
+            campo.value = buscarAtr(detalle.getAtributoc(), atributos);
+
+            camposForm.add(campo);
+            campo = new CampoForm();
+            campo.label = getString(R.string.foto_atributoc);
+            campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOC;
+            campo.type = "imagenView";
+            campo.value = fotos[6] != null ? directorio + fotos[6].getRuta() : "";
+
+            camposForm.add(campo);
+
+        }
         campo=new CampoForm();
         campo.label="QR";
 
-        campo.type="imagenView";
-        campo.value=fotos[8]!=null?directorio+fotos[8].getRuta():"";
+        campo.type="label";
+        campo.value=detalle.getQr();
 
         camposForm.add(campo);
+        campo=new CampoForm();
         campo.label=getString(R.string.etiqueta_evaluacion);
 
         campo.type="imagenView";
@@ -358,7 +352,9 @@ public class VerInformeDetFragment extends Fragment {
 
     }
     public String buscarAtr(String opcion,List<Atributo> cat){
+
         int op= Integer.parseInt(opcion);
+        if(cat!=null)
         for(Atributo valores:cat){
             if(op==valores.getId_atributo()){
                 return valores.getAt_nombre();

@@ -1,5 +1,6 @@
 package com.example.comprasmu.data.modelos;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -7,17 +8,23 @@ import androidx.room.TypeConverters;
 import com.example.comprasmu.data.Converters;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Entity(tableName = "reactivos")
 public class Reactivo {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private int parentId;
-    private String descripcion;
-    private String tipoReactivo; /**posibles Abierto Lista Catalogo, Boolean, Imagen**/
-    @TypeConverters(Converters.class)
-    private HashMap lista;
-    private int estatus;
+    private int sigId;
+    private String label;
+    private String type; /**posibles vienen del creador form**/
+    /*@TypeConverters(Converters.class)
+    private HashMap lista;*/
+
+    private String nombreCampo;
+    private int sigAlt;
+    private boolean botonMicro;
+    private boolean isCatalogo;
+    private String tabla;
 
     public int getId() {
         return id;
@@ -27,43 +34,71 @@ public class Reactivo {
         this.id = id;
     }
 
-    public int getParentId() {
-        return parentId;
+    public String getLabel() {
+        return label;
     }
 
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getType() {
+        return type;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getTipoReactivo() {
-        return tipoReactivo;
+    public String getNombreCampo() {
+        return nombreCampo;
     }
 
-    public void setTipoReactivo(String tipoReactivo) {
-        this.tipoReactivo = tipoReactivo;
+    public void setNombreCampo(String nombreCampo) {
+        this.nombreCampo = nombreCampo;
     }
 
-    public HashMap getLista() {
-        return lista;
+    public int getSigId() {
+        return sigId;
     }
 
-    public void setLista(HashMap lista) {
-        this.lista = lista;
+    public void setSigId(int sigId) {
+        this.sigId = sigId;
     }
 
-    public int getEstatus() {
-        return estatus;
+    public int getSigAlt() {
+        return sigAlt;
     }
 
-    public void setEstatus(int estatus) {
-        this.estatus = estatus;
+
+    public void setSigAlt(int sigAlt) {
+        this.sigAlt = sigAlt;
     }
+
+
+    public boolean isBotonMicro() {
+        return botonMicro;
+    }
+
+    public boolean isCatalogo() {
+        return isCatalogo;
+    }
+
+    public String getTabla() {
+        return tabla;
+    }
+
+    public void setTabla(String tabla) {
+        this.tabla = tabla;
+    }
+
+    public void setCatalogo(boolean catalogo) {
+        isCatalogo = catalogo;
+    }
+
+    public void setBotonMicro(boolean botonMicro) {
+        this.botonMicro = botonMicro;
+    }
+
+
 }

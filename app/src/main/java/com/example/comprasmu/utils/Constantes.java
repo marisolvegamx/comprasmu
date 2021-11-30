@@ -1,6 +1,7 @@
 package com.example.comprasmu.utils;
 
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class Constantes {
     /********************/
     public static SimpleDateFormat  vistasdf=new SimpleDateFormat("dd-MM-yy HH:mm:ss");
     public static SimpleDateFormat  sdfcaducidad=new SimpleDateFormat("dd-MM-yy");
+    public static SimpleDateFormat  sdfsolofecha=new SimpleDateFormat("dd-MM-yyyy");
 
     public static String []listaindices;
     public static final String ACCOUNT_TYPE ="com.example.ejemploimagen.account" ;
@@ -47,4 +49,5 @@ public class Constantes {
     public static String ni_clientesel;
     public static int NM_TOTALISTA;
     public static int DP_TIPOTIENDA;
+    public static NuevoDetalleViewModel.ProductoSel productoSel;
 }

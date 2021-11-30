@@ -50,6 +50,7 @@
 
             <ImageButton
                 android:id="@+id/btnfeeliminar"
+                style="@style/imbutton"
                 android:layout_width="72dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

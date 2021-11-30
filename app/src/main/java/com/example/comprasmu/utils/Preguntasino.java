@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ public class Preguntasino extends LinearLayout {
         si = (RadioButton) this.findViewById(R.id.cvrbsi);
         no = (RadioButton) this.findViewById(R.id.cvrbno);
         this.setOrientation(VERTICAL);
+
     }
 
     public void onclicksi(OnClickListener clicksi) {
@@ -45,9 +47,16 @@ public class Preguntasino extends LinearLayout {
     public void onclickno(OnClickListener clickno) {
         no.setOnClickListener(clickno);
     }
+    public void setOnCheckedChangeListener( RadioGroup.OnCheckedChangeListener ccl){
+        RadioGroup rg=this.findViewById(R.id.cvradiogpo);
+        rg.setOnCheckedChangeListener(ccl);
+    }
 
     public void setmLabel(String pregunta) {
         label.setText(pregunta);
+    }
+    public void setStyleLabel(int style){
+        label.setTextAppearance(style);
     }
 
 

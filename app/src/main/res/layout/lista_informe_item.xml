@@ -5,6 +5,7 @@
     android:layout_marginBottom="10dp">
     <data >
         <import type="com.example.comprasmu.utils.Constantes"/>
+        <import type="com.example.comprasmu.utils.ComprasUtils"/>
         <import type="android.view.View"/>
         <variable name="detalle"
             type="com.example.comprasmu.data.dao.InformeCompraDao.InformeCompravisita"></variable>
@@ -53,7 +54,7 @@
                     android:layout_width="139dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
-                    android:text="@{detalle.indice}"
+                    android:text='@{detalle.indice!=null?ComprasUtils.indiceLetra(detalle.indice):""}'
                     android:visibility="visible" />
             </LinearLayout>
 
@@ -63,7 +64,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txtfecha"
+                    android:id="@+id/ldprod"
                     style="@style/textolista1"
                     android:layout_width="133dp"
                     android:layout_height="wrap_content"
@@ -102,7 +103,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txttienda"
+                    android:id="@+id/txtldpres"
                     style="@style/textolista2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -128,6 +129,7 @@
 
                 <ImageButton
                     android:id="@+id/li_btnsubir"
+                    style="@style/imbutton"
                     android:layout_width="66dp"
                     android:layout_height="42dp"
                     android:layout_weight="1"
@@ -136,6 +138,7 @@
 
                 <ImageButton
                     android:id="@+id/li_btnedit"
+                    style="@style/imbutton"
                     android:layout_width="41dp"
                     android:layout_height="39dp"
                     android:layout_weight="1"

@@ -38,8 +38,8 @@ public class VerInformeDetViewModel extends AndroidViewModel {
     private ImagenDetRepositoryImpl imagenDetRepository;
 
     private InformeComDetRepositoryImpl detalleRepo;
-    public LiveData<List<CatalogoDetalle>> atributos;
-    public LiveData<List<CatalogoDetalle>> tomadoDe;
+    public List<CatalogoDetalle> atributos;
+    public List<CatalogoDetalle> tomadoDe;
     private CatalogoDetalleRepositoryImpl catRepo;
 
     public VerInformeDetViewModel(@NonNull Application application) {

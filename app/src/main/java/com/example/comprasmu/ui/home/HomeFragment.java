@@ -1,6 +1,7 @@
 package com.example.comprasmu.ui.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -44,6 +45,13 @@ public class HomeFragment extends Fragment {
                 guardar();
             }
         });
+        Button boton = (Button) root.findViewById(R.id.button);
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                abrirPrueba();
+            }
+        });
         //textusuario.on
         return root;
     }
@@ -56,8 +64,12 @@ public class HomeFragment extends Fragment {
 
 
     }
+    public void abrirPrueba(){
+        Intent intento=new Intent(getContext(), PruebasActivity.class);
+        startActivity(intento);
+    }
 
-        public void guardar(){
+    public void guardar(){
        if(textusuario.getText().toString().length()>0){
            guardarUsuario(textusuario.getText().toString());
        }

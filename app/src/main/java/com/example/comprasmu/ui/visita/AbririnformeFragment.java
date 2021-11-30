@@ -141,6 +141,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     private ImagenDetalle efotoFachada;
     private FotoExhibicionAdapter mListAdapter;
     ImageView foto;
+    private TextView mensajedir;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -200,7 +201,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 irAProductoEx();
             }
         });
-       Button ubicar=(Button)root.findViewById(R.id.btnaiubicar);
+      // Button ubicar=(Button)root.findViewById(R.id.btnaiubicar);
         ImageButton fotofachada=(ImageButton)root.findViewById(R.id.btnaifotofachada);
         fotofachada.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,12 +209,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 tomarFoto(R.id.txtaifotofachada,R.id.ivaifachada);
             }
         });
-        ubicar.setOnClickListener(new View.OnClickListener() {
+       /* ubicar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 probarUbicacion();
             }
-        });
+        });*/
         /*para obtener la localizacion*/
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
@@ -319,7 +320,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     ponerDatos(visita);
                     LinearLayout sv = root.findViewById(R.id.content_main);
                     sv.addView(cf1.crearFormulario());
-                    sv.addView(cf2.crearFormulario());
+                 //   sv.addView(cf2.crearFormulario());
                     visitaEdi=visita;
 
 
@@ -343,7 +344,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             LinearLayout sv = root.findViewById(R.id.content_main);
             sv.addView(cf1.crearFormulario());
-            sv.addView(cf2.crearFormulario());
+        //    sv.addView(cf2.crearFormulario());
             getActivity().setTitle(R.string.nuevo_informe);
            // toolbar.setTitle(R.string.nuevo_informe);
         }
@@ -399,7 +400,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
                 return;
             } else if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 10, (LocationListener) Local);
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 50000, 10, (LocationListener) Local);
             }
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -409,9 +410,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
                     if (Local == null) { //Validación que evita NullPointerException
                         //Requiere actualización
-                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, (LocationListener) Local, Looper.getMainLooper());
+                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 50000, 10, (LocationListener) Local, Looper.getMainLooper());
                     } else
-                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, (LocationListener) Local);
+                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 50000, 10, (LocationListener) Local);
                     //  input11.setText("Localización aqui");
 
                 } else
@@ -469,7 +470,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             campo.id = 1004;
             camposTienda.add(campo);*/
             campo = new CampoForm();
-            campo.label = "Tipo tienda";
+            campo.label = "TIPO TIENDA";
             campo.nombre_campo = "tipoTienda";
             campo.type = "select";
             campo.value = visita.getTipoId()+"";
@@ -527,7 +528,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
      /***finaliza campos de tienda***/
         camposForm = new ArrayList<CampoForm>();
-        CampoForm campo2 = new CampoForm();
+      //  CampoForm campo2 = new CampoForm();
       /*  campo2.label=getString(R.string.ciudad);
         campo2.nombre_campo = "ciudad";
         campo2.type = "inputtext";
@@ -547,7 +548,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
         cf1=new CreadorFormulario(camposTienda,getActivity());
-        cf2=new CreadorFormulario(camposForm,getActivity());
+      //  cf2=new CreadorFormulario(camposForm,getActivity());
 
 
 
@@ -678,8 +679,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 mViewModel.visita.setTiendaNombre(input1.getText().toString());
                 mViewModel.visita.setTipoTienda(tipotiendasel);
 
-                mViewModel.visita.setTipoId(idtipo);
-               // mViewModel.visita.setDireccion(input2.getText().toString());
+                mViewModel.visita.setTipoId(idtipo+1);
+                mViewModel.visita.setDireccion(mensajedir.getText().toString());
 
                // mViewModel.visita.setCadenaComercial(input6.getText().toString());
                 //mViewModel.visita.setPuntoCardinal(input4.getText().toString());
@@ -695,6 +696,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 mViewModel.visita.setTiendaId(tienda.getUne_id());
                 mViewModel.visita.setTiendaNombre(tienda.getUne_descripcion());
                 mViewModel.visita.setTipoTienda(tienda.getTipoTienda());
+                mViewModel.visita.setDireccion(mensajedir.getText().toString());
 
                 mViewModel.visita.setTipoId(tienda.getUne_tipotienda());
             }
@@ -751,6 +753,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             /*   NavHostFragment.findNavController(this).navigate(R.id.action_selclientetolistacompras,bundle);
              */
             NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
+
         }
     }
 
@@ -862,17 +865,21 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
        Log.d(TAG,"****Ya tengo la ubicacion" + latitude + "," + longitude);
         //buscar direccion
         try {
-            TextView mensaje=root.findViewById(R.id.txtaimensajeubicacion);
-            mensaje.setText("Ubicación registrada");
+             mensajedir=root.findViewById(R.id.txtaimensajeubicacion);
+            mensajedir.setText("Ubicación registrada");
             Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-            List<Address> list = geocoder.getFromLocation(
+            List<Address> list=new ArrayList<>();
+            if(geocoder!=null)
+            list = geocoder.getFromLocation(
                     location.getLatitude(), location.getLongitude(), 1);
+
+
             if (!list.isEmpty()) {
                 Address DirCalle = list.get(0);
                 String state = DirCalle.getAdminArea();
                 country = DirCalle.getCountryName();
 
-                mensaje.setText(DirCalle.getAddressLine(0));
+                mensajedir.setText(DirCalle.getAddressLine(0));
                 //   ubicacion.setText(state+","+country);
             }
         } catch (IOException e) {
@@ -962,6 +969,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
          foto1=root.findViewById(origen);
          if(destino!=0) {
              imageView = root.findViewById(destino);
+             imageView.setVisibility(View.VISIBLE);
+            // rotar = root.findViewById(R.id.btnairotar1);
+             rotar.setVisibility(View.VISIBLE);
              startActivityForResult(intento1, REQUEST_CODE_TAKE_PHOTO);
          }
          else{
@@ -999,6 +1009,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     imageView.setImageBitmap(bitmap1);
                     rotar.setVisibility(View.VISIBLE);
                     agregarImagen();
+                    probarUbicacion();
                 }
                 if(requestCode == REQUEST_CODE_2) {
                     /*Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);

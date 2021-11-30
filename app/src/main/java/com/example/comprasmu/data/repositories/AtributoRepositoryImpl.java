@@ -25,10 +25,10 @@ public class AtributoRepositoryImpl extends BaseRepository<Atributo> {
         dao=comprasDataBase.getAtributoDao();
     }
 
-    public LiveData<List<Atributo>> getAll(int cat) {
-        return dao.findAll();
-    }
-    public  LiveData<List<Atributo>> getByEmpaque( int id, int cliente){
+   // public LiveData<List<Atributo>> getAll(int cat) {
+   //     return dao.findAll();
+    //}
+    public  List<Atributo> getByEmpaque( int id, int cliente){
      return dao.getByEmpaqueCliente(id,cliente );
     }
 
@@ -36,22 +36,22 @@ public class AtributoRepositoryImpl extends BaseRepository<Atributo> {
 
     @Override
     public LiveData<List<Atributo>> getAll() {
-        return null;
+        return dao.findAll();
     }
 
     @Override
     public List<Atributo> getAllsimple() {
-        return null;
+        return dao.findAllsimple();
     }
 
     @Override
     public LiveData<Atributo> find(int id) {
-        return null;
+        return dao.find(id);
     }
 
     @Override
     public Atributo findsimple(int id) {
-        return null;
+        return dao.findsimple(id);
     }
 
     @Override

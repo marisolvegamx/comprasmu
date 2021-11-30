@@ -25,6 +25,12 @@ public abstract class ReactivoDao extends  BaseDao<Reactivo> {
 
         @Query("SELECT * FROM reactivos where id=:id")
         public abstract LiveData<Reactivo> find( int id);
+
+        @Query("SELECT * FROM reactivos")
+        public  abstract List<Reactivo> findAllsimple();
+
+        @Query("SELECT * FROM reactivos where id=:id")
+        public abstract Reactivo findsimple( int id);
 }
 
 

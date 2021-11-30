@@ -1,5 +1,6 @@
 package com.example.comprasmu;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,13 +8,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
@@ -41,6 +45,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
@@ -72,6 +78,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
     private ListaDetalleViewModel mViewModel;
     SimpleDateFormat sdfparaindice=new SimpleDateFormat("MM-yyyy");
     SimpleDateFormat sdfparaindice2=new SimpleDateFormat("MMM yyyy");
+    private static final int PERMISSION_REQUEST_CODE = 200;
 
     public static final String PROGRESS_UPDATE = "progress_update";
     public static final String PROGRESS_PEND = "progress_pend";
@@ -161,7 +168,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
         }else {
             descargasIniciales();
-            graph.setStartDestination(R.id.nav_sel_planta);
+            graph.setStartDestination(R.id.nav_home);
         }
         navController.setGraph(graph);
       /*  if(inicio.equals("listainforme")){
@@ -170,6 +177,14 @@ public class NavigationDrawerActivity extends AppCompatActivity {
             ft.add(R.id., fragment);
             ft.commit();
         }*/
+        if (checkPermission()) {
+            //main logic or main code
+
+            // . write your main code to execute, It will execute if the permission is already given.
+
+        } else {
+            requestPermission();
+        }
     }
 
 
@@ -207,6 +222,58 @@ public class NavigationDrawerActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+    private boolean checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            return false;
+        }
+        return true;
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                  //  Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+
+                    // main logic
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            showMessageOKCancel("You need to allow access permissions",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                requestPermission();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+                break;
+        }
+    }
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
     public static Boolean isOnlineNet() {
 
@@ -316,7 +383,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         }
 
         // Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
-        Constantes.INDICEACTUAL = "1.2022";
+        Constantes.INDICEACTUAL = "12.2021";
         //TODO falta pais trabajo
         //  Constantes.CIUDADTRABAJO="Cd Juarez";
         Constantes.PAISTRABAJO = "Mexico";

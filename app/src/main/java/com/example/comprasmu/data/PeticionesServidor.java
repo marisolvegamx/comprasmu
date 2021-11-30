@@ -1,5 +1,6 @@
 package com.example.comprasmu.data;
 
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -11,11 +12,13 @@ import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
+import com.example.comprasmu.data.modelos.LoggedInUser;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.remote.CatalogosResponse;
 import com.example.comprasmu.data.remote.GenericResponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
+import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TiendasResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
@@ -25,10 +28,12 @@ import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.ui.login.LoginActivity;
 import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 
@@ -155,10 +160,11 @@ public class PeticionesServidor {
 
 
                     ListaCompraResponse compraResp = response.body();
-                    Log.d("PeticionesServidor","resp>>"+compraResp.getStatus());
-                   //reviso si está actualizado
+                    //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
+                        Log.d("PeticionesServidor","resp>>"+compraResp.getStatus());
+
                         listener.actualizar(compraResp);
                         /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
                         lcdrepo.insertAll(compraResp.getDetalles());
@@ -197,8 +203,6 @@ public class PeticionesServidor {
                 if (response.isSuccessful() && response.body() != null) {
                     //actualizo su estatus
 
-
-
                 }
             }
 
@@ -207,6 +211,48 @@ public class PeticionesServidor {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
 
+                }
+            }
+        });
+    }
+
+    public void autenticar(String username, String password, LoginActivity.LoginListener listener){
+
+        Log.d("PeticionesServidor","haciendo petición logeo");
+
+        final Call<PostResponse>  batch = apiClient.getApiService().autenticarUser(new String(android.util.Base64.encode(username.getBytes(), Base64.DEFAULT)), new String(Base64.encode(password.getBytes(),Base64.DEFAULT)));
+
+
+        batch.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+
+                    PostResponse logResp = response.body();
+                    //reviso si está actualizado
+                    if(logResp.getStatus().equals(100)) //correcto
+                    {
+
+                        listener.correcto();
+
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        listener.incorrecto(logResp.getData());
+                    }
+
+                }else{
+                    listener.incorrecto("error desconocido");
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("Peticiones servidor", t.getMessage());
+                    listener.incorrecto(t.getMessage());
                 }
             }
         });

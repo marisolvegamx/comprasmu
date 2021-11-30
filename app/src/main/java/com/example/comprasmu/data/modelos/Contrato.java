@@ -46,6 +46,9 @@ public  class Contrato {
         String CONDICIONES_TRASLADO = "condiciones_traslado";
         String COMENTARIOS = "comentarios";
         String AZUCARES = "azucares";
+        String SIGLAS = "siglas";
+
+
         String QR = "qr";
     }
     public static class TablaInformeDet

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -85,7 +86,7 @@ public class NuevaFotoExhibFragment extends Fragment {
         nombre_foto=extras.getString(NuevoinformeFragment.ARG_FOTOPRODUCTO);
         visitasId=extras.getInt(NuevaFotoExhibFragment.ARG_VISITASID);
         lViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-        cargarClientes();
+
         File file = new File(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
         if (file.exists()) {
             //   Bitmap imageBitmap = (Bitmap) extras.get("data");
@@ -95,7 +96,7 @@ public class NuevaFotoExhibFragment extends Fragment {
             ruta1.setText( nombre_foto);
         }
 
-        Button btnrotar=view.findViewById(R.id.btnnfrotar);
+        ImageButton btnrotar=view.findViewById(R.id.btnnfrotar);
         btnrotar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,9 +124,9 @@ public class NuevaFotoExhibFragment extends Fragment {
          spinn=view.findViewById(R.id.spteclientes);
 
         //cargo la lista de clientes
-        CreadorFormulario.cargarSpinnerDescr(getContext(),spinn,Constantes.clientesAsignados);
-
+        cargarClientes();
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -137,9 +138,13 @@ public class NuevaFotoExhibFragment extends Fragment {
             lViewModel.cargarClientes(Constantes.CIUDADTRABAJO).observe(getViewLifecycleOwner(), data -> {
                 Log.d(TAG, "regresó de la consulta " + data.size());
                 Constantes.clientesAsignados = ComprasUtils.convertirListaaClientes(data);
+                CreadorFormulario.cargarSpinnerDescr(getContext(),spinn,Constantes.clientesAsignados);
 
 
             });
+        else
+            CreadorFormulario.cargarSpinnerDescr(getContext(),spinn,Constantes.clientesAsignados);
+
     }
 
    public void guardarFotoExhibido(){

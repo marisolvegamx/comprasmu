@@ -19,6 +19,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 
+import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -75,6 +76,10 @@ public interface APIService {
             "Content-Type: application/json"
     })
     Call<ResponseBody> cancelarInforme(@Path("id") int informeId, @Body InformeCancelar item);
+
+    @FormUrlEncoded
+    @POST("login")
+    Call<PostResponse> autenticarUser(@Field("user") String user, @Field("pass") String pass);
 
 
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.DescripcionGenerica;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ public class CampoForm {
     public String required;
     public HashMap<Integer,String> select;
     public List<CatalogoDetalle> selectcat;
+    public List<DescripcionGenerica> selectdes;
     public String readonly;
     public String disabled;
     public View.OnClickListener funcionOnClick;
@@ -29,6 +31,7 @@ public class CampoForm {
     public boolean tomarFoto;
     public RecyclerView.Adapter adapter;
     public List<CampoForm> listadatos;
+    public int style;
 
     public CampoForm() {
     }

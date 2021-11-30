@@ -4,7 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
    >
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.comprasmu.ui.home.VHomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_v_home" >
 
+    </fragment>
     <fragment
         android:id="@+id/nav_configurar"
         android:name="com.example.comprasmu.ui.home.HomeFragment"
@@ -120,28 +126,8 @@
 
 
     </fragment>
-    <fragment
-        android:id="@+id/nav_borrarinformes"
-        android:name="com.example.comprasmu.ui.mantenimiento.BorrarDatosFragment"
-        android:label="@string/menu_borrar_informe"
-        tools:layout="@layout/borrar_datos_fragment" >
-        <argument
-            android:name="comprasmu.tipodata"
-            app:argType="string"
-            android:defaultValue="informe" />
 
-    </fragment>
-    <fragment
-        android:id="@+id/nav_borrarcompras"
-        android:name="com.example.comprasmu.ui.mantenimiento.BorrarDatosFragment"
-        android:label="@string/menu_borrar_lista"
-        tools:layout="@layout/borrar_datos_fragment" >
-        <argument
-            android:name="comprasmu.tipodata"
-            app:argType="string"
-            android:defaultValue="compra" />
 
-    </fragment>
     <fragment
         android:id="@+id/nav_tiendas"
         android:name="com.example.comprasmu.ui.tiendas.BuscarTiendaFragment"

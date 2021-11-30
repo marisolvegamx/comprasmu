@@ -22,11 +22,16 @@ public abstract class AtributoDao extends BaseDao<Atributo> {
     @Query("SELECT * FROM atributos ")
     public  abstract LiveData<List<Atributo>> findAll();
 
+    @Query("SELECT * FROM atributos ")
+    public  abstract List<Atributo> findAllsimple();
+
     @Query("SELECT * FROM atributos where id_atributo=:id")
     public abstract LiveData<Atributo> find( int id);
+    @Query("SELECT * FROM atributos where id_atributo=:id")
+    public abstract Atributo findsimple( int id);
     //TODO agregar el cliente
     @Query("SELECT * FROM atributos where id_tipoempaque=:id and id_atributo<>:cliente")
-    public abstract LiveData<List<Atributo>>  getByEmpaqueCliente( int id, int cliente);
+    public abstract List<Atributo>  getByEmpaqueCliente( int id, int cliente);
 
 
 

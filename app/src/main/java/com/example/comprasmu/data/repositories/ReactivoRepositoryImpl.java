@@ -13,7 +13,7 @@ import com.example.comprasmu.data.modelos.Reactivo;
 
 import java.util.List;
 
-public abstract class ReactivoRepositoryImpl  extends BaseRepository<Reactivo> {
+public  class ReactivoRepositoryImpl  extends BaseRepository<Reactivo> {
 
     private ReactivoDao dao;
 
@@ -30,11 +30,34 @@ public abstract class ReactivoRepositoryImpl  extends BaseRepository<Reactivo> {
     }
 
     @Override
+    public List<Reactivo> getAllsimple() {
+        return dao.findAllsimple();
+    }
+
+    @Override
     public LiveData<Reactivo> find(int id) {
         return dao.find(id);
     }
 
+    @Override
+    public Reactivo findsimple(int id) {
+        return dao.findsimple(id);
+    }
 
+    @Override
+    public long insert(Reactivo object) {
+        return dao.insert(object);
+    }
+
+    @Override
+    public void delete(Reactivo object) {
+         dao.delete(object);
+    }
+
+    @Override
+    public void insertAll(List<Reactivo> words) {
+        dao.insertAll(words);
+    }
 
 
 }

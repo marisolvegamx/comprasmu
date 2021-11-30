@@ -79,6 +79,12 @@ public class ComprasUtils {
 
 
     }
+
+    public static String upperCaseFirst(String val) {
+        char[] arr = val.toCharArray();
+        arr[0] = Character.toUpperCase(arr[0]);
+        return new String(arr);
+    }
     public Bitmap comprimirImagen(String nombre_foto){
         Bitmap bitmapOrg=BitmapFactory.decodeFile(nombre_foto);
 
@@ -141,46 +147,46 @@ public class ComprasUtils {
         return mapa;
     }
     static public String indiceLetra(String fecha){
-        fecha=fecha.replace("\\.","-");
-       String[] mifecha=fecha.split("");
+        fecha=fecha.replace(".","-");
+       String[] mifecha=fecha.split("-");
        String strMes="",lafecha;
         switch (mifecha[0])
         {
             case "01": case "1":
-                strMes="Enero";
+                strMes="ENERO";
                 break;
             case "02": case "2":
-                strMes="Febrero";
+                strMes="FEBRERO";
                 break;
             case "03": case "3":
-                strMes="Marzo";
+                strMes="MARZO";
                 break;
             case "04": case "4":
-                strMes="Abril";
+                strMes="ABRIL";
                 break;
             case "05": case "5":
-                strMes="Mayo";
+                strMes="MAYO";
                 break;
             case "06": case "6":
-                strMes="Junio";
+                strMes="JUNIO";
                 break;
             case "07": case "7":
-                strMes="Julio";
+                strMes="JULIO";
                 break;
             case "08": case "8":
-                strMes="Agosto";
+                strMes="AGOSTO";
                 break;
             case "09": case "9":
-                strMes="Septiembre";
+                strMes="SEPTIEMBRE";
                 break;
             case "10":
-                strMes="Octubre";
+                strMes="OCTUBRE";
                 break;
             case "11":
-                strMes="Noviembre";
+                strMes="NOVIEMBRE";
                 break;
             case "12":
-                strMes="Diciembre";
+                strMes="DICIEMBRE";
                 break;
         }
         lafecha=strMes+" "+mifecha[1];
@@ -192,40 +198,40 @@ public class ComprasUtils {
         switch (fecha)
         {
             case "1":
-                strMes="Enero";
+                strMes="ENERO";
                 break;
             case "2":
-                strMes="Febrero";
+                strMes="FEBRERO";
                 break;
             case "3":
-                strMes="Marzo";
+                strMes="MARZO";
                 break;
             case "4":
-                strMes="Abril";
+                strMes="ABRIL";
                 break;
             case "5":
-                strMes="Mayo";
+                strMes="MAYO";
                 break;
             case "6":
-                strMes="Junio";
+                strMes="JUNIO";
                 break;
             case "7":
-                strMes="Julio";
+                strMes="JULIO";
                 break;
             case "8":
-                strMes="Agosto";
+                strMes="AGOSTO";
                 break;
             case "9":
-                strMes="Septiembre";
+                strMes="SEPTIEMBRE";
                 break;
             case "10":
-                strMes="Octubre";
+                strMes="OCTUBRE";
                 break;
             case "11":
-                strMes="Noviembre";
+                strMes="NOVIEMBRE";
                 break;
             case "12":
-                strMes="Diciembre";
+                strMes="DICIEMBRE";
                 break;
         }
 

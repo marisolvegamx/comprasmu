@@ -25,7 +25,7 @@ public abstract class CatalogoDetalleDao {
 
 
     @Query("SELECT * FROM catalogos_detalle where cad_idcatalogo=:cat")
-    public  abstract LiveData<List<CatalogoDetalle>> findAll(int cat);
+    public  abstract List<CatalogoDetalle> findAll(int cat);
 
     @Query("SELECT * FROM catalogos_detalle where cad_idcatalogo=:cat and cad_idopcion=:id")
     public abstract LiveData<CatalogoDetalle> find( int id,int cat);

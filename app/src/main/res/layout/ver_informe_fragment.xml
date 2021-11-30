@@ -52,9 +52,10 @@ xmlns:tools="http://schemas.android.com/tools">
                     android:id="@+id/cardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="24dp"
+                    app:cardCornerRadius="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -79,11 +80,12 @@ xmlns:tools="http://schemas.android.com/tools">
                     android:id="@+id/card2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="24dp"
                     android:layout_marginBottom="15dp"
                     android:layout_weight="1"
+                    app:cardCornerRadius="10dp"
                     app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -109,30 +111,12 @@ xmlns:tools="http://schemas.android.com/tools">
                         <ImageView
                             android:id="@+id/ivvifoto_fachada"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="100dp"
                             android:layout_weight="1"
                             android:misrc="@{directorio+fotoFachada.ruta}"
 
                             tools:src="@tools:sample/avatars" />
 
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/comentarios"
-                            android:textStyle="bold" />
-
-
-                        <TextView
-                            android:id="@+id/txtvicomentarios"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:ems="10"
-                            android:gravity="start|top"
-                            android:inputType="textMultiLine"
-                            android:text="@{informe.comentarios}" />
 
                         <TextView
                             android:id="@+id/textView25"
@@ -145,43 +129,10 @@ xmlns:tools="http://schemas.android.com/tools">
                         <ImageView
                             android:id="@+id/ivuiprodex"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="100dp"
                             android:layout_weight="1"
                             android:misrc="@{directorio+prodex.ruta}"
                             tools:srcCompat="@tools:sample/avatars" />
-
-                        <TextView
-                            android:id="@+id/textView6"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/ticket_compra"
-                            android:textStyle="bold" />
-
-                        <ImageView
-                            android:id="@+id/ivuiticket_compra"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:misrc="@{directorio+fotoTicket}"
-                            tools:srcCompat="@tools:sample/avatars" />
-
-                        <TextView
-                            android:id="@+id/textView11"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/condiciones"
-                            android:textStyle="bold" />
-
-
-                        <ImageView
-                            android:id="@+id/ivuicondiciones"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:misrc="@{directorio+fotocondiciones.ruta}"
-                            tools:src="@tools:sample/avatars" />
 
 
                     </LinearLayout>
@@ -193,7 +144,9 @@ xmlns:tools="http://schemas.android.com/tools">
                     android:id="@+id/linearLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginEnd="20dp"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -215,6 +168,84 @@ xmlns:tools="http://schemas.android.com/tools">
 
                         />
                 </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="24dp"
+                    app:cardCornerRadius="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/linearLayout2">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textView6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/ticket_compra"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/ivuiticket_compra"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_weight="1"
+                            android:misrc="@{directorio+fotoTicket}"
+                            tools:srcCompat="@tools:sample/avatars" />
+
+                        <TextView
+                            android:id="@+id/textView11"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/condiciones"
+                            android:textStyle="bold" />
+
+
+                        <ImageView
+                            android:id="@+id/ivuicondiciones"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_weight="1"
+                            android:misrc="@{directorio+fotocondiciones.ruta}"
+                            tools:src="@tools:sample/avatars" />
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/comentarios"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtvicomentarios"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:gravity="start|top"
+                            android:inputType="textMultiLine"
+                            android:text="@{informe.comentarios}" />
+
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 

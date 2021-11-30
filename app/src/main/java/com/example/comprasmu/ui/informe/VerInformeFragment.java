@@ -110,7 +110,8 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
                 if (mViewModel.informeCompraSel.getValue() != null) {
                     mListAdapter.setInformeCompraDetalleList(mViewModel.informeCompraSel.getValue().informeDetalle, true);
                     mListAdapter.notifyDataSetChanged();
-
+                    Log.d(TAG,"tengo el informe"+ informeWithDetalle.informe.getId());
+                    mBinding.setInforme(informeWithDetalle.informe);
                     mViewModel.getVisita(informeWithDetalle.informe.getVisitasId()).observe(getViewLifecycleOwner(), new Observer<Visita>() {
                         @Override
                         public void onChanged(Visita visita) {
@@ -120,7 +121,6 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
                         }
                     });
 
-                    mBinding.setInforme(informeWithDetalle.informe);
 
 
                 }
@@ -158,6 +158,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
            @Override
            public void onChanged(ImagenDetalle imagenDetalle) {
                mBinding.setFotocondiciones(imagenDetalle);
+
            }
        });
        mViewModel.getproductoExhib(visita.getId(),informe.getClientesId()).observe(getViewLifecycleOwner(), new Observer<List<ProductoExhibidoDao.ProductoExhibidoFoto>>() {

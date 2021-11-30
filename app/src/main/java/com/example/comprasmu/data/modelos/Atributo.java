@@ -11,9 +11,9 @@ public class Atributo {
         private int id_tipoempaque;
         private String nombre_empaqueesp;
         private String nombre_empaque_ing;
-       /* private int at_idcliente;
+        private int at_idcliente;
         private int at_idclasificaciondano;
-        private int at_idponderaciondano;*/
+        private int at_idponderaciondano;
 
     public int getId_atributo() {
         return id_atributo;
@@ -53,5 +53,29 @@ public class Atributo {
 
     public void setNombre_empaque_ing(String nombre_empaque_ing) {
         this.nombre_empaque_ing = nombre_empaque_ing;
+    }
+
+    public int getAt_idcliente() {
+        return at_idcliente;
+    }
+
+    public void setAt_idcliente(int at_idcliente) {
+        this.at_idcliente = at_idcliente;
+    }
+
+    public int getAt_idclasificaciondano() {
+        return at_idclasificaciondano;
+    }
+
+    public void setAt_idclasificaciondano(int at_idclasificaciondano) {
+        this.at_idclasificaciondano = at_idclasificaciondano;
+    }
+
+    public int getAt_idponderaciondano() {
+        return at_idponderaciondano;
+    }
+
+    public void setAt_idponderaciondano(int at_idponderaciondano) {
+        this.at_idponderaciondano = at_idponderaciondano;
     }
 }

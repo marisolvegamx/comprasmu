@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.comprasmu">
-    <uses-feature
-        android:name="android.hardware.camera.any"
-        android:required="true" />
-    <uses-feature
-        android:name="android.hardware.camera.autofocus"
-        android:required="false" />
+
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GPS_PROVIDER" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -20,15 +22,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Comprasmu">
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:label="@string/title_activity_login">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.home.PruebasActivity"
+            android:label="@string/title_activity_pruebas"></activity>
+        <!--
+               Set to true if your app is Standalone, that is, it does not require the handheld
+               app to run.
+        -->
+        <activity
+            android:name=".ui.informedetalle.ContinuarInformeActivity"
+            android:label="@string/title_activity_continuar_informe"
+            android:screenOrientation="portrait"
+            tools:replace="screenOrientation" />
 
         <service
             android:name=".services.SubirFotoService"
             android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="true" />
         <service android:name=".services.SubirPendService" />
 
-        <activity android:name=".ui.BackActivity"></activity>
+        <activity android:name=".ui.BackActivity" />
         <activity android:name=".utils.ui.FiltrarListaActivity" />
         <activity
             android:name=".ui.RevisarFotoActivity"
@@ -37,11 +60,7 @@
             android:name=".NavigationDrawerActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Comprasmu.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
 

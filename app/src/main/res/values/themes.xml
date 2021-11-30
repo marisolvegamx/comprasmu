@@ -13,9 +13,16 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:textViewStyle">@style/CompTextViewStyle</item>
 
     </style>
+    <style name="CompTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:textSize">16sp</item>
+    </style>
 
+    <style name="RobotoButtonStyle" parent="android:Widget.Button">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
     <style name="Theme.Comprasmu.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

@@ -28,12 +28,14 @@ import android.widget.TextView;
 import com.example.comprasmu.R;
 
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.databinding.ListaCompraFragmentBinding;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -55,9 +57,10 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     private ListaCompraDetalleAdapter mListAdapter;
     TextView paraDebug;
      String nombrePlanta;
+     String nombreCliente;
     ListaWithDetalle lista;
 
-    private String siglas;
+   // private String siglas;
     TextView etsiglas;
     int consecutivoTienda;
 
@@ -67,11 +70,11 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
 
 
-    public  ListaCompraFragment(int planta,String onombrePlanta) {
+    public  ListaCompraFragment(int planta,String onombrePlanta, String nomcliente) {
       //  ListaCompraFragment fragment = new ListaCompraFragment();
         plantaSel=planta;
         nombrePlanta=onombrePlanta;
-
+        this.nombreCliente=nomcliente;
 
     }
 
@@ -166,7 +169,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                     calcularTotales(lista.listaDetalle);
                     etsiglas.setText(lista.user.getSiglas());
                     mViewModel.listaSelec = lista.user;
-                    mListAdapter.setListaCompraDetalleList(lista.listaDetalle, consecutivoTienda,isbu,ismuestra);
+                    mListAdapter.setListaCompraDetalleList(lista.listaDetalle, consecutivoTienda,isbu,ismuestra,lista.user.getClienteNombre());
                     mListAdapter.notifyDataSetChanged();
                 } else {
                     //  mBinding.setIsLoading(true);
@@ -200,7 +203,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 calcularTotales(myProducts);
                 //   etsiglas.setText(lista.user.getSiglas());
                 //   mViewModel.listaSelec = lista.user;
-                mListAdapter.setListaCompraDetalleList(myProducts, consecutivoTienda,isbu,ismuestra);
+                mListAdapter.setListaCompraDetalleList(myProducts, consecutivoTienda,isbu,ismuestra,"");
                 mListAdapter.notifyDataSetChanged();
             } else {
                 //  mBinding.setIsLoading(true);
@@ -276,7 +279,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
         //cambio al fragmento de captura del detalle
         if (view.getId() == R.id.btnldagregar) {
-            Log.d(TAG, "agregar muestra"+mViewModel.nombrePlantaSel+"--"+mViewModel.getPlantaSel());
+           Log.d(TAG, "agregar muestra"+mViewModel.nombrePlantaSel+"--"+mViewModel.getPlantaSel());
 
             NuevoDetalleViewModel nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
                 String clienteNombre=Constantes.ni_clientesel;//lo pongo hasta que se guarda el informe
@@ -288,8 +291,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 productoSel.setNombreTipoMuestra("Backup");
             }
             nuevoInf.setProductoSel(productoSel,mViewModel.nombrePlantaSel,mViewModel.getPlantaSel(), mViewModel.getClienteSel(),clienteNombre,mViewModel.listaSelec.getSiglas());
+            Constantes.productoSel=nuevoInf.productoSel;
             Constantes.NM_TOTALISTA=mListAdapter.getItemCount();
-            Fragment fragment = new DetalleProductoFragment1();
+    /*        Fragment fragment = new DetalleProductoFragment1();
 // Obtener el administrador de fragmentos a través de la actividad
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
@@ -300,7 +304,15 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 // Cambiar
             fragmentTransaction.commit();
           //  fragmentManager.beginTransaction().remove(this).commitAllowingStateLoss();
+*/
+            Constantes.NM_TOTALISTA=mListAdapter.getItemCount();
+            Intent resultIntent = new Intent();
 
+           // resultIntent.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.informe.getId());
+            getActivity().setResult(DetalleProductoFragment.NUEVO_RESULT_OK, resultIntent);
+
+            //regreso al informe
+            getActivity().finish();
         }
     }
 
@@ -319,7 +331,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
        //paso los params que necesito
         mViewModel.setIdListaSel(lista.user.getId());
         mViewModel.setDetallebuSel(productoSel);
-        Fragment fragment = new ListaCompraFragment(plantaSel,nombrePlanta);
+        Fragment fragment = new ListaCompraFragment(plantaSel,nombrePlanta,this.nombreCliente);
 // Obtener el administrador de fragmentos a través de la actividad
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
@@ -333,5 +345,13 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 // Cambiar
         fragmentTransaction.commit();
 
+    }
+
+    @Override
+    public InformeCompraDetalle getBackup(ListaCompraDetalle productoSel) {
+        //busco si tiene un backup
+        InformeCompraDetalle compra=mViewModel.tieneBackup(productoSel.getListaId(),productoSel.getId());
+        Log.d(TAG,"es bu "+compra.getNombreAnalisis());
+        return compra;
     }
 }

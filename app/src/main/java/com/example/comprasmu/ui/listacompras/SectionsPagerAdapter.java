@@ -28,16 +28,16 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
     private  final String[] TAB_TITLES;
     private int plantaSel;
    // private final Context mContext;
-    private String[][] plantas;
+    private String[][][] plantas;
     int tabCount;
 
-    public SectionsPagerAdapter(FragmentManager fm, String[] titulos, ListaDetalleViewModel vm,String[][] clientesplan) {
+    public SectionsPagerAdapter(FragmentManager fm, String[] titulos, ListaDetalleViewModel vm) {
         super(fm);
        // mContext = context;
         this.tabCount=titulos.length;
         TAB_TITLES=titulos;
         mViewModel=vm;
-        this.plantas=clientesplan;
+      //  this.plantas=clientesplan;
     }
 
     @Override

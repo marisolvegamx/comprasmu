@@ -29,8 +29,8 @@ public class ListaCompraDetalle {
     private String nombreTipoMuestra;
     private int categoriaid;
     private String categoria;
-    private String lid_fechapremitida;
-    private String lis_fecharestringida;
+    private String lid_fechapermitida;
+    private String lid_fecharestringida;
 
 
 
@@ -174,20 +174,20 @@ public class ListaCompraDetalle {
         this.categoria = categoria;
     }
 
-    public String getLid_fechapremitida() {
-        return lid_fechapremitida;
+    public String getLid_fechapermitida() {
+        return lid_fechapermitida;
     }
 
-    public void setLid_fechapremitida(String lid_fechapremitida) {
-        this.lid_fechapremitida = lid_fechapremitida;
+    public void setLid_fechapermitida(String lid_fechapermitida) {
+        this.lid_fechapermitida = lid_fechapermitida;
     }
 
-    public String getLis_fecharestringida() {
-        return lis_fecharestringida;
+    public String getLid_fecharestringida() {
+        return lid_fecharestringida;
     }
 
-    public void setLis_fecharestringida(String lis_fecharestringida) {
-        this.lis_fecharestringida = lis_fecharestringida;
+    public void setLid_fecharestringida(String lid_fecharestringida) {
+        this.lid_fecharestringida = lid_fecharestringida;
     }
 
     public String getNvoCodigo() {

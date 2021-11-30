@@ -48,14 +48,16 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... indice) {
-        Log.d("DescargasIniAsyncTask","iniciando descarga");
+
         if(NavigationDrawerActivity.isOnlineNet()) {
+            Log.d("DescargasIniAsyncTask","iniciando descarga");
             if (indice[0].equals("cat")) //descargo cats tmb
                 catalogos();
             listacompras();
         }else
               {
             notificar = true;
+                  Log.d("DescargasIniAsyncTask"," sin internet");
             cancel(true);
         }
         return null;
@@ -79,10 +81,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
 
             }
-        }else
-            //primera vez
-
-            ps.getCatalogos(cdrepo,tvRepo,atRepo);
+        }else {   //primera vez
+            Log.d("DescargasIniAsyncTask","iniciando descarga cats");
+            ps.getCatalogos(cdrepo, tvRepo, atRepo);
+        }
 
     }
 

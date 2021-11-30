@@ -13,9 +13,11 @@ import androidx.lifecycle.Transformations;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
+import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.utils.Constantes;
@@ -187,9 +189,15 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
+
+    public InformeCompraDetalle tieneBackup(int idcompra,int iddetalle){
+        InformeComDetRepositoryImpl icrepo=new InformeComDetRepositoryImpl(context);
+        return icrepo.findByCompra(idcompra,iddetalle);
+    }
     //actualiza comprados y codigos no permitidos
     public void comprarMuestraPepsi(int idlista,int idDetalle,String nuevoCodigo, String isbu){
         detRepo=new ListaCompraDetRepositoryImpl(context);
+        Log.d(TAG,"qqqqqqqqqqqqqqq"+idlista+"--"+idDetalle);
         ListaCompraDetalle listaCompraDetalle=detRepo.findsimple(idlista,idDetalle);
         Log.d(TAG,"1seguimiento muestras "+listaCompraDetalle.getCantidad()+" "+listaCompraDetalle.getComprados());
         //valido que se pueda comprar y no sea bu

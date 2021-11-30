@@ -17,18 +17,18 @@ import java.util.List;
 @Dao
 public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> {
 
-    @Query("SELECT * FROM lista_compras_detalle WHERE listaId = :uuid")
+    @Query("SELECT * FROM lista_compras_detalle WHERE listaId =:uuid")
      public abstract LiveData<List<ListaCompraDetalle>> getListaDetallesByLista(int uuid);
 
-    @Query("SELECT * FROM lista_compras_detalle WHERE listaId = :uuid")
+    @Query("SELECT * FROM lista_compras_detalle WHERE listaId =:uuid")
     public abstract List<ListaCompraDetalle> getListaDetallesByListasimple(int uuid);
     @Query("SELECT * FROM lista_compras_detalle")
     public abstract LiveData<List<ListaCompraDetalle>> findAll();
 
     @Query("SELECT * FROM lista_compras_detalle where id=:id and listaId=:listaid")
-    public abstract LiveData<ListaCompraDetalle> find( int id, int listaid);
+    public abstract LiveData<ListaCompraDetalle> find( int listaid, int id);
     @Query("SELECT * FROM lista_compras_detalle where id=:id and listaId=:listaid")
-    public abstract ListaCompraDetalle findsimple( int id, int listaid);
+    public abstract ListaCompraDetalle findsimple( int listaid, int id );
 
     @Query("delete FROM lista_compras_detalle WHERE listaId = :id")
     public abstract void deleteByLista(int id);

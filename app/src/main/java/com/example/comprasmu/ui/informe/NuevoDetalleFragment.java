@@ -55,7 +55,7 @@ public class NuevoDetalleFragment extends Fragment {
     public void crearFormulario(){
         /*el formulario se crea de acuerdo a los reactivos*/
 
-        mViewModel.getReactivos().observe(getViewLifecycleOwner(), new Observer<List<Reactivo>>() {
+      /*  mViewModel.getReactivos().observe(getViewLifecycleOwner(), new Observer<List<Reactivo>>() {
             @Override
             public void onChanged(@Nullable List<Reactivo> s) {
                 for(Reactivo reactivo:s){
@@ -93,7 +93,7 @@ public class NuevoDetalleFragment extends Fragment {
             }
         });
         cf=new CreadorFormulario(camposForm,getContext());
-        cf.crearFormulario();
+        cf.crearFormulario();*/
     }
 
 }
