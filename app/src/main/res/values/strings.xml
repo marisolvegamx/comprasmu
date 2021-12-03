@@ -161,7 +161,7 @@
     <string name="siglas_planta">SIGLAS DE PLANTA</string>
     <string name="no_hay_conexion">Sin conexión a internet este módulo no funcionará. Revise su conexión</string>
     <string name="error_fecha_caduca_prox">LA MUESTRA CADUCARÁ EN MENOS DE 30 DÍAS, VERIFIQUE</string>
-    <string name="consecutivo">CONSECUTIVO</string>
+    <string name="consecutivo"># TIENDA</string>
     <string name="fecha">FECHA</string>
     <string name="complementodir">COMPLEMENTO DIRECCION</string>
     <string name="estatus">ESTATUS</string>
@@ -188,5 +188,6 @@
     <string name="login_failed">"USUARIO O CONTRASEñA INCORRECTOS"</string>
     <string name="ingrese_usuario">ESCRIBA SU USUARIO Y CONTRASEñA</string>
     <string name="menu_home">INICIO</string>
+    <string name="nota">NOTA</string>
 
 </resources>

@@ -31,7 +31,7 @@ public class TabsFragment extends Fragment {
     ViewPager viewPager;
     private ListaDetalleViewModel mViewModel;
     String[] clientes;
-    String[][] clientesplan; //idplanta, nombreplanta, nombrecliente
+    String[][] clientesplan; //idplanta, nombreplanta, nombrecliente, siglas
     String ciudadSel;
     String ciudadNombre;
     String clienteSel;
@@ -70,8 +70,8 @@ public class TabsFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-             ciudadSel = bundle.getInt("ciudadSel")+"";
-             ciudadNombre  = bundle.getString("ciudadNombre");
+            ciudadSel = bundle.getInt("ciudadSel")+"";
+            ciudadNombre  = bundle.getString("ciudadNombre");
             clienteSel = bundle.getInt(ARG_CLIENTESEL)+"";
             clienteNombre  = bundle.getString(ARG_CLIENTENOMBRE);
             //busco ciudad seleccionada
@@ -80,7 +80,7 @@ public class TabsFragment extends Fragment {
          //   Log.d(Constantes.TAG,"arg_muestra"+bundle.getString(ARG_MUESTRA));
 
             if(bundle.getString(ARG_MUESTRA)!=null&&bundle.getString(ARG_MUESTRA).equals("true")) {
-            //vengo de agregar muestra
+                //vengo de agregar muestra
                 Bundle bundle2 =getActivity().getIntent().getExtras();
                 clienteSel=bundle2.getInt(ARG_CLIENTESEL)+"";
                 mViewModel.setClienteSel(Integer.parseInt(clienteSel));
@@ -153,7 +153,7 @@ public class TabsFragment extends Fragment {
     private  void convertirLista(List<ListaCompra> lista){
 
         int i=0;
-        clientesplan=new String[lista.size()][3];
+        clientesplan=new String[lista.size()][4];
 
         clientes=new String[lista.size()];
         for (ListaCompra listaCompra: lista ) {
@@ -161,8 +161,9 @@ public class TabsFragment extends Fragment {
 
             clientesplan[i][1]= listaCompra.getPlantaNombre();
             clientesplan[i][2]= listaCompra.getClienteNombre();
+            clientesplan[i][3]= listaCompra.getSiglas();
 
-            clientes[i]= listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre();
+            clientes[i]= listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre()+" ("+listaCompra.getSiglas()+")";
            // Log.d(TAG,"convertir lista>"+clientes[i]);
             i++;
 

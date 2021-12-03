@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static android.text.InputType.TYPE_CLASS_NUMBER;
+import static android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL;
 import static android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE;
 import static android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
 
@@ -79,7 +81,7 @@ public class CreadorFormulario {
     public static String SELECTDES="selectDes";
     public static String TEXTAREA="textarea";
     public static String FECHAMASK="fechaMask";
-
+    public static String DECIMALMASK="decimalMask";
 
 
     public CreadorFormulario(List<CampoForm> listaCampos, Context context) {
@@ -378,7 +380,33 @@ public class CreadorFormulario {
         textField.setId(this.infocampo.id);
         textField.setText(valor);
         textField.setEnabled(!this.readonly);
+        textField.setInputType(TYPE_CLASS_NUMBER);
+
        return  textField;
+
+    }
+
+    public TextInputEditText decimalMask(){
+        Mask mask = new Mask(
+                "___.__",
+                '.',
+                MaskStyle.PERSISTENT
+        );
+        MaskChangedListener listener =new  MaskChangedListener(mask);
+        TextInputEditText textField=new TextInputEditText(context);
+        textField.addTextChangedListener(listener);
+        String valor="";
+        if(this.infocampo.value!=null&&!this.infocampo.value.equals(""))
+            valor=this.infocampo.value;
+        //  else
+        //      valor=this.instance[this.infocampo["nombre_campo"]];
+        required=(this.infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
+
+        textField.setId(this.infocampo.id);
+        textField.setText(valor);
+        textField.setEnabled(!this.readonly);
+        textField.setInputType(TYPE_NUMBER_FLAG_DECIMAL);
+        return  textField;
 
     }
 

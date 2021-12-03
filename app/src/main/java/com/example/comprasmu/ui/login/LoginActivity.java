@@ -123,8 +123,8 @@ public class LoginActivity extends AppCompatActivity {
         LoggedInUser luser=tengoUsuario();
         if(luser==null){ //primera vez
             if(ComprasUtils.isOnlineNet())
-          //  loginViewModel.login(usernameEditText.getText().toString(),
-            //        passwordEditText.getText().toString(),new LoginListener());
+         //   loginViewModel.login(usernameEditText.getText().toString(),
+           //         passwordEditText.getText().toString(),new LoginListener());
                 new LoginListener().correcto();
             else{
                 Toast.makeText(getApplicationContext(), "Sin conexión a internet, verifique", Toast.LENGTH_LONG).show();
@@ -132,8 +132,9 @@ public class LoginActivity extends AppCompatActivity {
         }else
         //loginlocal
         {
+        //new LoginListener().correcto();
             loginViewModel.loginLocal(luser,usernameEditText.getText().toString(),
-                    passwordEditText.getText().toString(),new LoginListener());
+                   passwordEditText.getText().toString(),new LoginListener());
         }
     }
     public LoggedInUser tengoUsuario()

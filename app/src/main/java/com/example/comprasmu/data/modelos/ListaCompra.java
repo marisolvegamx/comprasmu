@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-//TODO idremoto, lis_nota
+
 @Entity(tableName="lista_compras")
 public class ListaCompra {
     @PrimaryKey(autoGenerate = true)
@@ -21,6 +21,7 @@ public class ListaCompra {
     private String createdBy;
     private String indice;
     private int estatus;
+    private String lis_nota;
 
 
     public int getId() {
@@ -109,5 +110,13 @@ public class ListaCompra {
 
     public void setSiglas(String siglas) {
         this.siglas = siglas;
+    }
+
+    public String getLis_nota() {
+        return lis_nota;
+    }
+
+    public void setLis_nota(String lis_nota) {
+        this.lis_nota = lis_nota;
     }
 }

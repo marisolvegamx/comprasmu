@@ -160,7 +160,8 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                    }
                }
           });
-           binding.btncodigosper.setOnClickListener(new View.OnClickListener() {
+         /* SE QUITAN LOS BOTONES QEUDARAN EN LAS NOTAS
+          binding.btncodigosper.setOnClickListener(new View.OnClickListener() {
 
                @Override
                public void onClick(View view) {
@@ -211,7 +212,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                            break;
                    }
                }
-           });
+           });*/
             binding.btnldagregar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

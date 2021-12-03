@@ -81,6 +81,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     private CatalogoDetalleRepositoryImpl catRepo;
     private ReactivoRepositoryImpl reacRepo;
     public LiveData<List<Reactivo>> listaPreguntas;
+
     public NuevoDetalleViewModel(@NonNull Application application) {
         super(application);
 

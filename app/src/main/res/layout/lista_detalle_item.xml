@@ -204,26 +204,26 @@
                     android:layout_height="wrap_content"
 
                     android:text="@{detalle.codigosNoPermitidos.replace(';','\n')}" />
-                <Button
-                    android:id="@+id/btncodigosex"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:layout_marginBottom="4dp"
-                    android:minWidth="0dp"
+<!--                <Button-->
+<!--                    android:id="@+id/btncodigosex"-->
+<!--                    style="@style/Widget.AppCompat.Button.Borderless"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="32dp"-->
+<!--                    android:layout_marginBottom="4dp"-->
+<!--                    android:minWidth="0dp"-->
 
-                    android:text="Ver fecha restringida>"
-                    android:textColor="@color/blue_subtitle"
-                    android:textSize="10sp" />
+<!--                    android:text="Ver fecha restringida>"-->
+<!--                    android:textColor="@color/blue_subtitle"-->
+<!--                    android:textSize="10sp" />-->
 
-                <TextView
-                    android:id="@+id/txtcodigosex"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+<!--                <TextView-->
+<!--                    android:id="@+id/txtcodigosex"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
 
-                    android:text="@{detalle.getLid_fecharestringida().replace(';','\n')}"
-                    android:visibility="gone" />
-                <Button
+<!--                    android:text="@{detalle.getLid_fecharestringida().replace(';','\n')}"-->
+<!--                    android:visibility="gone" />-->
+              <!--  <Button
                     android:id="@+id/btncodigosper"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
@@ -241,7 +241,7 @@
                     android:layout_height="wrap_content"
 
                     android:text="@{detalle.getLid_fechapermitida().replace(';','\n')}"
-                    android:visibility="gone" />
+                    android:visibility="gone" />-->
 
                 <include
                     layout="@layout/lista_detalle_item2"

@@ -18,6 +18,15 @@
     <variable
         name="visita"
         type="com.example.comprasmu.data.modelos.Visita" />
+    <variable
+        name="danioa"
+        type="String" />
+    <variable
+        name="daniob"
+        type="String" />
+    <variable
+        name="danioc"
+        type="String" />
 </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -65,6 +74,7 @@
                     style="@style/subtitulo1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text='@{visita.indice!=null?ComprasUtils.indiceLetra(visita.indice):""}' />
 
@@ -73,6 +83,7 @@
                     style="@style/subtitulo1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
                     android:layout_weight="1"
                     android:text='@{visita.createdAt!=null?sdf.format(visita.createdAt):""}' />
 
@@ -88,14 +99,16 @@
                     style="@style/subtitulo1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:text='@{informe.consecutivo>0?"Consecutivo:"+informe.consecutivo:""}' />
+                    android:text='@{informe.consecutivo>0?@string/consecutivo+":"+informe.consecutivo:""}' />
 
                 <TextView
                     android:id="@+id/txtniidinforme"
                     style="@style/subtitulo1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
                     android:layout_weight="1"
                     android:text='' />
             </TableRow>
@@ -104,7 +117,10 @@
                 android:id="@+id/row3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone">
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TextView
                     android:id="@+id/txtciplanta"
@@ -112,7 +128,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text='@{productoSel.plantaNombre}' />
+                    android:text='@{productoSel.plantaNombre}'
+                    tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/txtcisiglas"
@@ -120,14 +137,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@{productoSel.siglas}" />
+                    android:text="@{productoSel.siglas}"
+                    tools:visibility="visible" />
             </TableRow>
 
             <TableRow
                 android:id="@+id/row4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone">
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TextView
                     android:id="@+id/txtciprod"
@@ -135,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text='@{productoSel.producto+" "+productoSel.presentacion}'/>
+                    android:text='@{productoSel.producto+" "+productoSel.presentacion+" "+productoSel.empaque}' />
 
                 <TextView
                     android:id="@+id/txtciana"
@@ -143,7 +164,57 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text='@{productoSel.analisis}'/>
+                    android:text='@{productoSel.analisis}' />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/row5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtcidana"
+                    style="@style/subtitulo1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text='@{danioa}' />
+
+                <TextView
+                    android:id="@+id/txtcidanb"
+                    style="@style/subtitulo1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text='@{daniob}' />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/row6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtcidanc"
+                    style="@style/subtitulo1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text='@{danioc}' />
+
+                <TextView
+
+                    style="@style/subtitulo1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text='' />
             </TableRow>
 
         </TableLayout>

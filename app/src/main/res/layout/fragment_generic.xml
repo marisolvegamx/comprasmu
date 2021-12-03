@@ -16,28 +16,70 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.025">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/content_generic"
             style="@style/formlabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="bottom"
+            android:layout_marginTop="60dp"
             android:orientation="vertical">
 
 
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btnmicsiglas"
-            style="@style/imbutton"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_baseline_mic_24" />
+
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/editTextNumberDecimal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+
+            <ImageButton
+                android:id="@+id/btnmicsiglas"
+                style="@style/imbutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_baseline_mic_24" />
+
+            <ImageView
+                android:id="@+id/ivgfoto"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:visibility="gone"
+                tools:srcCompat="@tools:sample/avatars"
+                tools:visibility="visible" />
+
+            <ImageButton
+                android:id="@+id/btngrotar"
+                style="@style/imbutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:srcCompat="@android:drawable/stat_notify_sync"
+                tools:visibility="visible" />
+
+            <Button
+                android:id="@+id/btngaceptar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:includeFontPadding="false"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:text="@string/aceptar"
+                android:textAlignment="center" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,31 +87,6 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/ivgfoto"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:visibility="gone"
-                tools:srcCompat="@tools:sample/avatars" />
-
-            <ImageButton
-                android:id="@+id/btngrotar"
-                style="@style/imbutton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:tint="#000000"
-                android:visibility="gone"
-                app:srcCompat="@android:drawable/stat_notify_sync" />
-
-            <Button
-                android:id="@+id/btngaceptar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:text="@string/aceptar"
-                android:textAlignment="center" />
         </LinearLayout>
 
 

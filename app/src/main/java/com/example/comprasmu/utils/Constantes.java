@@ -50,4 +50,9 @@ public class Constantes {
     public static int NM_TOTALISTA;
     public static int DP_TIPOTIENDA;
     public static NuevoDetalleViewModel.ProductoSel productoSel;
+   public static class VarDetalleProd{
+        public static   String nvoatra;
+        public static  String nvoatrb;
+        public static String nvoatrc;
+    }
 }

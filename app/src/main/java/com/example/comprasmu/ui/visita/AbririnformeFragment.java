@@ -142,7 +142,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     private FotoExhibicionAdapter mListAdapter;
     ImageView foto;
     private TextView mensajedir;
-
+    LocationManager mlocManager;
+    Localizacion Local;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -215,7 +216,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 probarUbicacion();
             }
         });*/
-        /*para obtener la localizacion*/
+        /*para obtener la onre*/
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         setupSnackbar();
@@ -261,7 +262,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         } else {
             // rastreoGPS();
-            locationStart();
+          //  locationStart();
         }
         setupListAdapter();
         feviewModel.cargarfotos(nuevoId).observe(getViewLifecycleOwner(), myProducts -> {
@@ -364,7 +365,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                fotofachada.setText(s.getRuta());
 
                Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + s.getRuta());
-
+               foto.setVisibility(View.VISIBLE);
+               rotar.setVisibility(View.VISIBLE);
                foto.setImageBitmap(bitmap1);
                efotoFachada=s;
            }
@@ -386,8 +388,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     }
     private void locationStart() {
         if(mViewModel.mIsNew) {
-            LocationManager mlocManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            Localizacion Local = new Localizacion();
+            mlocManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+             Local = new Localizacion();
 
 
             final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -422,6 +424,20 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         }
 
+    }
+
+
+
+   /* @Override
+    public void onPause() {
+        super.onPause();
+        Local.desactivar();
+    }*/
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(Local!=null)
+        Local.desactivar();
     }
     private void setupSnackbar() {
         // Mostrar snackbar en resultados positivos de operaciones (crear, editar y eliminar)
@@ -625,17 +641,17 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         // GPS_ACTIVE = 1;
         //  obtenerUbicacion();
         Log.d("AbrirInformeFragment","presione boton");
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+      /*  if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
             //  requestPermissionLauncher.launch(
             //        Manifest.permission.REQUESTED_PERMISSION);
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
             return;
-        } else {
+        } else {*/
             // rastreoGPS();
             locationStart();
-        }
+        //}
 
     }
     public boolean guardar(){
@@ -822,7 +838,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
     public class Localizacion implements LocationListener {
-
+      /*  public void activar() {
+            if ( mlocManager!=null) activarProveedores();
+        }*/
+        public void desactivar() {
+            if ( mlocManager!=null)  mlocManager.removeUpdates(Local);
+        }
         @Override
         public void onLocationChanged(Location loc) {
             // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
@@ -1098,6 +1119,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         ActivityManager activityManager = (ActivityManager) act.getSystemService(ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         activityManager.getMemoryInfo(memoryInfo);
+
         return memoryInfo;
     }
 }

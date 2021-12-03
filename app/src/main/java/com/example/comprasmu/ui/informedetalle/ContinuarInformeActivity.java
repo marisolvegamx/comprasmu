@@ -99,6 +99,18 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         mBinding.row3.setVisibility(View.VISIBLE);
         mBinding.row4.setVisibility(View.VISIBLE);
     }
+    public void actualizarAtributo1() {
+        mBinding.setDanioa(Constantes.VarDetalleProd.nvoatra);
+        mBinding.setDaniob(Constantes.VarDetalleProd.nvoatrb);
+
+        mBinding.row5.setVisibility(View.VISIBLE);
+
+    }
+    public void actualizarAtributo2() {
+
+        mBinding.setDanioc(Constantes.VarDetalleProd.nvoatrc);
+        mBinding.row6.setVisibility(View.VISIBLE);
+    }
 
     public void buscarPreguntas() {
         dViewModel.buscarReactivos();

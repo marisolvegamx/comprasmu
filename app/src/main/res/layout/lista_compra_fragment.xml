@@ -32,27 +32,39 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp">
 
                     <TextView
                         android:id="@+id/txtlcindice"
                         style="@style/subtitulo1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
                         android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/txtlctotal"
+                        style="@style/subtitulo1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text='@{"TOTAL:"+total}' />
 
                     <TextView
                         android:id="@+id/txtlcsiglas"
                         style="@style/subtitulo1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:visibility="gone" />
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <TextView
                         android:id="@+id/txtlcciudad"
@@ -61,13 +73,6 @@
                         android:layout_height="19dp"
                         android:layout_weight="1" />
 
-                    <TextView
-                        android:id="@+id/txtlctotal"
-                        style="@style/subtitulo1"
-                        android:layout_width="match_parent"
-                        android:layout_height="19dp"
-                        android:layout_weight="1"
-                        android:text='@{"TOTAL:"+total}' />
                 </TableRow>
 
 
@@ -77,12 +82,37 @@
                 android:id="@+id/splcopcionesbu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="16dp"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtlcelegir" />
+
+            <TextView
+                android:id="@+id/txtlcnota"
+                style="@style/textolista1"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
+
+            <TextView
+                android:id="@+id/txtlcnota2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:textAlignment="viewStart"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/txtlcnota"
+                app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detalle_list"
@@ -105,13 +135,16 @@
                 android:id="@+id/txtlcelegir"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/elige_un_criterio"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
+                app:layout_constraintTop_toBottomOf="@+id/txtlcnota" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

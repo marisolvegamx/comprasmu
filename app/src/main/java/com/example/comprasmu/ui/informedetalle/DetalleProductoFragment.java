@@ -128,6 +128,7 @@ public class DetalleProductoFragment extends Fragment {
     ImageView fotomos;
     LinearLayout sv;
 
+
     NuevoDetalleViewModel.ProductoSel prodSel;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
     SpeechRecognizer sspeechRecognizer;
@@ -148,8 +149,8 @@ public class DetalleProductoFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
        // setHasOptionsMenu(true);
-         sdf = new SimpleDateFormat("dd-mm-yyyy");
-        sdfcodigo = new SimpleDateFormat("dd-mmm-yy");
+         sdf = new SimpleDateFormat("dd-MM-yyyy");
+        sdfcodigo = new SimpleDateFormat("dd-MM-yy");
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -240,10 +241,10 @@ public class DetalleProductoFragment extends Fragment {
             if(preguntaAct.isBotonMicro()) {
 
                 micbtn=root.findViewById(R.id.btnmicsiglas);
-                sspeechRecognizer = grabarVoz();
-                micbtn.setVisibility(View.VISIBLE);
+           /*     sspeechRecognizer = grabarVoz();
+                micbtn.setVisibility(View.VISIBLE);*/
             }
-            if(preguntaAct.getId()==42||preguntaAct.getId()==7){
+            if(preguntaAct.getId()==7){
                 //cambio el boton a finalizar y mestro alerta
                 aceptar.setText(getString(R.string.finalizar));
                 aceptar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.botonvalido));
@@ -281,8 +282,8 @@ public class DetalleProductoFragment extends Fragment {
 
                     break;
               case "clientesId":
-                    Log.d(TAG,"----"+Constantes.clientesAsignados.size());
-                    campo.selectdes= Constantes.clientesAsignados;
+                    cargarClientes(campo);
+
                     break;
 
             }
@@ -297,10 +298,10 @@ public class DetalleProductoFragment extends Fragment {
             };
             campo.tomarFoto = true;
 
-             fotomos=root.findViewById(R.id.ivgfoto);
+            fotomos=root.findViewById(R.id.ivgfoto);
             fotomos.setVisibility(View.VISIBLE);
-             btnrotar=root.findViewById(R.id.btngrotar);
-           btnrotar.setOnClickListener(new View.OnClickListener() {
+            btnrotar=root.findViewById(R.id.btngrotar);
+            btnrotar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     rotar();
@@ -327,10 +328,19 @@ public class DetalleProductoFragment extends Fragment {
         cf=new CreadorFormulario(camposForm,getContext());
         sv.addView(cf.crearFormulario());
 
+    }
+    public void cargarClientes(CampoForm campo) {
+        ListaDetalleViewModel lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
 
+        if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
+            lcviewModel.cargarClientes(Constantes.CIUDADTRABAJO).observe(getViewLifecycleOwner(), data -> {
+                Log.d(TAG, "regresó de la consulta de clientes " + data.size());
+                Constantes.clientesAsignados = ComprasUtils.convertirListaaClientes(data);
+                campo.selectdes= Constantes.clientesAsignados;
 
-
-
+            });
+        else
+            campo.selectdes= Constantes.clientesAsignados;
     }
     public void compraProd(View view,int nummuestra) {
         // Is the button now checked?
@@ -419,6 +429,33 @@ public class DetalleProductoFragment extends Fragment {
         }
         if(resp)
         {
+            if(preguntaAct.getId()==33 ) {
+                CatalogoDetalle opcionsel = (CatalogoDetalle) spclientes.getSelectedItem();
+                String  valor = opcionsel.getCad_idopcion() + "";
+
+                //guardo el atributo para mostrarlo despues
+                Constantes.VarDetalleProd.nvoatra = valor;
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
+
+            }
+            else  if( preguntaAct.getId()==36) {
+                CatalogoDetalle opcionsel = (CatalogoDetalle) spclientes.getSelectedItem();
+                String valor = opcionsel.getCad_idopcion() + "";
+
+
+                //guardo el atributo para mostrarlo despues
+                Constantes.VarDetalleProd.nvoatrb = valor;
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
+
+            } else  if(preguntaAct.getId()==39){
+                CatalogoDetalle opcionsel = (CatalogoDetalle) spclientes.getSelectedItem();
+                String valor = opcionsel.getCad_idopcion() + "";
+
+                //guardo el atributo para mostrarlo despues
+                Constantes.VarDetalleProd.nvoatrc=valor;
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
+
+            }
             if(preguntaAct.getType().equals(CreadorFormulario.PREGUNTASINO)){
                 //reviso la opcion seleccionada
                 if(!pregunta.getRespuesta()) //se selecciono no
@@ -490,7 +527,8 @@ public class DetalleProductoFragment extends Fragment {
                 //la muestra la guarde en la 42
 
                 avanzarPregunta(1);
-            }else {
+            }
+            else{
                 guardarResp();
                 avanzarPregunta(preguntaAct.getSigId());
             }
@@ -599,6 +637,62 @@ public class DetalleProductoFragment extends Fragment {
 
         }
 
+    }
+
+    public boolean validarFecha(){
+        //
+    //
+        ValidadorDatos valdat=new ValidadorDatos();
+
+        if (dViewModel.productoSel.clienteNombre.toUpperCase().equals("PEPSI")) {
+            valdat.validarFechaPep(textoint.getText().toString(),tipoTienda);
+            if(valdat.mensaje>0)
+            Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
+
+            return valdat.resp;
+        }
+        if (dViewModel.productoSel.clienteNombre.equals("PEñAFIEL")) {
+            Date hoy=new Date();
+            if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
+                Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca), Toast.LENGTH_LONG).show();
+
+                return false;
+            }else
+            //busco que no haya otra muestra con la misma fecha en el muestreo
+            if(this.buscarMuestraCodigoPeñafiel(dViewModel.productoSel,fechacad)) {
+                Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido), Toast.LENGTH_LONG).show();
+
+                return false;
+            }
+
+
+        }
+        return false;
+    }
+
+    public boolean validarCodigoprod(){
+        if(dViewModel.productoSel.clienteNombre.toUpperCase().equals("PEPSI")) {
+            ValidadorDatos valdat = new ValidadorDatos();
+
+            if (!valdat.validarCodigoprodPep(textoint.getText().toString(), dViewModel.productoSel.codigosnop)) {
+                Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido), Toast.LENGTH_LONG).show();
+                return false;
+            } else {
+
+                //busco si hay otra muestra == y si tiene el mismo codigo
+                res = buscarMuestraCodigo(dViewModel.productoSel, textoint.getText().toString(), fechacad);
+
+                if (res) {
+                    Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido), Toast.LENGTH_LONG).show();
+
+                    return false;
+
+                }
+
+            }
+
+        }
+        return true;
     }
     public void guardarInforme(){
         mViewModel.insertarInfdeTemp();
@@ -887,107 +981,6 @@ public class DetalleProductoFragment extends Fragment {
         Date fechacad = null;
        boolean res;
         //validar siglas
-        public boolean validarFecha(){
-            Date hoy=new Date();
-
-            if (!textoint.getText().toString().equals("")) {
-
-                try {
-                    fechacad = sdf.parse(textoint.getText().toString());
-                } catch (ParseException e) {
-
-                    Toast.makeText(getActivity(), getString(R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
-                    return false;
-                }
-                if (!sdf.format(fechacad).equals(textoint.getText().toString()))
-                {
-                    Toast.makeText(getActivity(), getString(R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
-                    return false;
-                }
-                if (dViewModel.productoSel.clienteNombre.toUpperCase().equals("PEPSI")) {
-
-                    Calendar cal = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
-                    cal.setTime(hoy);
-                    cal.add(Calendar.DAY_OF_MONTH, +30);
-                    Log.d(TAG,"tipo tienda ------------"+tipoTienda);
-                    if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
-
-
-                        if (tipoTienda == 2||tipoTienda == 3) {
-                            Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca), Toast.LENGTH_LONG).show();
-                            return false;
-                        }
-                        else {
-                            //ImageButton bton=(ImageButton)view;
-                            // bton.setSupportButtonTintList(ContextCompat.getColorStateList(getActivity(), R.color.botonvalido));
-                            //bton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.botonvalido));
-
-                            return true;
-                        }
-
-                    }else if (fechacad.compareTo(cal.getTime())<0) { //hoy+30>fechacad
-                        Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca_prox), Toast.LENGTH_LONG).show();
-
-                        return false;
-                    } else
-
-                        return true;
-
-
-                } else if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
-
-                    Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca), Toast.LENGTH_LONG).show();
-                    return false;
-                }else{
-                    if (dViewModel.productoSel.clienteNombre.toUpperCase().equals("PEñAFIEL")) {
-                        //busco que no haya otra muestra con la misma fecha en el muestreo
-                      if(this.buscarMuestraCodigoPeñafiel(dViewModel.productoSel,fechacad))
-                          Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido), Toast.LENGTH_LONG).show();
-
-                        return false;
-
-                    }
-                }
-
-                return true;
-            }
-            return false;
-        }
-        public boolean validarCodigoprod(){
-            boolean resp;
-            if(!textoint.getText().toString().equals("")){
-                if(dViewModel.productoSel.clienteNombre.toUpperCase().equals("PEPSI")){
-                    String arrecodigos[]=dViewModel.productoSel.codigosnop.split(";");
-                    if(arrecodigos!=null&&arrecodigos.length>0) {
-                        List<String> lista = Arrays.asList(arrecodigos);
-                        if (lista.contains(textoint.getText().toString())) {
-                            Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido)+"*", Toast.LENGTH_LONG).show();
-
-                            resp=false;
-                            return resp;
-                        }else{
-
-                            //busco si hay otra muestra == y si tiene el mismo codigo
-                            res=buscarMuestraCodigo(dViewModel.productoSel,textoint.getText().toString(),fechacad);
-
-                                    if(res){
-                                        Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido), Toast.LENGTH_LONG).show();
-                                        resp=false;
-                                        return resp;
-
-                                    }
-
-                        }
-                    }
-
-                }
-                resp=true;
-                return resp;
-            }
-            resp=false;
-            return resp;
-
-        }
 
         public boolean buscarMuestraCodigo(NuevoDetalleViewModel.ProductoSel productosel,String codigonvo,Date caducidadnva){
             //busco en el mismo informe

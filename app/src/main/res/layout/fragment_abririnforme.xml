@@ -14,16 +14,19 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/dark_grey"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/txtaiindice"
-            style="@style/formlabel"
+            style="@style/subtitulo1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center|start"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0dp"
+            android:gravity="fill_vertical"
             android:text=""
             android:textColor="@color/gray" />
 
@@ -43,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="vertical">
 
@@ -87,7 +91,7 @@
                     <ImageButton
                         android:id="@+id/btnaifotofachada"
                         style="@style/imbutton"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:src="@drawable/ic_menu_camera" />
@@ -157,10 +161,10 @@
 
                 <TextView
                     android:id="@+id/textView19"
+                    style="@style/formlabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    style="@style/formlabel"
                     android:text="COMPLEMENTO DIRECCION"
                     android:textStyle="bold" />
 

@@ -60,12 +60,11 @@ public class SelPlantaFragment extends ListaSelecFragment {
         final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
             public void onChanged(@Nullable List<ListaCompra> lista) {
-                Log.d(Constantes.TAG, "YA cargo la lista " + lista.size());
+                Log.d(TAG, "YA cargo la lista " + lista.size());
                 SelPlantaFragment.convertirLista(lista);
                 setLista(listaCiudadesEnv);
-
+               // siguiente(0);
                 if(lista.size()>1) {
-                    // Update the UI, in this case, a TextView.
 
                     setupListAdapter();
                 }else if(lista.size()>0)
@@ -132,6 +131,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
         Bundle bundle = new Bundle();
         bundle.putInt("ciudadSel",listaSeleccionable.get(i).getId() );
         bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
+
         NavHostFragment.findNavController(this).navigate(R.id.action_selclientetolistacompras,bundle);
 
     }
