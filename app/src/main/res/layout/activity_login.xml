@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -14,39 +14,38 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:background="@drawable/login_bg_color"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView27"
             style="@style/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="40dp"
             android:text="@string/app_name"
             android:textAlignment="center" />
+
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView4"
-        android:layout_width="328dp"
-        android:layout_height="350dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
+        android:layout_width="291dp"
+        android:layout_height="335dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="32dp"
         app:cardCornerRadius="10dp"
-        app:cardElevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:cardElevation="4dp">
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:orientation="vertical">
 
             <TextView
@@ -54,9 +53,7 @@
                 style="@style/formlabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="55dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginTop="35dp"
                 android:text="@string/ingrese_usuario"
                 android:textAlignment="center" />
 
@@ -64,9 +61,7 @@
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="36dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginTop="26dp"
                 android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress"
                 android:selectAllOnFocus="true"
@@ -78,9 +73,7 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
                 android:hint="@string/prompt_password"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionDone"
@@ -101,17 +94,19 @@
                 android:gravity="center"
                 android:text="@string/action_sign_in" />
 
-            <ProgressBar
-                android:id="@+id/loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="64dp"
-                android:layout_marginEnd="32dp"
-                android:visibility="gone" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:layout_weight="1"
+        tools:visibility="visible" />
+
+</RelativeLayout>

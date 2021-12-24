@@ -48,6 +48,10 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
         return icDao.getInformessimple();
     }
 
+    public List<InformeTemp> getProductoSel() {
+        return icDao.getProductoSel();
+    }
+
     @Override
     public LiveData<InformeTemp> find(int id) {
         return icDao.getInforme(id);
@@ -60,6 +64,9 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
 
     public InformeTemp findByNombre(String campo) {
         return icDao.getInformesByNombre(campo);
+    }
+    public InformeTemp getUltimo(boolean pregunta) {
+        return icDao.getUltimo(pregunta);
     }
 
     @Override

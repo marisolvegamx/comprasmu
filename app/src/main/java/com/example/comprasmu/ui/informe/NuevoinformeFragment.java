@@ -54,6 +54,7 @@ import com.example.comprasmu.databinding.FragmentNuevoinformeBinding;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.RevisarFotoActivity;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
 import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
@@ -1168,5 +1169,6 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         startActivityForResult(intento1, BackActivity.REQUEST_CODE);
         //  startActivity(intento1);
     }
+
 
 }

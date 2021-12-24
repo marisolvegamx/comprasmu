@@ -47,6 +47,7 @@ public  class Contrato {
         String COMENTARIOS = "comentarios";
         String AZUCARES = "azucares";
         String SIGLAS = "siglas";
+        String causa_nocompra = "causa_nocompra";
 
 
         String QR = "qr";

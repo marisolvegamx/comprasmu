@@ -26,6 +26,7 @@ import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
@@ -98,12 +99,22 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         tomadoDe=catRepo.getxCatalogo("ubicacion_muestra");
 
     }
+    public InformeTemp getUltimoTemp(){
+        //reivos si hay respuestas temporales si no devuelvo null
+        return itemprepo.getUltimo(true);
+    }
+
+    public InformeTemp buscarxNombreCam(String campo){
+        //reivos si hay respuestas temporales si no devuelvo null
+        return itemprepo.findByNombre(campo);
+    }
     public List<CatalogoDetalle> cargarCatalogos(){
 
 
         return catRepo.getxCatalogo("ubicacion_muestra");
 
     }
+
     public LiveData<List<Atributo>> getAtributos() {
         return atrRepo.getAll();
     }
@@ -114,7 +125,10 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public LiveData<Reactivo> buscarReactivo(int id){
         return reacRepo.find(id);
     }
+    public Reactivo inftempToReac(InformeTemp inftemp){
+        return reacRepo.findByNombre(inftemp.getNombre_campo());
 
+    }
     //devuelve el nuevo id
     public int saveDetalle2() {
 
@@ -357,7 +371,26 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         // this.productoSel.clienteNombre=productoSel.get
         //       this.productoSel.plantaNombre=
     }
-
+    public void setProductoSel(Sustitucion productoSel, String nombrePlanta, int plantaSel, int clienteSel, String clienteNombre, String siglas) {
+        this.productoSel=new ProductoSel();
+        this.productoSel.producto=productoSel.getNomproducto();
+        this.productoSel.productoid=productoSel.getSu_producto();
+      //  this.productoSel.compraSel=compraSel;
+        //this.productoSel.compradetalleSel=compraDetSel;
+        this.productoSel.presentacion=productoSel.getNomtamanio();
+       this.productoSel.idempaque=productoSel.getSu_tipoempaque();
+        //para la planta y cliente busco el encabezado
+        this.productoSel.plantaNombre=nombrePlanta;
+        this.productoSel.plantaSel=plantaSel;
+        //this.productoSel.tipoAnalisis=productoSel.getAnalisisId();
+        this.productoSel.tipoMuestra=2;
+        this.productoSel.nombreTipoMuestra="Backup";
+        this.productoSel.empaque=productoSel.getNomempaque();
+        this.productoSel.clienteNombre=clienteNombre;
+        this.productoSel.clienteSel=clienteSel;
+        this.productoSel.siglas=siglas;
+     //   this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
+    }
 
     public LiveData<InformeCompraDetalle> getMuestra(int id){
         return detalleRepo.find(id);
@@ -374,6 +407,64 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.foto_codigo_produccion = foto_codigo_produccion;
     }
 
+    public ProductoSel fromTemp(){
+       List<InformeTemp> respuestas= itemprepo.getProductoSel();
+        this.productoSel=new ProductoSel();
+        this.productoSel.producto=this.getValor(respuestas,"producto");
+        try {
+            this.productoSel.productoid = Integer.parseInt(this.getValor(respuestas, "productoId"));
+        }catch(NumberFormatException ex){
+            Log.e("NuevoDetVM",ex.getMessage());
+        }
+        try{
+          this.productoSel.compraSel=Integer.parseInt(this.getValor(respuestas,"comprasId"));
+         }catch(NumberFormatException ex){
+        Log.e("NuevoDetVM",ex.getMessage());
+    }  try{
+        this.productoSel.compradetalleSel=Integer.parseInt(this.getValor(respuestas,"comprasDetId"));
+    }catch(NumberFormatException ex){
+        Log.e("NuevoDetVM",ex.getMessage());
+    }
+        this.productoSel.presentacion=this.getValor(respuestas,"presentacion");
+        try{ this.productoSel.idempaque=Integer.parseInt(this.getValor(respuestas,"empaquesId"));
+}catch(NumberFormatException ex){
+        Log.e("NuevoDetVM",ex.getMessage());
+        }
+        //para la planta y cliente busco el encabezado
+        this.productoSel.plantaNombre=this.getValor(respuestas,"plantaNombre");
+        try{
+this.productoSel.plantaSel=Integer.parseInt(this.getValor(respuestas,"plantasId"));
+        }catch(NumberFormatException ex){
+            Log.e("NuevoDetVM",ex.getMessage());
+        }
+            try{
+        this.productoSel.tipoMuestra=Integer.parseInt(this.getValor(respuestas,"tipoMuestra"));
+        }catch(NumberFormatException ex){
+        Log.e("NuevoDetVM",ex.getMessage());
+        }
+        this.productoSel.nombreTipoMuestra=this.getValor(respuestas,"nombreTipoMuestra");
+        this.productoSel.empaque=this.getValor(respuestas,"empaque");
+        this.productoSel.codigosnop=this.getValor(respuestas,"codigosnop");
+
+        this.productoSel.clienteNombre=this.getValor(respuestas,"clienteNombre");
+        try{this.productoSel.clienteSel=Integer.parseInt(this.getValor(respuestas,"clientesId"));
+        }catch(NumberFormatException ex){
+        Log.e("NuevoDetVM",ex.getMessage());
+        }
+        this.productoSel.siglas=this.getValor(respuestas,"siglas");
+
+
+        return this.productoSel;
+
+    }
+    public String getValor( List<InformeTemp> respuestas,String campo){
+        for(InformeTemp respuesta:respuestas){
+            if(respuesta.getNombre_campo().equals(campo)){
+                return respuesta.getValor();
+            }
+        }
+        return "";
+    }
 
     public ImagenDetalle getEnergia() {
         return energia;
@@ -430,7 +521,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public void setEtiqueta_evaluacion(ImagenDetalle etiqueta_evaluacion) {
         this.etiqueta_evaluacion = etiqueta_evaluacion;
     }
-    public class ProductoSel{
+    public  class ProductoSel{
         public String producto;
         public int productoid;
         public int compraSel;

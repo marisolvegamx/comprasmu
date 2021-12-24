@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import android.util.Log;
 import android.util.Patterns;
 
 import com.example.comprasmu.R;
@@ -36,6 +37,7 @@ public class LoginViewModel extends ViewModel {
     public void login(String username, String password,LoginActivity.LoginListener listener) {
         // can be launched in a separate asynchronous job
         loginRepository=LoginRepository.getInstance();
+        Log.i("LoginVM","??");
         loginRepository.login(username, password,listener);
 
        /* if (result instanceof Result.Success) {

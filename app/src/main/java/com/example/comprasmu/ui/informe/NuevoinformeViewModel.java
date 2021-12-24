@@ -35,6 +35,7 @@ import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 
+import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -216,6 +217,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         if(visita.getEstatusSync()==0)
             envio.setVisita(visita);
         envio.setInformeCompra(info.informe);
+        envio.setProductosEx(prodRepo.getAllsimple(visita.getId()));
         //busco los detalles
         List<InformeCompraDetalle> detalles=detalleRepo.getAllSencillo(info.informe.getId());
         envio.setInformeCompraDetalles(detalles);
@@ -253,12 +255,13 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
 
     }
-    public boolean guardarResp(String resp,String nombrecampo,String tabla,int consecutivo){
+    public boolean guardarResp(String resp,String nombrecampo,String tabla,int consecutivo, boolean isPregunta){
         InformeTemp temporal=new InformeTemp();
         temporal.setNombre_campo(nombrecampo);
         temporal.setValor(resp);
         temporal.setTabla(tabla);
         temporal.setConsecutivo(consecutivo);
+        temporal.setPregunta(isPregunta);
         try {
             //reviso si ya existe
             InformeTemp editar=itemprepo.findByNombre(nombrecampo);
@@ -277,6 +280,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         }
 
     }
+
 
 
     public void guardarVisita() {
@@ -315,7 +319,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     }
 
 
-    public void actualizarVisita(){
+
+        public void actualizarVisita(){
         try {
             //actualizo la foto
             imagenDetRepository.insert(fotoFachada);
@@ -423,6 +428,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public void finalizarVisita(int idvisita) {
         Log.d("NuevoInformeViewModel", "finalizando"+idvisita);
         visitaRepository.actualizarEstatus(idvisita,2);
+        this.eliminarTblTemp();
     }
 
 

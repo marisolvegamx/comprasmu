@@ -56,23 +56,24 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
    private ListaInformesFragmentBinding mBinding;
     private InformeCompraAdapter mListAdapter;
 
-    static int clienteid;
-    static String ciudad;
-    static int plantaid;
-    static String tienda;
-    static String indice;
+    private int clienteid;
+    private String ciudad;
+    private int plantaid;
+    private String tienda;
+    private String indice;
     String clientesel;
     String plantasel;
     CoordinatorLayout coordinator;
 
-    public static ListaInformesFragment newInstance()
-    {
-      //  ListaInformesFragment fragment = new ListaInformesFragment();
-      //  Bundle bundle = new Bundle();
-      //  bundle.putInt(ARG_CLIENTEID, cliente);
-      //  fragment.setArguments(bundle);
-      //  clienteid=cliente;
-        return new ListaInformesFragment();
+    public ListaInformesFragment() {
+    }
+
+    public  ListaInformesFragment(int planta, String onombrePlanta, String nomcliente) {
+        //  ListaCompraFragment fragment = new ListaCompraFragment();
+        plantaid=planta;
+        plantasel=onombrePlanta;
+        this.clientesel=nomcliente;
+
     }
 
     @Override
@@ -81,7 +82,7 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
 
         if (getArguments() != null) {
         //    clienteid = getArguments().getInt(BuscarInformeFragment.ARG_CLIENTE);
-        //    plantaid=getArguments().getInt(ARG_PLANTAID);
+            plantasel=getArguments().getString(TabsICFragment.ARG_PLANTASEL);
             ciudad=getArguments().getString(BuscarInformeFragment.CIUDAD);
             tienda=getArguments().getString(BuscarInformeFragment.NOMBRETIENDA);
             indice=getArguments().getString(BuscarInformeFragment.INDICE);
@@ -126,9 +127,13 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
         mViewModel.getListas().observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDao.InformeCompravisita>>() {
             @Override
             public void onChanged(List<InformeCompraDao.InformeCompravisita> informeCompras) {
+                if(informeCompras.size()<1){
+                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
+                }
                 Log.d(TAG,"YA CARGÓ "+informeCompras.size());
                 mListAdapter.setInformeCompraList(informeCompras);
                 mListAdapter.notifyDataSetChanged();
+
             }
         });
     }
@@ -244,6 +249,7 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
     @Override
     public void onClickSubir(int informe) {
       NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
+     Log.d(TAG,"preparando informe**********");
        InformeEnvio informeenv=niViewModel.preparaInforme(informe);
         SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informeenv,getActivity());
         miTareaAsincrona.execute();

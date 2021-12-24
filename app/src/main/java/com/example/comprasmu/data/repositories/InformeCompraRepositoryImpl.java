@@ -13,6 +13,7 @@ import com.example.comprasmu.data.dao.InformeCompraDao;
 
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
+import com.example.comprasmu.data.modelos.ListaCompra;
 
 
 import java.util.ArrayList;
@@ -32,28 +33,37 @@ public class InformeCompraRepositoryImpl   {
     public InformeCompraDao getDao(){
         return icDao;
     }
-    public LiveData<List<InformeCompra>> getClientesByIndice(String indice, String nombretienda, String ciudad, int planta, int cliente) {
+
+
+    public LiveData<List<InformeCompra>> getPlantasByIndice(String indice, String nombretienda, String ciudad, String planta, int cliente) {
 
         String query="Select * from lista_compras where indice=?";
         ArrayList<String> filtros=new ArrayList<String>();
-
+        filtros.add(indice);
         if(nombretienda!=null&&!nombretienda.equals("")) {
-            query = query + " and nombretienda like '%?%'";
-            filtros.add(nombretienda);
+            query = query + " and nombretienda like ?";
+
+            filtros.add("%"+nombretienda+"%");
         }
         if(ciudad!=null&&!ciudad.equals("")) {
-            query = query + " and ciudad like '%?%'";
-            filtros.add(ciudad);
+            query = query + " and ciudad like ?";
+
+            filtros.add("%"+ciudad+"%");
         }
-        if(planta>0) {
-            query = query + " and plantasId = ?";
-            filtros.add(planta+"");
+        if(planta!=null&&!planta.equals("")) {
+            query = query + " and plantaNombre like ?";
+
+            filtros.add("%"+planta+"%");
         }
         if(cliente>0) {
             query = query + " and clientesId = ?";
             filtros.add(cliente+"");
         }
-             query=   " group by clientesId";
+             query= query+  " group by plantasId";
+        Object[] params=filtros.toArray();
+
+        for(int i=0;i<params.length;i++)
+            Log.d("InformeCompraRepo","***"+params[i]);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 filtros.toArray());

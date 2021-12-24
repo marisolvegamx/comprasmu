@@ -4,6 +4,7 @@
     package="com.example.comprasmu">
 
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.dao.ProductoExhibidoDao;
@@ -30,10 +31,12 @@ import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.VerInformeFragmentBinding;
 import com.example.comprasmu.ui.BackActivity;
+import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
 import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
 import com.example.comprasmu.ui.informedetalle.VerInformeDetFragment;
 import com.example.comprasmu.utils.CampoForm;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 
@@ -143,29 +146,60 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
        mViewModel.getfotoTicket(informe).observeForever(new Observer<ImagenDetalle>() {
            @Override
            public void onChanged(ImagenDetalle imagenDetalle) {
+               if(imagenDetalle!=null)
                //  fotoTicket=new MutableLiveData<>();
-               mBinding.setFotoTicket(imagenDetalle.getRuta());
-               Log.d(TAG,"*ya tengo las fotos informe "+imagenDetalle.getRuta());
+               {  mBinding.setFotoTicket(imagenDetalle.getRuta());
+               mBinding.ivuiticketCompra.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View view) {
+                       verImagen(imagenDetalle.getRuta());
+                   }
+               });
+               Log.d(TAG,"*ya tengo las fotos informe "+imagenDetalle.getRuta());}
            }
        });
        mViewModel.getFotoVisita(visita.getId()).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
            @Override
            public void onChanged(ImagenDetalle imagenDetalle) {
-               mBinding.setFotoFachada(imagenDetalle);
+
+                   mBinding.setFotoFachada(imagenDetalle);
+               if(imagenDetalle!=null) {
+                   mBinding.ivvifotoFachada.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View view) {
+                           verImagen(imagenDetalle.getRuta());
+                       }
+                   });
+               }
            }
        });
+
        mViewModel.getfotocondiciones(informe).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
            @Override
            public void onChanged(ImagenDetalle imagenDetalle) {
                mBinding.setFotocondiciones(imagenDetalle);
+               mBinding.ivuicondiciones.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View view) {
+                       verImagen(imagenDetalle.getRuta());
+                   }
+               });
 
            }
        });
        mViewModel.getproductoExhib(visita.getId(),informe.getClientesId()).observe(getViewLifecycleOwner(), new Observer<List<ProductoExhibidoDao.ProductoExhibidoFoto>>() {
            @Override
            public void onChanged(List<ProductoExhibidoDao.ProductoExhibidoFoto> productoExhibidoFotos) {
-              if(productoExhibidoFotos!=null&&productoExhibidoFotos.size()>0)
-               mBinding.setProdex(productoExhibidoFotos.get(0));
+              if(productoExhibidoFotos!=null&&productoExhibidoFotos.size()>0) {
+                  mBinding.setProdex(productoExhibidoFotos.get(0));
+                  mBinding.ivuiprodex.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View view) {
+                          verImagen(productoExhibidoFotos.get(0).ruta);
+                      }
+                  });
+              }
+
            }
        });
    }
@@ -186,7 +220,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
 
         campo.label=getString(R.string.indice);
         campo.type = "label";
-        campo.value = mViewModel.getVisita().getValue().getIndice();
+        campo.value = ComprasUtils.indiceLetra(mViewModel.getVisita().getValue().getIndice());
 
         camposTienda.add(campo);
          campo = new CampoForm();
@@ -288,6 +322,14 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     public  void editar(){
         //voy a editar
 
+    }
+
+    public void verImagen(String nombrearch){
+      //  ImageView imagen=(ImageView)v;
+       // imagen.get
+        Intent iverim=new Intent(getActivity(), RevisarFotoActivity.class);
+        iverim.putExtra(RevisarFotoActivity.IMG_PATH1,nombrearch);
+        startActivity(iverim);
     }
 
     @Override

@@ -36,6 +36,8 @@ public abstract class InformeTempDao extends  BaseDao<InformeTemp>  {
     public abstract InformeTemp  getInformesimple(int uuid);
     @Query("SELECT * FROM informe_temp WHERE nombre_campo =:campo")
     public abstract InformeTemp  getInformesByNombre(String campo);
+    @Query("SELECT * from informe_temp where isPregunta=:pregunta order by id desc")
+    public abstract InformeTemp  getUltimo(boolean pregunta);
     @Query("SELECT * FROM informe_temp WHERE tabla=:tabla")
     public abstract List<InformeTemp>  getInformesByTabla(String tabla);
 
@@ -44,7 +46,10 @@ public abstract class InformeTempDao extends  BaseDao<InformeTemp>  {
     public abstract void deleteAll();
 
 
-
+    @Query("SELECT * FROM informe_temp WHERE nombre_campo in ('productoId','producto','presentacion'" +
+            ",'empaque','empaquesId','numMuestra','tipoAnalisis','nombreAnalisis','comprasId','comprasDetId'," +
+            "'siglas','plantasId','plantaNombre','clienteNombre','clientesId','codigosnop')")
+    public abstract List<InformeTemp> getProductoSel();
     @Query("SELECT * FROM informe_temp WHERE id =:visitaId")
     public abstract List<InformeTemp> getInformessimple(int visitaId);
 

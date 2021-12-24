@@ -15,6 +15,7 @@ public class ListaCompraDetalle {
     private int productosId;
     private String productoNombre;
     private String tamanio;
+    private int tamanioId;
 
     private String empaque;
     private int empaquesId;
@@ -196,5 +197,13 @@ public class ListaCompraDetalle {
 
     public void setNvoCodigo(String nvoCodigo) {
         this.nvoCodigo = nvoCodigo;
+    }
+
+    public int getTamanioId() {
+        return tamanioId;
+    }
+
+    public void setTamanioId(int tamanioId) {
+        this.tamanioId = tamanioId;
     }
 }

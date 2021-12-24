@@ -71,7 +71,7 @@ public class CiudadTrabajoFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<ListaCompra> lista) {
                 Log.d(Constantes.TAG, "YA cargo la lista " + lista.size());
-                if(lista.size()>1) {
+                if(lista.size()>0) {
 
                     convertirLista(lista);
                     CreadorFormulario.cargarSpinnerDescr(getContext(),spciudades,listaCiudadesEnv);

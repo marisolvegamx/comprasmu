@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.services.ServicioCompras;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirPendService;
 import com.example.comprasmu.ui.home.HomeFragment;
@@ -44,9 +46,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
@@ -70,7 +74,7 @@ import java.util.List;
 
 
 /*esta es la clase principal***/
-public class NavigationDrawerActivity extends AppCompatActivity {
+public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     SubirFotoProgressReceiver rcv;
@@ -82,6 +86,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
     public static final String PROGRESS_UPDATE = "progress_update";
     public static final String PROGRESS_PEND = "progress_pend";
+    public static final String NAVINICIAL="nd_navinicial";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +113,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+        //navigationView.setNavigationItemSelectedListener(this);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -117,7 +123,7 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras(); // Aquí es null
         String inicio="";
         if(extras!=null) {
-             inicio = extras.getString("comprasmu.inicio");
+             inicio = extras.getString(NAVINICIAL);
         }
         NavController navController;
 
@@ -125,6 +131,8 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+      //  navigationView.setNavigationItemSelectedListener(this);
+
         NavInflater navInflater = navController.getNavInflater();
 
         NavGraph graph = navInflater.inflate(R.navigation.mobile_navigation);
@@ -166,17 +174,18 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
 
 
-        }else {
+        }else   if(inicio.equals("listainforme")){
+            /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment fragment = new BuscarInformeFragment();
+            ft.add(R.id., fragment);
+            ft.commit();*/
+            graph.setStartDestination(R.id.nav_listar);
+        }else{
             descargasIniciales();
             graph.setStartDestination(R.id.nav_home);
         }
         navController.setGraph(graph);
-      /*  if(inicio.equals("listainforme")){
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment fragment = new BuscarInformeFragment();
-            ft.add(R.id., fragment);
-            ft.commit();
-        }*/
+
         if (checkPermission()) {
             //main logic or main code
 
@@ -184,6 +193,15 @@ public class NavigationDrawerActivity extends AppCompatActivity {
 
         } else {
             requestPermission();
+        }
+        ServicioCompras sbt = new ServicioCompras();
+
+
+        try {
+            sbt.iniciar(this.getApplicationContext(), "marisol");
+        } catch (Exception e) {
+            Log.d(TAG,"Error al iniciar el servicio");
+            e.printStackTrace();
         }
     }
 
@@ -215,6 +233,10 @@ public class NavigationDrawerActivity extends AppCompatActivity {
               //  Log.d(TAG,"hice click en"+item.getItemId());
                    subirImagenes();
                 return true;
+            case R.id.cerrarsesion:
+                //  Log.d(TAG,"hice click en"+item.getItemId());
+                borrarUsuario();
+                return true;
 
             default:
                 // If we got here, the user's action was not recognized.
@@ -222,6 +244,27 @@ public class NavigationDrawerActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+
+    public void borrarUsuario(){
+        SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=prefe.edit();
+
+        editor.putString("usuario", "");
+        editor.putString("password", "");
+        editor.commit();
+
+    }
+
+    public void cerrarSesion(){
+
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory( Intent.CATEGORY_HOME );
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
+        finish();
+       // finishAndRemoveTask();
     }
     private boolean checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
@@ -337,6 +380,25 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(rcv);
     }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.i(TAG,"click en el menu");
+        switch (item.getItemId()) {
+
+            case R.id.nav_cerrarsesion: {
+                //borrarUsuario();
+                cerrarSesion();
+                break;
+            }
+        }
+        //close navigation drawer
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+
+    }
+
     public class SubirFotoProgressReceiver extends BroadcastReceiver {
 
         @Override
@@ -406,9 +468,9 @@ public class NavigationDrawerActivity extends AppCompatActivity {
         ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
 
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo);
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,null);
 
-        task.execute("cat");
+        task.execute("cat","");
       /*  AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setIcon(android.R.drawable.stat_sys_download);

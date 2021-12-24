@@ -8,12 +8,16 @@ public class InformeTemp {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private int visitasId;
+    private int iddetalle;
 
+    private int informesId;
     private String nombre_campo;
     private int consecutivo;
     private String valor;
-
     private String tabla;
+    private boolean isPregunta; //false para saber si solo es para guardar info
+
 
     public int getId() {
         return id;
@@ -53,5 +57,37 @@ public class InformeTemp {
 
     public void setTabla(String tabla) {
         this.tabla = tabla;
+    }
+
+    public boolean isPregunta() {
+        return isPregunta;
+    }
+
+    public void setPregunta(boolean pregunta) {
+        isPregunta = pregunta;
+    }
+
+    public int getVisitasId() {
+        return visitasId;
+    }
+
+    public void setVisitasId(int visitasId) {
+        this.visitasId = visitasId;
+    }
+
+    public int getIddetalle() {
+        return iddetalle;
+    }
+
+    public void setIddetalle(int iddetalle) {
+        this.iddetalle = iddetalle;
+    }
+
+    public int getInformesId() {
+        return informesId;
+    }
+
+    public void setInformesId(int informesId) {
+        this.informesId = informesId;
     }
 }

@@ -2,12 +2,15 @@ package com.example.comprasmu.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -43,8 +46,11 @@ import com.santalu.maskara.MaskStyle;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -363,7 +369,7 @@ public class CreadorFormulario {
     }
     public TextInputEditText fechaMask(){
         Mask mask = new Mask(
-                "__-__-____",
+                "__-__-__",
                  '_',
                 MaskStyle.PERSISTENT
         );
@@ -387,14 +393,14 @@ public class CreadorFormulario {
     }
 
     public TextInputEditText decimalMask(){
-        Mask mask = new Mask(
+/*        Mask mask = new Mask(
                 "___.__",
-                '.',
+                '_',
                 MaskStyle.PERSISTENT
         );
-        MaskChangedListener listener =new  MaskChangedListener(mask);
+        MaskChangedListener listener2 =new  MaskChangedListener(mask);*/
         TextInputEditText textField=new TextInputEditText(context);
-        textField.addTextChangedListener(listener);
+       // textField.addTextChangedListener(listener2);
         String valor="";
         if(this.infocampo.value!=null&&!this.infocampo.value.equals(""))
             valor=this.infocampo.value;
@@ -405,27 +411,45 @@ public class CreadorFormulario {
         textField.setId(this.infocampo.id);
         textField.setText(valor);
         textField.setEnabled(!this.readonly);
-        textField.setInputType(TYPE_NUMBER_FLAG_DECIMAL);
+        textField.setRawInputType(Configuration.KEYBOARD_12KEY);
+        textField.addTextChangedListener(new CurrencyTextWatcher());
+
+      /*  textField.addTextChangedListener(new TextWatcher(){
+            DecimalFormat dec = new DecimalFormat("0.00");
+            @Override
+            public void afterTextChanged(Editable arg0) {
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            private String current = "";
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().equals(current)){
+                    textField.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[$,\\.]", "");
+
+                    double parsed = Double.parseDouble(cleanString);
+                    NumberFormat format=NumberFormat.getCurrencyInstance();
+                    format.setCurrency(Currency.getInstance("MXN"));
+
+                    String formatted =format.format((parsed/100));
+
+                    current = formatted;
+                    textField.setText(formatted);
+                    textField.setSelection(formatted.length());
+
+                    textField.addTextChangedListener(this);
+                }
+            }
+        });*/
+        //   textField.setInputType(TYPE_NUMBER_FLAG_DECIMAL);
         return  textField;
 
     }
 
-    public void botonGaleria(){
-        ImageButton button=new ImageButton(context);
-        Drawable replacer = context.getResources().getDrawable(R.drawable.ic_menu_camera);
-
-        replacer = context.getResources().getDrawable(R.drawable.ic_menu_gallery);
-
-        button.setImageDrawable(replacer);
-        button.setBackgroundColor(context.getColor(R.color.blue_principal));
-        button.setOnClickListener( new View.OnClickListener() {
-            public void onClick(View v) {
-                //pongo el nombre en el textview
-                //    abrirGaleria(v);
-
-            }});
-        //layout.addView(button);
-    }
     public EditText password(){
         //   return '<div class="form-group">'.
         //readonly=isset(this.infocampo["readonly"])?;
@@ -855,6 +879,37 @@ public class CreadorFormulario {
 
 
 
+
+    }
+
+    class CurrencyTextWatcher implements TextWatcher {
+
+        boolean mEditing;
+
+        public CurrencyTextWatcher() {
+            mEditing = false;
+        }
+
+        public synchronized void afterTextChanged(Editable s) {
+            if(!mEditing) {
+                mEditing = true;
+
+                String digits = s.toString().replaceAll("\\D", "");
+                NumberFormat nf = NumberFormat.getCurrencyInstance();
+                try{
+                    String formatted = nf.format(Double.parseDouble(digits)/100);
+                    s.replace(0, s.length(), formatted);
+                } catch (NumberFormatException nfe) {
+                    s.clear();
+                }
+
+                mEditing = false;
+            }
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
     }
 }

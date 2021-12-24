@@ -19,6 +19,7 @@ import com.example.comprasmu.data.modelos.InformeCompra;
 
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
 import com.example.comprasmu.data.remote.InformeEnvio;
@@ -171,6 +172,12 @@ public class ListaInformesViewModel extends AndroidViewModel {
         }
 
         return fotosinfo;
+
+    }
+    public  LiveData<List<InformeCompra>>  cargarPestañas(String indice, String nombreTienda, String ciudad, String planta,int clienteSel){
+
+            return repository.getPlantasByIndice(Constantes.INDICEACTUAL,nombreTienda,ciudad,planta,clienteSel);
+
 
     }
     public MutableLiveData<Event<Integer>> getSnackbarText() {

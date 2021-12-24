@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -102,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    comprobacion();
+                  //  comprobacion();
                 }
                 return false;
             }
@@ -122,13 +123,17 @@ public class LoginActivity extends AppCompatActivity {
         //reviso si ya tengo el dato
         LoggedInUser luser=tengoUsuario();
         if(luser==null){ //primera vez
+            Log.i("LoginRepository","primera vez");
             if(ComprasUtils.isOnlineNet())
-         //   loginViewModel.login(usernameEditText.getText().toString(),
-           //         passwordEditText.getText().toString(),new LoginListener());
-                new LoginListener().correcto();
-            else{
-                Toast.makeText(getApplicationContext(), "Sin conexión a internet, verifique", Toast.LENGTH_LONG).show();
-            }
+            loginViewModel.login(usernameEditText.getText().toString(),
+                    passwordEditText.getText().toString(),new LoginListener());
+           //     new LoginListener().correcto();
+            else
+                {
+                    loadingProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), "Sin conexión a internet, verifique", Toast.LENGTH_LONG).show();
+
+                }
         }else
         //loginlocal
         {
@@ -168,6 +173,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+
+
     private void updateUiWithUser(String model) {
         String welcome = getString(R.string.welcome) +" "+ model;
         // TODO : initiate successful logged in experience
@@ -199,6 +206,7 @@ public class LoginActivity extends AppCompatActivity {
 
         }
         public void correcto() {
+            loadingProgressBar.setVisibility(View.GONE);
             guardarUsuario();
             updateUiWithUser(usernameEditText.getText().toString());
             entrar();

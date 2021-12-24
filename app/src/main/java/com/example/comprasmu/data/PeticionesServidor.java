@@ -218,20 +218,27 @@ public class PeticionesServidor {
 
     public void autenticar(String username, String password, LoginActivity.LoginListener listener){
 
-        Log.d("PeticionesServidor","haciendo petición logeo");
+        Log.d("PeticionesServidor","haciendo petición logeo "+new String(android.util.Base64.encode(username.getBytes(), Base64.NO_WRAP))+"--"+new String(Base64.encode(password.getBytes(),Base64.NO_WRAP)));
 
-        final Call<PostResponse>  batch = apiClient.getApiService().autenticarUser(new String(android.util.Base64.encode(username.getBytes(), Base64.DEFAULT)), new String(Base64.encode(password.getBytes(),Base64.DEFAULT)));
+        final Call<PostResponse>  batch = apiClient.getApiService().autenticarUser(new String(android.util.Base64.encode(username.getBytes(), Base64.NO_WRAP)), new String(Base64.encode(password.getBytes(),Base64.NO_WRAP)));
+       // final Call<PostResponse>  batch = apiClient.getApiService().autenticarUser(username, password);
 
 
         batch.enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
+                Log.i(TAG,"respuesta"+response.message());
+                if(response.code()==500){
+                    listener.incorrecto("Usuario o contraseña incorrectos");
+                }else
+
                 if (response.isSuccessful() && response.body() != null) {
 
 
                     PostResponse logResp = response.body();
+                    Log.i(TAG,"respuesta"+logResp.getData());
                     //reviso si está actualizado
-                    if(logResp.getStatus().equals(100)) //correcto
+                    if(logResp.getStatus().equals("ok")) //correcto
                     {
 
                         listener.correcto();
@@ -244,7 +251,8 @@ public class PeticionesServidor {
                     }
 
                 }else{
-                    listener.incorrecto("error desconocido");
+                  //  PostResponse logResp = response.body();
+                    listener.incorrecto("Error de conexión, intente nuevamete");
                 }
             }
 

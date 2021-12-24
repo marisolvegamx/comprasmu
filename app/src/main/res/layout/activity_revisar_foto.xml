@@ -19,28 +19,16 @@
     <!--    </data>-->
     <TableLayout
         android:id="@+id/tableLayout"
-        android:layout_width="0dp"
-        android:layout_height="589dp"
+        android:layout_width="404dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.307"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="200dp"
-                android:layout_height="34dp"
-                android:layout_marginStart="0dp"
-                android:layout_weight="1"
-                android:text="CAPTURAR FOTO" />
-
-
-        </TableRow>
+        app:layout_constraintTop_toBottomOf="@+id/my_child_toolbar3">
 
 
         <TableRow
@@ -67,32 +55,15 @@
                 android:layout_height="38dp"
                 android:layout_weight="1"
 
+                android:visibility="invisible"
                 tools:layout_editor_absoluteY="169dp" />
 
-            <Button
-                android:id="@+id/btnrfrotar"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="rotarImagen"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="Rotar imagen" />
         </TableRow>
 
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/btnrfaceptar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-
-                android:onClick="agregar"
-                android:text="agregar" />
 
             <Button
                 android:id="@+id/btnrfcancelar"
@@ -102,7 +73,7 @@
                 android:layout_weight="1"
                 android:onClick="cancelar"
 
-                android:text="CANCELAR" />
+                android:text="@string/regresar" />
         </TableRow>
 
 

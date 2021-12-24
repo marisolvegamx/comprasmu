@@ -24,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -71,7 +72,8 @@
                 android:layout_width="194dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:text="@{detalle.ciudad}" />
+                android:text="@{detalle.ciudad}"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,12 +82,13 @@
 
                 <TextView
                     android:id="@+id/txtvidtienda"
+                    style="@style/textolista2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:layout_weight="1"
-                    android:visibility="@{detalle.tiendaId>0?View.VISIBLE:View.GONE}"
-                    android:text='@{detalle.tiendaId+""}'/>
+                    android:text='@{detalle.tiendaId+""}'
+                    android:visibility="@{detalle.tiendaId>0?View.VISIBLE:View.GONE}" />
 
                 <TextView
                     android:id="@+id/txtldpres"
@@ -96,38 +99,21 @@
                     android:text='@{detalle.tiendaNombre}' />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/txtestatus"
-                style="@style/textolistagrisb"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:layout_weight="1"
-                android:text="@{Constantes.ESTATUSINFORME[detalle.estatus]}" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/li_btnfin"
-                    style="@style/imbutton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-
-                    android:text="@string/finalizar"
-
-                    tools:visibility='@{detalle.estatus==3?View.VISIBLE:View.GONE}' />
-
-                <ImageButton
-                    android:id="@+id/li_btnagregar"
-                    style="@style/imbutton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="42dp"
+                <TextView
+                    android:id="@+id/txtestatus"
+                    style="@style/textolistagrisb"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="clip_horizontal"
+                    android:layout_marginTop="14dp"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_baseline_add_24" />
+                    android:text="@{Constantes.ESTATUSINFORME[detalle.estatus]}" />
 
                 <ImageButton
                     android:id="@+id/li_btnedit"
@@ -136,7 +122,7 @@
                     android:layout_height="42dp"
                     android:layout_weight="1"
                     android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}"
-                    app:srcCompat="@android:drawable/ic_menu_edit" />
+                    app:srcCompat="@drawable/ic_baseline_edit_24" />
 
                 <ImageButton
                     android:id="@+id/li_btnborrar"
@@ -145,14 +131,49 @@
                     android:layout_height="42dp"
                     android:layout_weight="1"
                     android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}"
-                    app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+                    app:srcCompat="@drawable/ic_baseline_white_close_24" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/li_btnfin"
+                    style="@style/btnverde"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+
+                    android:layout_marginTop="1dp"
+
+                    android:layout_weight="1"
+                    android:text="@string/finalizar"
+                    android:textColor="#FFFFFF"
+                    tools:visibility='@{detalle.estatus==3?View.VISIBLE:View.GONE}' />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/li_btnagregar"
+                    style="@style/btnverde"
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="35dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:background="#00BCD4"
+                    android:text="@string/continuar"
+                    android:textColor="#FFFFFF" />
+
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textView26"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text='@{detalle.estatus+""}' />
+                android:text='@{detalle.estatus+""}'
+                android:visibility="gone" />
 
 
         </LinearLayout>

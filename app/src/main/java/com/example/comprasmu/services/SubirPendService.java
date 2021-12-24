@@ -22,6 +22,7 @@ import com.example.comprasmu.data.remote.TodoEnvio;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
+import com.example.comprasmu.utils.ComprasUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Random;
@@ -175,7 +176,7 @@ public class SubirPendService extends IntentService
 
     public void enviarReporte(SubirTodoListener listener) {
         //reviso si tengo conexion
-        if(NavigationDrawerActivity.isOnlineNet()) {
+        if(ComprasUtils.isOnlineNet()) {
             //busco los pendientes
 
             PostInformeViewModel postviewModel = new PostInformeViewModel(this);

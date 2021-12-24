@@ -20,7 +20,7 @@ public class InformeCompra {
     private boolean segundaMuestra;
     private boolean terceraMuestra;
     private int plantasId;
-    private int producto_exhibido;
+
     private String plantaNombre;
     private int clientesId;
     private String clienteNombre;
@@ -29,7 +29,8 @@ public class InformeCompra {
     private int condiciones_traslado;
     private int estatus;
      private int estatusSync;
-
+    private boolean sinproducto;
+    private String causa_nocompra;
     public String getClienteNombre() {
         return clienteNombre;
     }
@@ -135,13 +136,7 @@ public class InformeCompra {
         this.condiciones_traslado = condiciones_traslado;
     }
 
-    public int getProducto_exhibido() {
-        return producto_exhibido;
-    }
 
-    public void setProducto_exhibido(int producto_exhibido) {
-        this.producto_exhibido = producto_exhibido;
-    }
 
     public int getEstatus() {
         return estatus;
@@ -157,5 +152,21 @@ public class InformeCompra {
 
     public void setEstatusSync(int estatusSync) {
         this.estatusSync = estatusSync;
+    }
+
+    public boolean isSinproducto() {
+        return sinproducto;
+    }
+
+    public void setSinproducto(boolean sinproducto) {
+        this.sinproducto = sinproducto;
+    }
+
+    public String getCausa_nocompra() {
+        return causa_nocompra;
+    }
+
+    public void setCausa_nocompra(String causa_nocompra) {
+        this.causa_nocompra = causa_nocompra;
     }
 }

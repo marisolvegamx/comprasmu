@@ -25,6 +25,7 @@ public class Reactivo {
     private boolean botonMicro;
     private boolean isCatalogo;
     private String tabla;
+    private String cliente;
 
     public int getId() {
         return id;
@@ -100,5 +101,11 @@ public class Reactivo {
         this.botonMicro = botonMicro;
     }
 
+    public String getCliente() {
+        return cliente;
+    }
 
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
 }

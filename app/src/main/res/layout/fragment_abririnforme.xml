@@ -93,6 +93,7 @@
                         style="@style/imbutton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:layout_weight="1"
                         android:src="@drawable/ic_menu_camera" />
 
@@ -177,19 +178,29 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btnaifotoexhibido"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <TextView
+                android:id="@+id/textView29"
+                style="@style/formlabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/agregar_exhibido" />
+                android:text="@string/producto_exhibido" />
+
+            <ImageButton
+                android:id="@+id/btnaifotoexhibido"
+                style="@style/imbutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_menu_camera" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvaiproductoex"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="20dp" >
+
+            </androidx.recyclerview.widget.RecyclerView>
 
             <Button
                 android:id="@+id/aibtnguardar"

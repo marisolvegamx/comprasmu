@@ -27,28 +27,15 @@
 
         <ImageView
             android:id="@+id/ivfefotoproducto"
-            android:layout_width="241dp"
-            android:layout_height="218dp"
+            android:layout_width="216dp"
+            android:layout_height="227dp"
+            android:layout_marginTop="32dp"
             android:layout_weight="1"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.089"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
-
-        <ImageButton
-            android:id="@+id/btnnfrotar"
-            style="@style/imbutton"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="172dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:tint="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/ivfefotoproducto"
-            app:layout_constraintTop_toTopOf="@+id/ivfefotoproducto"
-            tools:src="@drawable/ic_baseline_loop_24" />
 
         <Button
             android:id="@+id/btnfeguardar"
@@ -83,6 +70,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteY="173dp" />
+
+        <ImageButton
+            android:id="@+id/btnnfrotar"
+            style="@style/imbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="208dp"
+            android:src="@drawable/ic_baseline_loop_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.011"
+            app:layout_constraintStart_toEndOf="@+id/ivfefotoproducto"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

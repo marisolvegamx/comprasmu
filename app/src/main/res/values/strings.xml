@@ -9,7 +9,7 @@
     <string name="total">TOTAL</string>
     <string name="ciudad">CIUDAD</string>
     <string name="siglas">SIGLAS</string>
-    <string name="fecha_caducidad">FECHA CADUCIDAD</string>
+    <string name="fecha_caducidad">FECHA DE CADUCIDAD</string>
     <string name="codigo_producto">CÓDIGO DE PRODUCCIÓN</string>
     <string name="cliente">CLIENTE</string>
     <string name="origen">TOMADO DE</string>
@@ -27,6 +27,10 @@
     <string name="atributoc">DAñO C</string>
     <string name="foto_atributoc">FOTO DAñO C</string>
     <string name="etiqueta_evaluacion">ETIQUETA DE EVALUACIÓN</string>
+    <string name="foto_posicion1">FOTO POSICION 1</string>
+    <string name="foto_posicion2">FOTO POSICION 2</string>
+    <string name="foto_posicion3">FOTO POSICION 3</string>
+
     <string name="se_compro_producto">¿SE COMPRÓ PRODUCTO?</string>
     <string name="se_compro_segunda">¿SE COMPRÓ SEGUNDA MUESTRA?</string>
     <string name="se_compro_terc">¿SE COMPRÓ TERCERA MUESTRA?</string>
@@ -52,8 +56,8 @@
     <string name="action_settings">Configuración</string>
 
     <string name="menu_configuracion">Configuración</string>
-    <string name="menu_descargar">Descargar lista de compras</string>
-    <string name="menu_ver_lista">Lista de compras</string>
+    <string name="menu_descargar">Actualizar lista de compra</string>
+    <string name="menu_ver_lista">Lista de compra</string>
     <string name="menu_abrir_informe">Abrir informe</string>
     <string name="menu_continuar_informe">Continuar informe</string>
     <string name="menu_lista_informe">Lista de informes</string>
@@ -155,9 +159,11 @@
     <string name="elige_un_criterio">ELIJA UN CRITERIO</string>
     <string name="error_siglas">LAS SIGLAS SON INCORRETAS, VERFIQUE</string>
     <string name="error_fecha">LA FECHA DE CADUCIDAD DEBE SER MAYOR A 30 DIAS</string>
-    <string name="error_fecha_formato">INTRODUZCA UNA FECHA VÁLIDA EN FORMATO dd-mm-aaaa</string>
+    <string name="error_fecha_formato">INTRODUZCA UNA FECHA VÁLIDA EN FORMATO dd-mm-aa</string>
     <string name="error_fecha_caduca">MUESTRA CADUCADA, VERIFIQUE</string>
     <string name="error_codigo_repetido">EXISTE UN PRODUCTO CON EL MISMO CÓDIGO, VERIFIQUE</string>
+    <string name="error_codigo_per">VERIFIQUE LOS CODIGOS PERMITIDOS</string>
+
     <string name="siglas_planta">SIGLAS DE PLANTA</string>
     <string name="no_hay_conexion">Sin conexión a internet este módulo no funcionará. Revise su conexión</string>
     <string name="error_fecha_caduca_prox">LA MUESTRA CADUCARÁ EN MENOS DE 30 DÍAS, VERIFIQUE</string>
@@ -189,5 +195,14 @@
     <string name="ingrese_usuario">ESCRIBA SU USUARIO Y CONTRASEñA</string>
     <string name="menu_home">INICIO</string>
     <string name="nota">NOTA</string>
+    <string name="enviar">ENVIAR</string>
+    <string name="informe_ayer">ESTE INFORME YA NO ES VÁLIDO POR LA FECHA, PARA CONTINUAR ELIMINE E INICIE UNO NUEVO</string>
+    <string name="regresar">REGRESAR</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="cerrar_app">¿ESTÁ SEGURO DE SALIR DE LA APLICACIÓN?</string>
+    <string name="continuar">CONTINUAR</string>
+    <string name="listas_actualiz">LAS LISTAS YA ESTÁN ACTUALIZADAS</string>
+    <string name="pregunta_salir">¿ESTÁ SEGURO DE SALIR DE LA CAPTURA DEL INFORME?</string>
+    <string name="selecciones_causa">SELECCIONE CAUSA</string>
 
 </resources>

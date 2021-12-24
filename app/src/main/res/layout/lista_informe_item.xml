@@ -130,8 +130,8 @@
                 <ImageButton
                     android:id="@+id/li_btnsubir"
                     style="@style/imbutton"
-                    android:layout_width="66dp"
-                    android:layout_height="42dp"
+                    android:layout_width="41dp"
+                    android:layout_height="39dp"
                     android:layout_weight="1"
                     android:visibility="@{detalle.estatusSync>0?View.GONE: View.VISIBLE }"
                     app:srcCompat="@drawable/ic_baseline_cloud_upload_24" />

@@ -33,9 +33,11 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     ListaCompraRepositoryImpl lcrepo;
     boolean notificar=false;
     Activity act;
+    int actualiza;
+    ProgresoListener proglist;
     public DescargasIniAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
-                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo) {
+                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener proglist) {
 
         this.cdrepo=cdrepo;
         this.atRepo=atRepo;
@@ -44,22 +46,26 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         this.lcrepo=lcrepo;
         this.act=act;
         sdfdias=new SimpleDateFormat("dd-MM-yyyy");
+        this.proglist=proglist;
     }
 
     @Override
     protected Void doInBackground(String... indice) {
 
-        if(NavigationDrawerActivity.isOnlineNet()) {
+      //  if(NavigationDrawerActivity.isOnlineNet()) {
             Log.d("DescargasIniAsyncTask","iniciando descarga");
-            if (indice[0].equals("cat")) //descargo cats tmb
-                catalogos();
+            if (indice[1].equals("act")) //vengo del fragment de actualizar lista
+                actualiza=1;
+           // if (indice[0].equals("cat")) //descargo cats tmb
+            catalogos();
             listacompras();
-        }else
+      /*  }else
               {
             notificar = true;
                   Log.d("DescargasIniAsyncTask"," sin internet");
-            cancel(true);
-        }
+          //  cancel(true);
+
+        }*/
         return null;
 
     }
@@ -78,12 +84,36 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             if(!sdfdias.format(cats.getVersion()).equals(sdfdias.format(new Date()))){
                 if(NavigationDrawerActivity.isOnlineNet())
                     ps.getCatalogos(cdrepo,tvRepo, atRepo);
+                else
 
+                    notificar = true;
 
+            }
+                 else{
+                //no actualice
+                if(actualiza==1) {
+                    if(NavigationDrawerActivity.isOnlineNet())
+                        ps.getCatalogos(cdrepo,tvRepo, atRepo);
+                else
+
+                    notificar = true;
+                  /*  act.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("DescargasIniAsyncTask","estas al dia*");
+
+                          //  proglist.cerrarAlerta();
+                         //   proglist.todoBien();
+                        }
+                    });*/
+                }
             }
         }else {   //primera vez
             Log.d("DescargasIniAsyncTask","iniciando descarga cats");
-            ps.getCatalogos(cdrepo, tvRepo, atRepo);
+            if(NavigationDrawerActivity.isOnlineNet())
+                ps.getCatalogos(cdrepo, tvRepo, atRepo);
+            else
+                notificar = true;
         }
 
     }
@@ -101,14 +131,39 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
 
             Log.d("DescargasIniAsyncTask","comprobando vers liscomp*"+sdfdias.format(comp.getVersion())+"--"+(sdfdias.format(new Date())));
-            if(!sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))){
+            if( !sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))){
+                if(NavigationDrawerActivity.isOnlineNet())
                 ps.getListasdeCompra(comp,det,Constantes.INDICEACTUAL,listener);
+                else
+                    notificar = true;
 
             }
+            else{
+                //no actualice
+                if(actualiza==1) {
+                    //siempre actualizo
+                    if(NavigationDrawerActivity.isOnlineNet())
+                    ps.getListasdeCompra(comp,det,Constantes.INDICEACTUAL,listener);
+                    else
+                        notificar = true;
+                  /*  act.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("DescargasIniAsyncTask","estas al dia*");
+
+                            proglist.cerrarAlerta();
+                            proglist.todoBien();
+                        }
+                    });*/
+                }
+            }
+
         }else {   //primera vez
             Log.d("DescargasIniAsyncTask", "primera vez");
-
+            if(NavigationDrawerActivity.isOnlineNet())
             ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
+            else
+                notificar = true;
         }
     }
 
@@ -116,13 +171,20 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         if(notificar)
-        notificarSinConexion();
+            notificarSinConexion();
+        Log.e("DescargasIniAsyT","---"+actualiza+"---"+proglist);
+        if(actualiza==1&&proglist!=null){
+            proglist.cerrarAlerta(notificar);
+        }
     }
 
 
 
         public class DescargaIniListener{
-
+            public DescargaIniListener(){
+                //if(proglist!=null&&actualiza==1)
+                  //  proglist.cerrarAlerta();
+            }
             public void noactualizar(String response){
                 //a ver como la regresamos
             }
@@ -158,27 +220,32 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 tvRepo.insertUpdate(tinfod);
 
             }
+
         }
+    public interface ProgresoListener {
+         void cerrarAlerta(boolean res);
+         void todoBien();
 
-        public void notificarSinConexion(){
-            AlertDialog.Builder builder=new AlertDialog.Builder(act);
-            builder.setCancelable(true);
-            builder.setIcon(android.R.drawable.stat_sys_download);
-            builder.setTitle(act.getString(R.string.atencion));
-            builder.setMessage("La aplicación necesita actualizarse. Favor de revisar su conexión a internet o activar sus datos");
+    }
+    public void notificarSinConexion(){
+        AlertDialog.Builder builder=new AlertDialog.Builder(act);
+        builder.setCancelable(true);
+        builder.setIcon(android.R.drawable.stat_sys_download);
+        builder.setTitle(act.getString(R.string.atencion));
+        builder.setMessage("La aplicación necesita actualizarse. Por favor revise su conexión a internet o active sus datos");
 
 
-            builder.setInverseBackgroundForced(true);
-            builder.setPositiveButton(act.getString(R.string.aceptar),new DialogInterface.OnClickListener()
+        builder.setInverseBackgroundForced(true);
+        builder.setPositiveButton(act.getString(R.string.aceptar),new DialogInterface.OnClickListener()
+        {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which)
             {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog alert=builder.create();
-            alert.show();
-        }
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert=builder.create();
+        alert.show();
+    }
 }

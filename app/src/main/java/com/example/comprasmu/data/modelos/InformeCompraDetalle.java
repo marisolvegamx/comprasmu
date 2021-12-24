@@ -15,12 +15,13 @@ public class InformeCompraDetalle {
     private int id;
 
     private int informesId;
-    private boolean sinproducto;
+
     private int estatus;
     private int estatusSync;
     private int productoId;
     private String producto;
     private String presentacion;
+    private int tamanioId;
     private String empaque;
     private int empaquesId;
     private String codigo;
@@ -51,6 +52,7 @@ public class InformeCompraDetalle {
     private String comentarios;
     private int comprasId;
     private int comprasDetId;
+
 
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
@@ -258,13 +260,6 @@ public class InformeCompraDetalle {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isSinproducto() {
-        return sinproducto;
-    }
-
-    public void setSinproducto(boolean sinproducto) {
-        this.sinproducto = sinproducto;
-    }
 
     public int getProductoId() {
         return productoId;
@@ -368,6 +363,14 @@ public class InformeCompraDetalle {
 
     public void setComprasDetId(int comprasDetId) {
         this.comprasDetId = comprasDetId;
+    }
+
+    public int getTamanioId() {
+        return tamanioId;
+    }
+
+    public void setTamanioId(int tamanioId) {
+        this.tamanioId = tamanioId;
     }
 }
 

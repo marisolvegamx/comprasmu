@@ -1,6 +1,8 @@
 package com.example.comprasmu.data.repositories;
 
 
+import android.util.Log;
+
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.LoggedInUser;
 import com.example.comprasmu.data.modelos.LoginDataSource;
@@ -50,6 +52,7 @@ public class LoginRepository {
 
     public void login(String username, String password, LoginActivity.LoginListener listener) {
         // handle login
+        Log.i("LoginRepository","haciendo peticion");
          petServ.autenticar(username, password,listener);
 
     }

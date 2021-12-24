@@ -20,6 +20,9 @@ public abstract class ListaCompraDao  extends  BaseDao<ListaCompra> {
     @RawQuery(observedEntities = ListaCompra.class)
     public abstract LiveData<List<ListaCompra>> getListaCompraByFiltros(SupportSQLiteQuery query);
 
+    @RawQuery(observedEntities = ListaCompra.class)
+    public abstract List<ListaCompra> getListaCompraByFiltrosSimple(SupportSQLiteQuery query);
+
     @Transaction
     @RawQuery(observedEntities = ListaWithDetalle.class)
     public abstract LiveData<List<ListaWithDetalle>> getListasWithDetalleByFiltros(SupportSQLiteQuery query);

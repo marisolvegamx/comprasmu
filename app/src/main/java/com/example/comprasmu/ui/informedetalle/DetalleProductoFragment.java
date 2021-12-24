@@ -63,6 +63,8 @@ import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeTemp;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.InformeEnvio;
@@ -74,6 +76,7 @@ import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
+import com.example.comprasmu.ui.visita.ListaVisitasFragment;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -81,6 +84,7 @@ import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.Preguntasino;
 import com.example.comprasmu.utils.RPResultListener;
 import com.example.comprasmu.utils.RuntimePermissionUtil;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -122,11 +126,13 @@ public class DetalleProductoFragment extends Fragment {
     boolean isTercera;
     EditText textoint;
     Preguntasino pregunta;
-   Spinner spclientes ;
+    View respgen;
+    Spinner spclientes ;
     private Reactivo preguntaAct;
     ImageButton micbtn;
     ImageView fotomos;
     LinearLayout sv;
+    boolean isEdicion;
 
 
     NuevoDetalleViewModel.ProductoSel prodSel;
@@ -139,9 +145,14 @@ public class DetalleProductoFragment extends Fragment {
     public final static String ARG_NUEVOINFORME="comprasmu.ni_idinforme";
     public static String NUMMUESTRA="comprasmu.ni.nummuestra";
     private ImageButton btnrotar;
+    InformeTemp  ultimares;
+    Button aceptar;
+    public DetalleProductoFragment() {
 
-    public DetalleProductoFragment(Reactivo preguntaAct) {
+    }
+    public DetalleProductoFragment(Reactivo preguntaAct,boolean edicion) {
         this.preguntaAct = preguntaAct;
+        this.isEdicion=edicion;
     }
 
     @Override
@@ -166,25 +177,124 @@ public class DetalleProductoFragment extends Fragment {
         try {
             Log.d(TAG,"creando fragment");
 
-            Log.d(TAG,"genere cons="+mViewModel.consecutivo+"----"+mViewModel.clienteSel);
-            sv = root.findViewById(R.id.content_generic);
+             sv = root.findViewById(R.id.content_generic);
+            aceptar = root.findViewById(R.id.btngaceptar);
          //   mViewModel.cargarCatsContinuar();
+            //si es la misma
+            //reviso si es edicion o es nueva
+              ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo());
+            if(isEdicion) {
+                aceptar.setEnabled(true);
+                mViewModel.consecutivo=ultimares.getConsecutivo();
+                InformeTemp inf= dViewModel.buscarxNombreCam("numMuestra");
+                mViewModel.numMuestra=inf==null?0:Integer.parseInt(inf.getValor());
+                 if(preguntaAct.getId()>=23)
+                {
+                    //  Constantes.ni_clientesel=opcionsel.getNombre();
+                    //int consecutivo=mViewModel.getConsecutivo(valor);
+                    // Log.d(TAG,"genere cons="+consecutivo);
+                    mViewModel.informe=new InformeCompra();
+                    // nviewModel.informe.setClienteNombre(opcionsel.getNombre());
+                    //  nviewModel.informe.setClientesId(ultimares.getValor());
+                    mViewModel.informe.setConsecutivo(ultimares.getConsecutivo());
+                    mViewModel.consecutivo=ultimares.getConsecutivo();
+                    ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
+                    dViewModel.fromTemp();
+                    ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
+                }
+                if (preguntaAct.getId() >= 25) {
+                    InformeTemp resp=dViewModel.buscarxNombreCam("codigo");
+                    ((ContinuarInformeActivity)getActivity()).actualizarCodProd(resp.getValor());
+
+                }
+                if(dViewModel.productoSel!=null)
+                { getAtributos();
+                getTomadoDe();}
+                if (preguntaAct.getId() >= 26) {
+
+
+                    InformeTemp resp=dViewModel.buscarxNombreCam("origen");
+                    String valor="";
+                    int opcion=Integer.parseInt(resp.getValor());
+                    //busco en el cat
+                    for(CatalogoDetalle cat:tomadoDe){
+                        if(cat.getCad_idopcion()==opcion)
+                            valor=cat.getCad_descripcionesp();
+                    }
+                    Constantes.VarDetalleProd.tomadode =valor;
+
+                    ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
+
+                }
+                if (preguntaAct.getId() >= 33) {
+                    InformeTemp resp=dViewModel.buscarxNombreCam("atributoa");
+                    String valor="";
+                    if(resp!=null) {
+                        int opcion = Integer.parseInt(resp.getValor());
+                        //busco en el cat
+                        for (CatalogoDetalle cat : atributos) {
+                            if (cat.getCad_idopcion() == opcion)
+                                valor = cat.getCad_descripcionesp();
+                        }
+                        Constantes.VarDetalleProd.nvoatra = valor;
+                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo1();
+                    }
+                }
+                if (preguntaAct.getId() >= 36) {
+                    InformeTemp resp=dViewModel.buscarxNombreCam("atributob");
+                    String valor="";
+                    if(resp!=null) {
+                        int opcion = Integer.parseInt(resp.getValor());
+                        //busco en el cat
+                        for (CatalogoDetalle cat : atributos) {
+                            if (cat.getCad_idopcion() == opcion)
+                                valor = cat.getCad_descripcionesp();
+                        }
+                        Constantes.VarDetalleProd.nvoatrb = resp == null ? "" : valor;
+                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo2();
+                    }
+                }
+                if (preguntaAct.getId() >= 39) {
+                    InformeTemp resp=dViewModel.buscarxNombreCam("atributoc");
+                    String valor="";
+                    if(resp!=null) {
+                        int opcion = Integer.parseInt(resp.getValor());
+                        //busco en el cat
+                        for (CatalogoDetalle cat : atributos) {
+                            if (cat.getCad_idopcion() == opcion)
+                                valor = cat.getCad_descripcionesp();
+                        }
+                        Constantes.VarDetalleProd.nvoatrc = resp == null ? "" : valor;
+                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo2();
+                    }
+                }
+            }
+            else {
+
+                aceptar.setEnabled(false);
+            }
 
             crearFormulario();
+
+
+
+
             if(preguntaAct.getType().equals(CreadorFormulario.SELECTCAT)||preguntaAct.getType().equals(CreadorFormulario.SELECTDES)||preguntaAct.getType().equals(CreadorFormulario.PSELECT)) {
                 spclientes = root.findViewById(1001);
             }
              else
             if(preguntaAct.getType().equals(CreadorFormulario.PREGUNTASINO))
             {  pregunta=root.findViewById(1001);
+            }else if(preguntaAct.getType().equals(CreadorFormulario.RADIOBUTTON))
+            {  respgen=root.findViewById(1001);
             }else
             {
                 textoint = root.findViewById(1001);
             }
 
-            Button aceptar = root.findViewById(R.id.btngaceptar);
-            aceptar.setEnabled(false);
-            if(textoint!=null){
+
+
+            if(textoint!=null&&preguntaAct.getId()!=7){ //los comentarios no son obligatorios
                 textoint.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -193,7 +303,7 @@ public class DetalleProductoFragment extends Fragment {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if (i2>0){ //count es cantidad de caracteres que tiene
+                        if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
                             aceptar.setEnabled(true);
                         }else{
                             aceptar.setEnabled(false);
@@ -206,7 +316,10 @@ public class DetalleProductoFragment extends Fragment {
 
                     }
                 });
+
             }
+            if(preguntaAct.getId()==7)
+            aceptar.setEnabled(true);
             if(spclientes!=null){
                 spclientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -223,6 +336,15 @@ public class DetalleProductoFragment extends Fragment {
             }
             if(pregunta!=null){
                 pregunta.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                        aceptar.setEnabled(true);
+                    }
+                });
+            }
+            if(respgen!=null){
+                RadioGroup botones=(RadioGroup)respgen;
+                botones.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup radioGroup, int i) {
                         aceptar.setEnabled(true);
@@ -246,7 +368,7 @@ public class DetalleProductoFragment extends Fragment {
             }
             if(preguntaAct.getId()==7){
                 //cambio el boton a finalizar y mestro alerta
-                aceptar.setText(getString(R.string.finalizar));
+                aceptar.setText(getString(R.string.enviar));
                 aceptar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.botonvalido));
             }
             Log.d(TAG,"tipo tienda -----------*"+Constantes.DP_TIPOTIENDA);
@@ -260,7 +382,7 @@ public class DetalleProductoFragment extends Fragment {
 
         return root;
     }
-
+    //btnaifotoexhibido
     public void crearFormulario(){
         camposForm=new ArrayList<>();
         CampoForm campo=new CampoForm();
@@ -268,18 +390,20 @@ public class DetalleProductoFragment extends Fragment {
         campo.nombre_campo=preguntaAct.getNombreCampo();
         campo.type=preguntaAct.getType();
         campo.style=R.style.formlabel2;
-
+        if(isEdicion)
+            campo.value=ultimares.getValor();
         campo.id=1001;
         //para los catalogos
         if(preguntaAct.getType().equals(CreadorFormulario.SELECTCAT)||preguntaAct.getType().equals(CreadorFormulario.SELECTDES)){
             switch (preguntaAct.getNombreCampo()){
                 case Contrato.TablaInformeDet.ATRIBUTOA:case Contrato.TablaInformeDet.ATRIBUTOB: case Contrato.TablaInformeDet.ATRIBUTOC:
-                    getAtributos(campo);
+                    getAtributos();
 
+                     campo.selectcat=atributos;
                     break;
                 case Contrato.TablaInformeDet.ORIGEN:
-                    getTomadoDe(campo);
-
+                    getTomadoDe();
+                 campo.selectcat=tomadoDe;
                     break;
               case "clientesId":
                     cargarClientes(campo);
@@ -287,6 +411,7 @@ public class DetalleProductoFragment extends Fragment {
                     break;
 
             }
+
         }
         if(campo.type.equals("agregarImagen")) {
 
@@ -308,7 +433,20 @@ public class DetalleProductoFragment extends Fragment {
                 }
             });
 
+            if(isEdicion){
+                Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                ComprasUtils cu=new ComprasUtils();
+                bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + ultimares.getValor());
 
+                fotomos.setImageBitmap(bitmap1);
+                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                fotomos.setVisibility(View.VISIBLE);
+
+                btnrotar.setVisibility(View.VISIBLE);
+                btnrotar.setFocusableInTouchMode(true);
+                btnrotar.requestFocus();
+
+            }
            // btnrotar.setVisibility(View.VISIBLE);
 
 
@@ -322,7 +460,13 @@ public class DetalleProductoFragment extends Fragment {
 
         };
         }
+        if(Contrato.TablaInformeDet.causa_nocompra.equals(campo.nombre_campo)) {
+            HashMap<Integer, String> registro=new HashMap<>();
+            registro.put(1,"NO VENDE PRODUCTO");
+            registro.put(2,"NO HAY CODIGO");
 
+            campo.select= registro;
+        }
         camposForm.add(campo);
 
         cf=new CreadorFormulario(camposForm,getContext());
@@ -332,13 +476,14 @@ public class DetalleProductoFragment extends Fragment {
     public void cargarClientes(CampoForm campo) {
         ListaDetalleViewModel lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
 
-        if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
-            lcviewModel.cargarClientes(Constantes.CIUDADTRABAJO).observe(getViewLifecycleOwner(), data -> {
+        if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
+            List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
+
                 Log.d(TAG, "regresó de la consulta de clientes " + data.size());
                 Constantes.clientesAsignados = ComprasUtils.convertirListaaClientes(data);
                 campo.selectdes= Constantes.clientesAsignados;
 
-            });
+            }
         else
             campo.selectdes= Constantes.clientesAsignados;
     }
@@ -372,7 +517,8 @@ public class DetalleProductoFragment extends Fragment {
         }
         return  nuevocat;
     }
-    public void getAtributos(CampoForm campo){
+    public void getAtributos(){
+        Log.d(TAG,"buscando atributos"+dViewModel.productoSel.empaque+"--"+dViewModel.productoSel.idempaque+"--"+dViewModel.productoSel.clienteSel);
         dViewModel.cargarCatalogos(dViewModel.productoSel.empaque,dViewModel.productoSel.idempaque,dViewModel.productoSel.clienteSel);
 
 
@@ -380,16 +526,16 @@ public class DetalleProductoFragment extends Fragment {
         List<Atributo> atrs=dViewModel.satributos;
 
         atributos = atributoaCat(atrs);
-        campo.selectcat=atributos;
+
 
     }
-    public void getTomadoDe(CampoForm campo){
+    public void getTomadoDe(){
         dViewModel.cargarCatalogos(dViewModel.productoSel.empaque,dViewModel.productoSel.idempaque,dViewModel.productoSel.clienteSel);
 
         List<CatalogoDetalle> catalogoDetalles=dViewModel.tomadoDe;
-                tomadoDe = catalogoDetalles;
+        tomadoDe = catalogoDetalles;
                 Log.d(TAG,"ya tengo los catalogos"+catalogoDetalles.size());
-                campo.selectcat=tomadoDe;
+
 
 
     }
@@ -402,12 +548,13 @@ public class DetalleProductoFragment extends Fragment {
             case Contrato.TablaInformeDet.SIGLAS:
                 resp=validarSiglas();
                 break;
-                case Contrato.TablaInformeDet.CODIGO:
+               /* case Contrato.TablaInformeDet.CODIGO:
                    resp=validarCodigoprod();
-                    break;
+                    break;*/
            case Contrato.TablaInformeDet.CADUCIDAD:
                     resp=validarFecha();
-
+                    if(resp)
+                        resp=validarCodigoprod();
                 break;
             case "clientesId":
                 DescripcionGenerica opcionsel = (DescripcionGenerica) spclientes.getSelectedItem();
@@ -429,9 +576,26 @@ public class DetalleProductoFragment extends Fragment {
         }
         if(resp)
         {
+            if(preguntaAct.getId()==25 ) {
+                 String  valor = textoint.getText().toString();
+
+                //guardo el atributo para mostrarlo despues
+                 ((ContinuarInformeActivity)getActivity()).actualizarCodProd(valor);
+
+            }else
+            if(preguntaAct.getId()==26 ) {
+                CatalogoDetalle opcionsel = (CatalogoDetalle) spclientes.getSelectedItem();
+                String  valor = opcionsel.getCad_descripcionesp()+ "";
+
+                //guardo el atributo para mostrarlo despues
+                Constantes.VarDetalleProd.tomadode = valor;
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
+
+            }
+            else
             if(preguntaAct.getId()==33 ) {
                 CatalogoDetalle opcionsel = (CatalogoDetalle) spclientes.getSelectedItem();
-                String  valor = opcionsel.getCad_idopcion() + "";
+                String  valor = opcionsel.getCad_descripcionesp()+ "";
 
                 //guardo el atributo para mostrarlo despues
                 Constantes.VarDetalleProd.nvoatra = valor;
@@ -440,20 +604,20 @@ public class DetalleProductoFragment extends Fragment {
             }
             else  if( preguntaAct.getId()==36) {
                 CatalogoDetalle opcionsel = (CatalogoDetalle) spclientes.getSelectedItem();
-                String valor = opcionsel.getCad_idopcion() + "";
+                String valor = opcionsel.getCad_descripcionesp() + "";
 
 
                 //guardo el atributo para mostrarlo despues
                 Constantes.VarDetalleProd.nvoatrb = valor;
-                ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo2();
 
             } else  if(preguntaAct.getId()==39){
                 CatalogoDetalle opcionsel = (CatalogoDetalle) spclientes.getSelectedItem();
-                String valor = opcionsel.getCad_idopcion() + "";
+                String valor = opcionsel.getCad_descripcionesp() + "";
 
                 //guardo el atributo para mostrarlo despues
                 Constantes.VarDetalleProd.nvoatrc=valor;
-                ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo2();
 
             }
             if(preguntaAct.getType().equals(CreadorFormulario.PREGUNTASINO)){
@@ -480,7 +644,11 @@ public class DetalleProductoFragment extends Fragment {
             if(preguntaAct.getSigId()==43) //termine inf
             {
                 guardarResp();
-
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 //guarda informe
                 this.actualizarInforme();
                 this.finalizar();
@@ -529,7 +697,8 @@ public class DetalleProductoFragment extends Fragment {
                 avanzarPregunta(1);
             }
             else{
-                guardarResp();
+                if(preguntaAct.getId()>0)
+                      guardarResp();
                 avanzarPregunta(preguntaAct.getSigId());
             }
         }
@@ -539,7 +708,7 @@ public class DetalleProductoFragment extends Fragment {
 
         //validar que si hay producto realmente tenga un producto capturado
 
-
+        mViewModel.eliminarTblTemp();
         mViewModel.finalizarInforme();
         try {
             InformeEnvio informe=preparaInforme();
@@ -553,7 +722,15 @@ public class DetalleProductoFragment extends Fragment {
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
-
+        //limpio variables de sesion
+        Constantes.productoSel=null;
+        Constantes.VarDetalleProd.tomadode=null;
+        Constantes.VarDetalleProd.nvoatra=null;
+        Constantes.VarDetalleProd.nvoatrb=null;
+        Constantes.VarDetalleProd.nvoatrc=null;
+        Constantes.DP_TIPOTIENDA=0;
+        Constantes.NM_TOTALISTA=0;
+        Constantes.ni_clientesel=null;
 
     }
     public InformeEnvio preparaInforme(){
@@ -569,18 +746,41 @@ public class DetalleProductoFragment extends Fragment {
 
     public void finalizarPreinforme(){
         //Es hora de cerrar el preinforme
+        //pregunto si habrá más clientes
+        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+        dialogo1.setTitle(R.string.importante);
+        dialogo1.setMessage(R.string.conf_finalizar);
+        dialogo1.setCancelable(false);
+        dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                //Es hora de cerrar el preinforme
+                mViewModel.finalizarVisita(mViewModel.visita.getId());
+                mViewModel.eliminarTblTemp();
 
-        mViewModel.finalizarVisita(mViewModel.visita.getId());
+                Toast.makeText(getActivity(), "Se finalizó el preinforme",Toast.LENGTH_SHORT).show();
+                salir();
+            }
+        });
+        dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                //no hago nada
+                dialogo1.cancel();
 
-        Toast.makeText(getActivity(), "Se finalizó el preinforme", Toast.LENGTH_SHORT).show();
-        salir();
+
+            }
+        });
+        dialogo1.show();
+
+
     }
     public void salir(){
+        mViewModel.eliminarTblTemp();
         //me voy a la lista de informes
-    getActivity().finish();
+        getActivity().finish();
         Intent intento1 = new Intent(getActivity(), NavigationDrawerActivity.class);
+        intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"listainforme");
         startActivity(intento1);
-       // NavHostFragment.findNavController(this).navigate(R.id.action_selclientetolistacompras,bundle);
+       // NavHostFragment.(this).navigate(R.id.action_selclientetolistacompras,bundle);
 
 
     }
@@ -650,6 +850,7 @@ public class DetalleProductoFragment extends Fragment {
             Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
 
             return valdat.resp;
+
         }
         if (dViewModel.productoSel.clienteNombre.equals("PEñAFIEL")) {
             Date hoy=new Date();
@@ -664,7 +865,7 @@ public class DetalleProductoFragment extends Fragment {
 
                 return false;
             }
-
+            return true;
 
         }
         return false;
@@ -675,7 +876,8 @@ public class DetalleProductoFragment extends Fragment {
             ValidadorDatos valdat = new ValidadorDatos();
 
             if (!valdat.validarCodigoprodPep(textoint.getText().toString(), dViewModel.productoSel.codigosnop)) {
-                Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido), Toast.LENGTH_LONG).show();
+                if(valdat.mensaje>0)
+                    Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
                 return false;
             } else {
 
@@ -709,7 +911,7 @@ public class DetalleProductoFragment extends Fragment {
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
             public void onChanged(Reactivo reactivo) {
-                DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo);
+                DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -820,7 +1022,9 @@ public class DetalleProductoFragment extends Fragment {
 
 
         }
-        mViewModel.guardarResp(valor,preguntaAct.getNombreCampo(),preguntaAct.getTabla(),mViewModel.consecutivo);
+        Log.d(TAG,"guardando en temp"+preguntaAct.getId());
+        if(preguntaAct.getId()>0&&valor!=null&&valor.length()>0)
+          mViewModel.guardarResp(valor,preguntaAct.getNombreCampo(),preguntaAct.getTabla(),mViewModel.consecutivo,true);
 
             //es un select
 
@@ -924,7 +1128,35 @@ public class DetalleProductoFragment extends Fragment {
                     dViewModel.productoSel = Constantes.productoSel;
                     //actualizo barra
                     ((ContinuarInformeActivity)getActivity()).actualizarProdSel( dViewModel.productoSel);
+                   //guardo el productosel en temporal
+
+                    mViewModel.guardarResp(dViewModel.productoSel.productoid+"","productoId","ID",mViewModel.consecutivo,false);
+
+                    mViewModel.guardarResp(dViewModel.productoSel.producto+"","producto","ID",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.presentacion+"","presentacion","ID",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.empaque+"","empaque","ID",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.idempaque+"","empaquesId","ID",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp( mViewModel.numMuestra+"","numMuestra","ID",mViewModel.consecutivo,false);
+
+                    mViewModel.guardarResp(dViewModel.productoSel.tipoAnalisis+"","tipoAnalisis","ID",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.analisis+"","nombreAnalisis","ID",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.compraSel+"","comprasId","ID",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.compradetalleSel+"","comprasDetId","ID",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.siglas+"","siglas","",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.tipoMuestra+"","tipoMuestra","ID",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.nombreTipoMuestra+"","nombreTipoMuestra","ID",mViewModel.consecutivo,false);
+
                     mViewModel.numMuestra++;
+                    //guardo en la tabla temporal si ya existe edita
+                    mViewModel.guardarResp(mViewModel.visita.getId()+"","visitasId","I",mViewModel.consecutivo,false);
+
+                    mViewModel.guardarResp(dViewModel.productoSel.plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.plantaNombre+"","plantaNombre","I",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.clienteNombre+"","clienteNombre","I",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.clienteSel+"","clientesId","I",mViewModel.consecutivo,false);
+                    mViewModel.guardarResp(dViewModel.productoSel.codigosnop+"","codigosnop","",mViewModel.consecutivo,false);
+
+
                     avanzarPregunta(23);
                 }else
                 Log.e(TAG,"Algo salió muy mal al elegir el producto");
@@ -1087,12 +1319,28 @@ public class DetalleProductoFragment extends Fragment {
         @Override
         public void onResume() {
             super.onResume();
+            if(textoint!=null) {
+                Log.d(TAG, "genere cons=" + textoint.getText().toString());
 
+                if (!textoint.getText().toString().equals("") && preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN)) {
 
+                    //cargo la foto
+                    Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                    ComprasUtils cu = new ComprasUtils();
+                    bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + textoint.getText().toString());
+
+                    fotomos.setImageBitmap(bitmap1);
+                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                    fotomos.setVisibility(View.VISIBLE);
+
+                    btnrotar.setVisibility(View.VISIBLE);
+                }
+            }
         }
      public int getNumPregunta(){
             return preguntaAct.getId();
      }
+
 
 
 }

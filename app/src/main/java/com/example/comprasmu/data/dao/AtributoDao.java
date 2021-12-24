@@ -30,7 +30,7 @@ public abstract class AtributoDao extends BaseDao<Atributo> {
     @Query("SELECT * FROM atributos where id_atributo=:id")
     public abstract Atributo findsimple( int id);
     //TODO agregar el cliente
-    @Query("SELECT * FROM atributos where id_tipoempaque=:id and id_atributo<>:cliente")
+    @Query("SELECT * FROM atributos where id_tipoempaque=:id and at_idcliente=:cliente")
     public abstract List<Atributo>  getByEmpaqueCliente( int id, int cliente);
 
 

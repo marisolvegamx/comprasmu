@@ -38,6 +38,7 @@ import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
+import com.example.comprasmu.ui.sustitucion.SustitucionFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
@@ -68,7 +69,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
     private static final String TAG="LISTACOMPRAFRAGMENT";
 
+    public  ListaCompraFragment() {
 
+    }
 
     public  ListaCompraFragment(int planta,String onombrePlanta, String nomcliente) {
       //  ListaCompraFragment fragment = new ListaCompraFragment();
@@ -154,8 +157,24 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 {
                     Log.e(TAG,"algo salió mal");
                 }
-                mBinding.txtlcnota.setText(getString(R.string.nota)+": ");
-                mBinding.txtlcnota2.setText( mViewModel.listaSelec.getLis_nota());
+                if( mViewModel.listaSelec.getLis_nota().length()>2) {
+                    //acorto la nota
+                  /*  if( mViewModel.listaSelec.getLis_nota().length()>20){
+                        mBinding.txtlcnota2.setText(mViewModel.listaSelec.getLis_nota().substring(0,20)+"...ver más");
+                        mBinding.txtlcnota2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                mBinding.txtlcnota2.setText(mViewModel.listaSelec.getLis_nota());
+
+                            }
+                        });
+
+                    }
+                    else*/
+                        mBinding.txtlcnota2.setText(mViewModel.listaSelec.getLis_nota());
+                    mBinding.txtlcnota.setText(getString(R.string.nota) + ": ");
+
+                }
             }
         }else {
             mViewModel.cargarDetalles();
@@ -174,8 +193,23 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
                     mListAdapter.setListaCompraDetalleList(lista.listaDetalle, consecutivoTienda,isbu,ismuestra,lista.user.getClienteNombre());
                     mListAdapter.notifyDataSetChanged();
-                    mBinding.txtlcnota.setText(getString(R.string.nota)+": ");
-                    mBinding.txtlcnota2.setText(lista.user.getLis_nota());
+                    if(lista.user.getLis_nota().length()>2) {
+                       /* if(lista.user.getLis_nota().length()>20) {
+
+                                mBinding.txtlcnota2.setText(lista.user.getLis_nota().substring(0,20)+"...ver más");
+                            mBinding.txtlcnota2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    mBinding.txtlcnota2.setText(lista.user.getLis_nota());
+
+                                }
+                            });
+                            }
+                        else*/
+                            mBinding.txtlcnota2.setText(lista.user.getLis_nota());
+                        mBinding.txtlcnota.setText(getString(R.string.nota) + ": ");
+
+                    }
                       } else {
                     //  mBinding.setIsLoading(true);
                 }
@@ -338,19 +372,34 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         mViewModel.setIdListaSel(lista.user.getId());
         mViewModel.listaSelec=lista.user;
         mViewModel.setDetallebuSel(productoSel);
-        Fragment fragment = new ListaCompraFragment(plantaSel,nombrePlanta,this.nombreCliente);
-// Obtener el administrador de fragmentos a través de la actividad
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
+        // Definir una transacción
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Bundle bundle=new Bundle();
-        bundle.putBoolean(ISBACKUP, true);
-        fragment.setArguments(bundle);
+        Bundle bundle = new Bundle();
 
-        fragmentTransaction.replace(R.id.back_fragment, fragment);
-        fragmentTransaction.addToBackStack(null);
+        if(nombreCliente.equals("PEPSI")) {
+            Fragment fragment = new ListaCompraFragment(plantaSel, nombrePlanta, this.nombreCliente);
+// Obtener el administrador de fragmentos a través de la actividad
+            bundle.putBoolean(ISBACKUP, true);
+            fragment.setArguments(bundle);
+
+            fragmentTransaction.replace(R.id.back_fragment, fragment);
+            fragmentTransaction.addToBackStack(null);
 // Cambiar
-        fragmentTransaction.commit();
+            fragmentTransaction.commit();
+        }else
+        if(nombreCliente.equals("PEñAFIEL")) {
+            Fragment fragment =  SustitucionFragment.newInstance(plantaSel, nombrePlanta);
+            // Obtener el administrador de fragmentos a través de la actividad
+            bundle.putBoolean(ISBACKUP, true);
+            bundle.putString(SustitucionFragment.ARG_CATEGORIA,productoSel.getCategoria());
+            fragment.setArguments(bundle);
+
+            fragmentTransaction.replace(R.id.back_fragment, fragment);
+            fragmentTransaction.addToBackStack(null);
+// Cambiar
+            fragmentTransaction.commit();
+        }
 
     }
 

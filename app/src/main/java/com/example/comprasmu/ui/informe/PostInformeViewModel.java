@@ -173,8 +173,11 @@ public class PostInformeViewModel {
         List<VisitaWithInformes> visitas= visitaRepo.getVisitaWithInformesByIndice(Constantes.INDICEACTUAL);
         for(VisitaWithInformes visitapend:visitas) {
             if (visitapend.visita.getEstatusSync() == 0)
+
                 visitaenv.add(visitapend.visita);
+            Log.d(TAG,"buscando prodexh"+visitapend.visita.getId());
             List<ProductoExhibido> productoExhibidos=prodeRepo.getAllsimple(visitapend.visita.getId());
+            Log.d(TAG,"buscando prodexh"+productoExhibidos.size());
             for(ProductoExhibido produc:productoExhibidos){
                 if(produc.getEstatusSync()==0)
                     productosExenv.add(produc);

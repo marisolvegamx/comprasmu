@@ -43,6 +43,9 @@ public  class ReactivoRepositoryImpl  extends BaseRepository<Reactivo> {
     public Reactivo findsimple(int id) {
         return dao.findsimple(id);
     }
+    public Reactivo findByNombre(String nombre) {
+        return dao.findByNombre(nombre);
+    }
 
     @Override
     public long insert(Reactivo object) {

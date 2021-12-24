@@ -83,6 +83,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
+    public  List<ListaCompra>  cargarClientesSimpl(String ciudadSel){
+
+        return repository.getClientesByIndiceCiudadSimpl(Constantes.INDICEACTUAL,ciudadSel);
+
+
+    }
     public List<DescripcionGenerica> cargarOpcionesAnalisis(int idanalisis){
         List<DescripcionGenerica> opciones=new ArrayList<>();
         opciones.add(new DescripcionGenerica(1,"Criterio 1"));

@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="16dp"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -91,35 +91,43 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtlcelegir" />
 
-            <TextView
-                android:id="@+id/txtlcnota"
-                style="@style/textolista1"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_marginStart="18dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
-
-            <TextView
-                android:id="@+id/txtlcnota2"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:textAlignment="viewStart"
-                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/txtlcnota"
-                app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tableLayout2">
+
+                <TextView
+                    android:id="@+id/txtlcnota"
+                    style="@style/textolista1"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/txtlcnota2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:textAlignment="viewStart"
+                    android:textColor="#F44336"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detalle_list"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_below="@+id/toolbar"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
 
                 android:paddingStart="16dp"
 
@@ -127,23 +135,24 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/splcopcionesbu"
-                app:layout_constraintVertical_bias="0.1" />
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/txtlcelegir"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/elige_un_criterio"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtlcnota" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

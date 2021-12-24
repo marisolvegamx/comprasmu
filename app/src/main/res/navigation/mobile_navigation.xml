@@ -17,7 +17,7 @@
         android:label="@string/menu_configuracion"
         tools:layout="@layout/fragment_home" >
         <action android:id="@+id/action_conftohome"
-            app:destination="@id/nav_descargar"
+            app:destination="@id/nav_home"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -29,7 +29,7 @@
         android:label="@string/menu_ciudad_trabajo"
         tools:layout="@layout/ciudad_trabajo_fragment" >
     <action android:id="@+id/action_ciudadtohome"
-        app:destination="@id/nav_descargar"
+        app:destination="@id/nav_home"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -89,9 +89,9 @@
 
     <fragment
         android:id="@+id/nav_listar"
-        android:name="com.example.comprasmu.ui.informe.ListaInformesFragment"
+        android:name="com.example.comprasmu.ui.informe.TabsICFragment"
         android:label="@string/menu_lista_informe"
-        tools:layout="@layout/lista_informes_fragment" />
+        tools:layout="@layout/fragment_lista_tabs" />
     <fragment
         android:id="@+id/nav_listarvisitas"
         android:name="com.example.comprasmu.ui.visita.ListaVisitasFragment"
@@ -103,6 +103,12 @@
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_visitatohome"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
 
     <fragment

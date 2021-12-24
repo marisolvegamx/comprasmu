@@ -84,7 +84,7 @@ public class VerInformeDetFragment extends Fragment {
 
         Log.d("VerInformeDFragment1","creando fragment");
 
-        sdf=new SimpleDateFormat("dd-MMM-yyyy");
+        sdf=new SimpleDateFormat("dd-MMM-yy");
         // Inflate the layout for this fragment
         startui();
 
@@ -219,14 +219,7 @@ public class VerInformeDetFragment extends Fragment {
         campo.value= detalle.getCosto();
 
         camposForm.add(campo);
-        campo=new CampoForm();
-        campo.label=getString(R.string.foto_codigo_produccion);
-        campo.type="imagenView";
-        campo.value=fotos[0]!=null?directorio+fotos[0].getRuta():"";
-        campo.required="required";
-
-
-        camposForm.add(campo);
+    /*
         campo=new CampoForm();
         campo.label=getString(R.string.azucareS);
 
@@ -242,7 +235,7 @@ public class VerInformeDetFragment extends Fragment {
 
         camposForm.add(campo);
 */
-        campo=new CampoForm();
+   /*     campo=new CampoForm();
         campo.label=getString(R.string.foto_num_tienda);
 
         campo.type="imagenView";
@@ -256,7 +249,7 @@ public class VerInformeDetFragment extends Fragment {
         campo.nombre_campo=Contrato.TablaInformeDet.MARCA_TRASLAPE;
         campo.type="imagenView";
         campo.value=fotos[3]!=null?directorio+fotos[3].getRuta():"";
-        camposForm.add(campo);
+        camposForm.add(campo);*/
         if(detalle.getAtributoa()!=null&&!detalle.getAtributoa().equals("")) {
             campo = new CampoForm();
             campo.label = getString(R.string.atributoa);
@@ -266,7 +259,7 @@ public class VerInformeDetFragment extends Fragment {
             campo.value = buscarAtr(detalle.getAtributoa(), atributos);
 
             camposForm.add(campo);
-            campo = new CampoForm();
+         /*   campo = new CampoForm();
             campo.label = getString(R.string.foto_atributoa);
             campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOA;
             campo.type = "imagenView";
@@ -274,7 +267,7 @@ public class VerInformeDetFragment extends Fragment {
             campo.value = fotos[4] != null ? directorio + fotos[4].getRuta() : "";
 
 
-            camposForm.add(campo);
+            camposForm.add(campo);*/
         }
         if(detalle.getAtributob()!=null&&!detalle.getAtributob().equals("")) {
             campo = new CampoForm();
@@ -285,13 +278,13 @@ public class VerInformeDetFragment extends Fragment {
             campo.value = buscarAtr(detalle.getAtributob(), atributos);
 
             camposForm.add(campo);
-            campo = new CampoForm();
+        /*    campo = new CampoForm();
             campo.label = getString(R.string.foto_atributob);
             campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOB;
             campo.type = "imagenView";
             campo.value = fotos[5] != null ? directorio + fotos[5].getRuta() : "";
 
-            camposForm.add(campo);
+            camposForm.add(campo);*/
         }
         if(detalle.getAtributoc()!=null&&!detalle.getAtributoc().equals("")) {
             campo = new CampoForm();
@@ -301,14 +294,14 @@ public class VerInformeDetFragment extends Fragment {
 
             campo.value = buscarAtr(detalle.getAtributoc(), atributos);
 
-            camposForm.add(campo);
+         /*   camposForm.add(campo);
             campo = new CampoForm();
             campo.label = getString(R.string.foto_atributoc);
             campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOC;
             campo.type = "imagenView";
             campo.value = fotos[6] != null ? directorio + fotos[6].getRuta() : "";
 
-            camposForm.add(campo);
+            camposForm.add(campo);*/
 
         }
         campo=new CampoForm();
@@ -318,6 +311,34 @@ public class VerInformeDetFragment extends Fragment {
         campo.value=detalle.getQr();
 
         camposForm.add(campo);
+        campo=new CampoForm();
+        campo.label=getString(R.string.foto_codigo_produccion);
+        campo.type="imagenView";
+        campo.value=fotos[0]!=null?directorio+fotos[0].getRuta():"";
+        campo.required="required";
+        camposForm.add(campo);
+        campo = new CampoForm();
+        campo.label = getString(R.string.foto_posicion1);
+        campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOA;
+        campo.type = "imagenView";
+
+        campo.value = fotos[4] != null ? directorio + fotos[4].getRuta() : "";
+        camposForm.add(campo);
+        campo = new CampoForm();
+        campo.label = getString(R.string.foto_posicion2);
+        campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOB;
+        campo.type = "imagenView";
+        campo.value = fotos[5] != null ? directorio + fotos[5].getRuta() : "";
+        camposForm.add(campo);
+
+        campo = new CampoForm();
+        campo.label = getString(R.string.foto_posicion3);
+        campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOC;
+        campo.type = "imagenView";
+        campo.value = fotos[6] != null ? directorio + fotos[6].getRuta() : "";
+
+        camposForm.add(campo);
+
         campo=new CampoForm();
         campo.label=getString(R.string.etiqueta_evaluacion);
 

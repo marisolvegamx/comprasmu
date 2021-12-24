@@ -23,6 +23,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -144,6 +146,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     private TextView mensajedir;
     LocationManager mlocManager;
     Localizacion Local;
+    File rutaArchivo;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -182,7 +185,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         });
        // continuar=(Button)root.findViewById(R.id.aibtnguardarcont);
-       Button fotoexhibido=(Button)root.findViewById(R.id.btnaifotoexhibido);
+       ImageButton fotoexhibido=(ImageButton)root.findViewById(R.id.btnaifotoexhibido);
         guardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             //      validator.validate();
@@ -204,9 +207,16 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         });
       // Button ubicar=(Button)root.findViewById(R.id.btnaiubicar);
         ImageButton fotofachada=(ImageButton)root.findViewById(R.id.btnaifotofachada);
+        probarUbicacion();
         fotofachada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                probarUbicacion();
+                if (txtubicacion.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Falta activar la ubicación", Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
                 tomarFoto(R.id.txtaifotofachada,R.id.ivaifachada);
             }
         });
@@ -218,12 +228,45 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         });*/
         /*para obtener la onre*/
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
+        rutaArchivo=getActivity().getExternalFilesDir(null);
         setupSnackbar();
      //   initUi();
          txtubicacion = root.findViewById(R.id.txtaiubicacion);
+        // This callback will only be called when MyFragment is at least Started.
+     /*  OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default *//*) {
+         /*   @Override
+            public void handleOnBackPressed() {
+                // Handle the back button event
+                onBackPressed();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);*/
+
         return root;
     }
+    /*public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //Handle the back button
+        if(keyCode == KeyEvent.KEYCODE_BACK && getActivity().isTaskRoot()) {
+            //Ask the user if they want to quit
+            new AlertDialog.Builder(getActivity())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(R.string.importante)
+                    .setMessage(R.string.cerrar_app)
+                    .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Stop the activity
+                            getActivity().finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.no, null)
+                    .show();
+
+            return true;
+        }
+        else {
+            return getActivity().onKeyDown(keyCode, event);
+        }
+    }*/
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
@@ -387,6 +430,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
     }
     private void locationStart() {
+        Log.d("wwwwwwwwwww",mViewModel.mIsNew+"--");
         if(mViewModel.mIsNew) {
             mlocManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
              Local = new Localizacion();
@@ -402,7 +446,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
                 return;
             } else if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 50000, 10, (LocationListener) Local);
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 20000, 10, (LocationListener) Local);
             }
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -412,9 +456,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
                     if (Local == null) { //Validación que evita NullPointerException
                         //Requiere actualización
-                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 50000, 10, (LocationListener) Local, Looper.getMainLooper());
+                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 20000, 10, (LocationListener) Local, Looper.getMainLooper());
                     } else
-                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 50000, 10, (LocationListener) Local);
+                        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 20000, 10, (LocationListener) Local);
                     //  input11.setText("Localización aqui");
 
                 } else
@@ -428,11 +472,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
 
-   /* @Override
+    @Override
     public void onPause() {
         super.onPause();
-        Local.desactivar();
-    }*/
+        if(Local!=null)
+            Local.desactivar();
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -747,7 +792,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
             mViewModel.guardarVisita();
-
+            mViewModel.eliminarTblTemp();
 
         }
         return true;
@@ -844,6 +889,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         public void desactivar() {
             if ( mlocManager!=null)  mlocManager.removeUpdates(Local);
         }
+
         @Override
         public void onLocationChanged(Location loc) {
             // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
@@ -888,20 +934,22 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         try {
              mensajedir=root.findViewById(R.id.txtaimensajeubicacion);
             mensajedir.setText("Ubicación registrada");
-            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-            List<Address> list=new ArrayList<>();
-            if(geocoder!=null)
-            list = geocoder.getFromLocation(
-                    location.getLatitude(), location.getLongitude(), 1);
+            if(ComprasUtils.isOnlineNet()) {
+                Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+                List<Address> list = new ArrayList<>();
+                if (geocoder != null)
+                    list = geocoder.getFromLocation(
+                            location.getLatitude(), location.getLongitude(), 1);
 
 
-            if (!list.isEmpty()) {
-                Address DirCalle = list.get(0);
-                String state = DirCalle.getAdminArea();
-                country = DirCalle.getCountryName();
+                if (!list.isEmpty()) {
+                    Address DirCalle = list.get(0);
+                    String state = DirCalle.getAdminArea();
+                    country = DirCalle.getCountryName();
 
-                mensajedir.setText(DirCalle.getAddressLine(0));
-                //   ubicacion.setText(state+","+country);
+                    mensajedir.setText(DirCalle.getAddressLine(0));
+                    //   ubicacion.setText(state+","+country);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -1013,15 +1061,15 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         Log.d(TAG,"vars"+requestCode +"=="+ resultCode+" =="+ RESULT_OK);
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode==REQUEST_CODE_2) && resultCode == RESULT_OK) {
 
-            File file = new File(getActivity().getExternalFilesDir(null), nombre_foto);
+            File file = new File(rutaArchivo, nombre_foto);
             if (file.exists()) {
                 if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
                     //envio a la actividad dos para ver la foto
-                    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
+                   /* Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
                     intento1.putExtra("ei.archivo", nombre_foto);
                     intento1.putExtra("ei.opcionfoto", "nose");
 
-                  //  startActivity(intento1);
+                  //  startActivity(intento1);*/
                     foto1.setText(nombre_foto);
                     Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                     ComprasUtils cu=new ComprasUtils();
@@ -1121,5 +1169,29 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         activityManager.getMemoryInfo(memoryInfo);
 
         return memoryInfo;
+    }
+
+    public void onBackPressed() {
+        EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
+        EditText nombretienda = root.findViewById(1001);
+
+        if(!fotofachada.getText().toString().equals("")&&visitaEdi!=null){
+
+            new AlertDialog.Builder(getActivity())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(R.string.importante)
+                    .setMessage(R.string.salir_sin_guardar)
+                    .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            requireActivity().onBackPressed();
+                        }
+                    })
+                    .setNegativeButton(R.string.no, null)
+                    .show();
+            return;
+        }
+        requireActivity().onBackPressed();
+
+
     }
 }
