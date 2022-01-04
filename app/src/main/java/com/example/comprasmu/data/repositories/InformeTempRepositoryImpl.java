@@ -82,7 +82,9 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
     public void deleteAll() {
         icDao.deleteAll();
     }
-
+    public void deleteMenosCliente() {
+        icDao.deleteMenosCliente();
+    }
     @Override
     public void insertAll(List<InformeTemp> words) {
         icDao.insertAll(words);

@@ -173,8 +173,8 @@ public class SubirFoto {
     public void actualizarEstado(ImagenDetalle imagen){
         //  for(Imagen imagen:lista){
         ImagenDetalle imagenedit=idrepo.findsimple(imagen.getId());
-        imagen.setEstatusSync(2);
-        idrepo.insert(imagen);
+        imagenedit.setEstatusSync(2);
+        idrepo.insert(imagenedit);
 
 
     }

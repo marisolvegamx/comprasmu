@@ -14,6 +14,7 @@ public class InformeTemp {
     private int informesId;
     private String nombre_campo;
     private int consecutivo;
+    private int numMuestra;
     private String valor;
     private String tabla;
     private boolean isPregunta; //false para saber si solo es para guardar info
@@ -89,5 +90,13 @@ public class InformeTemp {
 
     public void setInformesId(int informesId) {
         this.informesId = informesId;
+    }
+
+    public int getNumMuestra() {
+        return numMuestra;
+    }
+
+    public void setNumMuestra(int numMuestra) {
+        this.numMuestra = numMuestra;
     }
 }

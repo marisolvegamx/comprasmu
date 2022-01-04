@@ -898,7 +898,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         mViewModel.finalizarInforme();
         try {
             InformeEnvio informe=preparaInforme();
-            SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informe,getActivity());
+            SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informe,getActivity(),null);
             miTareaAsincrona.execute();
 
 

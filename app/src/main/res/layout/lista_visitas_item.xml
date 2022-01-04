@@ -149,6 +149,7 @@
 
                     android:layout_marginTop="1dp"
 
+                    android:layout_marginEnd="5dp"
                     android:layout_weight="1"
                     android:text="@string/finalizar"
                     android:textColor="#FFFFFF"
@@ -160,6 +161,7 @@
                     android:layout_width="wrap_content"
 
                     android:layout_height="35dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="1dp"
                     android:layout_weight="1"
                     android:background="#00BCD4"

@@ -348,6 +348,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                         Intent msgIntent = new Intent(NavigationDrawerActivity.this, SubirFotoService.class);
                         msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
                         msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
+                        msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,imagen.getIndice());
 
                         msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_IMG);
                         startService(msgIntent);
@@ -414,6 +415,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private void definirTrabajo() {
         SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         Constantes.CIUDADTRABAJO = prefe.getString("ciudadtrabajo", "");
+        Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
         Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
         //  prefe.getString("ciudadtrabajo","");
     /*    Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");

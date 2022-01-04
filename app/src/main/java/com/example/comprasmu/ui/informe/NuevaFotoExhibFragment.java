@@ -134,6 +134,7 @@ public class NuevaFotoExhibFragment extends Fragment {
 
     }
     public void cargarClientes() {
+        Log.d(TAG, "regresó de la consulta " + Constantes.CIUDADTRABAJO);
         if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
             lViewModel.cargarClientes(Constantes.CIUDADTRABAJO).observe(getViewLifecycleOwner(), data -> {
                 Log.d(TAG, "regresó de la consulta " + data.size());

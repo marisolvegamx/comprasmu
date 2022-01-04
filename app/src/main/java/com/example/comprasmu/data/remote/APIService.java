@@ -40,7 +40,7 @@ public interface APIService {
             "Accept: application/json",
             "Content-Type: application/json"
     })
-    Call<InformeEnvio> saveInformeEnvio(@Body InformeEnvio item);
+    Call<PostResponse> saveInformeEnvio(@Body InformeEnvio item);
 
     @POST("informes/create")
     @Headers({

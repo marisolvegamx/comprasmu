@@ -236,7 +236,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
                 params[0] = Date.class;
                 Date nval=null;
                 try {
-                    nval=Constantes.sdfsolofecha.parse(info.getValor());
+                    nval=Constantes.sdfcaducidad.parse(info.getValor());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -270,7 +270,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
             }
 
         }
-        InformeCompraDetalle x=nuevo;
+
         return nuevo;
     }
     public ImagenDetalle crearImagendeTmp(String descripcion){
@@ -293,25 +293,6 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public int insertarMuestra(int idInformeNuevo, int numMuestra){
         this.icdNuevo=tempToID();
         this.icdNuevo.setInformesId(idInformeNuevo);
-        //guardo la lista origen
-        this.icdNuevo.setProductoId(this.productoSel.productoid);
-        this.icdNuevo.setProducto(this.productoSel.producto);
-        this.icdNuevo.setEmpaque(this.productoSel.empaque);
-        this.icdNuevo.setEmpaquesId(this.productoSel.idempaque);
-        //  siglas.setText(this.productoSel.siglas);
-
-        this.icdNuevo.setTipoMuestra(this.productoSel.tipoMuestra);
-        this.icdNuevo.setNombreTipoMuestra(this.productoSel.nombreTipoMuestra);
-        this.icdNuevo.setTipoAnalisis(this.productoSel.tipoAnalisis);
-        this.icdNuevo.setNombreAnalisis(this.productoSel.analisis);
-
-
-        //
-
-        this.icdNuevo.setPresentacion(this.productoSel.presentacion);
-        this.icdNuevo.setComprasId(this.productoSel.compraSel);
-        this.icdNuevo.setComprasDetId(this.productoSel.compradetalleSel);
-
         this.icdNuevo.setNumMuestra(numMuestra);
 
         //las fotos se agregan al model
@@ -408,7 +389,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     }
 
     public ProductoSel fromTemp(){
-       List<InformeTemp> respuestas= itemprepo.getProductoSel();
+        List<InformeTemp> respuestas= itemprepo.getProductoSel();
         this.productoSel=new ProductoSel();
         this.productoSel.producto=this.getValor(respuestas,"producto");
         try {
@@ -417,30 +398,31 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
             Log.e("NuevoDetVM",ex.getMessage());
         }
         try{
-          this.productoSel.compraSel=Integer.parseInt(this.getValor(respuestas,"comprasId"));
+            this.productoSel.compraSel=Integer.parseInt(this.getValor(respuestas,"comprasId"));
          }catch(NumberFormatException ex){
-        Log.e("NuevoDetVM",ex.getMessage());
-    }  try{
-        this.productoSel.compradetalleSel=Integer.parseInt(this.getValor(respuestas,"comprasDetId"));
-    }catch(NumberFormatException ex){
-        Log.e("NuevoDetVM",ex.getMessage());
-    }
+            Log.e("NuevoDetVM",ex.getMessage());
+         }
+        try{
+            this.productoSel.compradetalleSel=Integer.parseInt(this.getValor(respuestas,"comprasDetId"));
+        }catch(NumberFormatException ex){
+            Log.e("NuevoDetVM",ex.getMessage());
+        }
         this.productoSel.presentacion=this.getValor(respuestas,"presentacion");
         try{ this.productoSel.idempaque=Integer.parseInt(this.getValor(respuestas,"empaquesId"));
-}catch(NumberFormatException ex){
+        }catch(NumberFormatException ex){
         Log.e("NuevoDetVM",ex.getMessage());
         }
         //para la planta y cliente busco el encabezado
         this.productoSel.plantaNombre=this.getValor(respuestas,"plantaNombre");
         try{
-this.productoSel.plantaSel=Integer.parseInt(this.getValor(respuestas,"plantasId"));
+            this.productoSel.plantaSel=Integer.parseInt(this.getValor(respuestas,"plantasId"));
         }catch(NumberFormatException ex){
             Log.e("NuevoDetVM",ex.getMessage());
         }
-            try{
-        this.productoSel.tipoMuestra=Integer.parseInt(this.getValor(respuestas,"tipoMuestra"));
+        try{
+             this.productoSel.tipoMuestra=Integer.parseInt(this.getValor(respuestas,"tipoMuestra"));
         }catch(NumberFormatException ex){
-        Log.e("NuevoDetVM",ex.getMessage());
+            Log.e("NuevoDetVM",ex.getMessage());
         }
         this.productoSel.nombreTipoMuestra=this.getValor(respuestas,"nombreTipoMuestra");
         this.productoSel.empaque=this.getValor(respuestas,"empaque");
@@ -506,12 +488,12 @@ this.productoSel.plantaSel=Integer.parseInt(this.getValor(respuestas,"plantasId"
         this.foto_atributoc = foto_atributoc;
     }
 
-    public LiveData<List<Reactivo>> getListaPreguntas() {
-        return listaPreguntas;
+    public int getIddetalleNuevo() {
+        return iddetalleNuevo;
     }
 
-    public void setListaPreguntas(LiveData<List<Reactivo>> listaPreguntas) {
-        this.listaPreguntas = listaPreguntas;
+    public void setIddetalleNuevo(int iddetalleNuevo) {
+        this.iddetalleNuevo = iddetalleNuevo;
     }
 
     public ImagenDetalle getEtiqueta_evaluacion() {

@@ -1,30 +1,17 @@
 package com.example.comprasmu.ui.informe;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ObservableField;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 
-import com.example.comprasmu.NavigationDrawerActivity;
-import com.example.comprasmu.SubirInformeTask;
-import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Post;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
-import com.example.comprasmu.data.remote.APIService;
 import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
@@ -34,7 +21,6 @@ import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
-import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirPendService;
 import com.example.comprasmu.utils.Constantes;
 
@@ -68,15 +54,16 @@ public class PostInformeViewModel {
     public  void sendInforme(InformeEnvio informeCompra) {
         //TODO manejar el response
         Log.d("Informe", "kkkkkkkkkk"+informeCompra.toJson(informeCompra));
-        apiClient.getApiService().saveInformeEnvio(informeCompra).enqueue(new Callback<InformeEnvio>() {
+        apiClient.getApiService().saveInformeEnvio(informeCompra).enqueue(new Callback<PostResponse>() {
             @Override
-            public void onResponse(Call<InformeEnvio> call, Response<InformeEnvio> response) {
-                Log.d("POstInformeVM", "jjjjjjjjj"+response.body());
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
               //  { "status": "ok",
                 //        "data": "Informe dado de alta correctamente."}
                 if(response.isSuccessful()) {
 
-                    mensaje=response.body().toString();
+                    mensaje=response.body().getData();
+                    Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);
                     //actualizo el estatus
                     iniciarConexiones();
                    actualizarEstatusInforme(informeCompra);
@@ -87,9 +74,12 @@ public class PostInformeViewModel {
             }
 
             @Override
-            public void onFailure(Call<InformeEnvio> call, Throwable t) {
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
                 Log.e(TAG, "Unable to submit post to API.");
             }
+
+
         });
     }
 
@@ -99,12 +89,13 @@ public class PostInformeViewModel {
         apiClient.getApiService().saveInformesPend(informes).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
-                Log.d("POstInformeVM", "jjjjjjjjj"+response.body());
+
                 //  { "status": "ok",
                 //        "data": "Informe dado de alta correctamente."}
                 if(response.isSuccessful()) {
 
-                    mensaje=response.body().toString();
+                    mensaje=response.body().getData();
+                    Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);
                     //actualizo el estatus
                     iniciarConexiones();
                     actualizarEstatusTodo(informes);

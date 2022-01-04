@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Compras</string>
+    <string name="empty_state_text">NO DATA TO SHOW</string>
+    <string name="producto">PRODUCT</string>
+    <string name="cancelar">CANCEL</string>
+    <string name="agregar">ADD</string>
+    <string name="direccion">ADDRESS</string>
+    <string name="guardar">SAVE</string>
+    <string name="si">YES</string>
+    <string name="no">NO</string>
+    <string name="importante">WARNING</string>
+    <string name="menu_home">HOME</string>
+    <string name="continuar">CONTINUE</string>
+</resources>

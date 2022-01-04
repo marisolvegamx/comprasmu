@@ -122,6 +122,7 @@ public class CiudadTrabajoFragment extends Fragment {
         SharedPreferences.Editor editor=prefe.edit();
         DescripcionGenerica ciudadSel=(DescripcionGenerica)spciudades.getSelectedItem();
         editor.putString("ciudadtrabajo",ciudadSel.getNombre() );
+        editor.putInt("idciudadtrabajo",ciudadSel.getId());
         editor.commit();
         Constantes.CIUDADTRABAJO=ciudadSel.getNombre();
        // Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");
@@ -135,6 +136,7 @@ public class CiudadTrabajoFragment extends Fragment {
 
         SharedPreferences prefe=getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         String d=prefe.getString("ciudadtrabajo", "");
+     //   prefe.getInt("idciudadtrabajo",0);
         if (d.length()==0) {
             Toast.makeText(getActivity(),"No existe dicho nombre en la agenda", Toast.LENGTH_LONG).show();
         }else{

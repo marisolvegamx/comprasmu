@@ -74,16 +74,18 @@ public class ValidadorDatos {
     //li_btnagregar
     //devuelve false si existe el codigo
     public boolean validarCodigoprodPep(String codigo,String codigonoper){
-
+        codigo=codigo.replace("-","");
         if(!codigo.equals("")&&codigonoper.length()>1){
                 if(!validarCodigoPepRango(codigo,codigonoper)){
                     mensaje=R.string.error_codigo_per;
+                    Log.d("ValidadorDatos", "mensaje"+mensaje);
                     return false;
                 }
 
                 //comparo con los no permitido
                 String arrecodigos[]=codigonoper.split(";");
                 if(arrecodigos!=null&&arrecodigos.length>0) {
+                    Log.d("ValidadorDatos","mi codigo"+codigo);
                     List<String> lista = Arrays.asList(arrecodigos);
                     if (lista.contains(codigo)) {
                         mensaje=R.string.error_codigo_repetido;
@@ -103,7 +105,7 @@ public class ValidadorDatos {
     public boolean validarCodigoPepRango(String codigo, String codigonoper ){
         Date vfecha=null;
         try {
-             vfecha=sdf.parse(codigo);
+             vfecha=sdfcod.parse(codigo);
 
         //comparo con el rango
         //busco el signo

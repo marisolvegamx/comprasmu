@@ -372,5 +372,33 @@ public class InformeCompraDetalle {
     public void setTamanioId(int tamanioId) {
         this.tamanioId = tamanioId;
     }
+
+    public void setTamanioId(String tamanioId) {
+        this.tamanioId = Integer.parseInt(tamanioId);
+    }
+    public void setComprasDetId(String comprasDetId) {
+        this.comprasDetId = Integer.parseInt(comprasDetId);
+    }
+    public void setComprasId(String comprasId) {
+        this.comprasId = Integer.parseInt(comprasId);
+    }
+    public void setTipoAnalisis(String tipoAnalisis) {
+        this.tipoAnalisis = Integer.parseInt(tipoAnalisis);
+    }
+
+    public void setTipoMuestra(String tipoMuestra) {
+        this.tipoMuestra = Integer.parseInt(tipoMuestra);
+    }
+    public void setEmpaquesId(String empaquesId) {
+        this.empaquesId = Integer.parseInt(empaquesId);
+    }
+     public void setNumMuestra(String numMuestra) {
+        this.numMuestra = Integer.parseInt(numMuestra);
+    }
+
+    public void setProductoId(String productoId) {
+        this.productoId = Integer.parseInt(productoId);
+    }
+
 }
 

@@ -15,10 +15,14 @@ import androidx.lifecycle.Transformations;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.PeticionesServidor;
 
+import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.modelos.InformeCompra;
+import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 
+import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -28,6 +32,8 @@ import java.util.List;
 
 public class ListaVisitasViewModel extends AndroidViewModel {
     private final VisitaRepositoryImpl visitaRepository;
+    private final ImagenDetRepositoryImpl imdRepository;
+    private final ProductoExhibidoRepositoryImpl prodeRepository;
     private LiveData<List<Visita>> listas;
     private  LiveData<Integer> size;
     private  LiveData<Boolean> empty;
@@ -42,7 +48,8 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         super(application);
         this.application=application;
         visitaRepository = new VisitaRepositoryImpl(application);
-
+        prodeRepository=new ProductoExhibidoRepositoryImpl(application);
+        imdRepository = new ImagenDetRepositoryImpl(application);
     }
 
     public void cargarDetalles(){
@@ -74,12 +81,23 @@ public class ListaVisitasViewModel extends AndroidViewModel {
                     Log.d(TAG,"borrando el"+id);
 
                    LiveData<Visita> eliminar= visitaRepository.find(id);
+
                    eliminar.observeForever(new Observer<Visita>() {
                         @Override
                         public void onChanged(Visita visita) {
+                            //elimino las imagenes
+                            imdRepository.deleteById(visita.getFotoFachada());
+                           List<ProductoExhibido> prods= prodeRepository.getAllByVisitaSimple(visita.getId());
+                           //elimino prods
+                            for (ProductoExhibido prod:prods
+                                 ) {
+                                imdRepository.deleteById(prod.getImagenId());
+
+                            }
+                            prodeRepository.deleteAllByVisita(visita.getId());
                             eliminar.removeObserver(this);
                             visitaRepository.delete(visita);
-
+                            //eliminar producto exhibido
                             mSnackbarText.setValue("Se eliminó correctamente");
 
                         }

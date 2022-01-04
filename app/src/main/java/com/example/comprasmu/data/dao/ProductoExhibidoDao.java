@@ -27,6 +27,7 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
 
     @Query("SELECT * FROM producto_exhibido where id=:id")
     public  abstract LiveData<ProductoExhibido> find( int id);
+
     @Query("SELECT * FROM producto_exhibido where visitasId=:id")
     public  abstract LiveData<List<ProductoExhibido>> findByVisita( int id);
 
@@ -54,6 +55,12 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
 
     @Query("SELECT * FROM ProductoExhibidoFoto where visitasId=:id")
     public  abstract LiveData<List<ProductoExhibidoFoto>> getAllByVisita( int id);
+
+    @Query("SELECT * FROM producto_exhibido where visitasId=:id")
+    public  abstract List<ProductoExhibido> getAllByVisitaSimple( int id);
+
+    @Query("DELETE FROM producto_exhibido where visitasId=:id")
+    public  abstract void deleteAllByVisita( int id);
 
     @Query("delete  FROM producto_exhibido where id=:id")
     public  abstract void deleteById( int id);

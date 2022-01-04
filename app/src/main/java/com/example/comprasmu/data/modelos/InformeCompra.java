@@ -16,7 +16,7 @@ public class InformeCompra {
 
     private int visitasId;
     private int consecutivo;
-    private boolean primeraMuestra;
+    private boolean primeraMuestra;//tienden a desaparecer solo usar para enviar la info
     private boolean segundaMuestra;
     private boolean terceraMuestra;
     private int plantasId;

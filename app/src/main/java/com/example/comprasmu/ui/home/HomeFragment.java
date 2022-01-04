@@ -22,7 +22,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.ui.mantenimiento.CiudadTrabajoViewModel;
 import com.example.comprasmu.utils.Constantes;
-
+/****guardar clave usuario******/
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
@@ -73,7 +73,8 @@ public class HomeFragment extends Fragment {
        if(textusuario.getText().toString().length()>0){
            guardarUsuario(textusuario.getText().toString());
        }
-        //voy al home
+//       getActivity().finish();
+       //voy a descargar listas
         NavHostFragment.findNavController(this).navigate(R.id.action_conftohome);
 
     }

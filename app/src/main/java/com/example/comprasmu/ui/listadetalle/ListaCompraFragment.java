@@ -32,11 +32,9 @@ import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.databinding.ListaCompraFragmentBinding;
-import com.example.comprasmu.ui.BackActivity;
-import com.example.comprasmu.ui.informe.NuevoinformeFragment;
-import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
+
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
+
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.sustitucion.SustitucionFragment;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -105,7 +103,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         if(bundle2!=null)
           mViewModel.setClienteSel(bundle2.getInt(ARG_CLIENTESEL));
         ismuestra=mViewModel.isNuevaMuestra();
-        Log.d(Constantes.TAG,"cliente y planta sel"+Constantes.INDICEACTUAL);
+        Log.d(Constantes.TAG,"cliente"+ mViewModel.getClienteSel());
         TextView etindice=mBinding.getRoot().findViewById(R.id.txtlcindice);
         etsiglas=mBinding.getRoot().findViewById(R.id.txtlcsiglas);
         etindice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
@@ -320,6 +318,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         //cambio al fragmento de captura del detalle
         if (view.getId() == R.id.btnldagregar) {
            Log.d(TAG, "agregar muestra"+mViewModel.nombrePlantaSel+"--"+mViewModel.getPlantaSel());
+            Log.d(TAG, "cliente sel "+ mViewModel.getClienteSel()+"--"+Constantes.ni_clientesel);
 
             NuevoDetalleViewModel nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
                 String clienteNombre=Constantes.ni_clientesel;//lo pongo hasta que se guarda el informe

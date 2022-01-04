@@ -17,7 +17,7 @@
         android:label="@string/menu_configuracion"
         tools:layout="@layout/fragment_home" >
         <action android:id="@+id/action_conftohome"
-            app:destination="@id/nav_home"
+            app:destination="@id/nav_descargar"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -39,7 +39,7 @@
     <fragment
         android:id="@+id/nav_descargar"
         android:name="com.example.comprasmu.ui.gallery.DescargarLisFragment"
-        android:label="@string/inicio"
+        android:label="@string/menu_descargar"
         tools:layout="@layout/fragment_descargarlc" />
 
     <fragment

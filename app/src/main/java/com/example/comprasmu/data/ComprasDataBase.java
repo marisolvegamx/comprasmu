@@ -1044,7 +1044,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setLabel(ctx.getString(R.string.selecciones_causa));
         campo.setNombreCampo(Contrato.TablaInformeDet.causa_nocompra);
         campo.setType("radiobutton");
-        campo.setTabla("ID");
+        campo.setTabla("I");
         campo.setId(47);
         campo.setSigId(7);
         campo.setCliente("PEPSI");

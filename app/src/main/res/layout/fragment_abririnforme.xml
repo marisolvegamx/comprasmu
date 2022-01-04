@@ -112,7 +112,8 @@
                         android:layout_height="99dp"
                         android:layout_marginTop="20dp"
                         android:visibility="gone"
-                        tools:src="@tools:sample/avatars" />
+                        tools:src="@tools:sample/avatars"
+                        tools:visibility="visible" />
 
                     <ImageButton
                         android:id="@+id/btnairotar1"
@@ -198,7 +199,7 @@
                 android:id="@+id/rvaiproductoex"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp" >
+                android:layout_marginTop="20dp">
 
             </androidx.recyclerview.widget.RecyclerView>
 
@@ -210,6 +211,7 @@
 
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
                 android:text="@string/guardar" />
 
 

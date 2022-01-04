@@ -52,6 +52,8 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     private DetalleProductoFragment fragementAct;
     Reactivo preguntaAct;
     InformeTemp ultimares;
+    boolean noSalir;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +139,26 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         mBinding.setProductoSel(prodsel);
         mBinding.txtciplanta.setVisibility(View.VISIBLE);
         mBinding.row4.setVisibility(View.VISIBLE);
+    }
+
+    public void reiniciarBarra() {
+        mBinding.setProductoSel(null);
+        mBinding.txtciplanta.setVisibility(View.GONE);
+        mBinding.row4.setVisibility(View.GONE);
+        mBinding.row45.setVisibility(View.GONE);
+        mBinding.txtcicodpr.setText("");
+        mBinding.txtcitomadode.setText("");
+        mBinding.setDanioa("");
+
+        mBinding.row5.setVisibility(View.GONE);
+        mBinding.setDaniob("");
+        Constantes.VarDetalleProd.nvoatrc="";
+        Constantes.VarDetalleProd.nvoatra="";
+        Constantes.VarDetalleProd.nvoatrb="";
+        mBinding.setDanioc("");
+        mBinding.row6.setVisibility(View.GONE);
+        Constantes.VarDetalleProd.tomadode="";
+
     }
     public void actualizarCodProd(String codprod) {
         mBinding.txtcicodpr.setText(codprod);
@@ -233,25 +255,38 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             case R.id.csalir:
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
                 dialogo1.setTitle(R.string.importante);
-                dialogo1.setMessage(R.string.pregunta_salir);
-                dialogo1.setCancelable(false);
-
-                dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogo1, int id) {
-                        dialogo1.cancel();
-                    }
-                });
-                dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogo1, int id) {
-                        DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
-
-                        //hay que guardar la ultima preguta
-                        fragment.guardarResp();
-                        finish();
+                if(!noSalir) {
+                    dialogo1.setMessage(R.string.pregunta_salir);
 
 
-                    }
-                });
+                    dialogo1.setCancelable(false);
+
+                    dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                            dialogo1.cancel();
+                        }
+                    });
+                    dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                            DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+
+                            //hay que guardar la ultima preguta
+                            fragment.guardarResp();
+                            finish();
+
+
+                        }
+                    });
+                } else
+                {   dialogo1.setMessage("Debe guardar antes de salir");
+
+                    dialogo1.setCancelable(false);
+
+                    dialogo1.setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                            dialogo1.cancel();
+                        }
+                    });}
                 dialogo1.show();
 
 
@@ -262,5 +297,8 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         }
 
         return false;
+    }
+    public void noSalir(boolean valor){
+        this.noSalir=valor;
     }
 }

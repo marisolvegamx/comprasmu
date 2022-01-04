@@ -235,9 +235,10 @@ public class CreadorFormulario {
       //      valor=this.instance[this.infocampo["nombre_campo"]];
         required=(this.infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
         TextInputEditText input=new TextInputEditText(context);
-       input.setId(this.infocampo.id);
-       input.setText(valor);
-       input.setEnabled(!this.readonly);
+        input.setId(this.infocampo.id);
+        input.setText(valor);
+        input.setEnabled(!this.readonly);
+        input.addTextChangedListener(new MayusTextWatcher());
      //  ".this.required." "..
      return input;
 
@@ -661,8 +662,6 @@ public class CreadorFormulario {
         }
         radiogrupo.setId(infocampo.id);
         return radiogrupo;
-
-
     }
 
     public Preguntasino preguntasino(){
@@ -899,6 +898,35 @@ public class CreadorFormulario {
                 try{
                     String formatted = nf.format(Double.parseDouble(digits)/100);
                     s.replace(0, s.length(), formatted);
+                } catch (NumberFormatException nfe) {
+                    s.clear();
+                }
+
+                mEditing = false;
+            }
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+    }
+    class MayusTextWatcher implements TextWatcher {
+
+        boolean mEditing;
+
+        public MayusTextWatcher() {
+            mEditing = false;
+        }
+
+        public synchronized void afterTextChanged(Editable s) {
+            if(!mEditing) {
+                mEditing = true;
+
+
+                try{
+                    if(s.length()>0)
+                    s.replace(0, s.length(), s.toString().toUpperCase());
                 } catch (NumberFormatException nfe) {
                     s.clear();
                 }

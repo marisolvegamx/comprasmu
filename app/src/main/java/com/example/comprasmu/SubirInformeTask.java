@@ -1,32 +1,41 @@
 package com.example.comprasmu;
 
 
+import android.app.Activity;
 import android.content.Context;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ProgressBar;
 
+import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.remote.InformeEnvio;
 
+import com.example.comprasmu.services.SubirFotoService;
+import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
+
+import java.util.List;
 
 public class SubirInformeTask extends AsyncTask<String, Float, Integer> {
     private boolean cancelarSiHayMas100Archivos;
     private ProgressBar miBarraDeProgreso;
-    public static String TAG="SubirInformeTask";
+    public static String TAG = "SubirInformeTask";
     InformeEnvio envio;
     Context context;
+    NuevoinformeViewModel mviemodel;
     /**
      * Contructor de ejemplo que podemos crear en el AsyncTask
      *
      * @param en este ejemplo le pasamos un booleano que indica si hay más de 100 archivos o no. Si le pasas true se cancela por la mitad del progreso, si le pasas false seguirá hasta el final sin cancelar la descarga simulada
      */
-    public SubirInformeTask(boolean cancelarSiHayMas100Archivos,InformeEnvio envio, Context context ) {
+    public SubirInformeTask(boolean cancelarSiHayMas100Archivos,InformeEnvio envio, Context context, NuevoinformeViewModel mviemodel) {
         this.cancelarSiHayMas100Archivos = cancelarSiHayMas100Archivos;
         this.envio=envio;
         this.context=context;
-
+        this.mviemodel=mviemodel;
     }
 
     /**
@@ -52,9 +61,9 @@ public class SubirInformeTask extends AsyncTask<String, Float, Integer> {
      */
     @Override
     protected Integer doInBackground(String... variableNoUsada) {
-
+       //  envio=mviemodel.preparaInforme();
         enviarReporte();
-
+      //  subirFotos(envio);
         return 0;
     }
 

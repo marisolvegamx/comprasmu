@@ -1,11 +1,7 @@
 package com.example.comprasmu.ui.informe;
 
 import android.app.Application;
-import android.icu.text.IDNA;
-import android.media.Image;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -16,17 +12,17 @@ import androidx.lifecycle.Observer;
 
 import com.example.comprasmu.R;
 
+import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 
-import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 
 import com.example.comprasmu.data.remote.InformeEnvio;
 
-import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
@@ -35,14 +31,9 @@ import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 
-import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
-import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import java.util.Date;
@@ -225,6 +216,10 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return envio;
     }
 
+    public List<ProductoExhibido> buscarProdExhi(){
+        return prodRepo.getAllsimple(visita.getId());
+    }
+
     public List<ImagenDetalle> buscarImagenes(Visita visita, InformeCompra informe, List<InformeCompraDetalle> detalles){
         //todas las fotos aqui
         List<ImagenDetalle> fotosinfo=new ArrayList<>();
@@ -255,14 +250,19 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
 
     }
-    public boolean guardarResp(String resp,String nombrecampo,String tabla,int consecutivo, boolean isPregunta){
+    public boolean guardarResp(int informeid, int informedet,String resp,String nombrecampo,String tabla,int consecutivo, boolean isPregunta){
         InformeTemp temporal=new InformeTemp();
         temporal.setNombre_campo(nombrecampo);
         temporal.setValor(resp);
         temporal.setTabla(tabla);
         temporal.setConsecutivo(consecutivo);
         temporal.setPregunta(isPregunta);
+        temporal.setVisitasId(this.visita.getId());
+        temporal.setInformesId(informeid);
+        temporal.setIddetalle(informedet);
+        temporal.setNumMuestra(numMuestra);
         try {
+            Log.d(TAG,"buscando a "+nombrecampo);
             //reviso si ya existe
             InformeTemp editar=itemprepo.findByNombre(nombrecampo);
             if(editar!=null){
@@ -303,7 +303,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                 informe=new InformeCompra();
 
 
-                informe.setProducto_exhibido(idfoto);
+             //   informe.setProducto_exhibido(idfoto);
                 informe.setClientesId(1);
                 informe.setClienteNombre(clientesFoto[i]);
                 repository.insertInformeCompra(informe);
@@ -342,24 +342,63 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     }
     public long insertarInfdeTemp(){
         this.informe=tempToIC();
+        this.informe.setEstatusSync(0);
+        this.informe.setEstatus(1);
         return repository.insertInformeCompra(this.informe);
     }
     public void eliminarTblTemp(){
         itemprepo.deleteAll();
     }
+
+    public void eliminarTblTempMenosCli(){
+        itemprepo.deleteMenosCliente();
+    }
+    public InformeTemp buscarCampo(String campo,List<InformeTemp> temps){
+        for(InformeTemp info:temps){
+
+                if(info.getNombre_campo().equals(campo)) {
+                return info;
+                }
+        }
+             return null;
+    }
     public InformeCompra tempToIC(){
         //consulto el informe
         InformeCompra nuevo=new InformeCompra();
         List<InformeTemp> temps=itemprepo.getAllByTabla("I");
+        InformeTemp inft=buscarCampo("plantasId",temps);
+        if(inft!=null)
+        nuevo.setPlantasId(Integer.parseInt(inft.getValor()));
+         inft=buscarCampo("plantaNombre",temps);
+        if(inft!=null)
+        nuevo.setPlantaNombre(inft.getValor());
+        inft=buscarCampo("clientesId",temps);
+        if(inft!=null)
+        nuevo.setClientesId(Integer.parseInt(inft.getValor()));
+        inft=buscarCampo("clienteNombre",temps);
+        if(inft!=null)
+        nuevo.setClienteNombre(inft.getValor());
+         inft=buscarCampo("comentarios",temps);
+        if(inft!=null)
+        nuevo.setComentarios(inft.getValor());
+
+
+         inft=buscarCampo(Contrato.TablaInformeDet.causa_nocompra,temps);
+        if(inft!=null) {
+            nuevo.setSinproducto(true);
+            nuevo.setCausa_nocompra(inft.getValor());
+        }
         for(InformeTemp info:temps){
-            Class claseCargada = InformeCompra.class;
+         /*   Class claseCargada = InformeCompra.class;
             Class params[] = new Class[1];
             params[0] = String.class;
+
             try {
                 if(info.getNombre_campo().equals("segundaMuestra")) {
                     params[0] = Boolean.class;
-                }
-
+                }*/
+            nuevo.setVisitasId(info.getVisitasId());
+            nuevo.setConsecutivo(info.getConsecutivo());
                 if(info.getNombre_campo().equals("ticket_compra")) {
                     this.ticket_compra = new ImagenDetalle();
                 //    this.ticket_compra.setIndice(Constantes.INDICEACTUAL);
@@ -380,17 +419,33 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                     this.condiciones_traslado.setEstatusSync(0);
                     this.condiciones_traslado.setCreatedAt(new Date());
                 }else {
-                    Method metodo = claseCargada.getDeclaredMethod("set" + ComprasUtils.upperCaseFirst(info.getNombre_campo()));
+                 /*   Method metodo = claseCargada.getDeclaredMethod("set" + ComprasUtils.upperCaseFirst(info.getNombre_campo()),params);
 
-                    metodo.invoke(nuevo, info.getValor());
+                    metodo.invoke(nuevo, info.getValor());*/
+
+                    continue;
                 }
-            } catch (IllegalAccessException e) {
+         /*   } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
+                params[0] = Integer.class;
+                Method metodo  = null;
+                try {
+                    metodo = claseCargada.getDeclaredMethod("set" + ComprasUtils.upperCaseFirst(info.getNombre_campo()),params);
+
+
+                metodo.invoke(nuevo, info.getValor());
+                } catch (NoSuchMethodException noSuchMethodException) {
+                    noSuchMethodException.printStackTrace();
+                } catch (IllegalAccessException illegalAccessException) {
+                    illegalAccessException.printStackTrace();
+                } catch (InvocationTargetException invocationTargetException) {
+                    invocationTargetException.printStackTrace();
+                }
+            }*/
+
         }
         return nuevo;
     }
@@ -400,14 +455,18 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         InformeCompra compra2=tempToIC();
         //recupero los comentarios
         informe.setComentarios(compra2.getComentarios());
-
+        if(ticket_compra!=null) //si hubo producto
         //validaciones
-        int idt= (int) imagenDetRepository.insertImg(ticket_compra);
+        {
+            int idt = (int) imagenDetRepository.insertImg(ticket_compra);
 
-        informe.setTicket_compra(idt);
-        int idc= (int) imagenDetRepository.insertImg(condiciones_traslado);
+            informe.setTicket_compra(idt);
+            int idc = (int) imagenDetRepository.insertImg(condiciones_traslado);
 
-        informe.setCondiciones_traslado(idc);
+            informe.setCondiciones_traslado(idc);
+        }
+        informe.setEstatus(1);
+        informe.setEstatusSync(0);
         // Guardar categoría
         repository.insertInformeCompra(informe);
 
