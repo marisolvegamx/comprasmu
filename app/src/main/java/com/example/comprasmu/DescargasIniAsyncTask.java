@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
@@ -191,10 +192,27 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             public void actualizar(ListaCompraResponse compraResp) {
                 //primero los inserts
                 if (compraResp.getInserts() != null) {
-                    if(compraResp.getInserts().getListaCompra()!=null)
+                    if(compraResp.getInserts().getListaCompra()!=null) {
+
                         lcrepo.insertAll(compraResp.getInserts().getListaCompra()); //inserto blblbl
-                    if(compraResp.getInserts().getListaCompraDetalle()!=null)
-                        lcdrepo.insertAll(compraResp.getInserts().getListaCompraDetalle());
+                    }
+                        if(compraResp.getInserts().getListaCompraDetalle()!=null){
+                            //como puede que ya existan reviso primero e inserto unoxuno
+                            for(ListaCompraDetalle detalle:compraResp.getInserts().getListaCompraDetalle()){
+                                ListaCompraDetalle existe=lcdrepo.findsimple(detalle.getListaId(),detalle.getId());
+                                if(existe==null){
+                                   // lcrepo.insert(detalle);
+
+                                }else
+                                {
+                                    detalle.setComprados(existe.getComprados());
+                                    //lcrepo.updateSC(compra);
+                                }
+                                lcdrepo.insert(detalle);
+
+                            }
+                        }
+                       // lcdrepo.insertAll(compraResp.getInserts().getListaCompraDetalle());
                 }
                 //los updates
                 if (compraResp.getUpdates() != null) {
@@ -202,8 +220,22 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     if(compraResp.getUpdates().getListaCompra()!=null)
                         lcrepo.insertAll(compraResp.getUpdates().getListaCompra()); //inserto blblbl
                     if(compraResp.getUpdates().getListaCompraDetalle()!=null) {
+                        //como puede que ya existan reviso primero e inserto unoxuno
+                        for(ListaCompraDetalle detalle:compraResp.getInserts().getListaCompraDetalle()){
+                            ListaCompraDetalle existe=lcdrepo.findsimple(detalle.getListaId(),detalle.getId());
+                            if(existe==null){
+                                // lcrepo.insert(detalle);
 
-                        lcdrepo.updateAll(compraResp.getUpdates().getListaCompraDetalle());
+                            }else
+                            {   //mantengo los comprados y codigos nevos
+                                detalle.setComprados(existe.getComprados());
+                                detalle.setNvoCodigo(existe.getNvoCodigo());
+                                //lcrepo.updateSC(compra);
+                            }
+                            lcdrepo.insert(detalle);
+
+                        }
+                       // lcdrepo.updateAll(compraResp.getUpdates().getListaCompraDetalle());
                     }
                 }
 

@@ -40,12 +40,14 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
     @Query("update producto_exhibido set estatusSync=:estatus WHERE visitasId=:idinfo")
     public abstract void actualizarEstatusSyncxVisita(int idinfo, int estatus);
 
-    @Query("SELECT  imagen_detalle.id, descripcion,ruta,estatus,producto_exhibido.estatusSync,indice FROM imagen_detalle " +
+    @Query("SELECT  imagen_detalle.id, descripcion,ruta,estatus,producto_exhibido.estatusSync," +
+            "indice,imagen_detalle.createdAt, imagen_detalle.updatedAt FROM imagen_detalle " +
             " inner join    producto_exhibido on producto_exhibido.imagenId=imagen_detalle.id" +
             " where visitasId=:idVisita")
     public abstract LiveData<List<ImagenDetalle>> getImagenByVisita(int idVisita);
 
-    @Query("SELECT  imagen_detalle.id, descripcion,ruta,estatus,producto_exhibido.estatusSync,indice FROM imagen_detalle " +
+    @Query("SELECT  imagen_detalle.id, descripcion,ruta,estatus,producto_exhibido.estatusSync," +
+            "indice,imagen_detalle.createdAt,imagen_detalle.updatedAt FROM imagen_detalle " +
             " inner join    producto_exhibido on producto_exhibido.imagenId=imagen_detalle.id" +
             " where visitasId=:idVisita")
     public abstract List<ImagenDetalle> getImagenByVisitasimple(int idVisita);

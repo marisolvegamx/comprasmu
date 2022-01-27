@@ -119,11 +119,21 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("LoginActivity"," regrese");
+        if(Constantes.LOGGEADO){ //ya inicié sesión no pido iniciar
+            entrar();
+            finish();
+        }
+    }
+
     public void comprobacion(){
         //reviso si ya tengo el dato
         LoggedInUser luser=tengoUsuario();
         if(luser==null){ //primera vez
-            Log.i("LoginRepository","primera vez");
+         //   Log.i("LoginActivity","primera vez");
             if(ComprasUtils.isOnlineNet())
             loginViewModel.login(usernameEditText.getText().toString(),
                     passwordEditText.getText().toString(),new LoginListener());
@@ -158,12 +168,12 @@ public class LoginActivity extends AppCompatActivity {
          return luser ;
 
     }
-    public void guardarUsuario(){
+    public void guardarUsuario(String cveusr){
 
 
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=prefe.edit();
-
+       // editor.putString("claveusuario",cveusr);
         editor.putString("usuario", android.util.Base64.encodeToString( usernameEditText.getText().toString().getBytes(), Base64.DEFAULT));
         editor.putString("password", Base64.encodeToString(passwordEditText.getText().toString().getBytes(),Base64.DEFAULT));
         editor.commit();
@@ -177,7 +187,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUiWithUser(String model) {
         String welcome = getString(R.string.welcome) +" "+ model;
-        // TODO : initiate successful logged in experience
+
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 
@@ -185,9 +195,11 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
     public void entrar(){
+        Constantes.LOGGEADO=true;
         //mando a la siguiente actividad
         Intent intento=new Intent(this, NavigationDrawerActivity.class);
         startActivity(intento);
+
     }
     public class LoginListener{
 
@@ -205,9 +217,17 @@ public class LoginActivity extends AppCompatActivity {
             //Complete and destroy login activity once successful
 
         }
-        public void correcto() {
+        public void correcto(String cveusr) {
             loadingProgressBar.setVisibility(View.GONE);
-            guardarUsuario();
+            guardarUsuario( cveusr);
+            updateUiWithUser(usernameEditText.getText().toString());
+            entrar();
+            finish();
+
+        }
+        public void iniciar() {
+            loadingProgressBar.setVisibility(View.GONE);
+         //   guardarUsuario( cveusr);
             updateUiWithUser(usernameEditText.getText().toString());
             entrar();
             finish();

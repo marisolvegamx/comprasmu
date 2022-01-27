@@ -47,19 +47,42 @@
         android:name="com.example.comprasmu.ui.SelPlantaFragment"
         android:label="@string/menu_ver_lista"
         tools:layout="@layout/lista_selec_fragment" >
+        <argument
+            android:name="comprasmu.selcli.tipocons"
+            app:argType="string"
+            android:defaultValue="action_selclitolista" />
 
-    <action android:id="@+id/action_selclientetolistacompras"
-        app:destination="@id/nav_listacompras"
+    <action android:id="@+id/action_selplantoselcli"
+        app:destination="@id/nav_selcliente"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
-        android:id="@+id/nav_listacompras"
-        android:name="com.example.comprasmu.ui.listacompras.TabsFragment"
+        android:id="@+id/nav_selcliente"
+        android:name="com.example.comprasmu.ui.listacompras.SelClienteFragment"
         android:label="@string/menu_ver_lista"
-        tools:layout="@layout/lista_selec_fragment" />
+        tools:layout="@layout/lista_selec_fragment">
+    <action android:id="@+id/action_selclitolista"
+        app:destination="@id/nav_listacompras"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_selclitoinformes"
+            app:destination="@id/nav_listar2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_listacompras"
+        android:name="com.example.comprasmu.ui.listadetalle.ListaCompraFragment"
+        android:label="@string/menu_ver_lista"
+       />
+
     <fragment
         android:id="@+id/nav_nuevoinforme"
         android:name="com.example.comprasmu.ui.visita.AbririnformeFragment"
@@ -89,10 +112,30 @@
 
     <fragment
         android:id="@+id/nav_listar"
-        android:name="com.example.comprasmu.ui.informe.TabsICFragment"
+        android:name="com.example.comprasmu.ui.SelPlantaFragment"
         android:label="@string/menu_lista_informe"
-        tools:layout="@layout/fragment_lista_tabs" />
+        tools:layout="@layout/lista_selec_fragment" >
+    <argument
+        android:name="comprasmu.selcli.tipocons"
+        app:argType="string"
+        android:defaultValue="action_selclitoinformes" />
+        <action android:id="@+id/action_selplantoselcli"
+            app:destination="@id/nav_selcliente"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
     <fragment
+        android:id="@+id/nav_listar2"
+        android:name="com.example.comprasmu.ui.informe.ListaInformesFragment"
+        android:label="@string/menu_lista_informe"
+        tools:layout="@layout/lista_informes_fragment" >
+
+
+    </fragment>
+    <fragment
+
         android:id="@+id/nav_listarvisitas"
         android:name="com.example.comprasmu.ui.visita.ListaVisitasFragment"
         android:label="@string/menu_continuar_informe"
@@ -109,6 +152,7 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+
     </fragment>
 
     <fragment
@@ -133,12 +177,19 @@
 
     </fragment>
 
-
     <fragment
         android:id="@+id/nav_tiendas"
         android:name="com.example.comprasmu.ui.tiendas.BuscarTiendaFragment"
         android:label="@string/buscar_tienda"
         tools:layout="@layout/buscar_tienda_fragment" >
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/nav_cerrarsesion"
+        android:name="com.example.comprasmu.ui.home.CerrarSesionFragment"
+        android:label="@string/cerrar_sesion"
+        tools:layout="@layout/fragment_cerrar_sesion" >
 
 
     </fragment>

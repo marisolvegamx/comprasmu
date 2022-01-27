@@ -16,6 +16,12 @@ public class DescripcionGenerica {
         this.nombre = nombre;
     }
 
+    public DescripcionGenerica(int id, String nombre, String descripcion) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
+
     public int getId() {
         return id;
     }

@@ -59,7 +59,8 @@ import java.util.Map;
         TablaVersiones.class,
         Visita.class,  InformeTemp.class,
         ProductoExhibido.class, Sustitucion.class,
-        CatalogoDetalle.class, Atributo.class},views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=3, exportSchema = false)
+        CatalogoDetalle.class, Atributo.class},
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=3, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -116,30 +117,34 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     "categoriasId INTEGER NOT NULL,nomcategoria TEXT,PRIMARY KEY(`id_sustitucion`));");
         }
     };
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+
+    static final Migration MIGRATION_2_3 = new Migration(2,3) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL(
-                    " ALTER TABLE informe_detalle ADD COLUMN causa_nocompra TEXT;");
+                    " ALTER TABLE informe_detalle ADD COLUMN comprasIdbu INTEGER; " );
+            database.execSQL( " ALTER TABLE informe_detalle ADD COLUMN comprasDetIdbu INTEGER;");
+
         }
     };
     private void cargandodatos(){
+
         runInTransaction(new Runnable() {
             @Override
             public void run() {
                 ReactivoDao dao = getReactivoDao();
-                dao.findAll().observeForever( myProducts -> {
+                List<Reactivo> myProducts=dao.findAllsimple();
                     if (myProducts == null||myProducts.size()==0) {
                         //no tengo datos
 
 
-                        prepopulatelc();
+                      //  prepopulatelc();
                         prepopulatedetc();
                         prepopulateder();
                        // catalogos();
 
                     }
-                });
+
             }
         });
     }
@@ -209,7 +214,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lc.setClienteNombre("PEñAFIEL");
         lc.setPlantaNombre("monterrey");
         lc.setSiglas("ppm");
-        lc.setIndice("noviembre 2021");
+        lc.setIndice("12.2021");
         lc.setCiudadesId(3);
         lc.setCiudadNombre("Nuevo leon");
         lc.setEstatus(1);
@@ -873,10 +878,11 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         campo = new Reactivo();
         campo.setLabel( ctx.getString(R.string.danio1));
-        campo.setNombreCampo("");
+        campo.setNombreCampo("danio1");
         campo.setType( "preguntasino");
         campo.setTabla("ID");
         campo.setCliente("PEPSI");
+
         campo.setId(32);
         campo.setSigId(33);
         campo.setSigAlt(41);
@@ -912,7 +918,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setId(35);
         campo.setSigId(36);
         campo.setTabla("ID");
-        campo.setNombreCampo("");
+        campo.setNombreCampo("danio2");
         campo.setType( "preguntasino");
         campo.setSigAlt(41);
         campo.setCliente("PEPSI");
@@ -945,7 +951,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setLabel( ctx.getString(R.string.danio3));
         campo.setId(38);
         campo.setSigId(39);
-        campo.setNombreCampo("123");
+        campo.setNombreCampo("danio3");
         campo.setType( "preguntasino");
         campo.setSigAlt(41);
         campo.setTabla("ID");
@@ -1025,6 +1031,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setType("agregarImagen");
         campo.setTabla("ID");
         campo.setId(42);
+        campo.setSigId(48);
         campo.setCliente("PEPSI");
         camposForm.add(campo);
 
@@ -1047,6 +1054,16 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setTabla("I");
         campo.setId(47);
         campo.setSigId(7);
+        campo.setCliente("PEPSI");
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.seguro_muestra));
+        campo.setNombreCampo("confirmaMuestra");
+        campo.setType("hidden");
+        campo.setTabla("");
+        campo.setId(48);
+
         campo.setCliente("PEPSI");
         camposForm.add(campo);
 

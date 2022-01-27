@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -238,7 +239,8 @@ public class CreadorFormulario {
         input.setId(this.infocampo.id);
         input.setText(valor);
         input.setEnabled(!this.readonly);
-        input.addTextChangedListener(new MayusTextWatcher());
+        input.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+      //  input.addTextChangedListener(new MayusTextWatcher());
      //  ".this.required." "..
      return input;
 
@@ -513,7 +515,7 @@ public class CreadorFormulario {
     public Spinner selectCat() {
 
         Spinner mySpinner = new Spinner(context);
-        Log.d("viendo si llego bien", this.infocampo.selectcat.get(0).getCad_descripcionesp());
+      //  Log.d("viendo si llego bien", this.infocampo.selectcat.get(0).getCad_descripcionesp());
 
         ArrayAdapter catAdapter = new ArrayAdapter<CatalogoDetalle>(context, android.R.layout.simple_spinner_dropdown_item, this.infocampo.selectcat) {
 
@@ -564,8 +566,25 @@ public class CreadorFormulario {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        if(infocampo.value!=null&&infocampo.value.length()>0){
+            //busco el valor en la lista
+            for(CatalogoDetalle cat:this.infocampo.selectcat){
+                Log.d("CreadorForm","val"+infocampo.value+" cat"+cat.getCad_idopcion());
+                if(infocampo.value.equals(cat.getCad_descripcionesp())){
+                    mySpinner.setSelection(catAdapter.getPosition(cat),true);
+                    break;
+                }
+                if(infocampo.value.equals(cat.getCad_idopcion()+"")){
+                    Log.d("CreadorForm",catAdapter.getPosition(cat)+"");
+
+                    mySpinner.setSelection(catAdapter.getPosition(cat),true);
+                    break;
+                }
+            }
+        }
 
         mySpinner.setId(this.infocampo.id);
+       // mySpinner.setSelection(3,true);
         //this.required.">
         return mySpinner;
 
@@ -671,10 +690,10 @@ public class CreadorFormulario {
         if(infocampo.style>0){
             radiogrupo.setStyleLabel(infocampo.style);
         }
-              //  if(this.infocampo.value!=null&&this.infocampo.value.equals(registro.getValue())) {
-          //      rb.setChecked(true);
+        if(this.infocampo.value!=null&&this.infocampo.value.equals("true")) {
+            radiogrupo.setSi(true);
 
-           // }
+        }
         radiogrupo.onclicksi(infocampo.funcionOnClick);
         radiogrupo.onclickno(infocampo.funcionOnClick2);
 
@@ -728,6 +747,8 @@ public class CreadorFormulario {
         }
         imagen.setId(infocampo.id);
         imagen.setLayoutParams(new ViewGroup.LayoutParams(350,150));
+        if(infocampo.funcionOnClick!=null)
+        imagen.setOnClickListener(infocampo.funcionOnClick);
         return  imagen;
     }
     public LinearLayout imagenViewr(){
@@ -925,8 +946,16 @@ public class CreadorFormulario {
 
 
                 try{
-                    if(s.length()>0)
-                    s.replace(0, s.length(), s.toString().toUpperCase());
+                    if(s.length()>0) {
+                        String s2=s.toString();
+                        String nueva="";
+                        if(!s2.equals(s2.toUpperCase()))
+                        {
+                            nueva=s2.toUpperCase();
+
+                        }
+                        s.replace(0, nueva.length(), s.toString().toUpperCase());
+                    }
                 } catch (NumberFormatException nfe) {
                     s.clear();
                 }

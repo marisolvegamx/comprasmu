@@ -37,6 +37,7 @@ public class ListaSelecFragment extends Fragment {
     private AdaptadorListas adaptadorLista;
     private ListView objetosLV;
     protected ArrayList<DescripcionGenerica> listaSeleccionable;
+    private TextView indicacion;
 
     public static ListaSelecFragment newInstance() {
         return new ListaSelecFragment();
@@ -61,7 +62,7 @@ public class ListaSelecFragment extends Fragment {
         mBinding.setLifecycleOwner(this);
         objetosLV=mBinding.getRoot().findViewById(R.id.listaobjetos);
 
-
+        indicacion=mBinding.textView9;
         return mBinding.getRoot();
 
     }
@@ -102,6 +103,10 @@ public class ListaSelecFragment extends Fragment {
 
             return(item);
         }
+    }
+
+    public void setIndicacion(String indicacion) {
+        this.indicacion.setText(indicacion);
     }
 
     public ListView getObjetosLV() {

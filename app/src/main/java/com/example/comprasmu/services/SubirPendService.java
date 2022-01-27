@@ -72,7 +72,7 @@ public class SubirPendService extends IntentService
 
 
 
-                    notificar();
+                    //notificar();
                     enviarReporte(objObservador);
                     // enviarOtra();
                 }catch (Exception ex){
@@ -94,6 +94,7 @@ public class SubirPendService extends IntentService
     public void onDestroy()
     {
         super.onDestroy();
+       // notificar();
         Log.e(TAG,"onDestroy");
     }
     @Override
@@ -160,7 +161,7 @@ public class SubirPendService extends IntentService
 
 
         notificationBuilder.setProgress(100, currentProgress, false);
-        notificationBuilder.setContentText("Downloaded: " + currentProgress + "%");
+        notificationBuilder.setContentText("uploaded: " + currentProgress + "%");
         notificationManager.notify(idnot, notificationBuilder.build());
     }
     private void onDownloadComplete(boolean downloadComplete) {
@@ -170,7 +171,7 @@ public class SubirPendService extends IntentService
         notificationBuilder.setProgress(0, 0, false);
         notificationBuilder.setSmallIcon(android.R.drawable.stat_sys_upload_done);
         notificationBuilder.setContentText("Envio completado");
-        notificationManager.notify(idnot, notificationBuilder.build());
+        notificationManager.notify(0, notificationBuilder.build());
 
     }
 
@@ -183,7 +184,10 @@ public class SubirPendService extends IntentService
           postviewModel.iniciarConexiones();
             //hago el post
             TodoEnvio envio= postviewModel.prepararInformes();
-
+            if((envio.getProductosEx()!=null&&envio.getProductosEx().size()>0)||(envio.getInformeCompraDetalles()!=null&&envio.getInformeCompraDetalles().size()>0)
+                    ||(envio.getInformeCompra()!=null&&envio.getInformeCompra().size()>0)
+                        ||(envio.getVisita()!=null&&envio.getVisita().size()>0)
+                            ||(envio.getImagenDetalles()!=null&&envio.getImagenDetalles().size()>0))
             postviewModel.sendTodo(envio,listener);
 
 
@@ -200,7 +204,7 @@ public class SubirPendService extends IntentService
         }
 
         public void onProgress(int progress){
-            updateNotification(progress);
+           // updateNotification(progress);
         }
         public void onSuccess(String mensaje){
           /*  contador++;
@@ -215,7 +219,7 @@ public class SubirPendService extends IntentService
 
 
             downloadComplete = true;
-            onDownloadComplete(downloadComplete);
+         //   onDownloadComplete(downloadComplete);
             Log.d(TAG, " resultado servidor"+mensaje);
         }
 

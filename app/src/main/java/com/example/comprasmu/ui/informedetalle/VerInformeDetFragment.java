@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.comprasmu.R;
@@ -23,6 +25,7 @@ import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.utils.CampoForm;
@@ -30,6 +33,7 @@ import com.example.comprasmu.utils.CreadorFormulario;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class VerInformeDetFragment extends Fragment {
@@ -43,7 +47,7 @@ public class VerInformeDetFragment extends Fragment {
     List<CampoForm> camposForm;
     private List<CatalogoDetalle> tomadoDe;
     private List<Atributo>atributos;
-    ImagenDetalle[] fotos;
+    HashMap<String,ImagenDetalle> fotos;
     MutableLiveData<Integer> cont;
 
     SimpleDateFormat sdf;
@@ -119,21 +123,21 @@ public class VerInformeDetFragment extends Fragment {
 
     public void ponerDatos(InformeCompraDetalle informe) {
 
-        fotos= new ImagenDetalle[10];
+        fotos= new HashMap<>();
         i=0;
 
 
-        ponerFoto(informe.getFoto_codigo_produccion());
+        ponerFoto(getString(R.string.foto_codigo_produccion),informe.getFoto_codigo_produccion());
 
        // ponerFoto(informe.getEnergia());
-        ponerFoto(informe.getFoto_num_tienda());
-        ponerFoto(informe.getMarca_traslape());
-        ponerFoto(informe.getFoto_atributoa());
-        ponerFoto(informe.getFoto_atributob());
-        ponerFoto(informe.getFoto_atributoc());
-        ponerFoto(informe.getEtiqueta_evaluacion());
+      //  ponerFoto(getString(R.string.foto_num_tienda),informe.getFoto_num_tienda());
+       // ponerFoto(getString(R.string.foto_codigo_produccion)informe.getMarca_traslape());
+        ponerFoto(getString(R.string.foto_atributoa),informe.getFoto_atributoa());
+        ponerFoto(getString(R.string.foto_atributob),informe.getFoto_atributob());
+        ponerFoto(getString(R.string.foto_atributoc),informe.getFoto_atributoc());
+        ponerFoto(getString(R.string.etiqueta_evaluacion),informe.getEtiqueta_evaluacion());
        // ponerFoto(informe.getQr());
-        ponerFoto(informe.getAzucares());
+      //  ponerFoto(informe.getAzucares());
         tomadoDe=dViewModel.cargarCatalogos();
         dViewModel.atributos=dViewModel.getAtributos();
         dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<Atributo>>() {
@@ -142,19 +146,20 @@ public class VerInformeDetFragment extends Fragment {
             public void onChanged(List<Atributo> catalogoDetalles) {
                 Log.d(TAG,"ya tengo atributos");
                 atributos = catalogoDetalles;
+                crearFormulario(informe);
+                sv1.addView(cf.crearTabla());
+                sv2.addView(cf2.crearTabla());
 
-            cont.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+           /* cont.observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 Log.d(TAG,"cont="+integer);
-                if(integer==8) {
+               // if(integer==8) {
                     Log.d(TAG,"dibujando form");
-                    crearFormulario(informe);
-                    sv1.addView(cf.crearTabla());
-                    sv2.addView(cf2.crearTabla());
-                }
-            }
-        });
+
+              //  }
+            }*/
+       // });
             }
         });
 
@@ -165,22 +170,8 @@ public class VerInformeDetFragment extends Fragment {
     //id imageview
     //objeto imagendetalle
 
-    public void ponerFoto( int idfoto){
-        niViewModel.getFotoLD(idfoto).observe(this, new Observer<ImagenDetalle>() {
-                @Override
-                public void onChanged(ImagenDetalle s) {
-                    if(s!=null) {
-                        Log.d(TAG,   "--" + s.getRuta());
-                     fotos[i]=s;
-
-
-                    }
-                    i++;
-                    cont.setValue(i);
-                }
-            });
-
-
+    public void ponerFoto(String key, int idfoto){
+        fotos.put(key,niViewModel.getFoto(idfoto));
 
     }
     public void crearFormulario(InformeCompraDetalle detalle){
@@ -314,37 +305,81 @@ public class VerInformeDetFragment extends Fragment {
         campo=new CampoForm();
         campo.label=getString(R.string.foto_codigo_produccion);
         campo.type="imagenView";
-        campo.value=fotos[0]!=null?directorio+fotos[0].getRuta():"";
+        campo.value=fotos.get(getString(R.string.foto_codigo_produccion))!=null?directorio+fotos.get(getString(R.string.foto_codigo_produccion)).getRuta():"";
         campo.required="required";
+
+        campo.id=500;
+        CampoForm finalCampo = campo;
+        campo.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verImagen( finalCampo.value);
+
+            }
+        };
         camposForm.add(campo);
         campo = new CampoForm();
         campo.label = getString(R.string.foto_posicion1);
         campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOA;
         campo.type = "imagenView";
+        campo.id=501;
+        campo.value = fotos.get(getString(R.string.foto_atributoa))!= null ? directorio + fotos.get(getString(R.string.foto_atributoa)).getRuta() : "";
+        CampoForm finalCampo2 = campo;
+        campo.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verImagen( finalCampo2.value);
 
-        campo.value = fotos[4] != null ? directorio + fotos[4].getRuta() : "";
+            }
+        };
         camposForm.add(campo);
         campo = new CampoForm();
         campo.label = getString(R.string.foto_posicion2);
         campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOB;
         campo.type = "imagenView";
-        campo.value = fotos[5] != null ? directorio + fotos[5].getRuta() : "";
+        campo.id=502;
+
+        campo.value = fotos.get(getString(R.string.foto_atributob)) != null ? directorio +fotos.get(getString(R.string.foto_atributob)).getRuta() : "";
+        CampoForm finalCampo3 = campo;
+        campo.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verImagen( finalCampo3.value);
+
+            }
+        };
         camposForm.add(campo);
 
         campo = new CampoForm();
         campo.label = getString(R.string.foto_posicion3);
         campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOC;
         campo.type = "imagenView";
-        campo.value = fotos[6] != null ? directorio + fotos[6].getRuta() : "";
+        campo.id=503;
+        campo.value = fotos.get(getString(R.string.foto_atributoc))!= null ? directorio + fotos.get(getString(R.string.foto_atributoc)).getRuta() : "";
+        CampoForm finalCampo4 = campo;
+        campo.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verImagen( finalCampo4.value);
 
+            }
+        };
         camposForm.add(campo);
 
         campo=new CampoForm();
         campo.label=getString(R.string.etiqueta_evaluacion);
 
         campo.type="imagenView";
-        campo.value=fotos[7]!=null?directorio+fotos[7].getRuta():"";
+        campo.value=fotos.get(getString(R.string.etiqueta_evaluacion))!=null?directorio+fotos.get(getString(R.string.etiqueta_evaluacion)).getRuta():"";
+        campo.id=504;
+        CampoForm finalCampo5 = campo;
+        campo.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verImagen( finalCampo5.value);
 
+            }
+        };
         camposForm.add(campo);
 
 
@@ -383,6 +418,13 @@ public class VerInformeDetFragment extends Fragment {
         }
         return "";
 
+    }
+    public void verImagen(String nombrearch){
+        //  ImageView imagen=(ImageView)v;
+        // imagen.get
+        Intent iverim=new Intent(getActivity(), RevisarFotoActivity.class);
+        iverim.putExtra(RevisarFotoActivity.IMG_PATH1,nombrearch);
+        startActivity(iverim);
     }
 
 }

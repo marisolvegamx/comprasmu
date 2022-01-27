@@ -688,7 +688,7 @@ public class DetalleProductoFragment1 extends Fragment {
             if (numMuestra == 1 || idInformeNuevo <= 0) {
                 //busco el consecutivo
 
-               int consecutivo=mViewModel.getConsecutivo(dViewModel.productoSel.clienteSel);
+             //  int consecutivo=mViewModel.getConsecutivo(dViewModel.productoSel.clienteSel);
 
 
                mViewModel.informe.setConsecutivo(consecutivo);

@@ -9,6 +9,7 @@ public  class Contrato {
 
     public static class  CatalogosId{
 
+        public static final int CAUSAS =100 ;
         public static int TOMADOSDE=8;
         public static int TIPODEMUESTRA=12;
         public static int TIPODETIENDA=2;

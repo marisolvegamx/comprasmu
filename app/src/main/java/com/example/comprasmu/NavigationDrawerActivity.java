@@ -1,7 +1,7 @@
 package com.example.comprasmu;
 
 import android.Manifest;
-import android.app.Dialog;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,41 +9,39 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
+
 import android.view.MenuItem;
-import android.view.View;
+
 import android.view.Menu;
-import android.view.Window;
+
 import android.widget.Toast;
 
 import com.example.comprasmu.data.ComprasDataBase;
-import com.example.comprasmu.data.PeticionesServidor;
+
 import com.example.comprasmu.data.dao.ListaCompraDao;
-import com.example.comprasmu.data.modelos.Atributo;
-import com.example.comprasmu.data.modelos.Contrato;
+
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.TablaVersiones;
+
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
-import com.example.comprasmu.services.ServicioCompras;
+
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirPendService;
-import com.example.comprasmu.ui.home.HomeFragment;
-import com.example.comprasmu.ui.informe.BuscarInformeFragment;
+
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
-import com.example.comprasmu.ui.visita.AbririnformeFragment;
+
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.comprasmu.workmanager.SyncWork;
+
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -51,8 +49,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -61,16 +58,23 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
+
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /*esta es la clase principal***/
@@ -80,7 +84,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     SubirFotoProgressReceiver rcv;
     String TAG="NavigationDrawerActivity";
     private ListaDetalleViewModel mViewModel;
-    SimpleDateFormat sdfparaindice=new SimpleDateFormat("MM-yyyy");
+    SimpleDateFormat sdfparaindice=new SimpleDateFormat("M-yyyy");
     SimpleDateFormat sdfparaindice2=new SimpleDateFormat("MMM yyyy");
     private static final int PERMISSION_REQUEST_CODE = 200;
 
@@ -194,7 +198,21 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         } else {
             requestPermission();
         }
-        ServicioCompras sbt = new ServicioCompras();
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                 .setRequiresBatteryNotLow(true)
+
+                .build();
+        PeriodicWorkRequest simpleRequest =
+                new PeriodicWorkRequest.Builder(SyncWork.class, 12, TimeUnit.HOURS)
+                        .setConstraints(constraints)
+                        .addTag("comprassync_worker")
+                        .build();
+        WorkManager
+                .getInstance()
+                .enqueue(simpleRequest);
+       /* ServicioCompras sbt = new ServicioCompras();
 
 
         try {
@@ -202,7 +220,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         } catch (Exception e) {
             Log.d(TAG,"Error al iniciar el servicio");
             e.printStackTrace();
-        }
+        }*/
     }
 
 
@@ -229,10 +247,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 guardarInforme();
                 return true;
 */
-            case R.id.action_enviar_fotos:
+     /*       case R.id.action_enviar_fotos:
               //  Log.d(TAG,"hice click en"+item.getItemId());
                    subirImagenes();
-                return true;
+                return true;*/
             case R.id.cerrarsesion:
                 //  Log.d(TAG,"hice click en"+item.getItemId());
                 borrarUsuario();
@@ -423,12 +441,22 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
         Constantes.CLAVEUSUARIO=prefe.getString("claveusuario","");
 */
-        //obtengo solo mes
-        String mesactual = sdfparaindice.format(new Date());
+        Constantes.TIPOTIENDA=new HashMap<>();
 
+       Constantes.TIPOTIENDA.put(1,getString(R.string.grande));
+        Constantes.TIPOTIENDA.put(2,getString(R.string.mediana));
+        Constantes.TIPOTIENDA.put(3,getString(R.string.chica));
+        Constantes.TIPOTIENDA.put(4,getString(R.string.otras));
+        //obtengo solo mes
+
+        Calendar cal = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
+        Date hoy=new Date();
+        cal.setTime(hoy);
+        cal.add(Calendar.MONTH, +1);
+        String mesactual = sdfparaindice.format(cal.getTime());
         Log.d(TAG, "***** hoy " + mesactual);
         String aux[] = mesactual.split("-");
-        int mes = Integer.parseInt(aux[0]);
+        int mes = Integer.parseInt(aux[0])+1;
         int anio = Integer.parseInt(aux[1]);
 
         Constantes.listaindices = new String[4];
@@ -447,7 +475,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
 
         // Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
-        Constantes.INDICEACTUAL = "12.2021";
+        Constantes.INDICEACTUAL=mesactual.replace('-','.');
+       // Constantes.INDICEACTUAL = "12.2021";
+        Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
+
         //TODO falta pais trabajo
         //  Constantes.CIUDADTRABAJO="Cd Juarez";
         Constantes.PAISTRABAJO = "Mexico";
@@ -459,7 +490,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
     public void descargasIniciales(){
-        //todo hacerlo en un servicio que esté constantemente verficando la conexion hasta que
         //pueda descargar
         //Inicio un servicio que se encargue de descargar
         CatalogoDetalleRepositoryImpl cdrepo=new CatalogoDetalleRepositoryImpl(getApplicationContext());

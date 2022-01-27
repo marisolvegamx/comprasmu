@@ -56,10 +56,19 @@ public interface InformeCompraDao {
     @Query("DELETE FROM informe_compras where visitasId=:visita")
     void deleteInformesByVisita(int visita);
 
+    @Query("SELECT max(id) as ultimo " +
+            "FROM informe_compras ")
+    int getUltimoId();
+
+   /* @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +
+            "FROM informe_compras inner join visitas on visitasId=visitas.id " +
+            "where indice=:indice and plantasId=:planta")
+    int getLastConsecutivoInforme(String indice, int planta);*/
+
     @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +
             "FROM informe_compras inner join visitas on visitasId=visitas.id " +
-            "where indice=:indice and clientesId=:cliente")
-    int getLastConsecutivoInforme(String indice, int cliente);
+            "where indice=:indice and clientesId=:planta")
+    int getLastConsecutivoInforme(String indice, int planta);
 
     @Query("update informe_compras set estatus=:estatus WHERE id=:id")
     public void actualizarEstatus(int id, int estatus);
@@ -75,6 +84,9 @@ public interface InformeCompraDao {
 
     @Query("SELECT * FROM informe_compras WHERE visitasId =:visitaId")
     abstract List<InformeCompra> getInformesByVisitasimple(int visitaId);
+
+    @Query("SELECT * FROM informe_compras WHERE id =:id")
+    public abstract InformeCompra findSimple(int id);
 
     @RawQuery(observedEntities = InformeCompravisita.class)
     public abstract LiveData<List<InformeCompravisita>> getInformesWithVisita(SupportSQLiteQuery query);
@@ -94,6 +106,8 @@ public interface InformeCompraDao {
     @DatabaseView("SELECT informe_compras.id as idinforme, " +
             "informe_compras.visitasId, " +
             "informe_compras.consecutivo, " +
+            "informe_compras.plantasId, " +
+
             "informe_compras.plantaNombre, " +
             "informe_compras.clienteNombre, " +
             "informe_compras.estatus, " +
@@ -104,6 +118,7 @@ public interface InformeCompraDao {
         public int idinforme;
         public int visitasId;
         public int consecutivo;
+        public int plantasId;
         public String plantaNombre;
         public String clienteNombre;
         public int estatus;

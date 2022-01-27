@@ -51,10 +51,9 @@
             <ImageButton
                 android:id="@+id/btnfeeliminar"
                 style="@style/imbutton"
-                android:layout_width="72dp"
+                android:layout_width="45dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:srcCompat="@android:drawable/ic_delete" />
+                app:srcCompat="@drawable/ic_baseline_white_close_24" />
         </LinearLayout>
 
 

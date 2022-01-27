@@ -14,9 +14,14 @@ import android.widget.Toast;
 import com.example.comprasmu.R;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
+import com.example.comprasmu.ui.listacompras.SelClienteFragment;
 import com.example.comprasmu.ui.listacompras.TabsFragment;
+import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
+
+import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
 public class BackActivity extends AppCompatActivity {
 
@@ -25,6 +30,7 @@ public class BackActivity extends AppCompatActivity {
     public static final String OP_LISTACOMPRA="lista_compra";
     public static final String OP_INFORME="informe";
     public static final String OP_INFORMEDET="informedet";
+    public static final String OP_SELPLANTA="selplanta";
     public static final String TAG="BackActivity";
     public static final int REQUEST_CODE=1003;
     public static final String OP_PRODUCTOEX="productoex";
@@ -66,14 +72,48 @@ public class BackActivity extends AppCompatActivity {
                     myChildToolbar.setTitle(R.string.menu_ver_lista);
                     Bundle bundle=new Bundle();
                     bundle.putInt(NuevoinformeFragment.INFORMESEL,datosRecuperados.getInt(NuevoinformeFragment.INFORMESEL));
-                    bundle.putString(TabsFragment.ARG_MUESTRA,"true");
+
                     bundle.putInt("ciudadSel",datosRecuperados.getInt("ciudadSel"));
                     bundle.putString("ciudadNombre",datosRecuperados.getString("ciudadNombre"));
-                    TabsFragment detailFragment = new TabsFragment();
+                  //  intento1.putExtra(,plantaSel );
+                    bundle.putInt(ListaCompraFragment.ARG_PLANTASEL,datosRecuperados.getInt(ListaCompraFragment.ARG_PLANTASEL));
+                    //intento1.putExtra(, NOMBREPLANTASEL);
+                    bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL,datosRecuperados.getString(ListaCompraFragment.ARG_NOMBREPLANTASEL));
+
+                    //intento1.putExtra(ARG_CLIENTESEL,mViewModel.clienteSel);
+                    bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL,datosRecuperados.getInt(ListaCompraFragment.ARG_CLIENTESEL));
+
+                    //intento1.putExtra(DetalleProductoFragment.NUMMUESTRA,nummuestra );
+                    bundle.putInt(DetalleProductoFragment.NUMMUESTRA,datosRecuperados.getInt(DetalleProductoFragment.NUMMUESTRA));
+
+
+                    //  TabsFragment detailFragment = new TabsFragment();
+                    ListaCompraFragment detailFragment = new ListaCompraFragment();
+                  //  SelClienteFragment detailFragment = new SelClienteFragment();
+
                     detailFragment.setArguments(bundle);
                     ft.add(R.id.back_fragment, detailFragment);
                     break;
+                case OP_SELPLANTA:
+                    myChildToolbar.setTitle(R.string.menu_ver_lista);
+                    Bundle bundle5=new Bundle();
+                    bundle5.putInt(NuevoinformeFragment.INFORMESEL,datosRecuperados.getInt(NuevoinformeFragment.INFORMESEL));
 
+                    bundle5.putInt("ciudadSel",datosRecuperados.getInt("ciudadSel"));
+                    bundle5.putString("ciudadNombre",datosRecuperados.getString("ciudadNombre"));
+                  //  intento1.putExtra(,plantaSel );
+                    bundle5.putString(SelClienteFragment.ARG_TIPOCONS,datosRecuperados.getString(SelClienteFragment.ARG_TIPOCONS));
+                    bundle5.putInt(ListaCompraFragment.ARG_CLIENTESEL,datosRecuperados.getInt(ListaCompraFragment.ARG_CLIENTESEL));
+
+                    bundle5.putString(ListaCompraFragment.ARG_MUESTRA,datosRecuperados.getString(ListaCompraFragment.ARG_MUESTRA) );
+                    bundle5.putInt(DetalleProductoFragment.NUMMUESTRA,datosRecuperados.getInt(DetalleProductoFragment.NUMMUESTRA));
+
+                  //  SelClienteFragment detailFragment = new ListaCompraFragment();
+                      SelClienteFragment detailFragment5 = new SelClienteFragment();
+
+                      detailFragment5.setArguments(bundle5);
+                    ft.add(R.id.back_fragment, detailFragment5);
+                    break;
                 case OP_PRODUCTOEX:
                     myChildToolbar.setTitle(R.string.producto_exhibido);
                     Bundle bundle2=new Bundle();

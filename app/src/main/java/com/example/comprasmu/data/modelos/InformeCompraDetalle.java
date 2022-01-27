@@ -52,7 +52,8 @@ public class InformeCompraDetalle {
     private String comentarios;
     private int comprasId;
     private int comprasDetId;
-
+    private int comprasIdbu;
+    private int comprasDetIdbu; //aqui guardaré de cuál se hizo backup
 
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
@@ -400,5 +401,26 @@ public class InformeCompraDetalle {
         this.productoId = Integer.parseInt(productoId);
     }
 
+    public int getComprasIdbu() {
+        return comprasIdbu;
+    }
+
+    public void setComprasIdbu(int comprasIdbu) {
+        this.comprasIdbu = comprasIdbu;
+    }
+    public void setComprasIdbu(String comprasId) {
+        this.comprasIdbu = Integer.parseInt(comprasId);
+    }
+
+    public int getComprasDetIdbu() {
+        return comprasDetIdbu;
+    }
+    public void setComprasDetIdbu(String comprasId) {
+        this.comprasDetIdbu = Integer.parseInt(comprasId);
+    }
+
+    public void setComprasDetIdbu(int comprasDetIdbu) {
+        this.comprasDetIdbu = comprasDetIdbu;
+    }
 }
 

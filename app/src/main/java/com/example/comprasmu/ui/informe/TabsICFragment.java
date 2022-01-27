@@ -100,9 +100,9 @@ public class TabsICFragment extends Fragment {
     private void configureTabLayout() {
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(   getChildFragmentManager(),clientes, null);
         for(int pos=0;pos<clientesplan.length;pos++) {
-            Fragment fragment = new ListaInformesFragment(Integer.parseInt(clientesplan[pos][0]), clientesplan[pos][1],clientesplan[pos][2]);
+          //  Fragment fragment = new ListaInformesFragment(Integer.parseInt(clientesplan[pos][0]), clientesplan[pos][1],clientesplan[pos][2]);
 
-            sectionsPagerAdapter.addFragment(fragment, clientesplan[pos][2]+" "+clientesplan[pos][1]);
+            //sectionsPagerAdapter.addFragment(fragment, clientesplan[pos][2]+" "+clientesplan[pos][1]);
         }
         viewPager.setAdapter(sectionsPagerAdapter);
 

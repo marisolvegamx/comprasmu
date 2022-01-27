@@ -76,17 +76,21 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         dViewModel = new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
         // if(Constantes.NM_TOTALISTA>=16)
         loadData();
-        //reviso si es edicion
+        //reviso si es edicion y ya tengo info en temp
         ultimares=dViewModel.getUltimoTemp();
+
         if(ultimares!=null) //es edicion
         {
+            preguntaAct=dViewModel.inftempToReac(ultimares);
 
-             preguntaAct=dViewModel.inftempToReac(ultimares);
+            Log.d(TAG, "reactivo:" +preguntaAct.getId()+"--"+ultimares.getNombre_campo());
 
-
+            nviewModel.numMuestra=ultimares.getNumMuestra();
+            nviewModel.setIdInformeNuevo(ultimares.getInformesId());
+            nviewModel.consecutivo=ultimares.getConsecutivo();
              if(preguntaAct.getTabla().equals(ultimares.getTabla())){
                 //si es la misma
-                Log.d(TAG, "reactivo:" + preguntaAct.getLabel());
+
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.add(R.id.continf_fragment, new DetalleProductoFragment(preguntaAct,true));
                 ft.commit();
@@ -105,8 +109,11 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                  });
             }
         }else {
+            //e uno nuevo
             buscarPreguntas();
-
+            nviewModel.numMuestra=0;
+           // nviewModel.setIdInformeNuevo(ultimares.getInformesId());
+          //  nviewModel.consecutivo=ultimares.getConsecutivo();
             dViewModel.getReactivos().observe(this, new Observer<List<Reactivo>>() {
                 @Override
                 public void onChanged(List<Reactivo> reactivos) {
@@ -139,6 +146,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         mBinding.setProductoSel(prodsel);
         mBinding.txtciplanta.setVisibility(View.VISIBLE);
         mBinding.row4.setVisibility(View.VISIBLE);
+        mBinding.row45.setVisibility(View.VISIBLE);
     }
 
     public void reiniciarBarra() {
@@ -163,7 +171,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     public void actualizarCodProd(String codprod) {
         mBinding.txtcicodpr.setText(codprod);
 
-        mBinding.row45.setVisibility(View.VISIBLE);
+        mBinding.row6.setVisibility(View.VISIBLE);
 
     }
     public void actualizarAtributo1() {
@@ -196,6 +204,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             public void onChanged(Visita visita) {
                 visitaCont = visita;
                 ValidadorDatos valdat=new ValidadorDatos();
+              //  Constantes.DP_TIPOTIENDA=visita.getTipoId();
                 if(valdat.compararFecha(visita.getCreatedAt(),new Date())){
                     //es un informe de ayer no puede continuar
                     //avisar
@@ -231,16 +240,52 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         onBackPressed();
         return false;
     }
+    boolean salir;
     @Override
     public void onBackPressed() {
+        Log.e(TAG,"aprete atras");
         DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
         int numpreg=fragment.getNumPregunta();
+        salir=true;
         //veo que pregunta es
-        if(numpreg==4||numpreg==3||numpreg==5||numpreg==43)
+        if(numpreg==4||numpreg==3||numpreg==5||numpreg==43||numpreg==7)
         {
             return; //no puedo regresar
         }
-        super.onBackPressed();
+        if(numpreg==23) //regreso a lista compra
+        {
+            AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+            dialogo1.setTitle(R.string.importante);
+
+            dialogo1.setMessage(R.string.muestra_atras);
+
+
+            dialogo1.setCancelable(false);
+
+            dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        dialogo1.cancel();
+                        salir=false;
+                    }
+            });
+            dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogo1, int id) {
+                       //eliminar muestra
+                    nviewModel.eliminarMuestra(nviewModel.numMuestra);
+                    //quito la info de la barra gris
+                    reiniciarBarra();
+                    dViewModel.setIddetalleNuevo(0);
+                    dViewModel.icdNuevo=null;
+
+                    ContinuarInformeActivity.super.onBackPressed();
+
+
+                    }
+                });
+                dialogo1.show();
+
+        }else
+            super.onBackPressed();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -271,7 +316,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                             DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
 
                             //hay que guardar la ultima preguta
-                            fragment.guardarResp();
+                           // fragment.guardarResp();
                             finish();
 
 

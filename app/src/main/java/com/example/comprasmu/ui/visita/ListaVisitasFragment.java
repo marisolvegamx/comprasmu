@@ -54,6 +54,9 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     static String indice;
     CoordinatorLayout coordinator;
 
+    public ListaVisitasFragment() {
+    }
+
     public static ListaVisitasFragment newInstance()
     {
      //   ListaVisitaFragment fragment = new ListaVisitaFragment();
@@ -119,6 +122,8 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                 mListAdapter.notifyDataSetChanged();
                 if(visitas!=null&&visitas.size()>0)
                     mBinding.emptyStateText.setVisibility(View.INVISIBLE);
+                else
+                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
             }
         });
 
@@ -142,6 +147,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         });
     }*/
 
+   /* solo saldrá un elemento no se requiere la busqueda
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Do something that differs the Activity's menu here
@@ -150,7 +156,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         //  super.onCreateOptionsMenu(menu, inflater);
 
 
-    }
+    }*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -2,6 +2,9 @@ package com.example.comprasmu.ui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,6 +23,8 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.ui.listacompras.SelClienteFragment;
+import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
@@ -32,10 +37,11 @@ import java.util.List;
 
 public class SelPlantaFragment extends ListaSelecFragment {
     private LiveData<List<ListaCompra>> listaCiudades;
-    private static ArrayList<DescripcionGenerica> listaCiudadesEnv;
+    private  ArrayList<DescripcionGenerica> listaCiudadesEnv;
     ListaCompraRepositoryImpl lcrepo;
     private static String TAG="SelPlantaFragment";
     private ListaDetalleViewModel mViewModel;
+    String tipoconsulta;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //busco los datos y los convierto al tipo String[]
@@ -45,23 +51,26 @@ public class SelPlantaFragment extends ListaSelecFragment {
         mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
         cargarClientes();
 
+
     }
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         /*aqui me dice que dato es*/
-       /*   Bundle bundle = getArguments();
+          Bundle bundle = getArguments();
         if (bundle != null) {
-           this.listaSeleccionable= bundle.getStringArrayList("listaSel");
+             tipoconsulta=bundle.getString(SelClienteFragment.ARG_TIPOCONS);
+
 
         }
-*/
-        Log.d(TAG,"indice..............."+Constantes.INDICEACTUAL);
+
+        setIndicacion(getString(R.string.seleccione_ciudad));
+       // Log.d(TAG,"indice..............."+Constantes.INDICEACTUAL);
         // Create the observer which updates the UI.
         final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
             public void onChanged(@Nullable List<ListaCompra> lista) {
-                Log.d(TAG, "YA cargo la lista " + lista.size());
-                SelPlantaFragment.convertirLista(lista);
+
+                convertirLista(lista);
                 setLista(listaCiudadesEnv);
                // siguiente(0);
                 if(lista.size()>1) {
@@ -69,6 +78,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
                     setupListAdapter();
                 }else if(lista.size()>0)
                 {
+
                     //voy directo a la lista
                     siguiente(0);
                 }
@@ -112,14 +122,14 @@ public class SelPlantaFragment extends ListaSelecFragment {
     public void cargarClientes(){
         if( Constantes.clientesAsignados==null||Constantes.clientesAsignados.size()<1)
         mViewModel.cargarClientes( Constantes.CIUDADTRABAJO).observe(this, data -> {
-            Log.d(TAG,"regresó de la consulta "+ data.size());
+          //  Log.d(TAG,"regresó de la consulta "+ data.size());
             Constantes.clientesAsignados= ComprasUtils.convertirListaaClientes(data);
 
 
         });
         if( Constantes.plantasAsignadas==null)
         mViewModel.cargarPestañas(Constantes.CIUDADTRABAJO,0).observe(this, data -> {
-            Log.d(TAG,"regresó de la consulta "+ data.size());
+           // Log.d(TAG,"regresó de la consulta "+ data.size());
             Constantes.plantasAsignadas=ComprasUtils.convertirListaaPlantas(data);
 
 
@@ -132,11 +142,26 @@ public class SelPlantaFragment extends ListaSelecFragment {
         bundle.putInt("ciudadSel",listaSeleccionable.get(i).getId() );
         bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
 
-        NavHostFragment.findNavController(this).navigate(R.id.action_selclientetolistacompras,bundle);
+         bundle.putString(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
+        Log.d(TAG,"una cd "+tipoconsulta);
+        NavHostFragment.findNavController(this).navigate(R.id.action_selplantoselcli,bundle);
 
+      /*  FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        // Definir una transacción
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        Fragment fragment = new SelClienteFragment();
+// Obtener el administrador de fragmentos a través de la actividad
+
+        fragment.setArguments(bundle);
+
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragment);
+        fragmentTransaction.addToBackStack(null);
+// Cambiar
+        fragmentTransaction.commit();*/
     }
 
-    private static void convertirLista(List<ListaCompra>lista){
+    private  void convertirLista(List<ListaCompra>lista){
         listaCiudadesEnv=new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
           /*String tupla=Integer.toString(listaCompra.getCiudadesId())+";"+

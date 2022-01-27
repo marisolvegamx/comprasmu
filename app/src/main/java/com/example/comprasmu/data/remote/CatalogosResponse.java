@@ -14,6 +14,7 @@ public class CatalogosResponse {
     ArrayList<CatalogoDetalle> tipo_tienda;
     ArrayList<CatalogoDetalle> cadena_comercial;*/
     ArrayList<CatalogoDetalle> catalogos;
+    ArrayList<CatalogoDetalle> causas;
     ArrayList<Atributo> atributos;
 
   /*  public ArrayList<CatalogoDetalle> getClientes() {
@@ -55,6 +56,14 @@ public class CatalogosResponse {
     public void setTomado_de(ArrayList<CatalogoDetalle> tomado_de) {
         this.tomado_de = tomado_de;
     }*/
+
+    public ArrayList<CatalogoDetalle> getCausas() {
+        return causas;
+    }
+
+    public void setCausas(ArrayList<CatalogoDetalle> causas) {
+        this.causas = causas;
+    }
 
     public ArrayList<Atributo> getAtributos() {
         return atributos;

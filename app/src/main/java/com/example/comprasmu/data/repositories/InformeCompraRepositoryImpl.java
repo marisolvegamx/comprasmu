@@ -34,7 +34,9 @@ public class InformeCompraRepositoryImpl   {
         return icDao;
     }
 
-
+    public InformeCompra findSimple(int id){
+       return icDao.findSimple(id);
+    }
     public LiveData<List<InformeCompra>> getPlantasByIndice(String indice, String nombretienda, String ciudad, String planta, int cliente) {
 
         String query="Select * from lista_compras where indice=?";
@@ -137,6 +139,10 @@ public class InformeCompraRepositoryImpl   {
        return icDao.addInforme(newInformeCompra);
     }
 
+    public long getUltimo() {
+        return icDao.getUltimoId();
+    }
+
 
     public void actualizarEstatus(int id, int estatus) {
 
@@ -179,7 +185,7 @@ public class InformeCompraRepositoryImpl   {
     }
 
 
-    public LiveData<List<InformeCompraDao.InformeCompravisita>> getInformesVisitas (String indice, String nombretienda, String ciudad, String planta, String cliente) {
+    public LiveData<List<InformeCompraDao.InformeCompravisita>> getInformesVisitas (String indice, String nombretienda, String ciudad, int planta, String cliente) {
         String query="Select * from InformeCompravisita " +
                 "where 1=1";
         ArrayList<String> filtros=new ArrayList<String>();
@@ -195,9 +201,10 @@ public class InformeCompraRepositoryImpl   {
             query = query + " and ciudad like ?";
             filtros.add("%"+ciudad+"%");
         }
-        if(planta!=null&&!planta.equals("")) {
-            query = query + " and plantaNombre like ?";
-            filtros.add("%"+planta+"%");
+        if(planta>0) {
+            query = query + " and plantasId=?";
+        //    query = query + " and plantaNombre like ?";
+            filtros.add(planta+"");
         }
         if(cliente!=null&&!cliente.equals("")) {
             query = query + " and clienteNombre like ?";

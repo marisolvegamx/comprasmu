@@ -127,13 +127,13 @@ public class SubirFoto {
 
                 @Override
                 public void onProgress(UploadInfo uploadInfo) {
-                    Log.d("ejemplo","Subiendo foto....."+uploadFileArrayList);
+                    Log.d("SubirFoto","Subiendo foto....."+uploadFileArrayList);
                     notificarAvance(uploadInfo.getProgressPercent());
                 }
 
                 @Override
                 public void onError(UploadInfo uploadInfo, Exception exception) {
-                    Log.d("ejemplo","Error al subir"+uploadInfo.getUploadedBytes());
+                    Log.d("SubirFoto","Error al subir"+uploadInfo.getUploadedBytes());
                 }
 
                 @Override
@@ -144,9 +144,9 @@ public class SubirFoto {
                         actualizarEstado(imagen);
                     }else { //hubo un error
                         //lo registro en el log
-                        Log.d(Constantes.TAG,"Hubo un error al subir imagen "+serverResponse.getBodyAsString());
+                        Log.d("SubirFoto","Hubo un error al subir imagen "+serverResponse.getBodyAsString());
                     }
-                      Log.d("ejemplo", "terminó de subir");
+                      Log.d("SubirFoto", "terminó de subir");
                       notificarObservadores();
 
 

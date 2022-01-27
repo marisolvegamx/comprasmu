@@ -50,7 +50,7 @@ public class LoginViewModel extends ViewModel {
     public void loginLocal( LoggedInUser luser,String username, String password,LoginActivity.LoginListener listener) {
         // can be launched in a separate asynchronous job
        if(luser.getUserId().equals(username)&&luser.getPassword().equals(password))
-            listener.correcto();
+            listener.iniciar();
        else
            listener.incorrecto("Usuario o contraseña incorrectos");
     }

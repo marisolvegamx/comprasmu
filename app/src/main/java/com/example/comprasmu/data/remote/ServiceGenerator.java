@@ -1,5 +1,8 @@
 package com.example.comprasmu.data.remote;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,11 +29,14 @@ public class ServiceGenerator {
 
         OkHttpClient.Builder httpClient =
                 new OkHttpClient.Builder();
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd hh:mm:ss")
+                .create();
 
         if (servicio == null) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                  //   .client(httpClient.build()) // <-- usamos el log level
                     .build();
             servicio = retrofit.create(APIService.class);

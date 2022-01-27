@@ -145,12 +145,13 @@
     <string name="agregar_exhibido">AGREGAR PRODUCTO EXHIBIDO</string>
     <string name="muestras">MUESTRAS</string>
     <string name="menu_nuevo_informe">Nuevo Informe</string>
-    <string name="editar_informe">EDITAR PREINFORME</string>
+    <string name="editar_informe">EDITAR INFORME</string>
     <string name="nuevo_informe">NUEVO INFORME</string>
     <string name="delete_muestra_message">La muestra se eliminó correctamente</string>
     <string name="conf_finalizar">¿ESTÁ SEGURO? TOME EN CUENTA QUE NO PODRÁ ELABORAR MÁS INFORMES CON LOS DATOS DE LA TIENDA</string>
     <string name="salir_sin_guardar">¿SI SALE SIN GUARDAR PERDERÁ SU INFORMACIÓN</string>
 
+    <string name="fin_informe">SE FINALIZÓ EN INFORME</string>
     <string name="pregunta_mas_clientes">¿COMPRO PRODUCTO PARA OTROS CLIENTES?</string>
     <string name="menu_ciudad_trabajo">Ciudad de trabajo</string>
     <string name="informes">INFORMES</string>
@@ -161,13 +162,12 @@
     <string name="error_fecha">LA FECHA DE CADUCIDAD DEBE SER MAYOR A 30 DIAS</string>
     <string name="error_fecha_formato">INTRODUZCA UNA FECHA VÁLIDA EN FORMATO dd-mm-aa</string>
     <string name="error_fecha_caduca">MUESTRA CADUCADA, VERIFIQUE</string>
-    <string name="error_codigo_repetido">EXISTE UN PRODUCTO CON EL MISMO CÓDIGO, VERIFIQUE</string>
-    <string name="error_codigo_per">VERIFIQUE LOS CODIGOS PERMITIDOS</string>
+    <string name="error_codigo_per">CODIGOS NO PERMITIDO</string>
 
     <string name="siglas_planta">SIGLAS DE PLANTA</string>
     <string name="no_hay_conexion">Sin conexión a internet este módulo no funcionará. Revise su conexión</string>
     <string name="error_fecha_caduca_prox">LA MUESTRA CADUCARÁ EN MENOS DE 30 DÍAS, VERIFIQUE</string>
-    <string name="consecutivo"># TIENDA</string>
+    <string name="consecutivo">TIENDA</string>
     <string name="fecha">FECHA</string>
     <string name="complementodir">COMPLEMENTO DIRECCION</string>
     <string name="estatus">ESTATUS</string>
@@ -204,5 +204,13 @@
     <string name="listas_actualiz">LAS LISTAS YA ESTÁN ACTUALIZADAS</string>
     <string name="pregunta_salir">¿ESTÁ SEGURO DE SALIR DE LA CAPTURA DEL INFORME?</string>
     <string name="selecciones_causa">SELECCIONE CAUSA</string>
-
+    <string name="muestra_atras" >SI VUELVE ATRÁS SE CANCELARÁ LA MUESTRA Y LO QUE LLEVE CAPTURADO ¿ESTÁ SEGURO?</string>
+    <string name="seguro_muestra">¿LA INFORMACIÓN CAPTURADA CORRESPONDE A LA MUESTRA, TOME EN CUENTA QUE SI CONTINUA YA NO PODRÁ CORREGIR?</string>
+    <string name="seleccione_ciudad">SELECCIONE UNA CIUDAD</string>
+    <string name="seleccione_planta">SELECCIONE UNA PLANTA</string>
+    <string name="grande">GRANDE</string>
+    <string name="mediana">MEDIANA</string>
+    <string name="chica">CHICA</string>
+    <string name="otras">OTRAS</string>
+    <string name="sin_conexion">ESTA ACCION REQUIERE CONEXION A INTERNET, VERIFIQUE SU CONEXION O ACTIVE SUS DATOS</string>
 </resources>

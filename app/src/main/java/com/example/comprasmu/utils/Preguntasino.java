@@ -78,5 +78,15 @@ public class Preguntasino extends LinearLayout {
         return si.isChecked();
 
     }
+    public void setSi(boolean val){
+        if(val)
+            si.setChecked(val);
+
+    }
+    public void setNo(boolean val){
+        if(val)
+            no.setChecked(val);
+
+    }
 
 }

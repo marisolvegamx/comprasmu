@@ -68,6 +68,9 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     public InformeCompraDetalle findByCompra(int idcompra, int iddet) {
         return dao.findByCompra(idcompra,iddet);
     }
+    public List<InformeCompraDetalle> findByCompraBu(int idcompra, int iddet) {
+        return dao.findByCompraBu(idcompra,iddet);
+    }
     @Override
     public long insert(InformeCompraDetalle object) {
         return dao.insert(object);

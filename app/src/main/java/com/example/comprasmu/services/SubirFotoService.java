@@ -52,7 +52,7 @@ public class SubirFotoService extends IntentService
     @Override
     protected void onHandleIntent(Intent intent)
     {
-        Log.d(TAG,"action");
+      //  Log.d(TAG,"action");
         if (intent != null)
         {
             final String action = intent.getAction();
@@ -60,7 +60,7 @@ public class SubirFotoService extends IntentService
 
             if (ACTION_UPLOAD_IMG.equals(action))
             {
-                Log.d(TAG,"action"+action);
+              //  Log.d(TAG,"action"+action);
                 imagenSubir=new ImagenDetalle();
                 imagenSubir.setRuta(intent.getStringExtra(EXTRA_IMG_PATH));
                 imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
@@ -75,13 +75,11 @@ public class SubirFotoService extends IntentService
             // Instanciar y registrar un Observador
             SubirFotoListener objObservador  = new SubirFotoListener();
 
-
-
             try {
-                notificar();
+               // notificar();
                 SubirFoto sf = new SubirFoto();
                 sf.agregarObservador(objObservador);
-                Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
+             //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String dir=   this.getExternalFilesDir(null)+"/";
                 ImagenDetRepositoryImpl idrepo=new ImagenDetRepositoryImpl(this);
@@ -101,13 +99,13 @@ public class SubirFotoService extends IntentService
     public void onCreate()
     {
         super.onCreate();
-        Log.e(TAG,"onCreate");
+        //Log.e(TAG,"onCreate");
     }
     @Override
     public void onDestroy()
     {
         super.onDestroy();
-        Log.e(TAG,"onDestroy");
+     //   Log.e(TAG,"onDestroy");
     }
     @Override
     public void onTaskRemoved(Intent rootIntent) {
@@ -172,7 +170,7 @@ public class SubirFotoService extends IntentService
 
 
         notificationBuilder.setProgress(100, currentProgress, false);
-        notificationBuilder.setContentText("Downloaded: " + currentProgress + "%");
+        notificationBuilder.setContentText("Enviado: " + currentProgress + "%");
         notificationManager.notify(0, notificationBuilder.build());
     }
     private void onDownloadComplete(boolean downloadComplete) {
@@ -198,8 +196,9 @@ public class SubirFotoService extends IntentService
 
         }
 
-        public void onProgress(int progress){
-            updateNotification(progress);
+        public void onProgress(int progress)
+        {
+           // updateNotification(progress);
         }
         public void onSuccess(){
           /*  contador++;
@@ -214,7 +213,7 @@ public class SubirFotoService extends IntentService
 
 
             downloadComplete = true;
-            onDownloadComplete(downloadComplete);
+          //  onDownloadComplete(downloadComplete);
 
         }
 

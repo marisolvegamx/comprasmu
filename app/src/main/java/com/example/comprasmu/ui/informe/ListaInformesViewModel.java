@@ -48,7 +48,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
     private final MutableLiveData<Event<Integer>> mSnackbarText = new MutableLiveData<>();
 
     private String clienteSel;
-    private String plantaSel;
+    private int plantaSel;
     private String ciudadSel;
     private String nombreTienda;
     private String indiceSel;
@@ -253,9 +253,6 @@ public class ListaInformesViewModel extends AndroidViewModel {
         this.clienteSel = clienteSel;
     }
 
-    public void setPlantaSel(String plantaSel) {
-        this.plantaSel = plantaSel;
-    }
 
     public String getCiudadSel() {
         return ciudadSel;
@@ -275,8 +272,12 @@ public class ListaInformesViewModel extends AndroidViewModel {
         return clienteSel;
     }
 
-    public String getPlantaSel() {
+    public int getPlantaSel() {
         return plantaSel;
+    }
+
+    public void setPlantaSel(int plantaSel) {
+        this.plantaSel = plantaSel;
     }
 
     public void setCiudadSel(String ciudadSel) {

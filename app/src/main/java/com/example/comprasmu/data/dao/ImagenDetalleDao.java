@@ -28,6 +28,10 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
     @Query("SELECT * FROM imagen_detalle")
     public  abstract LiveData<List<ImagenDetalle>> findAll();
 
+    @Query("SELECT max(id) FROM imagen_detalle")
+    public  abstract long getUltimoId();
+
+
     @Query("SELECT * FROM imagen_detalle")
     public  abstract List<ImagenDetalle> findAllsimple();
 

@@ -1,6 +1,9 @@
 package com.example.comprasmu.ui.informe;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
@@ -29,6 +33,8 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
 
     private ImagenDetRepositoryImpl imagenDetRepository;
     private final MutableLiveData<Event<Integer>> mSnackbarText = new MutableLiveData<>();
+    private int prefimagen;
+
 
     public NuevaFotoExhibViewModel(@NonNull Application application) {
         super(application);
@@ -36,10 +42,26 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
         this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
     }
 
-    public void guardarFoto(String rutaFoto, int idcliente,String cliente,int visitasId) {
+    public void guardarFoto(String rutaFoto, int idcliente,String cliente,int visitasId,Activity actividad,NuevoinformeViewModel ninfvm) {
         //guardo la foto
         try {
+            //busco el ultimo id
+            int nvoidimagem=(int)imagenDetRepository.getUltimo();
+            if(nvoidimagem==0) {
+
+                PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+                NuevoinformeViewModel.EnvioListener listener = ninfvm.crearEnvioListener(actividad);
+                ps.getUltimaVisita(Constantes.INDICEACTUAL,  listener);
+                recuperarIds(actividad);
+                nvoidimagem=prefimagen;
+                if(prefimagen==0){
+                    nvoidimagem=nvoidimagem+1;
+                }
+            }else
+              nvoidimagem=nvoidimagem+1;
+
             ImagenDetalle foto = new ImagenDetalle();
+            foto.setId(nvoidimagem);
             foto.setRuta(rutaFoto);
             foto.setEstatusSync(0);
             foto.setEstatus(0);
@@ -62,23 +84,26 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
 
 
     }
+    public void recuperarIds(Activity actividad) {
+
+        SharedPreferences prefe=actividad.getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+
+        prefimagen=prefe.getInt("ultimagen", 0);
+
+
+    }
     public void eliminarFoto(ProductoExhibidoDao.ProductoExhibidoFoto productoExhibido){
         //la busco en imagen detalle
      //   repository.find(idfoto).observeForever(new Observer<ProductoExhibido>() {
         //    @Override
        //     public void onChanged(ProductoExhibido productoExhibido) {
+        Log.d("NuevaFotoVM","sigo borrando"+productoExhibido.imagenId);
+        ImagenDetalle imagenDetalle=null;
                 if(productoExhibido!=null)
-                imagenDetRepository.find(productoExhibido.imagenId).observeForever(new Observer<ImagenDetalle>() {
-                    @Override
-                    public void onChanged(ImagenDetalle imagenDetalle) {
-                        if(imagenDetalle!=null){
-                            //la elimino
-                            imagenDetRepository.delete(imagenDetalle);
-                            return;
+                     imagenDetalle=imagenDetRepository.findsimple(productoExhibido.imagenId);
 
-                        }
-                    }
-                });
+                imagenDetRepository.delete(imagenDetalle);
+
 
                 //la elimino de foto exhibicion
                 repository.deleteById(productoExhibido.idprodex);

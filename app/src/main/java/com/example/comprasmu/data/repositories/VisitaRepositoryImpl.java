@@ -43,7 +43,7 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
         //traigo solo los abiertos
     public LiveData<List<Visita>> getSearchResults (String indice, String nombretienda, String ciudad) {
         String query="Select * from visitas " +
-                "where estatus=1";
+                "where (estatus=1 or estatus=3)";
         ArrayList<String> filtros=new ArrayList<String>();
         if(indice!=null&&!indice.equals("")) {
             query += " and indice=?";
@@ -122,7 +122,10 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
         return icDao.findAllByIndice(indice);
     }
 
-
+   public int getUltimo(){
+       int ultimo=  icDao.getUltimoId();
+       return ultimo;
+   }
     public int getSiguienteId() {
         int siguiente=1;
 

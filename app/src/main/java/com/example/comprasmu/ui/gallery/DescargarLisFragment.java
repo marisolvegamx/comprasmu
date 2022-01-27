@@ -39,7 +39,6 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
     }
 
     public void descargar(){
-        //todo hacerlo en un servicio que esté constantemente verficando la conexion hasta que
         //pueda descargar
         //Inicio un servicio que se encargue de descargar
 

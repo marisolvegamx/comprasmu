@@ -1,5 +1,7 @@
 package com.example.comprasmu.data;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
 
@@ -11,6 +13,7 @@ import androidx.lifecycle.Observer;
 import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.LoggedInUser;
 import com.example.comprasmu.data.modelos.TablaVersiones;
@@ -21,6 +24,8 @@ import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TiendasResponse;
+import com.example.comprasmu.data.remote.UltimoInfResponse;
+import com.example.comprasmu.data.remote.UltimosIdsResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 
@@ -28,9 +33,11 @@ import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.login.LoginActivity;
 import com.example.comprasmu.utils.Constantes;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -113,6 +120,101 @@ public class PeticionesServidor {
         });
 
     }
+    MutableLiveData<Boolean> resp;
+    public  void getUltimoInforme(String indice,int plantaSel, NuevoinformeViewModel.EnvioListener listener ) {
+        resp=new  MutableLiveData<Boolean>();
+        Log.d(TAG,"haciendo peticion"+plantaSel);
+        final Call<UltimoInfResponse> batch = apiClient.getApiService().getUltimosIdsI(indice,plantaSel,usuario);
+
+        batch.enqueue(new Callback<UltimoInfResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<UltimoInfResponse> call, @Nullable Response<UltimoInfResponse> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    UltimoInfResponse respuesta = response.body();
+                    Log.d(TAG,"ultimos ids llego algo"+response.body().getInforme());
+                    //guardo en propertis
+                    resp=listener.guardarRespuestaInf(respuesta);
+
+
+                    // lista.setValue(respuestaTiendas);
+
+                 //   Log.d(TAG,"ya lo asigné"+respuestaTiendas.getTiendas().get(0).getUne_descripcion());
+                    //  return lista;
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<UltimoInfResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+
+                }
+            }
+        });
+
+    }
+
+    public  UltimoInfResponse getUltimoInformex(String indice,int plantaSel, NuevoinformeViewModel.EnvioListener listener ) {
+
+        Log.d(TAG,"haciendo peticion"+plantaSel);
+        final Call<UltimoInfResponse> batch = apiClient.getApiService().getUltimosIdsI(indice,plantaSel,usuario);
+
+        UltimoInfResponse respuesta = null;
+        try {
+            respuesta = batch.execute().body();
+
+        if (respuesta != null) {
+        Log.d(TAG,"ultimos ids llego algo"+respuesta.getInforme());
+                    //guardo en propertis
+
+        return respuesta;
+                }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+                    Log.e(TAG, "error al hacer peticion");
+        return null;
+
+
+
+    }
+
+    public  MutableLiveData<Boolean> getUltimaVisita(String indice, NuevoinformeViewModel.EnvioListener listener ) {
+        resp=new  MutableLiveData<Boolean>();
+        final Call<UltimosIdsResponse> batch = apiClient.getApiService().getUltimosIdsV(indice,usuario);
+
+        batch.enqueue(new Callback<UltimosIdsResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<UltimosIdsResponse> call, @Nullable Response<UltimosIdsResponse> response) {
+                Log.d(TAG,"ultimos ids llego algo"+response.body());
+                if (response.isSuccessful() && response.body() != null) {
+                    UltimosIdsResponse respuesta = response.body();
+                    //guardo en propertis
+                    resp=listener.guardarRespuestaVis(respuesta);
+
+
+                    // lista.setValue(respuestaTiendas);
+
+                    //   Log.d(TAG,"ya lo asigné"+respuestaTiendas.getTiendas().get(0).getUne_descripcion());
+                    //  return lista;
+                 }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<UltimosIdsResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+
+                }
+            }
+        });
+        return resp;
+    }
+
 
     public void getListasdeCompra(TablaVersiones comp, TablaVersiones version2, String indice, DescargasIniAsyncTask.DescargaIniListener listener){
         //busco la version de la app
@@ -120,12 +222,8 @@ public class PeticionesServidor {
 
         PeticionLista peticion = new PeticionLista();
         if (comp != null && comp.getVersion() != null) {
-
-
-            peticion.version_detalle = sdf.format(version2.getVersion());
-
-
-            peticion.version_lista = sdf.format(comp.getVersion());
+             peticion.version_detalle = sdf.format(version2.getVersion());
+             peticion.version_lista = sdf.format(comp.getVersion());
             peticion.indice = indice;
             peticion.usuario = usuario;
             //
@@ -241,7 +339,8 @@ public class PeticionesServidor {
                     if(logResp.getStatus().equals("ok")) //correcto
                     {
 
-                        listener.correcto();
+                        listener.correcto(logResp.getData());
+                        //guardar cveuser
 
 
                     }
@@ -272,7 +371,10 @@ public class PeticionesServidor {
         catRep.deletexIdCat(2);
         catRep.deletexIdCat(8);
         catRep.deletexIdCat(15);
+        catRep.deletexIdCat(100); //causas
         catRep.insertAll(lista);
+
+        catRep.insertAll(respuestaCats.getCausas());
         List<Atributo> lista2=respuestaCats.getAtributos();
         //borro los catalogos que traigo
        // atrRepo.delete();
@@ -305,7 +407,6 @@ public class PeticionesServidor {
         String version_detalle;
 
        public PeticionLista() {
-
        }
 
        public PeticionLista(String version_lista, String version_detalle) {

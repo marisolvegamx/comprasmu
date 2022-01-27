@@ -121,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="42dp"
                     android:layout_weight="1"
-                    android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}"
+                    android:visibility="@{detalle.estatusSync==0&amp;&amp;detalle.estatus!=3?View.VISIBLE:View.GONE}"
                     app:srcCompat="@drawable/ic_baseline_edit_24" />
 
                 <ImageButton

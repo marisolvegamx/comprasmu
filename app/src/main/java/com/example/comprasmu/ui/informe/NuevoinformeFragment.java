@@ -967,7 +967,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
         String dateString = format.format(new Date());
         File foto=null;
         try{
-            nombre_foto = "img_" + dateString + ".jpg";
+            nombre_foto = "img_"  +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
             foto = new File(activity.getExternalFilesDir(null), nombre_foto);
             Log.e(TAG, "****"+foto.getAbsolutePath());
         } catch (Exception ex) {

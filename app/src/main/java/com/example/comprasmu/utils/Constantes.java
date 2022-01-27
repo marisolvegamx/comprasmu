@@ -24,14 +24,14 @@ public class Constantes {
     public static  String PAISTRABAJO;
     public static final String ESTADO = "estado";
     public static final String MENSAJE = "mensaje";
-    public static final String ID_GASTO = "idGasto";
+
     public static String []meses={"Enero","Febrero","Marzo","Abril", "Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"};
     public static String []anios={"2021","2022","2023","2024", "2025","2026","2027","2028","2029","2030"};
      public static final String SUCCESS ="1" ;
     public static final String FAILED = "2";
     /****estatus sync***/
     public static final int PENDIENTE =0 ;
-
+    public static boolean LOGGEADO;
     public static final int SINCRONIZANDO = 1;
     public static final int ENVIADO =2;
     /********************/
@@ -47,13 +47,18 @@ public class Constantes {
     public static List<DescripcionGenerica> clientesAsignados;
     public static HashMap<Integer,String> plantasAsignadas;
     public static String ni_clientesel;
+    public static int ni_plantasel;
+    public static String ni_plantanombre;
     public static int NM_TOTALISTA;
+    public static int DP_CONSECUTIVO;
     public static int DP_TIPOTIENDA;
     public static NuevoDetalleViewModel.ProductoSel productoSel;
+    public static HashMap <Integer,String>TIPOTIENDA;
    public static class VarDetalleProd{
        public static   String tomadode;
         public static   String nvoatra;
         public static  String nvoatrb;
         public static String nvoatrc;
+
     }
 }

@@ -17,6 +17,9 @@
             name="numTienda"
             type="Integer" />
         <variable
+            name="totalbu"
+            type="Integer" />
+        <variable
             name="cliente"
             type="String" />
     </data>
@@ -50,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -115,9 +119,9 @@
                         android:id="@+id/txtanalisis"
                         style="@style/textolistagris"
 
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="3"
                         android:text="@{detalle.tipoAnalisis}" />
 
                     <TextView
@@ -125,32 +129,28 @@
                         style="@style/textolistagris"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="@{detalle.nombreTipoMuestra}" />
+                        android:layout_weight="3"
+                        android:text='@{detalle.nombreTipoMuestra}' />
 
                     <ImageButton
                         android:id="@+id/btnldbackup"
                         style="@style/imbutton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
 
-
-                        android:layout_weight="1"
 
                         android:theme="@android:style/Widget.Material.Button.Small"
-                        android:visibility='@{((cliente=="PEPSI"&amp;&amp;numTienda>10)||(cliente=="PEñAFIEL"))&amp;&amp;!isBu&amp;&amp;mostrarAgregar?View.VISIBLE:View.GONE}'
+                        android:visibility='@{(detalle.comprados+1&lt;=detalle.cantidad)&amp;&amp;((cliente.equals("PEPSI")&amp;&amp;numTienda>10)||(cliente.equals("PEñAFIEL")))&amp;&amp;!isBu&amp;&amp;mostrarAgregar?View.VISIBLE:View.GONE}'
                         app:srcCompat="@drawable/ic_baseline_repeat_24" />
 
                     <ImageButton
                         android:id="@+id/btnldagregar"
                         style="@style/imbutton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-
-                        android:layout_weight="1"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
 
                         android:textAlignment="textEnd"
-                        android:visibility="@{(detalle.comprados+1&lt;=detalle.cantidad)&amp;&amp;mostrarAgregar?View.VISIBLE:View.GONE}"
+                        android:visibility="@{isBu?View.VISIBLE:(detalle.comprados+1&lt;=detalle.cantidad)&amp;&amp;mostrarAgregar?View.VISIBLE:View.GONE}"
                         app:srcCompat="@drawable/ic_baseline_add_24" />
 
                 </LinearLayout>
@@ -162,26 +162,29 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView23"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5" />
-
-                    <TextView
-                        android:id="@+id/txtldisbu2"
+                        android:id="@+id/txtldisbu3"
                         android:layout_width="59dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text='@{numTienda+" "+isBu+" "+mostrarAgregar+"--"}'
-                        android:visibility="invisible" />
+                        android:textSize="8sp"
+                        android:text='@{((cliente.equals("PEPSI")&amp;&amp;numTienda>10))+"--"+detalle.comprados+1+"--"+detalle.cantidad}'
+                        android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/txtldisbu2"
+                        android:layout_width="59dp"
+                        android:textSize="8sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text='@{numTienda+" "+isBu+" "+cliente+" "+mostrarAgregar+"--"}'
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/txtldisbu"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text='@{numTienda>10&amp;&amp;isBu?"backup":""}'
-                        android:visibility="invisible" />
+                        android:text='@{isBu?"backup":""}'
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
@@ -190,7 +193,7 @@
                     android:id="@+id/btncodigos"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
-                    android:layout_height="32dp"
+                    android:layout_height="40dp"
                     android:layout_marginBottom="4dp"
                     android:minWidth="0dp"
 
@@ -203,27 +206,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    android:text="@{detalle.codigosNoPermitidos.replace(';','\n')}" />
-<!--                <Button-->
-<!--                    android:id="@+id/btncodigosex"-->
-<!--                    style="@style/Widget.AppCompat.Button.Borderless"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="32dp"-->
-<!--                    android:layout_marginBottom="4dp"-->
-<!--                    android:minWidth="0dp"-->
+                    android:text='@{(numTienda&lt;11&amp;&amp;detalle.nvoCodigo!=null)?detalle.nvoCodigo.replace(";","\n"):""+detalle.codigosNoPermitidos!=null?detalle.codigosNoPermitidos.replace(";","\n"):""}' />
+                <!--                <Button-->
+                <!--                    android:id="@+id/btncodigosex"-->
+                <!--                    style="@style/Widget.AppCompat.Button.Borderless"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="32dp"-->
+                <!--                    android:layout_marginBottom="4dp"-->
+                <!--                    android:minWidth="0dp"-->
 
-<!--                    android:text="Ver fecha restringida>"-->
-<!--                    android:textColor="@color/blue_subtitle"-->
-<!--                    android:textSize="10sp" />-->
+                <!--                    android:text="Ver fecha restringida>"-->
+                <!--                    android:textColor="@color/blue_subtitle"-->
+                <!--                    android:textSize="10sp" />-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/txtcodigosex"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
+                <!--                <TextView-->
+                <!--                    android:id="@+id/txtcodigosex"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
 
-<!--                    android:text="@{detalle.getLid_fecharestringida().replace(';','\n')}"-->
-<!--                    android:visibility="gone" />-->
-              <!--  <Button
+                <!--                    android:text="@{detalle.getLid_fecharestringida().replace(';','\n')}"-->
+                <!--                    android:visibility="gone" />-->
+                <!--  <Button
                     android:id="@+id/btncodigosper"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
@@ -244,11 +247,10 @@
                     android:visibility="gone" />-->
 
                 <include
-                    layout="@layout/lista_detalle_item2"
                     android:id="@+id/informebudata"
+                    layout="@layout/lista_detalle_item2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                />
+                    android:layout_height="wrap_content" />
 
 
             </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.repositories;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
@@ -64,6 +65,15 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
                 new Object[]{indice,idCiudad});
         return dao.getListaCompraByFiltros( sqlquery);
     }
+    public LiveData<List<ListaCompra>> getAllByIndiceCiudadSimpl(String indice,String idCiudad) {
+
+        String query="Select * from lista_compras where indice=?" +
+                "and ciudadNombre like ? group by plantasId";
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,
+                new Object[]{indice,idCiudad});
+        return dao.getListaCompraByFiltros( sqlquery);
+    }
 
     public LiveData<List<ListaCompra>> getClientesByIndiceCiudad(String indice,String idCiudad) {
         List<String> params= new ArrayList<>();
@@ -102,14 +112,30 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
                 new Object[]{indice,idCiudad,idCliente});
         return dao.getListaCompraByFiltros( sqlquery);
     }
-    public LiveData<List<ListaWithDetalle>> getListaWithDetalleByFiltros(String indice, int idPlanta, int idCliente ) {
+    public List<ListaCompra> getAllByIndiceCiudadClienteSim(String indice,String ciudad,int idCliente) {
 
         String query="Select * from lista_compras where indice=?" +
+                "and ciudadNombre=? and clientesId=? group by plantasId";
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,
+                new Object[]{indice,ciudad,idCliente});
+        return dao.getListaCompraByFiltrosSimple( sqlquery);
+    }
+    public LiveData<List<ListaWithDetalle>> getListaWithDetalleByFiltros(String indice, int idPlanta, int idCliente ) {
+      /*  String query="Select * from lista_compras  " +
+                "inner join lista_compras_detalle  " +
+                "on lista_compras_detalle.listaId=lista_compras.id  where indice=? " +
+                "and plantasId=? order by lista_compras.id";*/
+        String query="Select * from lista_compras  " +
+                " where indice=? " +
                 "and plantasId=?";
 
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idPlanta});
+    //    Log.d("LISTACOMPRREPIMP",indice+"---"+idPlanta+"--"+sqlquery.getSql());
+
+
         return dao.getListasWithDetalleByFiltros( sqlquery);
     }
     @Override
@@ -153,6 +179,9 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
 
     @Override
     public long insert(ListaCompra object) {
+        return dao.insert(object);
+    }
+    public long updateSC(ListaCompra object) {
         return dao.insert(object);
     }
 

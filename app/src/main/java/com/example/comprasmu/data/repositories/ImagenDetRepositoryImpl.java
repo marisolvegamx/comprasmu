@@ -6,9 +6,12 @@ import androidx.lifecycle.LiveData;
 
 import com.example.comprasmu.data.ComprasDataBase;
 
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
+import com.example.comprasmu.utils.Constantes;
 
 
 import java.util.List;
@@ -69,9 +72,13 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
     }
 
 
+    public long getUltimo() {
 
+        return dao.getUltimoId();
+    }
 
     public long insertImg(ImagenDetalle object) {
+
         return dao.insertImg(object);
     }
 
@@ -101,6 +108,7 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
     public  LiveData<List<ImagenDetalle>> getImagenDetallePendientesSync(){
         return  dao.getImagenDetalleByEstatusSync(1,0);
     }
+
     public  List<ImagenDetalle> getImagenPendSyncsimple(){
         return  dao.getImagenByEstSyncsimple(1,0);
     }

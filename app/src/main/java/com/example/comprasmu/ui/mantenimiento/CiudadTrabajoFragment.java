@@ -70,7 +70,7 @@ public class CiudadTrabajoFragment extends Fragment {
         final Observer<List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
             public void onChanged(@Nullable List<ListaCompra> lista) {
-                Log.d(Constantes.TAG, "YA cargo la lista " + lista.size());
+               // Log.d(Constantes.TAG, "YA cargo la lista " + lista.size());
                 if(lista.size()>0) {
 
                     convertirLista(lista);

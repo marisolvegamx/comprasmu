@@ -16,7 +16,7 @@ public class ValidadorDatos {
     public int mensaje;
     public boolean resp;
     SimpleDateFormat     sdf = new SimpleDateFormat("dd-MM-yy");
-    SimpleDateFormat     sdfcod = new SimpleDateFormat("ddMMyy");
+    SimpleDateFormat     sdfcod = new SimpleDateFormat("dd-MM-yy");
 
     public void validarFechaPep(String fecha, int tipoTienda){
         Date hoy=new Date();
@@ -40,13 +40,11 @@ public class ValidadorDatos {
             Calendar cal = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
             cal.setTime(hoy);
             cal.add(Calendar.DAY_OF_MONTH, +30);
-            Log.d("ValidadorDatos","fechacad------------"+sdf.format(hoy));
-            Log.d("ValidadorDatos","fechacad------------"+sdf.format(cal.getTime()));
 
             if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
 
 
-                if (tipoTienda == 2||tipoTienda == 3) {
+                if (tipoTienda == 3) {
                         mensaje=R.string.error_fecha_caduca;
                         resp=false;
                         return ;
@@ -88,7 +86,7 @@ public class ValidadorDatos {
                     Log.d("ValidadorDatos","mi codigo"+codigo);
                     List<String> lista = Arrays.asList(arrecodigos);
                     if (lista.contains(codigo)) {
-                        mensaje=R.string.error_codigo_repetido;
+                        mensaje=R.string.error_codigo_per;
 
                         resp=false;
                         return resp;

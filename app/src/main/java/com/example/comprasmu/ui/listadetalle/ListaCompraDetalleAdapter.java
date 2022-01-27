@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 //import com.example.comprasmu.BR;
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 
@@ -27,7 +28,7 @@ import java.util.List;
 public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraDetalleAdapter.ListaCompraDetalleViewHolder> {
 
     private List<ListaCompraDetalle> mListaCompraDetalleList;
-
+    private List<InformeCompraDetalle> listacomprasbu;
     private final ListaDetalleViewModel mViewModel;
     private AdapterCallback callback;
     private final static String TAG=ListaCompraDetalleAdapter.class.getName();
@@ -41,12 +42,13 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
 
     }
 
-    public void setListaCompraDetalleList(List<ListaCompraDetalle> categoriesList, int numtienda, boolean isbu, boolean ismuestra, String cliente) {
+    public void setListaCompraDetalleList(List<ListaCompraDetalle> categoriesList, int numtienda, boolean isbu, boolean ismuestra, String cliente,List<InformeCompraDetalle> listacomprasbu) {
         mListaCompraDetalleList = categoriesList;
         this.numtienda=numtienda;
         this.isbu=isbu;
         this.ismuestra=ismuestra;
         this.cliente=cliente;
+        this.listacomprasbu=listacomprasbu;
       //  notifyDataSetChanged();
     }
     @NonNull
@@ -68,6 +70,22 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
        holder.binding.setIsBu(isbu);
        holder.binding.setMostrarAgregar(ismuestra);
        holder.binding.setCliente(cliente);
+       if(listacomprasbu!=null) {
+
+           InformeCompraDetalle icd = buscarBU(mListaCompraDetalleList.get(position));
+           if (icd != null) {
+               Log.d(TAG, "es bu " + listacomprasbu.size());
+
+               holder.binding.informebudata.setDetallebu(icd);
+               // holder.binding.setTotalbu(comprabu.size());
+               int cantorig = mListaCompraDetalleList.get(position).getCantidad();
+               mListaCompraDetalleList.get(position).setCantidad(cantorig - 1);
+
+
+               // if(binding.informebudata.getDetallebu()!=null)
+               holder.binding.informebudata.cajatexto.setVisibility(View.VISIBLE);
+           }
+       }
      //  holder.binding.informebudata.setDetallebu(comprabu);
      //  Log.d(TAG,"mostar agregar "+mListaCompraDetalleList.get(position).getComprados()+"--"+mListaCompraDetalleList.get(position).getCantidad());
       /*  if(mListaCompraDetalleList.get(position).getComprados()==mListaCompraDetalleList.get(position).getCantidad()){
@@ -85,6 +103,21 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
     @Override
     public int getItemCount() {
         return mListaCompraDetalleList == null ? 0 : mListaCompraDetalleList.size();
+    }
+    private InformeCompraDetalle buscarBU(ListaCompraDetalle det){
+
+        for(InformeCompraDetalle icd: listacomprasbu) {
+            Log.d(TAG, "--------------Se seleccionó a " + det.getListaId() + "--" + det.getId() + "--" + icd.getComprasIdbu() + "--" + icd.getComprasDetIdbu());
+
+
+            if (icd.getComprasIdbu() == det.getListaId() && icd.getComprasDetIdbu() ==det.getId() )
+            { Log.d(TAG, "--------------Se seleccionó a " +icd.getComprasIdbu()+ "--" + det.getId()+"--"+ det.getListaId() +"--"+icd.getComprasDetIdbu());
+
+                return icd;
+        }
+        }
+        return null;
+
     }
 
     static class ListaCompraDetalleViewHolder extends RecyclerView.ViewHolder  {
@@ -106,14 +139,11 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
             // if(!binding.txtdicomprados.getText().toString().equals("")&&Integer.parseInt(binding.txtdicomprados.getText().toString())<Integer.parseInt(binding.txtdicantidad.getText().toString()))
 
             //
+         //  Log.d(TAG,"xxxxxxx "+binding.informebudata.txtldpres.getText()+"--"+binding.informebudata.txtldcomprabu.getText());
            altoini=binding.ldcardview.getLayoutParams();
 
            binding.txtcodigos.setVisibility(View.GONE);
-           if(binding.getDetalle()!=null) {
-               binding.informebudata.setDetallebu(callback.getBackup(binding.getDetalle()));
-                if(binding.informebudata.getDetallebu()!=null)
-                    binding.informebudata.cajatexto.setVisibility(View.VISIBLE);
-           }
+
            binding.btncodigos.setOnClickListener(new View.OnClickListener() {
 
                @Override
@@ -141,7 +171,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
 
                            }else
                            {
-                               Log.d(TAG,"haciendo chiquito");
+                              // Log.d(TAG,"haciendo chiquito");
                                binding.txtcodigos.setVisibility(View.GONE);
                            //    binding.ldcardview.setLayoutParams(altoini);
                             //   LinearLayout rLGreen = ((LinearLayout) binding.btncodigos.getParent());
@@ -225,6 +255,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                @Override
                public void onClick(View view) {
                    if (view.getId()==R.id.btnldbackup) {
+
                        callback.verBackup(binding.getDetalle());
                    }
                }
@@ -246,7 +277,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
         void onClickCallback(View view);
         void agregarMuestra(View view,ListaCompraDetalle productoSel);
         void verBackup(ListaCompraDetalle productoSel);
-        InformeCompraDetalle getBackup(ListaCompraDetalle productoSel);
+        List<InformeCompraDetalle> getBackup(ListaCompraDetalle productoSel);
     }
 
 }

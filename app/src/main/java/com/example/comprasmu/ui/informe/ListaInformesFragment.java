@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -38,15 +36,11 @@ import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
 import com.example.comprasmu.ui.BackActivity;
 
+import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.io.File;
 import java.util.List;
-
-import static android.app.Activity.RESULT_OK;
-import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
 public class ListaInformesFragment extends Fragment implements InformeCompraAdapter.AdapterCallback {
     private ListaInformesViewModel mViewModel;
@@ -62,19 +56,19 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
     private String tienda;
     private String indice;
     String clientesel;
-    String plantasel;
+    int plantasel;
     CoordinatorLayout coordinator;
 
     public ListaInformesFragment() {
     }
 
-    public  ListaInformesFragment(int planta, String onombrePlanta, String nomcliente) {
+  /*  public  ListaInformesFragment(int planta, String onombrePlanta, String nomcliente) {
         //  ListaCompraFragment fragment = new ListaCompraFragment();
         plantaid=planta;
         plantasel=onombrePlanta;
         this.clientesel=nomcliente;
 
-    }
+    }*/
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -82,8 +76,8 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
 
         if (getArguments() != null) {
         //    clienteid = getArguments().getInt(BuscarInformeFragment.ARG_CLIENTE);
-            plantasel=getArguments().getString(TabsICFragment.ARG_PLANTASEL);
-            ciudad=getArguments().getString(BuscarInformeFragment.CIUDAD);
+            plantasel=getArguments().getInt(ListaCompraFragment.ARG_PLANTASEL);
+          //  ciudad=getArguments().getString(BuscarInformeFragment.CIUDAD);
             tienda=getArguments().getString(BuscarInformeFragment.NOMBRETIENDA);
             indice=getArguments().getString(BuscarInformeFragment.INDICE);
 
@@ -155,7 +149,7 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
         });
     }
 
-    @Override
+ /*   @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Do something that differs the Activity's menu here
         menu.clear();
@@ -163,7 +157,7 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
         //  super.onCreateOptionsMenu(menu, inflater);
 
 
-    }
+    }*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -248,12 +242,16 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
 
     @Override
     public void onClickSubir(int informe) {
-      NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
-     Log.d(TAG,"preparando informe**********");
-       InformeEnvio informeenv=niViewModel.preparaInforme(informe);
-        SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informeenv,getActivity(),niViewModel);
-        miTareaAsincrona.execute();
-        NuevoinformeFragment.subirFotos(getActivity(),informeenv);
+        if(NavigationDrawerActivity.isOnlineNet()) {
+            NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
+            Log.d(TAG, "preparando informe**********");
+            InformeEnvio informeenv = niViewModel.preparaInforme(informe);
+            SubirInformeTask miTareaAsincrona = new SubirInformeTask(true, informeenv, getActivity(), niViewModel);
+            miTareaAsincrona.execute();
+            NuevoinformeFragment.subirFotos(getActivity(), informeenv);
+        }else
+            Toast.makeText(getActivity(), getString(R.string.sin_conexion), Toast.LENGTH_LONG).show();
+
     }
 
 

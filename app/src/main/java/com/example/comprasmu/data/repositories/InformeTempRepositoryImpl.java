@@ -39,8 +39,11 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
         return icDao.getInformes();
     }
 
-    public List<InformeTemp> getAllByTabla(String tabla) {
-        return icDao.getInformesByTabla(tabla);
+    public List<InformeTemp> getAllByTabla(String tabla, int numMuestra) {
+        if (tabla.equals("I"))
+            return icDao.getInformesByTablaI(tabla);
+        else
+        return icDao.getInformesByTabla(tabla,numMuestra);
     }
 
     @Override
@@ -56,6 +59,9 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
     public LiveData<InformeTemp> find(int id) {
         return icDao.getInforme(id);
     }
+    public List<Integer> getMuestras() {
+        return icDao.getMuestras();
+    }
 
     @Override
     public InformeTemp findsimple(int id) {
@@ -65,8 +71,13 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
     public InformeTemp findByNombre(String campo) {
         return icDao.getInformesByNombre(campo);
     }
+    public InformeTemp findByNombreMues(String campo, int nummuestra) {
+        return icDao.getInformesByNombreMues(campo, nummuestra);
+    }
     public InformeTemp getUltimo(boolean pregunta) {
-        return icDao.getUltimo(pregunta);
+        if(icDao.getUltimo(pregunta).size()>0)
+        return icDao.getUltimo(pregunta).get(0);
+        else return null;
     }
 
     @Override
@@ -81,6 +92,9 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
 
     public void deleteAll() {
         icDao.deleteAll();
+    }
+    public void deleteMuestra(int nummuestra) {
+        icDao.deleteMuestra(nummuestra);
     }
     public void deleteMenosCliente() {
         icDao.deleteMenosCliente();

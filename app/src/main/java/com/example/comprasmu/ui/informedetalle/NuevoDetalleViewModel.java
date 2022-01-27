@@ -79,10 +79,11 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public LiveData<List<Atributo>> atributos;
     public List<Atributo> satributos;
     public List<CatalogoDetalle> tomadoDe;
+    public List<CatalogoDetalle> causas;
     private CatalogoDetalleRepositoryImpl catRepo;
     private ReactivoRepositoryImpl reacRepo;
     public LiveData<List<Reactivo>> listaPreguntas;
-
+    final String TAG="NvoDetVM";
     public NuevoDetalleViewModel(@NonNull Application application) {
         super(application);
 
@@ -99,6 +100,12 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         tomadoDe=catRepo.getxCatalogo("ubicacion_muestra");
 
     }
+
+    public void buscarCausas(){
+        causas=catRepo.getxCatalogo("causas");
+
+    }
+
     public InformeTemp getUltimoTemp(){
         //reivos si hay respuestas temporales si no devuelvo null
         return itemprepo.getUltimo(true);
@@ -107,6 +114,10 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public InformeTemp buscarxNombreCam(String campo){
         //reivos si hay respuestas temporales si no devuelvo null
         return itemprepo.findByNombre(campo);
+    }
+    public InformeTemp buscarxNombreCam(String campo,int nummuestra){
+        //reivos si hay respuestas temporales si no devuelvo null
+        return itemprepo.findByNombreMues(campo,nummuestra);
     }
     public List<CatalogoDetalle> cargarCatalogos(){
 
@@ -129,6 +140,12 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         return reacRepo.findByNombre(inftemp.getNombre_campo());
 
     }
+
+    public Reactivo buscarReactivoxId(int campo){
+        return reacRepo.findsimple(campo);
+
+    }
+
     //devuelve el nuevo id
     public int saveDetalle2() {
 
@@ -203,25 +220,28 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
     }
     public boolean buscarMuestraCodigo(String indice, int planta, ProductoSel productosel, String codigonvo, Date caducidad, LifecycleOwner lco){
-
+        Log.d(TAG, "buscando codigo"+caducidad);
 
         //busco en los informes
         List<InformeCompraDetalle> informeCompraDetalles=detalleRepo.getByProductoAna(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion);
-
-               for(InformeCompraDetalle det:informeCompraDetalles)
+        Log.d(TAG,"buscando codigo igual"+informeCompraDetalles.size());
+               for(InformeCompraDetalle det:informeCompraDetalles) {
+                   Log.d(TAG, "buscando codigo igual" + det.getCaducidad());
                    //recorro el informe buscando
-                 if(det.getCaducidad().equals(caducidad)){
+                   if (det.getCaducidad().equals(caducidad)) {
 
-                      return true; //tengo uno
+                       return true; //tengo uno
 
-                 }
+                   }
+               }
 
         return false;
     }
-    public InformeCompraDetalle tempToID(){
+    public InformeCompraDetalle tempToID(int numMuestra){
         //consulto el informe
         InformeCompraDetalle nuevo=new InformeCompraDetalle();
-        List<InformeTemp> temps=itemprepo.getAllByTabla("ID");
+        List<InformeTemp> temps=itemprepo.getAllByTabla("ID",numMuestra);
+        Log.d(TAG,"guardando  muestra"+numMuestra+"--"+temps.size());
         for(InformeTemp info:temps){
 
             Class claseCargada = InformeCompraDetalle.class;
@@ -289,9 +309,11 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         return foto;
     }
 
-
+   public List<Integer> muestrasTotales(){
+        return itemprepo.getMuestras();
+   }
     public int insertarMuestra(int idInformeNuevo, int numMuestra){
-        this.icdNuevo=tempToID();
+        this.icdNuevo=tempToID(numMuestra);
         this.icdNuevo.setInformesId(idInformeNuevo);
         this.icdNuevo.setNumMuestra(numMuestra);
 
@@ -316,13 +338,14 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         return nuevoid;
     }
 
-    public void setProductoSel(ListaCompraDetalle productoSel,String nombrePlanta,int plantaSel,int clienteSel,String clienteNombre, String siglas) {
+    public void setProductoSel(ListaCompraDetalle productoSel,String nombrePlanta,int plantaSel,int clienteSel,String clienteNombre, String siglas, ListaCompraDetalle prodbu) {
         this.productoSel=new ProductoSel();
         this.productoSel.producto=productoSel.getProductoNombre();
         this.productoSel.productoid=productoSel.getProductosId();
         this.productoSel.compraSel=productoSel.getListaId();
         this.productoSel.compradetalleSel=productoSel.getId();
         this.productoSel.presentacion=productoSel.getTamanio();
+        this.productoSel.tamanioId=productoSel.getTamanioId();
         this.productoSel.empaque=productoSel.getEmpaque();
         this.productoSel.idempaque=productoSel.getEmpaquesId();
         //para la planta y cliente busco el encabezado
@@ -337,7 +360,12 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.clienteSel=clienteSel;
         this.productoSel.siglas=siglas;
         this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
+        if(prodbu!=null) {
+            this.productoSel.comprasDetIdbu = prodbu.getId();
+            this.productoSel.comprasIdbu = productoSel.getListaId();
+        }
     }
+
     public void setProductoSel(InformeCompraDetalle productoSel,String nombrePlanta,int plantaSel) {
         this.productoSel=new ProductoSel();
         this.productoSel.producto=productoSel.getProducto();
@@ -347,7 +375,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.analisis=productoSel.getNombreAnalisis();
         this.productoSel.tipoAnalisis=productoSel.getTipoAnalisis();
         this.productoSel.presentacion=productoSel.getPresentacion();
-
+        this.productoSel.tamanioId=productoSel.getTamanioId();
        // this.productoSel.analisis=productoSel.geta;
         // this.productoSel.clienteNombre=productoSel.get
         //       this.productoSel.plantaNombre=
@@ -359,6 +387,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
       //  this.productoSel.compraSel=compraSel;
         //this.productoSel.compradetalleSel=compraDetSel;
         this.productoSel.presentacion=productoSel.getNomtamanio();
+        this.productoSel.tamanioId=productoSel.getSu_tamanio();
        this.productoSel.idempaque=productoSel.getSu_tipoempaque();
         //para la planta y cliente busco el encabezado
         this.productoSel.plantaNombre=nombrePlanta;
@@ -395,34 +424,45 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         try {
             this.productoSel.productoid = Integer.parseInt(this.getValor(respuestas, "productoId"));
         }catch(NumberFormatException ex){
-            Log.e("NuevoDetVM",ex.getMessage());
+            Log.e("NuevoDetVM","error al parasar a int el valor de productoId"+ex.getMessage());
         }
         try{
             this.productoSel.compraSel=Integer.parseInt(this.getValor(respuestas,"comprasId"));
          }catch(NumberFormatException ex){
-            Log.e("NuevoDetVM",ex.getMessage());
+            Log.e("NuevoDetVM","error al parasar a int el valor de comprasId"+ex.getMessage());
          }
         try{
             this.productoSel.compradetalleSel=Integer.parseInt(this.getValor(respuestas,"comprasDetId"));
         }catch(NumberFormatException ex){
-            Log.e("NuevoDetVM",ex.getMessage());
+            Log.e("NuevoDetVM","error al parasar a int el valor de comprasDetId"+ex.getMessage());
         }
         this.productoSel.presentacion=this.getValor(respuestas,"presentacion");
+        try {
+            this.productoSel.tamanioId = Integer.parseInt(this.getValor(respuestas, "tamanioId"));
+        }catch(NumberFormatException ex){
+            Log.e("NuevoDetVM","error al parasar a int el valor de tamanioId"+ex.getMessage());
+        }
         try{ this.productoSel.idempaque=Integer.parseInt(this.getValor(respuestas,"empaquesId"));
         }catch(NumberFormatException ex){
-        Log.e("NuevoDetVM",ex.getMessage());
+        Log.e("NuevoDetVM","error al parasar a int el valor de empaquesId"+ex.getMessage());
         }
+        try{ this.productoSel.tipoAnalisis=Integer.parseInt(this.getValor(respuestas,"tipoAnalisis"));
+        }catch(NumberFormatException ex){
+            Log.e("NuevoDetVM","error al parasar a int el valor de tipoAnalisis"+ex.getMessage());
+        }
+        this.productoSel.analisis=this.getValor(respuestas,"nombreAnalisis");
+
         //para la planta y cliente busco el encabezado
         this.productoSel.plantaNombre=this.getValor(respuestas,"plantaNombre");
         try{
             this.productoSel.plantaSel=Integer.parseInt(this.getValor(respuestas,"plantasId"));
         }catch(NumberFormatException ex){
-            Log.e("NuevoDetVM",ex.getMessage());
+            Log.e("NuevoDetVM","error al parasar a int el valor de plantasId"+ex.getMessage());
         }
         try{
              this.productoSel.tipoMuestra=Integer.parseInt(this.getValor(respuestas,"tipoMuestra"));
         }catch(NumberFormatException ex){
-            Log.e("NuevoDetVM",ex.getMessage());
+            Log.e("NuevoDetVM","error al parasar a int el valor de tipoMuestra"+ex.getMessage());
         }
         this.productoSel.nombreTipoMuestra=this.getValor(respuestas,"nombreTipoMuestra");
         this.productoSel.empaque=this.getValor(respuestas,"empaque");
@@ -431,9 +471,9 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.clienteNombre=this.getValor(respuestas,"clienteNombre");
         try{this.productoSel.clienteSel=Integer.parseInt(this.getValor(respuestas,"clientesId"));
         }catch(NumberFormatException ex){
-        Log.e("NuevoDetVM",ex.getMessage());
+        Log.e("NuevoDetVM","error al parasar a int el valor de clientesId"+ex.getMessage());
         }
-        this.productoSel.siglas=this.getValor(respuestas,"siglas");
+        this.productoSel.siglas=this.getValor(respuestas,"siglaspla");
 
 
         return this.productoSel;
@@ -480,6 +520,14 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.foto_atributob = foto_atributob;
     }
 
+    public void setCausas(List<CatalogoDetalle> causas) {
+        this.causas = causas;
+    }
+
+    public List<CatalogoDetalle> getCausas() {
+        return causas;
+    }
+
     public ImagenDetalle getFoto_atributoc() {
         return foto_atributoc;
     }
@@ -509,6 +557,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         public int compraSel;
         public int compradetalleSel;
         public String presentacion;
+        public int tamanioId;
         public String empaque;
         public int idempaque;
 
@@ -523,6 +572,9 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         public String nombreTipoMuestra;
         public String siglas;
         public String codigosnop;
+        public int comprasIdbu;
+        public int comprasDetIdbu; //aqui guardaré de cuál se hizo backup
+
 
         public ProductoSel() {
 

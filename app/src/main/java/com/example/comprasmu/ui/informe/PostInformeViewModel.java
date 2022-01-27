@@ -52,7 +52,7 @@ public class PostInformeViewModel {
 
 
     public  void sendInforme(InformeEnvio informeCompra) {
-        //TODO manejar el response
+
         Log.d("Informe", "kkkkkkkkkk"+informeCompra.toJson(informeCompra));
         apiClient.getApiService().saveInformeEnvio(informeCompra).enqueue(new Callback<PostResponse>() {
             @Override
@@ -60,7 +60,7 @@ public class PostInformeViewModel {
 
               //  { "status": "ok",
                 //        "data": "Informe dado de alta correctamente."}
-                if(response.isSuccessful()) {
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
 
                     mensaje=response.body().getData();
                     Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);
@@ -92,7 +92,7 @@ public class PostInformeViewModel {
 
                 //  { "status": "ok",
                 //        "data": "Informe dado de alta correctamente."}
-                if(response.isSuccessful()) {
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
 
                     mensaje=response.body().getData();
                     Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);
@@ -103,6 +103,7 @@ public class PostInformeViewModel {
                     //listo para subir fotos
 
                 }
+                listen.onSuccess(mensaje);
             }
 
             @Override
@@ -132,15 +133,19 @@ public class PostInformeViewModel {
     }
     public void actualizarEstatusTodo(TodoEnvio informes){
         //actualizo la visita
+        if(informes.getVisita()!=null)
         for(Visita visita:informes.getVisita())
             visitaRepo.actualizarEstatusSync(visita.getId(), Constantes.ENVIADO);
         //actualizo informe
+        if(informes.getInformeCompra()!=null)
         for(InformeCompra informe:informes.getInformeCompra())
             infoRepo.actualizarEstatusSync(informe.getId(),Constantes.ENVIADO);
         //actualizo detalles
+        if(informes.getInformeCompraDetalles()!=null)
         for(InformeCompraDetalle detalle:informes.getInformeCompraDetalles())
             infoDetRepo.actualizarEstatusSyncxInfo(detalle.getId(),Constantes.ENVIADO);
         //producto exhibido
+        if(informes.getProductosEx()!=null)
         for(ProductoExhibido prod:informes.getProductosEx())
             prodeRepo.actualizarEstatusSyncxVisita(prod.getId(), Constantes.ENVIADO);
 
@@ -184,10 +189,15 @@ public class PostInformeViewModel {
             }
         }
         imagenDetallesenv=imagenRepo.getImagenPendSyncsimple();
+        if(imagenDetallesenv.size()>0)
        envio.setImagenDetalles(imagenDetallesenv);
+        if(informeCompraenv.size()>0)
        envio.setInformeCompra(informeCompraenv);
+        if(informeCompraDetallesenv.size()>0)
        envio.setInformeCompraDetalles(informeCompraDetallesenv);
+        if(productosExenv.size()>0)
        envio.setProductosEx(productosExenv);
+        if(visitaenv.size()>0)
        envio.setVisita(visitaenv);
        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
        //TODO talvez sacar el de la visita

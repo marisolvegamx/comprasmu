@@ -70,7 +70,7 @@ public class FotoExhibicionAdapter extends RecyclerView.Adapter<FotoExhibicionAd
             binding.btnfeeliminar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("hola hola","hice clic"+binding.txtfeid.getText().toString());
+                    Log.d("FotoExhibAdapter","hice clic"+binding.txtfeid.getText().toString());
                     int idfoto=Integer.parseInt(binding.txtfeid.getText().toString());
 
                     //lo elimino de la lista

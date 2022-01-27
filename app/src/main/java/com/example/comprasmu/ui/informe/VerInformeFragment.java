@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -21,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.dao.ProductoExhibidoDao;
@@ -35,6 +37,7 @@ import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
 import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
 import com.example.comprasmu.ui.informedetalle.VerInformeDetFragment;
+import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -42,6 +45,8 @@ import com.example.comprasmu.utils.CreadorFormulario;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 public class VerInformeFragment extends Fragment implements InformeDetalleAdapter.AdapterCallback {
 
@@ -143,6 +148,13 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
 
     }
    public void llenarFotos(InformeCompra informe,Visita visita){
+        //reviso la memoria
+       if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+       {
+           Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+
+           return;
+       }else
        mViewModel.getfotoTicket(informe).observeForever(new Observer<ImagenDetalle>() {
            @Override
            public void onChanged(ImagenDetalle imagenDetalle) {
@@ -158,16 +170,20 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
                Log.d(TAG,"*ya tengo las fotos informe "+imagenDetalle.getRuta());}
            }
        });
-       mViewModel.getFotoVisita(visita.getId()).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+       mViewModel.getFotoVisita(visita.getFotoFachada()).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
            @Override
            public void onChanged(ImagenDetalle imagenDetalle) {
 
                    mBinding.setFotoFachada(imagenDetalle);
+               Log.d(TAG,"*ya tengo las fotos informe "+imagenDetalle.getRuta());
+
                if(imagenDetalle!=null) {
                    mBinding.ivvifotoFachada.setOnClickListener(new View.OnClickListener() {
                        @Override
                        public void onClick(View view) {
+
                            verImagen(imagenDetalle.getRuta());
+
                        }
                    });
                }
@@ -253,12 +269,21 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
 
 
         camposTienda.add(campo);
+
         campo = new CampoForm();
 
         campo.nombre_campo = "tiendaNombre";
         campo.label=getString(R.string.nombre_tienda);
         campo.type = "label";
         campo.value = mViewModel.getVisita().getValue().getTiendaNombre();
+
+        camposTienda.add(campo);
+        campo = new CampoForm();
+
+        campo.nombre_campo = "tipoTienda";
+        campo.label=getString(R.string.tipo_tienda);
+        campo.type = "label";
+        campo.value = mViewModel.getVisita().getValue().getTipoTienda();
 
         camposTienda.add(campo);
         campo = new CampoForm();
@@ -330,6 +355,13 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         Intent iverim=new Intent(getActivity(), RevisarFotoActivity.class);
         iverim.putExtra(RevisarFotoActivity.IMG_PATH1,nombrearch);
         startActivity(iverim);
+    }
+    // Get a MemoryInfo object for the device's current memory status.
+    private ActivityManager.MemoryInfo getAvailableMemory() {
+        ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        activityManager.getMemoryInfo(memoryInfo);
+        return memoryInfo;
     }
 
     @Override

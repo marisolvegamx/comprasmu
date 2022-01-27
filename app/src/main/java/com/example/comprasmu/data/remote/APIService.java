@@ -69,7 +69,13 @@ public interface APIService {
 
     @GET("listacompras")
     Call<ListaCompraResponse> getListasCompra( @Query("indice") String indice, @Query("usuario") String usuario, @Query("version_lista") String version_lista, @Query("version_detalle") String version_detalle);
-    
+
+    @GET("ultids")
+    Call<UltimosIdsResponse> getUltimosIdsV( @Query("indice") String indice, @Query("usuario") String usuario);
+
+    @GET("ultids")
+    Call<UltimoInfResponse> getUltimosIdsI( @Query("indice") String indice,@Query("planta") int plantasel, @Query("usuario") String usuario);
+
     @POST("cancelarInforme/{id}")
     @Headers({
             "Accept: application/json",

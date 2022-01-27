@@ -51,6 +51,8 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     private static final String TAG=ListaDetalleViewModel.class.getCanonicalName();
     private boolean nuevaMuestra=false;  //indica si se agregará muestra
     Context context;
+
+
     public ListaDetalleViewModel(Application application) {
         super(application);
         ListaCompraDao dao=ComprasDataBase.getInstance(application).getListaCompraDao();
@@ -74,6 +76,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             return repository.getAllByIndiceCiudadCliente(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
         }else
         return repository.getAllByIndiceCiudad(Constantes.INDICEACTUAL,ciudadSel);
+
+
+    }
+    public  List<ListaCompra>  cargarPlantas(String ciudadSel,int clienteSel){
+
+            return repository.getAllByIndiceCiudadClienteSim(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
 
 
     }
@@ -196,9 +204,9 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
 
-    public InformeCompraDetalle tieneBackup(int idcompra,int iddetalle){
+    public List<InformeCompraDetalle> tieneBackup(int idcompra,int iddetalle){
         InformeComDetRepositoryImpl icrepo=new InformeComDetRepositoryImpl(context);
-        return icrepo.findByCompra(idcompra,iddetalle);
+        return icrepo.findByCompraBu(idcompra,iddetalle);
     }
     //actualiza comprados y codigos no permitidos
     public void comprarMuestraPepsi(int idlista,int idDetalle,String nuevoCodigo, String isbu){
@@ -212,9 +220,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             listaCompraDetalle.setComprados(listaCompraDetalle.getComprados()+1);
 
         }
-
+        String listaCodigos="";
             //no aumento el comprado solo el codigo
-            String listaCodigos=nuevoCodigo+";"+listaCompraDetalle.getNvoCodigo();
+        if(listaCompraDetalle.getNvoCodigo()!=null)
+             listaCodigos=nuevoCodigo+";"+listaCompraDetalle.getNvoCodigo();
+        else
+             listaCodigos=nuevoCodigo;
             listaCompraDetalle.setNvoCodigo(listaCodigos);
             //actualizo
             detRepo.insert(listaCompraDetalle);

@@ -11,6 +11,7 @@ import com.example.comprasmu.utils.Constantes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -64,13 +65,14 @@ public class InformeEnvio {
     public String toJson(InformeEnvio informe) {
         //  this.inf_visitasIdlocal=informe.getVisitasId();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
 
 
-      /*  Gson gson = new Gson();
+      //  Gson gson = new Gson();
         String informejson=gson.toJson(informe.informeCompra);
         String JSON = gson.toJson(informe);
-        return  JSON;*/
-        ObjectMapper mapper=new ObjectMapper();
+        return  JSON;
+        /*ObjectMapper mapper=new ObjectMapper();
         mapper.setDateFormat(sdf);
         String json = null;
         try {
@@ -79,7 +81,7 @@ public class InformeEnvio {
             e.printStackTrace();
             Log.e("InformeEnvio","hubo un error al serializar"+e.getMessage());
         }
-        return json;
+        return json;*/
 
         // System.out.println(json);
 
