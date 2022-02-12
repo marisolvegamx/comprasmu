@@ -72,11 +72,12 @@ public class ValidadorDatos {
     //li_btnagregar
     //devuelve false si existe el codigo
     public boolean validarCodigoprodPep(String codigo,String codigonoper){
-        codigo=codigo.replace("-","");
+      //  codigo=codigo.replace("-","");
+        Log.d("ValidadorDatos", "mensaje"+codigonoper);
         if(!codigo.equals("")&&codigonoper.length()>1){
                 if(!validarCodigoPepRango(codigo,codigonoper)){
                     mensaje=R.string.error_codigo_per;
-                    Log.d("ValidadorDatos", "mensaje"+mensaje);
+
                     return false;
                 }
 

@@ -18,6 +18,7 @@ import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.utils.Constantes;
 
@@ -27,6 +28,7 @@ import java.util.Date;
 public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     AlertDialog alertDialog;
     CatalogoDetalleRepositoryImpl cdrepo;
+    SustitucionRepositoryImpl sustRepo;
     TablaVersionesRepImpl tvRepo;
     AtributoRepositoryImpl atRepo;
     SimpleDateFormat sdfdias;
@@ -38,13 +40,14 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     ProgresoListener proglist;
     public DescargasIniAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
-                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener proglist) {
+                                     AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener proglist, SustitucionRepositoryImpl sustRepo) {
 
         this.cdrepo=cdrepo;
         this.atRepo=atRepo;
         this.tvRepo=tvRepo;
         this.lcdrepo=lcdrepo;
         this.lcrepo=lcrepo;
+        this.sustRepo=sustRepo;
         this.act=act;
         sdfdias=new SimpleDateFormat("dd-MM-yyyy");
         this.proglist=proglist;
@@ -76,15 +79,18 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
 
 
-        TablaVersiones cats=tvRepo.getVersionByNombreTablasmd("catalogos");
+        TablaVersiones cats=tvRepo.getVersionByNombreTabla("catalogos");
 
 
         if(cats!=null){
             //si hoy ya se actualizó no actualizo
             Log.d("DescargasIniAsyncTask","comprobando vers catalog*"+sdfdias.format(cats.getVersion())+"--"+(sdfdias.format(new Date())));
             if(!sdfdias.format(cats.getVersion()).equals(sdfdias.format(new Date()))){
-                if(NavigationDrawerActivity.isOnlineNet())
-                    ps.getCatalogos(cdrepo,tvRepo, atRepo);
+                if(NavigationDrawerActivity.isOnlineNet()) {
+                    ps.getCatalogos(cdrepo, tvRepo, atRepo);
+                    ps.getSustitucion(tvRepo,sustRepo);
+                }
+
                 else
 
                     notificar = true;
@@ -93,8 +99,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                  else{
                 //no actualice
                 if(actualiza==1) {
-                    if(NavigationDrawerActivity.isOnlineNet())
-                        ps.getCatalogos(cdrepo,tvRepo, atRepo);
+                    if(NavigationDrawerActivity.isOnlineNet()) {
+                        ps.getCatalogos(cdrepo, tvRepo, atRepo);
+                        ps.getSustitucion(tvRepo, sustRepo);
+                    }
                 else
 
                     notificar = true;
@@ -111,8 +119,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             }
         }else {   //primera vez
             Log.d("DescargasIniAsyncTask","iniciando descarga cats");
-            if(NavigationDrawerActivity.isOnlineNet())
+            if(NavigationDrawerActivity.isOnlineNet()) {
                 ps.getCatalogos(cdrepo, tvRepo, atRepo);
+                ps.getSustitucion(tvRepo, sustRepo);
+            }
             else
                 notificar = true;
         }
@@ -123,8 +133,8 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
 
 
-        TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS);
-        TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET);
+        TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
+        TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
 
 
         DescargasIniAsyncTask.DescargaIniListener listener=new DescargaIniListener();
@@ -243,11 +253,13 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 TablaVersiones tinfo = new TablaVersiones();
                 tinfo.setNombreTabla(Contrato.TBLLISTACOMPRAS);
                 tinfo.setVersion(new Date());
+                tinfo.setIndice(Constantes.INDICEACTUAL);
                 tinfo.setTipo("I");
                 TablaVersiones tinfod = new TablaVersiones();
                 tinfod.setNombreTabla(Contrato.TBLLISTACOMPRASDET);
                 tinfod.setVersion(new Date());
                 tinfod.setTipo("I");
+                tinfod.setIndice(Constantes.INDICEACTUAL);
                 tvRepo.insertUpdate(tinfo);
                 tvRepo.insertUpdate(tinfod);
 

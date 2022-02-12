@@ -2,6 +2,7 @@ package com.example.comprasmu.data.remote;
 
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.Sustitucion;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,7 @@ public class CatalogosResponse {
     ArrayList<CatalogoDetalle> catalogos;
     ArrayList<CatalogoDetalle> causas;
     ArrayList<Atributo> atributos;
+    ArrayList<Sustitucion> sustitucion;
 
   /*  public ArrayList<CatalogoDetalle> getClientes() {
         return clientes;
@@ -56,6 +58,14 @@ public class CatalogosResponse {
     public void setTomado_de(ArrayList<CatalogoDetalle> tomado_de) {
         this.tomado_de = tomado_de;
     }*/
+
+    public ArrayList<Sustitucion> getSustitucion() {
+        return sustitucion;
+    }
+
+    public void setSustitucion(ArrayList<Sustitucion> sustitucion) {
+        this.sustitucion = sustitucion;
+    }
 
     public ArrayList<CatalogoDetalle> getCausas() {
         return causas;

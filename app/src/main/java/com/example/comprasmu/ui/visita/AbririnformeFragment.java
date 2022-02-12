@@ -23,6 +23,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -150,7 +151,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     LocationManager mlocManager;
     Localizacion Local;
     File rutaArchivo;
-    EditText input3; // para complemento direccion
+    EditText txtcomplemento; // para complemento direccion
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -247,8 +248,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);*/
-         input3 = root.findViewById(R.id.txtaicomplementodir);
-         input3.addTextChangedListener(new MayusTextWatcher());
+        txtcomplemento = root.findViewById(R.id.txtaicomplementodir);
+        txtcomplemento.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+         //input3.addTextChangedListener(new MayusTextWatcher());
         return root;
     }
     /*public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -422,7 +424,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
            }
        });
 
-
+        //el complemento
+        txtcomplemento.setText(visita.getComplementodireccion());
        EditText ubicacion=root.findViewById(R.id.txtaiubicacion);
        ubicacion.setText(visita.getGeolocalizacion());
 
@@ -579,7 +582,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             campo.nombre_campo = "tipoTienda";
             campo.type = "select";
             campo.value = visita.getTipoId()+"";
-
+            Log.d(TAG,"tienda sel "+visita.getTipoId());
             campo.select=Constantes.TIPOTIENDA;
             campo.required = "required";
             campo.id = 1005;
@@ -755,6 +758,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
        // EditText input13 = root.findViewById(1013);
          mViewModel.visita=new Visita();
         mViewModel.visita.setId(nuevoId);
+        EditText input1;
+        if(nuevaTienda){
+            input1 = root.findViewById(1001);
+            if(input1.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), getString(R.string.error_nombre_tienda), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
         if (txtubicacion.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Falta activar la ubicación", Toast.LENGTH_SHORT).show();
             return false;
@@ -769,7 +780,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
         else {
             if(nuevaTienda){
-                EditText input1 = root.findViewById(1001);
+                input1 = root.findViewById(1001);
                 EditText input2 = root.findViewById(1002);
 
                 EditText input4 = root.findViewById(1004);
@@ -794,7 +805,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             {//ya existe
 
                 EditText input5 = root.findViewById(1005);
-                EditText input1 = root.findViewById(1001);
+                 input1 = root.findViewById(1001);
                 EditText input2 = root.findViewById(1002);
 
                 mViewModel.visita.setTiendaId(tienda.getUne_id());
@@ -805,7 +816,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 mViewModel.visita.setTipoId(tienda.getUne_tipotienda());
             }
 
-            mViewModel.visita.setComplementodireccion(input3.getText().toString());
+            mViewModel.visita.setComplementodireccion(txtcomplemento.getText().toString());
             mViewModel.visita.setIndice(Constantes.INDICEACTUAL);
             //guardo la foto
             //guardar imagen
@@ -868,7 +879,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
     public void actualizar(){
         EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
-    Log.d("AbrirOnformeFragment","nueva?"+nuevaTienda);
+        EditText input1;
+        if(nuevaTienda){
+             input1 = root.findViewById(1001);
+             if(input1.getText().toString().equals("")) {
+                 Toast.makeText(getActivity(), getString(R.string.error_nombre_tienda), Toast.LENGTH_SHORT).show();
+                 return;
+             }
+        }
         if (txtubicacion.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Falta activar la ubicación", Toast.LENGTH_SHORT).show();
             return;
@@ -879,7 +897,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
         //actualizo campos
         if(nuevaTienda){
-            EditText input1 = root.findViewById(1001);
+             input1 = root.findViewById(1001); //nombre de la tienda
             EditText input2 = root.findViewById(1002);
 
             EditText input4 = root.findViewById(1004);
@@ -889,9 +907,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
             visitaEdi.setTiendaNombre(input1.getText().toString());
-          //  visitaEdi.setTipoTienda(String.valueOf(input5.getSelectedItem()));
+            visitaEdi.setTipoTienda((input5.getSelectedItem()).toString());
 
-            // mViewModel.informe.setTiendaId(input5.getText().toString());
+            visitaEdi.setTipoId((int)input5.getSelectedItemId()+1);
            // visitaEdi.setDireccion(input2.getText().toString());
 
             //visitaEdi.setCadenaComercial(input6.getText().toString());
@@ -1082,13 +1100,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             return;
         }
-        Activity activity=null;
-        Intent intento1=null;
+
         File foto=null;
+        Activity activity=this.getActivity();
+        Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try{
         try{
-         activity=this.getActivity();
-         intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
         String dateString = format.format(new Date());
@@ -1096,7 +1114,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
             foto = new File(activity.getExternalFilesDir(null), nombre_foto);
-            Log.e(TAG, "****"+foto.getAbsolutePath());
+            Log.d(TAG, "****"+foto.getAbsolutePath());
         } catch (Exception  ex) {
             ex.printStackTrace();
             Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
@@ -1136,10 +1154,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG,"vars"+nombre_foto +"=="+ resultCode+" =="+ RESULT_OK);
-        if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode==REQUEST_CODE_2) && resultCode == RESULT_OK) {
-
+        //super.onActivityResult(requestCode, resultCode, data);
+         if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode==REQUEST_CODE_2) && resultCode == RESULT_OK) {
+          //  super.onActivityResult(requestCode, resultCode, data);
+            Log.d(TAG,"vars*"+requestCode +"=="+ resultCode+" =="+ RESULT_OK);
             File file = new File(getActivity().getExternalFilesDir(null), nombre_foto);
             if (file.exists()) {
                 if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
@@ -1162,6 +1180,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     Local.desactivar();
                    // mostrarPosicion(Local);
                     yaTengoFoto=true;
+                   // nombre_foto=null;
                    //
                 }
                 if(requestCode == REQUEST_CODE_2) {
@@ -1179,7 +1198,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
         }if (requestCode == REQUEST_CODE_PROD && resultCode == RESULT_OK) {
-
+            super.onActivityResult(requestCode, resultCode, data);
             File file = new File(getActivity().getExternalFilesDir(null), nombre_foto);
             if (file.exists()) {
 
@@ -1194,6 +1213,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
         }else{
+            super.onActivityResult(requestCode, resultCode, data);
             Log.d(TAG,"Algo salió muy mal");
         }
     }

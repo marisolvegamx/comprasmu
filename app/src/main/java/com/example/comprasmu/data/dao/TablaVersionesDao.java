@@ -18,8 +18,8 @@ public abstract class TablaVersionesDao extends BaseDao<TablaVersiones>{
     @Query("SELECT * FROM tabla_versiones WHERE nombreTabla = :nombre")
     public abstract TablaVersiones getVersionByNombreTabla(String nombre);
 
-    @Query("SELECT * FROM tabla_versiones WHERE nombreTabla = :nombre")
-    public abstract  TablaVersiones getVersionByNombreTablamd(String nombre);
+    @Query("SELECT * FROM tabla_versiones WHERE nombreTabla = :nombre and indice=:indice")
+    public abstract  TablaVersiones getVersionByNombreTablamd(String nombre, String indice);
     @Transaction
     public void insertUpdate(TablaVersiones tabla) {
         // Anything inside this method runs in a single transaction.

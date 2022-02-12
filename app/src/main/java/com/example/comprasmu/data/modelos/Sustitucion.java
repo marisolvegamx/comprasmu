@@ -7,13 +7,19 @@ import androidx.room.TypeConverters;
 
 import com.example.comprasmu.data.Converters;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
+
+import javax.annotation.Nullable;
 
 @Entity(tableName = "sustitucion")
 public class Sustitucion {
     @PrimaryKey
     private int id_sustitucion;
-
+    @NotNull
+    @ColumnInfo(name="clientesId", defaultValue = "0")
+    private int clientesId;
     private int su_tipoempaque;
     private int su_producto;
     private int su_tamanio;
@@ -93,6 +99,14 @@ public class Sustitucion {
 
     public void setNomcategoria(String nomcategoria) {
         this.nomcategoria = nomcategoria;
+    }
+
+    public int getClientesId() {
+        return clientesId;
+    }
+
+    public void setClientesId(int clientesId) {
+        this.clientesId = clientesId;
     }
 }
 

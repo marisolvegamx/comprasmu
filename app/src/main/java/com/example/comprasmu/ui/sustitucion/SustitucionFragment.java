@@ -23,6 +23,7 @@ import com.example.comprasmu.databinding.ListaGenericFragmentBinding;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listacompras.PlaceholderFragment;
+import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.mantenimiento.CiudadTrabajoFragment;
 import com.example.comprasmu.utils.Constantes;
 
@@ -35,27 +36,31 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
 
     private SustitucionViewModel mViewModel;
+    private ListaDetalleViewModel ldViewModel;
     private ListaGenericFragmentBinding mBinding;
     private SustitucionAdapter mListAdapter;
      String nombrePlanta;
      int plantaSel;
 
     private boolean isbu, ismuestra; //para saber si es reemplazo
-    private static final String ARG_PLANTA = "comprasmu.sustitucion.planta";
-    private static final String ARG_NOMBREPLANTA = "comprasmu.sustitucion.nomplanta";
+    public static final String ARG_PLANTA = "comprasmu.sustplanta";
+    public static final String ARG_NOMBREPLANTA = "comprasmu.sustnomplanta";
+    public static final String ARG_SIGLAS = "comprasmu.sustsiglas";
 
     private static final String TAG="SUSTITUCIONFRAGMENT";
     private String categoriaSel;
+    private String siglas;
 
 
-    public static CiudadTrabajoFragment newInstance(int planta,String onombrePlanta) {
+    public static SustitucionFragment newInstance() {
         //  ListaCompraFragment fragment = new ListaCompraFragment();
 
-        CiudadTrabajoFragment fragment = new CiudadTrabajoFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(ARG_PLANTA, planta);
-        bundle.putString(ARG_NOMBREPLANTA, onombrePlanta);
-        fragment.setArguments(bundle);
+     //   Log.d(TAG,"planta sel"+planta);
+       // Log.d(TAG,"nombre"+onombrePlanta);
+        SustitucionFragment fragment = new SustitucionFragment();
+       // Bundle bundle = new Bundle();
+
+        //fragment.setArguments(bundle);
         return fragment;
 
     }
@@ -63,6 +68,21 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
     public SustitucionFragment() {
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle2 =getArguments();
+
+        if(bundle2!=null)
+            categoriaSel=bundle2.getString(ARG_CATEGORIA);
+
+        if (bundle2 != null) {
+            plantaSel = bundle2.getInt(ARG_PLANTA);
+            nombrePlanta = bundle2.getString(ARG_NOMBREPLANTA);
+            siglas = bundle2.getString(ARG_SIGLAS);
+        }
     }
 
     @Override
@@ -75,6 +95,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
        // mViewModel = new ViewModelProvider(this).get(com.example.comprasmu.ui.Sustitucion.SustitucionViewModel.class);
         mViewModel=new ViewModelProvider(requireActivity()).get(SustitucionViewModel.class);
+        ldViewModel=new ViewModelProvider(requireActivity()).get(ListaDetalleViewModel.class);
 
         return    mBinding.getRoot();
     }
@@ -82,15 +103,10 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-    //    Log.d("aquiiiiii","********"+mViewModel.isNuevaMuestra());
-        Bundle bundle2 =getActivity().getIntent().getExtras();
 
-        if(bundle2!=null)
-         categoriaSel=bundle2.getString(ARG_CATEGORIA);
-        if (getArguments() != null) {
-            plantaSel = getArguments().getInt(ARG_PLANTA);
-            nombrePlanta = getArguments().getString(ARG_NOMBREPLANTA);
-        }
+
+        Log.d(TAG,"planta sel"+plantaSel);
+        Log.d(TAG,"cat"+categoriaSel);
         mBinding.setLifecycleOwner(this);
         setupListAdapter();
 
@@ -138,10 +154,14 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
             NuevoDetalleViewModel nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
                 String clienteNombre=Constantes.ni_clientesel;//lo pongo hasta que se guarda el informe
             //para los bu
-
-            nuevoInf.setProductoSel(productoSel,nombrePlanta,plantaSel, 2,"PEñAFIEL","");
+            //productoSel.setTipoMuestra(2);
+            //productoSel.setNombreTipoMuestra("BACKUP");
+            //productoSel.setAnalisisId(mViewModel.getDetallebuSel().getAnalisisId());
+            //productoSel.setTipoAnalisis(mViewModel.getDetallebuSel().getTipoAnalisis());
+            //me faltan las siglas
+            nuevoInf.setProductoSel(productoSel,nombrePlanta,plantaSel, ldViewModel.getClienteSel(),clienteNombre,siglas,ldViewModel.getDetallebuSel());
             Constantes.productoSel=nuevoInf.productoSel;
-            Constantes.NM_TOTALISTA=mListAdapter.getItemCount();
+          //  Constantes.NM_TOTALISTA=mListAdapter.getItemCount();
     /*        Fragment fragment = new DetalleProductoFragment1();
 // Obtener el administrador de fragmentos a través de la actividad
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -154,7 +174,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
             fragmentTransaction.commit();
           //  fragmentManager.beginTransaction().remove(this).commitAllowingStateLoss();
 */
-            Constantes.NM_TOTALISTA=mListAdapter.getItemCount();
+
             Intent resultIntent = new Intent();
 
            // resultIntent.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.informe.getId());

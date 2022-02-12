@@ -23,7 +23,14 @@ import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class ListaDetalleViewModel extends AndroidViewModel {
@@ -66,6 +73,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
        listas =repository.getListaWithDetalleByFiltros(Constantes.INDICEACTUAL,plantaSel,clienteSel);
+
         size = Transformations.map(listas,res->{ return listas.getValue().size();});
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
     }
@@ -116,33 +124,33 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     }
 
     //para las colsultas de bu
-    public void consultasBackup(int idlista,int opcionsel,String categoria, String productoNombre, String empaque,String tamanio,int analisisid, String analisis ){
+    public void consultasBackup(int idlista,int opcionsel,String categoria, String productoNombre, String empaque,String tamanio,int analisisid, String analisis,int iddetorig ){
       switch (analisisid){
           case 1: //fisico
-                consultaFisico(idlista, opcionsel, categoria, productoNombre, empaque, analisis);
+                consultaFisico(idlista, opcionsel, categoria, productoNombre, empaque, analisis,iddetorig);
                 break;
           case 2: //sensorial
-              consultaSensorial(idlista, opcionsel, categoria, productoNombre, empaque, analisis);
+              consultaSensorial(idlista, opcionsel, categoria, productoNombre, empaque, analisis,iddetorig);
               break;
           case 3: //torque
-              consultaTorque(idlista, opcionsel, categoria, productoNombre, empaque, analisis);
+              consultaTorque(idlista, opcionsel, categoria, productoNombre, empaque, analisis,iddetorig);
               break;
           case 4: //micro
-              consultaMicro(idlista, opcionsel, categoria, productoNombre, empaque, analisis);
+              consultaMicro(idlista, opcionsel, categoria, productoNombre, empaque, analisis,iddetorig);
               break;
       }
 
     }
-    public void consultaFisico(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ){
+    public void consultaFisico(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "");
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "",iddetorig);
                 break;
             case 2:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, "", "", "");
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, "", "", "",iddetorig);
                 break;
             case 3:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria,"" , "", "", "");
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria,"" , "", "", "",iddetorig);
                 break;
             case 4: default: //la misma lista
                 detallebu = detRepo.getAllByLista(idlista);
@@ -152,10 +160,10 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public void consultaSensorial(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ){
+    public void consultaSensorial(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "");
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "",iddetorig);
                 break;
             case 2: default:
                 detallebu = detRepo.getAllByLista(idlista);
@@ -166,13 +174,13 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public void consultaTorque(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ){
+    public void consultaTorque(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ,int iddetorig){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "");
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "",iddetorig);
                 break;
             case 2:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, "", empaque, "", "");
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, "", empaque, "", "",iddetorig);
                 break;
 
             case 3: default: //la misma lista
@@ -183,16 +191,16 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ){
+    public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", analisis);
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", analisis,iddetorig);
                 break;
             case 2:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, "", "", analisis);
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, "", "", analisis,iddetorig);
                 break;
             case 3:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, "", "", "", analisis);
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, "", "", "", analisis,iddetorig);
                 break;
 
             case 4: default: //la misma lista
@@ -215,7 +223,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         ListaCompraDetalle listaCompraDetalle=detRepo.findsimple(idlista,idDetalle);
         Log.d(TAG,"1seguimiento muestras "+listaCompraDetalle.getCantidad()+" "+listaCompraDetalle.getComprados());
         //valido que se pueda comprar y no sea bu
-        if(!isbu.equals("BACKUP")&&listaCompraDetalle.getCantidad()>=listaCompraDetalle.getComprados()+1){
+        if(listaCompraDetalle.getCantidad()>=listaCompraDetalle.getComprados()+1){
           //  detRepo.actualizarComprados(idDetalle,1);
             listaCompraDetalle.setComprados(listaCompraDetalle.getComprados()+1);
 
@@ -223,27 +231,69 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         String listaCodigos="";
             //no aumento el comprado solo el codigo
         if(listaCompraDetalle.getNvoCodigo()!=null)
-             listaCodigos=nuevoCodigo+";"+listaCompraDetalle.getNvoCodigo();
+            //reviso que no exite
+        {    if(!listaCompraDetalle.getNvoCodigo().contains(nuevoCodigo))
+                listaCodigos=nuevoCodigo+";"+listaCompraDetalle.getNvoCodigo();}
         else
              listaCodigos=nuevoCodigo;
-            listaCompraDetalle.setNvoCodigo(listaCodigos);
+        listaCompraDetalle.setNvoCodigo(listaCodigos);
             //actualizo
-            detRepo.insert(listaCompraDetalle);
+        detRepo.insert(listaCompraDetalle);
 
 
 
-        Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);
+      //  Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);
     }
 
+    public String ordenarCodigosNoPermitidos(int numTienda,String nvoCodigos,String noPermitidos) {
+        List<String> otodo= new ArrayList<String>();
+        List<Date> fechas=new ArrayList<Date>();
+        String resultado = "";
+        Log.d(TAG,"xxxxx "+numTienda+"--"+nvoCodigos+"--"+noPermitidos);
+        if(numTienda>=11){
+            nvoCodigos="";
+        }
+    if(nvoCodigos!=null&&nvoCodigos.length()>0) {
+        String auxnvo[] = nvoCodigos.split(";");
 
-    public void sumarTotales(){
+        if(auxnvo.length>0) {
+            List<String> lnvo= Arrays.asList(auxnvo);
+            otodo.addAll(lnvo);
+           // otodo = Arrays.asList();
+        }
+        else
+            otodo.add(nvoCodigos);
+        if (noPermitidos != null && noPermitidos.length() > 0) {
+            String auxno[] = noPermitidos.split(";");
+            if(auxno.length>0) {
+               List<String> lperm= Arrays.asList(auxno);
+                otodo.addAll(lperm);
+            }
+            else
+                otodo.add(noPermitidos);
+        }
+        Log.d(TAG,otodo.size()+"--"+ otodo);
+        SimpleDateFormat sdfcaducidad = new SimpleDateFormat("dd-MM-yy");
+        for (int i = 0; i < otodo.size(); i++) {
+            Log.d(TAG, otodo.get(i));
+            try {
+                fechas.add(sdfcaducidad.parse(otodo.get(i)));
+                Log.d(TAG, "<<" + fechas);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
 
-    }
+        Collections.sort(fechas,new SortItems());
 
+        for (int i = 0; i < fechas.size(); i++) {
+            resultado = resultado + "\n" + sdfcaducidad.format(fechas.get(i));
+        }
+    }else //ya están ordenados los no permitidos
+        resultado=noPermitidos.replace(";","\n");
 
+        return  resultado;
 
-    public void codigosNoPermitidos(String categoryId) {
-     //   mOpenListaCompraEvent.setValue(new Event<>(categoryId));
     }
 
     public LiveData<List<ListaWithDetalle>> getListas() {
@@ -308,5 +358,19 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     public void setDetallebu(LiveData<List<ListaCompraDetalle>> detallebu) {
         this.detallebu = detallebu;
+    }
+
+    class SortItems implements Comparator<Date> {
+        // @Override
+
+        // Method of this class
+        // To compare datetime objects
+        public int compare(Date a, Date b)
+        {
+
+            // Returning the value after comparing the objects
+            // this will sort the data in Descending order
+            return b.compareTo(a);
+        }
     }
 }

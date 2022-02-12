@@ -28,6 +28,8 @@ public abstract class SustitucionDao extends  BaseDao<Sustitucion> {
     @Query("delete from sustitucion where id_sustitucion=:id_sustitucion")
     public  abstract  void deleteById(int id_sustitucion);
 
+    @Query("delete from sustitucion")
+    public  abstract  void deleteAll();
 
     @Query("SELECT * FROM sustitucion where id_sustitucion=:id")
     public abstract LiveData<Sustitucion> find( int id);

@@ -183,7 +183,7 @@ public class CreadorFormulario {
             //  formulario.addView();
             //crear el label
             TextView tv=new TextView(context);
-            tv.setText(Html.fromHtml("<b>"+this.infocampo.label+"</b>:   "));
+            tv.setText(this.infocampo.label);
           //  tv.setGravity(Gravity.END);
             //formulario.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
            // tv.setTextAppearance(context, R.style.textolista1);
@@ -221,7 +221,8 @@ public class CreadorFormulario {
     public TextView label(){
         TextView label=new TextView(context);
         label.setText(infocampo.value);
-
+        if(infocampo.style>0)
+        label.setTextAppearance(context, infocampo.style);
         return label;
 
     }
@@ -498,16 +499,11 @@ public class CreadorFormulario {
 
         mySpinner.setAdapter(adapter);
 
-
-     /*   foreach(coleccion as key=>col){
-            //    echo "***".col;
-            if(old(this.infocampo["nombre_campo"],this.instance[this.infocampo["nombre_campo"]])==key)
-                opciones.="<option value='".key."' selected>".col."</option>";
-            else
-            opciones.="<option value='".key."'>".col."</option>";
-        }*/
-        //  die();
-       mySpinner.setId(this.infocampo.id);
+        if(infocampo.value!=null&&infocampo.value.length()>0){
+            mySpinner.setSelection(Integer.parseInt(infocampo.value)-1);
+        }
+       // mySpinner.setSelection(0);
+        mySpinner.setId(this.infocampo.id);
        //this.required.">
             return mySpinner;
 
@@ -594,7 +590,7 @@ public class CreadorFormulario {
 
         Spinner mySpinner = new Spinner(context);
         if( this.infocampo.selectdes!=null) {
-            Log.d("CREADORFORM","hola"+ this.infocampo.selectdes.get(0).getNombre());
+         //   Log.d("CREADORFORM","hola"+ this.infocampo.selectdes.get(0).getNombre());
 
             ArrayAdapter catAdapter = new ArrayAdapter<DescripcionGenerica>(context, android.R.layout.simple_spinner_dropdown_item, infocampo.selectdes) {
 
@@ -645,7 +641,23 @@ public class CreadorFormulario {
                 public void onNothingSelected(AdapterView<?> parent) {
                 }
             });
+            if(infocampo.value!=null&&infocampo.value.length()>0){
+                //busco el valor en la lista
+                for(DescripcionGenerica cat:this.infocampo.selectdes){
+                      Log.d("CreadorForm","val"+infocampo.value+" cat"+cat.getId());
+                    if(infocampo.value.equals(cat.getId()+"")){
+                       // Log.d("CreadorForm","val"+infocampo.value+" cat"+cat.getId());
+                        mySpinner.setSelection(catAdapter.getPosition(cat),true);
+                        break;
+                    }
+                    if(infocampo.value.equals(cat.getNombre())){
+                        Log.d("CreadorForm",catAdapter.getPosition(cat)+"");
 
+                        mySpinner.setSelection(catAdapter.getPosition(cat),true);
+                        break;
+                    }
+                }
+            }
         }
         else
             Log.e(Constantes.TAG,"Error creando el select falta definir selectdes");

@@ -15,6 +15,12 @@
         <item name="android:textSize">14sp</item>
 
     </style>
+    <style name="verinforme2" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
     <style name="textolistagris" parent="TextAppearance.AppCompat">
         <item name="android:textColor">#929292</item>
         <item name="android:textSize">14sp</item>

@@ -88,7 +88,7 @@ public class VerInformeDetFragment extends Fragment {
 
         Log.d("VerInformeDFragment1","creando fragment");
 
-        sdf=new SimpleDateFormat("dd-MMM-yy");
+        sdf=new SimpleDateFormat("dd-MM-yy");
         // Inflate the layout for this fragment
         startui();
 
@@ -186,6 +186,7 @@ public class VerInformeDetFragment extends Fragment {
 
         CampoForm campo=new CampoForm();
         campo.label=getString(R.string.fecha_caducidad);
+        campo.style=R.style.verinforme2;
         campo.nombre_campo=Contrato.TablaInformeDet.COSTO;
         campo.type="label";
         campo.value=sdf.format(detalle.getCaducidad());
@@ -196,6 +197,7 @@ public class VerInformeDetFragment extends Fragment {
         cf=new CreadorFormulario(camposForm,getContext());
         camposForm= new ArrayList<CampoForm>();
          campo=new CampoForm();
+        campo.style=R.style.verinforme2;
         campo.label=getString(R.string.origen);
         campo.nombre_campo= Contrato.TablaInformeDet.ORIGEN;
          campo.type="label";
@@ -204,6 +206,7 @@ public class VerInformeDetFragment extends Fragment {
 
         camposForm.add(campo);
         campo=new CampoForm();
+        campo.style=R.style.verinforme2;
         campo.label=getString(R.string.costo);
 
          campo.type="label";
@@ -244,7 +247,7 @@ public class VerInformeDetFragment extends Fragment {
         if(detalle.getAtributoa()!=null&&!detalle.getAtributoa().equals("")) {
             campo = new CampoForm();
             campo.label = getString(R.string.atributoa);
-
+            campo.style=R.style.verinforme2;
             campo.type = "label";
 
             campo.value = buscarAtr(detalle.getAtributoa(), atributos);
@@ -265,7 +268,7 @@ public class VerInformeDetFragment extends Fragment {
             campo.label = getString(R.string.atributob);
             campo.nombre_campo = Contrato.TablaInformeDet.ATRIBUTOB;
             campo.type = "label";
-
+            campo.style=R.style.verinforme2;
             campo.value = buscarAtr(detalle.getAtributob(), atributos);
 
             camposForm.add(campo);
@@ -282,7 +285,7 @@ public class VerInformeDetFragment extends Fragment {
             campo.label = getString(R.string.atributoc);
             campo.nombre_campo = Contrato.TablaInformeDet.ATRIBUTOC;
             campo.type = "label";
-
+            campo.style=R.style.verinforme2;
             campo.value = buscarAtr(detalle.getAtributoc(), atributos);
 
          /*   camposForm.add(campo);
@@ -297,7 +300,7 @@ public class VerInformeDetFragment extends Fragment {
         }
         campo=new CampoForm();
         campo.label="QR";
-
+        campo.style=R.style.verinforme2;
         campo.type="label";
         campo.value=detalle.getQr();
 
@@ -313,7 +316,7 @@ public class VerInformeDetFragment extends Fragment {
         campo.funcionOnClick=new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                verImagen( finalCampo.value);
+                verImagen( fotos.get(getString(R.string.foto_codigo_produccion)).getRuta());
 
             }
         };
@@ -322,13 +325,14 @@ public class VerInformeDetFragment extends Fragment {
         campo.label = getString(R.string.foto_posicion1);
         campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOA;
         campo.type = "imagenView";
+
         campo.id=501;
         campo.value = fotos.get(getString(R.string.foto_atributoa))!= null ? directorio + fotos.get(getString(R.string.foto_atributoa)).getRuta() : "";
         CampoForm finalCampo2 = campo;
         campo.funcionOnClick=new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                verImagen( finalCampo2.value);
+                verImagen( fotos.get(getString(R.string.foto_atributoa)).getRuta());
 
             }
         };
@@ -344,7 +348,7 @@ public class VerInformeDetFragment extends Fragment {
         campo.funcionOnClick=new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                verImagen( finalCampo3.value);
+                verImagen( fotos.get(getString(R.string.foto_atributob)).getRuta() );
 
             }
         };
@@ -356,11 +360,11 @@ public class VerInformeDetFragment extends Fragment {
         campo.type = "imagenView";
         campo.id=503;
         campo.value = fotos.get(getString(R.string.foto_atributoc))!= null ? directorio + fotos.get(getString(R.string.foto_atributoc)).getRuta() : "";
-        CampoForm finalCampo4 = campo;
+
         campo.funcionOnClick=new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                verImagen( finalCampo4.value);
+                verImagen( fotos.get(getString(R.string.foto_atributoc)).getRuta());
 
             }
         };
@@ -376,7 +380,7 @@ public class VerInformeDetFragment extends Fragment {
         campo.funcionOnClick=new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                verImagen( finalCampo5.value);
+                verImagen(fotos.get(getString(R.string.etiqueta_evaluacion)).getRuta());
 
             }
         };
@@ -390,7 +394,7 @@ public class VerInformeDetFragment extends Fragment {
     private void crearCampo(String label, String value){
         CampoForm campo=new CampoForm();
         campo.label=label;
-
+        campo.style=R.style.verinforme2;
         campo.type="label";
         campo.value=value;
 
@@ -422,6 +426,7 @@ public class VerInformeDetFragment extends Fragment {
     public void verImagen(String nombrearch){
         //  ImageView imagen=(ImageView)v;
         // imagen.get
+        Log.d(TAG,nombrearch);
         Intent iverim=new Intent(getActivity(), RevisarFotoActivity.class);
         iverim.putExtra(RevisarFotoActivity.IMG_PATH1,nombrearch);
         startActivity(iverim);

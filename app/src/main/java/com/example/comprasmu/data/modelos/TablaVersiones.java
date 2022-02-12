@@ -13,6 +13,7 @@ public class TablaVersiones {
     private String nombreTabla;
     private Date version;
     private String tipo;
+    private String indice; //solo para listas de compra
 
 
     public int getId() {
@@ -45,5 +46,13 @@ public class TablaVersiones {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public String getIndice() {
+        return indice;
+    }
+
+    public void setIndice(String indice) {
+        this.indice = indice;
     }
 }

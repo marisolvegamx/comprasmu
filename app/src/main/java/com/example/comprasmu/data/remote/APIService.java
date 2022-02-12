@@ -7,10 +7,12 @@ import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.Tienda;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
 import okhttp3.MultipartBody;
@@ -66,6 +68,8 @@ public interface APIService {
 
     @GET("catalogos")
     Call<CatalogosResponse> getCatalogosNuevoInforme(@Query("usuario") String usuario);
+    @GET("sustitucion")
+    Call<List<Sustitucion>> getSustitucion(@Query("usuario") String usuario);
 
     @GET("listacompras")
     Call<ListaCompraResponse> getListasCompra( @Query("indice") String indice, @Query("usuario") String usuario, @Query("version_lista") String version_lista, @Query("version_detalle") String version_detalle);

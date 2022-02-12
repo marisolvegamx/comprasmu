@@ -49,8 +49,8 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         }
 
 
-        Object[] params=filtros.toArray();
-
+       // Object[] params=filtros.toArray();
+        Log.d("query",filtros.toArray()+"");
 
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
@@ -85,6 +85,9 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
 
     public void delete(Sustitucion object) {
         dao.delete(object);
+    }
+    public void deleteAll(){
+     dao.deleteAll();
     }
 
 

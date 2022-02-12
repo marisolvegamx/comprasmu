@@ -11,6 +11,9 @@
             name="mostrarAgregar"
             type="Boolean" />
         <variable
+            name="mostrarbcu"
+            type="Boolean" />
+        <variable
             name="isBu"
             type="Boolean" />
         <variable
@@ -21,7 +24,11 @@
             type="Integer" />
         <variable
             name="cliente"
-            type="String" />
+            type="Integer" />
+        <variable
+            name="mViewModel"
+            type="com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel" />
+
     </data>
 
 
@@ -122,6 +129,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
+                        android:visibility="@{isBu?View.GONE:View.VISIBLE}"
                         android:text="@{detalle.tipoAnalisis}" />
 
                     <TextView
@@ -130,6 +138,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
+                        android:visibility="@{isBu?View.GONE:View.VISIBLE}"
                         android:text='@{detalle.nombreTipoMuestra}' />
 
                     <ImageButton
@@ -140,7 +149,7 @@
 
 
                         android:theme="@android:style/Widget.Material.Button.Small"
-                        android:visibility='@{(detalle.comprados+1&lt;=detalle.cantidad)&amp;&amp;((cliente.equals("PEPSI")&amp;&amp;numTienda>10)||(cliente.equals("PEñAFIEL")))&amp;&amp;!isBu&amp;&amp;mostrarAgregar?View.VISIBLE:View.GONE}'
+                        android:visibility='@{(detalle.comprados+1&lt;=detalle.cantidad)&amp;&amp;mostrarbcu?View.VISIBLE:View.GONE}'
                         app:srcCompat="@drawable/ic_baseline_repeat_24" />
 
                     <ImageButton
@@ -167,7 +176,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:textSize="8sp"
-                        android:text='@{((cliente.equals("PEPSI")&amp;&amp;numTienda>10))+"--"+detalle.comprados+1+"--"+detalle.cantidad}'
+                        android:text='@{"--"+detalle.comprados+1+"--"+detalle.cantidad}'
                         android:visibility="gone" />
                     <TextView
                         android:id="@+id/txtldisbu2"
@@ -175,7 +184,7 @@
                         android:textSize="8sp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text='@{numTienda+" "+isBu+" "+cliente+" "+mostrarAgregar+"--"}'
+                        android:text='@{mostrarbcu+""}'
                         android:visibility="gone" />
 
                     <TextView
@@ -183,8 +192,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text='@{isBu?"backup":""}'
-                        android:visibility="gone" />
+                        android:text='@{isBu?"BACKUP":""}'
+                        android:visibility="visible" />
 
 
                 </LinearLayout>
@@ -196,7 +205,7 @@
                     android:layout_height="40dp"
                     android:layout_marginBottom="4dp"
                     android:minWidth="0dp"
-
+                    android:visibility="@{isBu?View.GONE:View.VISIBLE}"
                     android:text="Ver códigos no permitidos>"
                     android:textColor="@color/blue_subtitle"
                     android:textSize="10sp" />
@@ -206,7 +215,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    android:text='@{(numTienda&lt;11&amp;&amp;detalle.nvoCodigo!=null)?detalle.nvoCodigo.replace(";","\n"):""+detalle.codigosNoPermitidos!=null?detalle.codigosNoPermitidos.replace(";","\n"):""}' />
+                    android:text='@{mViewModel.ordenarCodigosNoPermitidos(numTienda,detalle.nvoCodigo,detalle.codigosNoPermitidos)}' />
                 <!--                <Button-->
                 <!--                    android:id="@+id/btncodigosex"-->
                 <!--                    style="@style/Widget.AppCompat.Button.Borderless"-->

@@ -3,7 +3,7 @@
     <string name="empty_state_text">NO HAY DATOS QUE MOSTRAR</string>
     <string name="codigos_no_per">CÓDIGOS NO PERMITIDOS</string>
     <string name="producto">PRODUCTO</string>
-    <string name="tamanio">TAMAñO</string>
+    <string name="tamanio">TAMAÑO</string>
     <string name="empaque">EMPAQUE</string>
     <string name="analisis">ANÁLISIS</string>
     <string name="total">TOTAL</string>
@@ -20,12 +20,12 @@
     <string name="producto_exhibido">PRODUCTO EXHIBIDO</string>
     <string name="foto_num_tienda">MUESTRA CON NÚMERO DE TIENDA Y TAMAÑO</string>
     <string name="marca_traslape">MARCA DEL TRASLAPE</string>
-    <string name="atributoa">DAñO A</string>
-    <string name="foto_atributoa">FOTO DAñO A</string>
-    <string name="atributob">DAñO B</string>
-    <string name="foto_atributob">FOTO DAñO B</string>
-    <string name="atributoc">DAñO C</string>
-    <string name="foto_atributoc">FOTO DAñO C</string>
+    <string name="atributoa">DAÑO A</string>
+    <string name="foto_atributoa">FOTO DAÑO A</string>
+    <string name="atributob">DAÑO B</string>
+    <string name="foto_atributob">FOTO DAÑO B</string>
+    <string name="atributoc">DAÑO C</string>
+    <string name="foto_atributoc">FOTO DAÑO C</string>
     <string name="etiqueta_evaluacion">ETIQUETA DE EVALUACIÓN</string>
     <string name="foto_posicion1">FOTO POSICION 1</string>
     <string name="foto_posicion2">FOTO POSICION 2</string>
@@ -34,6 +34,8 @@
     <string name="se_compro_producto">¿SE COMPRÓ PRODUCTO?</string>
     <string name="se_compro_segunda">¿SE COMPRÓ SEGUNDA MUESTRA?</string>
     <string name="se_compro_terc">¿SE COMPRÓ TERCERA MUESTRA?</string>
+    <string name="se_compro_cuar">¿SE COMPRÓ CUARTA MUESTRA?</string>
+
     <string name="planta">PLANTA</string>
 
 
@@ -81,6 +83,7 @@
     <string name="importante">IMPORTANTE</string>
     <string name="resp_cancelar_sinconexion">SE ELIMINÓ EL INFORME</string>
     <string name="informe_abierto">PARA INICIAR UN NUEVO INFORME FINALICE EL ANTERIOR.</string>
+    <string name="error_memoria">NO HAY MEMORIA SUFICIENTE PARA ESTA ACCION.</string>
 
     <string-array name="form_detalle_producto">
         <item>origen</item>
@@ -125,7 +128,7 @@
     <string name="form_informe_terceramuestra">terceraMuestra</string>
     <string name="form_informe_condiciones">condiciones_traslado</string>
     <string name="informe_finalizado">INFORME FINALIZADO</string>
-    <string name="title_activity_revisar_foto">RevisarFotoActivity</string>
+    <string name="title_activity_revisar_foto">VER FOTO</string>
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
@@ -162,7 +165,7 @@
     <string name="error_fecha">LA FECHA DE CADUCIDAD DEBE SER MAYOR A 30 DIAS</string>
     <string name="error_fecha_formato">INTRODUZCA UNA FECHA VÁLIDA EN FORMATO dd-mm-aa</string>
     <string name="error_fecha_caduca">MUESTRA CADUCADA, VERIFIQUE</string>
-    <string name="error_codigo_per">CODIGOS NO PERMITIDO</string>
+    <string name="error_codigo_per">CODIGO NO PERMITIDO</string>
 
     <string name="siglas_planta">SIGLAS DE PLANTA</string>
     <string name="no_hay_conexion">Sin conexión a internet este módulo no funcionará. Revise su conexión</string>
@@ -185,14 +188,15 @@
     <string name="seleccione_cliente">SELECCIONE EL CLIENTE</string>
     <string name="title_activity_login">Compras</string>
     <string name="prompt_email">CORREO</string>
-    <string name="prompt_password">CONTRASEñA</string>
+    <string name="prompt_password">CONTRASEÑA</string>
     <string name="action_sign_in">INGRESAR</string>
     <string name="action_sign_in_short">INGRESAR</string>
     <string name="welcome">"¡BIENVENIDO!"</string>
     <string name="invalid_username">CORREO INVALIDO</string>
-    <string name="invalid_password">LA CONTRASEñA DEBE SER MAYOR A 5 CARACTERES</string>
-    <string name="login_failed">"USUARIO O CONTRASEñA INCORRECTOS"</string>
-    <string name="ingrese_usuario">ESCRIBA SU USUARIO Y CONTRASEñA</string>
+    <string name="invalid_password">LA CONTRASEÑA DEBE SER MAYOR A 5 CARACTERES</string>
+    <string name="login_failed">"USUARIO O CONTRASEÑA INCORRECTOS"</string>
+    <string name="ingrese_usuario">ESCRIBA SU USUARIO Y CONTRASEÑA</string>
+    <string name="error_sesion">ERROR AL INICIAR SESION</string>
     <string name="menu_home">INICIO</string>
     <string name="nota">NOTA</string>
     <string name="enviar">ENVIAR</string>
@@ -213,4 +217,6 @@
     <string name="chica">CHICA</string>
     <string name="otras">OTRAS</string>
     <string name="sin_conexion">ESTA ACCION REQUIERE CONEXION A INTERNET, VERIFIQUE SU CONEXION O ACTIVE SUS DATOS</string>
+    <string name="error_nombre_tienda">FALTA CAPTURAR EL NOMBRE DE LA TIENDA</string>
+    <string name="sig_criterio">SIGUIENTE CRITERIO</string>
 </resources>

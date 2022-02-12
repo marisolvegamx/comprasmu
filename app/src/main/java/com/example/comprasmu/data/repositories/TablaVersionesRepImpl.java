@@ -67,8 +67,8 @@ public class TablaVersionesRepImpl extends BaseRepository<TablaVersiones> {
     public TablaVersiones getVersionByNombreTabla(String nombre) {
         return dao.getVersionByNombreTabla(nombre);
     }
-    public TablaVersiones getVersionByNombreTablasmd(String nombre) {
-        return dao.getVersionByNombreTablamd(nombre);
+    public TablaVersiones getVersionByNombreTablasmd(String nombre,String indice) {
+        return dao.getVersionByNombreTablamd(nombre, indice);
     }
     @Override
     public long insert(TablaVersiones object) {

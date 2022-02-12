@@ -42,6 +42,9 @@ public abstract class InformeTempDao extends  BaseDao<InformeTemp>  {
     public abstract InformeTemp  getInformesByNombreMues(String campo,int numMuestra);
     @Query("SELECT * from informe_temp where isPregunta=:pregunta order by id desc")
     public abstract List<InformeTemp>  getUltimo(boolean pregunta);
+
+    @Query("SELECT * from informe_temp where id<:id and isPregunta=:pregunta order by id desc")
+    public abstract List<InformeTemp>  getUltimoxId(int id, boolean pregunta);
     @Query("SELECT * FROM informe_temp WHERE tabla=:tabla and numMuestra=:numMuestra")
     public abstract List<InformeTemp>  getInformesByTabla(String tabla,int numMuestra);
     @Query("SELECT * FROM informe_temp WHERE tabla=:tabla")

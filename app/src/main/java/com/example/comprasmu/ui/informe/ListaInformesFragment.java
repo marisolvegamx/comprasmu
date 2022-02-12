@@ -244,10 +244,11 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
     public void onClickSubir(int informe) {
         if(NavigationDrawerActivity.isOnlineNet()) {
             NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
-            Log.d(TAG, "preparando informe**********");
+
             InformeEnvio informeenv = niViewModel.preparaInforme(informe);
             SubirInformeTask miTareaAsincrona = new SubirInformeTask(true, informeenv, getActivity(), niViewModel);
             miTareaAsincrona.execute();
+            Log.d(TAG, "preparando informe**********"+informeenv);
             NuevoinformeFragment.subirFotos(getActivity(), informeenv);
         }else
             Toast.makeText(getActivity(), getString(R.string.sin_conexion), Toast.LENGTH_LONG).show();

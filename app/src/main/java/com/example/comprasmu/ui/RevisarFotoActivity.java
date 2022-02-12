@@ -96,7 +96,7 @@ public class RevisarFotoActivity extends AppCompatActivity {
 
             Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
             //comprimir imagen
-            File file = new File(nombre_foto);
+           /* File file = new File(nombre_foto);
             OutputStream os = null;
             try {
                 os = new FileOutputStream(file);
@@ -104,8 +104,8 @@ public class RevisarFotoActivity extends AppCompatActivity {
                 Log.d("Compras",e.getMessage());
                // Toast.makeText(, "Error al guardar la foto", Toast.LENGTH_SHORT).show();
                 return;
-            }
-            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            }*/
+          //  rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
 
             imagen1.setImageBitmap(rotatedBitmap);
 

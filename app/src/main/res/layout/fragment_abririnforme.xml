@@ -80,7 +80,7 @@
 
                     <EditText
                         android:id="@+id/txtaifotofachada"
-                        style="@style/MyEditTextStyle"
+
                         android:layout_width="98dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"

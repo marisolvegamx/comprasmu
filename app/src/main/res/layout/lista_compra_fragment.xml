@@ -69,7 +69,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text='@{"TOTAL:"+total}' />
+                        android:text='@{"TOTAL:"+total}'
+                       />
 
                     <TextView
                         android:id="@+id/txtlcsiglas"
@@ -97,19 +98,6 @@
 
 
             </TableLayout>
-
-            <Spinner
-                android:id="@+id/splcopcionesbu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="16dp"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtlcelegir" />
 
             <LinearLayout
                 android:id="@+id/linearLayout5"
@@ -140,39 +128,49 @@
                     android:textAlignment="viewStart"
                     android:textColor="#F44336"
                     android:textSize="14sp" />
+
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtlcopcionbu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detalle_list"
                 android:layout_width="0dp"
+
                 android:layout_height="0dp"
+
                 android:layout_below="@+id/toolbar"
-                android:layout_marginTop="10dp"
-
+                android:layout_marginTop="8dp"
                 android:paddingStart="16dp"
-
                 android:paddingEnd="16dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/splcopcionesbu"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <TextView
-                android:id="@+id/txtlcelegir"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/elige_un_criterio"
-                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/btnlcsigbu"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+
+            <Button
+                android:id="@+id/btnlcsigbu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/sig_criterio"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+                app:layout_constraintVertical_bias="0.971" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

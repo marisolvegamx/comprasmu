@@ -918,7 +918,8 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
             Intent msgIntent = new Intent(activity, SubirFotoService.class);
             msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
             msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
-            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getVisita().getIndice());
+           // Log.d(TAG,"error "+informe.get)
+            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,imagen.getIndice());
            // Constantes.INDICEACTUAL
             Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
             activity.startService(msgIntent);

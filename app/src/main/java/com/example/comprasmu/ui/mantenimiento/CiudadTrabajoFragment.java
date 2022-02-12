@@ -121,13 +121,17 @@ public class CiudadTrabajoFragment extends Fragment {
         SharedPreferences prefe=getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=prefe.edit();
         DescripcionGenerica ciudadSel=(DescripcionGenerica)spciudades.getSelectedItem();
-        editor.putString("ciudadtrabajo",ciudadSel.getNombre() );
-        editor.putInt("idciudadtrabajo",ciudadSel.getId());
-        editor.commit();
-        Constantes.CIUDADTRABAJO=ciudadSel.getNombre();
-       // Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");
-        Constantes.IDCIUDADTRABAJO=ciudadSel.getId();
-     //  Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
+        if(ciudadSel!=null) {
+            editor.putString("ciudadtrabajo", ciudadSel.getNombre());
+            editor.putInt("idciudadtrabajo", ciudadSel.getId());
+            editor.commit();
+            Constantes.CIUDADTRABAJO = ciudadSel.getNombre();
+            // Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");
+            Constantes.IDCIUDADTRABAJO = ciudadSel.getId();
+        }else
+            Toast.makeText(getActivity(),"Algo salió mal con el catálogo, actualice las lista de compra", Toast.LENGTH_LONG).show();
+
+        //  Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
        //voy al home
            NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
 

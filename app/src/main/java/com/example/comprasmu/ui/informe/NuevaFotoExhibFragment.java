@@ -33,6 +33,7 @@ import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
@@ -89,7 +90,16 @@ public class NuevaFotoExhibFragment extends Fragment {
           File file = new File(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
         if (file.exists()) {
             //   Bitmap imageBitmap = (Bitmap) extras.get("data");
+            if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+            {
+                Toast.makeText(getContext(), getString(R.string.error_memoria), Toast.LENGTH_SHORT).show();
+                return;
+            }
             Bitmap bitmap1= BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
+          // comprimo imagen
+            ComprasUtils cu=new ComprasUtils();
+            bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+
 
             imagen1.setImageBitmap(bitmap1);
             ruta1.setText( nombre_foto);
@@ -191,7 +201,11 @@ public class NuevaFotoExhibFragment extends Fragment {
    */
 
     public void rotarImagen(View v){
-
+        if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+        {
+            Toast.makeText(getContext(), getString(R.string.error_memoria), Toast.LENGTH_SHORT).show();
+            return;
+        }
         Bitmap bitmapOrg=BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
 
         int width=bitmapOrg.getWidth();
@@ -205,7 +219,7 @@ public class NuevaFotoExhibFragment extends Fragment {
 
         rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
         //comprimir imagen
-        File file = new File(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
+       /* File file = new File(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
         OutputStream os = null;
         try {
             os = new FileOutputStream(file);
@@ -214,7 +228,7 @@ public class NuevaFotoExhibFragment extends Fragment {
             Toast.makeText(getActivity(),"Hubo un error fatal", Toast.LENGTH_SHORT).show();
 
         }
-        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);*/
 
         imagen1.setImageBitmap(rotatedBitmap);
 

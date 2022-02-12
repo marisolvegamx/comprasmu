@@ -25,6 +25,7 @@ public abstract class BaseDao<T> {
     @Delete
     public abstract void delete(T object);
 
+
    /* @RawQuery(observedEntities = )
     protected abstract LiveData<List<T>> doFindAllValid(SupportSQLiteQuery query);
 

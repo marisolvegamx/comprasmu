@@ -1486,9 +1486,7 @@ public class DetalleProductoFragment1 extends Fragment {
     }
 
 
-    public boolean validarMuestra(){
-        return true;
-    }
+
     String nombre_foto;
     ImageButton botonrot;
     public   void tomarFoto(int origen, int destino) {
@@ -1669,7 +1667,7 @@ public class DetalleProductoFragment1 extends Fragment {
                if(arrecodigos!=null&&arrecodigos.length>0) {
                    List<String> lista = Arrays.asList(arrecodigos);
                    if (lista.contains(codigo.getText().toString())) {
-                       Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido)+"*", Toast.LENGTH_LONG).show();
+                       Toast.makeText(getActivity(), getString(R.string.error_codigo_per)+"*", Toast.LENGTH_LONG).show();
 
                        resp.setValue(false);
                        return resp;
@@ -1679,7 +1677,7 @@ public class DetalleProductoFragment1 extends Fragment {
                        res=buscarMuestraCodigo(dViewModel.productoSel,codigo.getText().toString(),fechacad);
 
                                if(res){
-                                   Toast.makeText(getActivity(), getString(R.string.error_codigo_repetido), Toast.LENGTH_LONG).show();
+                                   Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
 
 
                                }

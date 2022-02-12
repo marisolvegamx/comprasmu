@@ -32,10 +32,10 @@
             android:icon="?attr/actionModePasteDrawable"
             android:title="@string/menu_lista_informe" />
 
-        <item
+      <!--  <item
             android:id="@+id/nav_configurar"
             android:icon="@android:drawable/ic_menu_manage"
-            android:title="@string/menu_configuracion" />
+            android:title="@string/menu_configuracion" />-->
         <item
             android:id="@+id/nav_cerrarsesion"
             android:icon="@android:drawable/ic_menu_close_clear_cancel"

@@ -21,6 +21,7 @@ import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 
 public class DescargarLisFragment extends Fragment implements DescargasIniAsyncTask.ProgresoListener {
@@ -51,8 +52,8 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         ListaCompraDao dao= ComprasDataBase.getInstance(getContext()).getListaCompraDao();
         ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getContext());
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
-
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this);
+        SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getContext());
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo);
         textView.setText("Por favor mantengase en la aplicación hasta que termine la descarga");
        pb.setVisibility(View.VISIBLE);
 

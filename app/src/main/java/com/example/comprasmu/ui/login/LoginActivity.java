@@ -61,21 +61,6 @@ public class LoginActivity extends AppCompatActivity {
         final Button loginButton = findViewById(R.id.login);
         loadingProgressBar = findViewById(R.id.loading);
 
-        loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
-            @Override
-            public void onChanged(@Nullable LoginFormState loginFormState) {
-                if (loginFormState == null) {
-                    return;
-                }
-                loginButton.setEnabled(loginFormState.isDataValid());
-                if (loginFormState.getUsernameError() != null) {
-                    usernameEditText.setError(getString(loginFormState.getUsernameError()));
-                }
-                if (loginFormState.getPasswordError() != null) {
-                    passwordEditText.setError(getString(loginFormState.getPasswordError()));
-                }
-            }
-        });
 
 
 
@@ -92,8 +77,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+              //  loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
+                //        passwordEditText.getText().toString());
+                if(s.length()>0)
+                loginButton.setEnabled(true);
             }
         };
         usernameEditText.addTextChangedListener(afterTextChangedListener);
@@ -113,7 +100,24 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-               comprobacion();
+                loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString());
+
+                LoginFormState loginFormState=loginViewModel.getLoginFormState();
+                        if (loginFormState == null) {
+                            return;
+                        }
+                        loginButton.setEnabled(loginFormState.isDataValid());
+                        if (loginFormState.getUsernameError() != null) {
+                            usernameEditText.setError(getString(loginFormState.getUsernameError()));
+                        }
+                        if (loginFormState.getPasswordError() != null) {
+                            passwordEditText.setError(getString(loginFormState.getPasswordError()));
+                        }
+                if(loginFormState.isDataValid())
+                    comprobacion();
+
+                loadingProgressBar.setVisibility(View.GONE);
 
             }
         });
@@ -132,6 +136,8 @@ public class LoginActivity extends AppCompatActivity {
     public void comprobacion(){
         //reviso si ya tengo el dato
         LoggedInUser luser=tengoUsuario();
+        //siempre checa el internet
+        //luser=null;
         if(luser==null){ //primera vez
          //   Log.i("LoginActivity","primera vez");
             if(ComprasUtils.isOnlineNet())
@@ -181,6 +187,16 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+    public void guardarClave(String clave){
+        SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=prefe.edit();
+
+        editor.putString("claveusuario",clave);
+        editor.commit();
+        Constantes.CLAVEUSUARIO=clave;
+
+
+    }
 
 
 
@@ -220,6 +236,14 @@ public class LoginActivity extends AppCompatActivity {
         public void correcto(String cveusr) {
             loadingProgressBar.setVisibility(View.GONE);
             guardarUsuario( cveusr);
+            //busco la clave de usuario
+            String aux[]=cveusr.split("=");
+            if(aux.length<=0){
+                Toast.makeText(getApplicationContext(),getString(R.string.error_sesion) , Toast.LENGTH_LONG).show();
+                return;
+            }
+            String clave=aux[1];
+            guardarClave(clave);
             updateUiWithUser(usernameEditText.getText().toString());
             entrar();
             finish();

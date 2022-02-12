@@ -38,7 +38,9 @@ public  class ReactivoRepositoryImpl  extends BaseRepository<Reactivo> {
     public LiveData<Reactivo> find(int id) {
         return dao.find(id);
     }
-
+    public LiveData<Reactivo> findAnterior(int id) {
+        return dao.find(id);
+    }
     @Override
     public Reactivo findsimple(int id) {
         return dao.findsimple(id);

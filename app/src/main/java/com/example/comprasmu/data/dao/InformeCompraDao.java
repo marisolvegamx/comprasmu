@@ -60,15 +60,15 @@ public interface InformeCompraDao {
             "FROM informe_compras ")
     int getUltimoId();
 
-   /* @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +
+   @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +
             "FROM informe_compras inner join visitas on visitasId=visitas.id " +
             "where indice=:indice and plantasId=:planta")
-    int getLastConsecutivoInforme(String indice, int planta);*/
+    int getLastConsecutivoInforme(String indice, int planta);
 
-    @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +
+   /* @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +
             "FROM informe_compras inner join visitas on visitasId=visitas.id " +
             "where indice=:indice and clientesId=:planta")
-    int getLastConsecutivoInforme(String indice, int planta);
+    int getLastConsecutivoInforme(String indice, int planta);*/
 
     @Query("update informe_compras set estatus=:estatus WHERE id=:id")
     public void actualizarEstatus(int id, int estatus);

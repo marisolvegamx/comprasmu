@@ -26,6 +26,7 @@ public abstract class ReactivoDao extends  BaseDao<Reactivo> {
         @Query("SELECT * FROM reactivos where id=:id")
         public abstract LiveData<Reactivo> find( int id);
 
+
         @Query("SELECT * FROM reactivos")
         public  abstract List<Reactivo> findAllsimple();
 
@@ -33,6 +34,8 @@ public abstract class ReactivoDao extends  BaseDao<Reactivo> {
         public abstract Reactivo findsimple( int id);
         @Query("SELECT * FROM reactivos where nombreCampo=:nombre")
         public abstract Reactivo findByNombre( String nombre);
+        @Query("SELECT * FROM reactivos where cliente=:nombre")
+        public abstract List<Reactivo> findByCliente( String nombre);
 }
 
 

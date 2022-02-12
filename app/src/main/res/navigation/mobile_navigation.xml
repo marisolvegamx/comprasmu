@@ -90,12 +90,16 @@
         tools:layout="@layout/fragment_abririnforme">
         <action android:id="@+id/action_continuar"
             app:destination="@id/nav_continuar"
+            app:popUpTo="@+id/nav_continuar"
+            app:popUpToInclusive="true"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action android:id="@+id/action_nuevotolista"
             app:destination="@id/nav_listarvisitas"
+            app:popUpTo="@+id/nav_listarvisitas"
+            app:popUpToInclusive="true"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"

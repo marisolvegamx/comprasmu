@@ -86,7 +86,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
                     Log.d(TAG,"algo salió mal con la consulta de listas");
             }
         };
-
+       // Log.d(TAG,);
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         lcrepo.getCiudades(Constantes.INDICEACTUAL).observe(getViewLifecycleOwner(), nameObserver);
          /*  SelectAsyncTask selec=new SelectAsyncTask(lcrepo);

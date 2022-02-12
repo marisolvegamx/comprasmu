@@ -122,11 +122,47 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
     public LiveData<List<ListaWithDetalle>> getListaWithDetalleByFiltros(String indice, int idPlanta, int idCliente ) {
-      /*  String query="Select * from lista_compras  " +
-                "inner join lista_compras_detalle  " +
-                "on lista_compras_detalle.listaId=lista_compras.id  where indice=? " +
-                "and plantasId=? order by lista_compras.id";*/
-        String query="Select * from lista_compras  " +
+       /* String query="Select " +
+                "lc.id," +
+                "   lc.plantasId," +
+                " lc.plantaNombre," +
+                "lc.siglas," +
+                "lc.clientesId," +
+                "lc.clienteNombre," +
+                "lc.ciudadesId," +
+                "lc.ciudadNombre," +
+                "lc.createdBy," +
+                "lc.indice," +
+                "lc.estatus," +
+                "lc.lis_nota," +
+                "lcd.id," +
+
+                "lcd.listaId," +
+                "lcd.productosId," +
+                "lcd.productoNombre," +
+                "lcd.tamanio," +
+                "lcd.tamanioId," +
+                "lcd.empaque," +
+                "lcd.empaquesId," +
+                "lcd.tipoAnalisis," +
+                "lcd.analisisId," +
+                "lcd.cantidad," +
+                "lcd.codigosNoPermitidos," +
+                "lcd.nvoCodigo," +
+                "lcd.estatus," +
+                "lcd.comprados," +
+                "lcd.tipoMuestra," +
+                "lcd.nombreTipoMuestra," +
+                "lcd.categoriaid," +
+                "lcd.categoria," +
+                "lcd.lid_fechapermitida," +
+                "lcd.lid_fecharestringida," +
+                "lcd.lid_orden" +
+                " from lista_compras as lc " +
+                "inner join lista_compras_detalle as lcd " +
+                "on lcd.listaId=lc.id  where lc.indice=? " +
+                "and plantasId=? order by lcd.lid_orden";*/
+       String query="Select * from lista_compras  " +
                 " where indice=? " +
                 "and plantasId=?";
 

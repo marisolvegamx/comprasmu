@@ -16,6 +16,7 @@ import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.LoggedInUser;
+import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.remote.CatalogosResponse;
@@ -32,6 +33,7 @@ import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.login.LoginActivity;
@@ -62,7 +64,7 @@ public class PeticionesServidor {
         lista=new MutableLiveData<>();
     }
 
-    public void getCatalogos(CatalogoDetalleRepositoryImpl catRep,TablaVersionesRepImpl trepo,AtributoRepositoryImpl atRepo) {
+    public void getCatalogos(CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atRepo) {
 
         final Call<CatalogosResponse> batch = apiClient.getApiService().getCatalogosNuevoInforme(usuario);
 
@@ -81,6 +83,34 @@ public class PeticionesServidor {
 
             @Override
             public void onFailure(@Nullable Call<CatalogosResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio catalogo"+t.getMessage());
+
+                }
+            }
+        });
+    }
+
+    public void getSustitucion(TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo) {
+
+        final Call<List<Sustitucion>> batch = apiClient.getApiService().getSustitucion(usuario);
+        Log.d("PeticionesServidor","enviando sustitucion ");
+
+        batch.enqueue(new Callback<List<Sustitucion>>() {
+            @Override
+            public void onResponse(@Nullable Call<List<Sustitucion>> call, @Nullable Response<List<Sustitucion>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Sustitucion> respuestaCats = response.body();
+                    Log.d("PeticionesServidor","leyendo sust "+respuestaCats.size());
+                    insertarSustitucion(respuestaCats,trepo,sustRepo);
+
+                }else
+                    Log.e("PeticionesServidor", "algo salio mal en peticion catalogo");
+
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<List<Sustitucion>> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e("PeticionesServidor", "algo salio mal en peticio catalogo"+t.getMessage());
 
@@ -344,7 +374,7 @@ public class PeticionesServidor {
 
 
                     }
-                    else //aviso al usuario //solo si esta desde descargar lista
+                    else //aviso al usuario
                     {
                         listener.incorrecto(logResp.getData());
                     }
@@ -372,10 +402,12 @@ public class PeticionesServidor {
         catRep.deletexIdCat(8);
         catRep.deletexIdCat(15);
         catRep.deletexIdCat(100); //causas
+
         catRep.insertAll(lista);
 
         catRep.insertAll(respuestaCats.getCausas());
         List<Atributo> lista2=respuestaCats.getAtributos();
+
         //borro los catalogos que traigo
        // atrRepo.delete();
         atrRepo.insertAll(lista2);
@@ -390,6 +422,20 @@ public class PeticionesServidor {
         tv2.setTipo("C");
         tv2.setVersion(new Date());
         trepo.insertUpdate(tv2);
+        tv=tv2=null;
+
+    }
+
+    public void insertarSustitucion(List<Sustitucion> respuestaCats,TablaVersionesRepImpl trepo,  SustitucionRepositoryImpl sustRepo){
+
+        sustRepo.deleteAll();
+        sustRepo.insertAll(respuestaCats);
+
+        TablaVersiones tv3=new TablaVersiones();
+        tv3.setNombreTabla("sustitucion");
+        tv3.setTipo("C");
+        tv3.setVersion(new Date());
+        trepo.insertUpdate(tv3);
     }
 
     public MutableLiveData<List<Tienda>> getLista() {

@@ -5,15 +5,7 @@
 
 xmlns:tools="http://schemas.android.com/tools">
 <data>
-    <variable
-        name="fotocondiciones"
-        type="com.example.comprasmu.data.modelos.ImagenDetalle"/>
-    <variable
-        name="fotoFachada"
-        type="com.example.comprasmu.data.modelos.ImagenDetalle"/>
-    <variable
-        name="fotoTicket"
-        type="String"/>
+
     <variable
         name="prodex"
         type="com.example.comprasmu.data.dao.ProductoExhibidoDao.ProductoExhibidoFoto"/>
@@ -106,14 +98,13 @@ xmlns:tools="http://schemas.android.com/tools">
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/foto_fachada"
-                            android:textStyle="bold" />
+                          />
 
                         <ImageView
                             android:id="@+id/ivvifoto_fachada"
                             android:layout_width="match_parent"
                             android:layout_height="100dp"
                             android:layout_weight="1"
-                            android:misrc="@{directorio+fotoFachada.ruta}"
 
                             tools:src="@tools:sample/avatars" />
 
@@ -124,14 +115,14 @@ xmlns:tools="http://schemas.android.com/tools">
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/producto_exhibido"
-                            android:textStyle="bold" />
+                             />
 
                         <ImageView
                             android:id="@+id/ivuiprodex"
                             android:layout_width="match_parent"
                             android:layout_height="100dp"
                             android:layout_weight="1"
-                            android:misrc="@{directorio+prodex.ruta}"
+
                             tools:srcCompat="@tools:sample/avatars" />
 
 
@@ -160,7 +151,7 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:layout_marginStart="26dp"
                         android:layout_weight="1"
                         android:text="@string/muestras"
-                        android:textStyle="bold" />
+                         />
 
                     <include
                         android:id="@+id/vicontentmuestras"
@@ -195,15 +186,14 @@ xmlns:tools="http://schemas.android.com/tools">
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/ticket_compra"
-                            android:textStyle="bold" />
+                            android:text="@string/ticket_compra"/>
 
                         <ImageView
                             android:id="@+id/ivuiticket_compra"
                             android:layout_width="match_parent"
                             android:layout_height="100dp"
                             android:layout_weight="1"
-                            android:misrc="@{directorio+fotoTicket}"
+
                             tools:srcCompat="@tools:sample/avatars" />
 
                         <TextView
@@ -212,7 +202,7 @@ xmlns:tools="http://schemas.android.com/tools">
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/condiciones"
-                            android:textStyle="bold" />
+                            />
 
 
                         <ImageView
@@ -220,7 +210,7 @@ xmlns:tools="http://schemas.android.com/tools">
                             android:layout_width="match_parent"
                             android:layout_height="100dp"
                             android:layout_weight="1"
-                            android:misrc="@{directorio+fotocondiciones.ruta}"
+
                             tools:src="@tools:sample/avatars" />
 
                         <TextView
@@ -229,10 +219,11 @@ xmlns:tools="http://schemas.android.com/tools">
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/comentarios"
-                            android:textStyle="bold" />
+                           />
 
                         <TextView
                             android:id="@+id/txtvicomentarios"
+                            style="@style/verinforme2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"

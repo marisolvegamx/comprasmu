@@ -17,7 +17,8 @@ import com.example.comprasmu.data.repositories.LoginRepository;
 
 public class LoginViewModel extends ViewModel {
 
-    private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
+  //  private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
+    private LoginFormState loginFormState;
    // private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
     private PeticionesServidor petServ;
@@ -26,9 +27,14 @@ public class LoginViewModel extends ViewModel {
        this.petServ=new PeticionesServidor("");
     }
 
-    LiveData<LoginFormState> getLoginFormState() {
+   /* LiveData<LoginFormState> getLoginFormState() {
+        return loginFormState;
+    }*/
+
+    LoginFormState getLoginFormState() {
         return loginFormState;
     }
+
 
    /* LiveData<LoginResult> getLoginResult() {
         return loginResult;
@@ -58,11 +64,11 @@ public class LoginViewModel extends ViewModel {
 
     public void loginDataChanged(String username, String password) {
         if (!isUserNameValid(username)) {
-            loginFormState.setValue(new LoginFormState(R.string.invalid_username, null));
+            loginFormState=new LoginFormState(R.string.invalid_username, null);
         } else if (!isPasswordValid(password)) {
-            loginFormState.setValue(new LoginFormState(null, R.string.invalid_password));
+            loginFormState=new LoginFormState(null, R.string.invalid_password);
         } else {
-            loginFormState.setValue(new LoginFormState(true));
+            loginFormState=new LoginFormState(true);
         }
     }
 

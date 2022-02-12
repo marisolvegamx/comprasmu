@@ -31,6 +31,7 @@ import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 
 import com.example.comprasmu.services.SubirFotoService;
@@ -65,6 +66,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -210,8 +212,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                         .addTag("comprassync_worker")
                         .build();
         WorkManager
-                .getInstance()
-                .enqueue(simpleRequest);
+                .getInstance(this)
+                .enqueueUniquePeriodicWork(
+                "comprassync_worker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                simpleRequest);
+
        /* ServicioCompras sbt = new ServicioCompras();
 
 
@@ -476,7 +482,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         // Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
         Constantes.INDICEACTUAL=mesactual.replace('-','.');
-       // Constantes.INDICEACTUAL = "12.2021";
+        Constantes.INDICEACTUAL = "2.2022";
         Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
         //TODO falta pais trabajo
@@ -499,8 +505,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         ListaCompraDao dao= ComprasDataBase.getInstance(getApplicationContext()).getListaCompraDao();
         ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
-
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,null);
+        SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,null,sustRepo);
 
         task.execute("cat","");
       /*  AlertDialog.Builder builder=new AlertDialog.Builder(this);

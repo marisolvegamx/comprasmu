@@ -71,12 +71,20 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
     public InformeTemp findByNombre(String campo) {
         return icDao.getInformesByNombre(campo);
     }
+
+    public InformeTemp getUltimoxId(int campo) {
+        List<InformeTemp> resp= icDao.getUltimoxId(campo,true);
+        if(resp!=null&&resp.size()>0)
+            return resp.get(0);
+        else return null;
+    }
     public InformeTemp findByNombreMues(String campo, int nummuestra) {
         return icDao.getInformesByNombreMues(campo, nummuestra);
     }
     public InformeTemp getUltimo(boolean pregunta) {
-        if(icDao.getUltimo(pregunta).size()>0)
-        return icDao.getUltimo(pregunta).get(0);
+        List<InformeTemp> resp=icDao.getUltimo(pregunta);
+        if(resp.size()>0)
+        return resp.get(0);
         else return null;
     }
 

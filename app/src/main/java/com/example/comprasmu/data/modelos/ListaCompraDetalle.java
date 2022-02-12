@@ -32,6 +32,7 @@ public class ListaCompraDetalle {
     private String categoria;
     private String lid_fechapermitida;
     private String lid_fecharestringida;
+    private int lid_orden;
 
 
 
@@ -205,5 +206,13 @@ public class ListaCompraDetalle {
 
     public void setTamanioId(int tamanioId) {
         this.tamanioId = tamanioId;
+    }
+
+    public int getLid_orden() {
+        return lid_orden;
+    }
+
+    public void setLid_orden(int lid_orden) {
+        this.lid_orden = lid_orden;
     }
 }

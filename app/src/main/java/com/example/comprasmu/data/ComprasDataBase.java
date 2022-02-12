@@ -60,7 +60,7 @@ import java.util.Map;
         Visita.class,  InformeTemp.class,
         ProductoExhibido.class, Sustitucion.class,
         CatalogoDetalle.class, Atributo.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=3, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=5, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -89,7 +89,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .build();*/
                     INSTANCE =  Room.databaseBuilder(context,
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
-                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3)
+                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -122,11 +122,34 @@ public abstract class ComprasDataBase extends RoomDatabase {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL(
-                    " ALTER TABLE informe_detalle ADD COLUMN comprasIdbu INTEGER; " );
-            database.execSQL( " ALTER TABLE informe_detalle ADD COLUMN comprasDetIdbu INTEGER;");
+                    "ALTER TABLE informe_detalle ADD COLUMN comprasIdbu INTEGER; " );
+            database.execSQL( "ALTER TABLE informe_detalle ADD COLUMN comprasDetIdbu INTEGER;");
 
         }
     };
+    static final Migration MIGRATION_3_4 = new Migration(3,4) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "ALTER TABLE tabla_versiones ADD COLUMN indice TEXT; " );
+
+        }
+    };
+
+    static final Migration MIGRATION_4_5 = new Migration(4,5) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "ALTER TABLE sustitucion ADD COLUMN clientesId INTEGER DEFAULT 0 NOT NULL; " );
+
+            database.execSQL(
+                    "ALTER TABLE lista_compras_detalle ADD COLUMN lid_orden INTEGER; " );
+
+
+        }
+    };
+
+
     private void cargandodatos(){
 
         runInTransaction(new Runnable() {
@@ -138,12 +161,20 @@ public abstract class ComprasDataBase extends RoomDatabase {
                         //no tengo datos
 
 
-                      //  prepopulatelc();
+                        prepopulatelc();
                         prepopulatedetc();
                         prepopulateder();
+
                        // catalogos();
 
                     }
+                List<Reactivo> myProductsP=   dao.findByCliente("PEÑAFIEL");
+                if (myProductsP == null||myProductsP.size()==0) {
+                    //no tengo datos
+
+                    prepopulatederpeñ();
+                    prepopulatederele();
+                }
 
             }
         });
@@ -1054,6 +1085,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setTabla("I");
         campo.setId(47);
         campo.setSigId(7);
+        campo.setCatalogo(true);
+
         campo.setCliente("PEPSI");
         camposForm.add(campo);
 
@@ -1065,6 +1098,461 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setId(48);
 
         campo.setCliente("PEPSI");
+        camposForm.add(campo);
+
+        getReactivoDao().insertAll(camposForm);
+
+
+    }
+
+    private void prepopulatederpeñ( ) {
+        Reactivo campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.cliente));
+        campo.setNombreCampo( "clientesId");
+        campo.setType("selectDes");
+        campo.setCatalogo(true);
+        campo.setSigId(52);//abrir listacompra
+        campo.setId(51);
+        campo.setTabla("I");
+        campo.setCliente("PEÑAFIEL");
+        List<Reactivo> camposForm = new ArrayList<Reactivo>();
+        camposForm.add(campo);
+        campo = new Reactivo();
+
+        campo.setLabel(ctx.getString(R.string.se_compro_producto));
+        campo.setNombreCampo( "primeraMuestra");
+        campo.setType( "preguntasino");
+        campo.setSigAlt(69);
+        campo.setSigId(20000);//abrir listacompra
+        campo.setId(52);
+        campo.setTabla("I");
+        campo.setCliente("PEÑAFIEL");
+
+        camposForm.add(campo);
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.se_compro_segunda));
+        campo.setNombreCampo( "segundaMuestra");
+        campo.setId(53);
+        campo.setType( "preguntasino");
+        campo.setSigId(20000);//abrir listacompra
+        campo.setSigAlt(55);
+        campo.setTabla("I");
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.se_compro_terc));
+        campo.setNombreCampo("terceraMuestra");
+        campo.setTabla("I");
+        campo.setType("preguntasino");
+        campo.setSigId(20000);//abrir listacompra
+        campo.setSigAlt(55);
+        campo.setId( 54);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.se_compro_cuar));
+        campo.setNombreCampo("cuartaMuestra");
+        campo.setTabla("I");
+        campo.setType("preguntasino");
+        campo.setSigId(20000);//abrir listacompra
+        campo.setSigAlt(55);
+        campo.setId(67);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.comentarios));
+        campo.setNombreCampo("comentarios");
+        campo.setType("textarea");
+        campo.setTabla("I");
+        campo.setId(57);
+        campo.setSigId(68);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.ticket_compra));
+        campo.setNombreCampo("ticket_compra");
+        campo.setType("agregarImagen");
+        campo.setTabla("I");
+        campo.setId(55);
+        campo.setSigId(56);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.condiciones));
+        campo.setNombreCampo("condiciones_traslado");
+        campo.setType("agregarImagen");
+        campo.setTabla("I");
+        campo.setId(56);
+        campo.setSigId(57);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.siglas_planta));
+        campo.setNombreCampo(Contrato.TablaInformeDet.SIGLAS);
+        campo.setType("inputtext");
+        campo.setTabla("ID");
+        campo.setId(58);
+        campo.setSigId(59);
+        campo.setBotonMicro(true);
+        campo.setCliente("PEÑAFIEL");
+
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.fecha_caducidad));
+        campo.setNombreCampo("caducidad");
+        campo.setType(CreadorFormulario.FECHAMASK);
+        campo.setTabla("ID");
+        campo.setId(59);
+        campo.setSigId(60);
+        campo.setBotonMicro(true);
+        campo.setCliente("PEÑAFIEL");
+
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.codigo_producto));
+        campo.setNombreCampo("codigo");
+        campo.setType("inputtext");
+        campo.setTabla("ID");
+        campo.setId(60);
+        campo.setSigId(61);
+        campo.setBotonMicro(true);
+        campo.setCliente("PEÑAFIEL");
+
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.origen));
+        campo.setTabla("ID");
+        campo.setNombreCampo( Contrato.TablaInformeDet.ORIGEN);
+        campo.setType("selectCat");
+        campo.setCatalogo(true);
+        campo.setId(61);
+        campo.setSigId(62);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.costo));
+        campo.setNombreCampo(Contrato.TablaInformeDet.COSTO);
+        campo.setType("decimalMask");
+        campo.setTabla("ID");
+        campo.setId(62);
+        // campo.setSigId(28);
+        campo.setSigId(63);
+        campo.setBotonMicro(true);
+        campo.setCliente("PEÑAFIEL");
+
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_codigo_produccion));
+        campo.setNombreCampo( Contrato.TablaInformeDet.FOTOCODIGOPRODUCCION);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(63);
+        campo.setSigId(64);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_posicion1));
+        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOA);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(64);
+        campo.setSigId(65);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_posicion2));
+        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOB);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(65);
+        campo.setSigId(66);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_posicion3));
+        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOC);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(66);
+        campo.setSigId(700);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+
+
+     /*   campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.etiqueta_evaluacion));
+        campo.setNombreCampo(Contrato.TablaInformeDet.ETIQUETA_EVALUACION);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(42);
+        campo.setSigId(48);
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);*/
+
+        //insert into reactivos values(43,1,'¿CAPTURAR INFORME DE OTRO CLIENTE MISMA TIENDA?',"preguntasino","",0,0,0,null)
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.pregunta_mas_clientes));
+        campo.setNombreCampo("");
+        campo.setType("preguntasino");
+        campo.setTabla("");
+        campo.setCliente("PEÑAFIEL");
+
+        campo.setId(68);
+        campo.setSigId(51);
+        campo.setSigAlt(600);
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.selecciones_causa));
+        campo.setNombreCampo(Contrato.TablaInformeDet.causa_nocompra);
+        campo.setType("radiobutton");
+        campo.setTabla("I");
+        campo.setId(69);
+        campo.setSigId(57);
+        campo.setCatalogo(true);
+
+        campo.setCliente("PEÑAFIEL");
+        camposForm.add(campo);
+
+      /*  campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.seguro_muestra));
+        campo.setNombreCampo("confirmaMuestra");
+        campo.setType("hidden");
+        campo.setTabla("");
+        campo.setId(48);
+
+        campo.setCliente("TODOS");
+        camposForm.add(campo);*/
+
+        getReactivoDao().insertAll(camposForm);
+
+
+    }
+
+    private  void prepopulatederele( ) {
+        Reactivo campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.cliente));
+        campo.setNombreCampo( "clientesId");
+        campo.setType("selectDes");
+        campo.setCatalogo(true);
+        campo.setSigId(72);//abrir listacompra
+        campo.setId(71);
+        campo.setTabla("I");
+        campo.setCliente("ELECTROPURA");
+        List<Reactivo> camposForm = new ArrayList<Reactivo>();
+        camposForm.add(campo);
+        campo = new Reactivo();
+
+        campo.setLabel(ctx.getString(R.string.se_compro_producto));
+        campo.setNombreCampo( "primeraMuestra");
+        campo.setType( "preguntasino");
+        campo.setSigAlt(87);
+        campo.setSigId(20000);//abrir listacompra
+        campo.setId(72);
+        campo.setTabla("I");
+        campo.setCliente("ELECTROPURA");
+
+        camposForm.add(campo);
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.se_compro_segunda));
+        campo.setNombreCampo( "segundaMuestra");
+        campo.setId(73);
+        campo.setType( "preguntasino");
+        campo.setSigId(20000);//abrir listacompra
+        campo.setSigAlt(75);
+        campo.setTabla("I");
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.se_compro_terc));
+        campo.setNombreCampo("terceraMuestra");
+        campo.setTabla("I");
+        campo.setType("preguntasino");
+        campo.setSigId(20000);//abrir listacompra
+        campo.setSigAlt(75);
+        campo.setId( 74);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.comentarios));
+        campo.setNombreCampo("comentarios");
+        campo.setType("textarea");
+        campo.setTabla("I");
+        campo.setId(77);
+        campo.setSigId(88);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.ticket_compra));
+        campo.setNombreCampo("ticket_compra");
+        campo.setType("agregarImagen");
+        campo.setTabla("I");
+        campo.setId(75);
+        campo.setSigId(76);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.condiciones));
+        campo.setNombreCampo("condiciones_traslado");
+        campo.setType("agregarImagen");
+        campo.setTabla("I");
+        campo.setId(76);
+        campo.setSigId(77);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.siglas_planta));
+        campo.setNombreCampo(Contrato.TablaInformeDet.SIGLAS);
+        campo.setType("inputtext");
+        campo.setTabla("ID");
+        campo.setId(78);
+        campo.setSigId(79);
+        campo.setBotonMicro(true);
+        campo.setCliente("ELECTROPURA");
+
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.fecha_caducidad));
+        campo.setNombreCampo("caducidad");
+        campo.setType(CreadorFormulario.FECHAMASK);
+        campo.setTabla("ID");
+        campo.setId(79);
+        campo.setSigId(80);
+        campo.setBotonMicro(true);
+        campo.setCliente("ELECTROPURA");
+
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.codigo_producto));
+        campo.setNombreCampo("codigo");
+        campo.setType("inputtext");
+        campo.setTabla("ID");
+        campo.setId(80);
+        campo.setSigId(81);
+        campo.setBotonMicro(true);
+        campo.setCliente("ELECTROPURA");
+
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.origen));
+        campo.setTabla("ID");
+        campo.setNombreCampo( Contrato.TablaInformeDet.ORIGEN);
+        campo.setType("selectCat");
+        campo.setCatalogo(true);
+        campo.setId(81);
+        campo.setSigId(82);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.costo));
+        campo.setNombreCampo(Contrato.TablaInformeDet.COSTO);
+        campo.setType("decimalMask");
+        campo.setTabla("ID");
+        campo.setId(82);
+        // campo.setSigId(28);
+        campo.setSigId(83);
+        campo.setBotonMicro(true);
+        campo.setCliente("ELECTROPURA");
+
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_codigo_produccion));
+        campo.setNombreCampo( Contrato.TablaInformeDet.FOTOCODIGOPRODUCCION);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(83);
+        campo.setSigId(84);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_posicion1));
+        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOA);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(84);
+        campo.setSigId(85);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_posicion2));
+        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOB);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(85);
+        campo.setSigId(86);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_posicion3));
+        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOC);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(86);
+        campo.setSigId(800);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+
+
+     /*   campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.etiqueta_evaluacion));
+        campo.setNombreCampo(Contrato.TablaInformeDet.ETIQUETA_EVALUACION);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(42);
+        campo.setSigId(48);
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);*/
+
+        //insert into reactivos values(43,1,'¿CAPTURAR INFORME DE OTRO CLIENTE MISMA TIENDA?',"preguntasino","",0,0,0,null)
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.pregunta_mas_clientes));
+        campo.setNombreCampo("");
+        campo.setType("preguntasino");
+        campo.setTabla("");
+        campo.setCliente("ELECTROPURA");
+
+        campo.setId(88);
+        campo.setSigId(61);
+        campo.setSigAlt(800);
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.selecciones_causa));
+        campo.setNombreCampo(Contrato.TablaInformeDet.causa_nocompra);
+        campo.setType("radiobutton");
+        campo.setTabla("I");
+        campo.setId(87);
+        campo.setSigId(77);
+        campo.setCatalogo(true);
+
+        campo.setCliente("ELECTROPURA");
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.seguro_muestra));
+        campo.setNombreCampo("confirmaMuestra");
+        campo.setType("hidden");
+        campo.setTabla("");
+        campo.setId(48);
+
+        campo.setCliente("TODOS");
         camposForm.add(campo);
 
         getReactivoDao().insertAll(camposForm);

@@ -176,7 +176,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public  MutableLiveData<Integer> getConsecutivo(int oplantaSel, Activity actividad, LifecycleOwner owner) {
 
         respcon=new MutableLiveData<Integer>();
-        Log.d(TAG, "ahorita es el cliente"+oplantaSel);
+        Log.d(TAG, "ahorita es la planta"+oplantaSel);
         int ultimo=repository.getLastConsecutivoInforme(Constantes.INDICEACTUAL,oplantaSel);
         Log.d(TAG, "consecutivo encontrado"+ultimo);
        /* if(ultimo==0){
@@ -498,13 +498,13 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                      ps.getUltimoInforme(Constantes.INDICEACTUAL, planta, listener);
                  }
                  else
-                     nvoid.setValue(1);
+                     nvoid.postValue(1);
         }
 
              else
-                 nvoid.setValue(prefinf+1);
+                 nvoid.postValue(prefinf+1);
         }else
-            nvoid.setValue(nvoid2+1);
+            nvoid.postValue(nvoid2+1);
 
         return nvoid;
 
@@ -642,7 +642,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         // Guardar categoría
         repository.insertInformeCompra(informe);
 
-        mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
+//        mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
 
 
     }
@@ -651,7 +651,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
        repository.actualizarEstatus(informe.getId(),2);
 
-        mSnackbarText.setValue(new Event<>(R.string.informe_finalizado));
+//        mSnackbarText.setValue(new Event<>(R.string.informe_finalizado));
         //aqui se enviará
 
 
@@ -674,6 +674,11 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public LiveData<Visita> buscarVisita(int id){
         Log.d("NuevoInformeViewModel", "Buscando visita");
         return visitaRepository.find(id);
+    }
+
+    public Visita buscarVisitaSimpl(int id){
+        Log.d("NuevoInformeViewModel", "Buscando visita");
+        return visitaRepository.findsimple(id);
     }
     public ImagenDetalle getFotoFachada() {
         return fotoFachada;

@@ -62,6 +62,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     private InformeDetalleAdapter mListAdapter;
     private static String TAG="VerInformeFragment";
 
+    String directorio;
     public static VerInformeFragment newInstance() {
         return new VerInformeFragment();
     }
@@ -76,6 +77,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         Bundle datosRecuperados = getActivity().getIntent().getExtras();
         mViewModel = new ViewModelProvider(this).get(VerInformeViewModel.class);
         mBinding.setDirectorio(getActivity().getExternalFilesDir(null)+"/");
+        directorio=getActivity().getExternalFilesDir(null)+"/";
         if (datosRecuperados != null) {
             // No hay datos, manejar excepción
             //no debería estar aqui
@@ -160,7 +162,9 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
            public void onChanged(ImagenDetalle imagenDetalle) {
                if(imagenDetalle!=null)
                //  fotoTicket=new MutableLiveData<>();
-               {  mBinding.setFotoTicket(imagenDetalle.getRuta());
+               {
+                   //mBinding.setFotoTicket(imagenDetalle.getRuta());
+               mBinding.ivuiticketCompra.setImageBitmap(ComprasUtils.decodeSampledBitmapFromResource(directorio+imagenDetalle.getRuta(), 100, 100));
                mBinding.ivuiticketCompra.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View view) {
@@ -174,10 +178,10 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
            @Override
            public void onChanged(ImagenDetalle imagenDetalle) {
 
-                   mBinding.setFotoFachada(imagenDetalle);
-               Log.d(TAG,"*ya tengo las fotos informe "+imagenDetalle.getRuta());
-
+               //    mBinding.setFotoFachada(imagenDetalle);
                if(imagenDetalle!=null) {
+                 mBinding.ivvifotoFachada.setImageBitmap(ComprasUtils.decodeSampledBitmapFromResource(directorio+imagenDetalle.getRuta(), 100, 100));
+
                    mBinding.ivvifotoFachada.setOnClickListener(new View.OnClickListener() {
                        @Override
                        public void onClick(View view) {
@@ -193,21 +197,28 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
        mViewModel.getfotocondiciones(informe).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
            @Override
            public void onChanged(ImagenDetalle imagenDetalle) {
-               mBinding.setFotocondiciones(imagenDetalle);
-               mBinding.ivuicondiciones.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                   public void onClick(View view) {
-                       verImagen(imagenDetalle.getRuta());
-                   }
-               });
+               if (imagenDetalle != null) {
+                   // mBinding.setFotocondiciones(imagenDetalle);
+                   mBinding.ivuicondiciones.setImageBitmap(ComprasUtils.decodeSampledBitmapFromResource(directorio + imagenDetalle.getRuta(), 100, 100));
 
+                   mBinding.ivuicondiciones.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View view) {
+                           verImagen(imagenDetalle.getRuta());
+                       }
+                   });
+
+               }
            }
        });
        mViewModel.getproductoExhib(visita.getId(),informe.getClientesId()).observe(getViewLifecycleOwner(), new Observer<List<ProductoExhibidoDao.ProductoExhibidoFoto>>() {
            @Override
            public void onChanged(List<ProductoExhibidoDao.ProductoExhibidoFoto> productoExhibidoFotos) {
               if(productoExhibidoFotos!=null&&productoExhibidoFotos.size()>0) {
-                  mBinding.setProdex(productoExhibidoFotos.get(0));
+                 // mBinding.setProdex(productoExhibidoFotos.get(0));
+                  mBinding.ivuiprodex.setImageBitmap(ComprasUtils.decodeSampledBitmapFromResource(directorio+productoExhibidoFotos.get(0).ruta
+                          , 100, 100));
+
                   mBinding.ivuiprodex.setOnClickListener(new View.OnClickListener() {
                       @Override
                       public void onClick(View view) {
@@ -227,13 +238,13 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         CampoForm campo = new CampoForm();
 
         campo.label=getString(R.string.consecutivo);
-
+        campo.style=R.style.verinforme2;
         campo.type = "label";
         campo.value = informeCompra.getConsecutivo()+"";
         camposTienda.add(campo);
          campo = new CampoForm();
 
-
+        campo.style=R.style.verinforme2;
         campo.label=getString(R.string.indice);
         campo.type = "label";
         campo.value = ComprasUtils.indiceLetra(mViewModel.getVisita().getValue().getIndice());
@@ -241,7 +252,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         camposTienda.add(campo);
          campo = new CampoForm();
 
-
+        campo.style=R.style.verinforme2;
         campo.label=getString(R.string.fecha);
         campo.type = "label";
         campo.value =  Constantes.vistasdf.format( mViewModel.getVisita().getValue().getCreatedAt());
@@ -249,19 +260,21 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         camposTienda.add(campo);
         campo = new CampoForm();
         campo.label=getString(R.string.ciudad);
+        campo.style=R.style.verinforme2;
         campo.type = "label";
         campo.value = mViewModel.getVisita().getValue().getCiudad();
 
         camposTienda.add(campo);
         campo = new CampoForm();
         campo.label=getString(R.string.cliente);
+        campo.style=R.style.verinforme2;
         campo.type = "label";
         campo.value = informeCompra.getClienteNombre();
 
 
         camposTienda.add(campo);
         campo = new CampoForm();
-
+        campo.style=R.style.verinforme2;
         campo.label=getString(R.string.planta);
         campo.type = "label";
         campo.value =  informeCompra.getPlantaNombre();
@@ -271,7 +284,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         camposTienda.add(campo);
 
         campo = new CampoForm();
-
+        campo.style=R.style.verinforme2;
         campo.nombre_campo = "tiendaNombre";
         campo.label=getString(R.string.nombre_tienda);
         campo.type = "label";
@@ -279,7 +292,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
 
         camposTienda.add(campo);
         campo = new CampoForm();
-
+        campo.style=R.style.verinforme2;
         campo.nombre_campo = "tipoTienda";
         campo.label=getString(R.string.tipo_tienda);
         campo.type = "label";
@@ -289,10 +302,11 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         campo = new CampoForm();
         campo.label=getString(R.string.direccion);
         campo.type = "label";
+        campo.style=R.style.verinforme2;
         campo.value =mViewModel.getVisita().getValue().getDireccion();
         camposTienda.add(campo);
         campo = new CampoForm();
-
+        campo.style=R.style.verinforme2;
         campo.nombre_campo = "complementodireccion";
         campo.label=getString(R.string.complementodir);
         campo.type = "label";
@@ -318,7 +332,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
 
         camposTienda.add(campo);*/
         campo = new CampoForm();
-
+        campo.style=R.style.verinforme2;
         campo.nombre_campo = "tiendaNombre";
         campo.label=getString(R.string.estatus_envio);
         campo.type = "label";

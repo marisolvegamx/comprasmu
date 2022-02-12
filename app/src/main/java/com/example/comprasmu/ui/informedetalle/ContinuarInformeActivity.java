@@ -18,7 +18,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -171,7 +173,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     public void actualizarCodProd(String codprod) {
         mBinding.txtcicodpr.setText(codprod);
 
-        mBinding.row6.setVisibility(View.VISIBLE);
+        mBinding.row7.setVisibility(View.VISIBLE);
 
     }
     public void actualizarAtributo1() {
@@ -199,13 +201,10 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         mBinding.setSdf(Constantes.sdfsolofecha);
         //Log.d(TAG, "informe creado=" + idinformeSel);
         //busco la visita
-        nviewModel.buscarVisita(idinformeSel).observe(this, new Observer<Visita>() {
-            @Override
-            public void onChanged(Visita visita) {
-                visitaCont = visita;
+        visitaCont=nviewModel.buscarVisitaSimpl(idinformeSel);
                 ValidadorDatos valdat=new ValidadorDatos();
               //  Constantes.DP_TIPOTIENDA=visita.getTipoId();
-                if(valdat.compararFecha(visita.getCreatedAt(),new Date())){
+                if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
                     //es un informe de ayer no puede continuar
                     //avisar
                      AlertDialog.Builder dialogo1 = new AlertDialog.Builder(ContinuarInformeActivity.this);
@@ -222,14 +221,14 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 });
                 dialogo1.show();
                 }
-                Constantes.DP_TIPOTIENDA = visita.getTipoId();
-                Log.d(TAG, "VISITA " + visita.getCreatedAt());
+                Constantes.DP_TIPOTIENDA = visitaCont.getTipoId();
+                Log.d(TAG, "VISITA " + visitaCont.getCreatedAt());
                 Log.d(TAG, "tipo tienda -----------*" + Constantes.DP_TIPOTIENDA);
-                nviewModel.visita = visita;
-                mBinding.setVisita(visita);
+                nviewModel.visita = visitaCont;
+                mBinding.setVisita(visitaCont);
 
-            }
-        });
+
+
 
     }
 
@@ -247,6 +246,11 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
         int numpreg=fragment.getNumPregunta();
         salir=true;
+     /*   if(numpreg==1) {
+            super.onBackPressed();
+            return;
+        }*/
+
         //veo que pregunta es
         if(numpreg==4||numpreg==3||numpreg==5||numpreg==43||numpreg==7)
         {
@@ -277,15 +281,42 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                     dViewModel.setIddetalleNuevo(0);
                     dViewModel.icdNuevo=null;
 
-                    ContinuarInformeActivity.super.onBackPressed();
-
+                    //ContinuarInformeActivity.super.onBackPressed();
+                    regresar();
 
                     }
                 });
                 dialogo1.show();
 
         }else
+            regresar();
+         //   super.onBackPressed();
+    }
+    public void regresar(){
+        DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+        InformeTemp resact=null;
+        int idreact=0;
+        if(fragment.isEdicion) {
+            resact = fragment.getUltimares();
+            idreact=resact.getId();
+        }
+
+        //busco el siguiente
+        Reactivo reactivo = dViewModel.buscarReactivoAnterior(idreact,fragment.isEdicion);
+        if(reactivo!=null) {
+            DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+// Definir una transacción
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+// Remplazar el contenido principal por el fragmento
+            fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+            fragmentTransaction.addToBackStack(null);
+// Cambiar
+            fragmentTransaction.commit();
+        }
+        else
             super.onBackPressed();
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

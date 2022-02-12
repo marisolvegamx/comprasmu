@@ -27,7 +27,7 @@ public class ListaCompraDetRepositoryImpl {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
         dao=comprasDataBase.getListaCompraDetalleDao();
     }
-    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltros(int idlista,String categoria, String productoNombre, String empaque,String tamanio,String analisis ) {
+    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltros(int idlista,String categoria, String productoNombre, String empaque,String tamanio,String analisis,int detorig ) {
 
         String query="Select * from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
@@ -51,6 +51,10 @@ public class ListaCompraDetRepositoryImpl {
         if(analisis!=null&&!analisis.equals("")) {
             query = query + " and tipoAnalisis=?";
             filtros.add(analisis);
+        }
+        if(detorig>0) {
+            query = query + " and id!=?";
+            filtros.add(detorig+"");
         }
 
 

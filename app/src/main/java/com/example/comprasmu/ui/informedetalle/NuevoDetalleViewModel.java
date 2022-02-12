@@ -27,10 +27,12 @@ import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Sustitucion;
+import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
@@ -84,10 +86,11 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     private ReactivoRepositoryImpl reacRepo;
     public LiveData<List<Reactivo>> listaPreguntas;
     final String TAG="NvoDetVM";
+    Application application;
     public NuevoDetalleViewModel(@NonNull Application application) {
         super(application);
 
-
+        this.application=application;
         this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
         this.detalleRepo=new InformeComDetRepositoryImpl(application);
         this.catRepo=new CatalogoDetalleRepositoryImpl(application);
@@ -103,6 +106,21 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
     public void buscarCausas(){
         causas=catRepo.getxCatalogo("causas");
+
+    }
+    //ver si tiene informe la visita y devuelve el cliente o los clientes
+    public int[] tieneInforme(Visita visita){
+        int[] clienteAnt=null;
+        InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(application);
+        List<InformeCompra> informeCompras=infoRepo.getAllByVisitasimple(visita.getId());
+        if(informeCompras!=null&&informeCompras.size()>0) {
+            clienteAnt=new int[informeCompras.size()];
+            for (int i = 0; i < informeCompras.size(); i++)
+                clienteAnt[i] = informeCompras.get(i).getClientesId();
+        }
+
+
+        return clienteAnt;
 
     }
 
@@ -135,6 +153,23 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     }
     public LiveData<Reactivo> buscarReactivo(int id){
         return reacRepo.find(id);
+    }
+
+    public Reactivo buscarReactivoSimpl(int id){
+        return reacRepo.findsimple(id);
+    }
+
+    public Reactivo buscarReactivoAnterior(int id,boolean isEdicion){
+       InformeTemp inftemp;
+        if(isEdicion){
+            inftemp=itemprepo.getUltimoxId(id);
+        }else
+            inftemp=itemprepo.getUltimo(true);
+        //busco el reactivo
+        if(inftemp!=null)
+        return reacRepo.findByNombre(inftemp.getNombre_campo());
+        else
+            return null;
     }
     public Reactivo inftempToReac(InformeTemp inftemp){
         return reacRepo.findByNombre(inftemp.getNombre_campo());
@@ -380,11 +415,11 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         // this.productoSel.clienteNombre=productoSel.get
         //       this.productoSel.plantaNombre=
     }
-    public void setProductoSel(Sustitucion productoSel, String nombrePlanta, int plantaSel, int clienteSel, String clienteNombre, String siglas) {
+    public void setProductoSel(Sustitucion productoSel, String nombrePlanta, int plantaSel, int clienteSel, String clienteNombre, String siglas, ListaCompraDetalle prodbu) {
         this.productoSel=new ProductoSel();
         this.productoSel.producto=productoSel.getNomproducto();
         this.productoSel.productoid=productoSel.getSu_producto();
-      //  this.productoSel.compraSel=compraSel;
+       // this.productoSel.compraSel=compraSel;
         //this.productoSel.compradetalleSel=compraDetSel;
         this.productoSel.presentacion=productoSel.getNomtamanio();
         this.productoSel.tamanioId=productoSel.getSu_tamanio();
@@ -392,13 +427,16 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         //para la planta y cliente busco el encabezado
         this.productoSel.plantaNombre=nombrePlanta;
         this.productoSel.plantaSel=plantaSel;
-        //this.productoSel.tipoAnalisis=productoSel.getAnalisisId();
+        this.productoSel.analisis=prodbu.getTipoAnalisis();
+        this.productoSel.tipoAnalisis=prodbu.getAnalisisId();
         this.productoSel.tipoMuestra=2;
         this.productoSel.nombreTipoMuestra="Backup";
         this.productoSel.empaque=productoSel.getNomempaque();
         this.productoSel.clienteNombre=clienteNombre;
         this.productoSel.clienteSel=clienteSel;
         this.productoSel.siglas=siglas;
+        this.productoSel.comprasDetIdbu = prodbu.getId();
+        this.productoSel.comprasIdbu = prodbu.getListaId();
      //   this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
     }
 
@@ -551,7 +589,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public void setEtiqueta_evaluacion(ImagenDetalle etiqueta_evaluacion) {
         this.etiqueta_evaluacion = etiqueta_evaluacion;
     }
-    public  class ProductoSel{
+    public static class ProductoSel{
         public String producto;
         public int productoid;
         public int compraSel;
