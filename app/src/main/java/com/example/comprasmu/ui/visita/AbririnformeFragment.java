@@ -480,17 +480,16 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
     }
 
-    @Override
-    public void onDestroyView() {
+
+    public void sliendoSinguardar() {
 
         //para avisar que sale sin guardar
         EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
         EditText nombretienda = root.findViewById(1001);
-        if(guardado){
+        if (guardado) {
             super.onDestroyView();
-        }else
-        if(!fotofachada.getText().toString().equals("")&&visitaEdi==null){
-            Log.d(TAG,"Estoy saliendoe"+fotofachada.getText().toString()+visitaEdi);
+        } else if (!fotofachada.getText().toString().equals("") && visitaEdi == null) {
+            Log.d(TAG, "Estoy saliendoe" + fotofachada.getText().toString() + visitaEdi);
 
             AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
             dialogo1.setTitle(R.string.importante);
@@ -505,18 +504,19 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             });
             dialogo1.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogo1, int id) {
-                      dialogo1.cancel();
-                      return;
+                    dialogo1.cancel();
+                    return;
 
                 }
             });
             dialogo1.show();
-           // return;
+            // return;
         }
 
-      else
-        super.onDestroyView();
-        super.onDestroyView();
+
+      //else
+    //    super.onDestroyView();
+      //  super.onDestroyView();
     }
 
     @Override
@@ -1275,29 +1275,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         return memoryInfo;
     }
 
-    public void onBackPressed() {
-        EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
-        EditText nombretienda = root.findViewById(1001);
-
-        if(!fotofachada.getText().toString().equals("")&&visitaEdi!=null){
-
-            new AlertDialog.Builder(getActivity())
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle(R.string.importante)
-                    .setMessage(R.string.salir_sin_guardar)
-                    .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            requireActivity().onBackPressed();
-                        }
-                    })
-                    .setNegativeButton(R.string.no, null)
-                    .show();
-            return;
-        }
-        requireActivity().onBackPressed();
-
-
-    }
     class MayusTextWatcher implements TextWatcher {
 
         boolean mEditing;
@@ -1335,4 +1312,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
     }
+
+
 }
