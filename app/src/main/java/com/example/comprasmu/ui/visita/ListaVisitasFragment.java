@@ -252,7 +252,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                         new ViewModelProvider(ListaVisitasFragment.this).get(NuevoinformeViewModel.class);
                 niViewModel.finalizarVisita(idvisita);
 
-                Toast.makeText(getActivity(), "Se finalizó el preinforme",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
                 //paso al home
                 NavHostFragment.findNavController(ListaVisitasFragment.this).navigate(R.id.action_visitatohome);
 
