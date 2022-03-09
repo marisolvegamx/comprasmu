@@ -83,7 +83,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
                     siguiente(0);
                 }
                 else
-                    Log.d(TAG,"algo salió mal con la consulta de listas");
+                    Log.d(TAG,"algo salió mal con la consulta de listas"+lista.size());
             }
         };
        // Log.d(TAG,);

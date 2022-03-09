@@ -71,16 +71,22 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
        holder.binding.setIsBu(isbu);
        holder.binding.setMostrarAgregar(ismuestra);
        holder.binding.setCliente(cliente);
+    //   this.mViewModel.setListacomprasbu(listacomprasbu);
        holder.binding.setMViewModel(this.mViewModel);
-        Log.d(TAG, "vars " + cliente+"--"+isbu+"--"+ismuestra+"--"+numtienda);
-       if(((cliente==4&&numtienda>10)||(cliente==5))&&!isbu&&ismuestra) {
+
+//        Log.d(TAG, "vars " +listacomprasbu.size());
+       if(cliente==4&&numtienda>10&&!isbu) {
            holder.binding.setMostrarbcu(true);
        }
-       if(listacomprasbu!=null) {
+        if(cliente!=4&&!isbu) {
+            holder.binding.setMostrarbcu(true);
+        }
+
+      if(listacomprasbu!=null) {
 
            InformeCompraDetalle icd = buscarBU(mListaCompraDetalleList.get(position));
            if (icd != null) {
-               Log.d(TAG, "es bu " + listacomprasbu.size());
+             //  Log.d(TAG, "es bu " + listacomprasbu.size());
 
                holder.binding.informebudata.setDetallebu(icd);
                // holder.binding.setTotalbu(comprabu.size());
@@ -89,7 +95,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
 
 
                // if(binding.informebudata.getDetallebu()!=null)
-               holder.binding.informebudata.cajatexto.setVisibility(View.VISIBLE);
+               //  holder.binding.informebudata.cajatexto.setVisibility(View.VISIBLE);
            }
        }
      //  holder.binding.informebudata.setDetallebu(comprabu);
@@ -113,12 +119,12 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
     private InformeCompraDetalle buscarBU(ListaCompraDetalle det){
 
         for(InformeCompraDetalle icd: listacomprasbu) {
-         //   Log.d(TAG, "--------------Se seleccionó a " + det.getListaId() + "--" + det.getId() + "--" + icd.getComprasIdbu() + "--" + icd.getComprasDetIdbu());
+            Log.d(TAG, "--------------Se seleccionó a " + det.getListaId() + "--" + det.getId() + "--" + icd.getComprasId() + "--" + icd.getComprasDetId());
 
 
             if (icd.getComprasId() == det.getListaId() && icd.getComprasDetId() ==det.getId() )
             {
-                //Log.d(TAG, "--------------Se seleccionó a " +icd.getComprasIdbu()+ "--" + det.getId()+"--"+ det.getListaId() +"--"+icd.getComprasDetIdbu());
+                Log.d(TAG, "2--------------Se seleccionó a " +icd.getComprasId()+ "--" + det.getId()+"--"+ det.getListaId() +"--"+icd.getComprasDetId());
 
                 return icd;
         }

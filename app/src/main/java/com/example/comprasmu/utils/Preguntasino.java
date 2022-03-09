@@ -20,11 +20,15 @@ public class Preguntasino extends LinearLayout {
     RadioButton si;
     RadioButton no;
 
+
     public Preguntasino(Context context) {
         super(context);
         initializeViews(context);
     }
-
+    public Preguntasino(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        initializeViews(context);
+    }
     public Preguntasino(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initializeViews(context);

@@ -17,6 +17,8 @@ public class InformeTemp {
     private int numMuestra;
     private String valor;
     private String tabla;
+    private int clienteSel;
+
     private boolean isPregunta; //false para saber si solo es para guardar info
 
 
@@ -98,5 +100,13 @@ public class InformeTemp {
 
     public void setNumMuestra(int numMuestra) {
         this.numMuestra = numMuestra;
+    }
+
+    public int getClienteSel() {
+        return clienteSel;
+    }
+
+    public void setClienteSel(int clienteSel) {
+        this.clienteSel = clienteSel;
     }
 }

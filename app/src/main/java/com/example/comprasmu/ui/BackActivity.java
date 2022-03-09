@@ -31,6 +31,7 @@ public class BackActivity extends AppCompatActivity {
     public static final String OP_INFORME="informe";
     public static final String OP_INFORMEDET="informedet";
     public static final String OP_SELPLANTA="selplanta";
+    public static final String OP_SELPLANTAMUE="selplantamue";
     public static final String TAG="BackActivity";
     public static final int REQUEST_CODE=1003;
     public static final String OP_PRODUCTOEX="productoex";
@@ -114,6 +115,26 @@ public class BackActivity extends AppCompatActivity {
                       detailFragment5.setArguments(bundle5);
                     ft.add(R.id.back_fragment, detailFragment5);
                     break;
+               /* case OP_SELPLANTAMUE:
+                    myChildToolbar.setTitle(R.string.menu_ver_lista);
+                    Bundle bundle6=new Bundle();
+                    bundle6.putInt(NuevoinformeFragment.INFORMESEL,datosRecuperados.getInt(NuevoinformeFragment.INFORMESEL));
+
+                    bundle6.putInt("ciudadSel",datosRecuperados.getInt("ciudadSel"));
+                    bundle6.putString("ciudadNombre",datosRecuperados.getString("ciudadNombre"));
+                    //  intento1.putExtra(,plantaSel );
+                    bundle6.putString(SelClienteFragment.ARG_TIPOCONS,datosRecuperados.getString(SelClienteFragment.ARG_TIPOCONS));
+                    bundle6.putInt(ListaCompraFragment.ARG_CLIENTESEL,datosRecuperados.getInt(ListaCompraFragment.ARG_CLIENTESEL));
+
+                    bundle6.putString(ListaCompraFragment.ARG_MUESTRA,datosRecuperados.getString(ListaCompraFragment.ARG_MUESTRA) );
+                    bundle6.putInt(DetalleProductoFragment.NUMMUESTRA,datosRecuperados.getInt(DetalleProductoFragment.NUMMUESTRA));
+
+                    //  SelClienteFragment detailFragment = new ListaCompraFragment();
+                    SelClienteFragment detailFragment6 = new SelClienteFragment();
+
+                    detailFragment6.setArguments(bundle6);
+                    ft.add(R.id.back_fragment, detailFragment6);
+                    break;*/
                 case OP_PRODUCTOEX:
                     myChildToolbar.setTitle(R.string.producto_exhibido);
                     Bundle bundle2=new Bundle();

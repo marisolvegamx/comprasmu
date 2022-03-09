@@ -22,6 +22,7 @@ import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.remote.CatalogosResponse;
 import com.example.comprasmu.data.remote.GenericResponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
+import com.example.comprasmu.data.remote.PlantaResponse;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TiendasResponse;
@@ -36,6 +37,7 @@ import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.login.LoginActivity;
 import com.example.comprasmu.utils.Constantes;
 
@@ -180,6 +182,49 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<UltimoInfResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
+
+                }
+            }
+        });
+
+    }
+
+    public  void getPlantaPeniafiel(String siglas, DetalleProductoPenFragment.EnvioListener listener) {
+        CatalogoDetalle resp=null;
+        Log.d(TAG,"haciendo peticion"+siglas);
+        final Call<PlantaResponse> batch = apiClient.getApiService().getPlantaPeniafiel(siglas,usuario);
+
+        batch.enqueue(new Callback<PlantaResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<PlantaResponse> call, @Nullable Response<PlantaResponse> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    PlantaResponse respuesta = response.body();
+                    Log.d(TAG,"PlantaPeniafiel resp="+response.body().getData());
+                    //guardo en propertis
+                   // resp=response.body().getData();
+                    if(respuesta.getStatus().equals("ok"))
+                    listener.guardarRespuestaInf(response.body().getData());
+                    else
+                        listener.guardarRespuestaInf(null);
+                    // lista.setValue(respuestaTiendas);
+
+                    //   Log.d(TAG,"ya lo asigné"+respuestaTiendas.getTiendas().get(0).getUne_descripcion());
+                    //  return lista;
+
+
+                }  else {
+                    Log.e(Constantes.TAG, response.toString());
+                    listener.guardarRespuestaInf(null);
+                }
+
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<PlantaResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+                    listener.guardarRespuestaInf(resp);
 
                 }
             }

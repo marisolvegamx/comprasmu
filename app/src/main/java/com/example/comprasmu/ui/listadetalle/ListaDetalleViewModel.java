@@ -42,6 +42,8 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     private  LiveData<List<ListaWithDetalle>> listas;
     private  LiveData<List<ListaCompraDetalle>> detallebu;
+    private  LiveData<List<ListaCompraDetalle>> detallebu1;
+    private  LiveData<List<ListaCompraDetalle>> detallebu2;
     private  LiveData<List<ListaCompra>> listaSelbu;
     private final MutableLiveData<Event<Integer>> mOpenListaCompraEvent = new MutableLiveData<>();
     private  LiveData<Integer> size;
@@ -124,48 +126,55 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     }
 
     //para las colsultas de bu
-    public void consultasBackup(int idlista,int opcionsel,String categoria, String productoNombre, String empaque,String tamanio,int analisisid, String analisis,int iddetorig ){
+    public void consultasBackup(int idlista,int opcionsel,String categoria, String productoNombre, String empaque,int tamanio,int analisisid, String analisis,int iddetorig ){
       switch (analisisid){
           case 1: //fisico
-                consultaFisico(idlista, opcionsel, categoria, productoNombre, empaque, analisis,iddetorig);
+                consultaFisico(idlista, opcionsel, categoria, productoNombre, empaque, analisis,tamanio,iddetorig);
                 break;
           case 2: //sensorial
-              consultaSensorial(idlista, opcionsel, categoria, productoNombre, empaque, analisis,iddetorig);
+              consultaSensorial(idlista, opcionsel, categoria, productoNombre, empaque, analisis,tamanio,iddetorig);
               break;
           case 3: //torque
-              consultaTorque(idlista, opcionsel, categoria, productoNombre, empaque, analisis,iddetorig);
+              consultaTorque(idlista, opcionsel, categoria, productoNombre, empaque, analisis,tamanio,iddetorig);
               break;
           case 4: //micro
-              consultaMicro(idlista, opcionsel, categoria, productoNombre, empaque, analisis,iddetorig);
+              consultaMicro(idlista, opcionsel, categoria, productoNombre, empaque, analisisid,tamanio,iddetorig);
+
               break;
       }
 
     }
-    public void consultaFisico(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int iddetorig ){
+    public void consultaFisico(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int tamanio,int iddetorig ){
+        Log.d(TAG,"criterio"+opcionsel);
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "",iddetorig);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, tamanio);
                 break;
             case 2:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, "", "", "",iddetorig);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, 0);
                 break;
             case 3:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria,"" , "", "", "",iddetorig);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria,productoNombre , "", 0);
                 break;
             case 4: default: //la misma lista
-                detallebu = detRepo.getAllByLista(idlista);
+               // detallebu = detRepo.getDetalleByFiltrosUD(idlista,categoria,"","",0);
+                detallebu = detRepo.consultaFisico4(idlista, categoria, productoNombre, empaque, tamanio,"",iddetorig);
+               // detallebu = detRepo.getAllByLista(idlista);
+
                 break;
         }
 
 
 
     }
-    public void consultaSensorial(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int iddetorig ){
+    public void consultaSensorial(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int tamanio,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "",iddetorig);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, tamanio);
                 break;
-            case 2: default:
+            case 2: default: //muestro toda la lista
+              //  detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,"",iddetorig);
+              //  detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, 0,"",iddetorig);
                 detallebu = detRepo.getAllByLista(idlista);
                 break;
 
@@ -174,16 +183,18 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public void consultaTorque(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ,int iddetorig){
+    public void consultaTorque(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ,int tamanio,int iddetorig){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", "",iddetorig);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, tamanio);
                 break;
             case 2:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, "", empaque, "", "",iddetorig);
+                detallebu = detRepo.consultaTorque2(idlista, categoria, productoNombre, empaque);
                 break;
 
-            case 3: default: //la misma lista
+            case 3: default:
+             //   detallebu = detRepo.consultaTorque4(idlista, categoria, empaque);
+
                 detallebu = detRepo.getAllByLista(idlista);
                 break;
         }
@@ -191,16 +202,16 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int iddetorig ){
+    public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisis,int tamanio,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, "", analisis,iddetorig);
+                detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque, tamanio);
                 break;
             case 2:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, "", "", analisis,iddetorig);
+                detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque,0);
                 break;
             case 3:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, "", "", "", analisis,iddetorig);
+                detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, "", 0);
                 break;
 
             case 4: default: //la misma lista
@@ -244,7 +255,30 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
       //  Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);
     }
+    List<InformeCompraDetalle> listacomprasbu;
 
+    public void setListacomprasbu(List<InformeCompraDetalle> listacomprasbu) {
+        this.listacomprasbu = listacomprasbu;
+    }
+
+    public InformeCompraDetalle buscarBU(ListaCompraDetalle det){
+        Log.d(TAG, "listacomprabu " + listacomprasbu.size());
+
+
+        for(InformeCompraDetalle icd: listacomprasbu) {
+            Log.d(TAG, "--------------Se seleccionó a " + det.getListaId() + "--" + det.getId() + "--" + icd.getComprasId() + "--" + icd.getComprasDetId());
+
+
+            if (icd.getComprasId() == det.getListaId() && icd.getComprasDetId() ==det.getId() )
+            {
+                Log.d(TAG, "2--------------Se seleccionó a " +icd.getComprasId()+ "--" + det.getId()+"--"+ det.getListaId() +"--"+icd.getComprasDetId());
+
+                return icd;
+            }
+        }
+        return null;
+
+    }
     public String ordenarCodigosNoPermitidos(int numTienda,String nvoCodigos,String noPermitidos) {
         List<String> otodo= new ArrayList<String>();
         List<Date> fechas=new ArrayList<Date>();

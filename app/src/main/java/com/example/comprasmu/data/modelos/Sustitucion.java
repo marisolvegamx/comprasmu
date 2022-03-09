@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 public class Sustitucion {
     @PrimaryKey
     private int id_sustitucion;
-    @NotNull
+
     @ColumnInfo(name="clientesId", defaultValue = "0")
     private int clientesId;
     private int su_tipoempaque;

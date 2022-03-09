@@ -45,6 +45,7 @@ public class Constantes {
     public static String[] ESTATUSSYNC={"PENDIENTE","ENVIANDO","ENVIADO"};
 
     public static List<DescripcionGenerica> clientesAsignados;
+
     public static HashMap<Integer,String> plantasAsignadas;
     public static String ni_clientesel;
     public static int ni_plantasel;

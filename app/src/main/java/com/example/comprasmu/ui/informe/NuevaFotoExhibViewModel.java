@@ -69,7 +69,7 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
             foto.setIndice(Constantes.INDICEACTUAL);
             foto.setCreatedAt(new Date());
             int idfoto = (int) imagenDetRepository.insert(foto);
-
+            Log.e("NuevaFotoExhibViewModel",idfoto+"--"+idcliente);
             ProductoExhibido prod1 = new ProductoExhibido();
             prod1.setClienteId(idcliente);
             prod1.setVisitasId(visitasId);
@@ -117,5 +117,8 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
         //la busco en imagen detalle
         return repository.getAllByVisita(idvisita);
     }
-
+    public List<ProductoExhibidoDao.ProductoExhibidoFoto> cargarfotosSimpl(int idvisita){
+        //la busco en imagen detalle
+        return repository.getAllFotoByVisitaSimpl(idvisita);
+    }
 }

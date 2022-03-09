@@ -55,7 +55,7 @@ public abstract class InformeTempDao extends  BaseDao<InformeTemp>  {
     public abstract void deleteMenosCliente();
 
     @Query("DELETE FROM informe_temp where nombre_campo!='clientesId' and nombre_campo!='plantasId' and nombre_campo!='plantaNombre' and nombre_campo!='primeraMuestra'" +
-            " and nombre_campo!='segundaMuestra' and  nombre_campo!='terceraMuestra' and numMuestra=:nummuestra")
+            " and nombre_campo!='segundaMuestra' and  nombre_campo!='terceraMuestra' and  nombre_campo!='confirmaMuestra' and numMuestra=:nummuestra")
     public abstract void deleteMuestra(int nummuestra);
 
     @Query("DELETE FROM informe_temp")

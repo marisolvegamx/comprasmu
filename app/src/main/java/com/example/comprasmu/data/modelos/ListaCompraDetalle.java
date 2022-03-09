@@ -1,6 +1,8 @@
 package com.example.comprasmu.data.modelos;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -8,9 +10,9 @@ import androidx.room.PrimaryKey;
 public class ListaCompraDetalle {
 
 
-    @NonNull
+
     private int id;
-    @NonNull
+
     private int listaId;
     private int productosId;
     private String productoNombre;
@@ -33,6 +35,9 @@ public class ListaCompraDetalle {
     private String lid_fechapermitida;
     private String lid_fecharestringida;
     private int lid_orden;
+
+    @ColumnInfo(name="lid_backup", defaultValue = "-1")
+    private int lid_backup;
 
 
 
@@ -214,5 +219,13 @@ public class ListaCompraDetalle {
 
     public void setLid_orden(int lid_orden) {
         this.lid_orden = lid_orden;
+    }
+
+    public int getLid_backup() {
+        return lid_backup;
+    }
+
+    public void setLid_backup(int lid_backup) {
+        this.lid_backup = lid_backup;
     }
 }

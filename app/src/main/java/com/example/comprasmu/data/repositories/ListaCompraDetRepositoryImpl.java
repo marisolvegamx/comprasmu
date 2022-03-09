@@ -27,7 +27,7 @@ public class ListaCompraDetRepositoryImpl {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
         dao=comprasDataBase.getListaCompraDetalleDao();
     }
-    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltros(int idlista,String categoria, String productoNombre, String empaque,String tamanio,String analisis,int detorig ) {
+    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltros(int idlista,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
 
         String query="Select * from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
@@ -44,24 +44,272 @@ public class ListaCompraDetRepositoryImpl {
             query = query + " and empaque=?";
             filtros.add(empaque);
         }
-        if(tamanio!=null&&!tamanio.equals("")) {
+        if(tamanio>0) {
             query = query + " and tamanio=?";
-            filtros.add(tamanio);
+            filtros.add(tamanio+"");
         }
         if(analisis!=null&&!analisis.equals("")) {
             query = query + " and tipoAnalisis=?";
             filtros.add(analisis);
         }
-        if(detorig>0) {
-            query = query + " and id!=?";
-            filtros.add(detorig+"");
-        }
+
 
 
         Object[] params=filtros.toArray();
 
         for(int i=0;i<params.length;i++)
             Log.d("InformeCompraRepo","***"+params[i]);
+        Log.d("InformeCompraRepo","****"+query);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,filtros.toArray()
+        );
+
+        return dao.getDetallesByFiltros(sqlquery);
+    }
+
+    public LiveData<List<ListaCompraDetalle>> consultaSensorial4(int idlista,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
+
+        String query="Select * from lista_compras_detalle where listaId=?";
+        ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(idlista+"");
+
+        if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and ((productoNombre=?";
+            filtros.add(productoNombre);
+        }
+        if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque=?";
+            filtros.add(empaque);
+        }
+        if(tamanio>0) {
+            query = query + " and tamanio=?) or (productoNombre!=? and empaque!=?))";
+            filtros.add(tamanio+"");
+            filtros.add(productoNombre);
+            filtros.add(empaque);
+        }
+
+
+
+        Object[] params=filtros.toArray();
+
+        for(int i=0;i<params.length;i++)
+            Log.d("InformeCompraRepo","***"+params[i]);
+        Log.d("InformeCompraRepo","****"+query);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,filtros.toArray()
+        );
+
+        return dao.getDetallesByFiltros(sqlquery);
+    }
+
+    public LiveData<List<ListaCompraDetalle>> consultaFisico4(int idlista,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
+
+        String query="Select * from lista_compras_detalle where listaId=?";
+        ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(idlista+"");
+        if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and ((categoria=?";
+            filtros.add(categoria);
+        }
+        if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and productoNombre=?";
+            filtros.add(productoNombre);
+        }
+        if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque=?";
+            filtros.add(empaque);
+        }
+        if(tamanio>0) {
+            query = query + " and tamanio=?) or categoria!=?)";
+            filtros.add(tamanio+"");
+            filtros.add(categoria+"");
+        }
+
+
+
+
+        Object[] params=filtros.toArray();
+
+        for(int i=0;i<params.length;i++)
+            Log.d("InformeCompraRepo","***"+params[i]);
+        Log.d("InformeCompraRepo","****"+query);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,filtros.toArray()
+        );
+
+        return dao.getDetallesByFiltros(sqlquery);
+    }
+    //el ultimo parametro enviado debe ser diferente
+    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUD(int idlista,String categoria, String productoNombre, String empaque,int tamanio ) {
+
+        String query="Select * from lista_compras_detalle where listaId=?";
+        ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(idlista+"");
+        if(productoNombre==null||productoNombre.equals("")) //catego es el ultimo y es diferente
+        { if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and categoria!=?";
+            filtros.add(categoria);
+        }}else
+        if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and categoria=?";
+            filtros.add(categoria);
+        }
+        if(empaque==null||empaque.equals("")) //prdo es el ultimo y es diferente
+        {   if(productoNombre!=null&&!productoNombre.equals("")) {
+                query = query + " and productoNombre!=?";
+                filtros.add(productoNombre);
+            }}
+        else
+        if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and productoNombre=?";
+            filtros.add(productoNombre);
+        }
+        if(tamanio==0)
+        { if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque!=?";
+            filtros.add(empaque);
+        }}else
+        if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque=?";
+            filtros.add(empaque);
+        }
+
+        if(tamanio>0) {
+            query = query + " and tamanioId!=?";
+            filtros.add(tamanio+"");
+        }
+
+
+
+        Object[] params=filtros.toArray();
+
+         for(int i=0;i<params.length;i++)
+          Log.d("InformeCompraRepo","***"+params[i]);
+        Log.d("InformeCompraRepo","****"+query);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,filtros.toArray()
+        );
+
+        return dao.getDetallesByFiltros(sqlquery);
+    }
+
+    //el ultimo parametro enviado debe ser diferente
+    public LiveData<List<ListaCompraDetalle>> consultaTorque2(int idlista,String categoria, String productoNombre, String empaque ) {
+
+        String query="Select * from lista_compras_detalle where listaId=?";
+        ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(idlista+"");
+
+        if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and categoria=?";
+            filtros.add(categoria);
+        }
+       if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and productoNombre!=?";
+            filtros.add(productoNombre);
+        }
+        if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque=?";
+            filtros.add(empaque);
+        }
+
+         Object[] params=filtros.toArray();
+
+        for(int i=0;i<params.length;i++)
+            Log.d("InformeCompraRepo","***"+params[i]);
+        Log.d("InformeCompraRepo","****"+query);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,filtros.toArray()
+        );
+
+        return dao.getDetallesByFiltros(sqlquery);
+    }
+    //el ultimo parametro enviado debe ser diferente
+    public LiveData<List<ListaCompraDetalle>> consultaTorque4(int idlista,String categoria, String empaque ) {
+
+        String query="Select * from lista_compras_detalle where listaId=?";
+        ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(idlista+"");
+
+        if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and categoria=?";
+            filtros.add(categoria);
+        }
+
+        if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque!=?";
+            filtros.add(empaque);
+        }
+
+        Object[] params=filtros.toArray();
+
+        for(int i=0;i<params.length;i++)
+            Log.d("InformeCompraRepo","***"+params[i]);
+        Log.d("InformeCompraRepo","****"+query);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,filtros.toArray()
+        );
+
+        return dao.getDetallesByFiltros(sqlquery);
+    }
+    //el ultimo param debe ser diferente pero aqui viene el analisis
+    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUDA(int idlista,String categoria,int analisis, String productoNombre, String empaque,int tamanio ) {
+
+        String query="Select * from lista_compras_detalle where listaId=?";
+        ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(idlista+"");
+        if(analisis==0) //catego es el ultimo y es diferente
+        { if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and categoria!=?";
+            filtros.add(categoria);
+        }}else
+        if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and categoria=?";
+            filtros.add(categoria);
+        }
+        if(productoNombre==null||productoNombre.equals("")) //analisis es el ultimo y es diferente
+        {
+            if(analisis>0) {
+                query = query + " and analisisId!=?";
+                filtros.add(analisis+"");
+            }
+        }else
+        if(analisis>0) {
+            query = query + " and analisisId=?";
+            filtros.add(analisis+"");
+        }
+        if(empaque==null||empaque.equals("")) //prdo es el ultimo y es diferente
+        {   if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and productoNombre!=?";
+            filtros.add(productoNombre);
+        }}
+        else
+        if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and productoNombre=?";
+            filtros.add(productoNombre);
+        }
+        if(tamanio==0)
+        { if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque!=?";
+            filtros.add(empaque);
+        }}else
+        if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque=?";
+            filtros.add(empaque);
+        }
+
+        if(tamanio>0) {
+            query = query + " and tamanioId!=?";
+            filtros.add(tamanio+"");
+        }
+
+
+
+        Object[] params=filtros.toArray();
+
+        for(int i=0;i<params.length;i++)
+            Log.d("InformeCompraRepo","***"+params[i]);
+        Log.d("InformeCompraRepo","****"+query);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
         );

@@ -72,6 +72,12 @@
                 app:srcCompat="@android:drawable/stat_notify_sync"
                 tools:visibility="visible" />
 
+            <TextView
+                android:id="@+id/txtfgplanta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
             <Button
                 android:id="@+id/btngaceptar"
                 android:layout_width="match_parent"

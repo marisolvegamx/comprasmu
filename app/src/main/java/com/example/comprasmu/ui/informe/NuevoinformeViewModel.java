@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -74,6 +75,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
     private int idInformeNuevo;
     public int clienteSel;
+    public String clienteNombre;
     public Visita visita;
     public LiveData<Visita> visitaEdicion;
     public LiveData<InformeCompra> informeEdicion;
@@ -191,17 +193,17 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             respcon.setValue(1+ultimo);
         return respcon;
     }
-    public void agregarMuestra(InformeCompraDetalle det){
-        muestrasCap.add(det);
-    }
+   // public void agregarMuestra(InformeCompraDetalle det){
+     //   muestrasCap.add(det);
+    //}
     public void cargarMuestras(int id){
         muestrasCap=detalleRepo.getAllSencillo(id);
     }
 
-    public LiveData<String> getRutaFoto(int idfoto){
+    /*public LiveData<String> getRutaFoto(int idfoto){
         return imagenDetRepository.findRuta(idfoto);
 
-    }
+    }*/
     public ImagenDetalle getFoto(int idfoto){
         return imagenDetRepository.findsimple(idfoto);
 
@@ -295,7 +297,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         temporal.setVisitasId(this.visita.getId());
         temporal.setInformesId(informeid);
         temporal.setIddetalle(informedet);
-
+        if(!nombrecampo.equals("clientesId"))
+        temporal.setClienteSel(clienteSel);
         try {
             Log.d(TAG,"buscando a "+nombrecampo);
             //reviso si ya existe
@@ -311,6 +314,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                 editar.setNombre_campo(nombrecampo);
                 editar.setValor(resp);
                 editar.setTabla(tabla);
+                if(!nombrecampo.equals("clientesId"))
+                    editar.setClienteSel(clienteSel);
                 editar.setConsecutivo(consecutivo);
                 itemprepo.insert(editar);
             }else
@@ -389,6 +394,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                             recuperarIds(actividad);
 
                             nvoid.setValue(prefimagen + 1);
+                            resul.removeObservers(owner);
                         }
                     });
                 }
@@ -472,9 +478,10 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                 Log.d(TAG, "nvo informe" + nvoidd);
                 if(nvoidd>0) {
                     informe.setId(nvoidd);
-                    Log.d(TAG, "nvo informe" + nvoidd);
+                  //  Log.d(TAG, "nvo informe" + nvoidd);
                     repository.insertInformeCompra(informe);
                 }
+                nvoid.removeObservers(owner);
             }
         });
         return nvoid;
@@ -547,6 +554,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
 
          inft=buscarCampo(Contrato.TablaInformeDet.causa_nocompra,temps);
+     //    Log.d(TAG,"causa no compra="+inft.getNombre_campo());
         if(inft!=null) {
             nuevo.setSinproducto(true);
             nuevo.setCausa_nocompra(inft.getValor());
@@ -754,6 +762,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             resul.setValue(true);
             return resul;
         }
+
    }
 
 

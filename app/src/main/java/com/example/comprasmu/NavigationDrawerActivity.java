@@ -37,8 +37,12 @@ import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirPendService;
 
+import com.example.comprasmu.ui.informedetalle.DetalleProductoElecFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
+import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.workmanager.SyncWork;
@@ -51,6 +55,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -482,7 +487,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         // Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
         Constantes.INDICEACTUAL=mesactual.replace('-','.');
-        Constantes.INDICEACTUAL = "2.2022";
+        Constantes.INDICEACTUAL = "3.2022";
         Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
         //TODO falta pais trabajo
@@ -523,6 +528,24 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.setCancelable(false);
 */
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.e(TAG,"aprete atras");
+        try {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            if (fragment instanceof AbririnformeFragment){
+               Log.e(TAG,"aprete atras***");
+                ((AbririnformeFragment)fragment).sliendoSinguardar();
+            }else
+            super.onBackPressed();
+
+        }catch(Exception ex){
+            super.onBackPressed();
+        }
+
 
     }
 

@@ -42,6 +42,7 @@
                app to run.
         -->
         <activity
+
             android:name=".ui.informedetalle.ContinuarInformeActivity"
             android:label="@string/title_activity_continuar_informe"
             android:screenOrientation="portrait"
@@ -55,6 +56,7 @@
 
         <activity android:name=".ui.BackActivity"
             android:screenOrientation="portrait"
+
             />
         <activity android:name=".utils.ui.FiltrarListaActivity"
             android:screenOrientation="portrait"

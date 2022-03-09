@@ -105,6 +105,9 @@ public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhib
     public  LiveData<List<ProductoExhibidoDao.ProductoExhibidoFoto>> getAllByVisita(int id){
        return  dao.getAllByVisita(id);
     }
+    public  List<ProductoExhibidoDao.ProductoExhibidoFoto> getAllFotoByVisitaSimpl(int id){
+        return  dao.getAllFotoByVisita(id);
+    }
     public  List<ProductoExhibido> getAllByVisitaSimple(int id){
         return  dao.getAllByVisitaSimple(id);
     }

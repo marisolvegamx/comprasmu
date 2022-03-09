@@ -7,6 +7,7 @@
         <import type="android.view.View"/>
         <variable name="detalle"
             type="com.example.comprasmu.data.modelos.ListaCompraDetalle"></variable>
+
         <variable
             name="mostrarAgregar"
             type="Boolean" />
@@ -129,7 +130,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:visibility="@{isBu?View.GONE:View.VISIBLE}"
+                        android:visibility="@{isBu?View.INVISIBLE:View.VISIBLE}"
                         android:text="@{detalle.tipoAnalisis}" />
 
                     <TextView
@@ -138,7 +139,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:visibility="@{isBu?View.GONE:View.VISIBLE}"
+                        android:visibility="@{isBu?View.INVISIBLE:View.VISIBLE}"
                         android:text='@{detalle.nombreTipoMuestra}' />
 
                     <ImageButton
@@ -149,7 +150,7 @@
 
 
                         android:theme="@android:style/Widget.Material.Button.Small"
-                        android:visibility='@{(detalle.comprados+1&lt;=detalle.cantidad)&amp;&amp;mostrarbcu?View.VISIBLE:View.GONE}'
+                        android:visibility='@{(detalle.comprados+1&lt;=detalle.cantidad)&amp;&amp;(mostrarbcu&amp;&amp;detalle.lid_backup==-1)?View.VISIBLE:View.GONE}'
                         app:srcCompat="@drawable/ic_baseline_repeat_24" />
 
                     <ImageButton
@@ -184,7 +185,7 @@
                         android:textSize="8sp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text='@{mostrarbcu+""}'
+                        android:text='@{mostrarbcu+""+cliente+"--"+detalle.lid_backup}'
                         android:visibility="gone" />
 
                     <TextView
@@ -193,22 +194,20 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text='@{isBu?"BACKUP":""}'
-                        android:visibility="visible" />
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
 
-                <Button
+
+                <TextView
                     android:id="@+id/btncodigos"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="4dp"
-                    android:minWidth="0dp"
-                    android:visibility="@{isBu?View.GONE:View.VISIBLE}"
-                    android:text="Ver códigos no permitidos>"
-                    android:textColor="@color/blue_subtitle"
-                    android:textSize="10sp" />
+                    style="@style/liga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text='@{@string/ver_codigos+">"}'
+                    android:visibility="@{isBu?View.GONE:View.VISIBLE}" />
 
                 <TextView
                     android:id="@+id/txtcodigos"
@@ -259,13 +258,22 @@
                     android:id="@+id/informebudata"
                     layout="@layout/lista_detalle_item2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:visibility="@{!isBu&amp;&amp;mViewModel.buscarBU(detalle)!=null?View.VISIBLE:View.GONE}"
+                  />
 
 
             </LinearLayout>
 
 
         </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btnldsigcriterio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sig_criterio"
+            android:visibility="gone" />
     </LinearLayout>
 
 

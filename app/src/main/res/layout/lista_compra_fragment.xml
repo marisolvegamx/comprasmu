@@ -34,7 +34,7 @@
                 <TextView
                     android:id="@+id/txtlcplanta"
                     android:layout_width="match_parent"
-                    android:layout_height="50px"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="5dp"
                     android:textColor="#FFFFFF" />
@@ -69,8 +69,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text='@{"TOTAL:"+total}'
-                       />
+                        android:text='@{"TOTAL: "+total}' />
 
                     <TextView
                         android:id="@+id/txtlcsiglas"
@@ -100,7 +99,7 @@
             </TableLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout5"
+                android:id="@+id/lonota"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -133,12 +132,17 @@
 
             <TextView
                 android:id="@+id/txtlcopcionbu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="27dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
                 android:layout_weight="1"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lonota"
+                tools:visibility="visible" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detalle_list"
@@ -146,8 +150,8 @@
 
                 android:layout_height="0dp"
 
-                android:layout_below="@+id/toolbar"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -155,7 +159,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+                app:layout_constraintTop_toBottomOf="@+id/txtlcopcionbu"
+                app:layout_constraintVertical_bias="1.0" />
 
             <Button
                 android:id="@+id/btnlcsigbu"
@@ -169,8 +174,24 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+                app:layout_constraintTop_toBottomOf="@+id/lonota"
                 app:layout_constraintVertical_bias="0.971" />
+
+            <TextView
+                android:id="@+id/txtsdatosbu"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="120dp"
+                android:layout_marginEnd="16dp"
+                android:textAlignment="center"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/detalle_list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/detalle_list"
+                app:layout_constraintTop_toBottomOf="@+id/lonota"
+                app:layout_constraintVertical_bias="0.0"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

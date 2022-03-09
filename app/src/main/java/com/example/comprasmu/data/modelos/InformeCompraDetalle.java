@@ -31,7 +31,7 @@ public class InformeCompraDetalle {
     private String costo;
     private int foto_codigo_produccion;
     private int energia;
-    private int producto_exhibido;
+    private int producto_exhibido; //no se usa está enel informe
     private int foto_num_tienda;
     private int marca_traslape;
     private String atributoa;

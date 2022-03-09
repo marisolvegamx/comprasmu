@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
@@ -36,6 +37,7 @@ import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
+import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -87,6 +89,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public LiveData<List<Reactivo>> listaPreguntas;
     final String TAG="NvoDetVM";
     Application application;
+    public int reactivoAct;
     public NuevoDetalleViewModel(@NonNull Application application) {
         super(application);
 
@@ -109,12 +112,12 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
     }
     //ver si tiene informe la visita y devuelve el cliente o los clientes
-    public int[] tieneInforme(Visita visita){
-        int[] clienteAnt=null;
+    public Integer[] tieneInforme(Visita visita){
+        Integer[] clienteAnt=null;
         InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(application);
         List<InformeCompra> informeCompras=infoRepo.getAllByVisitasimple(visita.getId());
         if(informeCompras!=null&&informeCompras.size()>0) {
-            clienteAnt=new int[informeCompras.size()];
+            clienteAnt=new Integer[informeCompras.size()];
             for (int i = 0; i < informeCompras.size(); i++)
                 clienteAnt[i] = informeCompras.get(i).getClientesId();
         }
@@ -167,12 +170,12 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
             inftemp=itemprepo.getUltimo(true);
         //busco el reactivo
         if(inftemp!=null)
-        return reacRepo.findByNombre(inftemp.getNombre_campo());
+        return reacRepo.findByNombre(inftemp.getNombre_campo(),inftemp.getClienteSel());
         else
             return null;
     }
     public Reactivo inftempToReac(InformeTemp inftemp){
-        return reacRepo.findByNombre(inftemp.getNombre_campo());
+        return reacRepo.findByNombre(inftemp.getNombre_campo(),inftemp.getClienteSel());
 
     }
 
@@ -272,6 +275,16 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
         return false;
     }
+    public void buscarPlantaPen(String siglas, DetalleProductoPenFragment.EnvioListener listener ){
+        try {
+            PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+             ps.getPlantaPeniafiel(siglas,listener);
+
+        }catch(Exception ex){
+            Log.e(TAG,"Error al hacer peticion");
+        }
+
+    }
     public InformeCompraDetalle tempToID(int numMuestra){
         //consulto el informe
         InformeCompraDetalle nuevo=new InformeCompraDetalle();
@@ -306,7 +319,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 }
-                Log.d("NuevoDetVM",">>>>"+nuevo.getCaducidad());
+             //   Log.d("NuevoDetVM",">>>>"+nuevo.getCaducidad());
             }
             else {
                 params[0] = String.class;
@@ -415,28 +428,32 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         // this.productoSel.clienteNombre=productoSel.get
         //       this.productoSel.plantaNombre=
     }
-    public void setProductoSel(Sustitucion productoSel, String nombrePlanta, int plantaSel, int clienteSel, String clienteNombre, String siglas, ListaCompraDetalle prodbu) {
+    public void setProductoSelSust(ListaCompraDetalle productoSel, String nombrePlanta, int plantaSel, int clienteSel, String clienteNombre, String siglas, Sustitucion prodbu) {
         this.productoSel=new ProductoSel();
-        this.productoSel.producto=productoSel.getNomproducto();
-        this.productoSel.productoid=productoSel.getSu_producto();
-       // this.productoSel.compraSel=compraSel;
-        //this.productoSel.compradetalleSel=compraDetSel;
-        this.productoSel.presentacion=productoSel.getNomtamanio();
-        this.productoSel.tamanioId=productoSel.getSu_tamanio();
-       this.productoSel.idempaque=productoSel.getSu_tipoempaque();
+        this.productoSel.producto=productoSel.getProductoNombre();
+        this.productoSel.productoid=productoSel.getProductosId();
+        this.productoSel.compraSel=productoSel.getListaId();
+        this.productoSel.compradetalleSel=productoSel.getId();
+        this.productoSel.presentacion=productoSel.getTamanio();
+        this.productoSel.tamanioId=productoSel.getTamanioId();
+        this.productoSel.empaque=productoSel.getEmpaque();
+        this.productoSel.idempaque=productoSel.getEmpaquesId();
         //para la planta y cliente busco el encabezado
+
         this.productoSel.plantaNombre=nombrePlanta;
         this.productoSel.plantaSel=plantaSel;
-        this.productoSel.analisis=prodbu.getTipoAnalisis();
-        this.productoSel.tipoAnalisis=prodbu.getAnalisisId();
-        this.productoSel.tipoMuestra=2;
-        this.productoSel.nombreTipoMuestra="Backup";
-        this.productoSel.empaque=productoSel.getNomempaque();
+        this.productoSel.analisis=productoSel.getTipoAnalisis();
+        this.productoSel.tipoAnalisis=productoSel.getAnalisisId();
+        this.productoSel.tipoMuestra=productoSel.getTipoMuestra();
+        this.productoSel.nombreTipoMuestra=productoSel.getNombreTipoMuestra();
         this.productoSel.clienteNombre=clienteNombre;
         this.productoSel.clienteSel=clienteSel;
         this.productoSel.siglas=siglas;
-        this.productoSel.comprasDetIdbu = prodbu.getId();
-        this.productoSel.comprasIdbu = prodbu.getListaId();
+        this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
+        if(prodbu!=null) {
+            this.productoSel.comprasDetIdbu = prodbu.getId_sustitucion();
+          //  this.productoSel.comprasIdbu = productoSel.getListaId();
+        }
      //   this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
     }
 

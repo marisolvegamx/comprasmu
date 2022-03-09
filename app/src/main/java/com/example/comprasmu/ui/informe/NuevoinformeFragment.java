@@ -54,8 +54,10 @@ import com.example.comprasmu.databinding.FragmentNuevoinformeBinding;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.RevisarFotoActivity;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoElecFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
@@ -108,6 +110,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
     public final static String ISEDIT="comprasmu.ni_isedit";
     public final static String ISCOMPLETE="comprasmu.ni_complete";
     public final static String ARG_NUEVOINFORME="comprasmu.ni_idinforme";
+    public final static String ARG_CLIENTEINFORME="comprasmu.clienteinf";
     private View root;
     private static final String TAG="NuevoInformeFragment";
     private FragmentNuevoinformeBinding mBinding;
@@ -573,6 +576,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
             camposForm.add(campo);
 
     }
+
 
    /* public void crearFormulario(){
         CampoForm campo=new CampoForm();

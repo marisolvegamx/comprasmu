@@ -20,7 +20,9 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.Sustitucion;
 
 import com.example.comprasmu.databinding.ListaGenericFragmentBinding;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoElecFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listacompras.PlaceholderFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
@@ -159,7 +161,18 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
             //productoSel.setAnalisisId(mViewModel.getDetallebuSel().getAnalisisId());
             //productoSel.setTipoAnalisis(mViewModel.getDetallebuSel().getTipoAnalisis());
             //me faltan las siglas
-            nuevoInf.setProductoSel(productoSel,nombrePlanta,plantaSel, ldViewModel.getClienteSel(),clienteNombre,siglas,ldViewModel.getDetallebuSel());
+            //cambio el tipo de muestra y el producto
+            // en detallebusel esta lainfo original
+
+            ldViewModel.getDetallebuSel().setTipoMuestra(2);
+            ldViewModel.getDetallebuSel().setNombreTipoMuestra("BACKUP");
+            ldViewModel.getDetallebuSel().setProductosId(productoSel.getSu_producto());
+            ldViewModel.getDetallebuSel().setProductoNombre(productoSel.getNomproducto());
+            ldViewModel.getDetallebuSel().setTamanioId(productoSel.getSu_tamanio());
+            ldViewModel.getDetallebuSel().setTamanio(productoSel.getNomtamanio());
+            ldViewModel.getDetallebuSel().setEmpaque(productoSel.getNomempaque());
+            ldViewModel.getDetallebuSel().setEmpaquesId(productoSel.getSu_tipoempaque());
+            nuevoInf.setProductoSelSust(ldViewModel.getDetallebuSel(),nombrePlanta,plantaSel, ldViewModel.getClienteSel(),clienteNombre,siglas,productoSel);
             Constantes.productoSel=nuevoInf.productoSel;
           //  Constantes.NM_TOTALISTA=mListAdapter.getItemCount();
     /*        Fragment fragment = new DetalleProductoFragment1();
@@ -176,9 +189,12 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 */
 
             Intent resultIntent = new Intent();
-
+            if(ldViewModel.getClienteSel()==5)
            // resultIntent.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.informe.getId());
-            getActivity().setResult(DetalleProductoFragment.NUEVO_RESULT_OK, resultIntent);
+                getActivity().setResult(DetalleProductoPenFragment.NUEVO_RESULT_OK, resultIntent);
+            if(ldViewModel.getClienteSel()==6)
+                // resultIntent.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.informe.getId());
+                getActivity().setResult(DetalleProductoElecFragment.NUEVO_RESULT_OK, resultIntent);
 
             //regreso al informe
             getActivity().finish();

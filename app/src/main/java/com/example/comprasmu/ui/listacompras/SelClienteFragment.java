@@ -107,7 +107,7 @@ public class SelClienteFragment extends ListaSelecFragment {
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
      //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
-        mViewModel.cargarPestañas(ciudadNombre,0).observe(getViewLifecycleOwner(),nameObserver);
+        mViewModel.cargarPestañas(ciudadNombre,clienteSel).observe(getViewLifecycleOwner(),nameObserver);
 
             getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

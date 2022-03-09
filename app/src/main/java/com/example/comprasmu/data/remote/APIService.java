@@ -80,6 +80,9 @@ public interface APIService {
     @GET("ultids")
     Call<UltimoInfResponse> getUltimosIdsI( @Query("indice") String indice,@Query("planta") int plantasel, @Query("usuario") String usuario);
 
+    @GET("plantapen")
+    Call<PlantaResponse> getPlantaPeniafiel( @Query("siglas") String indice, @Query("usuario") String usuario);
+
     @POST("cancelarInforme/{id}")
     @Headers({
             "Accept: application/json",

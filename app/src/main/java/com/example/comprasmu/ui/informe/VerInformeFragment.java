@@ -61,6 +61,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     private VerInformeFragmentBinding mBinding;
     private InformeDetalleAdapter mListAdapter;
     private static String TAG="VerInformeFragment";
+    private int cliente;
 
     String directorio;
     public static VerInformeFragment newInstance() {
@@ -122,6 +123,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
                     mListAdapter.notifyDataSetChanged();
                     Log.d(TAG,"tengo el informe"+ informeWithDetalle.informe.getId());
                     mBinding.setInforme(informeWithDetalle.informe);
+                    cliente=informeWithDetalle.informe.getClientesId();
                     mViewModel.getVisita(informeWithDetalle.informe.getVisitasId()).observe(getViewLifecycleOwner(), new Observer<Visita>() {
                         @Override
                         public void onChanged(Visita visita) {
@@ -384,6 +386,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
          Bundle bundle = new Bundle();
 
         bundle.putInt(NuevoinformeFragment.INFORMESEL,informeSel);
+        bundle.putInt(NuevoinformeFragment.ARG_CLIENTEINFORME,cliente);
        bundle.putInt(DetalleProductoFragment1.ARG_IDMUESTRA,idmuestra);
         Fragment fragment = new VerInformeDetFragment();
         fragment.setArguments(bundle);

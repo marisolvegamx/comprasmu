@@ -9,7 +9,6 @@ import androidx.room.PrimaryKey;
 @Entity(tableName="lista_compras")
 public class ListaCompra {
     @PrimaryKey(autoGenerate = true)
-    @NonNull
     private int id;
     private int plantasId;
     private String plantaNombre;

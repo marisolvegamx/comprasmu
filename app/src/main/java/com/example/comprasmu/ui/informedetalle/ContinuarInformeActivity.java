@@ -1,6 +1,5 @@
 package com.example.comprasmu.ui.informedetalle;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -20,25 +17,18 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.ActivityContinuarInformeBinding;
-import com.example.comprasmu.databinding.FragmentNuevoinformeBinding;
-import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -90,12 +80,19 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             nviewModel.numMuestra=ultimares.getNumMuestra();
             nviewModel.setIdInformeNuevo(ultimares.getInformesId());
             nviewModel.consecutivo=ultimares.getConsecutivo();
+            nviewModel.clienteSel=ultimares.getClienteSel();
              if(preguntaAct.getTabla().equals(ultimares.getTabla())){
                 //si es la misma
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.add(R.id.continf_fragment, new DetalleProductoFragment(preguntaAct,true));
-                ft.commit();
+                if(nviewModel.clienteSel==4||nviewModel.clienteSel==0)
+                    ft.add(R.id.continf_fragment, new DetalleProductoFragment(preguntaAct,true));
+                if(nviewModel.clienteSel==5)
+                     ft.add(R.id.continf_fragment, new DetalleProductoPenFragment(preguntaAct,true));
+                if(nviewModel.clienteSel==6)
+                     ft.add(R.id.continf_fragment, new DetalleProductoElecFragment(preguntaAct,true));
+
+                 ft.commit();
 
             }else{
                  buscarPreguntas();
@@ -197,7 +194,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
 
     public void loadData() {
         Bundle datosRecuperados = getIntent().getExtras();
-        int idinformeSel = datosRecuperados.getInt(INFORMESEL);
+        int idinformeSel = datosRecuperados.getInt(INFORMESEL); //es la visita id
         mBinding.setSdf(Constantes.sdfsolofecha);
         //Log.d(TAG, "informe creado=" + idinformeSel);
         //busco la visita
@@ -242,9 +239,28 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     boolean salir;
     @Override
     public void onBackPressed() {
-        Log.e(TAG,"aprete atras");
-        DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
-        int numpreg=fragment.getNumPregunta();
+        Log.e(TAG,"aprete atras"+dViewModel.reactivoAct);
+        int numpreg =0;
+        if(dViewModel.reactivoAct==1)
+        {    getFragmentManager().popBackStack();
+        return;}
+        else
+
+        if( nviewModel.clienteSel==4||nviewModel.clienteSel==0||dViewModel.reactivoAct==1) {
+            DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+             numpreg = fragment.getNumPregunta();
+        }else
+        if( nviewModel.clienteSel==5) {
+            DetalleProductoPenFragment fragment2 = (DetalleProductoPenFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+             numpreg = fragment2.getNumPregunta();
+        }else
+
+        if( nviewModel.clienteSel==6) {
+            DetalleProductoElecFragment fragment3 = (DetalleProductoElecFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+             numpreg = fragment3.getNumPregunta();
+        }
+
+
         salir=true;
      /*   if(numpreg==1) {
             super.onBackPressed();
@@ -256,7 +272,15 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         {
             return; //no puedo regresar
         }
-        if(numpreg==23) //regreso a lista compra
+        if(numpreg==54||numpreg==53||numpreg==55||numpreg==68||numpreg==57||numpreg==67)
+        {
+            return; //no puedo regresar
+        }
+        if(numpreg==74||numpreg==73||numpreg==75||numpreg==88||numpreg==77)
+        {
+            return; //no puedo regresar
+        }
+        if(numpreg==23||numpreg==58||numpreg==78) //regreso a lista compra
         {
             AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
             dialogo1.setTitle(R.string.importante);
@@ -293,13 +317,33 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
          //   super.onBackPressed();
     }
     public void regresar(){
-        DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+
+        if( nviewModel.clienteSel==4||nviewModel.clienteSel==0) {
+         regresarPep();
+        }
+        if( nviewModel.clienteSel==5) {
+            regresarPen();
+        }
+
+        if( nviewModel.clienteSel==6) {
+            regresarElec();
+        }
+
+
+
+    }
+
+    public void regresarPep(){
         InformeTemp resact=null;
         int idreact=0;
-        if(fragment.isEdicion) {
-            resact = fragment.getUltimares();
-            idreact=resact.getId();
-        }
+
+            DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+
+            if (fragment.isEdicion) {
+                resact = fragment.getUltimares();
+                idreact = resact.getId();
+            }
+
 
         //busco el siguiente
         Reactivo reactivo = dViewModel.buscarReactivoAnterior(idreact,fragment.isEdicion);
@@ -310,6 +354,78 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
             fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+            fragmentTransaction.addToBackStack(null);
+// Cambiar
+            fragmentTransaction.commit();
+        }
+        else
+            super.onBackPressed();
+
+    }
+    public void regresarPen(){
+        InformeTemp resact=null;
+        int idreact=0;
+
+        DetalleProductoPenFragment fragment = (DetalleProductoPenFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+
+        if (fragment.isEdicion) {
+                resact = fragment.getUltimares();
+                idreact = resact.getId();
+        }
+
+
+
+        //busco el siguiente
+        Reactivo reactivo = dViewModel.buscarReactivoAnterior(idreact,fragment.isEdicion);
+
+        if(reactivo!=null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+// Definir una transacción
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+// Remplazar el contenido principal por el fragmento
+            if(reactivo.getId()==1)
+            {      DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
+                fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+                }else {
+                DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo, false);
+                fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+            }
+
+            fragmentTransaction.addToBackStack(null);
+// Cambiar
+            fragmentTransaction.commit();
+        }
+        else
+            super.onBackPressed();
+
+    }
+    public void regresarElec(){
+        InformeTemp resact=null;
+        int idreact=0;
+
+        DetalleProductoElecFragment fragment = (DetalleProductoElecFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+
+        if (fragment.isEdicion) {
+            resact = fragment.getUltimares();
+            idreact = resact.getId();
+        }
+
+
+        //busco el siguiente
+        Reactivo reactivo = dViewModel.buscarReactivoAnterior(idreact,fragment.isEdicion);
+        if(reactivo!=null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+// Definir una transacción
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+// Remplazar el contenido principal por el fragmento
+            if(reactivo.getId()==1)
+            {      DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
+                fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+            }else {
+                DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment(reactivo, false);
+                fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+            }
+
             fragmentTransaction.addToBackStack(null);
 // Cambiar
             fragmentTransaction.commit();
@@ -344,7 +460,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                     });
                     dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogo1, int id) {
-                            DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+                           // DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
 
                             //hay que guardar la ultima preguta
                            // fragment.guardarResp();

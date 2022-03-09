@@ -218,5 +218,8 @@
     <string name="otras">OTRAS</string>
     <string name="sin_conexion">ESTA ACCION REQUIERE CONEXION A INTERNET, VERIFIQUE SU CONEXION O ACTIVE SUS DATOS</string>
     <string name="error_nombre_tienda">FALTA CAPTURAR EL NOMBRE DE LA TIENDA</string>
-    <string name="sig_criterio">SIGUIENTE CRITERIO</string>
+    <string name="sig_criterio">REVISAR CRITERIO</string>
+    <string name="sin_datosbu">NO HAY PRODUCTOS QUE CUMPLAN CON EL CRITERIO</string>
+    <string name="ver_codigos">VER CODIGOS NO PERMITIDOS</string>
+    <string name="criterio">CRITERIO</string>
 </resources>

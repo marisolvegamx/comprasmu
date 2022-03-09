@@ -22,6 +22,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.ui.visita.AbririnformeFragment;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,6 +88,7 @@ public class ComprasUtils {
         return new String(arr);
     }
     public Bitmap comprimirImagen(String nombre_foto){
+
         Bitmap bitmapOrg=BitmapFactory.decodeFile(nombre_foto);
 
         int width=bitmapOrg.getWidth();
@@ -105,7 +107,7 @@ public class ComprasUtils {
             // Toast.makeText(, "Error al guardar la foto", Toast.LENGTH_SHORT).show();
             return null;
         }
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 45, os);
 
        return scaledBitmap;
 
