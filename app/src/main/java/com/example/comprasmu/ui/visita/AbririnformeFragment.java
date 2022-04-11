@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -432,6 +433,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //cargo la lista de clientes
         cargarClientes();
 
+
         if (getArguments() != null) {
 
             //es edicion
@@ -507,14 +509,31 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
            // Log.d(TAG,"a ver"+fotosExh.get(0).clienteId+"-"+Constantes.clientesAsignados.indexOf(fotosExh.get(0).clienteId));
             int pos=buscarEnClientes(fotosExh.get(0).clienteId,clientesAsignados);
             spinn.setSelection(pos,true);
+            //quito la opción en los otros
+
+            clientesAsignados2.remove(pos);
+
+
+
+            clientesAsignados3.remove(pos);
+            CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
+
+            CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
+
+
         }
         if(fotosExh!=null&&fotosExh.size()>1) {
 //            mostrarOcultarlayout("true",ll);
             cargarFotos(fotosExh.get(1).ruta, txtfotoex2, btnrotar2, fotoex2);
             int pos=buscarEnClientes(fotosExh.get(1).clienteId,clientesAsignados2);
-            if(pos>-1)
-            spinn2.setSelection(pos,true);
+            if(pos>-1) {
+                spinn2.setSelection(pos, true);
 
+
+                clientesAsignados3.remove(pos);
+
+                CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
+            }
         }
         if(fotosExh!=null&&fotosExh.size()>2) {
             cargarFotos(fotosExh.get(2).ruta, txtfotoex3, btnrotar3, fotoex3);
@@ -602,7 +621,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
        // Log.d(TAG, "regresó de la consulta " + Constantes.CIUDADTRABAJO);
         //   if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
         List<ListaCompra> data=lViewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
+        if(data.size()==0){
+            Toast.makeText(getActivity(), "Falta actualizar la app", Toast.LENGTH_SHORT).show();
+            NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
 
+            return;
+        }
             Log.d(TAG, "regresó de la consulta " + data.size());
            clientesAsignados= ComprasUtils.convertirListaaClientes(data);
            clientesAsignados2= ComprasUtils.convertirListaaClientes(data);
@@ -610,14 +634,103 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             CreadorFormulario.cargarSpinnerDescr(getContext(),spinn,clientesAsignados);
             CreadorFormulario.cargarSpinnerDescr(getContext(),spinn2,clientesAsignados2);
             CreadorFormulario.cargarSpinnerDescr(getContext(),spinn3,clientesAsignados3);
+           /* spinn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
+                    @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    // Get the value selected by the user
+                    // e.g. to store it as a field or immediately call a method
+                    DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
+                    int pos=buscarEnClientes(opcion.id,clientesAsignados2);
+                    if(pos>-1)
+                        {
+                            clientesAsignados2.remove(pos);
+
+                        }
+                    pos=buscarEnClientes(opcion.id,clientesAsignados3);
+                    if(pos>-1)
+                            {
+                                clientesAsignados3.remove(pos);
+
+                            }
+                      //  Log.d(TAG, "CLIENTES ASIG QUITÉ UNO " + clientesAsignados2.size());
+                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
+
+                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
+
+                |}
+
+
+
+                  /*   @Override
+                     public void onNothingSelected(AdapterView<?> parent) {
+                     }
+                 });*/
+           /* spinn2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Get the value selected by the user
+                // e.g. to store it as a field or immediately call a method
+                DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
+                int pos=buscarEnClientes(opcion.id,clientesAsignados);
+                if(pos>-1) {
+                    {
+                        clientesAsignados.remove(pos);
+
+                    }
+                    int pos=buscarEnClientes(opcion.id,clientesAsignados3);
+                    if(pos>-1) {
+                        {
+                            clientesAsignados.remove(pos);
+                            clientesAsignados3.remove(pos);
+                        }
+                    Log.d(TAG, "CLIENTES ASIG QUITÉ UNO " + clientesAsignados2.size());
+                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
+
+                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
+                }
+                |}
+
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        spinn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Get the value selected by the user
+                // e.g. to store it as a field or immediately call a method
+                DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
+                int pos=buscarEnClientes(opcion.id,clientesAsignados2);
+                if(pos>-1) {
+                    {
+                        clientesAsignados2.remove(pos);
+                        clientesAsignados3.remove(pos);
+                    }
+                    Log.d(TAG, "CLIENTES ASIG QUITÉ UNO " + clientesAsignados2.size());
+                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
+
+                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
+                }
+                |}
+
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });*/
 
         //  else
         //     CreadorFormulario.cargarSpinnerDescr(getContext(),spinn,Constantes.clientesAsignados);
 
     }
 
-    public void sliendoSinguardar() {
+    public void saliendoSinguardar() {
 
         //para avisar que sale sin guardar
         EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
@@ -801,13 +914,21 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                mostrarOcultarlayout(View.VISIBLE,ll2);
                //quito el cliente seleecionado del spinner
                DescripcionGenerica cliente=(DescripcionGenerica)spinn.getSelectedItem();
-               Log.d(TAG,spinn.getId()+"<--"+spinn.getSelectedItemId());
+             //  Log.d(TAG,spinn.getId()+"<--"+spinn.getSelectedItemId());
                int pos=buscarEnClientes(cliente.id,clientesAsignados2);
+               //lo bloqueo
+               spinn.setEnabled(false);
                if(pos>-1) {
                    {
                        clientesAsignados2.remove(pos);
-                       clientesAsignados3.remove(pos);
+
                    }
+                    pos=buscarEnClientes(cliente.id,clientesAsignados3);
+                   if(pos>-1)
+                       {
+
+                           clientesAsignados3.remove(pos);
+                       }
                    Log.d(TAG, "CLIENTES ASIG QUITÉ UNO " + clientesAsignados2.size());
                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
 
@@ -819,82 +940,91 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
            @Override
            public void onClick(View view) {
                //oculto el layout
+               spinn.setEnabled(true);
+               loopViews(ll2);
                mostrarOcultarlayout(View.GONE,ll2);
+                //borrar si hay algo
 
            }
        };
         campo.required = "required";
         campo.id = 1010;
-        //camposForm.add(campo);
-         snmascli1=root.findViewById(R.id.snaimascli1);
-
-        snmascli1.setmLabel(campo.label);
-        snmascli1.setStyleLabel(R.style.formlabel);
-        if(campo.style>0){
-            snmascli1.setStyleLabel(campo.style);
-        }
-        if(campo.value!=null&&campo.value.equals("true")) {
-            snmascli1.setSi(true);
-
-        }
-        snmascli1.onclicksi(campo.funcionOnClick);
-        snmascli1.onclickno(campo.funcionOnClick2);
+        snmascli1 = root.findViewById(R.id.snaimascli1);
+        if(clientesAsignados!=null&&clientesAsignados.size()==1){
+            snmascli1.setVisible(View.GONE);
+        }else {
+            //camposForm.add(campo);
 
 
-        // }
-        snmascli1.setId((campo.id));
+            snmascli1.setmLabel(campo.label);
+            snmascli1.setStyleLabel(R.style.formlabel);
+            if (campo.style > 0) {
+                snmascli1.setStyleLabel(campo.style);
+            }
+            if (campo.value != null && campo.value.equals("true")) {
+                snmascli1.setSi(true);
 
-        snmascli2=root.findViewById(R.id.snmascli2);
+            }
+            snmascli1.onclicksi(campo.funcionOnClick);
+            snmascli1.onclickno(campo.funcionOnClick2);
 
-        snmascli2.setmLabel(campo.label);
-        snmascli2.setStyleLabel(R.style.formlabel);
-        if(campo.style>0){
-            snmascli2.setStyleLabel(campo.style);
-        }
-        if(fotosExh!=null&&fotosExh.size()>2) {
-            campo.value = "true";
-            mostrarOcultarlayout(View.VISIBLE, ll3);
-        }
-        else
-            campo.value="false";
-        if(campo.value!=null&&campo.value.equals("true")) {
-            snmascli2.setSi(true);
 
-        }
-        snmascli2.onclicksi(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //muestro sig boton
+            // }
+            snmascli1.setId((campo.id));
 
-                mostrarOcultarlayout(View.VISIBLE,ll3);
-                DescripcionGenerica cliente=(DescripcionGenerica)spinn2.getSelectedItem();
-                int pos=buscarEnClientes(cliente.id,clientesAsignados3);
-                if(pos>-1) {
-                    {
+            snmascli2 = root.findViewById(R.id.snmascli2);
 
-                        clientesAsignados3.remove(pos);
+            snmascli2.setmLabel(campo.label);
+            snmascli2.setStyleLabel(R.style.formlabel);
+            if (campo.style > 0) {
+                snmascli2.setStyleLabel(campo.style);
+            }
+            if (fotosExh != null && fotosExh.size() > 2) {
+                campo.value = "true";
+                mostrarOcultarlayout(View.VISIBLE, ll3);
+            } else
+                campo.value = "false";
+            if (campo.value != null && campo.value.equals("true")) {
+                snmascli2.setSi(true);
+
+            }
+            snmascli2.onclicksi(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //muestro sig boton
+
+                    mostrarOcultarlayout(View.VISIBLE, ll3);
+                    DescripcionGenerica cliente = (DescripcionGenerica) spinn2.getSelectedItem();
+                    int pos = buscarEnClientes(cliente.id, clientesAsignados3);
+                    spinn2.setEnabled(false);
+                    if (pos > -1) {
+                        {
+
+                            clientesAsignados3.remove(pos);
+                        }
+
+
+                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
                     }
 
-                    clientesAsignados3.remove(cliente);
-                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
                 }
+            });
+            snmascli2.onclickno(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //muestro sig boton
+                    spinn2.setEnabled(true);
+                    loopViews(ll3);
+                    mostrarOcultarlayout(View.GONE, ll3);
 
-            }
-        });
-        snmascli2.onclickno(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //muestro sig boton
-
-                mostrarOcultarlayout(View.GONE,ll3);
-            }
-        });
-
-
-        // }
-        snmascli2.setId(1011);
+                }
+            });
 
 
+            // }
+            snmascli2.setId(1011);
+
+        }
 
         cf1=new CreadorFormulario(camposTienda,getActivity());
       //  cf2=new CreadorFormulario(camposForm,getActivity());
@@ -905,6 +1035,30 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public void mostrarOcultarlayout(int val, LinearLayout ll){
         ll.setVisibility(val);
 
+    }
+    public void loopViews( LinearLayout layout ){
+
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+
+
+            if (child instanceof EditText) {
+                // Do something
+                ((EditText) child).setText("");
+            }if (child instanceof ImageView) {
+                // Do something
+                ((ImageView) child).setImageBitmap(null);
+            } /* else  /*if (child instanceof LinearLayout) {
+
+                this.loopViews((LinearLayout) child);
+            }*/
+            /*if (child instanceof ViewGroup) {
+
+                this.loopViews((ViewGroup) child);
+            }*/
+
+
+        }
     }
 
   /*  public void camposFotosProd(){
@@ -1031,7 +1185,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
                 return false;
             }
-        if(snmascli2.getRespuesta())//veo que tenga foto etc
+        if(snmascli2!=null&&snmascli2.getRespuesta())//veo que tenga foto etc
             if(txtfotoex3.getText().toString().equals("")){
                 Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
                 return false;
@@ -1106,11 +1260,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                    mViewModel.eliminarTblTemp();
                    guardado=true;
                    guardarFotoExhibido(txtfotoex1.getText().toString(),nuevoId,spinn);
-                   if(snmascli1.getRespuesta()) {
+                   if(snmascli1!=null&&snmascli1.getRespuesta()) {
                        Log.d(TAG,"entre aqui"+spinn.getId()+"--"+spinn2.getId());
                        guardarFotoExhibido(txtfotoex2.getText().toString(), nuevoId, spinn2);
                    }
-                   if(snmascli2.getRespuesta()) {
+                   if(snmascli2!=null&&snmascli2.getRespuesta()) {
                        guardarFotoExhibido(txtfotoex3.getText().toString(), nuevoId, spinn3);
                    }
 
@@ -1177,7 +1331,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
                 return ;
             }
-        if(snmascli2.getRespuesta())//veo que tenga foto etc
+        if(snmascli2!=null&&snmascli2.getRespuesta())//veo que tenga foto etc
             if(txtfotoex3.getText().toString().equals("")){
                 Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
                 return ;
@@ -1232,7 +1386,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         guardarFotoExhibido(txtfotoex1.getText().toString(),nuevoId,spinn);
         if(snmascli1.getRespuesta())
             guardarFotoExhibido(txtfotoex2.getText().toString(),nuevoId,spinn2);
-        if(snmascli2.getRespuesta())
+        if(snmascli2!=null&&snmascli2.getRespuesta())
             guardarFotoExhibido(txtfotoex3.getText().toString(),nuevoId,spinn3);
 
         guardado=true;
