@@ -38,6 +38,9 @@ public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhib
     public List<ProductoExhibido> getAllsimple(int visita) {
         return dao.getByVisitasimple(visita);
     }
+    public List<ProductoExhibido> getAllsimplePendSync(int visita) {
+        return dao.getByVisitasimplePendSync(visita,0);
+    }
 
     public LiveData<List<ProductoExhibido>> getByVisita(int idVisita) {
       return dao.findByVisita( idVisita);

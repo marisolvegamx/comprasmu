@@ -360,7 +360,8 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
    public List<Integer> muestrasTotales(){
         return itemprepo.getMuestras();
    }
-    public int insertarMuestra(int idInformeNuevo, int numMuestra){
+
+   public int insertarMuestra(int idInformeNuevo, int numMuestra){
         this.icdNuevo=tempToID(numMuestra);
         this.icdNuevo.setInformesId(idInformeNuevo);
         this.icdNuevo.setNumMuestra(numMuestra);
@@ -383,7 +384,22 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.etiqueta_evaluacion = crearImagendeTmp( Contrato.TablaInformeDet.ETIQUETA_EVALUACION);
         this.fotoazucares = crearImagendeTmp( Contrato.TablaInformeDet.AZUCARES);
         int nuevoid = this.saveDetalle2();
+
         return nuevoid;
+    }
+    public void limpiarVarsMuestra(){
+        this.icdNuevo=null;
+        this.energia=null;
+        this.foto_codigo_produccion=null;
+        this.foto_num_tienda = null;
+        this.marca_traslape =null;
+
+        this.foto_atributoa = null;
+        this.foto_atributob =null;
+        this.foto_atributoc = null;
+        this.etiqueta_evaluacion = null;
+        this.fotoazucares = null;
+
     }
 
     public void setProductoSel(ListaCompraDetalle productoSel,String nombrePlanta,int plantaSel,int clienteSel,String clienteNombre, String siglas, ListaCompraDetalle prodbu) {
@@ -501,6 +517,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         }catch(NumberFormatException ex){
         Log.e("NuevoDetVM","error al parasar a int el valor de empaquesId"+ex.getMessage());
         }
+        //es el id
         try{ this.productoSel.tipoAnalisis=Integer.parseInt(this.getValor(respuestas,"tipoAnalisis"));
         }catch(NumberFormatException ex){
             Log.e("NuevoDetVM","error al parasar a int el valor de tipoAnalisis"+ex.getMessage());

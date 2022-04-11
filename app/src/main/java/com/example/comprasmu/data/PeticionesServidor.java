@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.comprasmu.DescargaRespAsyncTask;
 import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
@@ -24,6 +25,7 @@ import com.example.comprasmu.data.remote.GenericResponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.PlantaResponse;
 import com.example.comprasmu.data.remote.PostResponse;
+import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TiendasResponse;
 import com.example.comprasmu.data.remote.UltimoInfResponse;
@@ -356,6 +358,48 @@ public class PeticionesServidor {
 
             @Override
             public void onFailure(@Nullable Call<ListaCompraResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+
+                }
+            }
+        });
+    }
+
+    public void pedirRespaldo(String indice, DescargaRespAsyncTask.DescargaIniListener listener){
+
+        Log.d("PeticionesServidor","haciendo petición pedir respaldo "+usuario);
+
+        final Call<RespInformesResponse> batch = apiClient.getApiService().getRespaldoInf(indice,usuario);
+
+        batch.enqueue(new Callback<RespInformesResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<RespInformesResponse> call, @Nullable Response<RespInformesResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    RespInformesResponse compraResp = response.body();
+                    //reviso si está actualizado
+                    if(compraResp!=null) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","resp>>"+compraResp.getVisita());
+
+                        listener.actualizar(compraResp);
+                        /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
+                        lcdrepo.insertAll(compraResp.getDetalles());
+                        //actualizar version en tabla
+                        tvrepo.insertAll(compraResp.getVersiones());
+*/
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista vacia");
+                        listener.noactualizar();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<RespInformesResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
 

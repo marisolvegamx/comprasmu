@@ -58,6 +58,7 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
 
     @Query("update imagen_detalle set estatusSync=0, estatus=:estatus WHERE id=:id")
     public abstract void cancelar(int id, int estatus);
+
     @Query("delete FROM imagen_detalle where indice=:indice")
     public abstract void deleteByIndice(int indice);
 

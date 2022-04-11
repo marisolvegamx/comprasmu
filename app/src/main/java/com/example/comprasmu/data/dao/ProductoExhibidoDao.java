@@ -34,6 +34,9 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
     @Query("SELECT * FROM producto_exhibido where visitasId=:id")
     public  abstract List<ProductoExhibido> getByVisitasimple( int id);
 
+    @Query("SELECT * FROM producto_exhibido where visitasId=:id and estatusSync=:estatusSync")
+    public  abstract List<ProductoExhibido> getByVisitasimplePendSync( int id,int estatusSync);
+
     @Query("update producto_exhibido set estatusSync=:estatus WHERE id=:id")
     public abstract void actualizarEstatusSync(int id, int estatus);
 

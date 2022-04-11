@@ -105,7 +105,7 @@ public class DetalleProductoFragment extends Fragment {
     private List<CatalogoDetalle>causas;
     private static final String TAG="DETALLEPRODUCTOFRAG";
 
-    private static final int SELECT_FILE = 1;
+
     private static final int REQUEST_CODEQR = 341;
     SimpleDateFormat sdf;
     SimpleDateFormat sdfcodigo;
@@ -130,8 +130,8 @@ public class DetalleProductoFragment extends Fragment {
     SpeechRecognizer sspeechRecognizer;
     private int tipoTienda;
     public static final int NUEVO_RESULT_OK =102 ;
-    public static final Integer RecordAudioRequestCode = 1;
-    private static final String cameraPerm = Manifest.permission.CAMERA;
+   // public static final Integer RecordAudioRequestCode = 1;
+  //  private static final String cameraPerm = Manifest.permission.CAMERA;
     public final static String ARG_NUEVOINFORME="comprasmu.ni_idinforme";
     public static String NUMMUESTRA="comprasmu.ni.nummuestra";
     private ImageButton btnrotar;
@@ -156,7 +156,7 @@ public class DetalleProductoFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
        // setHasOptionsMenu(true);
-         sdf = new SimpleDateFormat("dd-MM-yyyy");
+        sdf = new SimpleDateFormat("dd-MM-yyyy");
         sdfcodigo = new SimpleDateFormat("dd-MM-yy");
     }
     @Override
@@ -257,8 +257,10 @@ public class DetalleProductoFragment extends Fragment {
                     mViewModel.consecutivo=ultimares.getConsecutivo();
                     Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
                             //  mViewModel.consecutivo=ultimares.getConsecutivo();
-                    ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
                     dViewModel.fromTemp(); //guardo datos del producto selec
+                    ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
+
+                    Log.d(TAG,">>>>>"+dViewModel.productoSel.nombreTipoMuestra);
                     ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
                 }
                 if (preguntaAct.getId() >= 25&&preguntaAct.getId() !=47) {//si compro prod
@@ -838,7 +840,7 @@ public class DetalleProductoFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-              //  guardarMuestra();
+
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -847,8 +849,7 @@ public class DetalleProductoFragment extends Fragment {
                 //guarda informe
                 this.actualizarInforme();
                 this.finalizar();
-                //limpiar tabla
-                limpiarTablTemp();
+
                 //reviso si hay más clientes, si no fin
                 buscarClientes();
                 if(clientesAsignados!=null&&clientesAsignados.size()>0) {
@@ -864,7 +865,7 @@ public class DetalleProductoFragment extends Fragment {
                     Log.d(TAG,"dice que no");
                     //es la 43 //finalizo preinforme
                     mViewModel.finalizarVisita(mViewModel.visita.getId());
-                    mViewModel.eliminarTblTemp();
+                  //  mViewModel.eliminarTblTemp();
                     loadingDialog.dismisDialog();
                     Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
                     yaestoyProcesando=false;
@@ -926,7 +927,7 @@ public class DetalleProductoFragment extends Fragment {
                         //generar consecutivo tienda
                         MutableLiveData<Integer> consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
                         Log.d(TAG,"*genere cons="+consecutivo);
-                        consecutivo.observe(this, new Observer<Integer>() {
+                        consecutivo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
                             @Override
                             public void onChanged(Integer cons) {
                                 Log.d(TAG,"genere cons="+cons);
@@ -934,23 +935,22 @@ public class DetalleProductoFragment extends Fragment {
                                 mViewModel.informe.setConsecutivo(cons);
 
                                 mViewModel.consecutivo=cons;
-                                consecutivo.removeObservers(DetalleProductoFragment.this);
+                                mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
+                                mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
+                                mViewModel.guardarResp(0,0,listapl.get(0).getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
+                                guardarMuestra(preguntaAct.getSigId());
+                                loadingDialog.dismisDialog();
+                              //  consecutivo.removeObservers(DetalleProductoFragment.this);
                             }
                         });
                     }
-                    mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
-                    mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
-                    mViewModel.guardarResp(0,0,listapl.get(0).getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
 
-                }
+                }else {
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                guardarMuestra(preguntaAct.getSigId());
-                loadingDialog.dismisDialog();
+
+                  guardarMuestra(preguntaAct.getSigId());
+                  loadingDialog.dismisDialog();
+              }
 
                // avanzarPregunta(preguntaAct.getSigId());
 
@@ -1005,6 +1005,7 @@ public class DetalleProductoFragment extends Fragment {
 
         mViewModel.eliminarTblTemp();
         mViewModel.finalizarInforme();
+
         try {
             InformeEnvio informe=this.preparaInforme();
             SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informe,getActivity(),mViewModel);
@@ -1026,9 +1027,8 @@ public class DetalleProductoFragment extends Fragment {
         Constantes.DP_TIPOTIENDA=0;
         Constantes.NM_TOTALISTA=0;
         Constantes.ni_clientesel=null;
-        mViewModel.informe=null;
+        mViewModel.limpiarVarInforme();
         mViewModel.setIdInformeNuevo(0);
-        mViewModel.numMuestra=0;
 
 
     }
@@ -1090,7 +1090,7 @@ public class DetalleProductoFragment extends Fragment {
                MutableLiveData<Integer> idInformeNuevo = guardarInforme();
                 Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
                 //
-               idInformeNuevo.observe(this, new Observer<Integer>() {
+               idInformeNuevo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
                    @Override
                    public void onChanged(Integer idnvo) {
                        Log.d(TAG, "se creo el informe" + idnvo);
@@ -1115,7 +1115,7 @@ public class DetalleProductoFragment extends Fragment {
                                //   limpiarTablTempMenCli();
                                mViewModel.eliminarMuestra(mViewModel.numMuestra);
                                dViewModel.setIddetalleNuevo(0);
-                               dViewModel.icdNuevo=null;
+                               dViewModel.limpiarVarsMuestra();
                            }
                            yaestoyProcesando=false;
                            if(Constantes.NM_TOTALISTA>=16&&mViewModel.numMuestra==3||Constantes.NM_TOTALISTA<16&&mViewModel.numMuestra==2) //ya terminé
@@ -1140,7 +1140,7 @@ public class DetalleProductoFragment extends Fragment {
                        }
 
                        mViewModel.numMuestra++;
-                       idInformeNuevo.removeObservers(DetalleProductoFragment.this);
+                     //  idInformeNuevo.removeObservers(DetalleProductoFragment.this);
 
                    }
 
@@ -1165,7 +1165,7 @@ public class DetalleProductoFragment extends Fragment {
                        //   limpiarTablTempMenCli();
                        mViewModel.eliminarMuestra(mViewModel.numMuestra);
                        dViewModel.setIddetalleNuevo(0);
-                       dViewModel.icdNuevo=null;
+                        dViewModel.limpiarVarsMuestra();
                        yaestoyProcesando=false;
                        if(Constantes.NM_TOTALISTA>=16&&mViewModel.numMuestra==3||Constantes.NM_TOTALISTA<16&&mViewModel.numMuestra==2) //ya terminé
                        {
@@ -1209,14 +1209,17 @@ public class DetalleProductoFragment extends Fragment {
     }
     public InformeEnvio preparaInforme(){
         InformeEnvio envio=new InformeEnvio();
+        Log.d(TAG,"estatus informe"+mViewModel.visita.getEstatus());
+        if(mViewModel.visita.getEstatusSync()==0)
         envio.setVisita(mViewModel.visita);
         envio.setInformeCompra(mViewModel.informe);
         mViewModel.cargarMuestras(mViewModel.informe.getId());
         //busco el prod exhibido
 
-        List<ProductoExhibido> productoExhibidos=mViewModel.buscarProdExhi();
+        List<ProductoExhibido> productoExhibidos=mViewModel.buscarProdExhiPend();
         Log.d(TAG,"buscando prodexh"+productoExhibidos.size());
-
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(mViewModel.visita.getIndice());
         envio.setProductosEx(productoExhibidos);
         envio.setInformeCompraDetalles(mViewModel.muestrasCap);
         envio.setImagenDetalles(mViewModel.buscarImagenes(mViewModel.visita,mViewModel.informe,mViewModel.muestrasCap));
@@ -1294,7 +1297,7 @@ public class DetalleProductoFragment extends Fragment {
         }
         if(dViewModel.productoSel.clienteNombre.toUpperCase().equals("PEPSI")) {
             ValidadorDatos valdat = new ValidadorDatos();
-            if(Constantes.DP_CONSECUTIVO<11)
+           // if(Constantes.DP_CONSECUTIVO<11)
             if (!valdat.validarCodigoprodPep(textoint.getText().toString(), dViewModel.productoSel.codigosnop)) {
                 if(valdat.mensaje>0)
                     Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
@@ -1319,7 +1322,7 @@ public class DetalleProductoFragment extends Fragment {
     }
     public MutableLiveData<Integer> guardarInforme(){
 
-        return mViewModel.insertarInfdeTemp(getActivity(), this);
+        return mViewModel.insertarInfdeTemp(getActivity(), getViewLifecycleOwner());
     }
     public void actualizarInforme(){
         mViewModel.actualizarInforme();
@@ -1348,7 +1351,7 @@ public class DetalleProductoFragment extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-                fragmentTransaction.addToBackStack(null);
+           //     fragmentTransaction.addToBackStack(null);
 // Cambiar
                 fragmentTransaction.commit();
             }
@@ -1660,6 +1663,7 @@ public class DetalleProductoFragment extends Fragment {
                                 mViewModel.consecutivo = cons;
                                 Constantes.DP_CONSECUTIVO=cons;
                                 //actualizo barra
+                                Log.d(TAG,"tengo el tipo muestra "+dViewModel.productoSel);
                                 ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                                 mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
@@ -1787,15 +1791,15 @@ public class DetalleProductoFragment extends Fragment {
    @Override
    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            if (requestCode == RecordAudioRequestCode && grantResults.length > 0 ){
+          /*  if (requestCode == RecordAudioRequestCode && grantResults.length > 0 ){
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
                     Toast.makeText(getActivity(),"Permission Granted",Toast.LENGTH_SHORT).show();
-            }
+            }*/
             if (requestCode == 100) {
                 RuntimePermissionUtil.onRequestPermissionsResult(grantResults, new RPResultListener() {
                     @Override
                     public void onPermissionGranted() {
-                        if ( RuntimePermissionUtil.checkPermissonGranted(getActivity(), cameraPerm)) {
+                        if ( RuntimePermissionUtil.checkPermissonGranted(getActivity(), Manifest.permission.CAMERA)) {
                             //   restartActivity();
                         }
                     }

@@ -112,7 +112,10 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
 </fragment>
-
+    <activity
+        android:id="@+id/nav_abririnf"
+        android:name="com.example.comprasmu.ui.visita.AbrirInformeActivity"
+        android:label="@string/nuevo_informe" />
 
     <fragment
         android:id="@+id/nav_listar"
@@ -172,6 +175,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
     </fragment>
+
     <fragment
         android:id="@+id/nav_editar_informe"
         android:name="com.example.comprasmu.ui.informe.VerInformeFragment"

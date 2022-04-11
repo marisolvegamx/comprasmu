@@ -204,7 +204,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
                     //es un informe de ayer no puede continuar
                     //avisar
-                     AlertDialog.Builder dialogo1 = new AlertDialog.Builder(ContinuarInformeActivity.this);
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(ContinuarInformeActivity.this);
                     dialogo1.setTitle(R.string.importante);
                     dialogo1.setMessage(R.string.informe_ayer);
                     dialogo1.setCancelable(false);
@@ -223,9 +223,6 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 Log.d(TAG, "tipo tienda -----------*" + Constantes.DP_TIPOTIENDA);
                 nviewModel.visita = visitaCont;
                 mBinding.setVisita(visitaCont);
-
-
-
 
     }
 

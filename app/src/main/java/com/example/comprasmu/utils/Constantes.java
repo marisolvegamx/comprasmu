@@ -1,6 +1,8 @@
 package com.example.comprasmu.utils;
 
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 
 import java.text.SimpleDateFormat;
@@ -60,6 +62,13 @@ public class Constantes {
         public static   String nvoatra;
         public static  String nvoatrb;
         public static String nvoatrc;
+
+    }
+    public static class VarListCompra{
+        public static   int idListaSel;
+        public static ListaCompra listaSelec;
+        public static ListaCompraDetalle detallebuSel;
+
 
     }
 }

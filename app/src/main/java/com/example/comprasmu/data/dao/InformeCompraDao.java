@@ -50,6 +50,11 @@ public interface InformeCompraDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long addInforme(InformeCompra informe);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+     void insertAll(List<InformeCompra> objects);
+
+
+
     @Query("DELETE FROM informe_compras where id=:id")
     void deleteInforme(int id);
 

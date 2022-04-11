@@ -22,6 +22,8 @@ public class InformeEnvio {
     private List<InformeCompraDetalle> informeCompraDetalles;
     private List<ImagenDetalle> imagenDetalles;
     private List<ProductoExhibido> productosEx;
+    private String claveUsuario;
+    private String indice;
 
     public Visita getVisita() {
         return visita;
@@ -62,6 +64,23 @@ public class InformeEnvio {
     public void setProductosEx(List<ProductoExhibido> productosEx) {
         this.productosEx = productosEx;
     }
+
+    public String getClaveUsuario() {
+        return claveUsuario;
+    }
+
+    public void setClaveUsuario(String claveUsuario) {
+        this.claveUsuario = claveUsuario;
+    }
+
+    public String getIndice() {
+        return indice;
+    }
+
+    public void setIndice(String indice) {
+        this.indice = indice;
+    }
+
     public String toJson(InformeEnvio informe) {
         //  this.inf_visitasIdlocal=informe.getVisitasId();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

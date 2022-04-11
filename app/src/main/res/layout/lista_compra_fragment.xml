@@ -112,7 +112,7 @@
                 <TextView
                     android:id="@+id/txtlcnota"
                     style="@style/textolista1"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="18dp"
                     android:layout_marginTop="8dp" />

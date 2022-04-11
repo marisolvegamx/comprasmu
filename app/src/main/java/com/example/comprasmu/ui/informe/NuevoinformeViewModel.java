@@ -51,7 +51,6 @@ import java.util.List;
 
 public class NuevoinformeViewModel extends AndroidViewModel {
 
-    private MutableLiveData<HashMap<Integer,String>> listaPlantas;
     private MutableLiveData<HashMap<Integer,String>> listaClientes;
     private MutableLiveData<HashMap<Integer,String>> tiposTienda;
 
@@ -100,7 +99,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         this.visitaRepository=new VisitaRepositoryImpl(application);
         prodRepo=new ProductoExhibidoRepositoryImpl(application);
-        listaPlantas = new MutableLiveData<>();
+
         listaClientes = new MutableLiveData<>();
         tiposTienda = new MutableLiveData<>();
         informe     =new InformeCompra();
@@ -127,9 +126,9 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             if(idVisita==0)//no hay nada busco en el serv
             {
                 if (prefvisita == 0&&ComprasUtils.isOnlineNet()) {
-                    PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+                   /* PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
                     NuevoinformeViewModel.EnvioListener listener = new NuevoinformeViewModel.EnvioListener(actividad);
-                    MutableLiveData<Boolean> resul=ps.getUltimaVisita(Constantes.INDICEACTUAL, listener);
+                    MutableLiveData<Boolean> resul=ps.getUltimaVisita(Constantes.INDICEACTUAL, listener);*/
                     recuperarIds(actividad);
                 }
 
@@ -163,11 +162,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
 
     }
-    public MutableLiveData<HashMap<Integer, String>> getListaPlantas() {
-        return listaPlantas;
-    }
-
-    public MutableLiveData<HashMap<Integer, String>> getListaClientes() {
+      public MutableLiveData<HashMap<Integer, String>> getListaClientes() {
         return listaClientes;
     }
 
@@ -242,10 +237,12 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         //   VisitaRepositoryImpl vrepo=new VisitaRepositoryImpl(getContext());
         Visita visita=visitaRepository.findsimple(info.informe.getVisitasId());
         Log.d(TAG,"wwwwwwwww"+info.informe.getId()+"---"+visita.getTiendaNombre());
+        envio.setIndice(visita.getIndice());
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         if(visita.getEstatusSync()==0)
             envio.setVisita(visita);
         envio.setInformeCompra(info.informe);
-        envio.setProductosEx(prodRepo.getAllsimple(visita.getId()));
+        envio.setProductosEx(prodRepo.getAllsimplePendSync(visita.getId()));
         //busco los detalles
         List<InformeCompraDetalle> detalles=detalleRepo.getAllSencillo(info.informe.getId());
         envio.setInformeCompraDetalles(detalles);
@@ -256,13 +253,18 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public List<ProductoExhibido> buscarProdExhi(){
         return prodRepo.getAllsimple(visita.getId());
     }
+    public List<ProductoExhibido> buscarProdExhiPend(){
+        return prodRepo.getAllsimplePendSync(visita.getId());
+    }
 
     public List<ImagenDetalle> buscarImagenes(Visita visita, InformeCompra informe, List<InformeCompraDetalle> detalles){
         //todas las fotos aqui
         List<ImagenDetalle> fotosinfo=new ArrayList<>();
         //la visita
-        ImagenDetalle imagenDetalle=getFoto(visita.getFotoFachada());
-        fotosinfo.add(imagenDetalle);
+        if(visita.getEstatusSync()==0) {
+            ImagenDetalle imagenDetalle = getFoto(visita.getFotoFachada());
+            fotosinfo.add(imagenDetalle);
+        }
 
         //las del informe
         List<Integer> arrFotos=new ArrayList<>();
@@ -280,8 +282,10 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         }
 
         //las de producto ex
-        List<ImagenDetalle> productoExhibidos=prodRepo.getImagenByVisitasimple(visita.getId());
-        fotosinfo.addAll(productoExhibidos);
+        if(visita.getEstatusSync()==0) {
+            List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimple(visita.getId());
+            fotosinfo.addAll(productoExhibidos);
+        }
 
        return fotosinfo;
 
@@ -385,7 +389,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             if (nvoidimagem == 0) {
                 //voy al servidor
                 if (ComprasUtils.isOnlineNet()) {
-                    PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+                 /*   PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
                     NuevoinformeViewModel.EnvioListener listener = new NuevoinformeViewModel.EnvioListener(actividad);
                     MutableLiveData<Boolean> resul = ps.getUltimaVisita(Constantes.INDICEACTUAL, listener);
                     resul.observe(owner, new Observer<Boolean>() {
@@ -396,7 +400,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                             nvoid.setValue(prefimagen + 1);
                             resul.removeObservers(owner);
                         }
-                    });
+                    });*/
                 }
                 nvoid.setValue( nvoidimagem + 1);
             } else
@@ -470,7 +474,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         this.informe.setEstatusSync(0);
         this.informe.setEstatus(1);
-        nvoid=getNvoIdInforme(actividad,owner,this.informe.getPlantasId());
+        nvoid=new MutableLiveData<>();
+        nvoid=getNvoIdInforme(actividad,this.informe.getPlantasId());
        // nvoid.setValue(8);
         nvoid.observe(owner, new Observer<Integer>() {
             @Override
@@ -481,14 +486,18 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                   //  Log.d(TAG, "nvo informe" + nvoidd);
                     repository.insertInformeCompra(informe);
                 }
-                nvoid.removeObservers(owner);
+               // nvoid.removeObservers(owner);
             }
         });
         return nvoid;
     }
+    public  void limpiarVarInforme(){
+        this.informe=null;
+        this.nvoid=null;
+    }
     MutableLiveData<Integer> nvoid;
 
-     public MutableLiveData<Integer> getNvoIdInforme(Activity actividad, LifecycleOwner owner,int planta) {
+     public MutableLiveData<Integer> getNvoIdInforme(Activity actividad, int planta) {
 
 
         int nvoid2 = (int) repository.getUltimo();
@@ -498,13 +507,13 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
              if (prefinf == 0){
         //busco id
-                 if (ComprasUtils.isOnlineNet()) {
+               /*  if (ComprasUtils.isOnlineNet()) {
                      //lo pido al servidor
-                     PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
-                     EnvioListener listener = new EnvioListener(actividad);
-                     ps.getUltimoInforme(Constantes.INDICEACTUAL, planta, listener);
+                   //  PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+                    // EnvioListener listener = new EnvioListener(actividad);
+                    // ps.getUltimoInforme(Constantes.INDICEACTUAL, planta, listener);
                  }
-                 else
+                 else*/
                      nvoid.postValue(1);
         }
 

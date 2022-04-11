@@ -13,6 +13,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -30,6 +31,7 @@ import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.databinding.ListaCompraFragmentBinding;
 
+import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 
@@ -48,7 +50,7 @@ import java.util.List;
 public class ListaCompraFragment extends Fragment implements ListaCompraDetalleAdapter.AdapterCallback {
 
 
-    private static final String ISBACKUP = "comprasmu.isbackup";
+    public static final String ISBACKUP = "comprasmu.isbackup";
     private  int plantaSel;
 
     private ListaDetalleViewModel mViewModel;
@@ -191,6 +193,11 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 opcionbu=2;
                 mBinding.txtlcopcionbu.setText(getString(R.string.criterio)+" "+(opcionbu-1));
                 mBinding.txtlcopcionbu.setVisibility(View.VISIBLE);
+                if(!ismuestra) {
+                    mViewModel.setDetallebuSel(Constantes.VarListCompra.detallebuSel);
+                    mViewModel.listaSelec = Constantes.VarListCompra.listaSelec;
+                    mViewModel.setIdListaSel(Constantes.VarListCompra.idListaSel);
+                }
                 //reviso que traiga el detalle original
                 if(mViewModel.getDetallebuSel()!=null) {
                   //  Log.d(TAG,"rrrrrrrrrrrrrrr"+isbu);
@@ -274,11 +281,12 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 //   mBinding.paradebug1.setText(myProducts.size()+"");
 
 
-                if (myProducts != null && myProducts.size() > 0) {
+                if (myProducts != null && myProducts.size() > 0)
                     lista = myProducts.get(0);
-                    Log.d(Constantes.TAG, "en la consulta id lista=> " + myProducts.size());
+                    Log.d(Constantes.TAG, "en la consulta id lista=> " +lista.listaDetalle.get(0).getNvoCodigo());
                     // mBinding.setIsLoading(false);
-
+                    //busco el cliente
+                    clienteSel=lista.user.getClientesId();
                     lista.listaDetalle=buscarBU(lista.listaDetalle);
                     calcularTotales(lista.listaDetalle);
                     etsiglas.setText(lista.user.getSiglas());
@@ -310,6 +318,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                             }
                         }
                     }*/
+                //consecutivoTienda=11;
                     mViewModel.setListacomprasbu(listacomprasbu);
                     mListAdapter.setListaCompraDetalleList(lista.listaDetalle, consecutivoTienda,isbu,ismuestra,lista.user.getClientesId(), listacomprasbu);
                     mListAdapter.notifyDataSetChanged();
@@ -331,9 +340,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
                     }else
                         mBinding.lonota.setVisibility(View.GONE);
-                      } else {
-                    //  mBinding.setIsLoading(true);
-                }
+
                 // espresso does not know how to wait for data binding's loop so we execute changes
                 // sync.
                 //  mBinding.executePendingBindings();
@@ -426,14 +433,16 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         listacomprasbu=new ArrayList<InformeCompraDetalle>();
         for (ListaCompraDetalle lcd:listalcd
              ) {
-         //  Log.d(TAG, "---- viendo si tiene bu " + lcd.getListaId() + "--" + lcd.getId());
+           // Log.d(Constantes.TAG, "revisando nuevos codigos " +lcd.getNvoCodigo());
+
+            //  Log.d(TAG, "---- viendo si tiene bu " + lcd.getListaId() + "--" + lcd.getId());
             List<InformeCompraDetalle> comprabu = getBackup(lcd);
             if (comprabu.size() > 0) {
              //   Log.d(TAG, "es bu " + comprabu.size());
 
                 listacomprasbu.addAll(comprabu);
                 //resto al producto de la lista
-                lcd.setCantidad(lcd.getCantidad()-comprabu.size());
+              //  lcd.setCantidad(lcd.getCantidad()-comprabu.size());
                 lcd.setComprados(lcd.getComprados()-comprabu.size());
 
             }
@@ -449,7 +458,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     private void setupListAdapter() {
 
         //consecutivoTienda=Constantes.DP_CONSECUTIVO;
-      //  consecutivoTienda=11;
+
         mListAdapter = new ListaCompraDetalleAdapter(mViewModel,this);
         //mBinding.detalleList.setAdapter(mListAdapter);
         mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -494,6 +503,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         //cambio al fragmento de captura del detalle
         if (view.getId() == R.id.btnldagregar) {
            Log.d(TAG, "agregar muestra"+mViewModel.nombrePlantaSel+"--"+mViewModel.getPlantaSel());
+            Log.d(TAG, "producto tipo muestra"+mViewModel.nombrePlantaSel+"--"+mViewModel.getPlantaSel());
 
                  // String clienteNombre=Constantes.ni_clientesel;//lo pongo hasta que se guarda el informe
             //para los bu
@@ -502,15 +512,15 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 //cambio el tipo de muestra y el producto
                 // en detallebusel esta lainfo original
 
-                mViewModel.getDetallebuSel().setTipoMuestra(2);
-                mViewModel.getDetallebuSel().setNombreTipoMuestra("BACKUP");
+                mViewModel.getDetallebuSel().setTipoMuestra(3);
+                mViewModel.getDetallebuSel().setNombreTipoMuestra("BACK UP");
                 mViewModel.getDetallebuSel().setProductosId(productoSel.getProductosId());
                 mViewModel.getDetallebuSel().setProductoNombre(productoSel.getProductoNombre());
                 mViewModel.getDetallebuSel().setTamanioId(productoSel.getTamanioId());
                 mViewModel.getDetallebuSel().setTamanio(productoSel.getTamanio());
                 mViewModel.getDetallebuSel().setEmpaque(productoSel.getEmpaque());
                 mViewModel.getDetallebuSel().setEmpaquesId(productoSel.getEmpaquesId());
-
+                mViewModel.getDetallebuSel().setCodigosNoPermitidos(productoSel.getCodigosNoPermitidos());
                 //  productoSel.setAnalisisId(mViewModel.getDetallebuSel().getAnalisisId());
                 //productoSel.setTipoAnalisis(mViewModel.getDetallebuSel().getTipoAnalisis());
                 //productoSel.setCantidad();
@@ -522,7 +532,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
             }
             else
-            nuevoInf.setProductoSel(productoSel,mViewModel.nombrePlantaSel,mViewModel.getPlantaSel(), mViewModel.getClienteSel(),nombreCliente,etsiglas.getText().toString(),null);
+                 nuevoInf.setProductoSel(productoSel,mViewModel.nombrePlantaSel,mViewModel.getPlantaSel(), mViewModel.getClienteSel(),nombreCliente,etsiglas.getText().toString(),null);
             Constantes.productoSel=nuevoInf.productoSel;
 
     /*        Fragment fragment = new DetalleProductoFragment1();
@@ -556,59 +566,86 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
     @Override
     public void verBackup(ListaCompraDetalle productoSel) {
-//        Intent intento1=new Intent(getActivity(), BackActivity.class);
-//        intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_LISTACOMPRA);
-//        intento1.putExtra("ciudadSel",mViewModel.ciudadSel);
-//        intento1.putExtra("ciudadNombre",mViewModel.nombreCiudadSel);
-//        intento1.putExtra(ISBACKUP, true);
-//        intento1.putExtra(ARG_CLIENTESEL, mViewModel.getClienteSel());
-//     //   intento1.putExtra(NuevoinformeFragment.NUMMUESTRA,nummuestra );
-//
-//        startActivity(intento1);
+        //paso los params que necesito
 
-       //paso los params que necesito
         mViewModel.setIdListaSel(lista.user.getId());
-        mViewModel.listaSelec=lista.user;
+        mViewModel.listaSelec = lista.user;
         //es el detalle original
         mViewModel.setDetallebuSel(productoSel);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        // Definir una transacción
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Bundle bundle = new Bundle();
+        if(!ismuestra) {
+            Constantes.VarListCompra.detallebuSel=productoSel;
+            Constantes.VarListCompra.idListaSel=lista.user.getId();
+            Constantes.VarListCompra.listaSelec=lista.user;
 
-        if(clienteSel==4) {
-            Fragment fragment = new ListaCompraFragment(plantaSel, nombrePlanta, this.nombreCliente);
+            Intent intento1 = new Intent(getActivity(), BackActivity.class);
+            intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_LISTACOMPRA);
+            intento1.putExtra("ciudadSel", mViewModel.ciudadSel);
+            intento1.putExtra("ciudadNombre", mViewModel.nombreCiudadSel);
+            intento1.putExtra(ISBACKUP, true);
+            intento1.putExtra(ARG_CLIENTESEL, mViewModel.getClienteSel());
+            //   intento1.putExtra(NuevoinformeFragment.NUMMUESTRA,nummuestra );
+            if (clienteSel == 4) {
+                intento1.putExtra(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
+                intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
+                intento1.putExtra(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
+                //   bundle.putInt(DetalleProductoFragment.NUMMUESTRA,);
+            }
+            if (clienteSel == 5 || clienteSel == 6) {
+
+
+                intento1.putExtra(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
+                intento1.putExtra(SustitucionFragment.ARG_PLANTA, plantaSel);
+                intento1.putExtra(SustitucionFragment.ARG_NOMBREPLANTA, nombrePlanta);
+                intento1.putExtra(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
+                Constantes.ni_clientesel = nombreCliente;
+            }
+                startActivity(intento1);
+
+
+        }else{
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            // Definir una transacción
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            Bundle bundle = new Bundle();
+            Log.d(TAG, "ppppppp" + clienteSel);
+            if (clienteSel == 4) {
+                Fragment fragment = new ListaCompraFragment(plantaSel, nombrePlanta, this.nombreCliente);
 // Obtener el administrador de fragmentos a través de la actividad
-            bundle.putInt(ListaCompraFragment.ARG_PLANTASEL,plantaSel );
-            bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
-            bundle.putString(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
-         //   bundle.putInt(DetalleProductoFragment.NUMMUESTRA,);
-            bundle.putString(ListaCompraFragment.ARG_MUESTRA, "true");
-            bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL,clienteSel );
-            bundle.putBoolean(ISBACKUP, true);
-            fragment.setArguments(bundle);
+                bundle.putInt(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
+                bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
+                bundle.putString(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
+                //   bundle.putInt(DetalleProductoFragment.NUMMUESTRA,);
+                bundle.putString(ListaCompraFragment.ARG_MUESTRA, "true");
+                bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL, clienteSel);
+                bundle.putBoolean(ISBACKUP, true);
+                fragment.setArguments(bundle);
 
-            fragmentTransaction.replace(R.id.back_fragment, fragment);
-            fragmentTransaction.addToBackStack(null);
-// Cambiar
-            fragmentTransaction.commit();
-        }else
-        if(clienteSel==5||clienteSel==6) {
+                fragmentTransaction.replace(R.id.back_fragment, fragment);
 
-            Fragment fragment =  SustitucionFragment.newInstance();
-            // Obtener el administrador de fragmentos a través de la actividad
-            bundle.putBoolean(ISBACKUP, true);
-            bundle.putString(SustitucionFragment.ARG_CATEGORIA,productoSel.getCategoria());
-            bundle.putInt(SustitucionFragment.ARG_PLANTA, plantaSel);
-            bundle.putString(SustitucionFragment.ARG_NOMBREPLANTA, nombrePlanta);
-            bundle.putString(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
-            fragment.setArguments(bundle);
-            Constantes.ni_clientesel=nombreCliente;
-            Log.d(TAG,"di clic en bu "+nombreCliente);
-            fragmentTransaction.replace(R.id.back_fragment, fragment);
-            fragmentTransaction.addToBackStack(null);
+
+                fragmentTransaction.addToBackStack(null);
 // Cambiar
-            fragmentTransaction.commit();
+                fragmentTransaction.commit();
+            } else if (clienteSel == 5 || clienteSel == 6) {
+
+                Fragment fragment = SustitucionFragment.newInstance();
+                // Obtener el administrador de fragmentos a través de la actividad
+                bundle.putBoolean(ISBACKUP, true);
+                bundle.putString(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
+                bundle.putInt(SustitucionFragment.ARG_PLANTA, plantaSel);
+                bundle.putString(SustitucionFragment.ARG_NOMBREPLANTA, nombrePlanta);
+                bundle.putString(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
+                fragment.setArguments(bundle);
+                Constantes.ni_clientesel = nombreCliente;
+                Log.d(TAG, "di clic en bu " + nombreCliente);
+
+                fragmentTransaction.replace(R.id.back_fragment, fragment);
+
+                fragmentTransaction.addToBackStack(null);
+// Cambiar
+                fragmentTransaction.commit();
+            }
         }
 
     }

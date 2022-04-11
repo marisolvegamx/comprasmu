@@ -139,6 +139,10 @@ public class InformeCompraRepositoryImpl   {
        return icDao.addInforme(newInformeCompra);
     }
 
+    public void  insertAll(List<InformeCompra> newInformeCompra) {
+         icDao.insertAll(newInformeCompra);
+    }
+
     public long getUltimo() {
         return icDao.getUltimoId();
     }

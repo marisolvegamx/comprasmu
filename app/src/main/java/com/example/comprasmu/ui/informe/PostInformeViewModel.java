@@ -120,15 +120,20 @@ public class PostInformeViewModel {
          prodeRepo=new ProductoExhibidoRepositoryImpl(context);
     }
     public void actualizarEstatusInforme(InformeEnvio informe){
+        if(informe.getVisita()!=null)
         //actualizo la visita
-        visitaRepo.actualizarEstatusSync(informe.getVisita().getId(), Constantes.ENVIADO);
+        {
+            visitaRepo.actualizarEstatusSync(informe.getVisita().getId(), Constantes.ENVIADO);
+            //producto exhibido
+            prodeRepo.actualizarEstatusSyncxVisita(informe.getVisita().getId(), Constantes.ENVIADO);
+        }
         //actualizo informe
         infoRepo.actualizarEstatusSync(informe.getInformeCompra().getId(),Constantes.ENVIADO);
         //actualizo detalles
         infoDetRepo.actualizarEstatusSyncxInfo(informe.getInformeCompra().getId(),Constantes.ENVIADO);
-        //producto exhibido
-        prodeRepo.actualizarEstatusSyncxVisita(informe.getVisita().getId(), Constantes.ENVIADO);
-
+        //imagenes
+        for(ImagenDetalle imagen: informe.getImagenDetalles())
+        imagenRepo.actualizarEstatusSync(imagen.getId(),Constantes.ENVIADO);
 
     }
     public void actualizarEstatusTodo(TodoEnvio informes){

@@ -1,3 +1,4 @@
+
 package com.example.comprasmu;
 
 import android.Manifest;
@@ -42,6 +43,7 @@ import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
+import com.example.comprasmu.ui.mantenimiento.DescRespaldoFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -56,6 +58,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -254,6 +258,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+            case R.id.action_settings:
+                //  Log.d(TAG,"hice click en"+item.getItemId());
+                pruebadescarga();
+                return true;
           /*  case R.id.action_save:
                 guardarInforme();
                 return true;
@@ -485,9 +493,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             j--;
         }
 
-        // Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
-        Constantes.INDICEACTUAL=mesactual.replace('-','.');
-        Constantes.INDICEACTUAL = "3.2022";
+        Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
+       // Constantes.INDICEACTUAL=mesactual.replace('-','.');
+       Constantes.INDICEACTUAL = "4.2022";
         Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
         //TODO falta pais trabajo
@@ -538,7 +546,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
             if (fragment instanceof AbririnformeFragment){
                Log.e(TAG,"aprete atras***");
-                ((AbririnformeFragment)fragment).sliendoSinguardar();
+                ((AbririnformeFragment)fragment).saliendoSinguardar();
             }else
             super.onBackPressed();
 
@@ -549,7 +557,23 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
 
+    public void pruebadescarga() {
+        //pueda descargar
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        // Definir una transacción
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+        Fragment fragment = new DescRespaldoFragment();
+// Obtener el administrador de fragmentos a través de la actividad
+
+      //  fragment.setArguments(bundle);
+
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragment);
+        fragmentTransaction.addToBackStack(null);
+// Cambiar
+        fragmentTransaction.commit();
+
+    }
 
 
 

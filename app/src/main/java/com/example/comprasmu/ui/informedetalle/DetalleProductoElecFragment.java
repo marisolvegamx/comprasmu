@@ -632,7 +632,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
                     fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-                    fragmentTransaction.addToBackStack(null);
+               //     fragmentTransaction.addToBackStack(null);
 // Cambiar
                     fragmentTransaction.commit();
                 }else {
@@ -642,7 +642,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
                     fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-                    fragmentTransaction.addToBackStack(null);
+                  //  fragmentTransaction.addToBackStack(null);
 // Cambiar
                     fragmentTransaction.commit();
                 }

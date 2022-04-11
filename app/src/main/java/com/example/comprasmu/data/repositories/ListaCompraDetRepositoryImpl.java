@@ -45,15 +45,15 @@ public class ListaCompraDetRepositoryImpl {
             filtros.add(empaque);
         }
         if(tamanio>0) {
-            query = query + " and tamanio=?";
+            query = query + " and tamanioId=?";
             filtros.add(tamanio+"");
         }
         if(analisis!=null&&!analisis.equals("")) {
-            query = query + " and tipoAnalisis=?";
+            query = query + " and analisisId=?";
             filtros.add(analisis);
         }
 
-
+        //Select * from lista_compras_detalle where listaId=54 and categoria='CARBONATADAS' and productoNombre='PEPSI' and empaque='PET' and tamanio=13
 
         Object[] params=filtros.toArray();
 
@@ -120,9 +120,9 @@ public class ListaCompraDetRepositoryImpl {
             filtros.add(empaque);
         }
         if(tamanio>0) {
-            query = query + " and tamanio=?) or categoria!=?)";
+            query = query + " and tamanioId=?))";
             filtros.add(tamanio+"");
-            filtros.add(categoria+"");
+          //  filtros.add(categoria+"");
         }
 
 
@@ -243,9 +243,9 @@ public class ListaCompraDetRepositoryImpl {
 
         Object[] params=filtros.toArray();
 
-        for(int i=0;i<params.length;i++)
-            Log.d("InformeCompraRepo","***"+params[i]);
-        Log.d("InformeCompraRepo","****"+query);
+     //   for(int i=0;i<params.length;i++)
+      //      Log.d("InformeCompraRepo","***"+params[i]);
+             Log.d("InformeCompraRepo","****"+query);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
         );
@@ -308,8 +308,8 @@ public class ListaCompraDetRepositoryImpl {
         Object[] params=filtros.toArray();
 
         for(int i=0;i<params.length;i++)
-            Log.d("InformeCompraRepo","***"+params[i]);
-        Log.d("InformeCompraRepo","****"+query);
+            Log.d("InformeCompraRepo","getDetalleByFiltrosUDA***"+params[i]);
+        Log.d("InformeCompraRepo","getDetalleByFiltrosUDA****"+query);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
         );

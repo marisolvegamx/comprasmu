@@ -4,11 +4,13 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.InformeCompraDetDao;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 
 
+import java.util.HashMap;
 import java.util.List;
 
 public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDetalle> {

@@ -87,7 +87,7 @@ public class NuevaFotoExhibFragment extends Fragment {
         nombre_foto=extras.getString(NuevoinformeFragment.ARG_FOTOPRODUCTO);
         visitasId=extras.getInt(NuevaFotoExhibFragment.ARG_VISITASID);
         lViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-          File file = new File(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
+        File file = new File(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
         if (file.exists()) {
             //   Bitmap imageBitmap = (Bitmap) extras.get("data");
             if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
@@ -145,13 +145,12 @@ public class NuevaFotoExhibFragment extends Fragment {
     public void cargarClientes() {
         Log.d(TAG, "regresó de la consulta " + Constantes.CIUDADTRABAJO);
      //   if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
-            lViewModel.cargarClientes(Constantes.CIUDADTRABAJO).observe(getViewLifecycleOwner(), data -> {
-                Log.d(TAG, "regresó de la consulta " + data.size());
-                Constantes.clientesAsignados = ComprasUtils.convertirListaaClientes(data);
-                CreadorFormulario.cargarSpinnerDescr(getContext(),spinn,Constantes.clientesAsignados);
+        lViewModel.cargarClientes(Constantes.CIUDADTRABAJO).observe(getViewLifecycleOwner(), data -> {
+            Log.d(TAG, "regresó de la consulta " + data.size());
+            Constantes.clientesAsignados = ComprasUtils.convertirListaaClientes(data);
+            CreadorFormulario.cargarSpinnerDescr(getContext(),spinn,Constantes.clientesAsignados);
 
-
-            });
+         });
       //  else
        //     CreadorFormulario.cargarSpinnerDescr(getContext(),spinn,Constantes.clientesAsignados);
 
@@ -163,12 +162,12 @@ public class NuevaFotoExhibFragment extends Fragment {
             return;
 
         }
-   if(spinn.getSelectedItem()==null){
+       if(spinn.getSelectedItem()==null){
            Toast.makeText(getActivity(), "Falta seleccionar cliente", Toast.LENGTH_LONG).show();
             return;
 
        }
-   DescripcionGenerica cliente=(DescripcionGenerica)spinn.getSelectedItem();
+       DescripcionGenerica cliente=(DescripcionGenerica)spinn.getSelectedItem();
        NuevoinformeViewModel ninfViewModel =
                new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 

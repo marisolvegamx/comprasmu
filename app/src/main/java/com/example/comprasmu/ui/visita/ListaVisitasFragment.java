@@ -33,9 +33,11 @@ import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.ContinuarInformeActivity;
+import com.example.comprasmu.ui.informedetalle.ValidadorDatos;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
@@ -177,6 +179,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
 
     @Override
     public void onClickAgregar(int idvisita) {
+
         Bundle bundle = new Bundle();
         bundle.putInt(ContinuarInformeActivity.INFORMESEL,idvisita);
 
@@ -198,19 +201,9 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
             dialogo1.setCancelable(false);
             dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogo1, int id) {
+                    eliminar(idVisita);
 
 
-                    mViewModel.eliminarVisita(idVisita);
-
-                    mViewModel.getmSnackbarText().observe(getViewLifecycleOwner(), new Observer<String>() {
-                        @Override
-                        public void onChanged(String s) {
-                            Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
-                     //actualizo la lista
-                    mListAdapter.notifyDataSetChanged();
                 }
             });
             dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -228,6 +221,19 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         }
 
     }
+    public void eliminar(int idVisita){
+        mViewModel.eliminarVisita(idVisita, 0);
+
+        mViewModel.getmSnackbarText().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        //actualizo la lista
+        mListAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onClickEditar(int id) {
@@ -239,7 +245,16 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     }
 
     @Override
-    public void onClickFinalizar(int idvisita) {
+    public void onClickFinalizar(int idvisita, Visita visitaCont) {
+        ValidadorDatos valdat=new ValidadorDatos();
+       if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
+            //elimino
+            mViewModel.eliminarVisita(idvisita, 1);
+
+            //actualizo la lista
+            mListAdapter.notifyDataSetChanged();
+            return;
+        }
         //pregunto si habrá más clientes
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
         dialogo1.setTitle(R.string.importante);

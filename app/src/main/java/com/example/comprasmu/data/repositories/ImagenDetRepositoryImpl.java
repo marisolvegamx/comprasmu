@@ -4,23 +4,26 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.utils.Constantes;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
 
     private ImagenDetalleDao dao;
-
-    private LiveData<List<ImagenDetalle>> allImagenDetalle;
+    List<ImagenDetalle> fotos ;
 
     public ImagenDetRepositoryImpl(Context context) {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
@@ -113,6 +116,37 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
         return  dao.getImagenByEstSyncsimple(1,0);
     }
 
+    public List<ImagenDetalle> getFotosInfDet(InformeCompraDetalle informe) {
+
+       fotos = new ArrayList<>();
+
+
+
+        ponerFoto( informe.getFoto_codigo_produccion());
+
+        // ponerFoto(informe.getEnergia());
+        //  ponerFoto(getString(R.string.foto_num_tienda),informe.getFoto_num_tienda());
+        // ponerFoto(getString(R.string.foto_codigo_produccion)informe.getMarca_traslape());
+        ponerFoto( informe.getFoto_atributoa());
+        ponerFoto( informe.getFoto_atributob());
+        ponerFoto(informe.getFoto_atributoc());
+        ponerFoto(informe.getEtiqueta_evaluacion());
+        return fotos;
+    }
+    public List<ImagenDetalle> getFotosInf(InformeCompra informe) {
+        fotos = new ArrayList<>();
+        ponerFoto( informe.getTicket_compra());
+        // ponerFoto(informe.getEnergia());
+        //  ponerFoto(getString(R.string.foto_num_tienda),informe.getFoto_num_tienda());
+        // ponerFoto(getString(R.string.foto_codigo_produccion)informe.getMarca_traslape());
+        ponerFoto( informe.getCondiciones_traslado());
+
+        return fotos;
+    }
+    public void ponerFoto( int idfoto){
+        fotos.add(findsimple(idfoto));
+
+    }
     @Override
     public long insert(ImagenDetalle object) {
         return dao.insert(object);

@@ -94,6 +94,8 @@ public interface APIService {
     @POST("login")
     Call<PostResponse> autenticarUser(@Field("user") String user, @Field("pass") String pass);
 
+    @GET("descresp")
+    Call<RespInformesResponse> getRespaldoInf( @Query("indice") String indice, @Query("usuario") String usuario);
 
 
 }

@@ -49,7 +49,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
         this.ismuestra=ismuestra;
         this.cliente=cliente;
         this.listacomprasbu=listacomprasbu;
-
+        Log.d(TAG,"consecutivo "+numtienda);
       //  notifyDataSetChanged();
     }
     @NonNull
@@ -270,8 +270,9 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                @Override
                public void onClick(View view) {
                    if (view.getId()==R.id.btnldbackup) {
-
+//Log.d(TAG, "hice clikkkkkkkkk");
                        callback.verBackup(binding.getDetalle());
+
                    }
                }
            });

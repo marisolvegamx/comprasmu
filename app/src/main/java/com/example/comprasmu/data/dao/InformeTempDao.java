@@ -65,7 +65,7 @@ public abstract class InformeTempDao extends  BaseDao<InformeTemp>  {
     @Query("SELECT * FROM informe_temp WHERE nombre_campo in ('productoId','producto','presentacion'" +
             ",'empaque','empaquesId','numMuestra','tipoAnalisis','nombreAnalisis','comprasId','comprasDetId'," +
             "'siglaspla','plantasId','plantaNombre','clienteNombre','clientesId','codigosnop'," +
-            "'tamanioId','tipoMuestra')")
+            "'tamanioId','tipoMuestra','nombreTipoMuestra')")
     public abstract List<InformeTemp> getProductoSel();
     @Query("SELECT * FROM informe_temp WHERE id =:visitaId")
     public abstract List<InformeTemp> getInformessimple(int visitaId);

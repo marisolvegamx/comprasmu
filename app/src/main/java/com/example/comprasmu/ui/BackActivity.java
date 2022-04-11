@@ -20,6 +20,7 @@ import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.listacompras.SelClienteFragment;
 import com.example.comprasmu.ui.listacompras.TabsFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
+import com.example.comprasmu.ui.sustitucion.SustitucionFragment;
 
 import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
@@ -80,10 +81,12 @@ public class BackActivity extends AppCompatActivity {
                     bundle.putInt(ListaCompraFragment.ARG_PLANTASEL,datosRecuperados.getInt(ListaCompraFragment.ARG_PLANTASEL));
                     //intento1.putExtra(, NOMBREPLANTASEL);
                     bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL,datosRecuperados.getString(ListaCompraFragment.ARG_NOMBREPLANTASEL));
-
+                    bundle.putString(SelClienteFragment.ARG_TIPOCONS, datosRecuperados.getString(SelClienteFragment.ARG_TIPOCONS));
                     //intento1.putExtra(ARG_CLIENTESEL,mViewModel.clienteSel);
                     bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL,datosRecuperados.getInt(ListaCompraFragment.ARG_CLIENTESEL));
-
+                    bundle.putString(SustitucionFragment.ARG_CATEGORIA, datosRecuperados.getString(SustitucionFragment.ARG_CATEGORIA));
+                    bundle.putString(SustitucionFragment.ARG_SIGLAS, datosRecuperados.getString(SustitucionFragment.ARG_SIGLAS));
+                    bundle.putBoolean(ListaCompraFragment.ISBACKUP,datosRecuperados.getBoolean(ListaCompraFragment.ISBACKUP) );
                     //intento1.putExtra(DetalleProductoFragment.NUMMUESTRA,nummuestra );
                     bundle.putInt(DetalleProductoFragment.NUMMUESTRA,datosRecuperados.getInt(DetalleProductoFragment.NUMMUESTRA));
 

@@ -120,7 +120,7 @@ public class SubirInformeTask extends AsyncTask<String, Float, Integer> {
             postviewModel.sendInforme(envio);
 
             String result = postviewModel.getMensaje();
-            Log.d(TAG, result+" resultado servidor");
+            Log.d(TAG, result+" resultado servidor"+envio.getClaveUsuario());
         }
     }
 

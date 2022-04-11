@@ -101,7 +101,6 @@ public class DetalleProductoPenFragment extends Fragment {
     protected List<CatalogoDetalle>atributos;
     protected List<CatalogoDetalle>causas;
     protected static final String TAG="DETALLEPRODUCTOPEÑFRAG";
-    protected static final int REQUEST_CODEQR = 342;
     SimpleDateFormat sdf;
     SimpleDateFormat sdfcodigo;
     View root;
@@ -123,9 +122,9 @@ public class DetalleProductoPenFragment extends Fragment {
     protected int tipoTienda;
     public static final int NUEVO_RESULT_OK =103 ;
     public static final Integer RecordAudioRequestCode = 1;
-    protected static final String cameraPerm = Manifest.permission.CAMERA;
+    //protected static final String cameraPerm = Manifest.permission.CAMERA;
     public final static String ARG_NUEVOINFORME="comprasmu.ni_idinforme";
-    public static String NUMMUESTRA="comprasmu.ni.nummuestra";
+    public static final String NUMMUESTRA="comprasmu.ni.nummuestra";
     protected ImageButton btnrotar;
     InformeTemp  ultimares;
     Button aceptar;
@@ -183,12 +182,12 @@ public class DetalleProductoPenFragment extends Fragment {
             //    if(preguntaAct.getId()==52||preguntaAct.getId()==53||preguntaAct.getId()==54){
                //     {
                         //reviso si ya tengo muestra
+                Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
 
-                 if(preguntaAct.getId()==69||preguntaAct.getId()==70){
+                if(preguntaAct.getId()==69||preguntaAct.getId()==70){
                 //no puedo modificar  avanzo a la siguiente
 
                 preguntaAct=dViewModel.buscarReactivoxId(preguntaAct.getSigId());
-                     Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
                      InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
                      if(inft!=null) {
                          mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
@@ -505,8 +504,10 @@ public class DetalleProductoPenFragment extends Fragment {
             mViewModel.consecutivo=ultimares.getConsecutivo();
             Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
             //  mViewModel.consecutivo=ultimares.getConsecutivo();
-            ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
             dViewModel.fromTemp(); //guardo datos del producto selec
+            ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
+
+            Log.d(TAG,"tipo muestras>>>>"+dViewModel.productoSel.nombreTipoMuestra);
             ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
         }
         if (preguntaAct.getId() >= 60&&preguntaAct.getId() !=69&&preguntaAct.getId() !=67) {//si compro prod
@@ -744,13 +745,13 @@ public class DetalleProductoPenFragment extends Fragment {
                 }
                 else{
                     //no hay mas clientes finalizo preinforme e informe
-                     mViewModel.finalizarInforme();
+                 //    mViewModel.finalizarInforme();
                 //la muestra la guarde en la 42
 
                     Log.d(TAG,"dice que no");
                     //es la 43 //finalizo preinforme
                     mViewModel.finalizarVisita(mViewModel.visita.getId());
-                    mViewModel.eliminarTblTemp();
+                 //   mViewModel.eliminarTblTemp();
                     loadingDialog.dismisDialog();
                     Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
                   //  yaestoyProcesando=false;
@@ -985,7 +986,7 @@ public class DetalleProductoPenFragment extends Fragment {
                MutableLiveData<Integer> idInformeNuevo = guardarInforme();
                 Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
                 //
-               idInformeNuevo.observe(this, new Observer<Integer>() {
+               idInformeNuevo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
                    @Override
                    public void onChanged(Integer idnvo) {
                        Log.d(TAG, "se creo el informe" + idnvo);
@@ -1029,7 +1030,7 @@ public class DetalleProductoPenFragment extends Fragment {
                            avanzarPregunta(sig);
                        }
                        mViewModel.numMuestra++;
-                       idInformeNuevo.removeObservers(DetalleProductoPenFragment.this);
+                      // idInformeNuevo.removeObservers(DetalleProductoPenFragment.this);
 
                    }
 
@@ -1092,12 +1093,16 @@ public class DetalleProductoPenFragment extends Fragment {
     }
     public InformeEnvio preparaInforme(){
         InformeEnvio envio=new InformeEnvio();
+        Log.d(TAG,"wwwwwwwww"+mViewModel.visita.getEstatus());
+
+        if(mViewModel.visita.getEstatusSync()==0)
         envio.setVisita(mViewModel.visita);
         envio.setInformeCompra(mViewModel.informe);
         mViewModel.cargarMuestras(mViewModel.informe.getId());
         //busco el prod exhibido
-
-        List<ProductoExhibido> productoExhibidos=mViewModel.buscarProdExhi();
+        envio.setIndice(mViewModel.visita.getIndice());
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        List<ProductoExhibido> productoExhibidos=mViewModel.buscarProdExhiPend();
         Log.d(TAG,"buscando prodexh"+productoExhibidos.size());
 
         envio.setProductosEx(productoExhibidos);
@@ -1166,7 +1171,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
     public MutableLiveData<Integer> guardarInforme(){
 
-        return mViewModel.insertarInfdeTemp(getActivity(), this);
+        return mViewModel.insertarInfdeTemp(getActivity(), getViewLifecycleOwner());
     }
     public void actualizarInforme(){
         mViewModel.actualizarInforme();
@@ -1194,7 +1199,7 @@ public class DetalleProductoPenFragment extends Fragment {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
             fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-            fragmentTransaction.addToBackStack(null);
+         //   fragmentTransaction.addToBackStack(null);
 // Cambiar
             fragmentTransaction.commit();
         }else {
@@ -1493,7 +1498,7 @@ public class DetalleProductoPenFragment extends Fragment {
                 RuntimePermissionUtil.onRequestPermissionsResult(grantResults, new RPResultListener() {
                     @Override
                     public void onPermissionGranted() {
-                        if ( RuntimePermissionUtil.checkPermissonGranted(getActivity(), cameraPerm)) {
+                        if ( RuntimePermissionUtil.checkPermissonGranted(getActivity(), Manifest.permission.CAMERA)) {
                             //   restartActivity();
                         }
                     }

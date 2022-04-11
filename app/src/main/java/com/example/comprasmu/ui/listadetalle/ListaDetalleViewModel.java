@@ -113,7 +113,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         opciones.add(new DescripcionGenerica(2,"Criterio 2"));
 
         switch (idanalisis){
-            case 1: case 4: //fisico
+            case 1:  //fisico
                 opciones.add(new DescripcionGenerica(3,"Criterio 3"));
                 opciones.add(new DescripcionGenerica(4,"Criterio 4"));
                 break;
@@ -121,6 +121,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             case 3: //torque
                 opciones.add(new DescripcionGenerica(3,"Criterio 3"));
                 break;
+
         }
         return  opciones;
     }
@@ -154,7 +155,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, 0);
                 break;
             case 3:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria,productoNombre , "", 0);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria,productoNombre, "", 0);
                 break;
             case 4: default: //la misma lista
                // detallebu = detRepo.getDetalleByFiltrosUD(idlista,categoria,"","",0);
@@ -173,9 +174,8 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, tamanio);
                 break;
             case 2: default: //muestro toda la lista
-              //  detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,"",iddetorig);
-              //  detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, 0,"",iddetorig);
-                detallebu = detRepo.getAllByLista(idlista);
+                 detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,"",iddetorig);
+              //  detallebu = detRepo.getAllByLista(idlista);
                 break;
 
         }
@@ -193,9 +193,10 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 break;
 
             case 3: default:
-             //   detallebu = detRepo.consultaTorque4(idlista, categoria, empaque);
+              //  detallebu = detRepo.consultaTorque4(idlista, categoria, empaque);
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,"",iddetorig);
 
-                detallebu = detRepo.getAllByLista(idlista);
+                //    detallebu = detRepo.getAllByLista(idlista);
                 break;
         }
 
@@ -205,18 +206,24 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisis,int tamanio,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque, tamanio);
+                detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, "", 0);
+
+               // detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque, tamanio);
                 break;
-            case 2:
-                detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque,0);
+            case 2: default:
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,analisis+"",0);
+
+              //  detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque,0);
                 break;
-            case 3:
+       /*     case 3:
                 detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, "", 0);
                 break;
 
             case 4: default: //la misma lista
-                detallebu = detRepo.getAllByLista(idlista);
-                break;
+                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,analisis+"",0);
+
+             //   detallebu = detRepo.getAllByLista(idlista);
+                break;*/
         }
 
 
