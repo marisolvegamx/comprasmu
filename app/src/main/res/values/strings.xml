@@ -200,7 +200,7 @@
     <string name="menu_home">INICIO</string>
     <string name="nota">NOTA</string>
     <string name="enviar">ENVIAR</string>
-    <string name="informe_ayer">ESTE INFORME YA NO ES VÁLIDO POR LA FECHA, PARA CONTINUAR ELIMINE E INICIE UNO NUEVO</string>
+    <string name="informe_ayer">ESTE INFORME YA NO ES VÁLIDO POR LA FECHA, PARA CONTINUAR FINALICE E INICIE UNO NUEVO, EL REPORTE SE ELIMINARÁ</string>
     <string name="regresar">REGRESAR</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="cerrar_app">¿ESTÁ SEGURO DE SALIR DE LA APLICACIÓN?</string>
@@ -208,7 +208,7 @@
     <string name="listas_actualiz">LAS LISTAS YA ESTÁN ACTUALIZADAS</string>
     <string name="pregunta_salir">¿ESTÁ SEGURO DE SALIR DE LA CAPTURA DEL INFORME?</string>
     <string name="selecciones_causa">SELECCIONE CAUSA</string>
-    <string name="muestra_atras" >SI VUELVE ATRÁS SE CANCELARÁ LA MUESTRA Y LO QUE LLEVE CAPTURADO ¿ESTÁ SEGURO?</string>
+    <string name="muestra_atras">SI VUELVE ATRÁS SE CANCELARÁ LA MUESTRA Y LO QUE LLEVE CAPTURADO ¿ESTÁ SEGURO?</string>
     <string name="seguro_muestra">¿LA INFORMACIÓN CAPTURADA CORRESPONDE A LA MUESTRA, TOME EN CUENTA QUE SI CONTINUA YA NO PODRÁ CORREGIR?</string>
     <string name="seleccione_ciudad">SELECCIONE UNA CIUDAD</string>
     <string name="seleccione_planta">SELECCIONE UNA PLANTA</string>
@@ -222,4 +222,10 @@
     <string name="sin_datosbu">NO HAY PRODUCTOS QUE CUMPLAN CON EL CRITERIO</string>
     <string name="ver_codigos">VER CODIGOS NO PERMITIDOS</string>
     <string name="criterio">CRITERIO</string>
+    <string name="title_activity_abrir_informe">AbrirInformeActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 </resources>
