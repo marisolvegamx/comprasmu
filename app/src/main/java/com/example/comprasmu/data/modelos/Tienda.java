@@ -1,5 +1,6 @@
 package com.example.comprasmu.data.modelos;
 
+
 public class Tienda {
 
     private int une_id;
@@ -16,6 +17,8 @@ public class Tienda {
     private String une_coordenadasxy;
     private int une_cadenacomercial;
     private String une_dir_referencia;
+    private String color;
+
 
     public int getUne_id() {
         return une_id;

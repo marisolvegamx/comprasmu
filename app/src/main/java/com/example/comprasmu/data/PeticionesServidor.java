@@ -123,37 +123,7 @@ public class PeticionesServidor {
         });
     }
 
-    public  void getTiendas(String ciudad, String tipo, String nombre ) {
 
-        final Call<TiendasResponse> batch = apiClient.getApiService().getTiendas(ciudad,tipo,nombre,usuario);
-
-        batch.enqueue(new Callback<TiendasResponse>() {
-            @Override
-            public void onResponse(@Nullable Call<TiendasResponse> call, @Nullable Response<TiendasResponse> response) {
-               Log.d(TAG,"llego algo"+response.body());
-                if (response.isSuccessful() && response.body() != null) {
-                    TiendasResponse respuestaTiendas = response.body();
-
-                      lista.setValue(respuestaTiendas.getTiendas());
-                   // lista.setValue(respuestaTiendas);
-
-                    Log.d(TAG,"ya lo asigné"+respuestaTiendas.getTiendas().get(0).getUne_descripcion());
-                //  return lista;
-
-
-                }
-            }
-
-            @Override
-            public void onFailure(@Nullable Call<TiendasResponse> call, @Nullable Throwable t) {
-                if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
-
-                }
-            }
-        });
-
-    }
     MutableLiveData<Boolean> resp;
     public  void getUltimoInforme(String indice,int plantaSel, NuevoinformeViewModel.EnvioListener listener ) {
         resp=new  MutableLiveData<Boolean>();

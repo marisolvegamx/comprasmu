@@ -1,15 +1,12 @@
 package com.example.comprasmu.data.remote;
 
-import com.example.comprasmu.data.PeticionesServidor;
-import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
-import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.Tienda;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,9 +60,6 @@ public interface APIService {
     Single<ResponseBody> onFileUpload(@Part("email") RequestBody mEmail,
                                       @Part MultipartBody.Part file);
 
-    @GET("tiendas")
-    Call<TiendasResponse> getTiendas(@Query("ciudad") String ciudad, @Query("tipo") String tipo, @Query("nombre") String nombre, @Query("usuario") String usuario);
-
     @GET("catalogos")
     Call<CatalogosResponse> getCatalogosNuevoInforme(@Query("usuario") String usuario);
     @GET("sustitucion")
@@ -94,8 +88,13 @@ public interface APIService {
     @POST("login")
     Call<PostResponse> autenticarUser(@Field("user") String user, @Field("pass") String pass);
 
+    @GET("tiendas")
+    Call<TiendasResponse> getTiendas(@Query("pais") String pais,@Query("ciudad") String ciudad, @Query("plan") int planta,  @Query("cli") int cliente,@Query("fini") String fechaini,@Query("ffin") String fechafin,@Query("tipo") String tipo, @Query("nombre") String nombre, @Query("usuario") String usuario);
+
+
     @GET("descresp")
     Call<RespInformesResponse> getRespaldoInf( @Query("indice") String indice, @Query("usuario") String usuario);
+
 
 
 }

@@ -55,7 +55,7 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
     }
     @RawQuery(observedEntities = ListaCompraDetalle.class)
     public abstract LiveData<List<ListaCompraDetalle>> getDetallesByFiltros(SupportSQLiteQuery query);
-    public class MinimalLstaDet{
+  /*  public class MinimalLstaDet{
         public int productosId;
         public String productoNombre;
         public String tamanio;
@@ -73,5 +73,5 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
         public int listaId;
 
 
-    }
+    }*/
 }

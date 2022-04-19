@@ -38,12 +38,10 @@ import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirPendService;
 
-import com.example.comprasmu.ui.informedetalle.DetalleProductoElecFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
 import com.example.comprasmu.ui.mantenimiento.DescRespaldoFragment;
+import com.example.comprasmu.ui.tiendas.MapaCdActivity;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -108,7 +106,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         definirTrabajo();
         setContentView(R.layout.activity_navigation_darawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
 
       //  FloatingActionButton fab = findViewById(R.id.fab);
@@ -147,14 +144,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
       //  navigationView.setNavigationItemSelectedListener(this);
-
         NavInflater navInflater = navController.getNavInflater();
-
         NavGraph graph = navInflater.inflate(R.navigation.mobile_navigation);
-
-
-
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(SubirFotoService.ACTION_UPLOAD_IMG);
 
@@ -200,20 +191,16 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             graph.setStartDestination(R.id.nav_home);
         }
         navController.setGraph(graph);
-
         if (checkPermission()) {
             //main logic or main code
 
             // . write your main code to execute, It will execute if the permission is already given.
-
         } else {
             requestPermission();
         }
-
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                  .setRequiresBatteryNotLow(true)
-
                 .build();
         PeriodicWorkRequest simpleRequest =
                 new PeriodicWorkRequest.Builder(SyncWork.class, 12, TimeUnit.HOURS)
@@ -226,7 +213,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 "comprassync_worker",
                 ExistingPeriodicWorkPolicy.KEEP,
                 simpleRequest);
-
        /* ServicioCompras sbt = new ServicioCompras();
 
 
@@ -261,6 +247,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             case R.id.action_settings:
                 //  Log.d(TAG,"hice click en"+item.getItemId());
                 pruebadescarga();
+                return true;
+            case R.id.action_mapa:
+                //  Log.d(TAG,"hice click en"+item.getItemId());
+                Intent homeIntent=new Intent(this, MapaCdActivity.class);
+
+                startActivity(homeIntent);
+                finish();
                 return true;
           /*  case R.id.action_save:
                 guardarInforme();
@@ -574,9 +567,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         fragmentTransaction.commit();
 
     }
-
-
-
 
 
 

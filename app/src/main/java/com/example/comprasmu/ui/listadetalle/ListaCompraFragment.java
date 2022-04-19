@@ -1,5 +1,6 @@
 package com.example.comprasmu.ui.listadetalle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -7,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -21,16 +23,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.comprasmu.R;
 
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaDetalleBu;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.databinding.ListaCompraFragmentBinding;
 
+import com.example.comprasmu.databinding.ListaDetalleItem2Binding;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
@@ -41,6 +47,7 @@ import com.example.comprasmu.ui.listacompras.SelClienteFragment;
 import com.example.comprasmu.ui.sustitucion.SustitucionFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
+import com.example.comprasmu.utils.ui.ListaSelecViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +71,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
    // private String siglas;
     TextView etsiglas;
     int consecutivoTienda;
-    List<InformeCompraDetalle> listacomprasbu=null;
+   // List<InformeCompraDetalle> listacomprasbu=null;
     private boolean isbu, ismuestra; //para saber si es reemplazo
 
     private static final String TAG="LISTACOMPRAFRAGMENT";
@@ -202,6 +209,8 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 if(mViewModel.getDetallebuSel()!=null) {
                   //  Log.d(TAG,"rrrrrrrrrrrrrrr"+isbu);
                     etsiglas.setText(mViewModel.listaSelec.getSiglas());
+                    if(nombreCliente==null)
+                        nombreCliente="";
                     mBinding.txtlcplanta.setText(nombreCliente+" "+nombrePlanta+" ("+mViewModel.listaSelec.getSiglas()+")");
                     mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio)+" "+opcionbu);
 
@@ -287,11 +296,11 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                     // mBinding.setIsLoading(false);
                     //busco el cliente
                     clienteSel=lista.user.getClientesId();
-                    lista.listaDetalle=buscarBU(lista.listaDetalle);
-                    calcularTotales(lista.listaDetalle);
+                    List<ListaDetalleBu> detalles=buscarBU(lista.listaDetalle);
+                    calcularTotales(detalles);
                     etsiglas.setText(lista.user.getSiglas());
                    //ordeno la lista
-                    Collections.sort( lista.listaDetalle, new Comparator<ListaCompraDetalle>() {
+                    Collections.sort( detalles, new Comparator<ListaCompraDetalle>() {
                         @Override
                         public int compare(ListaCompraDetalle lhs, ListaCompraDetalle rhs) {
                             return Integer.compare( lhs.getLid_orden(),rhs.getLid_orden());
@@ -319,8 +328,8 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                         }
                     }*/
                 //consecutivoTienda=11;
-                    mViewModel.setListacomprasbu(listacomprasbu);
-                    mListAdapter.setListaCompraDetalleList(lista.listaDetalle, consecutivoTienda,isbu,ismuestra,lista.user.getClientesId(), listacomprasbu);
+                  //  mViewModel.setListacomprasbu(listacomprasbu);
+                    mListAdapter.setListaCompraDetalleList(detalles, consecutivoTienda,isbu,ismuestra,lista.user.getClientesId());
                     mListAdapter.notifyDataSetChanged();
                     if(lista.user.getLis_nota()!=null&&lista.user.getLis_nota().length()>2) {
                        /* if(lista.user.getLis_nota().length()>20) {
@@ -380,7 +389,10 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 //   mViewModel.listaSelec = lista.user;
                // mBinding.txtlcplanta.setText(nombrePlanta+"("+lista.user.getSiglas()+")");
                 mBinding.txtsdatosbu.setVisibility(View.GONE);
-                mListAdapter.setListaCompraDetalleList(myProducts, consecutivoTienda,isbu,ismuestra,clienteSel,null);
+                //paso a nuevo objeto
+
+                List<ListaDetalleBu> detalles=pasarADetalleBU(myProducts);
+                mListAdapter.setListaCompraDetalleList(detalles, consecutivoTienda,isbu,ismuestra,clienteSel);
                 mListAdapter.notifyDataSetChanged();
             } else {
                 mBinding.txtsdatosbu.setText(getString(R.string.sin_datosbu)+" "+opcionsel);
@@ -392,62 +404,65 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         });
     }
 
-    public void calcularTotales(List<ListaCompraDetalle> detalles)
+    public void calcularTotales(List<ListaDetalleBu> detalles)
     {
         int totalPedidos=0;
         int totalcomprados=0;
-        for(ListaCompraDetalle detalle:detalles){
-            totalcomprados=totalcomprados+detalle.getComprados();
+        for(ListaDetalleBu detalle:detalles){
+            int bus=detalle.getInfcd()!=null?detalle.getInfcd().size():0;
+            totalcomprados=totalcomprados+detalle.getComprados()+bus;
             totalPedidos=totalPedidos+detalle.getCantidad();
         }
         //   Log.d(TAG,"WWWWWWWWWW estoy en los totales"+listacomprasbu.size());
         //sumo los bu
-        if(listacomprasbu!=null) {
+       /* if(detalles.!=null) {
             totalcomprados = totalcomprados + listacomprasbu.size();
-            totalPedidos=totalPedidos+ listacomprasbu.size();
-        }
+           // totalPedidos=totalPedidos+ listacomprasbu.size();
+        }*/
         //pongo en el textview
         mBinding.setTotal(totalcomprados+"/"+totalPedidos);
         Constantes.NM_TOTALISTA=totalPedidos;
 
     }
-    private InformeCompraDetalle isBU(ListaCompraDetalle det){
 
-        for(InformeCompraDetalle icd: listacomprasbu) {
-            //   Log.d(TAG, "--------------Se seleccionó a " + det.getListaId() + "--" + det.getId() + "--" + icd.getComprasIdbu() + "--" + icd.getComprasDetIdbu());
-
-
-            if (icd.getComprasIdbu() == det.getListaId() && icd.getComprasDetIdbu() ==det.getId() )
-            {
-                //Log.d(TAG, "--------------Se seleccionó a " +icd.getComprasIdbu()+ "--" + det.getId()+"--"+ det.getListaId() +"--"+icd.getComprasDetIdbu());
-
-                return icd;
-            }
-        }
-        return null;
-
-    }
 
     //aqui guardo los backups
-    public List<ListaCompraDetalle> buscarBU(List<ListaCompraDetalle> listalcd){
-        listacomprasbu=new ArrayList<InformeCompraDetalle>();
-        for (ListaCompraDetalle lcd:listalcd
+    public List<ListaDetalleBu> buscarBU(List<ListaCompraDetalle> listalcd){
+        List<ListaDetalleBu> listanueva=new ArrayList<>();
+        List<InformeCompraDetalle> listacomprasbu=new ArrayList<InformeCompraDetalle>();
+        for (ListaCompraDetalle lcdo:listalcd
              ) {
            // Log.d(Constantes.TAG, "revisando nuevos codigos " +lcd.getNvoCodigo());
+            ListaDetalleBu nuevaitem= new ListaDetalleBu(lcdo);
 
             //  Log.d(TAG, "---- viendo si tiene bu " + lcd.getListaId() + "--" + lcd.getId());
-            List<InformeCompraDetalle> comprabu = getBackup(lcd);
+            List<InformeCompraDetalle> comprabu = getBackup(lcdo);
             if (comprabu.size() > 0) {
              //   Log.d(TAG, "es bu " + comprabu.size());
 
                 listacomprasbu.addAll(comprabu);
                 //resto al producto de la lista
               //  lcd.setCantidad(lcd.getCantidad()-comprabu.size());
-                lcd.setComprados(lcd.getComprados()-comprabu.size());
-
+                nuevaitem.setComprados(nuevaitem.getComprados()-comprabu.size());
+                nuevaitem.setInfcd(listacomprasbu);
+                if(nuevaitem.getComprados()==nuevaitem.getCantidad())
+                    nuevaitem.setCompletado(true);
             }
+            listanueva.add(nuevaitem);
         }
-        return listalcd;
+        return listanueva;
+    }
+    //aqui guardo los backups
+    public List<ListaDetalleBu> pasarADetalleBU(List<ListaCompraDetalle> listalcd){
+        List<ListaDetalleBu> listanueva=new ArrayList<>();
+        for (ListaCompraDetalle lcdo:listalcd
+        ) {
+            // Log.d(Constantes.TAG, "revisando nuevos codigos " +lcd.getNvoCodigo());
+            ListaDetalleBu nuevaitem= new ListaDetalleBu(lcdo);
+
+            listanueva.add(nuevaitem);
+        }
+        return listanueva;
     }
     @Override
     public void onDestroyView() {
@@ -657,4 +672,5 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
         return compra;
     }
+
 }

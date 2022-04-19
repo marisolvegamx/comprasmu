@@ -1,39 +1,10 @@
 package com.example.comprasmu.ui.tiendas;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
-import android.content.DialogInterface;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.example.comprasmu.NavigationDrawerActivity;
-import com.example.comprasmu.R;
-import com.example.comprasmu.data.modelos.CatalogoDetalle;
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.data.modelos.Tienda;
-import com.example.comprasmu.databinding.BuscarTiendaFragmentBinding;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class BuscarTiendaFragment extends Fragment implements DescripcionGenericaAdapter.AdapterCallback {
-
-    private BuscarTiendaViewModel mViewModel;
+public class BuscarTiendaFragment extends Fragment {
+   /* private BuscarTiendaViewModel mViewModel;
     private BuscarTiendaFragmentBinding mBinding;
     private DescripcionGenericaAdapter mListAdapter;
     private RecyclerView mRecyclerView;
@@ -131,5 +102,5 @@ public class BuscarTiendaFragment extends Fragment implements DescripcionGeneric
     @Override
     public void onClickCallback(String codigos) {
 
-    }
+    }*/
 }

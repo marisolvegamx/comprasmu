@@ -6,7 +6,7 @@
     <data >
         <import type="android.view.View"/>
         <variable name="detalle"
-            type="com.example.comprasmu.data.modelos.ListaCompraDetalle"></variable>
+            type="com.example.comprasmu.data.modelos.ListaDetalleBu"></variable>
 
         <variable
             name="mostrarAgregar"
@@ -176,17 +176,20 @@
                         android:layout_width="59dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:textSize="8sp"
                         android:text='@{"--"+detalle.comprados+1+"--"+detalle.cantidad}'
-                        android:visibility="gone" />
+                        android:textSize="8sp"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
                     <TextView
                         android:id="@+id/txtldisbu2"
                         android:layout_width="59dp"
-                        android:textSize="8sp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text='@{mostrarbcu+""+cliente+"--"+detalle.lid_backup}'
-                        android:visibility="gone" />
+                        android:textSize="8sp"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
 
                     <TextView
                         android:id="@+id/txtldisbu"
@@ -253,14 +256,36 @@
 
                     android:text="@{detalle.getLid_fechapermitida().replace(';','\n')}"
                     android:visibility="gone" />-->
+                <androidx.core.widget.NestedScrollView
+                   
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <include
+                <ListView
+
+                    android:id="@+id/informebudata"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="32dp"
+                    android:dividerHeight="5.0sp"
+                    android:foregroundGravity="center_vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView9"
+                    app:layout_constraintVertical_bias="0.111">
+                    android:visibility="@{!isBu&amp;&amp;detalle.infcd!=null?View.VISIBLE:View.GONE}"
+
+                </ListView>
+                </androidx.core.widget.NestedScrollView>
+               <!-- <include
                     android:id="@+id/informebudata"
                     layout="@layout/lista_detalle_item2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="@{!isBu&amp;&amp;mViewModel.buscarBU(detalle)!=null?View.VISIBLE:View.GONE}"
-                  />
+                      />-->
 
 
             </LinearLayout>

@@ -11,35 +11,61 @@ public class ListaCompraDetalle {
 
 
 
-    private int id;
+    protected int id;
 
-    private int listaId;
-    private int productosId;
-    private String productoNombre;
-    private String tamanio;
-    private int tamanioId;
+    protected int listaId;
+    protected int productosId;
+    protected String productoNombre;
+    protected String tamanio;
+    protected int tamanioId;
 
-    private String empaque;
-    private int empaquesId;
-    private String tipoAnalisis;
-    private int analisisId;
-    private int cantidad;
-    private String codigosNoPermitidos;
-    private String nvoCodigo;
-    private int estatus;
-    private int comprados;
-    private int tipoMuestra;
-    private String nombreTipoMuestra;
-    private int categoriaid;
-    private String categoria;
-    private String lid_fechapermitida;
-    private String lid_fecharestringida;
-    private int lid_orden;
+    protected String empaque;
+    protected int empaquesId;
+    protected String tipoAnalisis;
+    protected int analisisId;
+    protected int cantidad;
+    protected String codigosNoPermitidos;
+    protected String nvoCodigo;
+    protected int estatus;
+    protected int comprados;
+    protected int tipoMuestra;
+    protected String nombreTipoMuestra;
+    protected int categoriaid;
+    protected String categoria;
+    protected String lid_fechapermitida;
+    protected String lid_fecharestringida;
+    protected int lid_orden;
 
     @ColumnInfo(name="lid_backup", defaultValue = "-1")
-    private int lid_backup;
+    protected int lid_backup;
+    public ListaCompraDetalle(){
 
-
+    }
+    public void iniciarListaCompraDetalle(int id, int listaId, int productosId, String productoNombre, String tamanio, int tamanioId, String empaque, int empaquesId, String tipoAnalisis, int analisisId, int cantidad, String codigosNoPermitidos, String nvoCodigo, int estatus, int comprados, int tipoMuestra, String nombreTipoMuestra, int categoriaid, String categoria, String lid_fechapermitida, String lid_fecharestringida, int lid_orden, int lid_backup) {
+        this.id = id;
+        this.listaId = listaId;
+        this.productosId = productosId;
+        this.productoNombre = productoNombre;
+        this.tamanio = tamanio;
+        this.tamanioId = tamanioId;
+        this.empaque = empaque;
+        this.empaquesId = empaquesId;
+        this.tipoAnalisis = tipoAnalisis;
+        this.analisisId = analisisId;
+        this.cantidad = cantidad;
+        this.codigosNoPermitidos = codigosNoPermitidos;
+        this.nvoCodigo = nvoCodigo;
+        this.estatus = estatus;
+        this.comprados = comprados;
+        this.tipoMuestra = tipoMuestra;
+        this.nombreTipoMuestra = nombreTipoMuestra;
+        this.categoriaid = categoriaid;
+        this.categoria = categoria;
+        this.lid_fechapermitida = lid_fechapermitida;
+        this.lid_fecharestringida = lid_fecharestringida;
+        this.lid_orden = lid_orden;
+        this.lid_backup = lid_backup;
+    }
 
     public int getId() {
         return id;

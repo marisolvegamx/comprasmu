@@ -42,9 +42,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     private  LiveData<List<ListaWithDetalle>> listas;
     private  LiveData<List<ListaCompraDetalle>> detallebu;
-    private  LiveData<List<ListaCompraDetalle>> detallebu1;
-    private  LiveData<List<ListaCompraDetalle>> detallebu2;
-    private  LiveData<List<ListaCompra>> listaSelbu;
+
     private final MutableLiveData<Event<Integer>> mOpenListaCompraEvent = new MutableLiveData<>();
     private  LiveData<Integer> size;
 
@@ -206,7 +204,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisis,int tamanio,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, "", 0);
+                detallebu = detRepo.getDetalleByFiltrosUDA2(idlista, categoria, analisis,productoNombre, "", 0);
 
                // detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque, tamanio);
                 break;
@@ -262,13 +260,13 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
       //  Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);
     }
-    List<InformeCompraDetalle> listacomprasbu;
+   // List<InformeCompraDetalle> listacomprasbu;
 
-    public void setListacomprasbu(List<InformeCompraDetalle> listacomprasbu) {
+  /*  public void setListacomprasbu(List<InformeCompraDetalle> listacomprasbu) {
         this.listacomprasbu = listacomprasbu;
-    }
+    }*/
 
-    public InformeCompraDetalle buscarBU(ListaCompraDetalle det){
+   /* public InformeCompraDetalle buscarBU(ListaCompraDetalle det){
         Log.d(TAG, "listacomprabu " + listacomprasbu.size());
 
 
@@ -285,7 +283,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         }
         return null;
 
-    }
+    }*/
     public String ordenarCodigosNoPermitidos(int numTienda,String nvoCodigos,String noPermitidos) {
         List<String> otodo= new ArrayList<String>();
         List<Date> fechas=new ArrayList<Date>();

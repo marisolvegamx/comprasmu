@@ -29,7 +29,21 @@ public class ListaCompraDetRepositoryImpl {
     }
     public LiveData<List<ListaCompraDetalle>> getDetalleByFiltros(int idlista,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
 
-        String query="Select * from lista_compras_detalle where listaId=?";
+        String query="select id,  listaId, productosId, productoNombre, " +
+                "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
+                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
+                "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
+                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
+                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
+                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
+                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
         filtros.add(idlista+"");
         if(categoria!=null&&!categoria.equals("")) {
@@ -52,6 +66,8 @@ public class ListaCompraDetRepositoryImpl {
             query = query + " and analisisId=?";
             filtros.add(analisis);
         }
+        query=query+" )  prin group by productoNombre,empaque,tamanioId ";
+
 
         //Select * from lista_compras_detalle where listaId=54 and categoria='CARBONATADAS' and productoNombre='PEPSI' and empaque='PET' and tamanio=13
 
@@ -66,6 +82,7 @@ public class ListaCompraDetRepositoryImpl {
 
         return dao.getDetallesByFiltros(sqlquery);
     }
+
 
     public LiveData<List<ListaCompraDetalle>> consultaSensorial4(int idlista,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
 
@@ -88,7 +105,7 @@ public class ListaCompraDetRepositoryImpl {
             filtros.add(empaque);
         }
 
-
+      //  query=query+" )  prin group by productoNombre,empaque,tamanioId ";
 
         Object[] params=filtros.toArray();
 
@@ -104,7 +121,21 @@ public class ListaCompraDetRepositoryImpl {
 
     public LiveData<List<ListaCompraDetalle>> consultaFisico4(int idlista,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
 
-        String query="Select * from lista_compras_detalle where listaId=?";
+        String query="select id,  listaId, productosId, productoNombre, " +
+                "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
+                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
+                "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
+                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
+                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
+                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
+                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
         filtros.add(idlista+"");
         if(categoria!=null&&!categoria.equals("")) {
@@ -125,7 +156,7 @@ public class ListaCompraDetRepositoryImpl {
           //  filtros.add(categoria+"");
         }
 
-
+        query=query+" )  prin group by productoNombre,empaque,tamanioId ";
 
 
         Object[] params=filtros.toArray();
@@ -142,7 +173,21 @@ public class ListaCompraDetRepositoryImpl {
     //el ultimo parametro enviado debe ser diferente
     public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUD(int idlista,String categoria, String productoNombre, String empaque,int tamanio ) {
 
-        String query="Select * from lista_compras_detalle where listaId=?";
+        String query="select id,  listaId, productosId, productoNombre, " +
+                "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
+                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
+                "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
+                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
+                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
+                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
+                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
         filtros.add(idlista+"");
         if(productoNombre==null||productoNombre.equals("")) //catego es el ultimo y es diferente
@@ -180,7 +225,7 @@ public class ListaCompraDetRepositoryImpl {
         }
 
 
-
+        query=query+" )  prin group by productoNombre,empaque,tamanioId ";
         Object[] params=filtros.toArray();
 
          for(int i=0;i<params.length;i++)
@@ -196,7 +241,21 @@ public class ListaCompraDetRepositoryImpl {
     //el ultimo parametro enviado debe ser diferente
     public LiveData<List<ListaCompraDetalle>> consultaTorque2(int idlista,String categoria, String productoNombre, String empaque ) {
 
-        String query="Select * from lista_compras_detalle where listaId=?";
+        String query="select id,  listaId, productosId, productoNombre, " +
+                "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
+                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
+                "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
+                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
+                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
+                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
+                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
         filtros.add(idlista+"");
 
@@ -212,7 +271,7 @@ public class ListaCompraDetRepositoryImpl {
             query = query + " and empaque=?";
             filtros.add(empaque);
         }
-
+        query=query+" )  prin group by productoNombre,empaque,tamanioId ";
          Object[] params=filtros.toArray();
 
         for(int i=0;i<params.length;i++)
@@ -304,6 +363,85 @@ public class ListaCompraDetRepositoryImpl {
         }
 
 
+
+        Object[] params=filtros.toArray();
+
+        for(int i=0;i<params.length;i++)
+            Log.d("InformeCompraRepo","getDetalleByFiltrosUDA***"+params[i]);
+        Log.d("InformeCompraRepo","getDetalleByFiltrosUDA****"+query);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,filtros.toArray()
+        );
+
+        return dao.getDetallesByFiltros(sqlquery);
+    }
+
+    //el ultimo param debe ser diferente pero aqui viene el analisis
+    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUDA2(int idlista,String categoria,int analisis, String productoNombre, String empaque,int tamanio ) {
+
+        String query="select id,  listaId, productosId, productoNombre, " +
+                "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
+                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
+                "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
+                "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
+                "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
+                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
+                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
+                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
+                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                " from lista_compras_detalle where listaId=?";
+        ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(idlista+"");
+        if(analisis==0) //catego es el ultimo y es diferente
+        { if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and categoria!=?";
+            filtros.add(categoria);
+        }}else
+        if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and categoria=?";
+            filtros.add(categoria);
+        }
+        if(productoNombre==null||productoNombre.equals("")) //analisis es el ultimo y es diferente
+        {
+            if(analisis>0) {
+                query = query + " and analisisId!=?";
+                filtros.add(analisis+"");
+            }
+        }else
+        if(analisis>0) {
+            query = query + " and analisisId=?";
+            filtros.add(analisis+"");
+        }
+        if(empaque==null||empaque.equals("")) //prdo es el ultimo y es diferente
+        {   if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and productoNombre!=?";
+            filtros.add(productoNombre);
+        }}
+        else
+        if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and productoNombre=?";
+            filtros.add(productoNombre);
+        }
+        if(tamanio==0)
+        { if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque!=?";
+            filtros.add(empaque);
+        }}else
+        if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and empaque=?";
+            filtros.add(empaque);
+        }
+
+        if(tamanio>0) {
+            query = query + " and tamanioId!=?";
+            filtros.add(tamanio+"");
+        }
+
+        query=query+" )  prin group by productoNombre,empaque,tamanioId ";
 
         Object[] params=filtros.toArray();
 

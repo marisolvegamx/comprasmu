@@ -2,20 +2,12 @@ package com.example.comprasmu.data.repositories;
 
 import android.content.Context;
 import android.util.Log;
-
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.sqlite.db.SimpleSQLiteQuery;
-
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.InformeCompraDao;
-
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
-import com.example.comprasmu.data.modelos.ListaCompra;
-
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -3,30 +3,19 @@ package com.example.comprasmu.utils.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.comprasmu.R;
-
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.databinding.ListaSelecFragmentBinding;
-import com.example.comprasmu.utils.Constantes;
-
 import java.util.ArrayList;
 
 
@@ -47,8 +36,6 @@ public class ListaSelecFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ListaSelecViewModel.class);
-
-
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -56,14 +43,14 @@ public class ListaSelecFragment extends Fragment {
          mBinding=DataBindingUtil.inflate(inflater,
                R.layout.lista_selec_fragment, container, false);
 
-              listaSeleccionable=new ArrayList<DescripcionGenerica>();
+         listaSeleccionable=new ArrayList<DescripcionGenerica>();
        // mViewModel.setLista( this.listaSeleccionable);
       //  mBinding.setViewModel(mViewModel);
-        mBinding.setLifecycleOwner(this);
-        objetosLV=mBinding.getRoot().findViewById(R.id.listaobjetos);
+         mBinding.setLifecycleOwner(this);
+         objetosLV=mBinding.getRoot().findViewById(R.id.listaobjetos);
 
-        indicacion=mBinding.textView9;
-        return mBinding.getRoot();
+         indicacion=mBinding.textView9;
+         return mBinding.getRoot();
 
     }
 
@@ -74,8 +61,6 @@ public class ListaSelecFragment extends Fragment {
     }
 
 
-
-
     public void setupListAdapter() {
         adaptadorLista = new AdaptadorListas((AppCompatActivity) getActivity(),mViewModel);
 
@@ -83,7 +68,7 @@ public class ListaSelecFragment extends Fragment {
 
     }
 
-    class AdaptadorListas extends ArrayAdapter<DescripcionGenerica> {
+    public class AdaptadorListas extends ArrayAdapter<DescripcionGenerica> {
 
         AppCompatActivity appCompatActivity;
 
