@@ -123,7 +123,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     Button guardar;
     ImageButton rotar;
     View root;
-    boolean nuevaTienda=true;
+    boolean nuevaTienda;
     Tienda tienda;
     int nuevoId;
     private boolean yaTengoFoto;
@@ -173,6 +173,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public  List<DescripcionGenerica> clientesAsignados2;
     public  List<DescripcionGenerica> clientesAsignados3;
     List<ProductoExhibidoDao.ProductoExhibidoFoto> fotosExh;
+    private boolean isEdicion;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -200,8 +201,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
       //  LinearLayout sv2 = root.findViewById(R.id.content_main2);
       //  sv2.addView(cf3.crearFormulario());
         //   createLocationRequest();
-        validator = new Validator(this);
-        validator.setValidationListener(this);
+      //  validator = new Validator(this);
+      //  validator.setValidationListener(this);
         guardar=(Button)root.findViewById(R.id.aibtnguardar);
         rotar=(ImageButton)root.findViewById(R.id.btnairotar1);
         fotofac=(ImageView)root.findViewById(R.id.ivaifachada);
@@ -363,7 +364,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
 
         // Y ahora puedes recuperar usando get en lugar de put
-      //  nuevaTienda= datosRecuperados.getBoolean("nuevatienda");
+        nuevaTienda= datosRecuperados.getBoolean("nuevatienda");
+        Log.d(TAG,"datosrec "+nuevaTienda);
         if(!nuevaTienda)// es una tienda existente
         {
 
@@ -438,117 +440,137 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             //es edicion
             int categoryId = getArguments().getInt(EXTRAPREINFORME_ID);
-            nuevoId=mViewModel.start(categoryId,getActivity());
-             fotosExh= feviewModel.cargarfotosSimpl(nuevoId);
-            Log.d(TAG,"----"+fotosExh.size());
-            //lleno los campos
-            mViewModel.visitaEdicion.observe(getViewLifecycleOwner(), new Observer<Visita>() {
-                @Override
-                public void onChanged(Visita visita) {
-                    crearFormulario(visita);
-                    ponerDatos(visita);
-                    LinearLayout sv = root.findViewById(R.id.content_main);
-                    sv.addView(cf1.crearFormulario());
-                 //   sv.addView(cf2.crearFormulario());
-                    visitaEdi=visita;
+            if (categoryId > 0) {
+                //es edicion
+                isEdicion=true;
+                nuevoId = mViewModel.start(categoryId, getActivity());
+                fotosExh = feviewModel.cargarfotosSimpl(nuevoId);
+                Log.d(TAG, "----" + fotosExh.size());
+                //lleno los campos
+                mViewModel.visitaEdicion.observe(getViewLifecycleOwner(), new Observer<Visita>() {
+                    @Override
+                    public void onChanged(Visita visita) {
+                        crearFormulario(visita);
+                        ponerDatos(visita);
+                        LinearLayout sv = root.findViewById(R.id.content_main);
+                        sv.addView(cf1.crearFormulario());
+                        //   sv.addView(cf2.crearFormulario());
+                        visitaEdi = visita;
 
 
-                }
-            });
+                    }
+                });
+                return;
+            } else {
+                //es nuevo
+                //reviso si no hay visitas abiertas
+                MutableLiveData x = mViewModel.informesAbiertos(getViewLifecycleOwner());
+                x.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        if (aBoolean)
+                            alertaAbierto();
+                    }
+                });
+                nuevoId = mViewModel.start(0, getActivity());
+                crearFormulario(new Visita());
 
-
-        } else {
-            //es nuevo
-            //reviso si no hay visitas abiertas
-            MutableLiveData x=mViewModel.informesAbiertos(getViewLifecycleOwner());
-            x.observe(getViewLifecycleOwner(),new Observer<Boolean>() {
+                LinearLayout sv = root.findViewById(R.id.content_main);
+                sv.addView(cf1.crearFormulario());
+                //    sv.addView(cf2.crearFormulario());
+                getActivity().setTitle(R.string.nuevo_informe);
+                // toolbar.setTitle(R.string.nuevo_informe);
+            }
+        }else{
+            MutableLiveData x = mViewModel.informesAbiertos(getViewLifecycleOwner());
+            x.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                 @Override
                 public void onChanged(Boolean aBoolean) {
-                    if(aBoolean)
+                    if (aBoolean)
                         alertaAbierto();
                 }
             });
-            nuevoId= mViewModel.start(0,getActivity());
+            nuevoId = mViewModel.start(0, getActivity());
             crearFormulario(new Visita());
 
             LinearLayout sv = root.findViewById(R.id.content_main);
             sv.addView(cf1.crearFormulario());
-        //    sv.addView(cf2.crearFormulario());
+            //    sv.addView(cf2.crearFormulario());
             getActivity().setTitle(R.string.nuevo_informe);
-           // toolbar.setTitle(R.string.nuevo_informe);
+            // toolbar.setTitle(R.string.nuevo_informe);
+
         }
 
 
     }
 
     public void ponerDatos(Visita visita){
-        if(visita.getTiendaId()>0) {
-            nuevaTienda=false;
+      /*  if(visita.getTiendaId()>0) { //es edicion
         }else
-            nuevaTienda=true;
+            nuevaTienda=true;*/
 
+        if(isEdicion) {
+            mViewModel.getFotoLD(visita.getFotoFachada()).observe(this, new Observer<ImagenDetalle>() {
+                @Override
+                public void onChanged(ImagenDetalle s) {
+                    // if(s!=null)
+                    txtfotofachada.setText(s.getRuta());
 
-       mViewModel.getFotoLD(visita.getFotoFachada()).observe(this, new Observer<ImagenDetalle>() {
-           @Override
-           public void onChanged(ImagenDetalle s) {
-               txtfotofachada.setText(s.getRuta());
+                    Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + s.getRuta());
+                    fotofac.setVisibility(View.VISIBLE);
+                    rotar.setVisibility(View.VISIBLE);
+                    fotofac.setImageBitmap(bitmap1);
+                    efotoFachada = s;
+                }
+            });
 
-               Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + s.getRuta());
-               fotofac.setVisibility(View.VISIBLE);
-               rotar.setVisibility(View.VISIBLE);
-               fotofac.setImageBitmap(bitmap1);
-               efotoFachada=s;
-           }
-       });
+            //las fotos exhib
+            // for(ProductoExhibidoDao.ProductoExhibidoFoto fotoe:fotosExh) {
+            if (fotosExh != null && fotosExh.size() > 0) {
+                cargarFotos(fotosExh.get(0).ruta, txtfotoex1, btnrotar1, fotoex1);
+                //  Log.d(TAG,);
+                // Log.d(TAG,"a ver"+fotosExh.get(0).clienteId+"-"+Constantes.clientesAsignados.indexOf(fotosExh.get(0).clienteId));
+                int pos = buscarEnClientes(fotosExh.get(0).clienteId, clientesAsignados);
+                spinn.setSelection(pos, true);
+                //quito la opción en los otros
 
-        //las fotos exhib
-      // for(ProductoExhibidoDao.ProductoExhibidoFoto fotoe:fotosExh) {
-        if(fotosExh!=null&&fotosExh.size()>0) {
-            cargarFotos(fotosExh.get(0).ruta, txtfotoex1, btnrotar1, fotoex1);
-          //  Log.d(TAG,);
-           // Log.d(TAG,"a ver"+fotosExh.get(0).clienteId+"-"+Constantes.clientesAsignados.indexOf(fotosExh.get(0).clienteId));
-            int pos=buscarEnClientes(fotosExh.get(0).clienteId,clientesAsignados);
-            spinn.setSelection(pos,true);
-            //quito la opción en los otros
-
-            clientesAsignados2.remove(pos);
-
-
-
-            clientesAsignados3.remove(pos);
-            CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
-
-            CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
-
-
-        }
-        if(fotosExh!=null&&fotosExh.size()>1) {
-//            mostrarOcultarlayout("true",ll);
-            cargarFotos(fotosExh.get(1).ruta, txtfotoex2, btnrotar2, fotoex2);
-            int pos=buscarEnClientes(fotosExh.get(1).clienteId,clientesAsignados2);
-            if(pos>-1) {
-                spinn2.setSelection(pos, true);
+                clientesAsignados2.remove(pos);
 
 
                 clientesAsignados3.remove(pos);
+                CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
 
                 CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
+
+
             }
+            if (fotosExh != null && fotosExh.size() > 1) {
+//            mostrarOcultarlayout("true",ll);
+                cargarFotos(fotosExh.get(1).ruta, txtfotoex2, btnrotar2, fotoex2);
+                int pos = buscarEnClientes(fotosExh.get(1).clienteId, clientesAsignados2);
+                if (pos > -1) {
+                    spinn2.setSelection(pos, true);
+
+
+                    clientesAsignados3.remove(pos);
+
+                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
+                }
+            }
+            if (fotosExh != null && fotosExh.size() > 2) {
+                cargarFotos(fotosExh.get(2).ruta, txtfotoex3, btnrotar3, fotoex3);
+                int pos = buscarEnClientes(fotosExh.get(2).clienteId, clientesAsignados3);
+                if (pos > -1)
+                    spinn3.setSelection(pos, true);
+
+            }
+            //}
+
+            //el complemento
+            txtcomplemento.setText(visita.getComplementodireccion());
+            EditText ubicacion = root.findViewById(R.id.txtaiubicacion);
+            ubicacion.setText(visita.getGeolocalizacion());
         }
-        if(fotosExh!=null&&fotosExh.size()>2) {
-            cargarFotos(fotosExh.get(2).ruta, txtfotoex3, btnrotar3, fotoex3);
-            int pos=buscarEnClientes(fotosExh.get(2).clienteId,clientesAsignados3);
-            if(pos>-1)
-            spinn3.setSelection(pos,true);
-
-        }
-       //}
-
-        //el complemento
-        txtcomplemento.setText(visita.getComplementodireccion());
-       EditText ubicacion=root.findViewById(R.id.txtaiubicacion);
-       ubicacion.setText(visita.getGeolocalizacion());
-
     }
 
     public int buscarEnClientes(int seleccion, List<DescripcionGenerica> listaclientes){
@@ -853,24 +875,27 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             campo.label = getString(R.string.nombre_tienda);
             campo.nombre_campo = "tiendaNombre";
             campo.type = "inputtext";
-            campo.value = visita!=null?visita.getTiendaNombre():tienda.getUne_descripcion();
+            campo.value = tienda.getUne_descripcion();
             campo.required = "required";
             campo.id = 1001;
+            campo.readonly="readonly";
             camposTienda.add(campo);
 
             campo = new CampoForm();
             campo.label = getString(R.string.direccion);
             campo.nombre_campo = "direccion";
             campo.type = "inputtext";
-            campo.value = visita!=null?visita.getDireccion():tienda.getUne_direccion();
+            campo.value = tienda.getUne_direccion();
             campo.required = "required";
+            campo.readonly="readonly";
             campo.id = 1002;
             camposTienda.add(campo);
             campo = new CampoForm();
             campo.label =getString(R.string.tipo_tienda) ;
             campo.nombre_campo = "tipoTienda";
             campo.type = "inputtext";
-            campo.value =visita!=null?visita.getTipoTienda(): tienda.getTipoTienda();
+            campo.readonly="readonly";
+            campo.value =tienda.getTipoTienda();
             campo.required = "required";
             campo.id = 1005;
             camposTienda.add(campo);

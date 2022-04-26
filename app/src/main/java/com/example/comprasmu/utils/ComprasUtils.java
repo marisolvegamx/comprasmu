@@ -313,6 +313,16 @@ public class ComprasUtils {
 
         }
     }
+    //devuelve la fecha de la forma yyyy-mm-dd
+    static public String indiceaFecha(String indice){
+        if(indice.equals(""))
+            return "";
+        indice=indice.replace(" ","-");
+        String[] mifecha=indice.split("-");
+        String strMes="",lafecha;
+        return mifecha[1]+"-"+mifecha[0]+"-01";
+
+    }
 
 }
 

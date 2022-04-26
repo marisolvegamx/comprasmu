@@ -16,10 +16,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.Geocerca;
@@ -28,6 +31,7 @@ import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -43,9 +47,11 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallback , GoogleMap.OnMarkerClickListener {
+public class MapaCdActivity extends FragmentActivity implements OnMapReadyCallback , GoogleMap.OnMarkerClickListener {
     public static final String EXTRA_LATITUD = "extra_latitud";
     public static final String EXTRA_LONGITUD ="extra_longitud" ;
     private MapaCdFragment mFirstMapFragment;
@@ -53,6 +59,7 @@ public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallb
     private NuevoDetalleViewModel dViewModel;
     private GoogleMap mMap;
     String[] coloreszon={"#1E90FF","#FF1493", "#32CD32", "#FF8C00", "#4B0082"};
+    Map<String,Float> coloresTienda;
     private  final String TAG="MapaCdActivity";
     private  ArrayList<DescripcionGenerica> listaPlantasEnv;
     MutableLiveData<List<Tienda>> listatiendas;
@@ -81,9 +88,10 @@ public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallb
                .add(R.id.map_container,mFirstMapFragment)
                 .commit();*/
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapcd_container);
+        lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
 
         mapFragment.getMapAsync(this);
-        spclientes=findViewById(R.id.spmcdcliente);
+      //  spclientes=findViewById(R.id.spmcdcliente);
         spplantas=findViewById(R.id.spmcdplanta);
         spindicefin=findViewById(R.id.spmcdindicefin);
         spindiceini=findViewById(R.id.spmcdindiceini);
@@ -99,7 +107,7 @@ public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallb
                 String indiceini=(String)spindiceini.getSelectedItem();
                 String indicefin=(String)spindicefin.getSelectedItem();
 
-                buscarTiendas(Constantes.PAISTRABAJO,Constantes.CIUDADTRABAJO,planta,0,indiceini,indicefin);
+                buscarTiendas(planta,0,indiceini,indicefin);
             }
         });
         Button btnvatienda=findViewById(R.id.btnmcdnvati);
@@ -109,6 +117,12 @@ public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallb
                 //TODO envio al fragmento de nueva tienda
             }
         });
+        //inicio colores tienda
+        coloresTienda=new HashMap<>();
+        coloresTienda.put("verde",BitmapDescriptorFactory.HUE_GREEN);
+        coloresTienda.put("amarillo",BitmapDescriptorFactory.HUE_YELLOW);
+        coloresTienda.put("rojo",BitmapDescriptorFactory.HUE_RED);
+
     }
 
     @Override
@@ -254,21 +268,36 @@ public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallb
         }
 
     }
-    public void buscarTiendas(String pais,String ciudad, int planta, int cliente,String indiceini,String indicefin){
+    public void buscarTiendas( int planta, int cliente,String indiceini,String indicefin){
         //peticion al servidor
-        //TODO cambiar usuario x constantes usuario
-        PeticionMapaCd petmap=new PeticionMapaCd("4");
+
+        PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
         //usaria la ciudad de trabajo
         //25guadalajara
-        petmap.getTiendas("1","1",4,25,"","","",""); //se agregarian filtros despues
+        String fini= "";
+        fini=ComprasUtils.indiceaFecha(indiceini);
+        String ffin="";
+        ffin=ComprasUtils.indiceaFecha(indicefin);
+        //busco el pais y cd de la planta
+        int aux[]=lcviewModel.buscarClienCdxPlan(planta);
+        int pais=aux[0];
+        int ciudad=aux[1];
+        Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
+
+       petmap.getTiendas(pais+"",ciudad+"",planta,0,fini,ffin,"",""); //se agregarian filtros despues
+       // Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
+        //petmap.getTiendas("1","1",25,4,"2022-01-01","2022-04-01","",""); //se agregarian filtros despues
         this.listatiendas=petmap.getListatiendas();
         this.listageocercas=petmap.getListageocercas();
         //observo
         this.listatiendas.observe((LifecycleOwner) this, new Observer<List<Tienda>>() {
             @Override
             public void onChanged(List<Tienda> tiendas) {
-                if(tiendas.size()>0)
+                if(tiendas!=null&&tiendas.size()>0) {
+
+
                     dibujarTiendas(tiendas);
+                }
                 else
                 //pongo anuncio sin tiendas
                 {
@@ -292,6 +321,7 @@ public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallb
         martiendas=new ArrayList<>();
         LatLng japon2 = null;
         for(Tienda tienda: listiendas){
+            Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
             if(tienda.getUne_coordenadasxy()!=null&&tienda.getUne_coordenadasxy().length()>0) {
                 String aux[] = tienda.getUne_coordenadasxy().split(",");
 
@@ -299,17 +329,18 @@ public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallb
                 martiendas.add(mMap.addMarker(new MarkerOptions()
                         .position(japon2)
                         .title(tienda.getUne_descripcion())
-                        //TODO poner el color
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))));
+                        .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(tienda.getColor())))));
 
             }
         }
         if(japon2!=null)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,17));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,10));
     }
     public void buscarClientes(){
-        if(Constantes.CIUDADTRABAJO.equals("")){
+        Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
+        if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
             //TODO enviar a elegir cd de trabajo
+            Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
         }
         List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
 
@@ -325,7 +356,7 @@ public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallb
         if(lista!=null)
             for (ListaCompra listaCompra: lista ) {
                 DescripcionGenerica item=new DescripcionGenerica();
-                Log.d(TAG,"-estoy aqui"+listaCompra.getClientesId());
+              //  Log.d(TAG,"-estoy aqui"+listaCompra.getClientesId());
                 item.setId(listaCompra.getClientesId());
                 item.setNombre(listaCompra.getClienteNombre());
                 mapa.add(item);

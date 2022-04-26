@@ -17,7 +17,7 @@
             android:icon="@android:drawable/ic_menu_compass"
             android:title="@string/menu_ciudad_trabajo" />
         <item
-            android:id="@+id/nav_nuevoinforme"
+            android:id="@+id/nav_tiendas"
             android:icon="?attr/actionModePasteDrawable"
             android:title="@string/menu_nuevo_informe" />
         <item

@@ -11,6 +11,8 @@
         tools:layout="@layout/fragment_v_home" >
 
     </fragment>
+
+
     <fragment
         android:id="@+id/nav_configurar"
         android:name="com.example.comprasmu.ui.home.HomeFragment"
@@ -111,6 +113,7 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
+
 </fragment>
     <activity
         android:id="@+id/nav_abririnf"
@@ -187,10 +190,17 @@
 
     <fragment
         android:id="@+id/nav_tiendas"
-        android:name="com.example.comprasmu.ui.tiendas.BuscarTiendaFragment"
+        android:name="com.example.comprasmu.ui.tiendas.MapaCdFragment"
         android:label="@string/buscar_tienda"
-        tools:layout="@layout/buscar_tienda_fragment" >
-
+        tools:layout="@layout/activity_mapa_cd" >
+        <action android:id="@+id/action_buscartonuevo"
+            app:popUpTo="@+id/nav_nuevoinforme"
+            app:popUpToInclusive="true"
+            app:destination="@id/nav_nuevoinforme"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
     </fragment>
     <fragment

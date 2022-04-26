@@ -41,16 +41,18 @@ public class PeticionMapaCd {
         batch.enqueue(new Callback<TiendasResponse>() {
             @Override
             public void onResponse(@Nullable Call<TiendasResponse> call, @Nullable Response<TiendasResponse> response) {
-               Log.d(TAG,"llego algo"+response.body());
+               Log.d(TAG,"llego algo"+response.body().toString());
                 if (response.isSuccessful() && response.body() != null) {
                     TiendasResponse respuestaTiendas = response.body();
+                    if(respuestaTiendas!=null) {
+                        listatiendas.setValue(respuestaTiendas.getTiendas());
+                        listageocercas.setValue(respuestaTiendas.getGeocercas());
 
-                    listatiendas.setValue(respuestaTiendas.getTiendas());
-                    listageocercas.setValue(respuestaTiendas.getGeocercas());
-                   // lista.setValue(respuestaTiendas);
+                        // lista.setValue(respuestaTiendas);
 
-                    Log.d(TAG,"ya lo asigné"+respuestaTiendas.getTiendas().get(0).getUne_descripcion());
-                //  return lista;
+                        Log.d(TAG, "ya lo asigné" + respuestaTiendas.getTiendas());
+                    }
+                    //  return lista;
 
 
                 }

@@ -131,4 +131,12 @@ public class Tienda {
     public void setUne_dir_referencia(String une_dir_referencia) {
         this.une_dir_referencia = une_dir_referencia;
     }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

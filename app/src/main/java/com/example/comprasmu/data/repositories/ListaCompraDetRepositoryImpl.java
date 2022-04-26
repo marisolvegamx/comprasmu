@@ -504,4 +504,7 @@ public class ListaCompraDetRepositoryImpl {
     public void deleteByLista(int id) {
         dao.deleteByLista(id);
     }
+    public LiveData<List<ListaCompraDetalle>> getListaDetalleOrd(int listaid ) {
+        return dao.getListasDetalleOrdByLista(listaid);
+    }
 }

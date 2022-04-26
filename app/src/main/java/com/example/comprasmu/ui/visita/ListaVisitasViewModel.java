@@ -11,12 +11,16 @@ import androidx.lifecycle.Transformations;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 
@@ -25,6 +29,8 @@ import java.util.List;
 
 public class ListaVisitasViewModel extends AndroidViewModel {
     private final VisitaRepositoryImpl visitaRepository;
+    private final ListaCompraDetRepositoryImpl lcRepository;
+
     private final ImagenDetRepositoryImpl imdRepository;
     private final InformeComDetRepositoryImpl idrepo;
     private final ProductoExhibidoRepositoryImpl prodeRepository;
@@ -45,6 +51,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         prodeRepository=new ProductoExhibidoRepositoryImpl(application);
         imdRepository = new ImagenDetRepositoryImpl(application);
         idrepo = new InformeComDetRepositoryImpl(application);
+        lcRepository=new ListaCompraDetRepositoryImpl(application);
     }
 
     public void cargarDetalles(){
@@ -66,60 +73,54 @@ public class ListaVisitasViewModel extends AndroidViewModel {
 
                         for (InformeCompra inf : informeCompras) {
                             borrarImagenesxInforme(inf);
+                            //borrar el informe
+                            infrepo.deleteInformeCompra(inf.getId());
                         }
                     }else
                     //no puedo borrar
-                         mSnackbarText.setValue("No se puede eliminar");
-                }else{
-                    Visita im=null;
+                    {     mSnackbarText.setValue("No se puede eliminar");
+                    return;}
+                }
+                   /* Visita im=null;
                     for(i=0;i<listas.getValue().size();i++){
                         im=listas.getValue().get(i);
                         if(im.getId()==id){
                             break;
                         }
                     }
-                    Log.d(TAG,"borrando el"+id);
+                    Log.d(TAG,"borrando el"+id);*/
 
-                   LiveData<Visita> eliminar= visitaRepository.find(id);
+                   Visita eliminar= visitaRepository.findsimple(id);
 
-                   eliminar.observeForever(new Observer<Visita>() {
-                        @Override
-                        public void onChanged(Visita visita) {
+                  if(eliminar!=null) {
 
-                            ImagenDetalle img1=imdRepository.findsimple(visita.getFotoFachada());
-                            //borro el archivo
-                            File fdelete = new File(img1.getRuta());
-                            if (fdelete.exists())
-                                fdelete.delete();
-
+                            ImagenDetalle img1=imdRepository.findsimple(eliminar.getFotoFachada());
+                           if(img1!=null) {//borro el archivo
+                               File fdelete = new File(img1.getRuta());
+                               if (fdelete.exists())
+                                   fdelete.delete();
+                           }
                             //elimino las imagenes
-                            imdRepository.deleteById(visita.getFotoFachada());
-                           List<ProductoExhibido> prods= prodeRepository.getAllByVisitaSimple(visita.getId());
+                            imdRepository.deleteById(eliminar.getFotoFachada());
+                           List<ProductoExhibido> prods= prodeRepository.getAllByVisitaSimple(eliminar.getId());
                            //elimino prods
                             for (ProductoExhibido prod:prods) {
 
-                                ImagenDetalle img2=imdRepository.findsimple(visita.getFotoFachada());
-                                //borro el archivo
+                                ImagenDetalle img2=imdRepository.findsimple(eliminar.getFotoFachada());
+                                if(img2!=null)
+                                { //borro el archivo
                                 File fdelete2 = new File(img2.getRuta());
                                 if (fdelete2.exists())
-                                    fdelete2.delete();
+                                    fdelete2.delete();}
                                 imdRepository.deleteById(prod.getImagenId());
                             }
-                            prodeRepository.deleteAllByVisita(visita.getId());
-                            eliminar.removeObserver(this);
-                            visitaRepository.delete(visita);
+                            prodeRepository.deleteAllByVisita(eliminar.getId());
+                          //  eliminar.removeObserver(this);
+                            visitaRepository.delete(eliminar);
                             //eliminar producto exhibido
                             mSnackbarText.setValue("Se eliminó correctamente");
 
                         }
-                    });
-
-
-                }
-
-
-
-
 
     }
     public void borrarImagenesxInforme(InformeCompra inf){
@@ -137,7 +138,6 @@ public class ListaVisitasViewModel extends AndroidViewModel {
                 fdelete.delete();
         }
         //busco los detalles
-
         List<InformeCompraDetalle> det=idrepo.getAllSencillo(inf.getId());
         for (InformeCompraDetalle infd : det) {
             List<ImagenDetalle> fotos= imdRepository.getFotosInfDet(infd);
@@ -146,6 +146,12 @@ public class ListaVisitasViewModel extends AndroidViewModel {
                 if (fdelete.exists())
                     fdelete.delete();
             }
+            //ajusto cantidades
+            ListaCompraDetalle compradet=lcRepository.findsimple(infd.getComprasId(),infd.getId());
+            int nvacant=compradet.getCantidad();
+            lcRepository.actualizarComprados(infd.getId(),infd.getComprasId(),nvacant);
+            //borro los detalles
+            idrepo.delete(infd);
         }
     }
     public Visita tieneInforme(Visita visita, LifecycleOwner owner){

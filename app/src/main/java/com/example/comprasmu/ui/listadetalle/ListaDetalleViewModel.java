@@ -38,9 +38,8 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     private final ListaCompraRepositoryImpl repository;
     private ListaCompraDetRepositoryImpl detRepo;
 
-  //  private final LiveData<ListaWithDetalle> filter = new LiveData<ListaWithDetalle>("*");
-
-    private  LiveData<List<ListaWithDetalle>> listas;
+    private  LiveData<ListaCompra> listaCompra;
+    private  LiveData<List<ListaCompraDetalle>> listas;
     private  LiveData<List<ListaCompraDetalle>> detallebu;
 
     private final MutableLiveData<Event<Integer>> mOpenListaCompraEvent = new MutableLiveData<>();
@@ -67,12 +66,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         detRepo=new ListaCompraDetRepositoryImpl(application);
         context=application;
     }
+    public void cargarListaCompra() {
+        listaCompra = repository.getByFiltros(Constantes.INDICEACTUAL, plantaSel,clienteSel);
+    }
 
-
-    public void cargarDetalles(){
-
-
-       listas =repository.getListaWithDetalleByFiltros(Constantes.INDICEACTUAL,plantaSel,clienteSel);
+    public void cargarDetalles(int idlista){
+          listas =detRepo.getListaDetalleOrd(idlista);
 
         size = Transformations.map(listas,res->{ return listas.getValue().size();});
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
@@ -122,6 +121,17 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
         }
         return  opciones;
+    }
+
+    public int[] buscarClienCdxPlan(int planta){
+        int[] devolver = new int[2];
+        List<ListaCompra> res=repository.getByPlanta(planta);
+        if(res!=null&&res.size()>0){
+            devolver[0]=res.get(0).getClientesId();
+            devolver[1]=res.get(0).getCiudadesId();
+
+        }
+        return devolver;
     }
 
     //para las colsultas de bu
@@ -335,8 +345,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<List<ListaWithDetalle>> getListas() {
+    public LiveData<List<ListaCompraDetalle>> getListas() {
         return listas;
+    }
+
+    public LiveData<ListaCompra> getListaCompra() {
+        return listaCompra;
     }
 
     public MutableLiveData<Event<Integer>> getmOpenListaCompraEvent() {

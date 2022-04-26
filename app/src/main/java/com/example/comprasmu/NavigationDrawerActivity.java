@@ -41,7 +41,10 @@ import com.example.comprasmu.services.SubirPendService;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
 import com.example.comprasmu.ui.mantenimiento.DescRespaldoFragment;
+import com.example.comprasmu.ui.tiendas.FirstMapActivity;
+
 import com.example.comprasmu.ui.tiendas.MapaCdActivity;
+import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -250,10 +253,18 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 return true;
             case R.id.action_mapa:
                 //  Log.d(TAG,"hice click en"+item.getItemId());
-                Intent homeIntent=new Intent(this, MapaCdActivity.class);
+              //  Intent homeIntent=new Intent(this, MapaCdActivity.class);
+              //  Intent homeIntent=new Intent(this, FirstMapActivity.class);
 
-                startActivity(homeIntent);
-                finish();
+               // startActivity(homeIntent);
+             //   finish();
+
+             //   NavHostFragment.findNavController(AbririnformeFragment.this).navigate(R.id.action_nuevotolista);
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                MapaCdFragment fragconfig=new MapaCdFragment();
+                ft.add(R.id.nav_host_fragment, fragconfig);
+
+                ft.commit();
                 return true;
           /*  case R.id.action_save:
                 guardarInforme();
@@ -493,9 +504,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         //TODO falta pais trabajo
         //  Constantes.CIUDADTRABAJO="Cd Juarez";
-        Constantes.PAISTRABAJO = "Mexico";
+        //  Constantes.PAISTRABAJO = "Mexico";
         //Constantes.IDCIUDADTRABAJO=1;
-        Constantes.IDPAISTRABAJO = 1;
+        // Constantes.IDPAISTRABAJO = 1;
         //  Constantes.CLAVEUSUARIO="marisol";
         //inicio catalogo clientes y plantas
     }

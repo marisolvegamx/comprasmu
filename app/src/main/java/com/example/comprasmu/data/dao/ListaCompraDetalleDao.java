@@ -2,6 +2,7 @@ package com.example.comprasmu.data.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.DatabaseView;
 import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.room.Transaction;
@@ -11,7 +12,9 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaWithDetalle;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -32,6 +35,15 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
 
     @Query("delete FROM lista_compras_detalle WHERE listaId = :id")
     public abstract void deleteByLista(int id);
+
+    @Query("Select lista_compras_detalle.* from lista_compras_detalle" +
+            "                where listaId=:listaid " +
+            "               order by " +
+            "                productosId," +
+            "                tamanioId ASC," +
+            "                empaquesId ASC," +
+            "                analisisId ASC, tipoMuestra")
+    public abstract LiveData<List<ListaCompraDetalle>> getListasDetalleOrdByLista(int listaid);
 
     @Query("update lista_compras_detalle set comprados=comprados+:cantidad WHERE id = :id and listaId=:listaid")
     public abstract void actualizarCompra(int id,int listaid,int cantidad);
@@ -55,7 +67,9 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
     }
     @RawQuery(observedEntities = ListaCompraDetalle.class)
     public abstract LiveData<List<ListaCompraDetalle>> getDetallesByFiltros(SupportSQLiteQuery query);
-  /*  public class MinimalLstaDet{
+
+
+    /*  public class MinimalLstaDet{
         public int productosId;
         public String productoNombre;
         public String tamanio;

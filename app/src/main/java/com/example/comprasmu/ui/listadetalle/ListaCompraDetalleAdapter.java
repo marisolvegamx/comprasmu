@@ -66,6 +66,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                 .inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.lista_detalle_item, parent, false);
         this.parent=parent;
+
         return new ListaCompraDetalleViewHolder(binding,this.ismuestra,callback);
     }
 
@@ -94,11 +95,17 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
        //    List<InformeCompraDetalle> icd = buscarBU(mListaCompraDetalleList.get(position));
         List<InformeCompraDetalle> icd =mListaCompraDetalleList.get(position).getInfcd();
            if (icd != null) {
-             //  Log.d(TAG, "es bu " + listacomprasbu.size());
+               Log.d(TAG, "es bu " + icd.size());
                ListaDetalleBuAdapter adaptadorLista = new ListaDetalleBuAdapter((AppCompatActivity) parent.getContext(),icd);
+               final int adapterCount = adaptadorLista.getCount();
+               holder.binding.informebudata.removeAllViews();
+               for (int i = 0; i < adapterCount; i++) {
+                   View item = adaptadorLista.getView(i, null, null);
 
+                   holder.binding.informebudata.addView(item);
+               }
 
-               holder.binding.informebudata.setAdapter(adaptadorLista);
+             //  holder.binding.informebudata.setAdapter(adaptadorLista);
                // holder.binding.setTotalbu(comprabu.size());
              //  int cantorig = mListaCompraDetalleList.get(position).getCantidad();
              //  mListaCompraDetalleList.get(position).setCantidad(cantorig - 1);

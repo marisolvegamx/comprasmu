@@ -248,5 +248,6 @@ https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend
     --></string>
 
     <string name="google_maps_key" templateMergeStrategy="preserve">AIzaSyAY_2t7h2cptQLKWCC8KoOcMyeIrEFHQkc</string>
+    <string name="criterio_ant">CRITERIO ANTERIOR</string>
 
 </resources>

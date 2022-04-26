@@ -28,7 +28,8 @@ public class ListaDetalleBuAdapter extends ArrayAdapter<InformeCompraDetalle> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater= LayoutInflater.from(parent.getContext());
+        LayoutInflater inflater = appCompatActivity.getLayoutInflater();
+
         if (inflater == null) {
             inflater = ((Activity) parent.getContext()).getLayoutInflater();
         }

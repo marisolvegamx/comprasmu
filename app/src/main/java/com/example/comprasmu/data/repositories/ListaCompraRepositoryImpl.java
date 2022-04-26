@@ -47,14 +47,23 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public List<ListaCompra> getAllByIndicesimple(String indice) {
         return dao.findAllByIndicesimple(indice);
     }
-    public LiveData<List<ListaCompra>> getAllByFiltros(String indice,int idPlanta, int idCliente ) {
+    public LiveData<ListaCompra> getByFiltros(String indice,int idPlanta, int idCliente ) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and plantasId=? and clientesId=?";
+                "and plantasId=?";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
-               new Object[]{indice,idPlanta,idCliente});
-        return dao.getListaCompraByFiltros( sqlquery);
+               new Object[]{indice,idPlanta});
+        return dao.getListaByFiltros( sqlquery);
+    }
+    public List<ListaCompra> getByPlanta(int idPlanta ) {
+
+        String query="Select * from lista_compras where " +
+                " plantasId=?";
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,
+                new Object[]{idPlanta});
+        return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
     public LiveData<List<ListaCompra>> getAllByIndiceCiudad(String indice,String idCiudad) {
 
@@ -122,7 +131,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
     public LiveData<List<ListaWithDetalle>> getListaWithDetalleByFiltros(String indice, int idPlanta, int idCliente ) {
-       /* String query="Select " +
+      /*  String query="Select " +
                 "lc.id," +
                 "   lc.plantasId," +
                 " lc.plantaNombre," +
@@ -136,7 +145,6 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
                 "lc.estatus," +
                 "lc.lis_nota," +
                 "lcd.id," +
-
                 "lcd.listaId," +
                 "lcd.productosId," +
                 "lcd.productoNombre," +
@@ -161,20 +169,26 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
                 " from lista_compras as lc " +
                 "inner join lista_compras_detalle as lcd " +
                 "on lcd.listaId=lc.id  where lc.indice=? " +
-                "and plantasId=? order by lcd.lid_orden";*/
+                "and plantasId=? order by "+
+                "productosId," +
+                "tamanioId ASC," +
+                "empaquesId ASC," +
+                "analisisId ASC,tipoMuestra";*/
        String query="Select * from lista_compras  " +
                 " where indice=? " +
                 "and plantasId=?";
-
+        Log.d("wiiiiiiii",query);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idPlanta});
-    //    Log.d("LISTACOMPRREPIMP",indice+"---"+idPlanta+"--"+sqlquery.getSql());
+        Log.d("LISTACOMPRREPIMP",indice+"---"+idPlanta+"--"+sqlquery.getSql());
 
 
         return dao.getListasWithDetalleByFiltros( sqlquery);
     }
-    @Override
+
+
+        @Override
     public LiveData<List<ListaCompra>> getAll() {
       return dao.findAll();
     }
