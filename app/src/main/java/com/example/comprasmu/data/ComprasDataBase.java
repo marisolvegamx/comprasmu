@@ -15,6 +15,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.dao.AtributoDao;
 import com.example.comprasmu.data.dao.BaseDao;
 import com.example.comprasmu.data.dao.CatalogoDetalleDao;
+import com.example.comprasmu.data.dao.GeocercaDao;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.dao.InformeCompraDetDao;
@@ -29,6 +30,7 @@ import com.example.comprasmu.data.dao.VisitaDao;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -59,8 +61,9 @@ import java.util.Map;
         TablaVersiones.class,
         Visita.class,  InformeTemp.class,
         ProductoExhibido.class, Sustitucion.class,
-        CatalogoDetalle.class, Atributo.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=6, exportSchema = false)
+        CatalogoDetalle.class, Atributo.class, Geocerca.class},
+
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=8, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -78,6 +81,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
     public abstract InformeCompraDao getInformeCompraDao();
     public abstract InformeTempDao getInformeTempDao();
     public abstract SustitucionDao getSustitucionDao();
+    public abstract GeocercaDao getGeocercaDao();
     public static ComprasDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
             ctx=context;
@@ -89,7 +93,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .build();*/
                     INSTANCE =  Room.databaseBuilder(context,
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
-                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6)
+                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -173,7 +177,28 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         }
     };
+    static final Migration MIGRATION_6_7 = new Migration(6, 7) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `geocerca` (`geo_id` INTEGER NOT NULL," +
+                    " geo_n4id INTEGER NOT NULL, "
+                    + "`geo_region` INTEGER NOT NULL ,  geo_p1 TEXT,geo_p2 TEXT, geo_p3 TEXT, geo_p4 TEXT, ciudad TEXT," +
+                    " PRIMARY KEY(`geo_id`));");
 
+             }
+    };
+
+    static final Migration MIGRATION_7_8 = new Migration(7,8) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+              database.execSQL("ALTER TABLE lista_compras_detalle ADD COLUMN ordtam INTEGER DEFAULT 0 NOT NULL  ");
+            database.execSQL("ALTER TABLE lista_compras_detalle ADD COLUMN ordemp INTEGER DEFAULT 0  NOT NULL");
+
+            database.execSQL("ALTER TABLE lista_compras_detalle ADD COLUMN ordtipa INTEGER DEFAULT 0 NOT NULL ");
+            database.execSQL("ALTER TABLE lista_compras_detalle ADD COLUMN ordtipm INTEGER DEFAULT 0 NOT NULL ");
+
+        }
+    };
 
 
 

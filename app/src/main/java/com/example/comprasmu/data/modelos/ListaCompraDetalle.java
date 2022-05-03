@@ -35,6 +35,14 @@ public class ListaCompraDetalle {
     protected String lid_fechapermitida;
     protected String lid_fecharestringida;
     protected int lid_orden;
+    @ColumnInfo(defaultValue = "0")
+    protected int ordtam; //ordenar x tamanio
+    @ColumnInfo( defaultValue = "0")
+    protected int ordemp; //ordenar x empaque
+    @ColumnInfo( defaultValue = "0")
+    protected int ordtipa;
+    @ColumnInfo(defaultValue = "0")
+    protected int ordtipm;
 
     @ColumnInfo(name="lid_backup", defaultValue = "-1")
     protected int lid_backup;
@@ -253,5 +261,37 @@ public class ListaCompraDetalle {
 
     public void setLid_backup(int lid_backup) {
         this.lid_backup = lid_backup;
+    }
+
+    public int getOrdtam() {
+        return ordtam;
+    }
+
+    public void setOrdtam(int ordtam) {
+        this.ordtam = ordtam;
+    }
+
+    public int getOrdemp() {
+        return ordemp;
+    }
+
+    public void setOrdemp(int ordemp) {
+        this.ordemp = ordemp;
+    }
+
+    public int getOrdtipa() {
+        return ordtipa;
+    }
+
+    public void setOrdtipa(int ordtipa) {
+        this.ordtipa = ordtipa;
+    }
+
+    public int getOrdtipm() {
+        return ordtipm;
+    }
+
+    public void setOrdtipm(int ordtipm) {
+        this.ordtipm = ordtipm;
     }
 }

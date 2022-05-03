@@ -257,9 +257,29 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         mSnackbarText.setValue(new Event<>(R.string.delete_muestra_message));
 
     }
-    public boolean buscarMuestraCodigo(String indice, int planta, ProductoSel productosel, String codigonvo, Date caducidad, LifecycleOwner lco){
+    public boolean buscarMuestraCodigo(String indice, int planta, ProductoSel productosel, String codigonvo, Date caducidad, LifecycleOwner lco, String codigosperm){
         Log.d(TAG, "buscando codigo"+caducidad);
+        //reviso si es fecha permitid
+        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yy");
 
+        if(!codigosperm.equals(""));
+        {
+            codigosperm=codigosperm.replace("=","");
+            String[] fechas=codigosperm.split(";");
+
+            for(int j=0;j<fechas.length;j++){
+                try {
+                    Date fechaperm=sdf.parse(fechas[j]);
+                    if(fechaperm.equals(caducidad))
+                        return false; //esta permitida
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
         //busco en los informes
         List<InformeCompraDetalle> informeCompraDetalles=detalleRepo.getByProductoAna(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion);
         Log.d(TAG,"buscando codigo igual"+informeCompraDetalles.size());
@@ -424,6 +444,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.clienteSel=clienteSel;
         this.productoSel.siglas=siglas;
         this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
+        this.productoSel.codigosperm=productoSel.getLid_fechapermitida();
         if(prodbu!=null) {
             this.productoSel.comprasDetIdbu = prodbu.getId();
             this.productoSel.comprasIdbu = productoSel.getListaId();
@@ -440,6 +461,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.tipoAnalisis=productoSel.getTipoAnalisis();
         this.productoSel.presentacion=productoSel.getPresentacion();
         this.productoSel.tamanioId=productoSel.getTamanioId();
+       // this.productoSel.codigosperm=productoSel.getLid_fechapermitida();
        // this.productoSel.analisis=productoSel.geta;
         // this.productoSel.clienteNombre=productoSel.get
         //       this.productoSel.plantaNombre=
@@ -466,6 +488,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.clienteSel=clienteSel;
         this.productoSel.siglas=siglas;
         this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
+        this.productoSel.codigosperm=productoSel.getLid_fechapermitida();
         if(prodbu!=null) {
             this.productoSel.comprasDetIdbu = prodbu.getId_sustitucion();
           //  this.productoSel.comprasIdbu = productoSel.getListaId();
@@ -644,6 +667,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         public String nombreTipoMuestra;
         public String siglas;
         public String codigosnop;
+        public String codigosperm;
         public int comprasIdbu;
         public int comprasDetIdbu; //aqui guardaré de cuál se hizo backup
 

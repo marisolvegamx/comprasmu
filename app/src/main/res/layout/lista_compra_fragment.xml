@@ -113,7 +113,7 @@
                     android:id="@+id/txtlcnota"
                     style="@style/textolista1"
                     android:layout_width="80dp"
-                    android:layout_height="20dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="18dp"
                     android:layout_marginTop="8dp" />
 
@@ -165,7 +165,7 @@
             <LinearLayout
                 android:id="@+id/lllc3"
                 android:layout_width="0dp"
-                android:layout_height="76dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:orientation="horizontal"
@@ -181,6 +181,7 @@
                     android:id="@+id/btnlcantbu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/gray_light"
                     android:text="@string/criterio_ant"
@@ -193,10 +194,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
 
-                    android:paddingStart="0sp"
-                    android:paddingEnd="0sp"
+                    android:layout_weight="1"
+                    android:paddingStart="20sp"
+                    android:paddingEnd="20sp"
                     android:text="@string/sig_criterio"
                     android:textSize="12sp"
                     android:visibility="gone"

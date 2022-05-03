@@ -612,8 +612,8 @@ public class DetalleProductoFragment extends Fragment {
         Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
         //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
         List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-
-        Log.d(TAG, "regresó de la consulta de clientes " + data.size());
+if(clientesprev!=null)
+        Log.d(TAG, "regresó de la consulta de clientes " +clientesprev.length+"--"+ data.size());
         clientesAsignados = convertirListaaClientesE(data,clientesprev);
         Log.d(TAG, "*regresó de la consulta de clientes " +  clientesAsignados.size());
     }
@@ -826,13 +826,13 @@ public class DetalleProductoFragment extends Fragment {
                 compraProd(pregunta,preguntaAct.getId() - 1);
 
             }else
-            if(preguntaAct.getSigId()==43) //termine inf
+            if(preguntaAct.getSigId()==43) //termine inf comentarios
             {
                 if(yaestoyProcesando)
                     return;
                 yaestoyProcesando=true;
                 loadingDialog = new LoadingDialog(getActivity());
-                loadingDialog.startLoadingDialog();
+             //   loadingDialog.startLoadingDialog();
                 guardarResp();
                 try {
                     Thread.sleep(2000);
@@ -853,7 +853,7 @@ public class DetalleProductoFragment extends Fragment {
                 //reviso si hay más clientes, si no fin
                 buscarClientes();
                 if(clientesAsignados!=null&&clientesAsignados.size()>0) {
-                    loadingDialog.dismisDialog();
+
                     yaestoyProcesando=false;
                     avanzarPregunta(preguntaAct.getSigId());
                 }
@@ -866,7 +866,7 @@ public class DetalleProductoFragment extends Fragment {
                     //es la 43 //finalizo preinforme
                     mViewModel.finalizarVisita(mViewModel.visita.getId());
                   //  mViewModel.eliminarTblTemp();
-                    loadingDialog.dismisDialog();
+                 //   loadingDialog.dismisDialog();
                     Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
                     yaestoyProcesando=false;
                     salir();
@@ -922,7 +922,8 @@ public class DetalleProductoFragment extends Fragment {
                     //voy directo a la lista
                     plantaSel=listapl.get(0).getPlantasId() ;
                     NOMBREPLANTASEL=listapl.get(0).getPlantaNombre();
-                    if(valor!=null&&valor.equals("7")) //es otras
+                    if(valor!=null)
+                        if(valor.equals("7")) //es otras
                     {
                         //generar consecutivo tienda
                         MutableLiveData<Integer> consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
@@ -943,6 +944,14 @@ public class DetalleProductoFragment extends Fragment {
                               //  consecutivo.removeObservers(DetalleProductoFragment.this);
                             }
                         });
+
+                    }else {
+                            mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",0,false);
+                            mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",0,false);
+                            mViewModel.guardarResp(0,0,listapl.get(0).getClienteNombre(),"clienteNombre","I",0,false);
+
+                            guardarMuestra(preguntaAct.getSigId());
+                        loadingDialog.dismisDialog();
                     }
 
                 }else {
@@ -950,6 +959,7 @@ public class DetalleProductoFragment extends Fragment {
 
                   guardarMuestra(preguntaAct.getSigId());
                   loadingDialog.dismisDialog();
+
               }
 
                // avanzarPregunta(preguntaAct.getSigId());
@@ -1268,23 +1278,7 @@ public class DetalleProductoFragment extends Fragment {
             e.printStackTrace();
             return false;
         }
-        if (dViewModel.productoSel.clienteNombre.trim().equals("PEÑAFIEL")) {
-            Date hoy=new Date();
 
-            if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
-                Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca), Toast.LENGTH_LONG).show();
-
-                return false;
-            }else
-            //busco que no haya otra muestra con la misma fecha en el muestreo
-            if(this.buscarMuestraCodigoPeñafiel(dViewModel.productoSel,fechacad)) {
-                Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
-
-                return false;
-            }
-            return true;
-
-        }
         return false;
     }
 
@@ -1306,7 +1300,7 @@ public class DetalleProductoFragment extends Fragment {
                 //Constantes.
                 //busco si hay otra muestra == y si tiene el mismo codigo
                 if(Constantes.DP_CONSECUTIVO<11)
-                { res = buscarMuestraCodigo(dViewModel.productoSel, textoint.getText().toString(), fechacad);
+                { res = buscarMuestraCodigo(dViewModel.productoSel, textoint.getText().toString(), fechacad,dViewModel.productoSel.codigosperm);
 
                 if (res) {
                     Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
@@ -1768,15 +1762,15 @@ public class DetalleProductoFragment extends Fragment {
        boolean res;
         //validar siglas
 
-   public boolean buscarMuestraCodigo(NuevoDetalleViewModel.ProductoSel productosel,String codigonvo,Date caducidadnva){
+   public boolean buscarMuestraCodigo(NuevoDetalleViewModel.ProductoSel productosel,String codigonvo,Date caducidadnva, String codigosperm){
             //busco en el mismo informe
-            return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,codigonvo,caducidadnva,getViewLifecycleOwner());
+            return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,codigonvo,caducidadnva,getViewLifecycleOwner(),codigosperm);
 
         }
         //si true ya existe un codigo igual
-   public boolean buscarMuestraCodigoPeñafiel(NuevoDetalleViewModel.ProductoSel productosel,Date caducidadnva){
+   public boolean buscarMuestraCodigoPeñafiel(NuevoDetalleViewModel.ProductoSel productosel,Date caducidadnva, String codigosperm){
             //busco en el mismo informe
-            return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,"",caducidadnva,getViewLifecycleOwner());
+            return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,"",caducidadnva,getViewLifecycleOwner(),codigosperm);
 
         }
     @Override

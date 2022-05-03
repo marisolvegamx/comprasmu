@@ -1,5 +1,7 @@
 package com.example.comprasmu.data.dao;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.DatabaseView;
@@ -10,6 +12,7 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
@@ -39,10 +42,11 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
     @Query("Select lista_compras_detalle.* from lista_compras_detalle" +
             "                where listaId=:listaid " +
             "               order by " +
-            "                productosId," +
-            "                tamanioId ASC," +
-            "                empaquesId ASC," +
-            "                analisisId ASC, tipoMuestra")
+            "                productosId,"+
+            "ordtam DESC," +
+            "ordemp ASC," +
+            "ordtipa ASC," +
+            "ordtipm;")
     public abstract LiveData<List<ListaCompraDetalle>> getListasDetalleOrdByLista(int listaid);
 
     @Query("update lista_compras_detalle set comprados=comprados+:cantidad WHERE id = :id and listaId=:listaid")
@@ -65,6 +69,29 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
         }
 
     }
+
+  /*  @Transaction
+    public void insertActCantidades(InformeCompraDetDao infcomdao,List<InformeCompraDetalle> detalles, Product oldProduct) {
+        // Anything inside this method runs in a single transaction.
+
+
+        infcomdao.insertAll(detalles);
+        //sumo en la lista de compra
+        List<InformeCompraDetalle> detalles=infdrepo.getAllsimple();
+        //ajusto cantidades
+        if(detalles!=null)
+            for(InformeCompraDetalle det:detalles){
+                ListaCompraDetalle compradet=lcrepo.findsimple(det.getComprasId(),det.getId());
+                Log.d(TAG,"sss"+compradet.getProductoNombre()+"--"+compradet.getComprados());
+                if(compradet!=null)
+                { int nvacant=compradet.getComprados()+1;
+                    lcrepo.actualizarComprados(det.getId(),det.getComprasId(),nvacant);
+                    Log.d(TAG,"sss"+compradet.getProductoNombre()+"--"+nvacant);
+
+                }
+
+            }
+    }*/
     @RawQuery(observedEntities = ListaCompraDetalle.class)
     public abstract LiveData<List<ListaCompraDetalle>> getDetallesByFiltros(SupportSQLiteQuery query);
 

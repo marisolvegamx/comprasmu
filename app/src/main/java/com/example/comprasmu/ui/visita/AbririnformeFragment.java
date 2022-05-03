@@ -59,6 +59,7 @@ import com.example.comprasmu.R;
 
 import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 
@@ -66,6 +67,7 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.modelos.Visita;
 
+import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.informe.FotoExhibicionAdapter;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibViewModel;
@@ -83,7 +85,10 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.maps.android.PolyUtil;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 
@@ -193,7 +198,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         TextView indice = root.findViewById(R.id.txtaiindice);
         indice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
 
-        loadData();
+
 
 
 
@@ -387,6 +392,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             // rastreoGPS();
           //  locationStart();
         }
+        loadData();
 
      //   setupListAdapter();
 
@@ -450,6 +456,19 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 mViewModel.visitaEdicion.observe(getViewLifecycleOwner(), new Observer<Visita>() {
                     @Override
                     public void onChanged(Visita visita) {
+                        if(visita.getTiendaId()>0){
+                            //no es tienda nueva
+                            nuevaTienda=false;
+                            tienda=new Tienda();
+                            tienda.setUne_id(visita.getTiendaId());
+                            tienda.setUne_descripcion(visita.getTiendaNombre());
+                            try {
+                                tienda.setUne_tipotienda(Integer.parseInt(visita.getTipoTienda()));
+                            }catch(NumberFormatException ex){
+                                Log.d(TAG,"Error al convertir");
+                            }
+                            tienda.setUne_direccion(visita.getDireccion());
+                        }
                         crearFormulario(visita);
                         ponerDatos(visita);
                         LinearLayout sv = root.findViewById(R.id.content_main);
@@ -1232,7 +1251,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 mViewModel.visita.setDireccion(mensajedir.getText().toString());
 
                // mViewModel.visita.setCadenaComercial(input6.getText().toString());
-                //mViewModel.visita.setPuntoCardinal(input4.getText().toString());
+                //busco el punto cardinal
+
+               buscarZona(txtubicacion.getText().toString());
+                mViewModel.visita.setPuntoCardinal(input4.getText().toString());
 
             }else
             {//ya existe
@@ -1329,7 +1351,43 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         }
     }
-
+    //con la geolocalizacion de la tienda se busca la zona en la que esta
+    //devuelve el id de la zona de acuerdo al catalogo
+    //se puede consultar el catalogo en MapdaCDFragment
+    public int buscarZona(String puntotxt){
+        if(puntotxt.equals("")){
+            return 0;
+        }
+        String[] auxp=puntotxt.split(",");
+        LatLng punto=new LatLng(Double.parseDouble(auxp[0]),Double.parseDouble(auxp[1]));
+        //busco las zonas de la ciudad de trabajo
+        GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getActivity());
+        List<Geocerca> zonas=georep.findsimplexCd(Constantes.CIUDADTRABAJO);
+        LatLng p1;
+        LatLng p2;
+        LatLng p3;
+        LatLng p4;
+        if(zonas!=null)
+        for(Geocerca geo:zonas){
+            String aux[]=geo.getGeo_p1().split(",");
+             p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+            String aux2[]=geo.getGeo_p2().split(",");
+             p2 =new LatLng(Double.parseDouble(aux2[0]), Double.parseDouble(aux2[1]));
+            String aux3[]=geo.getGeo_p3().split(",");
+             p3 =new LatLng(Double.parseDouble(aux3[0]), Double.parseDouble(aux3[1]));
+            String aux4[]=geo.getGeo_p4().split(",");
+             p4 =new LatLng(Double.parseDouble(aux4[0]), Double.parseDouble(aux4[1]));
+            List<LatLng> poly=new ArrayList<>();
+            poly.add(p1);
+            poly.add(p2);
+            poly.add(p3);
+            poly.add(p4);
+            //mMap.addPolygon(new PolygonOptions()
+           if(PolyUtil.containsLocation(punto,poly,false))
+               return geo.getGeo_region();
+        }
+        return 0; //no estuvo lol
+    }
     public void actualizar(){
         EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
         EditText input1;

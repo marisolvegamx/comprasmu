@@ -1478,7 +1478,7 @@ public class DetalleProductoPenFragment extends Fragment {
    //true= ya existe un codigo igual
    public boolean buscarMuestraCodigoPeniafiel(NuevoDetalleViewModel.ProductoSel productosel,Date caducidadnva){
             //busco en el mismo informe
-            return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,"",caducidadnva,getViewLifecycleOwner());
+            return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,"",caducidadnva,getViewLifecycleOwner(),dViewModel.productoSel.codigosperm);
 
         }
     @Override

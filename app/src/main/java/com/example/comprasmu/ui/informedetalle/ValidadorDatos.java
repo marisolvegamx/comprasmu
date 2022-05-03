@@ -81,7 +81,7 @@ public class ValidadorDatos {
                     return false;
                 }
 
-                //comparo con los no permitido
+                //comparo con los no permitidos
                 String arrecodigos[]=codigonoper.split(";");
                 if(arrecodigos!=null&&arrecodigos.length>0) {
                     Log.d("ValidadorDatos","mi codigo"+codigo);

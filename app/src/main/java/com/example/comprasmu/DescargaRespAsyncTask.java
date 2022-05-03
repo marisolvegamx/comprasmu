@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
@@ -29,28 +30,32 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
     AlertDialog alertDialog;
     InformeCompraRepositoryImpl infrepo;
     InformeComDetRepositoryImpl infdrepo;
     ImagenDetRepositoryImpl imagenDetRepo;
+    ListaCompraDetRepositoryImpl lcrepo;
     VisitaRepositoryImpl visrepo;
     ProductoExhibidoRepositoryImpl prodrepo;
     SimpleDateFormat sdfdias;
+    String TAG="DescargarRespAsynTas";
 
     boolean notificar=false;
     Activity act;
     int actualiza;
     ProgresoListener proglist;
 
-    public DescargaRespAsyncTask(InformeCompraRepositoryImpl infrepo, InformeComDetRepositoryImpl infdrepo, ImagenDetRepositoryImpl imagenDetRepo, VisitaRepositoryImpl visrepo, ProductoExhibidoRepositoryImpl prodrepo, Activity act) {
+    public DescargaRespAsyncTask(InformeCompraRepositoryImpl infrepo, InformeComDetRepositoryImpl infdrepo, ImagenDetRepositoryImpl imagenDetRepo, VisitaRepositoryImpl visrepo, ProductoExhibidoRepositoryImpl prodrepo, ListaCompraDetRepositoryImpl lcrepo,Activity act) {
         this.infrepo = infrepo;
         this.infdrepo = infdrepo;
         this.imagenDetRepo = imagenDetRepo;
         this.visrepo = visrepo;
         this.prodrepo = prodrepo;
         this.act = act;
+        this.lcrepo=lcrepo;
         sdfdias=new SimpleDateFormat("dd-MM-yyyy");
         this.proglist=proglist;
     }
@@ -96,6 +101,7 @@ public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
             }
 
             public void actualizar(RespInformesResponse infoResp) {
+                Log.d(TAG,"actualizando bd");
                 //primero los inserts
                 if (infoResp.getVisita() != null) {
                     //reviso cada uno y las inserto
@@ -115,6 +121,8 @@ public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
 
 
                 }
+
+
                 if (infoResp.getImagenDetalles() != null && infoResp.getImagenDetalles().size() > 0) {
                     //como puede que ya existan reviso primero e inserto unoxuno
                     imagenDetRepo.insertAll(infoResp.getImagenDetalles());
@@ -127,6 +135,22 @@ public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
 
 
                 }
+                //sumo en la lista de compra
+             //   List<InformeCompraDetalle> detalles=infdrepo.getAllsimple();
+                //ajusto cantidades
+                if(infoResp.getInformeCompraDetalles()!=null)
+                    for(InformeCompraDetalle det:infoResp.getInformeCompraDetalles()){
+                        ListaCompraDetalle compradet=lcrepo.findsimple(det.getComprasId(),det.getId());
+                        if(compradet!=null)
+                        {   Log.d(TAG,"sss"+compradet.getProductoNombre()+"--"+compradet.getComprados());
+
+                            int nvacant=compradet.getComprados()+1;
+                            lcrepo.actualizarComprados(det.getId(),det.getComprasId(),nvacant);
+                            Log.d(TAG,"sss"+compradet.getProductoNombre()+"--"+nvacant);
+
+                        }
+
+                    }
 
 
             }

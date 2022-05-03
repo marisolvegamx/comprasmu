@@ -1,7 +1,12 @@
 package com.example.comprasmu.data.modelos;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "geocerca")
 public class Geocerca {
 
+    @PrimaryKey(autoGenerate = true)
    private int geo_id;
    private int  geo_n4id;
    private int geo_region;
@@ -9,6 +14,7 @@ public class Geocerca {
    private String geo_p2;
    private String geo_p3;
    private String geo_p4;
+    private String ciudad;
 
     public int getGeo_id() {
         return geo_id;
@@ -64,5 +70,13 @@ public class Geocerca {
 
     public void setGeo_p4(String geo_p4) {
         this.geo_p4 = geo_p4;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
     }
 }

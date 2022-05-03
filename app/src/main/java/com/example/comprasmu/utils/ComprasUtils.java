@@ -320,9 +320,52 @@ public class ComprasUtils {
         indice=indice.replace(" ","-");
         String[] mifecha=indice.split("-");
         String strMes="",lafecha;
-        return mifecha[1]+"-"+mifecha[0]+"-01";
+        return mifecha[1]+"-"+ComprasUtils.cambiaMesaNum(mifecha[0])+"-01";
 
     }
+
+    static public int cambiaMesaNum(String mes) {
+       int num=0;
+        // cambia el mes
+        switch (mes.toUpperCase()) {
+            case "ENERO": num=1;
+                break;
+            case "FEBRERO":num=2;
+                break;
+            case "MARZO" :
+                num=3;
+                break;
+            case "ABRIL" :
+                num=4;
+                break;
+            case "MAYO" :
+                num=5;
+                break;
+            case "JUNIO":
+                num=6;
+                break;
+            case "JULIO" :
+                num=7;
+                break;
+            case "AGOSTO" :
+                num=8;
+                break;
+            case "SEPTIEMBRE" :
+                num=9;
+                break;
+            case "OCTUBRE" :
+                num=10;
+                break;
+            case "NOVIEMBRE" :
+               num=11;
+                break;
+            case "DICIEMBRE" :
+                num=12;
+                break;
+        }
+        return num;
+    }
+
 
 }
 

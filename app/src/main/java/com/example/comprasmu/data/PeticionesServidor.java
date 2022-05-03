@@ -265,7 +265,7 @@ public class PeticionesServidor {
 
     public void getListasdeCompra(TablaVersiones comp, TablaVersiones version2, String indice, DescargasIniAsyncTask.DescargaIniListener listener){
         //busco la version de la app
-         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");
+         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 
         PeticionLista peticion = new PeticionLista();
         if (comp != null && comp.getVersion() != null) {
@@ -294,7 +294,7 @@ public class PeticionesServidor {
 
     public void pedirLista(PeticionLista peticion, DescargasIniAsyncTask.DescargaIniListener listener){
 
-        Log.d("PeticionesServidor","haciendo petición");
+        Log.d("PeticionesServidor","haciendo petición"+peticion.version_lista+"--"+peticion.version_detalle);
 
         final Call<ListaCompraResponse> batch = apiClient.getApiService().getListasCompra(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle);
 
@@ -308,7 +308,6 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
-                        Log.d("PeticionesServidor","resp>>"+compraResp.getStatus());
 
                         listener.actualizar(compraResp);
                         /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl

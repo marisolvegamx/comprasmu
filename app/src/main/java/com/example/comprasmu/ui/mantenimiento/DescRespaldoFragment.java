@@ -18,6 +18,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 
@@ -88,8 +89,8 @@ descargar();
             ImagenDetRepositoryImpl imrepo=new ImagenDetRepositoryImpl(getContext());
             ProductoExhibidoRepositoryImpl prodrepo=new ProductoExhibidoRepositoryImpl(getContext());
             VisitaRepositoryImpl visrepo=new VisitaRepositoryImpl(getContext());
-
-            DescargaRespAsyncTask task = new DescargaRespAsyncTask(infoRepo,ifodrepo,imrepo,visrepo,prodrepo,getActivity());
+            ListaCompraDetRepositoryImpl lcrepo=new ListaCompraDetRepositoryImpl(getContext());
+            DescargaRespAsyncTask task = new DescargaRespAsyncTask(infoRepo,ifodrepo,imrepo,visrepo,prodrepo,lcrepo,getActivity());
 
             //  textView.setText("Por favor mantengase en la aplicación hasta que termine la descarga");
             //pb.setVisibility(View.VISIBLE);

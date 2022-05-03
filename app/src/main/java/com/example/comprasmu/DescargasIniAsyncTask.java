@@ -131,12 +131,8 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
     private void listacompras(){
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-
-
         TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
         TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
-
-
         DescargasIniAsyncTask.DescargaIniListener listener=new DescargaIniListener();
         if(comp!=null){
 
@@ -154,7 +150,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 if(actualiza==1) {
                     //siempre actualizo
                     if(NavigationDrawerActivity.isOnlineNet())
-                    ps.getListasdeCompra(comp,det,Constantes.INDICEACTUAL,listener);
+                    ps.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
                     else
                         notificar = true;
                   /*  act.runOnUiThread(new Runnable() {
@@ -181,12 +177,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if(notificar)
-            notificarSinConexion();
+      /*  if(notificar)
+            notificarSinConexion();*/
         Log.e("DescargasIniAsyT","---"+actualiza+"---"+proglist);
-        if(actualiza==1&&proglist!=null){
-            proglist.cerrarAlerta(notificar);
-        }
+
     }
 
 
@@ -198,15 +192,23 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             }
             public void noactualizar(String response){
                 //a ver como la regresamos
+                if(actualiza==1&&proglist!=null){
+                    proglist.cerrarAlerta(notificar);
+                }
             }
             public void actualizar(ListaCompraResponse compraResp) {
                 //primero los inserts
+                Log.d("Descargaini","resp1>>"+compraResp.getInserts());
+
                 if (compraResp.getInserts() != null) {
                     if(compraResp.getInserts().getListaCompra()!=null) {
+                        Log.d("Descargaini","resp2>>"+compraResp.getInserts().getListaCompra());
 
                         lcrepo.insertAll(compraResp.getInserts().getListaCompra()); //inserto blblbl
                     }
-                        if(compraResp.getInserts().getListaCompraDetalle()!=null){
+                    Log.d("Descargaini","resp3>>"+compraResp.getInserts().getListaCompraDetalle());
+
+                    if(compraResp.getInserts().getListaCompraDetalle()!=null){
                             //como puede que ya existan reviso primero e inserto unoxuno
                             for(ListaCompraDetalle detalle:compraResp.getInserts().getListaCompraDetalle()){
                                 ListaCompraDetalle existe=lcdrepo.findsimple(detalle.getListaId(),detalle.getId());
@@ -219,6 +221,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                                     //lcrepo.updateSC(compra);
                                 }
                                 lcdrepo.insert(detalle);
+
 
                             }
                         }
@@ -252,17 +255,22 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 //actualizar version en tabla
                 TablaVersiones tinfo = new TablaVersiones();
                 tinfo.setNombreTabla(Contrato.TBLLISTACOMPRAS);
-                tinfo.setVersion(new Date());
+                Date fecha1=new Date();
+                Log.d("DescargasAsyncTask","insertando fecha version 1"+fecha1);
+
+                tinfo.setVersion(fecha1);
                 tinfo.setIndice(Constantes.INDICEACTUAL);
                 tinfo.setTipo("I");
                 TablaVersiones tinfod = new TablaVersiones();
                 tinfod.setNombreTabla(Contrato.TBLLISTACOMPRASDET);
-                tinfod.setVersion(new Date());
+                tinfod.setVersion(fecha1);
                 tinfod.setTipo("I");
                 tinfod.setIndice(Constantes.INDICEACTUAL);
                 tvRepo.insertUpdate(tinfo);
                 tvRepo.insertUpdate(tinfod);
-
+                if(actualiza==1&&proglist!=null){
+                    proglist.cerrarAlerta(notificar);
+                }
             }
 
         }
