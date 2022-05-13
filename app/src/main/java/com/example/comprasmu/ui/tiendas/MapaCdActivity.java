@@ -93,8 +93,8 @@ public class MapaCdActivity extends FragmentActivity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
       //  spclientes=findViewById(R.id.spmcdcliente);
         spplantas=findViewById(R.id.spmcdplanta);
-        spindicefin=findViewById(R.id.spmcdindicefin);
-        spindiceini=findViewById(R.id.spmcdindiceini);
+        //spindicefin=findViewById(R.id.spmcdindicefin);
+       // spindiceini=findViewById(R.id.spmcdindiceini);
         buscarClientes();
         buscarPlantas(Constantes.CIUDADTRABAJO,0);
         cargarIndices();

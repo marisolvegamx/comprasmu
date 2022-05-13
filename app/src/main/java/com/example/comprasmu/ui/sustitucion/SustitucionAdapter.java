@@ -27,8 +27,9 @@ public class SustitucionAdapter extends RecyclerView.Adapter<SustitucionAdapter.
     int numtienda;
     boolean isbu, ismuestra;//para saber si ya estoy en lista de bu o agregando muestra
     String cliente;
-    public SustitucionAdapter( AdapterCallback callback) {
-
+    public SustitucionAdapter(String ismuestra, AdapterCallback callback) {
+      if(ismuestra!=null&&ismuestra.equals("true"))
+          this.ismuestra=true;
         this.callback=callback;
 
     }
@@ -50,7 +51,7 @@ public class SustitucionAdapter extends RecyclerView.Adapter<SustitucionAdapter.
     @Override
     public void onBindViewHolder(@NonNull SustitucionViewHolder holder, int position) {
        holder.binding.setDetalle(mSustitucionList.get(position));
-
+        holder.binding.setMostrarAgregar(ismuestra);
 
 
     }

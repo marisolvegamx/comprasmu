@@ -600,6 +600,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             }
         }
         aceptar.setEnabled(true);
+        lastClickTime=0;
     }
     //validar siglas
     public boolean validarSiglas(){
@@ -658,7 +659,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             String state = Environment.getExternalStorageState();
             String baseDir;
             if(Environment.MEDIA_MOUNTED.equals(state)) {
-                File baseDirFile = getActivity().getExternalFilesDir(null);
+                File baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                 if(baseDirFile == null) {
                     baseDir = getActivity().getFilesDir().getAbsolutePath();
                 } else {
@@ -684,8 +685,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     }else {
                         Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                         ComprasUtils cu = new ComprasUtils();
-                        bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                        bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(null) + "/" + nombre_foto, 100, 100);
+                        bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+                        bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto, 100, 100);
                         fotomos.setImageBitmap(bitmap1);
                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                         fotomos.setVisibility(View.VISIBLE);

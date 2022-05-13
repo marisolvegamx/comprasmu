@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Environment;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -77,8 +78,8 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         mBinding.setLifecycleOwner(this);
         Bundle datosRecuperados = getActivity().getIntent().getExtras();
         mViewModel = new ViewModelProvider(this).get(VerInformeViewModel.class);
-        mBinding.setDirectorio(getActivity().getExternalFilesDir(null)+"/");
-        directorio=getActivity().getExternalFilesDir(null)+"/";
+        mBinding.setDirectorio(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/");
+        directorio=getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
         if (datosRecuperados != null) {
             // No hay datos, manejar excepción
             //no debería estar aqui

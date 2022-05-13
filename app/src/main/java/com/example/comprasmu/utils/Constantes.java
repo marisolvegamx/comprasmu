@@ -14,11 +14,11 @@ public class Constantes {
 
     public static final String TAG = "Comprasmu";
     public static final int REQUEST_CHECK_SETTINGS =0 ;
-    public static String INDICEACTUAL;
+    public static String INDICEACTUAL; //esta en la forma m-yyyyy
     public static int PLANTASEL;
     public static int CIUDADSEL;
     public static final int REQUEST_CODE_TAKE_PHOTO = 1;
-    //TODO falta iniciar el usuario en el main
+
     public static  String CLAVEUSUARIO ;
     public static  String CIUDADTRABAJO ;
     public static  int IDCIUDADTRABAJO ;

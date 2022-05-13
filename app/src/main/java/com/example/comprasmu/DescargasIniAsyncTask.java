@@ -85,24 +85,12 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         if(cats!=null){
             //si hoy ya se actualizó no actualizo
             Log.d("DescargasIniAsyncTask","comprobando vers catalog*"+sdfdias.format(cats.getVersion())+"--"+(sdfdias.format(new Date())));
-            if(!sdfdias.format(cats.getVersion()).equals(sdfdias.format(new Date()))){
+            //no actualice
+            if(actualiza==1) {
                 if(NavigationDrawerActivity.isOnlineNet()) {
                     ps.getCatalogos(cdrepo, tvRepo, atRepo);
-                    ps.getSustitucion(tvRepo,sustRepo);
+                    ps.getSustitucion(tvRepo, sustRepo);
                 }
-
-                else
-
-                    notificar = true;
-
-            }
-                 else{
-                //no actualice
-                if(actualiza==1) {
-                    if(NavigationDrawerActivity.isOnlineNet()) {
-                        ps.getCatalogos(cdrepo, tvRepo, atRepo);
-                        ps.getSustitucion(tvRepo, sustRepo);
-                    }
                 else
 
                     notificar = true;
@@ -115,8 +103,19 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                          //   proglist.todoBien();
                         }
                     });*/
+            }else
+            if(!sdfdias.format(cats.getVersion()).equals(sdfdias.format(new Date()))){
+                if(NavigationDrawerActivity.isOnlineNet()) {
+                    ps.getCatalogos(cdrepo, tvRepo, atRepo);
+                    ps.getSustitucion(tvRepo,sustRepo);
                 }
+
+                else
+
+                    notificar = true;
+
             }
+
         }else {   //primera vez
             Log.d("DescargasIniAsyncTask","iniciando descarga cats");
             if(NavigationDrawerActivity.isOnlineNet()) {
@@ -135,24 +134,12 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
         DescargasIniAsyncTask.DescargaIniListener listener=new DescargaIniListener();
         if(comp!=null){
-
-
-            Log.d("DescargasIniAsyncTask","comprobando vers liscomp*"+sdfdias.format(comp.getVersion())+"--"+(sdfdias.format(new Date())));
-            if( !sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))){
+            if(actualiza==1) {
+                //siempre actualizo
                 if(NavigationDrawerActivity.isOnlineNet())
-                ps.getListasdeCompra(comp,det,Constantes.INDICEACTUAL,listener);
+                    ps.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
                 else
                     notificar = true;
-
-            }
-            else{
-                //no actualice
-                if(actualiza==1) {
-                    //siempre actualizo
-                    if(NavigationDrawerActivity.isOnlineNet())
-                    ps.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
-                    else
-                        notificar = true;
                   /*  act.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -162,8 +149,18 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                             proglist.todoBien();
                         }
                     });*/
+            }else {
+
+                Log.d("DescargasIniAsyncTask", "comprobando vers liscomp*" + sdfdias.format(comp.getVersion()) + "--" + (sdfdias.format(new Date())));
+                if (!sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))) {
+                    if (NavigationDrawerActivity.isOnlineNet())
+                        ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
+                    else
+                        notificar = true;
+
                 }
             }
+
 
         }else {   //primera vez
             Log.d("DescargasIniAsyncTask", "primera vez");

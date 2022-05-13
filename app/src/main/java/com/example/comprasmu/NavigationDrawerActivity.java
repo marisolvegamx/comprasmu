@@ -499,7 +499,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
        // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-       Constantes.INDICEACTUAL = "4.2022";
+       Constantes.INDICEACTUAL = "5.2022";
         Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
         //TODO falta pais trabajo

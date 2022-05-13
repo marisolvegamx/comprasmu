@@ -79,6 +79,16 @@
                 android:visibility="gone" />
 
             <Button
+                android:id="@+id/btngvalidar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:backgroundTint="@color/blue_secondary"
+                android:text="@string/validar"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <Button
                 android:id="@+id/btngaceptar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

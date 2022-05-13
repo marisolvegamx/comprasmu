@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
@@ -33,7 +34,9 @@ public class BackActivity extends AppCompatActivity {
     public static final String OP_INFORMEDET="informedet";
     public static final String OP_SELPLANTA="selplanta";
     public static final String OP_SELPLANTAMUE="selplantamue";
+    public static final String OP_SUSTITUCION="sustitucion";
     public static final String TAG="BackActivity";
+
     public static final int REQUEST_CODE=1003;
     public static final String OP_PRODUCTOEX="productoex";
     Toolbar myChildToolbar;
@@ -98,6 +101,7 @@ public class BackActivity extends AppCompatActivity {
                     detailFragment.setArguments(bundle);
                     ft.add(R.id.back_fragment, detailFragment);
                     break;
+
                 case OP_SELPLANTA:
                     myChildToolbar.setTitle(R.string.menu_ver_lista);
                     Bundle bundle5=new Bundle();
@@ -158,6 +162,34 @@ public class BackActivity extends AppCompatActivity {
                     NuevaFotoExhibFragment detailFragment4 = new NuevaFotoExhibFragment();
 
                     ft.add(R.id.back_fragment, detailFragment4);
+                    break;
+                case OP_SUSTITUCION:
+                    myChildToolbar.setTitle(R.string.menu_ver_lista);
+                    Bundle bundle6=new Bundle();
+                 //   bundle6.putInt(NuevoinformeFragment.INFORMESEL,datosRecuperados.getInt(NuevoinformeFragment.INFORMESEL));
+
+                    bundle6.putInt("ciudadSel",datosRecuperados.getInt("ciudadSel"));
+                    bundle6.putString("ciudadNombre",datosRecuperados.getString("ciudadNombre"));
+                    //  intento1.putExtra(,plantaSel );
+                    bundle6.putInt(ListaCompraFragment.ARG_PLANTASEL,datosRecuperados.getInt(ListaCompraFragment.ARG_PLANTASEL));
+                    //intento1.putExtra(, NOMBREPLANTASEL);
+                    bundle6.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL,datosRecuperados.getString(ListaCompraFragment.ARG_NOMBREPLANTASEL));
+                  //  bundle6.putString(SelClienteFragment.ARG_TIPOCONS, datosRecuperados.getString(SelClienteFragment.ARG_TIPOCONS));
+                    //intento1.putExtra(ARG_CLIENTESEL,mViewModel.clienteSel);
+                    bundle6.putInt(ListaCompraFragment.ARG_CLIENTESEL,datosRecuperados.getInt(ListaCompraFragment.ARG_CLIENTESEL));
+                    bundle6.putString(SustitucionFragment.ARG_CATEGORIA, datosRecuperados.getString(SustitucionFragment.ARG_CATEGORIA));
+                    bundle6.putString(SustitucionFragment.ARG_SIGLAS, datosRecuperados.getString(SustitucionFragment.ARG_SIGLAS));
+                    bundle6.putBoolean(ListaCompraFragment.ISBACKUP,datosRecuperados.getBoolean(ListaCompraFragment.ISBACKUP) );
+                    //intento1.putExtra(DetalleProductoFragment.NUMMUESTRA,nummuestra );
+                 //   bundle6.putInt(DetalleProductoFragment.NUMMUESTRA,datosRecuperados.getInt(DetalleProductoFragment.NUMMUESTRA));
+
+
+                    //  TabsFragment detailFragment = new TabsFragment();
+                    SustitucionFragment detailFragment6 = new SustitucionFragment();
+                    //  SelClienteFragment detailFragment = new SelClienteFragment();
+
+                    detailFragment6.setArguments(bundle6);
+                    ft.add(R.id.back_fragment, detailFragment6);
                     break;
                 default:
                     break;

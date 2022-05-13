@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.R;
 
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Sustitucion;
 
 import com.example.comprasmu.databinding.ListaGenericFragmentBinding;
@@ -25,6 +26,7 @@ import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listacompras.PlaceholderFragment;
+import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.mantenimiento.CiudadTrabajoFragment;
 import com.example.comprasmu.utils.Constantes;
@@ -44,7 +46,8 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
      String nombrePlanta;
      int plantaSel;
 
-    private boolean isbu, ismuestra; //para saber si es reemplazo
+    private boolean isbu;
+    private String ismuestra; //para saber si es reemplazo
     public static final String ARG_PLANTA = "comprasmu.sustplanta";
     public static final String ARG_NOMBREPLANTA = "comprasmu.sustnomplanta";
     public static final String ARG_SIGLAS = "comprasmu.sustsiglas";
@@ -84,6 +87,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
             plantaSel = bundle2.getInt(ARG_PLANTA);
             nombrePlanta = bundle2.getString(ARG_NOMBREPLANTA);
             siglas = bundle2.getString(ARG_SIGLAS);
+            ismuestra=bundle2.getString(ListaCompraFragment.ARG_MUESTRA);
         }
     }
 
@@ -138,7 +142,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         super.onDestroyView();
     }
     private void setupListAdapter() {
-       mListAdapter = new SustitucionAdapter(this);
+       mListAdapter = new SustitucionAdapter(ismuestra,this);
 
         mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.detalleList.setHasFixedSize(true);
@@ -164,7 +168,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
             //cambio el tipo de muestra y el producto
             // en detallebusel esta lainfo original
 
-            ldViewModel.getDetallebuSel().setTipoMuestra(2);
+            ldViewModel.getDetallebuSel().setTipoMuestra(3);
             ldViewModel.getDetallebuSel().setNombreTipoMuestra("BACKUP");
             ldViewModel.getDetallebuSel().setProductosId(productoSel.getSu_producto());
             ldViewModel.getDetallebuSel().setProductoNombre(productoSel.getNomproducto());

@@ -45,7 +45,7 @@ public class ComprasUtils {
             return reachable;
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+
             e.printStackTrace();
         }
         return false;
@@ -168,6 +168,24 @@ public class ComprasUtils {
 
 
         for (ListaCompra listaCompra: lista ) {
+            DescripcionGenerica item=new DescripcionGenerica();
+            item.setId(listaCompra.getClientesId());
+            item.setNombre(listaCompra.getClienteNombre());
+            mapa.add(item);
+
+        }
+        return mapa;
+    }
+
+    public static List<DescripcionGenerica> convertirListaaClientessinPep(List<ListaCompra> lista){
+        int i=0;
+        List<DescripcionGenerica> mapa=new ArrayList<>();
+
+
+
+        for (ListaCompra listaCompra: lista ) {
+            if(listaCompra.getClientesId()==4)//es pepsi
+                continue;
             DescripcionGenerica item=new DescripcionGenerica();
             item.setId(listaCompra.getClientesId());
             item.setNombre(listaCompra.getClienteNombre());
@@ -321,6 +339,16 @@ public class ComprasUtils {
         String[] mifecha=indice.split("-");
         String strMes="",lafecha;
         return mifecha[1]+"-"+ComprasUtils.cambiaMesaNum(mifecha[0])+"-01";
+
+    }
+    //devuelve la fecha de la forma yyyy-mm-dd
+    static public String indiceaFecha2(String indice){
+        if(indice.equals(""))
+            return "";
+        indice=indice.replace(".","-");
+        String[] mifecha=indice.split("-");
+        String strMes="",lafecha;
+        return mifecha[1]+"-"+mifecha[0]+"-01";
 
     }
 

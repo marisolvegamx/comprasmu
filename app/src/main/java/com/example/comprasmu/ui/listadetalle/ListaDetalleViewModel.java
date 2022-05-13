@@ -299,7 +299,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         List<Date> fechas=new ArrayList<Date>();
         String resultado = "";
         Log.d(TAG,"xxxxx "+numTienda+"--"+nvoCodigos+"--"+noPermitidos);
-        if(numTienda>=11){
+        if(clienteSel==4&&numTienda>=11){
             nvoCodigos="";
         }
     if(nvoCodigos!=null&&nvoCodigos.length()>0) {

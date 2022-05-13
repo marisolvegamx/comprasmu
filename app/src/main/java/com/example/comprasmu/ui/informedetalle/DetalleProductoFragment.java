@@ -34,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -141,7 +142,8 @@ public class DetalleProductoFragment extends Fragment {
     private int plantaSel;
     private String NOMBREPLANTASEL;
     private long lastClickTime = 0;
-   private boolean yaestoyProcesando=false;
+    private boolean yaestoyProcesando=false;
+    public int estatusPepsi;
 
     public DetalleProductoFragment() {
 
@@ -464,11 +466,12 @@ public class DetalleProductoFragment extends Fragment {
                     long currentClickTime=SystemClock.elapsedRealtime();
                     // preventing double, using threshold of 1000 ms
                     if (currentClickTime - lastClickTime < 5500){
+                      //  Log.d(TAG,"doble click :("+lastClickTime);
                         return;
                     }
 
                     lastClickTime = currentClickTime;
-                    Log.d(TAG,"di click :("+lastClickTime);
+
                     if(preguntaAct.getNombreCampo().equals("clientesId")){
                         guardarCliente();
                     }
@@ -492,7 +495,7 @@ public class DetalleProductoFragment extends Fragment {
             Log.d(TAG,"tipo tienda -----------*"+Constantes.DP_TIPOTIENDA);
             tipoTienda=Constantes.DP_TIPOTIENDA;
 
-
+            estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -553,7 +556,7 @@ public class DetalleProductoFragment extends Fragment {
             if(isEdicion){
                 Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 ComprasUtils cu=new ComprasUtils();
-                bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + ultimares.getValor());
+                bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
 
                 fotomos.setImageBitmap(bitmap1);
                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
@@ -707,8 +710,15 @@ if(clientesprev!=null)
     }
 
     public void guardarCliente(){
+        lastClickTime=0;
         DescripcionGenerica opcionsel = (DescripcionGenerica) spclientes.getSelectedItem();
         int valor = opcionsel.getId();
+        if(valor==4&&estatusPepsi==0)//no puedo comprar pepsi
+        {
+            Toast.makeText(getActivity(),"No puede comprar producto de pepsi en esta tienda",Toast.LENGTH_LONG).show();
+            aceptar.setEnabled(true);
+            return;
+        }
         mViewModel.clienteSel=valor;
         Constantes.ni_clientesel=opcionsel.getNombre();
         mViewModel.informe=new InformeCompra();
@@ -730,6 +740,7 @@ if(clientesprev!=null)
     }
     public void siguiente(){
         boolean resp=false;
+        lastClickTime=0;
         aceptar.setEnabled(false);
        /* if (textoint != null) {
            String valor = textoint.getText().toString();
@@ -1538,12 +1549,12 @@ if(clientesprev!=null)
             File foto=null;
             try{
                 nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
-                foto = new File(activity.getExternalFilesDir(null), nombre_foto);
+                foto = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), nombre_foto);
                 Log.e(TAG, "****"+foto.getAbsolutePath());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
-
+                return;
 
             }
             Uri photoURI = FileProvider.getUriForFile(activity,
@@ -1570,7 +1581,7 @@ if(clientesprev!=null)
 
                 return;
             }else
-                RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(null) + "/" +foto,fotomos);
+                RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" +foto,fotomos);
         }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1581,7 +1592,7 @@ if(clientesprev!=null)
                 String state = Environment.getExternalStorageState();
                 String baseDir;
                 if(Environment.MEDIA_MOUNTED.equals(state)) {
-                    File baseDirFile = getActivity().getExternalFilesDir(null);
+                    File baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                     if(baseDirFile == null) {
                         baseDir = getActivity().getFilesDir().getAbsolutePath();
                     } else {
@@ -1591,7 +1602,7 @@ if(clientesprev!=null)
                     baseDir = getActivity().getFilesDir().getAbsolutePath();
                 }
                 File file = new File(baseDir, nombre_foto);
-               if (file.exists()) {
+               if (file!=null&&file.exists()) {
                     if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
                         //envio a la actividad dos para ver la foto
                     //    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
@@ -1607,8 +1618,8 @@ if(clientesprev!=null)
                         }else {
                            // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                             ComprasUtils cu = new ComprasUtils();
-                            cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(null) + "/" + nombre_foto, 100, 100);
+                            cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto, 100, 100);
                             fotomos.setImageBitmap(bitmap1);
                             // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                             fotomos.setVisibility(View.VISIBLE);
@@ -1740,7 +1751,9 @@ if(clientesprev!=null)
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.clienteNombre+"","clienteNombre","I",mViewModel.consecutivo,false);
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.clienteSel+"","clientesId","I",mViewModel.consecutivo,false);
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.codigosnop+"","codigosnop","",mViewModel.consecutivo,false);
-          mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasDetIdbu+"","comprasDetIdbu","ID",mViewModel.consecutivo,false);
+          mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.codigosperm+"","codigosperm","",mViewModel.consecutivo,false);
+
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasDetIdbu+"","comprasDetIdbu","ID",mViewModel.consecutivo,false);
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasIdbu+"","comprasIdbu","ID",mViewModel.consecutivo,false);
 
       }
@@ -1900,7 +1913,7 @@ if(clientesprev!=null)
                     }else { //cargo la foto
                         Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                         ComprasUtils cu = new ComprasUtils();
-                        bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + textoint.getText().toString());
+                        bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + textoint.getText().toString());
 
                         fotomos.setImageBitmap(bitmap1);
                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
@@ -1995,5 +2008,20 @@ if(clientesprev!=null)
 
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("picUri", nombre_foto);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState!=null)
+        nombre_foto= savedInstanceState.getParcelable("picUri");
+    }
+
 
 }

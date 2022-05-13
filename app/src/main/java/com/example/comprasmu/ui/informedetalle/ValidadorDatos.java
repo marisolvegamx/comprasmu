@@ -44,7 +44,7 @@ public class ValidadorDatos {
             if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
 
 
-                if (tipoTienda == 3) {//es tienda chica
+                if (tipoTienda == 3||tipoTienda==4) {//es tienda chica u otras
                         mensaje=R.string.error_fecha_caduca;
                         resp=false;
                         return ;

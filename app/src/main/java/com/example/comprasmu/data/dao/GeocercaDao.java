@@ -26,7 +26,7 @@ public abstract class GeocercaDao extends  BaseDao<Geocerca> {
         @Query("SELECT * FROM geocerca")
         public  abstract List<Geocerca> findAllsimple();
 
-        @Query("SELECT * FROM geocerca where ciudad=:ciudad")
+        @Query("SELECT * FROM geocerca where trim(ciudad)=:ciudad")
         public abstract List<Geocerca> findsimplexCd( String ciudad);
 
 }

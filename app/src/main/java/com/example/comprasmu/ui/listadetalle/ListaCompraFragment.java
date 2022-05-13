@@ -81,6 +81,26 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     public  int opcionbu;
     String tipoconsulta;
     NuevoDetalleViewModel nuevoInf;
+
+    private final String[] desccritFis={"MISMO PRODUCTO, MISMO EMPAQUE, DIFERENTE TAMAÑO",
+    "MISMO PRODUCTO, DIFERENTE EMPAQUE" ,
+            "OTRO PRODUCTO QUE ESTÉ EN LA LISTA DE COMPRA" ,
+            "MISMA FECHA DE CADUCIDAD PARA EL PRODUCTO QUE ESTÁ INTENTANDO SUSTITUIR"
+
+
+    };
+    private final String[] desccritSen={"MISMO PRODUCTO, MISMO EMPAQUE, DIFERENTE TAMAÑO",
+
+            "MISMA FECHA DE CADUCIDAD PARA EL PRODUCTO QUE ESTÁ INTENTANDO SUSTITUIR"
+    };
+    private final String[] desccritTor={"MISMO PRODUCTO, MISMO EMPAQUE, DIFERENTE TAMAÑO",
+            "MISMO EMPAQUE, PERO DIFERENTE PRODUCTO",
+            "MISMA FECHA DE CADUCIDAD PARA EL PRODUCTO QUE ESTÁ INTENTANDO SUSTITUIR"
+    };
+    private final String[] desccritMic={"OTRO PRODUCTO PARA LA MISMA CATEGORIA Y CON EL MISMO TIPO DE ANALISIS",
+
+            "MISMA FECHA DE CADUCIDAD PARA EL PRODUCTO QUE ESTÁ INTENTANDO SUSTITUIR"
+    };
     private NuevoinformeViewModel niViewModel;
 
     public  ListaCompraFragment() {
@@ -193,6 +213,25 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 opcionbu=2;
                 mBinding.txtlcopcionbu.setText(getString(R.string.criterio)+" "+(opcionbu-1));
                 mBinding.txtlcopcionbu.setVisibility(View.VISIBLE);
+                String descri="";
+                switch(Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
+                    case 1:
+                        descri=desccritFis[opcionbu-2];
+                        break;
+                    case 2:
+                        descri=desccritSen[opcionbu-2];
+                        break;
+                    case 3:
+                        descri=desccritTor[opcionbu-2];
+                        break;
+                    case 4:
+                        descri=desccritMic[opcionbu-2];
+                        break;
+
+                }
+                mBinding.txtlcdescbu.setText(descri);
+                mBinding.txtlcdescbu.setVisibility(View.VISIBLE);
+
                 if(!ismuestra) {
                     mViewModel.setDetallebuSel(Constantes.VarListCompra.detallebuSel);
                     mViewModel.listaSelec = Constantes.VarListCompra.listaSelec;
@@ -240,6 +279,24 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                            // opcionbu=Integer.parseInt(mBinding.txtlcopcionbu.getText().toString());
                             nuevaConsultaBu(opcionbu,mViewModel.getDetallebuSel().getId());
                             mBinding.txtlcopcionbu.setText(getString(R.string.criterio)+" "+(opcionbu));
+                            String descri="";
+                            switch(Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
+                                case 1:
+                                    descri=desccritFis[opcionbu-1];
+                                    break;
+                                case 2:
+                                    descri=desccritSen[opcionbu-1];
+                                    break;
+                                case 3:
+                                    descri=desccritTor[opcionbu-1];
+                                    break;
+                                case 4:
+                                    descri=desccritMic[opcionbu-1];
+                                    break;
+
+                            }
+                            mBinding.txtlcdescbu.setText(descri);
+                            mBinding.txtlcdescbu.setVisibility(View.VISIBLE);
                             opcionbu++;
                             mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio)+" "+opcionbu);
 
@@ -259,14 +316,28 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                                                                    opcionbu--;
                                                                    nuevaConsultaBu((opcionbu-1),mViewModel.getDetallebuSel().getId());
                                                                    mBinding.txtlcopcionbu.setText(getString(R.string.criterio)+" "+(opcionbu-1));
+                                                                   String descri="";
+                                                                   switch(Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
+                                                                       case 1:
+                                                                           descri=desccritFis[opcionbu-2];
+                                                                           break;
+                                                                       case 2:
+                                                                           descri=desccritSen[opcionbu-2];
+                                                                           break;
+                                                                       case 3:
+                                                                           descri=desccritTor[opcionbu-2];
+                                                                           break;
+                                                                       case 4:
+                                                                           descri=desccritMic[opcionbu-2];
+                                                                           break;
 
+                                                                   }
+                                                                   mBinding.txtlcdescbu.setText(descri);
+                                                                   mBinding.txtlcdescbu.setVisibility(View.VISIBLE);
                                                                    mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio)+" "+(opcionbu));
-
-
-
-                                                                       mBinding.lllc3.setVisibility(View.VISIBLE);
-                                                                       mBinding.btnlcantbu.setVisibility(View.VISIBLE);
-                                                                       mBinding.btnlcsigbu.setVisibility(View.VISIBLE);
+                                                                   mBinding.lllc3.setVisibility(View.VISIBLE);
+                                                                   mBinding.btnlcantbu.setVisibility(View.VISIBLE);
+                                                                   mBinding.btnlcsigbu.setVisibility(View.VISIBLE);
 
                                                                    if(opcionbu-1==1){
                                                                        mBinding.btnlcantbu.setVisibility(View.GONE);
@@ -624,19 +695,21 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         mViewModel.listaSelec = lista;
         //es el detalle original
         mViewModel.setDetallebuSel(productoSel);
-        if(!ismuestra) {
+        Constantes.VarListCompra.detallebuSel=productoSel;
+        if(!ismuestra) { //solo de consulta
             Constantes.VarListCompra.detallebuSel=productoSel;
             Constantes.VarListCompra.idListaSel=lista.getId();
             Constantes.VarListCompra.listaSelec=lista;
 
             Intent intento1 = new Intent(getActivity(), BackActivity.class);
-            intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_LISTACOMPRA);
             intento1.putExtra("ciudadSel", mViewModel.ciudadSel);
             intento1.putExtra("ciudadNombre", mViewModel.nombreCiudadSel);
             intento1.putExtra(ISBACKUP, true);
             intento1.putExtra(ARG_CLIENTESEL, mViewModel.getClienteSel());
             //   intento1.putExtra(NuevoinformeFragment.NUMMUESTRA,nummuestra );
             if (clienteSel == 4) {
+                intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_LISTACOMPRA);
+
                 intento1.putExtra(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
                 intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
                 intento1.putExtra(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
@@ -644,7 +717,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             }
             if (clienteSel == 5 || clienteSel == 6) {
 
-
+                intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_SUSTITUCION);
                 intento1.putExtra(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
                 intento1.putExtra(SustitucionFragment.ARG_PLANTA, plantaSel);
                 intento1.putExtra(SustitucionFragment.ARG_NOMBREPLANTA, nombrePlanta);
@@ -687,8 +760,11 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 bundle.putString(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
                 bundle.putInt(SustitucionFragment.ARG_PLANTA, plantaSel);
                 bundle.putString(SustitucionFragment.ARG_NOMBREPLANTA, nombrePlanta);
+                bundle.putString(ListaCompraFragment.ARG_MUESTRA, "true");
+
                 bundle.putString(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
                 fragment.setArguments(bundle);
+
                 Constantes.ni_clientesel = nombreCliente;
                 Log.d(TAG, "di clic en bu " + nombreCliente);
 

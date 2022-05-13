@@ -84,7 +84,7 @@ public class PostInformeViewModel {
     }
 
     public  void sendTodo(TodoEnvio informes, SubirPendService.SubirTodoListener listen) {
-        //TODO manejar el response
+
         Log.d("Informe", "kkkkkkkkkk"+informes.toJson(informes));
         apiClient.getApiService().saveInformesPend(informes).enqueue(new Callback<PostResponse>() {
             @Override

@@ -196,6 +196,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
             database.execSQL("ALTER TABLE lista_compras_detalle ADD COLUMN ordtipa INTEGER DEFAULT 0 NOT NULL ");
             database.execSQL("ALTER TABLE lista_compras_detalle ADD COLUMN ordtipm INTEGER DEFAULT 0 NOT NULL ");
+            database.execSQL("ALTER TABLE visita ADD COLUMN estatusPepsi INTEGER DEFAULT 0 NOT NULL ");
 
         }
     };

@@ -128,6 +128,7 @@ public class DetalleProductoPenFragment extends Fragment {
     protected ImageButton btnrotar;
     InformeTemp  ultimares;
     Button aceptar;
+    Button validar;
     ListaDetalleViewModel lcviewModel;
     protected int plantaSel;
     protected String NOMBREPLANTASEL;
@@ -168,6 +169,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
             sv = root.findViewById(R.id.content_generic);
             aceptar = root.findViewById(R.id.btngaceptar);
+            validar=root.findViewById(R.id.btngvalidar);
          //   mViewModel.cargarCatsContinuar();
             //si es la misma
             //reviso si es edicion o es nueva
@@ -315,7 +317,20 @@ public class DetalleProductoPenFragment extends Fragment {
               //  textoint.addTextChangedListener(new MayusTextWatcher());
                 textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
             }
+            if(preguntaAct.getId()==58){ //para las siglas agrego el boton de validar
+                validar.setVisibility(View.VISIBLE);
+                aceptar.setVisibility(View.GONE);
+                validar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        validar.setEnabled(false);
+                       buscarPlanta();
 
+
+                    }
+                });
+
+            }
             if(preguntaAct.getId()==57||preguntaAct.getId()==70)
                 aceptar.setEnabled(true);
             if(spclientes!=null){
@@ -364,10 +379,7 @@ public class DetalleProductoPenFragment extends Fragment {
                     if(preguntaAct.getNombreCampo().equals("clientesId")){
                         guardarCliente();
                     }else
-                        if(preguntaAct.getNombreCampo().equals(Contrato.TablaInformeDet.SIGLAS))
-                    {buscarPlanta();
 
-                    }else
 
                     siguiente();
 
@@ -449,7 +461,7 @@ public class DetalleProductoPenFragment extends Fragment {
             if(isEdicion){
                 Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 ComprasUtils cu=new ComprasUtils();
-                bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + ultimares.getValor());
+                bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
 
                 fotomos.setImageBitmap(bitmap1);
                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
@@ -639,6 +651,7 @@ public class DetalleProductoPenFragment extends Fragment {
     public void guardarCliente(){
         DescripcionGenerica opcionsel = (DescripcionGenerica) spclientes.getSelectedItem();
         int valor = opcionsel.getId();
+        lastClickTime=0;
         mViewModel.clienteSel=valor;
         Constantes.ni_clientesel=opcionsel.getNombre();
         mViewModel.informe=new InformeCompra();
@@ -654,6 +667,7 @@ public class DetalleProductoPenFragment extends Fragment {
     public void siguiente(){
         boolean resp=false;
         aceptar.setEnabled(false);
+
       /*  if (textoint != null) {
             String valor = textoint.getText().toString();
             if(valor.length()<=0){
@@ -887,6 +901,7 @@ public class DetalleProductoPenFragment extends Fragment {
             }
         }
         aceptar.setEnabled(true);
+        lastClickTime=0;
     }
     public void finalizar() {
 
@@ -1156,7 +1171,7 @@ public class DetalleProductoPenFragment extends Fragment {
                 return false;
             }else
             //busco que no haya otra muestra con la misma fecha en el muestreo
-            if(this.buscarMuestraCodigoPeniafiel(dViewModel.productoSel,fechacad)) {
+            if(this.buscarMuestraCodigoPeniafiel(fechacad)) {
                 Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
 
                 return false;
@@ -1281,7 +1296,7 @@ public class DetalleProductoPenFragment extends Fragment {
             File foto=null;
             try{
                 nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
-                foto = new File(activity.getExternalFilesDir(null), nombre_foto);
+                foto = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), nombre_foto);
                 Log.e(TAG, "****"+foto.getAbsolutePath());
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -1309,7 +1324,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
                 return;
             }else
-                RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(null) + "/" +foto,fotomos);
+                RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" +foto,fotomos);
         }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1319,7 +1334,7 @@ public class DetalleProductoPenFragment extends Fragment {
                 String state = Environment.getExternalStorageState();
                 String baseDir;
                 if(Environment.MEDIA_MOUNTED.equals(state)) {
-                    File baseDirFile = getActivity().getExternalFilesDir(null);
+                    File baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                     if(baseDirFile == null) {
                         baseDir = getActivity().getFilesDir().getAbsolutePath();
                     } else {
@@ -1345,8 +1360,8 @@ public class DetalleProductoPenFragment extends Fragment {
                         }else {
                             Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                             ComprasUtils cu = new ComprasUtils();
-                            bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                            bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(null) + "/" + nombre_foto, 100, 100);
+                            bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+                            bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto, 100, 100);
                             fotomos.setImageBitmap(bitmap1);
                             // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                             fotomos.setVisibility(View.VISIBLE);
@@ -1456,13 +1471,16 @@ public class DetalleProductoPenFragment extends Fragment {
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.clienteNombre+"","clienteNombre","I",mViewModel.consecutivo,false);
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.clienteSel+"","clientesId","I",mViewModel.consecutivo,false);
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.codigosnop+"","codigosnop","",mViewModel.consecutivo,false);
-          mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasDetIdbu+"","comprasDetIdbu","ID",mViewModel.consecutivo,false);
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.codigosperm+"","codigosperm","",mViewModel.consecutivo,false);
+
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasDetIdbu+"","comprasDetIdbu","ID",mViewModel.consecutivo,false);
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasIdbu+"","comprasIdbu","ID",mViewModel.consecutivo,false);
 
       }
         //TODO validar siglas
    public void  buscarPlanta() {
        String siglas = textoint.getText().toString();
+       textoint.setEnabled(false);
 
        if (!siglas.equals("")) {
            EnvioListener listener = new EnvioListener();
@@ -1470,15 +1488,18 @@ public class DetalleProductoPenFragment extends Fragment {
            //bloqueo la pnatalla y hago la peticion
            dViewModel.buscarPlantaPen(siglas,listener );
 
+       }else {
+           textoint.setEnabled(true);
+            validar.setEnabled(true);
        }
    }
         Date fechacad = null;
        boolean res;
         //validar siglas
    //true= ya existe un codigo igual
-   public boolean buscarMuestraCodigoPeniafiel(NuevoDetalleViewModel.ProductoSel productosel,Date caducidadnva){
+   public boolean buscarMuestraCodigoPeniafiel(Date caducidadnva){
             //busco en el mismo informe
-            return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,"",caducidadnva,getViewLifecycleOwner(),dViewModel.productoSel.codigosperm);
+            return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,dViewModel.productoSel,"",caducidadnva,getViewLifecycleOwner(),dViewModel.productoSel.codigosperm);
 
         }
     @Override
@@ -1601,7 +1622,7 @@ public class DetalleProductoPenFragment extends Fragment {
                     }else { //cargo la foto
                         Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                         ComprasUtils cu = new ComprasUtils();
-                        bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(null) + "/" + textoint.getText().toString());
+                        bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + textoint.getText().toString());
 
                         fotomos.setImageBitmap(bitmap1);
                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
@@ -1662,17 +1683,19 @@ public class DetalleProductoPenFragment extends Fragment {
                    TextView txtplanta=root.findViewById(R.id.txtfgplanta);
                    txtplanta.setText(planta.getCad_descripcionesp());
                    txtplanta.setVisibility(View.VISIBLE);
-                   //todo que mas hago con la planta?
+                   aceptar.setVisibility(View.VISIBLE);
+                   validar.setVisibility(View.GONE);
                   // dViewModel.productoSel.plantaSel=planta.getCad_idopcion();
                  //  dViewModel.productoSel.plantaNombre=planta.getCad_descripcionesp();
-                  siguiente();
+                //  siguiente();
                   // Toast.makeText(getContext(), "Las siglas no corresponden a lguna planta", Toast.LENGTH_LONG).show();
 
 
 
                } else {
-                   Toast.makeText(getContext(), "Las siglas no corresponden a lguna planta", Toast.LENGTH_LONG).show();
-
+                   Toast.makeText(getContext(), "Las siglas no corresponden a una planta", Toast.LENGTH_LONG).show();
+                    validar.setEnabled(true);
+                    textoint.setEnabled(true);
                }
 
            }

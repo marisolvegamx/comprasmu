@@ -34,6 +34,7 @@ public class Visita {
     private int estatus;
     private String claveUsuario;
     private int estatusSync;
+    private int estatusPepsi; //para saber si puedo comprar pepsi 0 no 1 si
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
     private Date createdAt;
@@ -208,5 +209,13 @@ public class Visita {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public int getEstatusPepsi() {
+        return estatusPepsi;
+    }
+
+    public void setEstatusPepsi(int estatusPepsi) {
+        this.estatusPepsi = estatusPepsi;
     }
 }

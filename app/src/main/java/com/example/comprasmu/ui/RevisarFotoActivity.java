@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -58,10 +59,10 @@ public class RevisarFotoActivity extends AppCompatActivity {
         imagen1=findViewById(R.id.ivrfimagen);
         foto1=findViewById(R.id.txtrffoto1);
         Log.d("algo******", nombre_foto);
-        File file = new File(getExternalFilesDir(null) + "/" + nombre_foto);
+        File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
         if (file.exists()) {
             //   Bitmap imageBitmap = (Bitmap) extras.get("data");
-            Bitmap bitmap1 = BitmapFactory.decodeFile(getExternalFilesDir(null) + "/" + nombre_foto);
+            Bitmap bitmap1 = BitmapFactory.decodeFile(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
 
             imagen1.setImageBitmap(bitmap1);
             foto1.setText(nombre_foto);

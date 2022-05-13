@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -179,7 +180,7 @@ public class VerInformeDetFragment extends Fragment {
 
     }
     public void crearFormulario(InformeCompraDetalle detalle){
-        String directorio=getActivity().getExternalFilesDir(null) + "/" ;
+        String directorio=getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" ;
         Log.d(TAG,"haciendo formulario");
 
         camposForm= new ArrayList<CampoForm>();
@@ -397,7 +398,7 @@ public class VerInformeDetFragment extends Fragment {
     }
 
     public void crearFormularioPen(InformeCompraDetalle detalle){
-        String directorio=getActivity().getExternalFilesDir(null) + "/" ;
+        String directorio=getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" ;
         Log.d(TAG,"haciendo formulario");
 
         camposForm= new ArrayList<CampoForm>();

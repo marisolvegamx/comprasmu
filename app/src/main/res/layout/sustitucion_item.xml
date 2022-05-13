@@ -7,6 +7,9 @@
         <import type="android.view.View"/>
         <variable name="detalle"
             type="com.example.comprasmu.data.modelos.Sustitucion"></variable>
+        <variable
+            name="mostrarAgregar"
+            type="Boolean" />
 
     </data>
 
@@ -72,6 +75,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
 
+                        android:visibility="@{mostrarAgregar?View.VISIBLE:View.INVISIBLE}"
                         app:srcCompat="@drawable/ic_baseline_add_24" />
                 </LinearLayout>
 

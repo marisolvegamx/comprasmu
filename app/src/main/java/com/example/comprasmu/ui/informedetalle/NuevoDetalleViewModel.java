@@ -427,7 +427,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.producto=productoSel.getProductoNombre();
         this.productoSel.productoid=productoSel.getProductosId();
         this.productoSel.compraSel=productoSel.getListaId();
-        this.productoSel.compradetalleSel=productoSel.getId();
+        this.productoSel.compradetalleSel=productoSel.getId(); //el id del prod pedido
         this.productoSel.presentacion=productoSel.getTamanio();
         this.productoSel.tamanioId=productoSel.getTamanioId();
         this.productoSel.empaque=productoSel.getEmpaque();
@@ -446,8 +446,8 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
         this.productoSel.codigosperm=productoSel.getLid_fechapermitida();
         if(prodbu!=null) {
-            this.productoSel.comprasDetIdbu = prodbu.getId();
-            this.productoSel.comprasIdbu = productoSel.getListaId();
+            this.productoSel.comprasDetIdbu = prodbu.getId();//el detale por el cual se cambio de la misma lista
+            this.productoSel.comprasIdbu = productoSel.getListaId(); //guardo datos del producto original el efectivamnete comprado va en el otro campo
         }
     }
 
@@ -490,8 +490,9 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
         this.productoSel.codigosperm=productoSel.getLid_fechapermitida();
         if(prodbu!=null) {
-            this.productoSel.comprasDetIdbu = prodbu.getId_sustitucion();
-          //  this.productoSel.comprasIdbu = productoSel.getListaId();
+           // this.productoSel.comprasDetIdbu = prodbu.getId_sustitucion();
+           this.productoSel.comprasIdbu = productoSel.getListaId(); //va a ser igual solo para indicar que hubo sust.
+            this.productoSel.comprasDetIdbu=productoSel.getId();
         }
      //   this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
     }
@@ -562,7 +563,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.nombreTipoMuestra=this.getValor(respuestas,"nombreTipoMuestra");
         this.productoSel.empaque=this.getValor(respuestas,"empaque");
         this.productoSel.codigosnop=this.getValor(respuestas,"codigosnop");
-
+        this.productoSel.codigosperm=this.getValor(respuestas,"codigosperm");
         this.productoSel.clienteNombre=this.getValor(respuestas,"clienteNombre");
         try{this.productoSel.clienteSel=Integer.parseInt(this.getValor(respuestas,"clientesId"));
         }catch(NumberFormatException ex){

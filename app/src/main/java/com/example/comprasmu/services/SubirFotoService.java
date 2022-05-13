@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.ProgressBar;
 
@@ -81,7 +82,7 @@ public class SubirFotoService extends IntentService
                 sf.agregarObservador(objObservador);
              //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String dir=   this.getExternalFilesDir(null)+"/";
+                String dir=   this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
                 ImagenDetRepositoryImpl idrepo=new ImagenDetRepositoryImpl(this);
                 sf.subirFoto(userId,dir, imagenSubir,indiceimagen, this,idrepo);
                // pvm.actualizarEstatusFoto(imagenSubir);
