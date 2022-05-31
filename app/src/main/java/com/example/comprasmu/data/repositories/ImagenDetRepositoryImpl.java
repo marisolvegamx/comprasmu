@@ -94,6 +94,10 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
 
         dao.actualizarEstatusSync(id, estatus);
     }
+    public List<ImagenDetalle> getByIndice(String indice) {
+
+        return dao.getByIndice(indice);
+    }
     public void cancelar(int id, int estatus) {
 
         dao.cancelar(id, estatus);

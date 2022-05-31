@@ -1,12 +1,18 @@
 package com.example.comprasmu.ui.mantenimiento;
 
+import android.app.Activity;
+import android.app.Application;
+import android.app.ListActivity;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -23,24 +29,35 @@ import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
+import com.example.comprasmu.utils.EliminadorIndice;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-public class BorrarDatosViewModel extends ViewModel {
+public class BorrarDatosViewModel extends AndroidViewModel {
 
-    InformeComDetRepositoryImpl icdrepo;
+
+
+
+ /*   InformeComDetRepositoryImpl icdrepo;
     InformeCompraRepositoryImpl icrepo;
-    ImagenDetRepositoryImpl imrepo;
+    ImagenDetRepositoryImpl imrepo;*/
     ListaCompraRepositoryImpl lcrepo;
     ListaCompraDetRepositoryImpl lcdrepo;
-    ProductoExhibidoRepositoryImpl prorepo;
-    VisitaRepositoryImpl visitarepo;
+  /*  ProductoExhibidoRepositoryImpl prorepo;
+    VisitaRepositoryImpl visitarepo;*/
 
     Context context;
-    File carpeta;
+    public BorrarDatosViewModel(Application application) {
+        super(application);
+        this.context = application;
+
+        lcdrepo = new ListaCompraDetRepositoryImpl(application);
+    }
+
+   /* File carpeta;
 
     public void setCarpeta(File carpeta) {
         this.carpeta = carpeta;
@@ -117,13 +134,13 @@ public class BorrarDatosViewModel extends ViewModel {
                                   }
                               }
                        );*/
-                   }
+             /*      }
 
                }
            }
         );
 
-    }
+    }*/
 
     private void puedoBorrarLista(ListaCompra compra){
 
@@ -144,10 +161,12 @@ public class BorrarDatosViewModel extends ViewModel {
 
     }
 
-
+    //revisar que no choque con la descarga de la lista de compra
     public void borrarListasCompra(String indice){
+        ListaCompraDao dao = ComprasDataBase.getInstance(context).getListaCompraDao();
+        lcrepo = ListaCompraRepositoryImpl.getInstance(dao);
 
-        lcrepo=new ListaCompraRepositoryImpl();
+
         lcdrepo=new ListaCompraDetRepositoryImpl(context);
         List<ListaCompra> listaCompras= lcrepo.getAllByIndicesimple(indice);
 
@@ -160,7 +179,7 @@ public class BorrarDatosViewModel extends ViewModel {
                 }
 
             }
-    public void borrarImagenes(Visita visita, InformeCompra informe){
+  /*  public void borrarImagenes(Visita visita, InformeCompra informe){
         //todas las fotos aqui
         List<Integer> fotosinfo=new ArrayList<>();
         //la visita
@@ -181,6 +200,6 @@ public class BorrarDatosViewModel extends ViewModel {
             if (fdelete.delete()) {
                 System.out.println("file Deleted :" + path); }
             else { Log.e("BorrarDatosFregment","No se pudo borrar el archivo "+path); } }
-    }
+    }*/
 
 }

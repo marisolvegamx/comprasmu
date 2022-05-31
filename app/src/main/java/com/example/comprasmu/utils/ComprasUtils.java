@@ -208,7 +208,7 @@ public class ComprasUtils {
         return mapa;
     }
     static public String indiceLetra(String fecha){
-       if(fecha.equals(""))
+       if(fecha==null||fecha.equals(""))
            return "";
         fecha=fecha.replace(".","-");
        String[] mifecha=fecha.split("-");

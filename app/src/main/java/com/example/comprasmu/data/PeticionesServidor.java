@@ -335,7 +335,7 @@ public class PeticionesServidor {
         });
     }
 
-    public void pedirRespaldo(String indice, DescargaRespAsyncTask.DescargaIniListener listener){
+    public void pedirRespaldo(String indice, DescargaRespAsyncTask.DescargaRespListener listener){
 
         Log.d("PeticionesServidor","haciendo petición pedir respaldo "+usuario);
 
@@ -351,7 +351,7 @@ public class PeticionesServidor {
                     {
                         Log.d("PeticionesServidor","resp>>"+compraResp.getVisita());
 
-                        listener.actualizar(compraResp);
+                        listener.actualizarInformes(compraResp);
                         /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
                         lcdrepo.insertAll(compraResp.getDetalles());
                         //actualizar version en tabla
@@ -361,7 +361,7 @@ public class PeticionesServidor {
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lista vacia");
-                        listener.noactualizar();
+                        listener.noactualizar("lista vacia");
                     }
 
                 }

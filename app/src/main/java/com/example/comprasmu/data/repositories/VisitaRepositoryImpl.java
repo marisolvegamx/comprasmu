@@ -27,12 +27,7 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
 
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
         icDao = comprasDataBase.getVisitaDao();
-
-
-    }
-
-
-
+     }
     /*public static VisitaRepositoryImpl getsInstance() {
         if (sInstance == null) {
             sInstance = new VisitaRepositoryImpl();
@@ -57,7 +52,6 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
             query = query + " and ciudad like '%?%'";
             filtros.add(ciudad);
         }
-
 
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
@@ -103,11 +97,9 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
         icDao.actualizarEstatus(id,estatus);
     }
 
-
     public void deleteVisitaByIndice(String indice) {
         icDao.deleteVisitaByIndice(indice);
     }
-
 
     public LiveData<VisitaWithInformes> getVisitaWithInformeById(int id) {
         return icDao.getVisitaWithInformesById(id);
@@ -116,6 +108,9 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
 
     public List<VisitaWithInformes> getVisitaWithInformesByIndice(String indice) {
         return icDao.getVisitasWithInformesByIndice(indice);
+    }
+    public List<Visita> getVisitaPendSubir(String indice) {
+        return icDao.getVisitasxEst( indice,0);
     }
 
     public LiveData<List<Visita>> getInformesByIndice(String indice) {

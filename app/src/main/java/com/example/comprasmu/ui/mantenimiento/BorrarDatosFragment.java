@@ -18,11 +18,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
+import com.example.comprasmu.utils.EliminadorIndice;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -37,6 +41,7 @@ public class BorrarDatosFragment extends Fragment {
     }
     Spinner spindice;
     EditText txtipo;
+    TextView aviso;
     public static final String TIPODATA="comprasmu.tipodata";
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -50,10 +55,12 @@ public class BorrarDatosFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, indices);
         spindice.setAdapter(adapter);
         Button btnborrar=root.findViewById(R.id.btnrfrotar);
+        aviso=root.findViewById(R.id.txtbdlisto);
         btnborrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                borrarxindice();
+                //borrarxindice();
+                borrarautomatico();
             }
         });
         return root;
@@ -63,7 +70,7 @@ public class BorrarDatosFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(BorrarDatosViewModel.class);
-       mViewModel.setCarpeta( getActivity().getExternalFilesDir(null));
+     //  mViewModel.setCarpeta( getActivity().getExternalFilesDir(null));
         Bundle datosRecuperados = getArguments();
 
         if (datosRecuperados != null) {
@@ -90,13 +97,13 @@ public class BorrarDatosFragment extends Fragment {
                  //depende del tipo
                   if(tipo.equals("informe")) {
 
-                      mViewModel.borrarInformes(indice);
+                    //  mViewModel.borrarInformes(indice);
                       Toast.makeText(getActivity(), "Se eliminaron los informes",Toast.LENGTH_SHORT).show();
 
                   }
                   if(tipo.equals("compra")) {
 
-                      mViewModel.borrarListasCompra(indice);
+                  //    mViewModel.borrarListasCompra(indice);
                       Toast.makeText(getActivity(), "Se eliminaron las listas",Toast.LENGTH_SHORT).show();
 
                   }
@@ -129,11 +136,13 @@ public class BorrarDatosFragment extends Fragment {
             anio_anterior=Integer.parseInt(anio)-1;
         }
         String indice_anterior= ComprasUtils.indiceLetra(mes_anterior+"-"+anio_anterior);
-
-
-         mViewModel.borrarInformes(indice_anterior);
+        indice_anterior="3.2022";
+        EliminadorIndice ei=new EliminadorIndice(getActivity(),indice_anterior);
+        ei.eliminarVisitas();
+        aviso.setVisibility(View.VISIBLE);
+       //  mViewModel.borrarInformes(indice_anterior);
          mViewModel.borrarListasCompra(indice_anterior);
-        Log.d("Comprasmu.BorrarDatosFragment","Se eliminaron las listas");
+       // Log.d("Comprasmu.BorrarDatosFragment","Se eliminaron las listas");
 
 
 

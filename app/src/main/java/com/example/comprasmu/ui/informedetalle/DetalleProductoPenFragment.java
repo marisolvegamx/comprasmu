@@ -114,8 +114,7 @@ public class DetalleProductoPenFragment extends Fragment {
     LinearLayout sv;
     boolean isEdicion;
     LoadingDialog loadingDialog ;
-
-
+    public int estatusPepsi;
     NuevoDetalleViewModel.ProductoSel prodSel;
     public static  int REQUEST_CODE_TAKE_PHOTO=5;
 
@@ -186,29 +185,13 @@ public class DetalleProductoPenFragment extends Fragment {
                         //reviso si ya tengo muestra
                 Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
 
-                if(preguntaAct.getId()==69||preguntaAct.getId()==70){
-                //no puedo modificar  avanzo a la siguiente
-
-                preguntaAct=dViewModel.buscarReactivoxId(preguntaAct.getSigId());
-                     InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
-                     if(inft!=null) {
-                         mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
-                         mViewModel.consecutivo = inft.getConsecutivo();
-                         Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
-                     }
-                ultimares=null;
-                isEdicion=false;
-
-            }
            }
            else
            //if(this.preguntaAct.getId()==2||this.preguntaAct.getId()==3||this.preguntaAct.getId()==5)
                isEdicion=false;
 
-
             if(isEdicion) {
                 aceptar.setEnabled(true);
-
                 mViewModel.consecutivo=ultimares.getConsecutivo();
                 Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
                 //  ya lo busco en la actividad
@@ -236,10 +219,7 @@ public class DetalleProductoPenFragment extends Fragment {
                     Constantes.ni_plantanombre=inf.getValor();
 
                 }
-
                 reiniciarDatos();
-
-
                 //busco el total de prods en la lista
                 if(Constantes.NM_TOTALISTA==0) {
                     InformeTemp resp = dViewModel.buscarxNombreCam("totalLista");
@@ -249,11 +229,33 @@ public class DetalleProductoPenFragment extends Fragment {
 
                     }
                 }
+                if(preguntaAct.getId()==69||preguntaAct.getId()==70){
+                    //no puedo modificar  avanzo a la siguiente
+
+                    preguntaAct=dViewModel.buscarReactivoxId(preguntaAct.getSigId());
+                    InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
+                    Log.d(TAG,"inf"+inft.getValor());
+                    if(inft!=null) {
+                        mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
+                        mViewModel.consecutivo = inft.getConsecutivo();
+                        Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
+                    }
+                    inft=dViewModel.buscarxNombreCam(Contrato.TablaInformeDet.causa_nocompra);
+
+                    if(inft!=null) {
+                        mViewModel.informe.setSinproducto(true);
+                        mViewModel.informe.setCausa_nocompra(inft.getValor());
+                    }
+                    ultimares=null;
+                    isEdicion=false;
+                    aceptar.setEnabled(false);
+
+                }
             }
             else {
                 aceptar.setEnabled(false);
             }
-                iniciarNumMuestra();
+            iniciarNumMuestra();
                    //}
                // if(preguntaAct.getId()==2||preguntaAct.getId() == 3||preguntaAct.getId() == 4) //estot en siglas y es una nueva muestra
                //     mViewModel.numMuestra=mViewModel.numMuestra+1;
@@ -286,12 +288,9 @@ public class DetalleProductoPenFragment extends Fragment {
                     }
                     boolean mEditing=false;
 
-
-
                     public synchronized void afterTextChanged(Editable s) {
                         if(!mEditing) {
                             mEditing = true;
-
 
                         }
                     }
@@ -306,7 +305,6 @@ public class DetalleProductoPenFragment extends Fragment {
 
                     }
 
-
                 });
             }else
             if(textoint!=null&&preguntaAct.getId()!=57){ //los comentarios no son obligatorios
@@ -316,6 +314,11 @@ public class DetalleProductoPenFragment extends Fragment {
             if(preguntaAct.getId()==57){ //los comentarios no son obligatorios
               //  textoint.addTextChangedListener(new MayusTextWatcher());
                 textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+                aceptar.setEnabled(true);
+            }
+            if(preguntaAct.getId()==57&&mViewModel.informe.isSinproducto()) {
+                aceptar.setEnabled(false);
+                textoint.addTextChangedListener(new BotonTextWatcher());
             }
             if(preguntaAct.getId()==58){ //para las siglas agrego el boton de validar
                 validar.setVisibility(View.VISIBLE);
@@ -326,12 +329,11 @@ public class DetalleProductoPenFragment extends Fragment {
                         validar.setEnabled(false);
                        buscarPlanta();
 
-
                     }
                 });
 
             }
-            if(preguntaAct.getId()==57||preguntaAct.getId()==70)
+            if(preguntaAct.getId()==70)
                 aceptar.setEnabled(true);
             if(spclientes!=null){
                 spclientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -380,7 +382,6 @@ public class DetalleProductoPenFragment extends Fragment {
                         guardarCliente();
                     }else
 
-
                     siguiente();
 
                 }
@@ -397,9 +398,10 @@ public class DetalleProductoPenFragment extends Fragment {
                 aceptar.setText(getString(R.string.enviar));
                 aceptar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.botonvalido));
             }
-            Log.d(TAG,"tipo tienda -----------*"+Constantes.DP_TIPOTIENDA);
             tipoTienda=Constantes.DP_TIPOTIENDA;
+            estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
 
+            Log.d(TAG,"tipo tienda -----------*"+estatusPepsi);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -474,7 +476,6 @@ public class DetalleProductoPenFragment extends Fragment {
             }
            // btnrotar.setVisibility(View.VISIBLE);
 
-
         }
 
         if(Contrato.TablaInformeDet.causa_nocompra.equals(campo.nombre_campo)) {
@@ -504,7 +505,7 @@ public class DetalleProductoPenFragment extends Fragment {
         {
             ((ContinuarInformeActivity)getActivity()).noSalir(true);
         }
-        if(preguntaAct.getId()>=58&&preguntaAct.getId()!=67) //ya tengo producto voy en siglas
+        if(preguntaAct.getId()>=57&&preguntaAct.getId()!=67&&preguntaAct.getId()!=69) //ya tengo producto voy en siglas
         {
             //  Constantes.ni_clientesel=opcionsel.getNombre();
             //int consecutivo=mViewModel.getConsecutivo(valor);
@@ -531,7 +532,6 @@ public class DetalleProductoPenFragment extends Fragment {
         {
             getTomadoDe();}
         if (preguntaAct.getId() >= 61&&preguntaAct.getId()!=69&&preguntaAct.getId() !=67) { //si hay prod
-
 
             InformeTemp resp=dViewModel.buscarxNombreCam("origen",mViewModel.numMuestra);
             String valor="";
@@ -570,7 +570,7 @@ public class DetalleProductoPenFragment extends Fragment {
     }
     public void cargarClientes(CampoForm campo) {
        buscarClientes();
-          campo.selectdes= clientesAsig;
+       campo.selectdes= clientesAsig;
 
           //  }
       //  else
@@ -581,7 +581,9 @@ public class DetalleProductoPenFragment extends Fragment {
         Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
         //if (clientesAsig == null||clientesAsig.size()<1){
         List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-
+        if(estatusPepsi==0){
+            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO);
+        }
        clientesAsig = convertirListaaClientesE(data,clientesprev);
         Log.d(TAG, "*regresó de la consulta de clientes " +  clientesAsig.size()+"");
     }
@@ -678,14 +680,23 @@ public class DetalleProductoPenFragment extends Fragment {
 
         switch (preguntaAct.getNombreCampo()){
 
+            case Contrato.TablaInformeDet.COSTO:
+                String  valor = textoint.getText().toString();
+                // float val=Float.parseFloat(valor);
+                if(valor.equals("$0.00")){
+                    Toast.makeText(getActivity(),"Costo inválido, verifique",Toast.LENGTH_LONG).show();
 
+
+                }
+                else resp=true;
+                break;
                /* case Contrato.TablaInformeDet.CODIGO:
                    resp=validarCodigoprod();
                     break;*/
            case Contrato.TablaInformeDet.CADUCIDAD:
                     resp=validarFecha();
-                   // if(resp)
-                    //    resp=validarCodigoprod();
+                    if(resp)
+                        resp=validarCodigoprod();
                 break;
             case "clientesId":
 
@@ -725,7 +736,7 @@ public class DetalleProductoPenFragment extends Fragment {
                 compraProd(pregunta,preguntaAct.getId() - 51);
                 //no funcionará para la 4a muestra
             }else
-            if(preguntaAct.getSigId()==68) //termine inf compro para otros clientes
+            if(preguntaAct.getSigId()==68) // comentarios termine inf
             {
                 if(yaestoyProcesando)
                     return;
@@ -740,11 +751,7 @@ public class DetalleProductoPenFragment extends Fragment {
                 }
 
               //  guardarMuestra();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
                 //guarda informe
                 this.actualizarInforme();
                 this.finalizar();
@@ -762,7 +769,7 @@ public class DetalleProductoPenFragment extends Fragment {
                  //    mViewModel.finalizarInforme();
                 //la muestra la guarde en la 42
 
-                    Log.d(TAG,"dice que no");
+                    Log.d(TAG,"no hay mas clientes");
                     //es la 43 //finalizo preinforme
                     mViewModel.finalizarVisita(mViewModel.visita.getId());
                  //   mViewModel.eliminarTblTemp();
@@ -827,19 +834,16 @@ public class DetalleProductoPenFragment extends Fragment {
                     if(valor!=null&&valor.equals("7")) //es otras
                     {
                         //generar consecutivo tienda
-                        MutableLiveData<Integer> consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
+                        int consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
                         Log.d(TAG,"*genere cons="+consecutivo);
-                        consecutivo.observe(this, new Observer<Integer>() {
-                            @Override
-                            public void onChanged(Integer cons) {
-                                Log.d(TAG,"genere cons="+cons);
 
-                                mViewModel.informe.setConsecutivo(cons);
+                        Log.d(TAG,"genere cons="+consecutivo);
 
-                                mViewModel.consecutivo=cons;
+                        mViewModel.informe.setConsecutivo(consecutivo);
+                        mViewModel.consecutivo=consecutivo;
+                        Constantes.DP_CONSECUTIVO=consecutivo;
 
-                            }
-                        });
+
                     }
                     mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
                     mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
@@ -892,7 +896,19 @@ public class DetalleProductoPenFragment extends Fragment {
                     finalizarPreinforme();
                     return;
                 }
-                avanzarPregunta(1);
+
+                //avanzarPregunta(1);
+                mViewModel.eliminarTblTemp();
+                //me voy a la lista de informes
+                getActivity().finish();
+                Bundle bundle = new Bundle();
+                bundle.putInt(ContinuarInformeActivity.INFORMESEL,mViewModel.visita.getId());
+
+                //NavHostFragment.findNavController(this).navigate(R.id.action_visitatonuevo,bundle);
+                Intent intento1=new Intent(getActivity(), ContinuarInformeActivity.class);
+                intento1.putExtras(bundle);
+
+                startActivity(intento1);
             }
             else{
                 if(preguntaAct.getId()>50)
@@ -902,6 +918,25 @@ public class DetalleProductoPenFragment extends Fragment {
         }
         aceptar.setEnabled(true);
         lastClickTime=0;
+    }
+    public void reiniciarVars(){
+
+        cf=null;
+        camposForm=null;
+        tomadoDe=null;
+        atributos=null;
+        causas=null;
+
+        textoint=null;
+        pregunta=null;
+
+        spclientes =null;
+
+        isEdicion=false;
+        loadingDialog=null ;
+
+
+      prodSel=null;
     }
     public void finalizar() {
 
@@ -933,6 +968,7 @@ public class DetalleProductoPenFragment extends Fragment {
         mViewModel.informe=null;
         mViewModel.setIdInformeNuevo(0);
         mViewModel.numMuestra=0;
+        mViewModel.consecutivo=0;
 
     }
 
@@ -976,7 +1012,6 @@ public class DetalleProductoPenFragment extends Fragment {
         startActivity(intento1);
        // NavHostFragment.(this).navigate(R.id.action_selclientetolistacompras,bundle);
 
-
     }
     String sigmuestra="segundaMuestra";
     public void guardarMuestra(int sigui){
@@ -1019,8 +1054,8 @@ public class DetalleProductoPenFragment extends Fragment {
                                dViewModel.setIddetalleNuevo(nuevoid);
                                //si ya se guardó lo agrego en la lista de compra
                                ListaDetalleViewModel lcviewModel = new ViewModelProvider(DetalleProductoPenFragment.this).get(ListaDetalleViewModel.class);
-                               Log.d(TAG,"voy a descontar"+dViewModel.icdNuevo+"--"+dViewModel.icdNuevo.getCaducidad());
-                               lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getNombreTipoMuestra());
+                               Log.d(TAG,"voy a descontar"+dViewModel.icdNuevo.getCaducidad());
+                               int res=lcviewModel.comprarMuestraPen(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getTipoMuestra(),dViewModel.icdNuevo,dViewModel.productoSel.plantaSel,Constantes.INDICEACTUAL);
                                //limpiar tabla temp
                                //   limpiarTablTempMenCli();
                                mViewModel.eliminarMuestra(mViewModel.numMuestra);
@@ -1065,7 +1100,7 @@ public class DetalleProductoPenFragment extends Fragment {
                        //si ya se guardó lo agrego en la lista de compra
                        ListaDetalleViewModel lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
                          Log.d(TAG,"qqqqqqqqqqqqqqq"+dViewModel.icdNuevo.getCaducidad());
-                       lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getNombreTipoMuestra());
+                       int res=lcviewModel.comprarMuestraPen(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getTipoMuestra(),dViewModel.icdNuevo,dViewModel.productoSel.plantaSel,Constantes.INDICEACTUAL);
                        //limpiar tabla temp
                        //   limpiarTablTempMenCli();
                        mViewModel.eliminarMuestra(mViewModel.numMuestra);
@@ -1088,15 +1123,6 @@ public class DetalleProductoPenFragment extends Fragment {
                 avanzarPregunta(sig);
                 mViewModel.numMuestra++;
             }
-
-            //else
-           // limpiarTablTempMenCli();
-            //reinicio variables
-
-        //    mViewModel.numMuestra=0;
-
-
-
 
         }catch (Exception ex){
             ex.printStackTrace();
@@ -1153,12 +1179,9 @@ public class DetalleProductoPenFragment extends Fragment {
         //
     //
         ValidadorDatos valdat=new ValidadorDatos();
-
-
         try {
             fechacad=sdfcodigo.parse(textoint.getText().toString());
         } catch (ParseException e) {
-
             e.printStackTrace();
             return false;
         }
@@ -1184,6 +1207,23 @@ public class DetalleProductoPenFragment extends Fragment {
       //  return false;
     }
 
+    public boolean validarCodigoprod(){
+         try {
+            fechacad=sdfcodigo.parse(textoint.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(dViewModel.productoSel.clienteSel==5||dViewModel.productoSel.clienteSel==6) {
+            ValidadorDatos valdat = new ValidadorDatos();
+            if (!valdat.validarCodigoprodPen(textoint.getText().toString(), dViewModel.productoSel.codigosnop)) {
+                if(valdat.mensaje>0)
+                    Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
     public MutableLiveData<Integer> guardarInforme(){
 
         return mViewModel.insertarInfdeTemp(getActivity(), getViewLifecycleOwner());
@@ -1201,7 +1241,6 @@ public class DetalleProductoPenFragment extends Fragment {
         LiveData<Reactivo> nvoReac = dViewModel.buscarReactivo(sig);
 
         //busco el siguiente
-
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
             public void onChanged(Reactivo reactivo) {
@@ -1224,7 +1263,7 @@ public class DetalleProductoPenFragment extends Fragment {
                      FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
                      fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-                     fragmentTransaction.addToBackStack(null);
+                  //   fragmentTransaction.addToBackStack(null);
 // Cambiar
                      fragmentTransaction.commit();
                  }
@@ -1330,12 +1369,14 @@ public class DetalleProductoPenFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //    super.onActivityResult(requestCode, resultCode, data);
                Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
-            if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
+        if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
+            try {
+                //   super.onActivityResult(requestCode, resultCode, data);
                 String state = Environment.getExternalStorageState();
                 String baseDir;
-                if(Environment.MEDIA_MOUNTED.equals(state)) {
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
                     File baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                    if(baseDirFile == null) {
+                    if (baseDirFile == null) {
                         baseDir = getActivity().getFilesDir().getAbsolutePath();
                     } else {
                         baseDir = baseDirFile.getAbsolutePath();
@@ -1344,24 +1385,23 @@ public class DetalleProductoPenFragment extends Fragment {
                     baseDir = getActivity().getFilesDir().getAbsolutePath();
                 }
                 File file = new File(baseDir, nombre_foto);
-                 if (file.exists()) {
-                    if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
+                if (file != null && file.exists()) {
+                    if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
                         //envio a la actividad dos para ver la foto
-                    //    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
-                      //  intento1.putExtra("ei.archivo", nombre_foto);
+                        //    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
+                        //  intento1.putExtra("ei.archivo", nombre_foto);
 
                         textoint.setText(nombre_foto);
 
-                        if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
-                        {
+                        if (AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory) {
                             Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
                             return;
-                        }else {
-                            Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                        } else {
+                            // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                             ComprasUtils cu = new ComprasUtils();
-                            bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
-                            bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto, 100, 100);
+                            cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto, 100, 100);
                             fotomos.setImageBitmap(bitmap1);
                             // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                             fotomos.setVisibility(View.VISIBLE);
@@ -1369,19 +1409,28 @@ public class DetalleProductoPenFragment extends Fragment {
                             btnrotar.setVisibility(View.VISIBLE);
                             btnrotar.setFocusableInTouchMode(true);
                             btnrotar.requestFocus();
-                            nombre_foto=null;
+                            nombre_foto = null;
                         }
 
                     }
 
 
-                }
-                else{
-                    Log.e(TAG,"Algo salió mal???");
-                }
+                } else {
+                    Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
 
-            } else if(requestCode==BackActivity.REQUEST_CODE)
+                    Log.e(TAG, "Algo salió mal???");
+                }
+            }catch (Exception ex){
+                Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion, intente de nuevo", Toast.LENGTH_SHORT).show();
+
+
+                Log.e(TAG, ex.getMessage());
+            }
+
+
+
+        } else if(requestCode==BackActivity.REQUEST_CODE)
     {
         super.onActivityResult(requestCode, resultCode, data);
         //capturé muestra
@@ -1410,17 +1459,14 @@ public class DetalleProductoPenFragment extends Fragment {
             //generar consecutivo tienda
             Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
             if(mViewModel.consecutivo==0) {
-                MutableLiveData<Integer> consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
+                int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
                 //  Log.d(TAG, "*genere cons=" + consecutivo);
-                consecutivo.observe(this, new Observer<Integer>() {
-                    @Override
-                    public void onChanged(Integer cons) {
-                        Log.d(TAG, "genere cons=" + cons);
+                        Log.d(TAG, "genere cons=" + consecutivo);
 
-                        mViewModel.informe.setConsecutivo(cons);
+                        mViewModel.informe.setConsecutivo(consecutivo);
 
-                        mViewModel.consecutivo = cons;
-                        Constantes.DP_CONSECUTIVO=cons;
+                        mViewModel.consecutivo = consecutivo;
+                        Constantes.DP_CONSECUTIVO=consecutivo;
                         //actualizo barra
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
@@ -1428,8 +1474,7 @@ public class DetalleProductoPenFragment extends Fragment {
                         ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
                         avanzarPregunta(58);
-                    }
-                });
+
             }else
             {
                 //actualizo barra
@@ -1481,13 +1526,12 @@ public class DetalleProductoPenFragment extends Fragment {
    public void  buscarPlanta() {
        String siglas = textoint.getText().toString();
        textoint.setEnabled(false);
-
        if (!siglas.equals("")) {
            EnvioListener listener = new EnvioListener();
-
            //bloqueo la pnatalla y hago la peticion
            dViewModel.buscarPlantaPen(siglas,listener );
-
+           //actualizo siglas en prod sel
+           dViewModel.productoSel.siglas=siglas;
        }else {
            textoint.setEnabled(true);
             validar.setEnabled(true);
@@ -1568,7 +1612,7 @@ public class DetalleProductoPenFragment extends Fragment {
             }
             inf= dViewModel.buscarxNombreCam("plantaNombre");
             InformeTemp inf2= dViewModel.buscarxNombreCam("clienteNombre");
-            if(inf!=null) {
+            if(inf2!=null) {
                 NOMBREPLANTASEL=inf.getValor();
 
             }
@@ -1689,6 +1733,8 @@ public class DetalleProductoPenFragment extends Fragment {
                  //  dViewModel.productoSel.plantaNombre=planta.getCad_descripcionesp();
                 //  siguiente();
                   // Toast.makeText(getContext(), "Las siglas no corresponden a lguna planta", Toast.LENGTH_LONG).show();
+                   //actualizo barra
+                   ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
 
 

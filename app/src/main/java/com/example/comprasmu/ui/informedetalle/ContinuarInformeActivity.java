@@ -238,9 +238,18 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     public void onBackPressed() {
         Log.e(TAG,"aprete atras"+dViewModel.reactivoAct);
         int numpreg =0;
-        if(dViewModel.reactivoAct==1)
-        {    getFragmentManager().popBackStack();
-        return;}
+        if(dViewModel.reactivoAct==1) {
+          //  Integer[] clientesprev = dViewModel.tieneInforme(nviewModel.visita);
+          //  Log.e(TAG,"aprete atras"+clientesprev+"--"+nviewModel.visita);
+
+           // if (clientesprev != null || clientesprev.length > 0) {
+          //      numpreg = 43;
+         //   } else {
+                //veo si ya tiene informe
+                getFragmentManager().popBackStack();
+                return;
+           // }
+        }
         else
 
         if( nviewModel.clienteSel==4||nviewModel.clienteSel==0||dViewModel.reactivoAct==1) {

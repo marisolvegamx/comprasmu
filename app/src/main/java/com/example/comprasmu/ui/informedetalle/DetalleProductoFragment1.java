@@ -772,7 +772,7 @@ public class DetalleProductoFragment1 extends Fragment {
                 if (nuevoid > 0) {
                     //si ya se guardó lo agrego en la lista de compra
                     ListaDetalleViewModel lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-                    lcviewModel.comprarMuestraPepsi(dViewModel.productoSel.compradetalleSel,dViewModel.productoSel.compradetalleSel,fecha.getText().toString(),dViewModel.productoSel.nombreTipoMuestra);
+                  //  lcviewModel.comprarMuestraPepsi(dViewModel.productoSel.compradetalleSel,dViewModel.productoSel.compradetalleSel,fecha.getText().toString(),dViewModel.productoSel.nombreTipoMuestra);
                     Log.d(TAG, "guardando>>" + mViewModel.informe.getId());
                     Intent resultIntent = new Intent();
 

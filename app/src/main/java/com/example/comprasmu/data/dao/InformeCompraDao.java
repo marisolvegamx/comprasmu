@@ -77,12 +77,16 @@ public interface InformeCompraDao {
 
     @Query("update informe_compras set estatus=:estatus WHERE id=:id")
     public void actualizarEstatus(int id, int estatus);
+
     @Query("update informe_compras set estatusSync=:estatus WHERE id=:id")
     public void actualizarEstatusSync(int id, int estatus);
 
     @Transaction
     @Query("SELECT * FROM informe_compras WHERE visitasId=:visita and estatusSync=2")
     LiveData<List<InformeWithDetalle>> getInformeWithDetalleByVisita(int visita);
+
+    @Query("SELECT informe_compras.* FROM informe_compras inner join visitas on visitas.id=visitasId WHERE indice=:indice and informe_compras.estatusSync=:estatus")
+    List<InformeCompra> getInformexEstatus(String indice, int estatus);
 
     @Query("SELECT * FROM informe_compras WHERE visitasId =:visitaId")
     abstract LiveData<List<InformeCompra>> getInformesByVisita(int visitaId);

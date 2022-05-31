@@ -40,6 +40,9 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
     @Query("SELECT * FROM imagen_detalle WHERE id IN (:filterValues)")
     public  abstract List<ImagenDetalle> findinListsencillo(List<Integer> filterValues);
 
+    @Query("SELECT * FROM imagen_detalle WHERE indice=:indice")
+    public  abstract List<ImagenDetalle> getByIndice(String indice);
+
     @Query("delete FROM imagen_detalle WHERE id IN (:filterValues)")
     public  abstract void deleteList(List<Integer> filterValues);
 

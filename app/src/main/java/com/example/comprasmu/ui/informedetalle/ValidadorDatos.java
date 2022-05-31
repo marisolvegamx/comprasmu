@@ -101,6 +101,37 @@ public class ValidadorDatos {
 
     }
 
+    //devuelve false si existe el codigo
+    public boolean validarCodigoprodPen(String codigo,String codigonoper){
+        //  codigo=codigo.replace("-","");
+        Log.d("ValidadorDatos", "mensaje"+codigonoper);
+        if(!codigo.equals("")&&codigonoper.length()>1){
+            if(!validarCodigoPepRango(codigo,codigonoper)){
+                mensaje=R.string.error_codigo_per;
+                return false;
+            }
+
+            //comparo con los no permitidos
+            String arrecodigos[]=codigonoper.split(";");
+            if(arrecodigos!=null&&arrecodigos.length>0) {
+                Log.d("ValidadorDatos","mi codigo"+codigo);
+                List<String> lista = Arrays.asList(arrecodigos);
+                if (lista.contains(codigo)) {
+                    mensaje=R.string.error_codigo_per;
+
+                    resp=false;
+                    return resp;
+                }
+            }
+
+        }
+
+        resp=true;
+        return resp;
+
+    }
+
+
     public boolean validarCodigoPepRango(String codigo, String codigonoper ){
         Date vfecha=null;
         try {

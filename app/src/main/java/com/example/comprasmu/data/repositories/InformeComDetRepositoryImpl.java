@@ -101,5 +101,9 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
         dao.actualizarEstatusSync(idinfo, estatus);
     }
 
+
+    public List<InformeCompraDetalle> getDetallePendSubir(String indice) {
+        return dao.getByEstatus(indice,0);
+    }
 }
 

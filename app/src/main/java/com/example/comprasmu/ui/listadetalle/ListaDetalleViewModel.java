@@ -20,6 +20,7 @@ import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
@@ -71,7 +72,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     }
 
     public void cargarDetalles(int idlista){
-          listas =detRepo.getListaDetalleOrd(idlista);
+        listas =detRepo.getListaDetalleOrd(idlista);
 
         size = Transformations.map(listas,res->{ return listas.getValue().size();});
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
@@ -101,6 +102,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public  List<ListaCompra>  cargarClientesSimpl(String ciudadSel){
 
         return repository.getClientesByIndiceCiudadSimpl(Constantes.INDICEACTUAL,ciudadSel);
+
+
+    }
+    public  List<ListaCompra>  cargarClientesSimplsp(String ciudadSel){
+
+        return repository.getClientesByIndiceCiudadSimplsp(Constantes.INDICEACTUAL,ciudadSel);
 
 
     }
@@ -234,8 +241,6 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 break;*/
         }
 
-
-
     }
 
     public List<InformeCompraDetalle> tieneBackup(int idcompra,int iddetalle){
@@ -243,32 +248,69 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         return icrepo.findByCompraBu(idcompra,iddetalle);
     }
     //actualiza comprados y codigos no permitidos
-    public void comprarMuestraPepsi(int idlista,int idDetalle,String nuevoCodigo, String isbu){
+    public int comprarMuestraPepsi(int idlista,int idDetalle,String nuevoCodigo, int isbu,int idlistabu,int iddetbu, int clienteSel){
+
         detRepo=new ListaCompraDetRepositoryImpl(context);
-        Log.d(TAG,"qqqqqqqqqqqqqqq"+idlista+"--"+idDetalle);
+        Log.d(TAG,"en comprar muestra pepsi"+idlista+"--"+idDetalle);
         ListaCompraDetalle listaCompraDetalle=detRepo.findsimple(idlista,idDetalle);
-        Log.d(TAG,"1seguimiento muestras "+listaCompraDetalle.getCantidad()+" "+listaCompraDetalle.getComprados());
+        Log.d(TAG,"1seguimiento muestras "+isbu);
         //valido que se pueda comprar y no sea bu
         if(listaCompraDetalle.getCantidad()>=listaCompraDetalle.getComprados()+1){
           //  detRepo.actualizarComprados(idDetalle,1);
             listaCompraDetalle.setComprados(listaCompraDetalle.getComprados()+1);
-
         }
         String listaCodigos="";
-            //no aumento el comprado solo el codigo
-        if(listaCompraDetalle.getNvoCodigo()!=null)
-            //reviso que no exite
-        {    if(!listaCompraDetalle.getNvoCodigo().contains(nuevoCodigo))
-                listaCodigos=nuevoCodigo+";"+listaCompraDetalle.getNvoCodigo();}
-        else
-             listaCodigos=nuevoCodigo;
-        listaCompraDetalle.setNvoCodigo(listaCodigos);
-            //actualizo
-        detRepo.insert(listaCompraDetalle);
 
+        //no aumento el comprado solo el codigo
+        if (listaCompraDetalle!=null&&listaCompraDetalle.getNvoCodigo() != null)//no es bu
+            // reviso que no existe
+            {
+                if (!listaCompraDetalle.getNvoCodigo().contains(nuevoCodigo))
+                    listaCodigos = nuevoCodigo + ";" + listaCompraDetalle.getNvoCodigo();
+            } else
+                listaCodigos = nuevoCodigo;
+            listaCompraDetalle.setNvoCodigo(listaCodigos);
+            int num=(int)detRepo.insert(listaCompraDetalle);
+
+            //actualizo
+        return num;
 
 
       //  Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);
+    }
+
+    public int comprarMuestraPen(int idlista, int idDetalle, String nuevoCodigo, int isbu, InformeCompraDetalle prodsel,int plantaSel,String indice){
+
+        detRepo=new ListaCompraDetRepositoryImpl(context);
+        Log.d(TAG,"en comprar muestra pepsi"+idlista+"--"+idDetalle);
+        ListaCompraDetalle listaCompraDetalle=detRepo.findsimple(idlista,idDetalle);
+        Log.d(TAG,"1seguimiento muestras "+isbu);
+        //valido que se pueda comprar y no sea bu
+        if(listaCompraDetalle.getCantidad()>=listaCompraDetalle.getComprados()+1){
+            //  detRepo.actualizarComprados(idDetalle,1);
+            listaCompraDetalle.setComprados(listaCompraDetalle.getComprados()+1);
+        }
+        int num=(int)detRepo.insert(listaCompraDetalle);
+        String listaCodigos="";
+        if(isbu==3){
+            //busco la del reemplazo
+            listaCompraDetalle=detRepo.getByProductoAna(prodsel.getProductoId(),prodsel.getEmpaquesId(),prodsel.getTamanioId(),prodsel.getTipoAnalisis(),indice,plantaSel);
+        }
+        //no aumento el comprado solo el codigo
+        if (listaCompraDetalle!=null&&listaCompraDetalle.getNvoCodigo() != null)//no es bu
+        //reviso que no existe
+        {
+            if (!listaCompraDetalle.getNvoCodigo().contains(nuevoCodigo))
+                listaCodigos = nuevoCodigo + ";" + listaCompraDetalle.getNvoCodigo();
+        } else
+            listaCodigos = nuevoCodigo;
+        if (listaCompraDetalle!=null) {
+            listaCompraDetalle.setNvoCodigo(listaCodigos);
+            num = (int) detRepo.insert(listaCompraDetalle);
+        }
+        //actualizo
+        return num;
+        //  Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);
     }
    // List<InformeCompraDetalle> listacomprasbu;
 

@@ -4,15 +4,10 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
-
-import com.example.comprasmu.DescargaRespAsyncTask;
-import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
@@ -90,12 +85,12 @@ descargar();
             ProductoExhibidoRepositoryImpl prodrepo=new ProductoExhibidoRepositoryImpl(getContext());
             VisitaRepositoryImpl visrepo=new VisitaRepositoryImpl(getContext());
             ListaCompraDetRepositoryImpl lcrepo=new ListaCompraDetRepositoryImpl(getContext());
-            DescargaRespAsyncTask task = new DescargaRespAsyncTask(infoRepo,ifodrepo,imrepo,visrepo,prodrepo,lcrepo,getActivity());
+           // DescargaRespAsyncTask task = new DescargaRespAsyncTask(infoRepo,ifodrepo,imrepo,visrepo,prodrepo,lcrepo,getActivity());
 
             //  textView.setText("Por favor mantengase en la aplicación hasta que termine la descarga");
             //pb.setVisibility(View.VISIBLE);
 
-            task.execute("", "act"); //para saber que estoy actualizando
+           // task.execute("", "act"); //para saber que estoy actualizando
         }else
         {
             AlertDialog.Builder builder=new AlertDialog.Builder(getContext());

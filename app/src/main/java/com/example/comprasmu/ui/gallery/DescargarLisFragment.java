@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 
+import com.example.comprasmu.DescargaRespAsyncTask;
 import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
@@ -24,7 +25,7 @@ import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 
-public class DescargarLisFragment extends Fragment implements DescargasIniAsyncTask.ProgresoListener {
+public class DescargarLisFragment extends Fragment implements DescargaRespAsyncTask.ProgresoRespListener {
      TextView textView;
 
     AlertDialog alert;

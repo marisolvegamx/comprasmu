@@ -9,6 +9,7 @@ import androidx.room.Transaction;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 
 
 import java.util.Date;
@@ -81,6 +82,13 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "FROM informe_detalle " +
             "WHERE id =:id")
     public abstract List<Integer> getInformesWithImagen(int id);
+    @Query("SELECT informe_detalle.* " +
+            "FROM informe_detalle " +
+            " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
+            " inner join visitas on visitas.id=informe_compras.visitasId" +
+            " where visitas.indice=:indice and informe_detalle.estatusSync=:estatus" )
+    public abstract List<InformeCompraDetalle> getByEstatus(String indice,  int estatus);
+
 
     @Query("SELECT informe_detalle.id,informe_detalle.informesId,informe_detalle.estatus," +
             "informe_detalle.estatusSync,productoId,producto,presentacion,tamanioId," +
@@ -97,6 +105,19 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " and empaquesId=:empaque and tipoAnalisis=:analisis " +
             " and visitas.indice=:indice and informe_compras.plantasId=:planta" )
     public abstract List<InformeCompraDetalle> getByProductoAna(String indice, int planta,int producto, int analisis, int empaque, String tamanio);
+
+    @Transaction
+    public void insertaActcant(List<InformeCompraDetalle> detalles) {
+       insertAll(detalles);
+        // Anything inside this method runs in a single transaction.
+       /* for(ListaCompraDetalle det:detalles){
+            actualizarLista(det.getProductosId(), det.getProductoNombre(), det.getTamanio(), det.getEmpaque(),
+                    det.getEmpaquesId(), det.getTipoAnalisis(),det.getAnalisisId(), det.getCantidad(), det.getTipoMuestra(),
+                    det.getNombreTipoMuestra(),det.getCategoriaid(),det.getCategoria(),det.getCodigosNoPermitidos(), det.getId(), det.getListaId());
+        }*/
+
+    }
+
 
     public class InformeDetalleImagenes {
 

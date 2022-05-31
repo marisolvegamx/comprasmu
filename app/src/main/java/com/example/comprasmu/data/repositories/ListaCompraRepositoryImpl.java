@@ -102,6 +102,21 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         List<String> params= new ArrayList<>();
         params.add(indice);
         String query="Select * from lista_compras where indice=?";
+        if(idCiudad!=null&&!idCiudad.equals("")) {
+            query = query + " and ciudadNombre like ?";
+            params.add(idCiudad);
+        }
+        query=query+ " group by clientesId";
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,params.toArray()
+        );
+        return dao.getListaCompraByFiltrosSimple( sqlquery);
+    }
+
+    public List<ListaCompra> getClientesByIndiceCiudadSimplsp(String indice,String idCiudad) {
+        List<String> params= new ArrayList<>();
+        params.add(indice);
+        String query="Select * from lista_compras where indice=? and clientesId!=4";
         if(!idCiudad.equals("")) {
             query = query + " and ciudadNombre like ?";
             params.add(idCiudad);

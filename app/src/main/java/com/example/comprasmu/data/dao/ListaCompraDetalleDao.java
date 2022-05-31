@@ -38,10 +38,14 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
 
     @Query("delete FROM lista_compras_detalle WHERE listaId = :id")
     public abstract void deleteByLista(int id);
+    @Query("Select lista_compras_detalle.* from lista_compras_detalle" +
+            "  inner join lista_compras on listaId=lista_compras.id" +
+            "   where productosId=:prodid and empaquesId=:empid and tamanioId=:tamid and analisisId=:anaid and indice=:indice and plantasId=:planta")
+    public abstract ListaCompraDetalle getByProductoAna(int prodid,int empid,int tamid,int anaid, String indice, int planta);
 
     @Query("Select lista_compras_detalle.* from lista_compras_detalle" +
-            "                where listaId=:listaid " +
-            "           order by lid_orden ASC, ordtam DESC, ordemp ASC, ordtipa ASC, ordtipm")
+            "     where listaId=:listaid " +
+            " order by lid_orden ASC, ordtam DESC, ordemp ASC, ordtipa ASC, ordtipm")
     public abstract LiveData<List<ListaCompraDetalle>> getListasDetalleOrdByLista(int listaid);
 
     @Query("update lista_compras_detalle set comprados=comprados+:cantidad WHERE id = :id and listaId=:listaid")

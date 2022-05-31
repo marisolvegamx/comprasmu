@@ -63,7 +63,7 @@ import java.util.Map;
         ProductoExhibido.class, Sustitucion.class,
         CatalogoDetalle.class, Atributo.class, Geocerca.class},
 
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=8, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=9, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -93,7 +93,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .build();*/
                     INSTANCE =  Room.databaseBuilder(context,
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
-                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8)
+                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,MIGRATION_8_9)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -197,6 +197,14 @@ public abstract class ComprasDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE lista_compras_detalle ADD COLUMN ordtipa INTEGER DEFAULT 0 NOT NULL ");
             database.execSQL("ALTER TABLE lista_compras_detalle ADD COLUMN ordtipm INTEGER DEFAULT 0 NOT NULL ");
             database.execSQL("ALTER TABLE visita ADD COLUMN estatusPepsi INTEGER DEFAULT 0 NOT NULL ");
+
+        }
+    };
+
+    static final Migration MIGRATION_8_9 = new Migration(8,9) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE informe_detalle ADD COLUMN siglas TEXT  ");
 
         }
     };

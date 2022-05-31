@@ -210,6 +210,8 @@ public class DetalleProductoFragment extends Fragment {
            //if(this.preguntaAct.getId()==2||this.preguntaAct.getId()==3||this.preguntaAct.getId()==5)
                isEdicion=false;
            Log.d(TAG,"mmmmmmmmmmm"+isEdicion);
+            estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
+            Log.d(TAG,"estatuspep -----------*"+estatusPepsi);
 
             if(isEdicion) {
                 aceptar.setEnabled(true);
@@ -426,7 +428,7 @@ public class DetalleProductoFragment extends Fragment {
                 aceptar.setEnabled(false);
                 textoint.addTextChangedListener(new BotonTextWatcher());
             }
-                if(preguntaAct.getId()==48)
+            if(preguntaAct.getId()==48)
                 aceptar.setEnabled(true);
             if(spclientes!=null){
                 spclientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -495,7 +497,7 @@ public class DetalleProductoFragment extends Fragment {
             Log.d(TAG,"tipo tienda -----------*"+Constantes.DP_TIPOTIENDA);
             tipoTienda=Constantes.DP_TIPOTIENDA;
 
-            estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -613,12 +615,17 @@ public class DetalleProductoFragment extends Fragment {
 
     public void buscarClientes(){
         Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
+
         //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
         List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-if(clientesprev!=null)
-        Log.d(TAG, "regresó de la consulta de clientes " +clientesprev.length+"--"+ data.size());
-        clientesAsignados = convertirListaaClientesE(data,clientesprev);
-        Log.d(TAG, "*regresó de la consulta de clientes " +  clientesAsignados.size());
+        if(estatusPepsi==0){
+            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO);
+        }
+       // if(clientesprev!=null)
+      //      Log.d(TAG, "regresó de la consulta de clientes " + clientesprev.length + "--" + data.size());
+        clientesAsignados = convertirListaaClientesE(data, clientesprev);
+        Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsignados.size());
+
     }
 
     public  List<DescripcionGenerica> convertirListaaClientesE(List<ListaCompra> lista, Integer clientesprev[]){
@@ -751,6 +758,16 @@ if(clientesprev!=null)
         }*/
 
         switch (preguntaAct.getNombreCampo()){
+            case Contrato.TablaInformeDet.COSTO:
+                String  valor = textoint.getText().toString();
+               // float val=Float.parseFloat(valor);
+                if(valor.equals("$0.00")){
+                    Toast.makeText(getActivity(),"Costo inválido, verifique",Toast.LENGTH_LONG).show();
+
+
+                }
+                else resp=true;
+                break;
             case Contrato.TablaInformeDet.SIGLAS:
                 resp=validarSiglas();
                 break;
@@ -852,11 +869,7 @@ if(clientesprev!=null)
                 }
 
 
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
                 //guarda informe
                 this.actualizarInforme();
                 this.finalizar();
@@ -895,11 +908,11 @@ if(clientesprev!=null)
                 aceptar.setEnabled(false);
                 int sig=mViewModel.numMuestra+2;
                 int nummuestra=mViewModel.numMuestra;
-                guardarResp();
+
 
                 //quito la info de la barra gris
                 ((ContinuarInformeActivity)getActivity()).reiniciarBarra();
-
+                Log.d(TAG,"antes de guardar num muestra"+nummuestra);
                 guardarMuestra(sig);
 
 
@@ -937,24 +950,21 @@ if(clientesprev!=null)
                         if(valor.equals("7")) //es otras
                     {
                         //generar consecutivo tienda
-                        MutableLiveData<Integer> consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
+                        int consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
                         Log.d(TAG,"*genere cons="+consecutivo);
-                        consecutivo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-                            @Override
-                            public void onChanged(Integer cons) {
-                                Log.d(TAG,"genere cons="+cons);
 
-                                mViewModel.informe.setConsecutivo(cons);
+                                Log.d(TAG,"genere cons="+consecutivo);
 
-                                mViewModel.consecutivo=cons;
+                                mViewModel.informe.setConsecutivo(consecutivo);
+
+                                mViewModel.consecutivo=consecutivo;
                                 mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
                                 mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
                                 mViewModel.guardarResp(0,0,listapl.get(0).getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
                                 guardarMuestra(preguntaAct.getSigId());
                                 loadingDialog.dismisDialog();
                               //  consecutivo.removeObservers(DetalleProductoFragment.this);
-                            }
-                        });
+
 
                     }else {
                             mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",0,false);
@@ -1109,7 +1119,7 @@ if(clientesprev!=null)
                 Log.d(TAG, "guardando informe");
                 //busco el consecutivo
                MutableLiveData<Integer> idInformeNuevo = guardarInforme();
-                Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
+             //   Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
                 //
                idInformeNuevo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
                    @Override
@@ -1126,17 +1136,24 @@ if(clientesprev!=null)
                            //  for(int x:muestras) {
                            int nuevoid = dViewModel.insertarMuestra(mViewModel.getIdInformeNuevo(), mViewModel.numMuestra);
                            //guardo la muestra
-                           if (nuevoid > 0) {
+                           if (nuevoid > 0&&dViewModel.icdNuevo!=null) {
                                dViewModel.setIddetalleNuevo(nuevoid);
                                //si ya se guardó lo agrego en la lista de compra
                                ListaDetalleViewModel lcviewModel = new ViewModelProvider(DetalleProductoFragment.this).get(ListaDetalleViewModel.class);
                                Log.d(TAG,"qqqqqqqqqqqqqqq"+dViewModel.icdNuevo+"--"+dViewModel.icdNuevo.getCaducidad());
-                               lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getNombreTipoMuestra());
+                               int res=lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getTipoMuestra(),dViewModel.icdNuevo.getComprasIdbu(),dViewModel.icdNuevo.getComprasDetIdbu(),4);
                                //limpiar tabla temp
                                //   limpiarTablTempMenCli();
+
                                mViewModel.eliminarMuestra(mViewModel.numMuestra);
                                dViewModel.setIddetalleNuevo(0);
                                dViewModel.limpiarVarsMuestra();
+                           }
+                           else{
+                               //algo salio mal
+                               Toast.makeText(getActivity(), "No se pudo guardar la muestra", Toast.LENGTH_LONG).show();
+                               yaestoyProcesando=false;
+                               return;
                            }
                            yaestoyProcesando=false;
                            if(Constantes.NM_TOTALISTA>=16&&mViewModel.numMuestra==3||Constantes.NM_TOTALISTA<16&&mViewModel.numMuestra==2) //ya terminé
@@ -1148,6 +1165,8 @@ if(clientesprev!=null)
                                //preguntar si hay otro cliente, para agregar otro o cerrar
                            }else
                            {
+                               Log.d(TAG,"ya me voy");
+
                                avanzarPregunta(sig);
                            }
                            //  }
@@ -1181,7 +1200,7 @@ if(clientesprev!=null)
                        //si ya se guardó lo agrego en la lista de compra
                        ListaDetalleViewModel lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
                          Log.d(TAG,"qqqqqqqqqqqqqqq"+dViewModel.icdNuevo.getCaducidad());
-                       lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getNombreTipoMuestra());
+                       int res=lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getTipoMuestra(),dViewModel.icdNuevo.getComprasIdbu(),dViewModel.icdNuevo.getComprasDetIdbu(),4);
                        //limpiar tabla temp
                        //   limpiarTablTempMenCli();
                        mViewModel.eliminarMuestra(mViewModel.numMuestra);
@@ -1344,6 +1363,8 @@ if(clientesprev!=null)
     }
 
     public void avanzarPregunta(int sig){
+        if(sig==0)
+            guardarResp();//vuelvo a guardar
         //busco el siguiente
         LiveData<Reactivo> nvoReac = dViewModel.buscarReactivo(sig);
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
@@ -1656,17 +1677,14 @@ if(clientesprev!=null)
                     //generar consecutivo tienda
                     Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
                     if(mViewModel.consecutivo==0) {
-                        MutableLiveData<Integer> consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
+                       int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
                       //  Log.d(TAG, "*genere cons=" + consecutivo);
-                        consecutivo.observe(this, new Observer<Integer>() {
-                            @Override
-                            public void onChanged(Integer cons) {
-                                Log.d(TAG, "genere cons=" + cons);
+                               Log.d(TAG, "genere cons=" + consecutivo);
 
-                                mViewModel.informe.setConsecutivo(cons);
+                                mViewModel.informe.setConsecutivo(consecutivo);
 
-                                mViewModel.consecutivo = cons;
-                                Constantes.DP_CONSECUTIVO=cons;
+                                mViewModel.consecutivo = consecutivo;
+                                Constantes.DP_CONSECUTIVO=consecutivo;
                                 //actualizo barra
                                 Log.d(TAG,"tengo el tipo muestra "+dViewModel.productoSel);
                                 ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
@@ -1675,8 +1693,7 @@ if(clientesprev!=null)
                                 ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
                                 avanzarPregunta(23);
-                            }
-                        });
+
                     }else
                     {
                         //actualizo barra

@@ -41,6 +41,10 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
     public abstract void actualizarEstatus(int id, int estatus) ;
     @Query("DELETE FROM visitas where indice=:indice")
     public abstract void deleteVisitaByIndice(String indice);
+
+    @Query("SELECT * FROM visitas WHERE indice=:indice and estatusSync=:estatusSync")
+    public abstract List<Visita> getVisitasxEst(String indice, int estatusSync);
+
     @Transaction
     @Query("SELECT * FROM visitas WHERE indice=:indice and estatusSync=2")
     public abstract List<VisitaWithInformes> getVisitasWithInformesByIndice(String indice);

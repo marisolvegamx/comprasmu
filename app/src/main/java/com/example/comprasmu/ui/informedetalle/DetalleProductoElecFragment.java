@@ -57,6 +57,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
     public DetalleProductoElecFragment(Reactivo preguntaAct, boolean edicion) {
         this.preguntaAct = preguntaAct;
         this.isEdicion=edicion;
+        yaestoyProcesando=false;
     }
 
     @Override
@@ -87,21 +88,6 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
             if(ultimares!=null) {    //es edicion
                 isEdicion = true;
-                if(preguntaAct.getId()==89||preguntaAct.getId()==87){
-                    //no puedo modificar  avanzo a la siguiente
-
-                    preguntaAct=dViewModel.buscarReactivoxId(preguntaAct.getSigId());
-                    Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
-                    InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
-                    if(inft!=null) {
-                        mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
-                        mViewModel.consecutivo = inft.getConsecutivo();
-                        Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
-                    }
-                    ultimares=null;
-                    isEdicion=false;
-
-                }
             }
             else
                 //if(this.preguntaAct.getId()==2||this.preguntaAct.getId()==3||this.preguntaAct.getId()==5)
@@ -151,6 +137,28 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
                     }
                 }
+                if(preguntaAct.getId()==89||preguntaAct.getId()==87){
+                    //no puedo modificar  avanzo a la siguiente
+
+                    preguntaAct=dViewModel.buscarReactivoxId(preguntaAct.getSigId());
+                    Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
+                    InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
+                    if(inft!=null) {
+                        mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
+                        mViewModel.consecutivo = inft.getConsecutivo();
+                        Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
+                    }
+                    inft=dViewModel.buscarxNombreCam(Contrato.TablaInformeDet.causa_nocompra);
+                    //    Log.d(TAG,"causa no compra="+inft.getNombre_campo());
+                    if(inft!=null) {
+                        mViewModel.informe.setSinproducto(true);
+                        mViewModel.informe.setCausa_nocompra(inft.getValor());
+                    }
+                    ultimares=null;
+                    isEdicion=false;
+
+                }
+
             }
             else {
                 aceptar.setEnabled(false);
@@ -217,11 +225,17 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             }
             if(preguntaAct.getId()==77){ //los comentarios no son obligatorios
                 //  textoint.addTextChangedListener(new MayusTextWatcher());
+                aceptar.setEnabled(true);
                 textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
             }
 
-            if(preguntaAct.getId()==77||preguntaAct.getId()==87)
+
+            if(preguntaAct.getId()==87)
                 aceptar.setEnabled(true);
+            if(preguntaAct.getId()==77&&mViewModel.informe.isSinproducto()) {
+                aceptar.setEnabled(false);
+                textoint.addTextChangedListener(new DetalleProductoPenFragment.BotonTextWatcher());
+            }
             if(spclientes!=null){
                 spclientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -258,13 +272,16 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 public void onClick(View view) {
                     aceptar.setEnabled(false);
                     long currentClickTime= SystemClock.elapsedRealtime();
+                    Log.d(TAG,"di click :("+currentClickTime+"--"+lastClickTime);
                     // preventing double, using threshold of 1000 ms
+                    if(preguntaAct.getSigId()==88&&currentClickTime - lastClickTime < 7000)
+                        return;
                     if (currentClickTime - lastClickTime < 5500){
                         return;
                     }
 
                     lastClickTime = currentClickTime;
-                    Log.d(TAG,"di click :("+lastClickTime);
+
                     if(preguntaAct.getNombreCampo().equals("clientesId")){
                         guardarCliente();
                     }
@@ -287,6 +304,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             }
             Log.d(TAG,"tipo tienda -----------*"+Constantes.DP_TIPOTIENDA);
             tipoTienda=Constantes.DP_TIPOTIENDA;
+            estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
 
 
         } catch (Exception e) {
@@ -318,7 +336,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         {
             ((ContinuarInformeActivity)getActivity()).noSalir(true);
         }
-        if(preguntaAct.getId()>=78) //ya tengo producto voy en siglas
+        if(preguntaAct.getId()>=78&&preguntaAct.getId()!=89) //ya tengo producto voy en siglas
         {
             //  Constantes.ni_clientesel=opcionsel.getNombre();
             //int consecutivo=mViewModel.getConsecutivo(valor);
@@ -332,9 +350,10 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             //  mViewModel.consecutivo=ultimares.getConsecutivo();
             ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
             dViewModel.fromTemp(); //guardo datos del producto selec
+            if(dViewModel.productoSel!=null)
             ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
         }
-        if (preguntaAct.getId() >= 80&&preguntaAct.getId() !=89) {//si compro prod
+        if (preguntaAct.getId() >= 80&&preguntaAct.getId() !=89&&preguntaAct.getId()!=77) {//si compro prod
             InformeTemp resp=dViewModel.buscarxNombreCam("codigo",mViewModel.numMuestra);
             ((ContinuarInformeActivity)getActivity()).actualizarCodProd(resp.getValor());
 
@@ -342,7 +361,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         if(dViewModel.productoSel!=null)
         {
             getTomadoDe();}
-        if (preguntaAct.getId() >= 81&&preguntaAct.getId()!=89) { //si hay prod
+        if (preguntaAct.getId() >= 81&&preguntaAct.getId()!=89&&mViewModel.numMuestra>0) { //si hay prod
 
 
             InformeTemp resp=dViewModel.buscarxNombreCam("origen",mViewModel.numMuestra);
@@ -392,6 +411,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         }*/
 
         switch (preguntaAct.getNombreCampo()){
+
             case Contrato.TablaInformeDet.SIGLAS:
 
                 resp=validarSiglas();
@@ -401,8 +421,18 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     break;*/
             case Contrato.TablaInformeDet.CADUCIDAD:
                 resp=validarFecha();
-                // if(resp)
-                //    resp=validarCodigoprod();
+                 if(resp)
+                    resp=validarCodigoprod();
+                break;
+            case Contrato.TablaInformeDet.COSTO:
+                String  valor = textoint.getText().toString();
+                // float val=Float.parseFloat(valor);
+                if(valor.equals("$0.00")){
+                    Toast.makeText(getActivity(),"Costo inválido, verifique",Toast.LENGTH_LONG).show();
+
+
+                }
+                else resp=true;
                 break;
 
             default: resp=true; break;
@@ -440,7 +470,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 compraProd(pregunta,preguntaAct.getId() - 71);
                 //no funcionará para la 4a muestra
             }else
-            if(preguntaAct.getSigId()==88) //termine inf compro para otros clientes
+            if(preguntaAct.getSigId()==88) //comentarios termine inf compro para otros clientes
             {
                 if(yaestoyProcesando)
                     return;
@@ -454,12 +484,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     e.printStackTrace();
                 }
 
-                //  guardarMuestra();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
                 //guarda informe
                 this.actualizarInforme();
                 this.finalizar();
@@ -541,28 +566,26 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     if(valor!=null&&valor.equals("7")) //es otras
                     {
                         //generar consecutivo tienda
-                        MutableLiveData<Integer> consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
+                        int consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
                         Log.d(TAG,"*genere cons="+consecutivo);
-                        consecutivo.observe(this, new Observer<Integer>() {
-                            @Override
-                            public void onChanged(Integer cons) {
-                                Log.d(TAG,"genere cons="+cons);
 
-                                mViewModel.informe.setConsecutivo(cons);
+                                Log.d(TAG,"genere cons="+consecutivo);
 
-                                mViewModel.consecutivo=cons;
-                                consecutivo.removeObservers(DetalleProductoElecFragment.this);
-                            }
-                        });
+                                mViewModel.informe.setConsecutivo(consecutivo);
+
+                                mViewModel.consecutivo=consecutivo;
+                              //  consecutivo.removeObservers(DetalleProductoElecFragment.this);
+                                mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
+                                mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
+                                mViewModel.guardarResp(0,0,listapl.get(0).getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
+
+
                     }
-                    mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
-                    mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
-                    mViewModel.guardarResp(0,0,listapl.get(0).getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
 
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -655,7 +678,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         //    super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
-           // super.onActivityResult(requestCode, resultCode, data);
+            //   super.onActivityResult(requestCode, resultCode, data);
             String state = Environment.getExternalStorageState();
             String baseDir;
             if(Environment.MEDIA_MOUNTED.equals(state)) {
@@ -669,7 +692,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 baseDir = getActivity().getFilesDir().getAbsolutePath();
             }
             File file = new File(baseDir, nombre_foto);
-            if (file.exists()) {
+            if (file!=null&&file.exists()) {
                 if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
                     //envio a la actividad dos para ver la foto
                     //    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
@@ -683,10 +706,10 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
                         return;
                     }else {
-                        Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                        // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                         ComprasUtils cu = new ComprasUtils();
-                        bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
-                        bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto, 100, 100);
+                        cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto, 100, 100);
                         fotomos.setImageBitmap(bitmap1);
                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                         fotomos.setVisibility(View.VISIBLE);
@@ -702,6 +725,9 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
             }
             else{
+                Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+
+
                 Log.e(TAG,"Algo salió mal???");
             }
 
@@ -723,17 +749,15 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     //generar consecutivo tienda
                     Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
                     if(mViewModel.consecutivo==0) {
-                        MutableLiveData<Integer> consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
+                        int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
                         //  Log.d(TAG, "*genere cons=" + consecutivo);
-                        consecutivo.observe(this, new Observer<Integer>() {
-                            @Override
-                            public void onChanged(Integer cons) {
-                                Log.d(TAG, "genere cons=" + cons);
 
-                                mViewModel.informe.setConsecutivo(cons);
+                                Log.d(TAG, "genere cons=" + consecutivo);
 
-                                mViewModel.consecutivo = cons;
-                                Constantes.DP_CONSECUTIVO=cons;
+                                mViewModel.informe.setConsecutivo(consecutivo);
+
+                                mViewModel.consecutivo = consecutivo;
+                                Constantes.DP_CONSECUTIVO=consecutivo;
                                 //actualizo barra
                                 ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
@@ -741,8 +765,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                                 ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
                                 avanzarPregunta(78);
-                            }
-                        });
+
+
                     }else
                     {
                         //actualizo barra

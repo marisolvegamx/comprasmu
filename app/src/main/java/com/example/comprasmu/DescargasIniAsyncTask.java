@@ -2,28 +2,44 @@ package com.example.comprasmu;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
+import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
+import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
+import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     AlertDialog alertDialog;
@@ -34,13 +50,23 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     SimpleDateFormat sdfdias;
     ListaCompraDetRepositoryImpl lcdrepo;
     ListaCompraRepositoryImpl lcrepo;
+    InformeCompraRepositoryImpl inforepo;
+    VisitaRepositoryImpl visRepo;
+    InformeComDetRepositoryImpl infdrepo;
+    ImagenDetRepositoryImpl imagenDetRepo;
+    ProductoExhibidoRepositoryImpl prodrepo;
     boolean notificar=false;
     Activity act;
     int actualiza;
-    ProgresoListener proglist;
+    DescargaRespAsyncTask.ProgresoRespListener proglist;
+    final String TAG="DescargasIniAsyncTask";
+    private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
+    private   String DESTINATION_PATH ;
+
+
     public DescargasIniAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
-                                     AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener proglist, SustitucionRepositoryImpl sustRepo) {
+                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo, DescargaRespAsyncTask.ProgresoRespListener proglist, SustitucionRepositoryImpl sustRepo) {
 
         this.cdrepo=cdrepo;
         this.atRepo=atRepo;
@@ -63,6 +89,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
            // if (indice[0].equals("cat")) //descargo cats tmb
             catalogos();
             listacompras();
+
       /*  }else
               {
             notificar = true;
@@ -84,7 +111,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
         if(cats!=null){
             //si hoy ya se actualizó no actualizo
-            Log.d("DescargasIniAsyncTask","comprobando vers catalog*"+sdfdias.format(cats.getVersion())+"--"+(sdfdias.format(new Date())));
+            Log.d(TAG,"comprobando vers catalog*"+sdfdias.format(cats.getVersion())+"--"+(sdfdias.format(new Date())));
             //no actualice
             if(actualiza==1) {
                 if(NavigationDrawerActivity.isOnlineNet()) {
@@ -171,12 +198,61 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         }
     }
 
+  /*  private void informes() {
+        if(getTotVisitas()==0) { //veo si tengo datos en el servidor
+           // InformeComDetRepositoryImpl ifodrepo=new InformeComDetRepositoryImpl(act);
+            inforepo=new InformeCompraRepositoryImpl(act);
+            infdrepo=new InformeComDetRepositoryImpl(act);
+          imagenDetRepo=new ImagenDetRepositoryImpl(act);
+            prodrepo=new ProductoExhibidoRepositoryImpl(act);
+
+            getRespaldo();
+           // DescargasIniAsyncTask.DescargaIniListener listener=new DescargaIniListener();
+
+           //
+
+        }
+
+    }*/
+
+
+    /*private void getRespaldo(){
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        DescargasIniAsyncTask.DescargaIniListener listener=new DescargaIniListener();
+
+        //   DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespAsyncTask.DescargaRespListener();
+        ps.pedirRespaldo(Constantes.INDICEACTUAL,listener);
+
+    }*/
+
+
+
+    private void descargarImagenes(List<ImagenDetalle> imagenes){
+        for(ImagenDetalle img:imagenes){
+            startDownload(DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta(), DESTINATION_PATH);
+            Log.d(TAG," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
+        }
+
+    }
+    private void startDownload(String downloadPath, String destinationPath) {
+        Uri uri = Uri.parse(downloadPath); // Path where you want to download file.
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  // This will show notification on top when downloading the file.
+        request.setTitle("Downloading a file"); // Title for notification.
+        request.setVisibleInDownloadsUi(true);
+
+        request.setDestinationInExternalFilesDir(act, Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
+        ((DownloadManager) act.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
+    }
+
+
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
       /*  if(notificar)
             notificarSinConexion();*/
-        Log.e("DescargasIniAsyT","---"+actualiza+"---"+proglist);
+        Log.e("DescargasIniAsyT","---"+actualiza);
 
     }
 
@@ -189,9 +265,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             }
             public void noactualizar(String response){
                 //a ver como la regresamos
-                if(actualiza==1&&proglist!=null){
+             /*  if(actualiza==1&&proglist!=null){
                     proglist.cerrarAlerta(notificar);
-                }
+                }*/
+                informes();
             }
             public void actualizar(ListaCompraResponse compraResp) {
                 //primero los inserts
@@ -213,8 +290,9 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                                    // lcrepo.insert(detalle);
 
                                 }else
-                                {
+                                {  //no reemplazo los comprados ni los nuevos codigos
                                     detalle.setComprados(existe.getComprados());
+                                    detalle.setNvoCodigo(existe.getNvoCodigo());
                                     //lcrepo.updateSC(compra);
                                 }
                                 lcdrepo.insert(detalle);
@@ -265,9 +343,31 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 tinfod.setIndice(Constantes.INDICEACTUAL);
                 tvRepo.insertUpdate(tinfo);
                 tvRepo.insertUpdate(tinfod);
-                if(actualiza==1&&proglist!=null){
+                informes();
+
+            }
+
+            public void informes(){
+                if(getTotVisitas()==0) {
+                     //    DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespAsyncTask.DescargaRespListener();
+
+                    DescargaRespAsyncTask task = new DescargaRespAsyncTask( act, actualiza,proglist);
+
+
+                    task.execute("", "act"); //para saber que estoy actualizando
+                }else
+                         if(actualiza==1&&proglist!=null){
                     proglist.cerrarAlerta(notificar);
                 }
+
+
+            }
+            public int getTotVisitas(){
+                visRepo=new VisitaRepositoryImpl(act);
+                int ultimo=visRepo.getUltimo();
+                Log.d(TAG, "consecutivo encontrado"+ultimo);
+
+                return ultimo;
             }
 
         }

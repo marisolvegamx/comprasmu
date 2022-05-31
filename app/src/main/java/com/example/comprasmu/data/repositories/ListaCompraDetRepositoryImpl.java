@@ -34,7 +34,7 @@ public class ListaCompraDetRepositoryImpl {
                 "             analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
@@ -126,7 +126,7 @@ public class ListaCompraDetRepositoryImpl {
                 "             analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
@@ -178,7 +178,7 @@ public class ListaCompraDetRepositoryImpl {
                 "             analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
@@ -246,7 +246,7 @@ public class ListaCompraDetRepositoryImpl {
                 "             analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
@@ -384,7 +384,7 @@ public class ListaCompraDetRepositoryImpl {
                 "             analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "codfis||' '||codsen||' '||codtor||' '||codmic as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
@@ -478,7 +478,9 @@ public class ListaCompraDetRepositoryImpl {
     public ListaCompraDetalle findsimple(int lista,int id) {
         return dao.findsimple(lista,id);
     }
-
+    public ListaCompraDetalle getByProductoAna(int prodid,int empid,int tamid,int anaid, String indice, int planta) {
+        return dao.getByProductoAna( prodid, empid, tamid, anaid,  indice, planta);
+    }
 
 
     public void delete(ListaCompraDetalle object) {
@@ -490,9 +492,7 @@ public class ListaCompraDetRepositoryImpl {
         dao.insertAll(objects);
     }
 
-    public void updateAll(List<ListaCompraDetalle> detalles) {
-        dao.updateAll(detalles);
-    }
+
 
     public long insert(ListaCompraDetalle object) {
         return dao.insert(object);

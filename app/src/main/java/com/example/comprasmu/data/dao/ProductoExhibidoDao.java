@@ -55,6 +55,13 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
             " where visitasId=:idVisita")
     public abstract List<ImagenDetalle> getImagenByVisitasimple(int idVisita);
 
+    @Query("SELECT  producto_exhibido.*" +
+            " FROM  producto_exhibido" +
+            " inner join visitas on producto_exhibido.visitasId=visitas.id" +
+            " where visitas.indice=:indice and producto_exhibido.estatusSync=:estatusSync")
+    public abstract List<ProductoExhibido> getByEstatusSync(String indice,int estatusSync);
+
+
     @Query("delete FROM producto_exhibido where visitasId=:idVisita")
     public abstract void deleteByVisita(int idVisita);
 

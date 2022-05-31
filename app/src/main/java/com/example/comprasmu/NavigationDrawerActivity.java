@@ -40,6 +40,7 @@ import com.example.comprasmu.services.SubirPendService;
 
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
+import com.example.comprasmu.ui.mantenimiento.BorrarDatosFragment;
 import com.example.comprasmu.ui.mantenimiento.DescRespaldoFragment;
 import com.example.comprasmu.ui.tiendas.FirstMapActivity;
 
@@ -250,6 +251,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             case R.id.action_settings:
                 //  Log.d(TAG,"hice click en"+item.getItemId());
                 pruebadescarga();
+              //  startService(DownloadSongService.getDownloadService(this, IMAGE_DOWNLOAD_PATH, DirectoryHelper.ROOT_DIRECTORY_NAME.concat("/")));
+
                 return true;
             case R.id.action_mapa:
                 //  Log.d(TAG,"hice click en"+item.getItemId());
@@ -260,11 +263,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
              //   finish();
 
              //   NavHostFragment.findNavController(AbririnformeFragment.this).navigate(R.id.action_nuevotolista);
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+           /*     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 MapaCdFragment fragconfig=new MapaCdFragment();
                 ft.add(R.id.nav_host_fragment, fragconfig);
 
+                ft.commit();*/
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                BorrarDatosFragment fragconfig=new BorrarDatosFragment();
+                ft.add(R.id.nav_host_fragment, fragconfig);
+
                 ft.commit();
+
                 return true;
           /*  case R.id.action_save:
                 guardarInforme();

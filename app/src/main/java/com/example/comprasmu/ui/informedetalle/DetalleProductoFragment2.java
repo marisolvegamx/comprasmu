@@ -614,7 +614,7 @@ public class DetalleProductoFragment2 extends Fragment {
         List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
 
         Log.d(TAG, "regresó de la consulta de clientes " + data.size());
-        Constantes.clientesAsignados = convertirListaaClientesE(data,clientesprev);
+       // Constantes.clientesAsignados = convertirListaaClientesE(data,clientesprev);
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     public  List<DescripcionGenerica> convertirListaaClientesE(List<ListaCompra> lista, int clientesprev[]){
@@ -986,7 +986,7 @@ public class DetalleProductoFragment2 extends Fragment {
                                //si ya se guardó lo agrego en la lista de compra
                                ListaDetalleViewModel lcviewModel = new ViewModelProvider(DetalleProductoFragment2.this).get(ListaDetalleViewModel.class);
                                Log.d(TAG,"qqqqqqqqqqqqqqq"+dViewModel.icdNuevo+"--"+dViewModel.icdNuevo.getCaducidad());
-                               lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getNombreTipoMuestra());
+                             //  lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getNombreTipoMuestra());
                                //limpiar tabla temp
                                //   limpiarTablTempMenCli();
                                mViewModel.eliminarMuestra(mViewModel.numMuestra);
@@ -1030,7 +1030,7 @@ public class DetalleProductoFragment2 extends Fragment {
                        //si ya se guardó lo agrego en la lista de compra
                        ListaDetalleViewModel lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
                          Log.d(TAG,"qqqqqqqqqqqqqqq"+dViewModel.icdNuevo.getCaducidad());
-                       lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getNombreTipoMuestra());
+                    //   lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getNombreTipoMuestra());
                        //limpiar tabla temp
                        //   limpiarTablTempMenCli();
                        mViewModel.eliminarMuestra(mViewModel.numMuestra);
@@ -1459,16 +1459,11 @@ public class DetalleProductoFragment2 extends Fragment {
                     //generar consecutivo tienda
                     Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
                     if(mViewModel.consecutivo==0) {
-                        MutableLiveData<Integer> consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
-                      //  Log.d(TAG, "*genere cons=" + consecutivo);
-                        consecutivo.observe(this, new Observer<Integer>() {
-                            @Override
-                            public void onChanged(Integer cons) {
-                                Log.d(TAG, "genere cons=" + cons);
+                       int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
 
-                                mViewModel.informe.setConsecutivo(cons);
+                                mViewModel.informe.setConsecutivo(consecutivo);
 
-                                mViewModel.consecutivo = cons;
+                                mViewModel.consecutivo = consecutivo;
 
                                 //actualizo barra
                                 ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
@@ -1477,8 +1472,7 @@ public class DetalleProductoFragment2 extends Fragment {
                                 ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
                                 avanzarPregunta(23);
-                            }
-                        });
+
                     }else
                     {
                         //actualizo barra
@@ -1790,19 +1784,15 @@ public class DetalleProductoFragment2 extends Fragment {
             if(valor!=null&&valor.equals("7")) //es otras
             {
                 //generar consecutivo tienda
-                MutableLiveData<Integer> consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
-                Log.d(TAG,"*genere cons="+consecutivo);
-                consecutivo.observe(this, new Observer<Integer>() {
-                    @Override
-                    public void onChanged(Integer cons) {
-                        Log.d(TAG,"genere cons="+cons);
+                int consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
 
-                        mViewModel.informe.setConsecutivo(cons);
+                        Log.d(TAG,"genere cons="+consecutivo);
 
-                        mViewModel.consecutivo=cons;
+                        mViewModel.informe.setConsecutivo(consecutivo);
 
-                    }
-                });
+                        mViewModel.consecutivo=consecutivo;
+
+
             }
             mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
             mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);

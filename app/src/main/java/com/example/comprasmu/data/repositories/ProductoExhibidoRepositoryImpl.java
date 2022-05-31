@@ -123,4 +123,7 @@ public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhib
         return  dao.getAllByVisitaCliente(id,cliente);
     }
 
+    public List<ProductoExhibido> getProdPendSubir(String indice) {
+        return dao.getByEstatusSync(indice,0);
+    }
 }

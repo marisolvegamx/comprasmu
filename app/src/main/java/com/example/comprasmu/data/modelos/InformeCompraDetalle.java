@@ -54,6 +54,7 @@ public class InformeCompraDetalle {
     private int comprasDetId;
     private int comprasIdbu;
     private int comprasDetIdbu; //aqui guardaré de cuál se hizo backup
+    private String siglas ;//para guardar las siglas
 
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
@@ -421,6 +422,14 @@ public class InformeCompraDetalle {
 
     public void setComprasDetIdbu(int comprasDetIdbu) {
         this.comprasDetIdbu = comprasDetIdbu;
+    }
+
+    public String getSiglas() {
+        return siglas;
+    }
+
+    public void setSiglas(String siglas) {
+        this.siglas = siglas;
     }
 }
 

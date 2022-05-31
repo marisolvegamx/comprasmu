@@ -236,7 +236,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
        int id=(int) detalleRepo.insert(icdNuevo);
         Log.d("NuevoDetalleViewModel","El informe se creo correctamente");
-        mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
+
         return id;
     }
 
@@ -269,9 +269,11 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
             for(int j=0;j<fechas.length;j++){
                 try {
-                    Date fechaperm=sdf.parse(fechas[j]);
-                    if(fechaperm.equals(caducidad))
-                        return false; //esta permitida
+                    if(!fechas[j].equals("")) {
+                        Date fechaperm = sdf.parse(fechas[j]);
+                        if (fechaperm.equals(caducidad))
+                            return false; //esta permitida
+                    }
 
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -283,12 +285,12 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         //busco en los informes
         List<InformeCompraDetalle> informeCompraDetalles=detalleRepo.getByProductoAna(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion);
         Log.d(TAG,"buscando codigo igual"+informeCompraDetalles.size());
-               for(InformeCompraDetalle det:informeCompraDetalles) {
-                   Log.d(TAG, "buscando codigo igual" + det.getCaducidad());
-                   //recorro el informe buscando
-                   if (det.getCaducidad().equals(caducidad)) {
+        for(InformeCompraDetalle det:informeCompraDetalles) {
+            Log.d(TAG, "buscando codigo igual" + det.getCaducidad());
+            //recorro el informe buscando
+            if (det.getCaducidad().equals(caducidad)) {
 
-                       return true; //tengo uno
+                return true; //tengo uno
 
                    }
                }
@@ -376,6 +378,16 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         foto.setCreatedAt(new Date());
         return foto;
     }
+    public String buscarCodigosIndice(String indice, int planta, ProductoSel productosel){
+        List<InformeCompraDetalle> informeCompraDetalles=detalleRepo.getByProductoAna(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion);
+       String codigosnuevos="";
+        for(InformeCompraDetalle det:informeCompraDetalles) {
+            Log.d(TAG, "buscando codigo igual" + det.getCaducidad());
+            //recorro el informe buscando
+            codigosnuevos=codigosnuevos+";"+det.getCaducidad();
+        }
+        return codigosnuevos;
+    }
 
    public List<Integer> muestrasTotales(){
         return itemprepo.getMuestras();
@@ -404,6 +416,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.etiqueta_evaluacion = crearImagendeTmp( Contrato.TablaInformeDet.ETIQUETA_EVALUACION);
         this.fotoazucares = crearImagendeTmp( Contrato.TablaInformeDet.AZUCARES);
         int nuevoid = this.saveDetalle2();
+
 
         return nuevoid;
     }
@@ -446,7 +459,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
         this.productoSel.codigosperm=productoSel.getLid_fechapermitida();
         if(prodbu!=null) {
-            this.productoSel.comprasDetIdbu = prodbu.getId();//el detale por el cual se cambio de la misma lista
+            this.productoSel.comprasDetIdbu = prodbu.getId();//el detalle por el cual se cambio de la misma lista
             this.productoSel.comprasIdbu = productoSel.getListaId(); //guardo datos del producto original el efectivamnete comprado va en el otro campo
         }
     }
@@ -492,7 +505,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         if(prodbu!=null) {
            // this.productoSel.comprasDetIdbu = prodbu.getId_sustitucion();
            this.productoSel.comprasIdbu = productoSel.getListaId(); //va a ser igual solo para indicar que hubo sust.
-            this.productoSel.comprasDetIdbu=productoSel.getId();
+            this.productoSel.comprasDetIdbu=prodbu.getId_sustitucion();
         }
      //   this.productoSel.codigosnop=productoSel.getCodigosNoPermitidos();
     }

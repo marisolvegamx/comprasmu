@@ -119,13 +119,10 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mBinding= DataBindingUtil.inflate(inflater,
-                R.layout.lista_compra_fragment, container, false);
-
-       // mViewModel = new ViewModelProvider(this).get(com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel.class);
+        mBinding= DataBindingUtil.inflate(inflater, R.layout.lista_compra_fragment, container, false);
+        // mViewModel = new ViewModelProvider(this).get(com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel.class);
         mViewModel=new ViewModelProvider(requireActivity()).get(ListaDetalleViewModel.class);
-         nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
+        nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
         niViewModel=new ViewModelProvider(requireActivity()).get(NuevoinformeViewModel.class);
 
         Bundle bundle = getArguments();
@@ -139,18 +136,13 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             mViewModel.setClienteSel(bundle.getInt(ARG_CLIENTESEL));
             clienteSel=bundle.getInt(ARG_CLIENTESEL);//ya llega como la clave
             Log.d(TAG," cliente"+clienteSel);
-            MutableLiveData<Integer> consecutivo = niViewModel.getConsecutivo(plantaSel, getActivity(), this);
+            int  consecutivo = niViewModel.getConsecutivo(plantaSel, getActivity(), this);
             //  Log.d(TAG, "*genere cons=" + consecutivo);
-            consecutivo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-                @Override
-                public void onChanged(Integer cons) {
-                    Log.d(TAG, "genere cons=" + cons);
 
-                    consecutivoTienda = cons;
+                    Log.d(TAG, "genere cons=" + consecutivo);
+                    consecutivoTienda = consecutivo;
 
 
-                }
-            });
             if(bundle.getString(ARG_MUESTRA)!=null&&bundle.getString(ARG_MUESTRA).equals("true")) {
                 //vengo de agregar muestra
                 // mViewModel.setClienteSel(Integer.parseInt(clienteSel));
@@ -172,7 +164,6 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
              //   Log.d(TAG,"entre aqui??");
                 mViewModel.setNuevaMuestra(true);
                 //busco el consecutivo
-
             }
         }
         return    mBinding.getRoot();
@@ -241,6 +232,8 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 if(mViewModel.getDetallebuSel()!=null) {
                   //  Log.d(TAG,"rrrrrrrrrrrrrrr"+isbu);
                     etsiglas.setText(mViewModel.listaSelec.getSiglas());
+                    clienteSel=mViewModel.listaSelec.getClientesId();
+                    mViewModel.setClienteSel(clienteSel);
                     if(nombreCliente==null)
                         nombreCliente="";
                     mBinding.txtlcplanta.setText(nombreCliente+" "+nombrePlanta+" ("+mViewModel.listaSelec.getSiglas()+")");
@@ -369,8 +362,8 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                     }
                     else*/
                     //si hay nota
-                        mBinding.lonota.setVisibility(View.VISIBLE);
-                        mBinding.txtlcnota2.setText(mViewModel.listaSelec.getLis_nota());
+                    mBinding.lonota.setVisibility(View.VISIBLE);
+                    mBinding.txtlcnota2.setText(mViewModel.listaSelec.getLis_nota());
                     mBinding.txtlcnota.setText(getString(R.string.nota) + ": ");
 
                 }
@@ -381,25 +374,33 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         }else { //no es bu
             //busco la lista
             mViewModel.cargarListaCompra();
-
+            if(mViewModel.getListaCompra()!=null)
             mViewModel.getListaCompra().observe(getViewLifecycleOwner(),listacomp->{
+
                 if(listacomp!=null) {
                     mViewModel.cargarDetalles(listacomp.getId());
+                    lista = listacomp;
+                    clienteSel=lista.getClientesId();
+                    mViewModel.setClienteSel(clienteSel);
+                    etsiglas.setText(lista.getSiglas());
                 }
                 mViewModel.getListas().observe(getViewLifecycleOwner(), myProducts -> {
 
                     //   mBinding.paradebug1.setText(myProducts.size()+"");
                     if (myProducts != null && myProducts.size() > 0)
-                        lista = listacomp;
-                    Log.d(Constantes.TAG, "en la consulta id lista=> " +myProducts.get(0).getNvoCodigo());
+
+                    Log.d(TAG, "en la consulta id lista=> " +myProducts.get(0).getNvoCodigo());
                     // mBinding.setIsLoading(false);
                     //busco el cliente
-                    clienteSel=lista.getClientesId();
+
                     List<ListaDetalleBu> detalles=buscarBU(myProducts);
                     calcularTotales(detalles);
-                    etsiglas.setText(lista.getSiglas());
+
+
+
+
                     //ordeno la lista
-               /*     Collections.sort( detalles, new Comparator<ListaCompraDetalle>() {
+                    /* Collections.sort( detalles, new Comparator<ListaCompraDetalle>() {
                         @Override
                         public int compare(ListaCompraDetalle lhs, ListaCompraDetalle rhs) {
                             return Integer.compare( lhs.getLid_orden(),rhs.getLid_orden());
@@ -458,6 +459,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
         }
 
+    }
+    private void buscarCodigosNuevos(){
+  //      nuevoInf.buscarCodigosIndice();
     }
 
     private void nuevaConsultaBu(int opcionsel, int detId){ //para cuando cambia el combolist

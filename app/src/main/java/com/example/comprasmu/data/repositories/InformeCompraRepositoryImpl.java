@@ -149,6 +149,12 @@ public class InformeCompraRepositoryImpl   {
         icDao.actualizarEstatusSync(id, estatus);
     }
 
+    public List<InformeCompra> getInformesPendSubir(String indice) {
+
+        return icDao.getInformexEstatus(indice, 0);
+    }
+
+
 
     public void deleteInformeCompra(int id) {
        icDao.deleteInforme( id);

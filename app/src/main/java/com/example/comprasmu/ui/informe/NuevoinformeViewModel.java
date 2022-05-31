@@ -169,23 +169,15 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public MutableLiveData<HashMap<Integer, String>> getTiposTienda() {
         return tiposTienda;
     }
-    MutableLiveData<Integer> respcon;
-    public  MutableLiveData<Integer> getConsecutivo(int oplantaSel, Activity actividad, LifecycleOwner owner) {
 
-        respcon=new MutableLiveData<Integer>();
+    public  Integer getConsecutivo(int oplantaSel, Activity actividad, LifecycleOwner owner) {
+
+        int respcon=1;
         Log.d(TAG, "ahorita es la planta"+oplantaSel);
         int ultimo=repository.getLastConsecutivoInforme(Constantes.INDICEACTUAL,oplantaSel);
         Log.d(TAG, "consecutivo encontrado"+ultimo);
-       /* if(ultimo==0){
-            //lo busco en el servidor
-            PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
-            EnvioListener listener=new EnvioListener( actividad);
-            ps.getUltimoInforme(Constantes.INDICEACTUAL, oplantaSel,listener);
-            Log.d(TAG, "esperando respuesta");
 
-
-        }else*/
-            respcon.setValue(1+ultimo);
+        respcon=1+ultimo;
         return respcon;
     }
    // public void agregarMuestra(InformeCompraDetalle det){
@@ -579,6 +571,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                 }*/
             nuevo.setVisitasId(info.getVisitasId());
             nuevo.setConsecutivo(info.getConsecutivo());
+            nuevo.setId(info.getInformesId());
                 if(info.getNombre_campo().equals("ticket_compra")) {
                     this.ticket_compra = new ImagenDetalle();
                 //    this.ticket_compra.setIndice(Constantes.INDICEACTUAL);
@@ -631,7 +624,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return nuevo;
     }
 
-    public void actualizarInforme() {
+    public void actualizarInforme() { //inserta el informe desde temporal
         //conservo el id
         InformeCompra compra2=tempToIC();
         Log.d(TAG,"dddddddddddddddddddd ya existe el informe"+compra2.getId());
@@ -656,7 +649,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         informe.setEstatus(1);
         informe.setEstatusSync(0);
 
-        // Guardar categoría
+
         repository.insertInformeCompra(informe);
 
 //        mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
@@ -670,9 +663,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
 //        mSnackbarText.setValue(new Event<>(R.string.informe_finalizado));
         //aqui se enviará
-
-
-    }
+     }
     public void finalizarVisita(int idvisita) {
         Log.d("NuevoInformeViewModel", "finalizando"+idvisita);
         visitaRepository.actualizarEstatus(idvisita,2);
@@ -760,9 +751,9 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                nvoid.setValue(prefinf + 1);
 
            }
-            if(respcon!=null) {
+            /*if(respcon!=null) {
                 respcon.setValue(prefcons + 1);
-            }
+            }*/
             return resul;
         }
         public MutableLiveData<Boolean> guardarRespuestaVis(UltimosIdsResponse resp){

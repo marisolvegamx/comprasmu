@@ -419,15 +419,15 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         dialogo1.show();
 
     }
-    /***para la edicion***/
+
     private void loadData() {
         Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolbar);
         spinn=root.findViewById(R.id.spaiclientes1);
         spinn2=root.findViewById(R.id.spaiclientes2);
         spinn3=root.findViewById(R.id.spaiclientes3);
-        //cargo la lista de clientes
-        cargarClientes();
         estatusPepsi=1;
+
+
 
         if (getArguments() != null) {
 
@@ -436,8 +436,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             if (categoryId > 0) {
                 //es edicion
                 isEdicion=true;
-
-
 
                 nuevoId = mViewModel.start(categoryId, getActivity());
                 fotosExh = feviewModel.cargarfotosSimpl(nuevoId);
@@ -461,7 +459,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                             }
                             tienda.setUne_direccion(visita.getDireccion());
                         }
-
+                        estatusPepsi=visita.getEstatusPepsi();
+                        //cargo la lista de clientes
+                        cargarClientes();
                         crearFormulario(visita);
                         ponerDatos(visita);
                         LinearLayout sv = root.findViewById(R.id.content_main);
@@ -495,9 +495,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 tienda.setUne_id(getArguments().getInt("idtienda"));
                 tienda.setUne_descripcion(getArguments().getString("nombretienda"));
                 tienda.setUne_tipotienda(getArguments().getInt("tipotienda"));
-                Log.d(TAG,"wwwww"+tienda.getUne_tipotienda());
+
                 tienda.setUne_direccion(getArguments().getString("direccion"));
                 String colortienda = getArguments().getString("color");
+                Log.d(TAG,"wwwww"+tienda.getColor());
                 if (colortienda != null) {
                     if (colortienda.equals("amarillo"))
                         estatusPepsi = 0;
@@ -506,6 +507,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 }
             }
 
+                //cargo la lista de clientes
+                cargarClientes();
                 nuevoId = mViewModel.start(0, getActivity());
                 crearFormulario(new Visita());
 
@@ -525,6 +528,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 }
             });
             nuevoId = mViewModel.start(0, getActivity());
+            estatusPepsi = 1;
             crearFormulario(new Visita());
 
             LinearLayout sv = root.findViewById(R.id.content_main);
@@ -682,8 +686,17 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
        // Log.d(TAG, "regresó de la consulta " + Constantes.CIUDADTRABAJO);
         //   if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
         List<ListaCompra> data=lViewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
+        if(estatusPepsi==0){
+            data=lViewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO);
+        }
         totClientes=data.size();
         if(totClientes==0){
+            if(estatusPepsi==0){
+                Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
+
+                return;
+            }
             Toast.makeText(getActivity(), "Falta actualizar la app", Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
 
@@ -928,7 +941,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             campo.readonly="readonly";
             camposTienda.add(campo);
 
-            campo = new CampoForm();
+         /*   no es necesaria la direccion 17-may
+         campo = new CampoForm();
             campo.label = getString(R.string.direccion);
             campo.nombre_campo = "direccion";
             campo.type = "inputtext";
@@ -936,7 +950,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             campo.required = "required";
             campo.readonly="readonly";
             campo.id = 1002;
-            camposTienda.add(campo);
+            camposTienda.add(campo);*/
             campo = new CampoForm();
             campo.label =getString(R.string.tipo_tienda) ;
             campo.nombre_campo = "tipoTienda";
@@ -1275,7 +1289,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
             if(spinn3!=null) {
                 DescripcionGenerica cliente3 = (DescripcionGenerica) spinn3.getSelectedItem();
-                if (cliente3.getId() == 4) {
+                if (cliente3!=null&&cliente3.getId() == 4) {
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -1330,7 +1344,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 EditText input5 = root.findViewById(1005);
                  input1 = root.findViewById(1001);
                 EditText input2 = root.findViewById(1002);
-
+                mViewModel.visita.setEstatusPepsi(estatusPepsi);
                 mViewModel.visita.setTiendaId(tienda.getUne_id());
                 mViewModel.visita.setTiendaNombre(tienda.getUne_descripcion());
                 Log.d(TAG,"PPPPP"+tienda.getUne_tipotienda()+"--"+Constantes.TIPOTIENDA.get(tienda.getUne_tipotienda()));
@@ -1508,7 +1522,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
             if(spinn3!=null) {
                 DescripcionGenerica cliente3 = (DescripcionGenerica) spinn3.getSelectedItem();
-                if (cliente3.getId() == 4) {
+                if (cliente3!=null&&cliente3.getId() == 4) {
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -1569,7 +1583,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         mViewModel.fotoFachada.setUpdatedAt(new Date());
         //la ciudad y el pais en el que está se definen en las propiedades
 
-
+        visitaEdi.setEstatusPepsi(estatusPepsi);
         //   EditText input2 = root.findViewById(1001);
         //    mViewModel.informe.setNombreTemporal(nombreTemporal.getText().toString());
         visitaEdi.setEstatus(1);
