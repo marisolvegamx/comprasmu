@@ -55,6 +55,9 @@ public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhib
     public List<ImagenDetalle> getImagenByVisitasimple(int idVisita) {
         return dao.getImagenByVisitasimple( idVisita);
     }
+    public List<ImagenDetalle> getImagenByVisitasimplePend(int idVisita) {
+        return dao.getImagenByVisitasimplePend( idVisita);
+    }
 
 
 

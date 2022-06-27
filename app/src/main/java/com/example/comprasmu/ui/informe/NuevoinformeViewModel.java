@@ -195,6 +195,10 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return imagenDetRepository.findsimple(idfoto);
 
     }
+    /*public ImagenDetalle getFotoPend(int idfoto){
+        return imagenDetRepository.getImagenPendSyncsimple(idfoto);
+
+    }*/
     public LiveData<ImagenDetalle> getFotoLD(int idfoto){
         return imagenDetRepository.find(idfoto);
 
@@ -255,7 +259,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         //la visita
         if(visita.getEstatusSync()==0) {
             ImagenDetalle imagenDetalle = getFoto(visita.getFotoFachada());
-            fotosinfo.add(imagenDetalle);
+            if(imagenDetalle!=null&&imagenDetalle.getEstatusSync()==0)
+                 fotosinfo.add(imagenDetalle);
         }
 
         //las del informe
@@ -275,7 +280,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         //las de producto ex
         if(visita.getEstatusSync()==0) {
-            List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimple(visita.getId());
+            List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimplePend(visita.getId());
+
             fotosinfo.addAll(productoExhibidos);
         }
 
@@ -327,20 +333,20 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
     MutableLiveData<Integer> finalid;
     public  MutableLiveData<Integer>  guardarVisita(Activity actividad, LifecycleOwner owner) {
+        if(fotoFachada!=null) {
+            MutableLiveData<Integer> nvoidimage = this.getNvoIdImagen(actividad, owner);
+            nvoidimage.observe(owner, new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer nvoidimagem) {
+                    fotoFachada.setId(nvoidimagem);
+                    nvoidimagem = (int) imagenDetRepository.insertImg(fotoFachada);
 
-        MutableLiveData<Integer> nvoidimage=this.getNvoIdImagen(actividad,owner);
-        nvoidimage.observe(owner, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer nvoidimagem) {
-                fotoFachada.setId(nvoidimagem);
-                nvoidimagem= (int) imagenDetRepository.insertImg(fotoFachada);
+                    visita.setFotoFachada(nvoidimagem);
+                    // Guardar visita
+                    //busco el id
 
-                visita.setFotoFachada(nvoidimagem);
-                // Guardar visita
-                //busco el id
-
-              //  visita.setId(nuevoid);
-                idVisita=(int)visitaRepository.insert(visita);
+                    //  visita.setId(nuevoid);
+                    idVisita = (int) visitaRepository.insert(visita);
 
      /*    if(idInformeNuevo>0) {
 
@@ -364,13 +370,25 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             }
 
         }*/
-                if(idVisita>0) {
-                    mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
+                    if (idVisita > 0) {
+                        mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
+                    }
+                    finalid = new MutableLiveData<Integer>();
+                    finalid.setValue(idVisita);
                 }
-                finalid=new  MutableLiveData<Integer>();
-                finalid.setValue(idVisita);
+            });
+        }else{
+            //  visita.setId(nuevoid);
+            //solo inserto la visita no hay foto
+            idVisita = (int) visitaRepository.insert(visita);
+
+
+            if (idVisita > 0) {
+                mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
             }
-        });
+            finalid = new MutableLiveData<Integer>();
+            finalid.setValue(idVisita);
+        }
         return finalid;
 
     }
@@ -379,21 +397,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             MutableLiveData<Integer> nvoid=new MutableLiveData<Integer>();
         int nvoidimagem = (int) imagenDetRepository.getUltimo();
             if (nvoidimagem == 0) {
-                //voy al servidor
-                if (ComprasUtils.isOnlineNet()) {
-                 /*   PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
-                    NuevoinformeViewModel.EnvioListener listener = new NuevoinformeViewModel.EnvioListener(actividad);
-                    MutableLiveData<Boolean> resul = ps.getUltimaVisita(Constantes.INDICEACTUAL, listener);
-                    resul.observe(owner, new Observer<Boolean>() {
-                        @Override
-                        public void onChanged(Boolean aBoolean) {
-                            recuperarIds(actividad);
 
-                            nvoid.setValue(prefimagen + 1);
-                            resul.removeObservers(owner);
-                        }
-                    });*/
-                }
                 nvoid.setValue( nvoidimagem + 1);
             } else
                 nvoid.setValue( nvoidimagem + 1);
@@ -444,7 +448,11 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         public void actualizarVisita(){
         try {
             //actualizo la foto
-            imagenDetRepository.insert(fotoFachada);
+            if(fotoFachada!=null) {
+                int foto =(int) imagenDetRepository.insert(fotoFachada);
+                visita.setFotoFachada(foto);
+
+            }
             visitaRepository.insert(this.visita);
 
             mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
@@ -624,15 +632,18 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return nuevo;
     }
 
-    public void actualizarInforme() { //inserta el informe desde temporal
+    public void actualizarInforme() throws Exception { //inserta el informe desde temporal
         //conservo el id
         InformeCompra compra2=tempToIC();
         Log.d(TAG,"dddddddddddddddddddd ya existe el informe"+compra2.getId());
-        if(compra2.getId()>0)
+        if(compra2.getId()==0)
         {
+            //algo salio mal
+            throw new Exception("no tengo informe");
+        }
         //recupero el informe
         informe=repository.findSimple(compra2.getId());
-        }
+
         //recupero los comentarios
 
         informe.setComentarios(compra2.getComentarios());

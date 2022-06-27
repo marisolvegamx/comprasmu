@@ -10,6 +10,10 @@
         <variable
             name="mostrarAgregar"
             type="Boolean" />
+        <variable
+            name="sViewModel"
+            type="com.example.comprasmu.ui.sustitucion.SustitucionViewModel" />
+
 
     </data>
 
@@ -69,6 +73,7 @@
                         android:layout_weight="1"
                         android:text="@{detalle.nomtamanio+' '+detalle.nomempaque}" />
 
+
                     <ImageButton
                         android:id="@+id/btnldagregar"
                         style="@style/imbutton"
@@ -78,6 +83,21 @@
                         android:visibility="@{mostrarAgregar?View.VISIBLE:View.INVISIBLE}"
                         app:srcCompat="@drawable/ic_baseline_add_24" />
                 </LinearLayout>
+                <TextView
+                    android:id="@+id/btnscodigos"
+                    style="@style/liga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text='@{@string/ver_codigos+">"}'
+                    />
+
+                <TextView
+                    android:id="@+id/txtscodigos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text='@{sViewModel.ordenarCodigosNoPermitidos(detalle)}' />
 
 
             </LinearLayout>

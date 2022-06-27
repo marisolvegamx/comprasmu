@@ -67,7 +67,8 @@ public class BackActivity extends AppCompatActivity {
         if (datosRecuperados != null) {
             // No hay datos, manejar excepción
             //no debería estar aqui
-            opcionSel= datosRecuperados.getString(ARG_FRAGMENT);
+            opcionSel = datosRecuperados.getString(ARG_FRAGMENT);
+        }
             switch (opcionSel){
                 case OP_DETALLE_PRODUCTO:
                     myChildToolbar.setTitle(R.string.nuevo_informe);
@@ -198,10 +199,7 @@ public class BackActivity extends AppCompatActivity {
 // alternatively add it with a tag
 // trx.add(R.id.your_placehodler, new YourFragment(), "detail");
             ft.commit();
-        }else{
-            //mandar error
-            Log.d(TAG,"No llegó el parametro");
-        }
+
 
 
 

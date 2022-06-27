@@ -90,7 +90,7 @@ public class NuevaFotoExhibFragment extends Fragment {
         File file = new File(getActivity().getExternalFilesDir(null)+"/"+nombre_foto);
         if (file.exists()) {
             //   Bitmap imageBitmap = (Bitmap) extras.get("data");
-            if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+            if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
             {
                 Toast.makeText(getContext(), getString(R.string.error_memoria), Toast.LENGTH_SHORT).show();
                 return;
@@ -200,7 +200,7 @@ public class NuevaFotoExhibFragment extends Fragment {
    */
 
     public void rotarImagen(View v){
-        if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
         {
             Toast.makeText(getContext(), getString(R.string.error_memoria), Toast.LENGTH_SHORT).show();
             return;
@@ -234,13 +234,7 @@ public class NuevaFotoExhibFragment extends Fragment {
 
     }
 
-    // Get a MemoryInfo object for the device's current memory status.
-    private ActivityManager.MemoryInfo getAvailableMemory() {
-        ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE);
-        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        activityManager.getMemoryInfo(memoryInfo);
-        return memoryInfo;
-    }
+
     public void cancelar(View v) {
         if (tiempoPrimerClick + INTERVALO > System.currentTimeMillis()){
           /*  super.onBackPressed();

@@ -27,24 +27,23 @@ public class ListaCompraDetRepositoryImpl {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
         dao=comprasDataBase.getListaCompraDetalleDao();
     }
-    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltros(int idlista,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
+    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltros(int idlista,int analisisid,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
 
         String query="select id,  listaId, productosId, productoNombre, " +
                 "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
-                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "             "+analisisid+" analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
-                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
-                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
-                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
+
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(analisisid+"");
         filtros.add(idlista+"");
         if(categoria!=null&&!categoria.equals("")) {
             query =query+ " and categoria=?";
@@ -119,25 +118,25 @@ public class ListaCompraDetRepositoryImpl {
         return dao.getDetallesByFiltros(sqlquery);
     }
 
-    public LiveData<List<ListaCompraDetalle>> consultaFisico4(int idlista,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
+    public LiveData<List<ListaCompraDetalle>> consultaFisico4(int idlista,int analisisid,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
 
         String query="select id,  listaId, productosId, productoNombre, " +
                 "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
-                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "             "+analisisid+" analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
-                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
-                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
-                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(analisisid+"");
+
         filtros.add(idlista+"");
+
         if(categoria!=null&&!categoria.equals("")) {
             query =query+ " and ((categoria=?";
             filtros.add(categoria);
@@ -171,25 +170,26 @@ public class ListaCompraDetRepositoryImpl {
         return dao.getDetallesByFiltros(sqlquery);
     }
     //el ultimo parametro enviado debe ser diferente
-    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUD(int idlista,String categoria, String productoNombre, String empaque,int tamanio ) {
+    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUD(int idlista,int analisis,String categoria, String productoNombre, String empaque,int tamanio ) {
 
         String query="select id,  listaId, productosId, productoNombre, " +
                 "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
-                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "             "+analisis+" analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
-                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
-                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
-                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
+
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(analisis+"");
         filtros.add(idlista+"");
+
+
         if(productoNombre==null||productoNombre.equals("")) //catego es el ultimo y es diferente
         { if(categoria!=null&&!categoria.equals("")) {
             query =query+ " and categoria!=?";
@@ -239,24 +239,23 @@ public class ListaCompraDetRepositoryImpl {
     }
 
     //el ultimo parametro enviado debe ser diferente
-    public LiveData<List<ListaCompraDetalle>> consultaTorque2(int idlista,String categoria, String productoNombre, String empaque ) {
+    public LiveData<List<ListaCompraDetalle>> consultaTorque2(int idlista,int analisisid,String categoria, String productoNombre, String empaque ) {
 
         String query="select id,  listaId, productosId, productoNombre, " +
                 "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
-                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "             "+analisisid+" analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
-                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
-                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
-                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(analisisid+"");
+
         filtros.add(idlista+"");
 
         if(categoria!=null&&!categoria.equals("")) {
@@ -377,24 +376,23 @@ public class ListaCompraDetRepositoryImpl {
     }
 
     //el ultimo param debe ser diferente pero aqui viene el analisis
-    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUDA2(int idlista,String categoria,int analisis, String productoNombre, String empaque,int tamanio ) {
+    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUDA2(int idlista,int analisisid, String categoria,int analisis, String productoNombre, String empaque,int tamanio ) {
 
         String query="select id,  listaId, productosId, productoNombre, " +
                 "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
-                "             analisisId, cantidad,  nvoCodigo,estatus, " +
+                "             "+analisisid+" analisisId, cantidad,  nvoCodigo,estatus, " +
                 "                     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "                  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup, " +
-                "max(codfis)||';'||max(codsen)||';'||max(codtor)||';'||max(codmic) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
+                "max(codfis) as codigosNoPermitidos from (select   id,  listaId, productosId, productoNombre," +
                 "   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                "case analisisId when 1 then codigosNoPermitidos else '' end  codfis," +
-                " case analisisId when 2 then codigosNoPermitidos else '' end  codsen," +
-                "case analisisId when 3 then codigosNoPermitidos else '' end  codtor," +
-                "case analisisId when 4 then codigosNoPermitidos else '' end  codmic" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
+
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(analisisid+"");
         filtros.add(idlista+"");
         if(analisis==0) //catego es el ultimo y es diferente
         { if(categoria!=null&&!categoria.equals("")) {

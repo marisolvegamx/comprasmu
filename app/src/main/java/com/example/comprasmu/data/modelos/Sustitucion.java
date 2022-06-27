@@ -29,6 +29,7 @@ public class Sustitucion {
     private int categoriasId;
     private String nomcategoria;
 
+
     public int getId_sustitucion() {
         return id_sustitucion;
     }
@@ -108,5 +109,7 @@ public class Sustitucion {
     public void setClientesId(int clientesId) {
         this.clientesId = clientesId;
     }
+
+
 }
 

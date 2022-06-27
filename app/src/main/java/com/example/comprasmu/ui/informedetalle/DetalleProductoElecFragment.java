@@ -45,6 +45,8 @@ import com.example.comprasmu.utils.Preguntasino;
 import com.example.comprasmu.utils.ui.LoadingDialog;
 
 import java.io.File;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -483,7 +485,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
+                try{
 
                 //guarda informe
                 this.actualizarInforme();
@@ -512,6 +514,14 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     salir();
                     //  aceptar.setEnabled(true);
                     return;
+
+                }
+                }
+                catch(Exception ex){
+                    ex.printStackTrace();
+                    yaestoyProcesando=false;
+                    Toast.makeText(getActivity(), "algo salio mal", Toast.LENGTH_SHORT).show();
+
 
                 }
 
@@ -553,7 +563,6 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     valor = selectedRadioButtonId + "";
                 }
 
-
                 //busco planta
                 List<ListaCompra> listapl=lcviewModel.cargarPlantas(mViewModel.visita.getCiudad(),mViewModel.clienteSel);
 
@@ -563,38 +572,42 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     //voy directo a la lista
                     plantaSel=listapl.get(0).getPlantasId() ;
                     NOMBREPLANTASEL=listapl.get(0).getPlantaNombre();
-                    if(valor!=null&&valor.equals("7")) //es otras
-                    {
-                        //generar consecutivo tienda
-                        int consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
-                        Log.d(TAG,"*genere cons="+consecutivo);
+                    if(valor!=null)
+                        if(valor.equals("7")) //es otras
+                        {
+                            //generar consecutivo tienda
+                            int consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
+                            Log.d(TAG,"*genere cons="+consecutivo);
 
-                                Log.d(TAG,"genere cons="+consecutivo);
+                            Log.d(TAG,"genere cons="+consecutivo);
 
-                                mViewModel.informe.setConsecutivo(consecutivo);
+                            mViewModel.informe.setConsecutivo(consecutivo);
 
-                                mViewModel.consecutivo=consecutivo;
-                              //  consecutivo.removeObservers(DetalleProductoElecFragment.this);
-                                mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
-                                mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
-                                mViewModel.guardarResp(0,0,listapl.get(0).getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
+                            mViewModel.consecutivo=consecutivo;
+                            mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
+                            mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
+                            mViewModel.guardarResp(0,0,listapl.get(0).getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
+                            guardarMuestra(preguntaAct.getSigId());
+                            loadingDialog.dismisDialog();
+                            //  consecutivo.removeObservers(DetalleProductoFragment.this);
 
 
-                    }
+                        }else {
+                            mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",0,false);
+                            mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",0,false);
+                            mViewModel.guardarResp(0,0,listapl.get(0).getClienteNombre(),"clienteNombre","I",0,false);
+
+                            guardarMuestra(preguntaAct.getSigId());
+                            loadingDialog.dismisDialog();
+                        }
+
+                }else {
+                    guardarMuestra(preguntaAct.getSigId());
+                    loadingDialog.dismisDialog();
 
                 }
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                guardarMuestra(preguntaAct.getSigId());
-                loadingDialog.dismisDialog();
 
                 // avanzarPregunta(preguntaAct.getSigId());
-
-
             }else
             if(preguntaAct.getId()==78){ //son la siglas y ya seleccioné producto
                 //creo informe e informe detalle con datos del producto
@@ -643,7 +656,17 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         LiveData<Reactivo> nvoReac = dViewModel.buscarReactivo(sig);
 
         //busco el siguiente
+        if(sig==1){
+            //empiezo de 0
+            Bundle bundle = new Bundle();
+            bundle.putInt(ContinuarInformeActivity.INFORMESEL,mViewModel.visita.getId());
 
+            //NavHostFragment.findNavController(this).navigate(R.id.action_visitatonuevo,bundle);
+            Intent intento1=new Intent(getActivity(), ContinuarInformeActivity.class);
+            intento1.putExtras(bundle);
+            requireActivity().finish();
+            startActivity(intento1);
+        }
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
             public void onChanged(Reactivo reactivo) {
@@ -679,28 +702,16 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
             //   super.onActivityResult(requestCode, resultCode, data);
-            String state = Environment.getExternalStorageState();
-            String baseDir;
-            if(Environment.MEDIA_MOUNTED.equals(state)) {
-                File baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                if(baseDirFile == null) {
-                    baseDir = getActivity().getFilesDir().getAbsolutePath();
-                } else {
-                    baseDir = baseDirFile.getAbsolutePath();
-                }
-            } else {
-                baseDir = getActivity().getFilesDir().getAbsolutePath();
-            }
-            File file = new File(baseDir, nombre_foto);
-            if (file!=null&&file.exists()) {
-                if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
+            if (archivofoto != null && archivofoto.exists()) {
+
+
                     //envio a la actividad dos para ver la foto
                     //    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
                     //  intento1.putExtra("ei.archivo", nombre_foto);
 
                     textoint.setText(nombre_foto);
 
-                    if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+                    if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
                     {
                         Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
@@ -708,8 +719,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     }else {
                         // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                         ComprasUtils cu = new ComprasUtils();
-                        cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
-                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto, 100, 100);
+                        cu.comprimirImagen(archivofoto.getAbsolutePath());
+                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
                         fotomos.setImageBitmap(bitmap1);
                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                         fotomos.setVisibility(View.VISIBLE);
@@ -718,10 +729,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                         btnrotar.setFocusableInTouchMode(true);
                         btnrotar.requestFocus();
                         nombre_foto=null;
+                        archivofoto=null;
                     }
-
-                }
-
 
             }
             else{
@@ -788,6 +797,43 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         {
             Log.e(TAG,"Algo salió muy mal**");
         }
+    }
+    public boolean buscarMuestraCodigoElec(Date caducidadnva){
+        //busco en el mismo informe
+        return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,dViewModel.productoSel,"",caducidadnva,getViewLifecycleOwner(),dViewModel.productoSel.codigosperm);
+
+    }
+    public boolean validarFecha(){
+        //
+        //
+        ValidadorDatos valdat=new ValidadorDatos();
+        try {
+            fechacad=sdfcodigo.parse(textoint.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+        // if (dViewModel.productoSel.clienteNombre.trim().equals("PEÑAFIEL")) {
+        Date hoy=new Date();
+
+        if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
+            Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca), Toast.LENGTH_LONG).show();
+
+            return false;
+        }else
+            //busco que no haya otra muestra con la misma fecha en el muestreo
+            if(dViewModel.productoSel.tipoMuestra!=3||mViewModel.numMuestra>1) //solo si no es bu
+                if(this.buscarMuestraCodigoElec(fechacad)) {
+                    Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
+
+                    return false;
+                }
+        return true;
+
+        //}else{
+        //     Log.d(TAG,"como que no es peñafiel");
+        //  }
+        //  return false;
     }
 
 

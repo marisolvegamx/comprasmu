@@ -103,9 +103,28 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " inner join visitas on visitas.id=informe_compras.visitasId" +
             " where productoId=:producto and presentacion=:tamanio" +
             " and empaquesId=:empaque and tipoAnalisis=:analisis " +
-            " and visitas.indice=:indice and informe_compras.plantasId=:planta" )
+            " and visitas.indice=:indice and informe_compras.plantasId=:planta" +
+            " group by caducidad order by caducidad desc" )
     public abstract List<InformeCompraDetalle> getByProductoAna(String indice, int planta,int producto, int analisis, int empaque, String tamanio);
 
+    @Query("SELECT informe_detalle.id,informe_detalle.informesId,informe_detalle.estatus," +
+            "informe_detalle.estatusSync,productoId,producto,presentacion,tamanioId," +
+            "empaque,empaquesId,codigo, caducidad,origen, costo,foto_codigo_produccion  ," +
+            "energia,producto_exhibido,foto_num_tienda,marca_traslape, atributoa," +
+            "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
+            "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
+            "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
+            "comprasIdbu,comprasDetIdbu  " +
+            "FROM informe_detalle " +
+            " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
+            " inner join visitas on visitas.id=informe_compras.visitasId" +
+            " where productoId=:producto and presentacion=:tamanio" +
+            " and empaquesId=:empaque and tipoAnalisis=:analisis " +
+            " and visitas.indice=:indice and informe_compras.plantasId=:planta" +
+            " and informe_detalle.siglas=:siglas" +
+            " order by caducidad desc" )
+    public abstract List<InformeCompraDetalle> getByProductoAnaSig(String indice, int planta,int producto, int analisis, int empaque, String tamanio, String siglas);
+    //planta es la de la lista de compra y las siglas son las que se capturan para peñafiel
     @Transaction
     public void insertaActcant(List<InformeCompraDetalle> detalles) {
        insertAll(detalles);

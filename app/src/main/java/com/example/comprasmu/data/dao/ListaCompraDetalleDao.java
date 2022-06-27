@@ -43,8 +43,45 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
             "   where productosId=:prodid and empaquesId=:empid and tamanioId=:tamid and analisisId=:anaid and indice=:indice and plantasId=:planta")
     public abstract ListaCompraDetalle getByProductoAna(int prodid,int empid,int tamid,int anaid, String indice, int planta);
 
-    @Query("Select lista_compras_detalle.* from lista_compras_detalle" +
-            "     where listaId=:listaid " +
+   /* @Query("Select  lis.id, listaId ,lis.productosId ,lis.productoNombre," +
+            "     lis.tamanio ,lis.tamanioId," +
+
+            "     lis.empaque," +
+            "     lis.empaquesId," +
+            "    lis.tipoAnalisis," +
+            "     lis.analisisId," +
+            "     lis.cantidad," +
+            "    lis.codigosNoPermitidos," +
+            "    com.caducidad as nvoCodigo," +
+            "     lis.estatus," +
+            "     lis.comprados," +
+            "     lis.tipoMuestra," +
+            "    lis.nombreTipoMuestra," +
+            "     lis.categoriaid," +
+            "    lis.categoria," +
+            "    lis.lid_fechapermitida," +
+            "    lid_fecharestringida," +
+            "     lid_orden," +
+
+            "     ordtam," +
+
+            "     ordemp," +
+
+            "     ordtipa," +
+
+            "     ordtipm," +
+
+
+            "     lid_backup from lista_compras_detalle lis" +
+            "   inner join informe_detalle com on lis.productosId=com.productoId and lis.analisisId=com.tipoAnalisis" +
+            " and lis.tamanioId=com.tamanioId and lis.empaquesId=com.empaquesId" +
+            "    where listaId=:listaid " +
+            " order by lid_orden ASC, ordtam DESC, ordemp ASC, ordtipa ASC, ordtipm")
+    public abstract LiveData<List<ListaCompraDetalle>> getListasDetalleOrdByLista(int listaid);
+*/
+
+    @Query("Select   lista_compras_detalle.* from lista_compras_detalle " +
+            "   where listaId=:listaid " +
             " order by lid_orden ASC, ordtam DESC, ordemp ASC, ordtipa ASC, ordtipm")
     public abstract LiveData<List<ListaCompraDetalle>> getListasDetalleOrdByLista(int listaid);
 

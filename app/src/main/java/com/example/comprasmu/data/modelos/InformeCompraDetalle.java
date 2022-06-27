@@ -7,6 +7,7 @@ import androidx.room.TypeConverters;
 
 import com.example.comprasmu.data.Converters;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity(tableName = "informe_detalle")
@@ -430,6 +431,11 @@ public class InformeCompraDetalle {
 
     public void setSiglas(String siglas) {
         this.siglas = siglas;
+    }
+
+    public String getCaducidadFormat(){
+        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yy");
+        return sdf.format(caducidad);
     }
 }
 

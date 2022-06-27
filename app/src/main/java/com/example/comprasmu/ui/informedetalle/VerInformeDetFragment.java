@@ -550,4 +550,27 @@ public class VerInformeDetFragment extends Fragment {
         startActivity(iverim);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        informeSel=null;
+        mViewModel=null;
+       dViewModel=null;
+       niViewModel=null;
+
+       cf=null;
+         cf2=null;
+      camposForm=null;
+         tomadoDe=null;
+        atributos=null;
+        fotos=null;
+       cont=null;
+
+         sdf=null;
+         root=null;
+
+         sv2=null;
+         sv1=null;
+    }
+
 }

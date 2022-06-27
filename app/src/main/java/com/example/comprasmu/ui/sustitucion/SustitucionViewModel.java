@@ -16,16 +16,23 @@ import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaDetalleBu;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
+import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class SustitucionViewModel extends AndroidViewModel {
@@ -46,18 +53,39 @@ public class SustitucionViewModel extends AndroidViewModel {
         super(application);
         SustitucionDao dao=ComprasDataBase.getInstance(application).getSustitucionDao();
         repository =new  SustitucionRepositoryImpl(application);
-         context=application;
+        context=application;
     }
 
 
     public void cargarListas(String categoria){
-
-
         listaSustitucion =repository.getByFiltros(categoria,"","","");
         size = Transformations.map(listaSustitucion,res->{ return listaSustitucion.getValue().size();});
         empty = Transformations.map(listaSustitucion, res->{return listaSustitucion.getValue().isEmpty();});
     }
 
+    public String ordenarCodigosNoPermitidos( Sustitucion detalle) {
+        SimpleDateFormat sdfcodigo= new SimpleDateFormat("dd-MM-yy");
+
+
+        InformeComDetRepositoryImpl icrepo=new InformeComDetRepositoryImpl(context);
+        String nvoCodigos = "";
+
+            //busco los nuevos codigos
+      //  Log.d(TAG,"buscando cods "+Constantes.VarListCompra.plantaSel+"--"+detalle.getSu_producto()+"--"+Constantes.VarListCompra.detallebuSel.getAnalisisId()+"--"+detalle.getSu_tipoempaque()+"--"+detalle.getNomtamanio());
+            List<InformeCompraDetalle> informeCompraDetalles=icrepo.getByProductoAna(Constantes.INDICEACTUAL,Constantes.VarListCompra.plantaSel,detalle.getSu_producto(),Constantes.VarListCompra.detallebuSel.getAnalisisId(),detalle.getSu_tipoempaque(),detalle.getNomtamanio());
+
+        if(informeCompraDetalles!=null) {
+       //     Log.d(TAG,"encontré " +informeCompraDetalles.size());
+            for (InformeCompraDetalle info : informeCompraDetalles) {
+                nvoCodigos = nvoCodigos + sdfcodigo.format(info.getCaducidad()) + "\n";
+            }
+        }
+
+
+
+        return  nvoCodigos;
+
+    }
 
 
     public LiveData<List<Sustitucion>> getListas() {

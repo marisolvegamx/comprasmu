@@ -102,18 +102,13 @@ public class DetalleProductoFragment extends Fragment {
     CreadorFormulario cf;
     List<CampoForm> camposForm;
     private List<CatalogoDetalle> tomadoDe;
-    private List<CatalogoDetalle>atributos;
-    private List<CatalogoDetalle>causas;
+    private List<CatalogoDetalle> atributos;
+    private List<CatalogoDetalle> causas;
     private static final String TAG="DETALLEPRODUCTOFRAG";
-
-
     private static final int REQUEST_CODEQR = 341;
     SimpleDateFormat sdf;
     SimpleDateFormat sdfcodigo;
     View root;
-
-    boolean isSegunda;
-    boolean isTercera;
     EditText textoint;
     Preguntasino pregunta;
     View respgen;
@@ -174,6 +169,9 @@ public class DetalleProductoFragment extends Fragment {
          * desde la lista de compra
          */
         try {
+            if(preguntaAct==null){
+                return root;
+            }
             Log.d(TAG,"creando fragment "+preguntaAct.getId());
             dViewModel.reactivoAct=preguntaAct.getId();
             sv = root.findViewById(R.id.content_generic);
@@ -186,7 +184,7 @@ public class DetalleProductoFragment extends Fragment {
             ((ContinuarInformeActivity)getActivity()).noSalir(false);
             if(this.preguntaAct!=null)
                  ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
-            Log.d(TAG,"------"+Constantes.NM_TOTALISTA+"---"+mViewModel.consecutivo);
+         //   Log.d(TAG,"------"+Constantes.NM_TOTALISTA+"---"+mViewModel.consecutivo);
 
             if(ultimares!=null) {    //es edicion
                isEdicion = true;
@@ -556,9 +554,10 @@ public class DetalleProductoFragment extends Fragment {
             });
 
             if(isEdicion){
-                Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                ComprasUtils cu=new ComprasUtils();
-                bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
+               // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                //ComprasUtils cu=new ComprasUtils();
+               // bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
+                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor(), 100, 100);
 
                 fotomos.setImageBitmap(bitmap1);
                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
@@ -867,35 +866,39 @@ public class DetalleProductoFragment extends Fragment {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                try {
+                    //guarda informe
+                    this.actualizarInforme();
+                    this.finalizar();
 
+                    //reviso si hay más clientes, si no fin
+                    buscarClientes();
+                    if (clientesAsignados != null && clientesAsignados.size() > 0) {
 
+                        yaestoyProcesando = false;
+                        avanzarPregunta(preguntaAct.getSigId());
+                    } else {
+                        //no hay mas clientes finalizo preinforme e informe
+                        //    mViewModel.finalizarInforme();
+                        //la muestra la guarde en la 42
 
-                //guarda informe
-                this.actualizarInforme();
-                this.finalizar();
+                        Log.d(TAG, "NO MAS CLIENTES");
+                        //es la 43 //finalizo preinforme
+                        mViewModel.finalizarVisita(mViewModel.visita.getId());
+                        //  mViewModel.eliminarTblTemp();
+                        //   loadingDialog.dismisDialog();
+                        Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
+                        yaestoyProcesando = false;
+                        salir();
+                        //  aceptar.setEnabled(true);
+                        return;
 
-                //reviso si hay más clientes, si no fin
-                buscarClientes();
-                if(clientesAsignados!=null&&clientesAsignados.size()>0) {
-
+                    }
+                }catch(Exception ex){
+                    ex.printStackTrace();
                     yaestoyProcesando=false;
-                    avanzarPregunta(preguntaAct.getSigId());
-                }
-                else{
-                    //no hay mas clientes finalizo preinforme e informe
-                 //    mViewModel.finalizarInforme();
-                //la muestra la guarde en la 42
 
-                    Log.d(TAG,"dice que no");
-                    //es la 43 //finalizo preinforme
-                    mViewModel.finalizarVisita(mViewModel.visita.getId());
-                  //  mViewModel.eliminarTblTemp();
-                 //   loadingDialog.dismisDialog();
-                    Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
-                    yaestoyProcesando=false;
-                    salir();
-                  //  aceptar.setEnabled(true);
-                    return;
+                    Toast.makeText(getActivity(), "algo salió mal", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -1021,6 +1024,8 @@ public class DetalleProductoFragment extends Fragment {
                     return;
                 }
                 avanzarPregunta(1);
+
+
             }
             else{
                 if(preguntaAct.getId()>0)
@@ -1077,7 +1082,7 @@ public class DetalleProductoFragment extends Fragment {
             public void onClick(DialogInterface dialogo1, int id) {
                 //Es hora de cerrar el preinforme
                 mViewModel.finalizarVisita(mViewModel.visita.getId());
-                mViewModel.eliminarTblTemp();
+               // mViewModel.eliminarTblTemp();
 
                 Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
                 salir();
@@ -1290,8 +1295,6 @@ public class DetalleProductoFragment extends Fragment {
 
     }
     public boolean validarFecha(){
-        //
-    //
         ValidadorDatos valdat=new ValidadorDatos();
 
         if (dViewModel.productoSel.clienteNombre.toUpperCase().trim().equals("PEPSI")) {
@@ -1300,7 +1303,6 @@ public class DetalleProductoFragment extends Fragment {
             Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
 
             return valdat.resp;
-
         }
         try {
             fechacad=sdfcodigo.parse(textoint.getText().toString());
@@ -1322,14 +1324,14 @@ public class DetalleProductoFragment extends Fragment {
         if(dViewModel.productoSel.clienteNombre.toUpperCase().equals("PEPSI")) {
             ValidadorDatos valdat = new ValidadorDatos();
            // if(Constantes.DP_CONSECUTIVO<11)
-            if (!valdat.validarCodigoprodPep(textoint.getText().toString(), dViewModel.productoSel.codigosnop)) {
+            if (!valdat.validarCodigoprodPep(textoint.getText().toString(), dViewModel.productoSel.codigosnop)) { //son solo los que vienen del servidor en la lista no tengo los permanentes
                 if(valdat.mensaje>0)
                     Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
                 return false;
             } else {
                 //Constantes.
                 //busco si hay otra muestra == y si tiene el mismo codigo
-                if(Constantes.DP_CONSECUTIVO<11)
+                if(dViewModel.productoSel.tipoMuestra!=3)
                 { res = buscarMuestraCodigo(dViewModel.productoSel, textoint.getText().toString(), fechacad,dViewModel.productoSel.codigosperm);
 
                 if (res) {
@@ -1348,7 +1350,7 @@ public class DetalleProductoFragment extends Fragment {
 
         return mViewModel.insertarInfdeTemp(getActivity(), getViewLifecycleOwner());
     }
-    public void actualizarInforme(){
+    public void actualizarInforme() throws Exception {
         mViewModel.actualizarInforme();
     }
     public void limpiarTablTemp(){
@@ -1365,6 +1367,17 @@ public class DetalleProductoFragment extends Fragment {
     public void avanzarPregunta(int sig){
         if(sig==0)
             guardarResp();//vuelvo a guardar
+        if(sig==1){
+            //empiezo de 0
+            Bundle bundle = new Bundle();
+            bundle.putInt(ContinuarInformeActivity.INFORMESEL,mViewModel.visita.getId());
+
+            //NavHostFragment.findNavController(this).navigate(R.id.action_visitatonuevo,bundle);
+            Intent intento1=new Intent(getActivity(), ContinuarInformeActivity.class);
+            intento1.putExtras(bundle);
+            requireActivity().finish();
+            startActivity(intento1);
+        }
         //busco el siguiente
         LiveData<Reactivo> nvoReac = dViewModel.buscarReactivo(sig);
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
@@ -1536,7 +1549,6 @@ public class DetalleProductoFragment extends Fragment {
                     valor = selectedRadioButtonId + "";
                 }
 
-
             }
             if (preguntaAct.getType().equals(CreadorFormulario.PREGUNTASINO)) {
                 valor = pregunta.getRespuesta() + "";
@@ -1545,7 +1557,6 @@ public class DetalleProductoFragment extends Fragment {
         }
             //  if(!preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN))
             //paso a mayusculas
-
             Log.d(TAG, "guardando en temp" + preguntaAct.getId() + "val" + valor);
             if (preguntaAct.getId() > 0 && valor != null && valor.length() > 0) {
               //actualizo la visita
@@ -1556,22 +1567,40 @@ public class DetalleProductoFragment extends Fragment {
 
             //si es la 2 4 o 3 guardo la
 
-
-
     }
         String nombre_foto;
-
+    File archivofoto;
     public void tomarFoto(){
-            Activity activity=this.getActivity();
+        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
+        {
+            Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+
+            return;
+        }else {
+            Activity activity = this.getActivity();
             Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
             String dateString = format.format(new Date());
-            File foto=null;
-            try{
-                nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
-                foto = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), nombre_foto);
-                Log.e(TAG, "****"+foto.getAbsolutePath());
+            String state = Environment.getExternalStorageState();
+
+            File baseDirFile;
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                if (baseDirFile == null) {
+                    Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            //  baseDir = baseDirFile.getAbsolutePath();
+
+            try {
+                nombre_foto = "img_" + Constantes.CLAVEUSUARIO + "_" + dateString + ".jpg";
+                archivofoto = new File(baseDirFile, nombre_foto);
+                Log.e(TAG, "****" + archivofoto.getAbsolutePath());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
@@ -1580,23 +1609,20 @@ public class DetalleProductoFragment extends Fragment {
             }
             Uri photoURI = FileProvider.getUriForFile(activity,
                     "com.example.comprasmu.fileprovider",
-                    foto);
+                    archivofoto);
             intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
             //intento1.putExtra("origen", origen);
-
-
-
-
-            if(fotomos!=null) {
+            if (fotomos != null) {
 
                 startActivityForResult(intento1, REQUEST_CODE_TAKE_PHOTO);
 
             }
+        }
 
         }
     public void rotar(){
         String foto=textoint.getText().toString();
-            if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+            if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
             {
                 Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
@@ -1610,20 +1636,8 @@ public class DetalleProductoFragment extends Fragment {
                Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
             if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
              //   super.onActivityResult(requestCode, resultCode, data);
-                String state = Environment.getExternalStorageState();
-                String baseDir;
-                if(Environment.MEDIA_MOUNTED.equals(state)) {
-                    File baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                    if(baseDirFile == null) {
-                        baseDir = getActivity().getFilesDir().getAbsolutePath();
-                    } else {
-                        baseDir = baseDirFile.getAbsolutePath();
-                    }
-                } else {
-                    baseDir = getActivity().getFilesDir().getAbsolutePath();
-                }
-                File file = new File(baseDir, nombre_foto);
-               if (file!=null&&file.exists()) {
+
+               if (archivofoto!=null&&archivofoto.exists()) {
                     if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
                         //envio a la actividad dos para ver la foto
                     //    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
@@ -1631,7 +1645,7 @@ public class DetalleProductoFragment extends Fragment {
 
                         textoint.setText(nombre_foto);
 
-                        if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+                        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
                         {
                             Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
@@ -1639,8 +1653,8 @@ public class DetalleProductoFragment extends Fragment {
                         }else {
                            // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                             ComprasUtils cu = new ComprasUtils();
-                            cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
-                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto, 100, 100);
+                            cu.comprimirImagen(archivofoto.getAbsolutePath());
+                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
                             fotomos.setImageBitmap(bitmap1);
                             // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                             fotomos.setVisibility(View.VISIBLE);
@@ -1649,6 +1663,7 @@ public class DetalleProductoFragment extends Fragment {
                             btnrotar.setFocusableInTouchMode(true);
                             btnrotar.requestFocus();
                             nombre_foto=null;
+                            archivofoto=null;
                         }
 
                     }
@@ -1918,7 +1933,7 @@ public class DetalleProductoFragment extends Fragment {
     @Override
     public void onResume() {
             super.onResume();
-            if(textoint!=null) {
+          /*  if(textoint!=null) {
                // Log.d(TAG, "genere cons=" + textoint.getText().toString());
 
                 if (!textoint.getText().toString().equals("") && preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN)) {
@@ -1928,9 +1943,10 @@ public class DetalleProductoFragment extends Fragment {
 
                         return;
                     }else { //cargo la foto
-                        Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                        ComprasUtils cu = new ComprasUtils();
-                        bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + textoint.getText().toString());
+                       // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                      //  ComprasUtils cu = new ComprasUtils();
+                        //      bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + textoint.getText().toString());
+                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + textoint.getText().toString(), 100, 100);
 
                         fotomos.setImageBitmap(bitmap1);
                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
@@ -1939,7 +1955,7 @@ public class DetalleProductoFragment extends Fragment {
                         btnrotar.setVisibility(View.VISIBLE);
                     }
                 }
-            }
+            }*/
         }
      public int getNumPregunta(){
             return preguntaAct.getId();
@@ -2038,6 +2054,34 @@ public class DetalleProductoFragment extends Fragment {
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState!=null)
         nombre_foto= savedInstanceState.getParcelable("picUri");
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mViewModel = null;
+        lcviewModel = null;
+        dViewModel=null;
+        cf=null;
+        camposForm=null;
+        tomadoDe=null;
+        atributos=null;
+        causas=null;
+        root=null;
+        textoint=null;
+        pregunta=null;
+        respgen=null;
+        spclientes=null ;
+        preguntaAct=null;
+        micbtn=null;
+        fotomos=null;
+        sv=null;
+        btnrotar=null;
+        loadingDialog=null ;
+        aceptar=null;
+
+        lcviewModel=null;
+         nombre_foto=null;
+         archivofoto=null;
     }
 
 

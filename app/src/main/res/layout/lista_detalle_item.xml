@@ -27,6 +27,12 @@
             name="cliente"
             type="Integer" />
         <variable
+            name="plantasel"
+            type="Integer" />
+        <variable
+            name="criteriobu"
+            type="Integer" />
+        <variable
             name="mViewModel"
             type="com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel" />
 
@@ -82,7 +88,7 @@
                         style="@style/textolistagrisb"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:visibility="@{isBu?View.INVISIBLE:View.VISIBLE}"
                         android:text="@{String.valueOf(detalle.comprados)+'/'+String.valueOf(detalle.cantidad)}"
                         android:textAlignment="textEnd" />
                 </LinearLayout>
@@ -223,8 +229,7 @@
                     android:id="@+id/txtcodigos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-                    android:text='@{mViewModel.ordenarCodigosNoPermitidos(numTienda,detalle.nvoCodigo,detalle.codigosNoPermitidos)}' />
+                    android:text='@{mViewModel.ordenarCodigosNoPermitidos(numTienda,detalle.nvoCodigo,detalle.codigosNoPermitidos,criteriobu,detalle.analisisId,detalle,plantasel)}' />
                 <!--                <Button-->
                 <!--                    android:id="@+id/btncodigosex"-->
                 <!--                    style="@style/Widget.AppCompat.Button.Borderless"-->

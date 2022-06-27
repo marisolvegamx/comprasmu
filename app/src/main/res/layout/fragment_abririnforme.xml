@@ -130,6 +130,35 @@
                         tools:visibility="visible" />
                 </LinearLayout>
 
+                <CheckBox
+                    android:id="@+id/cbainpfachada"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_foto" />
+
+                <LinearLayout
+                    android:id="@+id/aiubicar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/txtairegub"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ubiquese" />
+
+                    <Button
+                        android:id="@+id/btnaiubic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="#00BCD4"
+                        android:text="@string/regubi" />
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/textView15"
                     style="@style/formlabel"
@@ -189,6 +218,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/producto_exhibido" />
 
+            <CheckBox
+                android:id="@+id/cbainpexhibidor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_foto" />
+
             <EditText
                 android:id="@+id/txtaifotoex1"
                 android:layout_width="wrap_content"
@@ -213,6 +248,7 @@
                     android:id="@+id/ivaifotoex1"
                     android:layout_width="111dp"
                     android:layout_height="99dp"
+                    android:tag="fotoex"
                     android:visibility="gone"
                     tools:src="@tools:sample/avatars" />
 
@@ -264,6 +300,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
+
                     android:src="@drawable/ic_menu_camera" />
 
                 <EditText
@@ -282,6 +319,7 @@
                         android:id="@+id/ivaifotoex2"
                         android:layout_width="111dp"
                         android:layout_height="95dp"
+                        android:tag="fotoex"
                         android:visibility="gone"
                         tools:src="@tools:sample/avatars"
                         tools:visibility="visible" />
@@ -354,6 +392,7 @@
                         android:id="@+id/ivaifotoex3"
                         android:layout_width="111dp"
                         android:layout_height="95dp"
+                        android:tag="fotoex"
                         android:visibility="gone"
                         tools:src="@tools:sample/avatars" />
 

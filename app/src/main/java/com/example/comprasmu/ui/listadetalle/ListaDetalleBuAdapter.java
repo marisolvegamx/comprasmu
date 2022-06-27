@@ -20,11 +20,13 @@ public class ListaDetalleBuAdapter extends ArrayAdapter<InformeCompraDetalle> {
 
     AppCompatActivity appCompatActivity;
     List<InformeCompraDetalle> items;
-    ListaDetalleBuAdapter(AppCompatActivity context, List<InformeCompraDetalle> lsvm) {
+    int cliente;
+    ListaDetalleBuAdapter(AppCompatActivity context, List<InformeCompraDetalle> lsvm, int clientesel) {
         super(context,0,lsvm);
         // super(context,0, lsvm);
         appCompatActivity = context;
         items=lsvm;
+        this.cliente=clientesel;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -42,6 +44,7 @@ public class ListaDetalleBuAdapter extends ArrayAdapter<InformeCompraDetalle> {
         }
 
         binding.setDetallebu( items.get(position));
+        binding.setClientesel(cliente);
         if(binding.getDetallebu()!=null)
             binding.cajatexto.setVisibility(View.VISIBLE);
         binding.executePendingBindings();

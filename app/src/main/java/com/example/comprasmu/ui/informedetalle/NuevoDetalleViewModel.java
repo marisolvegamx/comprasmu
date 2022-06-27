@@ -297,6 +297,47 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
         return false;
     }
+    public boolean buscarMuestraCodigoPen(String indice, int planta, ProductoSel productosel, String codigonvo, Date caducidad, LifecycleOwner lco, String codigosperm){
+        Log.d(TAG, "buscando codigo"+caducidad);
+        //reviso si es fecha permitid
+        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yy");
+
+        if(!codigosperm.equals(""));
+        {
+            codigosperm=codigosperm.replace("=","");
+            String[] fechas=codigosperm.split(";");
+
+            for(int j=0;j<fechas.length;j++){
+                try {
+                    if(!fechas[j].equals("")) {
+                        Date fechaperm = sdf.parse(fechas[j]);
+                        if (fechaperm.equals(caducidad))
+                            return false; //esta permitida
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+        Log.d(TAG,"SI TRAigo siglas"+productosel.siglas);
+        //busco en los informes
+        List<InformeCompraDetalle> informeCompraDetalles=detalleRepo.getByProductoAnaPen(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion, productosel.siglas);
+        Log.d(TAG,"buscando codigo igual"+informeCompraDetalles.size());
+        for(InformeCompraDetalle det:informeCompraDetalles) {
+            Log.d(TAG, "buscando codigo igual" + det.getCaducidad());
+            //recorro el informe buscando
+            if (det.getCaducidad().equals(caducidad)) {
+
+                return true; //tengo uno
+
+            }
+        }
+
+        return false;
+    }
     public void buscarPlantaPen(String siglas, DetalleProductoPenFragment.EnvioListener listener ){
         try {
             PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
@@ -319,8 +360,8 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
             Class params[] = new Class[1];
             if(info.getNombre_campo().equals(""))
                 continue;
-            if(info.getNombre_campo().equals("siglas"))
-                continue;
+            /*if(info.getNombre_campo().equals("siglas"))
+                continue;*/
             if(info.getNombre_campo().equals("caducidad")) {
 
                 params[0] = Date.class;

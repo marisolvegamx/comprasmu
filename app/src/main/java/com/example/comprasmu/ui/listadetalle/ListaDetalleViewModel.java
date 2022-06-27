@@ -16,6 +16,7 @@ import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaDetalleBu;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
@@ -67,8 +68,10 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         detRepo=new ListaCompraDetRepositoryImpl(application);
         context=application;
     }
-    public void cargarListaCompra() {
+    public void cargarListaCompra()  {
+
         listaCompra = repository.getByFiltros(Constantes.INDICEACTUAL, plantaSel,clienteSel);
+
     }
 
     public void cargarDetalles(int idlista){
@@ -164,17 +167,17 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         Log.d(TAG,"criterio"+opcionsel);
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, tamanio);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista,1, categoria, productoNombre, empaque, tamanio);
                 break;
             case 2:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, 0);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista,1, categoria, productoNombre, empaque, 0);
                 break;
             case 3:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria,productoNombre, "", 0);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, 1,categoria,productoNombre, "", 0);
                 break;
             case 4: default: //la misma lista
                // detallebu = detRepo.getDetalleByFiltrosUD(idlista,categoria,"","",0);
-                detallebu = detRepo.consultaFisico4(idlista, categoria, productoNombre, empaque, tamanio,"",iddetorig);
+                detallebu = detRepo.consultaFisico4(idlista,1, categoria, productoNombre, empaque, tamanio,"",iddetorig);
                // detallebu = detRepo.getAllByLista(idlista);
 
                 break;
@@ -186,10 +189,10 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public void consultaSensorial(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int tamanio,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, tamanio);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista,2, categoria, productoNombre, empaque, tamanio);
                 break;
             case 2: default: //muestro toda la lista
-                 detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,"",iddetorig);
+                 detallebu = detRepo.getDetalleByFiltros(idlista,2, categoria, productoNombre, empaque, tamanio,"",iddetorig);
               //  detallebu = detRepo.getAllByLista(idlista);
                 break;
 
@@ -201,15 +204,15 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public void consultaTorque(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ,int tamanio,int iddetorig){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista, categoria, productoNombre, empaque, tamanio);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, 3,categoria, productoNombre, empaque, tamanio);
                 break;
             case 2:
-                detallebu = detRepo.consultaTorque2(idlista, categoria, productoNombre, empaque);
+                detallebu = detRepo.consultaTorque2(idlista,3, categoria, productoNombre, empaque);
                 break;
 
             case 3: default:
               //  detallebu = detRepo.consultaTorque4(idlista, categoria, empaque);
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,"",iddetorig);
+                detallebu = detRepo.getDetalleByFiltros(idlista, 3,categoria, productoNombre, empaque, tamanio,"",iddetorig);
 
                 //    detallebu = detRepo.getAllByLista(idlista);
                 break;
@@ -221,12 +224,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisis,int tamanio,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUDA2(idlista, categoria, analisis,productoNombre, "", 0);
+                detallebu = detRepo.getDetalleByFiltrosUDA2(idlista, 4,categoria, analisis,productoNombre, "", 0);
 
                // detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque, tamanio);
                 break;
             case 2: default:
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,analisis+"",0);
+                detallebu = detRepo.getDetalleByFiltros(idlista,4, categoria, productoNombre, empaque, tamanio,analisis+"",0);
 
               //  detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque,0);
                 break;
@@ -336,14 +339,35 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         return null;
 
     }*/
-    public String ordenarCodigosNoPermitidos(int numTienda,String nvoCodigos,String noPermitidos) {
+    public String ordenarCodigosNoPermitidos(int numTienda, String nvoCodigos, String noPermitidos, int criterio, int analisis, ListaDetalleBu detalle,int plantasel) {
+        SimpleDateFormat sdfcodigo= new SimpleDateFormat("dd-MM-yy");
         List<String> otodo= new ArrayList<String>();
         List<Date> fechas=new ArrayList<Date>();
         String resultado = "";
-        Log.d(TAG,"xxxxx "+numTienda+"--"+nvoCodigos+"--"+noPermitidos);
-        if(clienteSel==4&&numTienda>=11){
-            nvoCodigos="";
-        }
+
+       // Log.d(TAG,"yyy  "+clienteSel+"--"+criterio+"--"+analisis);
+        InformeComDetRepositoryImpl icrepo=new InformeComDetRepositoryImpl(context);
+        nvoCodigos = "";
+        if(clienteSel==4)
+        {   if(criterio>0){
+                nvoCodigos = "";
+
+                }
+                else{
+                    //busco los nuevos codigos
+                    List<InformeCompraDetalle> informeCompraDetalles=icrepo.getByProductoAna(Constantes.INDICEACTUAL,plantasel,detalle.getProductosId(),detalle.getAnalisisId(),detalle.getEmpaquesId(),detalle.getTamanio());
+                    for(InformeCompraDetalle info:informeCompraDetalles){
+                        nvoCodigos=nvoCodigos+sdfcodigo.format(info.getCaducidad())+";";
+                    }
+                }
+        }else{
+                //busco los nuevos codigos
+                List<InformeCompraDetalle> informeCompraDetalles=icrepo.getByProductoAna(Constantes.INDICEACTUAL,plantasel,detalle.getProductosId(),detalle.getAnalisisId(),detalle.getEmpaquesId(),detalle.getTamanio());
+                for(InformeCompraDetalle info:informeCompraDetalles){
+                    nvoCodigos=nvoCodigos+ sdfcodigo.format(info.getCaducidad())+";";
+                }
+            }
+      //  Log.d(TAG,"xxxxx "+numTienda+"--"+nvoCodigos+"--"+noPermitidos);
     if(nvoCodigos!=null&&nvoCodigos.length()>0) {
         String auxnvo[] = nvoCodigos.split(";");
 
@@ -363,11 +387,14 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             else
                 otodo.add(noPermitidos);
         }
-        Log.d(TAG,otodo.size()+"--"+ otodo);
+       // Log.d(TAG,otodo.size()+"--"+ otodo);
         SimpleDateFormat sdfcaducidad = new SimpleDateFormat("dd-MM-yy");
         for (int i = 0; i < otodo.size(); i++) {
             Log.d(TAG, otodo.get(i));
             try {
+                if(fechas.contains(sdfcaducidad.parse(otodo.get(i)))){
+                    continue; //para no meter duplicados
+                }
                 fechas.add(sdfcaducidad.parse(otodo.get(i)));
                 Log.d(TAG, "<<" + fechas);
             } catch (ParseException e) {

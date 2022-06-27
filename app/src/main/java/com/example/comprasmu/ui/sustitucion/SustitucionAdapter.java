@@ -27,6 +27,7 @@ public class SustitucionAdapter extends RecyclerView.Adapter<SustitucionAdapter.
     int numtienda;
     boolean isbu, ismuestra;//para saber si ya estoy en lista de bu o agregando muestra
     String cliente;
+    private SustitucionViewModel svmodel;
     public SustitucionAdapter(String ismuestra, AdapterCallback callback) {
       if(ismuestra!=null&&ismuestra.equals("true"))
           this.ismuestra=true;
@@ -34,8 +35,9 @@ public class SustitucionAdapter extends RecyclerView.Adapter<SustitucionAdapter.
 
     }
 
-    public void setSustitucionList(List<Sustitucion> categoriesList) {
+    public void setSustitucionList(List<Sustitucion> categoriesList,SustitucionViewModel svmodel) {
         mSustitucionList = categoriesList;
+        this.svmodel=svmodel;
 
     }
     @NonNull
@@ -52,7 +54,7 @@ public class SustitucionAdapter extends RecyclerView.Adapter<SustitucionAdapter.
     public void onBindViewHolder(@NonNull SustitucionViewHolder holder, int position) {
        holder.binding.setDetalle(mSustitucionList.get(position));
         holder.binding.setMostrarAgregar(ismuestra);
-
+        holder.binding.setSViewModel(svmodel);
 
     }
 
@@ -80,6 +82,33 @@ public class SustitucionAdapter extends RecyclerView.Adapter<SustitucionAdapter.
                 public void onClick(View view) {
                     if (view.getId() == R.id.btnldagregar) {
                         callback.agregarMuestra(view, binding.getDetalle());
+                    }
+                }
+            });
+
+            binding.btnscodigos.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    switch (view.getId()) {
+                        case R.id.btnscodigos:
+                            // Log.d("Se seleccionó a ", binding.txtfecha.getText().toString());
+                            //   Toast.makeText(context, "Se seleccionó a " + txtid.getText().toString(), Toast.LENGTH_SHORT).show();
+                            //amplio el card view
+                            if(binding.txtscodigos.getVisibility()==View.GONE) {
+
+                                binding.txtscodigos.setVisibility(View.VISIBLE);
+
+                            }else
+                            {
+                                // Log.d(TAG,"haciendo chiquito");
+                                binding.txtscodigos.setVisibility(View.GONE);
+
+                            }
+
+                            break;
+                        default:
+                            break;
                     }
                 }
             });

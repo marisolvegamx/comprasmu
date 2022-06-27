@@ -94,7 +94,12 @@
 
     </style>
     <style name="btnverde" parent="android:Widget.Button">
-        <item name="android:background">@color/blue_secondary</item>
+        <item name="android:backgroundTint">@color/blue_secondary</item>
+        <item name="android:tint">@color/white</item>
+
+    </style>
+    <style name="btnverde2" parent="android:Widget.Material.Button">
+        <item name="android:backgroundTint">@color/blue_secondary</item>
         <item name="android:tint">@color/white</item>
 
     </style>

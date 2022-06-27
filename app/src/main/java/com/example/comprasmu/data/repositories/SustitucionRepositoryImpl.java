@@ -59,6 +59,55 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         return dao.getByFiltros(sqlquery);
     }
 
+
+    public LiveData<List<Sustitucion>> getByFiltrosConCods(String categoria, String productoNombre, String empaque,String tamanio, int analisissel) {
+
+        String query="Select  id_sustitucion," +
+
+                "    clientesId," +
+                "    su_tipoempaque," +
+                "    su_producto," +
+                "    su_tamanio," +
+                "     nomproducto," +
+                "     nomtamanio," +
+                "     nomempaque," +
+                "    categoriasId," +
+                "     nomcategoria," +
+                "     caducidad as codigosnoperm from sustitucion" +
+                " inner join informe_detalle on informe_datelle.productoId=sustitucion.su_producto" +
+                " and informe_detalle.empaquesId=sustitucion.su_tipoempaque and informe_detalle.tamanioId=sustitucion.su_tamanio" +
+                " and tipoAnalisis=" +analisissel+
+                " where 1=1";
+        ArrayList<String> filtros=new ArrayList<String>();
+
+        if(categoria!=null&&!categoria.equals("")) {
+            query =query+ " and nomcategoria=?";
+            filtros.add(categoria);
+        }
+        if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and nomproducto=?";
+            filtros.add(productoNombre);
+        }
+        if(empaque!=null&&!empaque.equals("")) {
+            query = query + " and nomempaque=?";
+            filtros.add(empaque);
+        }
+        if(tamanio!=null&&!tamanio.equals("")) {
+            query = query + " and nomtamanio=?";
+            filtros.add(tamanio);
+        }
+
+
+        // Object[] params=filtros.toArray();
+        Log.d("query",filtros.toArray()+"");
+
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,filtros.toArray()
+        );
+
+        return dao.getByFiltros(sqlquery);
+    }
+
     public LiveData<List<Sustitucion>> getAll() {
       return dao.findAll();
     }

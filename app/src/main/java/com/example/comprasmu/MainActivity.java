@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.comprasmu.ui.listadetalle.PostViewModel;
+
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity  {
     Button cancelButton,sortButton;
     public TextView progressLabel;
     private TextView mResponseTv;
-    private PostViewModel  vmp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +44,7 @@ public class MainActivity extends AppCompatActivity  {
         });
 
     }
-    public void sendPost(String title, String body) {
-        vmp =  new ViewModelProvider(this).get(PostViewModel.class);
-        vmp.sendPost("hola", "esta es mi primera prueba");
-        
 
-    }
 
     public void verTabs(View v){
        // Intent intente=new Intent(this, SelPlantaActivity.class);

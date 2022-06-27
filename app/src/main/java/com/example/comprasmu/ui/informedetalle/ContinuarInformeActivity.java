@@ -19,13 +19,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.ActivityContinuarInformeBinding;
+import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.utils.Constantes;
 
@@ -45,6 +48,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     Reactivo preguntaAct;
     InformeTemp ultimares;
     boolean noSalir;
+    int idinformeSel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +70,21 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
         dViewModel = new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
+        if (savedInstanceState != null) {    // Restore value of members from saved state
+            //  idinformeSel = savedInstanceState.getInt("visitasel");
+            //  if(idinformeSel>0) { //se salio y lo devuelvo al inicio
+            this.finish();
+            Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
+            intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"continuarinf");
+
+            startActivity(intento1);
+
+            //mando al inicio
+            //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
+            //  }
+        }
         // if(Constantes.NM_TOTALISTA>=16)
-        loadData();
+        loadData(savedInstanceState);
         //reviso si es edicion y ya tengo info en temp
         ultimares=dViewModel.getUltimoTemp();
 
@@ -192,9 +209,24 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
 
     }
 
-    public void loadData() {
+    public void loadData(Bundle savedInstanceState) {
         Bundle datosRecuperados = getIntent().getExtras();
-        int idinformeSel = datosRecuperados.getInt(INFORMESEL); //es la visita id
+
+        if(datosRecuperados!=null)
+         idinformeSel = datosRecuperados.getInt(INFORMESEL); //es la visita id
+        else { //lo recupero
+            if (savedInstanceState != null) {    // Restore value of members from saved state
+              //  idinformeSel = savedInstanceState.getInt("visitasel");
+              //  if(idinformeSel>0) { //se salio y lo devuelvo al inicio
+                    Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
+                    startActivity(intento1);
+                    //mando al inicio
+                  //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
+              //  }
+            }
+
+        }
+
         mBinding.setSdf(Constantes.sdfsolofecha);
         //Log.d(TAG, "informe creado=" + idinformeSel);
         //busco la visita
@@ -360,7 +392,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
             fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-            fragmentTransaction.addToBackStack(null);
+           // fragmentTransaction.addToBackStack(null);
 // Cambiar
             fragmentTransaction.commit();
         }
@@ -397,7 +429,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
             }
 
-            fragmentTransaction.addToBackStack(null);
+         //   fragmentTransaction.addToBackStack(null);
 // Cambiar
             fragmentTransaction.commit();
         }
@@ -432,7 +464,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
             }
 
-            fragmentTransaction.addToBackStack(null);
+           // fragmentTransaction.addToBackStack(null);
 // Cambiar
             fragmentTransaction.commit();
         }
@@ -449,8 +481,38 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        noSalir=false;
         switch (item.getItemId()) {
             case R.id.csalir:
+                int numpreg=0;
+                //reviso que no sea de las que no debe salir
+                if( nviewModel.clienteSel==4||nviewModel.clienteSel==0||dViewModel.reactivoAct==1) {
+                    DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+                    numpreg = fragment.getNumPregunta();
+                }else
+                if( nviewModel.clienteSel==5) {
+                    DetalleProductoPenFragment fragment2 = (DetalleProductoPenFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+                    numpreg = fragment2.getNumPregunta();
+                }else
+
+                if( nviewModel.clienteSel==6) {
+                    DetalleProductoElecFragment fragment3 = (DetalleProductoElecFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+                    numpreg = fragment3.getNumPregunta();
+                }
+                if(nviewModel.clienteSel==4)
+                    if(numpreg==2||numpreg==3||numpreg==4||numpreg==5){
+                        noSalir=true;
+                    }
+                if(nviewModel.clienteSel==5)
+                    if(numpreg==52||numpreg==53||numpreg==54||numpreg==55){
+                        noSalir=true;
+                    }
+                if(nviewModel.clienteSel==6)
+                    if(numpreg==72||numpreg==73||numpreg==74||numpreg==75){
+                        noSalir=true;
+                    }
+
+
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
                 dialogo1.setTitle(R.string.importante);
                 if(!noSalir) {
@@ -499,4 +561,32 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     public void noSalir(boolean valor){
         this.noSalir=valor;
     }
-}
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        savedInstanceState.putInt("visitasel",idinformeSel );
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+  /*  @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
+        NuevoinformeViewModel nviewModel;
+        private NuevoDetalleViewModel dViewModel;
+        private ActivityContinuarInformeBinding mBinding;
+        Visita visitaCont;
+        private static boolean hayDatos = false;
+        public final static String INFORMESEL = "comprasmu.ni_informesel";
+        private static final String TAG = "ContInformeAct";
+        private DetalleProductoFragment fragementAct;
+        Reactivo preguntaAct;
+        InformeTemp ultimares;
+        boolean noSalir;
+        int idinformeSel;
+    }*/
+
+    }

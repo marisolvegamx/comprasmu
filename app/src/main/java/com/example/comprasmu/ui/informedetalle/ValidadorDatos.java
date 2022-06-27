@@ -15,8 +15,8 @@ import java.util.List;
 public class ValidadorDatos {
     public int mensaje;
     public boolean resp;
-    SimpleDateFormat     sdf = new SimpleDateFormat("dd-MM-yy");
-    SimpleDateFormat     sdfcod = new SimpleDateFormat("dd-MM-yy");
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
+    SimpleDateFormat sdfcod = new SimpleDateFormat("dd-MM-yy");
 
     public void validarFechaPep(String fecha, int tipoTienda){
         Date hoy=new Date();
@@ -39,7 +39,12 @@ public class ValidadorDatos {
             }
             Calendar cal = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
             cal.setTime(hoy);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
             cal.add(Calendar.DAY_OF_MONTH, +30);
+
 
             if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
 
@@ -57,16 +62,19 @@ public class ValidadorDatos {
                         return ;
                 }
 
-            }else if (fechacad.compareTo(cal.getTime())<0) { //hoy+30>fechacad
+            }else {
+                Log.d("VAlidadorDatos","wwwwww"+sdf.format(fechacad)+"--"+sdf.format(cal.getTime()));
+                if (fechacad.compareTo(cal.getTime()) < 0) { //hoy+30>fechacad
                     //compra si Date>arg->>0
-                    Log.d("VAlidadorDatos","wwwwww"+fechacad.compareTo(cal.getTime()));
-                    mensaje=R.string.error_fecha_caduca_prox;
-                    resp=false;
-                    return ;
-            } else {
-                    resp=true;
+                    // Log.d("VAlidadorDatos","wwwwww"+fechacad.compareTo(cal.getTime()));
+                    mensaje = R.string.error_fecha_caduca_prox;
+                    resp = false;
+                    return;
+                } else {
+                    resp = true;
                     return;
                 }
+            }
         }
     }
     //li_btnagregar

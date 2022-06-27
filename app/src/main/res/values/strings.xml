@@ -173,6 +173,7 @@
     <string name="consecutivo">TIENDA</string>
     <string name="fecha">FECHA</string>
     <string name="complementodir">COMPLEMENTO DIRECCION</string>
+    <string name="puntocardinal">PUNTO CARDINAL</string>
     <string name="estatus">ESTATUS</string>
     <string name="estatus_envio">ESTATUS ENVIO</string>
     <string name="aceptar">ACEPTAR</string>
@@ -250,5 +251,8 @@ https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend
     <string name="google_maps_key" templateMergeStrategy="preserve">AIzaSyAY_2t7h2cptQLKWCC8KoOcMyeIrEFHQkc</string>
     <string name="criterio_ant">CRITERIO ANTERIOR</string>
     <string name="validar">VALIDAR</string>
+    <string name="no_foto">NO SE PERMITE TOMAR FOTO</string>
+    <string name="ubiquese">POR FAVOR REGISTRE SU UBICACIÓN</string>
+    <string name="regubi">UBICAR</string>
 
 </resources>

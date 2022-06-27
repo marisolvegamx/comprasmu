@@ -190,6 +190,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             ft.add(R.id., fragment);
             ft.commit();*/
             graph.setStartDestination(R.id.nav_listar);
+        } if(inicio.equals("continuarinf")){
+            /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment fragment = new BuscarInformeFragment();
+            ft.add(R.id., fragment);
+            ft.commit();*/
+            graph.setStartDestination(R.id.nav_continuar);
         }else{
             descargasIniciales();
             graph.setStartDestination(R.id.nav_home);

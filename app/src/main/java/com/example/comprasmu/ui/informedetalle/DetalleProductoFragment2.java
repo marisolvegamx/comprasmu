@@ -1189,7 +1189,7 @@ public class DetalleProductoFragment2 extends Fragment {
         return mViewModel.insertarInfdeTemp(getActivity(), this);
     }
     public void actualizarInforme(){
-        mViewModel.actualizarInforme();
+    //    mViewModel.actualizarInforme();
     }
     public void limpiarTablTemp(){
         Log.d(TAG,"limpiando tabla");
@@ -1390,7 +1390,7 @@ public class DetalleProductoFragment2 extends Fragment {
         }
     public void rotar(){
         String foto=textoint.getText().toString();
-            if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+            if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
             {
                 Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
@@ -1413,7 +1413,7 @@ public class DetalleProductoFragment2 extends Fragment {
 
                         textoint.setText(nombre_foto);
 
-                        if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+                        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
                         {
                             Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
@@ -1698,7 +1698,7 @@ public class DetalleProductoFragment2 extends Fragment {
                // Log.d(TAG, "genere cons=" + textoint.getText().toString());
 
                 if (!textoint.getText().toString().equals("") && preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN)) {
-                    if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+                    if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
                     {
                         Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 

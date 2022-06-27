@@ -148,35 +148,75 @@ public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
                 if(infoResp.getInformeCompraDetalles()!=null)
                     for(InformeCompraDetalle det:infoResp.getInformeCompraDetalles()){
                         Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getComprasDetId());
-
+                        if(det.getTipoMuestra()!=3) {//para normal o catchup
                         ListaCompraDetalle compradet=lcdrepo.findsimple(det.getComprasId(),det.getComprasDetId());
-                        if(compradet!=null)
-                        {
-                          //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
-                            Log.d(TAG,"sss"+compradet.getProductoNombre()+"--"+compradet.getComprados());
+                        if(compradet!=null) {
+                            //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
+                            Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
 
-                            int nvacant=compradet.getComprados()+1;
-                          //  lcdrepo.actualizarComprados(det.getId(),det.getComprasId(),nvacant);
+                            int nvacant = compradet.getComprados() + 1;
+                            //  lcdrepo.actualizarComprados(det.getId(),det.getComprasId(),nvacant);
                             //actualizo lo codigos comprados
-                            String listaCodigos="";
+                            String listaCodigos = "";
                             SimpleDateFormat sdfcodigo = new SimpleDateFormat("dd-MM-yy");
-                            String nuevoCodigo= sdfcodigo.format(det.getCaducidad());
+                            String nuevoCodigo = sdfcodigo.format(det.getCaducidad());
                             //no aumento el comprado solo el codigo
-                            if(compradet.getNvoCodigo()!=null)
+
+                            if (compradet.getNvoCodigo() != null)
                             //reviso que no existe
-                            {    if(!compradet.getNvoCodigo().contains(nuevoCodigo))
-                                listaCodigos=nuevoCodigo+";"+compradet.getNvoCodigo();}
-                            else
-                                listaCodigos=nuevoCodigo;
+                            {
+                                if (!compradet.getNvoCodigo().contains(nuevoCodigo))
+                                    listaCodigos = nuevoCodigo + ";" + compradet.getNvoCodigo();
+                            } else
+                                listaCodigos = nuevoCodigo;
                             compradet.setNvoCodigo(listaCodigos);
+
                             compradet.setComprados(nvacant);
                             //actualizo
                             lcdrepo.insert(compradet);
-                            Log.d(TAG,"sss"+compradet.getProductoNombre()+"--"+nvacant);
+                        }
+                        }
+                        else{
+                            ListaCompraDetalle compradet = lcdrepo.findsimple(det.getComprasId(), det.getComprasDetId());
+                            if(compradet!=null) {
+                                //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
+                                Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
+
+                                int nvacant = compradet.getComprados() + 1;
+                                compradet.setComprados(nvacant);
+                                //actualizo
+                                lcdrepo.insert(compradet);
+                                //el codigo va en el comprado
+                                ListaCompraDetalle compradetbu = lcdrepo.findsimple(det.getComprasIdbu(), det.getComprasDetIdbu());
+                                if (compradetbu != null) {
+                                    //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
+                                    Log.d(TAG, "sss" + compradetbu.getProductoNombre() + "--" + compradetbu.getComprados());
+                                    //actualizo lo codigos comprados
+                                    String listaCodigos = "";
+                                    SimpleDateFormat sdfcodigo = new SimpleDateFormat("dd-MM-yy");
+                                    String nuevoCodigo = sdfcodigo.format(det.getCaducidad());
+                                    //no aumento el comprado solo el codigo
+
+                                    if (compradetbu.getNvoCodigo() != null)
+                                    //reviso que no existe
+                                    {
+                                        if (!compradetbu.getNvoCodigo().contains(nuevoCodigo))
+                                            listaCodigos = nuevoCodigo + ";" + compradetbu.getNvoCodigo();
+                                    } else
+                                        listaCodigos = nuevoCodigo;
+                                    compradetbu.setNvoCodigo(listaCodigos);
+
+
+                                    //actualizo
+                                    lcdrepo.insert(compradetbu);
+                                }
+                            }
+                        }
+
 
                         }
 
-                    }
+
 
                 if(actualiza==1&&proglist!=null){
                     proglist.cerrarAlerta(notificar);

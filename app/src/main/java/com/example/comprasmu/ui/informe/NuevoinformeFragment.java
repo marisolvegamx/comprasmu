@@ -80,6 +80,7 @@ import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
 /*****
  * solo necesito que llegue la visita seleccionada
+ * ya no se usa 1-jun
  */
 public class NuevoinformeFragment extends Fragment implements InformeDetalleAdapter.AdapterCallback {
 
@@ -419,7 +420,7 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
 
     public void rotar(int idfoto){
         ImageView foto = root.findViewById(idfoto);
-        if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
         {
             Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
@@ -924,7 +925,9 @@ public class NuevoinformeFragment extends Fragment implements InformeDetalleAdap
             msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
            // Log.d(TAG,"error "+informe.get)
             msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,imagen.getIndice());
-           // Constantes.INDICEACTUAL
+            msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_IMG);
+
+            // Constantes.INDICEACTUAL
             Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
             activity.startService(msgIntent);
             //cambio su estatus a subiendo

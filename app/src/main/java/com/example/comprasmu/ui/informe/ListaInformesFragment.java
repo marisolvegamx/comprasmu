@@ -248,7 +248,7 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
             InformeEnvio informeenv = niViewModel.preparaInforme(informe);
             SubirInformeTask miTareaAsincrona = new SubirInformeTask(true, informeenv, getActivity(), niViewModel);
             miTareaAsincrona.execute();
-            Log.d(TAG, "preparando informe**********"+informeenv);
+            Log.d(TAG, "preparando informe**********");
             NuevoinformeFragment.subirFotos(getActivity(), informeenv);
         }else
             Toast.makeText(getActivity(), getString(R.string.sin_conexion), Toast.LENGTH_LONG).show();

@@ -48,8 +48,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
     private boolean isbu;
     private String ismuestra; //para saber si es reemplazo
-    public static final String ARG_PLANTA = "comprasmu.sustplanta";
-    public static final String ARG_NOMBREPLANTA = "comprasmu.sustnomplanta";
+
     public static final String ARG_SIGLAS = "comprasmu.sustsiglas";
 
     private static final String TAG="SUSTITUCIONFRAGMENT";
@@ -59,12 +58,10 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
     public static SustitucionFragment newInstance() {
         //  ListaCompraFragment fragment = new ListaCompraFragment();
-
-     //   Log.d(TAG,"planta sel"+planta);
+        //   Log.d(TAG,"planta sel"+planta);
        // Log.d(TAG,"nombre"+onombrePlanta);
         SustitucionFragment fragment = new SustitucionFragment();
        // Bundle bundle = new Bundle();
-
         //fragment.setArguments(bundle);
         return fragment;
 
@@ -79,13 +76,10 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle2 =getArguments();
-
         if(bundle2!=null)
-            categoriaSel=bundle2.getString(ARG_CATEGORIA);
-
-        if (bundle2 != null) {
-            plantaSel = bundle2.getInt(ARG_PLANTA);
-            nombrePlanta = bundle2.getString(ARG_NOMBREPLANTA);
+        {   categoriaSel=bundle2.getString(ARG_CATEGORIA);
+            plantaSel = bundle2.getInt(ListaCompraFragment.ARG_PLANTASEL);
+            nombrePlanta = bundle2.getString(ListaCompraFragment.ARG_NOMBREPLANTASEL);
             siglas = bundle2.getString(ARG_SIGLAS);
             ismuestra=bundle2.getString(ListaCompraFragment.ARG_MUESTRA);
         }
@@ -109,36 +103,35 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-
         Log.d(TAG,"planta sel"+plantaSel);
         Log.d(TAG,"cat"+categoriaSel);
         mBinding.setLifecycleOwner(this);
+        Constantes.VarListCompra.plantaSel=plantaSel;
         setupListAdapter();
-
+        //Constantes.VarListCompra.detallebuSel.getAnalisisId()
         mViewModel.cargarListas(categoriaSel);
-
         mViewModel.getListas().observe(getViewLifecycleOwner(), myProducts -> {
             if (myProducts != null && myProducts.size() > 0) {
+                Log.d(Constantes.TAG, "en la consulta de sust=> " + myProducts.get(0).getId_sustitucion());
+                mListAdapter.setSustitucionList(myProducts,mViewModel);
+                mListAdapter.notifyDataSetChanged();
+            }
 
-                    Log.d(Constantes.TAG, "en la consulta de sust=> " + myProducts.get(0).getId_sustitucion());
-                    // mBinding.setIsLoading(false);
-
-                    mListAdapter.setSustitucionList(myProducts);
-                    mListAdapter.notifyDataSetChanged();
-
-                }
-
-            });
-
+        });
 
     }
-
 
     @Override
     public void onDestroyView() {
         mBinding = null;
         mListAdapter = null;
+        mViewModel = null;
+        ldViewModel = null;
+        nombrePlanta = null;
+        ismuestra = null;
+        categoriaSel = null;
+        siglas = null;
+
         super.onDestroyView();
     }
     private void setupListAdapter() {

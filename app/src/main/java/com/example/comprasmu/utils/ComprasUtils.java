@@ -1,5 +1,7 @@
 package com.example.comprasmu.utils;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -31,6 +33,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 public class ComprasUtils {
     Bitmap rotatedBitmap;
@@ -88,28 +92,33 @@ public class ComprasUtils {
         return new String(arr);
     }
     public Bitmap comprimirImagen(String nombre_foto){
-
-        Bitmap bitmapOrg=BitmapFactory.decodeFile(nombre_foto);
-
-        int width=bitmapOrg.getWidth();
-        int height=bitmapOrg.getHeight();
-
-
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, width, height, true);
-
-        //comprimir imagen
-        File file = new File(nombre_foto);
-        OutputStream os = null;
         try {
-            os = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            Log.d("Compras",e.getMessage());
-            // Toast.makeText(, "Error al guardar la foto", Toast.LENGTH_SHORT).show();
+            Bitmap bitmapOrg = BitmapFactory.decodeFile(nombre_foto);
+
+            int width = bitmapOrg.getWidth();
+            int height = bitmapOrg.getHeight();
+
+
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, width, height, true);
+
+            //comprimir imagen
+            File file = new File(nombre_foto);
+            OutputStream os = null;
+            try {
+                os = new FileOutputStream(file);
+            } catch (FileNotFoundException e) {
+                Log.d("Compras", e.getMessage());
+                // Toast.makeText(, "Error al guardar la foto", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 45, os);
+            return scaledBitmap;
+        }catch(Exception ex){
+            ex.printStackTrace();
+            Log.d("Compras","algo salió mal al comprimir la imagen");
             return null;
         }
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 45, os);
 
-       return scaledBitmap;
 
     }
 
@@ -392,6 +401,14 @@ public class ComprasUtils {
                 break;
         }
         return num;
+    }
+
+    public static ActivityManager.MemoryInfo getAvailableMemory(Activity act) {
+        ActivityManager activityManager = (ActivityManager) act.getSystemService(ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        activityManager.getMemoryInfo(memoryInfo);
+
+        return memoryInfo;
     }
 
 

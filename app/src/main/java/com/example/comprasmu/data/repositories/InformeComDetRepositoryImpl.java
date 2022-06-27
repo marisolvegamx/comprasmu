@@ -45,6 +45,10 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     public List<InformeCompraDetalle> getByProductoAna(String indice, int planta,int producto, int analisis, int presentacion, String tamanio ) {
         return dao.getByProductoAna(indice, planta,producto,analisis,presentacion,tamanio);
     }
+    public List<InformeCompraDetalle> getByProductoAnaPen(String indice, int planta,int producto, int analisis, int presentacion, String tamanio, String siglas ) {
+
+        return dao.getByProductoAnaSig(indice, planta,producto,analisis,presentacion,tamanio, siglas);
+    }
 
     @Override
     public LiveData<List<InformeCompraDetalle>> getAll() {

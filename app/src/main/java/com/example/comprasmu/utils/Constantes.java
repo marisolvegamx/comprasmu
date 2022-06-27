@@ -45,6 +45,7 @@ public class Constantes {
     public static final String ACCOUNT_TYPE ="com.example.ejemploimagen.account" ;
     public static String[] ESTATUSINFORME={"CANCELADO","ABIERTO","FINALIZADO","CON INFORME"};
     public static String[] ESTATUSSYNC={"PENDIENTE","ENVIANDO","ENVIADO"};
+    public static String[] PUNTOCARDINAL={"NORTE","SUR","ESTE","OESTE","CENTRO"};
 
     public static List<DescripcionGenerica> clientesAsignados;
 
@@ -67,6 +68,7 @@ public class Constantes {
     public static class VarListCompra{
         public static   int idListaSel;
         public static ListaCompra listaSelec;
+        public static int plantaSel;
         public static ListaCompraDetalle detallebuSel;
 
 

@@ -41,6 +41,8 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
     boolean isbu, ismuestra;//para saber si ya estoy en lista de bu o agregando muestra
     int cliente;
     ViewGroup parent;
+    int criterio;
+    int plantasel;
     public ListaCompraDetalleAdapter(ListaDetalleViewModel viewModel, AdapterCallback callback) {
 
         mViewModel = viewModel;
@@ -48,12 +50,14 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
 
     }
 
-    public void setListaCompraDetalleList(List<ListaDetalleBu> categoriesList, int numtienda, boolean isbu, boolean ismuestra, int cliente) {
+    public void setListaCompraDetalleList(List<ListaDetalleBu> categoriesList, int numtienda, boolean isbu, boolean ismuestra, int cliente, int criteriobu, int plantasel) {
         mListaCompraDetalleList = categoriesList;
         this.numtienda=numtienda;
         this.isbu=isbu;
         this.ismuestra=ismuestra;
         this.cliente=cliente;
+        this.criterio=criteriobu;
+        this.plantasel=plantasel;
      //   this.listacomprasbu=listacomprasbu;
 
        // Log.d(TAG,"consecutivo "+numtienda);
@@ -79,10 +83,11 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
        holder.binding.setIsBu(isbu);
        holder.binding.setMostrarAgregar(ismuestra);
        holder.binding.setCliente(cliente);
+       holder.binding.setPlantasel(plantasel);
     //   this.mViewModel.setListacomprasbu(listacomprasbu);
        holder.binding.setMViewModel(this.mViewModel);
-
-//        Log.d(TAG, "vars " +listacomprasbu.size());
+        holder.binding.setCriteriobu(this.criterio);
+//        Log.d(TAG, "va    rs " +listacomprasbu.size());
        if(cliente==4&&numtienda>10&&!isbu) {
            holder.binding.setMostrarbcu(true);
        }
@@ -96,7 +101,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
         List<InformeCompraDetalle> icd =mListaCompraDetalleList.get(position).getInfcd();
            if (icd != null) {
                Log.d(TAG, "es bu " + icd.size());
-               ListaDetalleBuAdapter adaptadorLista = new ListaDetalleBuAdapter((AppCompatActivity) parent.getContext(),icd);
+               ListaDetalleBuAdapter adaptadorLista = new ListaDetalleBuAdapter((AppCompatActivity) parent.getContext(),icd, cliente);
                final int adapterCount = adaptadorLista.getCount();
                holder.binding.informebudata.removeAllViews();
                for (int i = 0; i < adapterCount; i++) {

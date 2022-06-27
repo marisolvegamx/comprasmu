@@ -41,6 +41,13 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/txtbdlisto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ya terminé"
+            android:visibility="gone" />
     </LinearLayout>
 
 </FrameLayout>

@@ -144,8 +144,8 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/li_btnfin"
                     style="@style/btnverde"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
 
                     android:layout_marginTop="1dp"
 
@@ -158,13 +158,12 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/li_btnagregar"
                     style="@style/btnverde"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
 
-                    android:layout_height="35dp"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="1dp"
                     android:layout_weight="1"
-                    android:background="#00BCD4"
                     android:text="@string/continuar"
                     android:textColor="#FFFFFF" />
 

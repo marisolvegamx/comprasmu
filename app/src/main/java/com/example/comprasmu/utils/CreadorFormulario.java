@@ -754,7 +754,7 @@ public class CreadorFormulario {
     public ImageView imagenView(){
         ImageView imagen=new ImageView(context);
         if(infocampo.value!=null&&!infocampo.value.equals("")) {
-            Bitmap bitmap1 = BitmapFactory.decodeFile(infocampo.value);
+            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(infocampo.value,80,80);
             imagen.setImageBitmap(bitmap1);
         }
         imagen.setId(infocampo.id);
@@ -769,7 +769,7 @@ public class CreadorFormulario {
         layout.setOrientation(LinearLayout.HORIZONTAL);
         ImageView imagen=new ImageView(context);
         if(infocampo.value!=null&&!infocampo.value.equals("")) {
-            Bitmap bitmap1 = BitmapFactory.decodeFile(infocampo.value);
+            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(infocampo.value,80,80);
             imagen.setImageBitmap(bitmap1);
         }
         imagen.setVisibility(!infocampo.visible?View.GONE:View.VISIBLE);

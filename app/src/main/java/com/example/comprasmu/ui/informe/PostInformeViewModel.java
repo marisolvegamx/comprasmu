@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-import com.example.comprasmu.data.modelos.Post;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
@@ -33,7 +32,7 @@ import retrofit2.Response;
 
 public class PostInformeViewModel {
     private ServiceGenerator apiClient;;
-    Post post;
+
     public  String mensaje;
     private String TAG="Ejemplo";
    InformeCompraRepositoryImpl infoRepo;

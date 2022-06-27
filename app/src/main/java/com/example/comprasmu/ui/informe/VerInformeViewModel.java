@@ -186,4 +186,6 @@ public class VerInformeViewModel extends AndroidViewModel {
         this.productoExhib = productoExhib;
     }
 
+
+
 }

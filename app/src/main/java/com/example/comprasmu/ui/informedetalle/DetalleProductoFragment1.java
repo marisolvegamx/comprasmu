@@ -1526,7 +1526,7 @@ public class DetalleProductoFragment1 extends Fragment {
 
     public void rotar(int idfoto){
         ImageView foto = root.findViewById(idfoto);
-        if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
         {
             Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 

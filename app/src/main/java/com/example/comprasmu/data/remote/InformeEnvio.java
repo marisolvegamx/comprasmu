@@ -6,6 +6,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
+import com.example.comprasmu.data.modelos.Uneimagenes;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.utils.Constantes;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,6 +23,7 @@ public class InformeEnvio {
     private List<InformeCompraDetalle> informeCompraDetalles;
     private List<ImagenDetalle> imagenDetalles;
     private List<ProductoExhibido> productosEx;
+    private List<Uneimagenes> uneimagenes;
     private String claveUsuario;
     private String indice;
 
@@ -63,6 +65,14 @@ public class InformeEnvio {
 
     public void setProductosEx(List<ProductoExhibido> productosEx) {
         this.productosEx = productosEx;
+    }
+
+    public List<Uneimagenes> getUneimagenes() {
+        return uneimagenes;
+    }
+
+    public void setUneimagenes(List<Uneimagenes> uneimagenes) {
+        this.uneimagenes = uneimagenes;
     }
 
     public String getClaveUsuario() {

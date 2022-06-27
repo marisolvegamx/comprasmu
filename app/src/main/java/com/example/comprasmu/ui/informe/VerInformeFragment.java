@@ -154,7 +154,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     }
    public void llenarFotos(InformeCompra informe,Visita visita){
         //reviso la memoria
-       if(AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory)
+       if(getAvailableMemory().lowMemory)
        {
            Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
@@ -167,7 +167,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
                //  fotoTicket=new MutableLiveData<>();
                {
                    //mBinding.setFotoTicket(imagenDetalle.getRuta());
-               mBinding.ivuiticketCompra.setImageBitmap(ComprasUtils.decodeSampledBitmapFromResource(directorio+imagenDetalle.getRuta(), 100, 100));
+               mBinding.ivuiticketCompra.setImageBitmap(ComprasUtils.decodeSampledBitmapFromResource(directorio+imagenDetalle.getRuta(), 80, 80));
                mBinding.ivuiticketCompra.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View view) {
@@ -314,10 +314,17 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         campo.label=getString(R.string.complementodir);
         campo.type = "label";
         campo.value =mViewModel.getVisita().getValue().getComplementodireccion();
-
-
         camposTienda.add(campo);
 
+        campo = new CampoForm();
+        campo.label=getString(R.string.puntocardinal);
+        campo.type = "label";
+        campo.style=R.style.verinforme2;
+        if(mViewModel.getVisita().getValue().getPuntoCardinal()!=null&&!mViewModel.getVisita().getValue().getPuntoCardinal().equals("")&&!mViewModel.getVisita().getValue().getPuntoCardinal().equals("0")) {
+            campo.value = Constantes.PUNTOCARDINAL[Integer.parseInt(mViewModel.getVisita().getValue().getPuntoCardinal()) - 1];
+        }
+
+        camposTienda.add(campo);
 
       /*  campo = new CampoForm();
 
@@ -397,7 +404,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     // Remplazar el contenido principal por el fragmento
         fragmentTransaction.replace(R.id.back_fragment, fragment);
-        fragmentTransaction.addToBackStack(null);
+    //    fragmentTransaction.addToBackStack(null);
     // Cambiar
         fragmentTransaction.commit();
 
@@ -412,4 +419,25 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     public void onClickEditar(int id) {
 
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        mViewModel=null;
+
+        cf2=null;
+
+         informeCompra=null;
+        cf1=null;
+         fotocondiciones=null;
+         fotoFachada=null;
+         campo2=null;
+         mBinding=null;
+         mListAdapter=null;
+
+         directorio=null;
+
+    }
+
 }
