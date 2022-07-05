@@ -141,7 +141,11 @@ public class ComprasUtils {
                 inSampleSize *= 2;
             }
         }
+     //  Log.d("imagenes","reducim tam orig "+height+"x"+width+" factor "+inSampleSize);
 
+        //  ComprasLog clog=new ComprasLog();
+     //   clog.crearLog();
+      //  clog.grabarError("reducim tam orig "+height+"x"+width+" factor "+inSampleSize);
         return inSampleSize;
     }
 

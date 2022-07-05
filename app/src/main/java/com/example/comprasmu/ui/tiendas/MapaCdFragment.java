@@ -168,7 +168,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
 
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng cali = new LatLng(3.4383, -76.5161);
+            LatLng mex = new LatLng(19.36884,  -99.16410);
 
             mMap = googleMap;
             mMap.setOnMarkerClickListener(this);
@@ -188,6 +188,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
                             LOCATION_REQUEST_CODE);
                 }
             }
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mex, 4));
 
             mMap.getUiSettings().setZoomControlsEnabled(true);
 

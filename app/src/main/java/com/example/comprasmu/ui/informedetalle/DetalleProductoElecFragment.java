@@ -811,6 +811,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             fechacad=sdfcodigo.parse(textoint.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
+            Toast.makeText(getActivity(), getString( R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
+
             return false;
         }
         // if (dViewModel.productoSel.clienteNombre.trim().equals("PEÑAFIEL")) {

@@ -63,7 +63,7 @@ import java.util.Map;
         ProductoExhibido.class, Sustitucion.class,
         CatalogoDetalle.class, Atributo.class, Geocerca.class},
 
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=9, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=10, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -93,7 +93,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .build();*/
                     INSTANCE =  Room.databaseBuilder(context,
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
-                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,MIGRATION_8_9)
+                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,MIGRATION_8_9,MIGRATION_9_10)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -209,6 +209,15 @@ public abstract class ComprasDataBase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_9_10 = new Migration(9,10) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("DROP VIEW ProductoExhibidoFoto");
+            database.execSQL("CREATE VIEW `ProductoExhibidoFoto` AS SELECT producto_exhibido.id as idprodex, producto_exhibido.visitasId, producto_exhibido.imagenId, producto_exhibido.clienteId, producto_exhibido.nombreCliente, producto_exhibido.estatusSync, ruta FROM producto_exhibido LEFT JOIN imagen_detalle ON producto_exhibido.imagenId = imagen_detalle.id");
+
+        }
+    };
+
 
 
     private void cargandodatos(){
@@ -222,8 +231,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
                         //no tengo datos
 
 
-                        prepopulatelc();
-                        prepopulatedetc();
+                     //   prepopulatelc();
+                    //    prepopulatedetc();
                         prepopulateder();
 
                        // catalogos();

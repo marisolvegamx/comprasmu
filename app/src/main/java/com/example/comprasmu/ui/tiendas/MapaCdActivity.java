@@ -127,7 +127,7 @@ public class MapaCdActivity extends FragmentActivity implements OnMapReadyCallba
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng cali = new LatLng(3.4383, -76.5161);
+        LatLng mex = new LatLng(19.36884,  -99.16410);
 
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
@@ -146,8 +146,10 @@ public class MapaCdActivity extends FragmentActivity implements OnMapReadyCallba
                         LOCATION_REQUEST_CODE);
             }
         }
+      //  mMap.moveCamera(CameraUpdateFactory.newLatLng(mex));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mex, 12));
 
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
 
     }
 

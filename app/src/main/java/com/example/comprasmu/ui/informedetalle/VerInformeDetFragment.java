@@ -27,8 +27,10 @@ import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.ui.RevisarFotoActivity;
+
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
+import com.example.comprasmu.ui.informe.VerInformeFragment;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.CreadorFormulario;
 
@@ -102,10 +104,8 @@ public class VerInformeDetFragment extends Fragment {
         Bundle params = getArguments();
 
         idInforme= params.getInt(NuevoinformeFragment.ARG_NUEVOINFORME);
-         clienteSel= params.getInt(NuevoinformeFragment.ARG_CLIENTEINFORME);
-       int idmuestra=params.getInt(DetalleProductoFragment1.ARG_IDMUESTRA);
-
-
+        clienteSel= params.getInt(NuevoinformeFragment.ARG_CLIENTEINFORME);
+        int idmuestra=params.getInt(VerInformeFragment.ARG_IDMUESTRA);
         informeSel= dViewModel.getMuestra(idmuestra);
 
         informeSel.observe(getViewLifecycleOwner(), new Observer<InformeCompraDetalle>() {
@@ -116,10 +116,6 @@ public class VerInformeDetFragment extends Fragment {
 
             }
         });
-
-
-
-
 
     }
 

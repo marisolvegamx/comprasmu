@@ -94,10 +94,9 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
             "producto_exhibido.imagenId, " +
             "producto_exhibido.clienteId, " +
             "producto_exhibido.nombreCliente, " +
-
             "producto_exhibido.estatusSync, " +
             "ruta FROM producto_exhibido " +
-            "INNER JOIN imagen_detalle ON producto_exhibido.imagenId = imagen_detalle.id")
+            "LEFT JOIN imagen_detalle ON producto_exhibido.imagenId = imagen_detalle.id")
     public static class ProductoExhibidoFoto {
         public int idprodex;
         public int visitasId;

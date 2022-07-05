@@ -268,9 +268,11 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         arrFotos.add(informe.getCondiciones_traslado());
         arrFotos.add(informe.getTicket_compra());
         List<ImagenDetalle> imagenDetalles=imagenDetRepository.findListsencillo(arrFotos);
+       if(imagenDetalles!=null)
         fotosinfo.addAll(imagenDetalles);
 
         //las del los detalles
+        if(detalles!=null)
         for(InformeCompraDetalle detalle:detalles) {
             List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
             List<ImagenDetalle> imagenDetalles2=imagenDetRepository.findListsencillo(fotos);

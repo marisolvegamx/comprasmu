@@ -408,16 +408,17 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                         }
                     });*/
                             String siglas="";
+                           // Log.d(TAG,"siglas kkkkkk "+lista.getSiglas());
                             //pongo el nombre
-                            if(lista.getSiglas()!=null)
-                                siglas=lista.getSiglas();
+                            if(lista.getSiglas()!=null&&!lista.getSiglas().equals("false"))
+                                siglas=" (" +lista.getSiglas()+ ")";
                             nombreCliente = lista.getClienteNombre();
                             if (ismuestra)
-                                mBinding.txtlcplanta.setText(nombreCliente + " " + nombrePlanta + " (" + siglas + ")");
+                                mBinding.txtlcplanta.setText(nombreCliente + " " + nombrePlanta + siglas );
                             else
-                                mBinding.txtlcplanta.setText(nombrePlanta + " (" + siglas+ ")");
+                                mBinding.txtlcplanta.setText(nombrePlanta +  siglas);
 
-                            Log.d(TAG, "qqqqqqqqqqqqq" + ismuestra);
+                         //   Log.d(TAG, "qqqqqqqqqqqqq" + ismuestra);
                             //cambio las cantidades si es bu
                   /*  if(listacomprasbu!=null) {
                         for(int position=0;position<lista.listaDetalle.size();position++) {

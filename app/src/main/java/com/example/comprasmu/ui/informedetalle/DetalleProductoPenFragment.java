@@ -461,9 +461,9 @@ public class DetalleProductoPenFragment extends Fragment {
             });
 
             if(isEdicion){
-                Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+              //  Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 ComprasUtils cu=new ComprasUtils();
-                bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
+                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor(),80,80);
 
                 fotomos.setImageBitmap(bitmap1);
                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
@@ -1171,6 +1171,9 @@ public class DetalleProductoPenFragment extends Fragment {
             fechacad=sdfcodigo.parse(textoint.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
+            Toast.makeText(getActivity(), getString( R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
+
+
             return false;
         }
        // if (dViewModel.productoSel.clienteNombre.trim().equals("PEÑAFIEL")) {

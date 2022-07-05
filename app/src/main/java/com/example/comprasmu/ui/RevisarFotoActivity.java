@@ -13,16 +13,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.ui.informe.NuevoinformeFragment;
-import com.example.comprasmu.ui.visita.AbririnformeFragment;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;

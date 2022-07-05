@@ -36,9 +36,7 @@ import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
-import com.example.comprasmu.ui.informe.NuevoinformeFragment;
-import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
-import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;

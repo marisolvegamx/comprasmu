@@ -35,7 +35,7 @@ import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.VerInformeFragmentBinding;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.RevisarFotoActivity;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
+
 import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
 import com.example.comprasmu.ui.informedetalle.VerInformeDetFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
@@ -51,6 +51,7 @@ import static android.content.Context.ACTIVITY_SERVICE;
 
 public class VerInformeFragment extends Fragment implements InformeDetalleAdapter.AdapterCallback {
 
+    public static final String ARG_IDMUESTRA ="comprasmu.ni_idmuestra" ;
     private VerInformeViewModel mViewModel;
     private int informeSel;
     InformeCompra informeCompra;
@@ -62,6 +63,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     private VerInformeFragmentBinding mBinding;
     private InformeDetalleAdapter mListAdapter;
     private static String TAG="VerInformeFragment";
+
     private int cliente;
 
     String directorio;
@@ -76,10 +78,17 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
 
      //   mBinding.setMviewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
-        Bundle datosRecuperados = getActivity().getIntent().getExtras();
-        mViewModel = new ViewModelProvider(this).get(VerInformeViewModel.class);
+         mViewModel = new ViewModelProvider(this).get(VerInformeViewModel.class);
         mBinding.setDirectorio(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/");
         directorio=getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
+
+        return mBinding.getRoot();
+    }
+
+    @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Bundle datosRecuperados = getActivity().getIntent().getExtras();
+
         if (datosRecuperados != null) {
             // No hay datos, manejar excepción
             //no debería estar aqui
@@ -104,13 +113,6 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
             llenarDetalle();
 
         }
-        return mBinding.getRoot();
-    }
-
-    @Override
-  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-
 
 
     }
@@ -160,7 +162,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
 
            return;
        }else
-       mViewModel.getfotoTicket(informe).observeForever(new Observer<ImagenDetalle>() {
+       mViewModel.getfotoTicket(informe).observe(this,new Observer<ImagenDetalle>() {
            @Override
            public void onChanged(ImagenDetalle imagenDetalle) {
                if(imagenDetalle!=null)
@@ -395,7 +397,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
 
         bundle.putInt(NuevoinformeFragment.INFORMESEL,informeSel);
         bundle.putInt(NuevoinformeFragment.ARG_CLIENTEINFORME,cliente);
-       bundle.putInt(DetalleProductoFragment1.ARG_IDMUESTRA,idmuestra);
+       bundle.putInt(ARG_IDMUESTRA,idmuestra);
         Fragment fragment = new VerInformeDetFragment();
         fragment.setArguments(bundle);
     // Obtener el administrador de fragmentos a través de la actividad
@@ -404,7 +406,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     // Remplazar el contenido principal por el fragmento
         fragmentTransaction.replace(R.id.back_fragment, fragment);
-    //    fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack(null);
     // Cambiar
         fragmentTransaction.commit();
 

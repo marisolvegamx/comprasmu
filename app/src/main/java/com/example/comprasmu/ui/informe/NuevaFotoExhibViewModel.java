@@ -47,18 +47,19 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
         try {
             //busco el ultimo id
             int nvoidimagem=(int)imagenDetRepository.getUltimo();
-            if(nvoidimagem==0) {
+         //   if(nvoidimagem==0) {
 
-                PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+             /*   PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
                 NuevoinformeViewModel.EnvioListener listener = ninfvm.crearEnvioListener(actividad);
                 ps.getUltimaVisita(Constantes.INDICEACTUAL,  listener);
                 recuperarIds(actividad);
                 nvoidimagem=prefimagen;
                 if(prefimagen==0){
                     nvoidimagem=nvoidimagem+1;
-                }
-            }else
-              nvoidimagem=nvoidimagem+1;
+                }*/
+
+          //  }else
+            nvoidimagem=nvoidimagem+1;
 
             ImagenDetalle foto = new ImagenDetalle();
             foto.setId(nvoidimagem);
@@ -75,6 +76,29 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
             prod1.setVisitasId(visitasId);
             prod1.setEstatusSync(0);
             prod1.setImagenId(idfoto);
+            prod1.setNombreCliente(cliente);
+            repository.insert(prod1);
+        }catch (Exception ex){
+            Log.e("NuevaFotoExhibViewModel",ex.getMessage());
+            mSnackbarText.setValue(new Event<>(R.string.error_imagen));
+        }
+
+
+    }
+    public void guardarsinFoto(int idcliente,String cliente,int visitasId) {
+        //guardo la foto
+        try {
+            //busco el ultimo id
+            int nvoidimagem=(int)imagenDetRepository.getUltimo();
+
+            nvoidimagem=nvoidimagem+1;
+
+
+            ProductoExhibido prod1 = new ProductoExhibido();
+            prod1.setClienteId(idcliente);
+            prod1.setVisitasId(visitasId);
+            prod1.setEstatusSync(0);
+            prod1.setImagenId(0); //no se pudo tomar
             prod1.setNombreCliente(cliente);
             repository.insert(prod1);
         }catch (Exception ex){
@@ -101,7 +125,7 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
         ImagenDetalle imagenDetalle=null;
                 if(productoExhibido!=null)
                      imagenDetalle=imagenDetRepository.findsimple(productoExhibido.imagenId);
-
+                if(imagenDetalle!=null)
                 imagenDetRepository.delete(imagenDetalle);
 
 

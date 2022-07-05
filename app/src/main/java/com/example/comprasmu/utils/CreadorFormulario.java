@@ -1,15 +1,14 @@
 package com.example.comprasmu.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.provider.MediaStore;
+
 import android.text.Editable;
-import android.text.Html;
+
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,37 +27,34 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.TableRow;
+
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.ui.informe.NuevoinformeFragment;
+
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+
 import com.santalu.maskara.Mask;
 import com.santalu.maskara.MaskChangedListener;
 import com.santalu.maskara.MaskStyle;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.DecimalFormat;
+
 import java.text.NumberFormat;
-import java.util.ArrayList;
+
 import java.util.Collection;
-import java.util.Currency;
+
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
-import static android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL;
+
 import static android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE;
 import static android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
 
@@ -136,7 +132,7 @@ public class CreadorFormulario {
             tv.setTextAppearance(context, R.style.formlabel);
             if(infocampo.style>0)
                 tv.setTextAppearance(context, R.style.formlabel2);
-            if(!this.infocampo.type.equals("preguntasino")) {
+            if(!this.infocampo.type.equals("preguntasino")&&!this.infocampo.type.equals("listDivider")) {
                 formulario.addView(tv);
             }
 
@@ -186,8 +182,9 @@ public class CreadorFormulario {
             tv.setText(this.infocampo.label);
           //  tv.setGravity(Gravity.END);
             //formulario.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
-           // tv.setTextAppearance(context, R.style.textolista1);
-
+         /*  if(this.infocampo.style>0)
+             tv.setTextAppearance(context, this.infocampo.style);
+*/
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
             lp.setMargins(0, 20, 0, 20);
             formulario.addView(tv);
@@ -224,6 +221,20 @@ public class CreadorFormulario {
         if(infocampo.style>0)
         label.setTextAppearance(context, infocampo.style);
         return label;
+
+    }
+
+    public View listDivider(){
+        View linea=new View(context);
+        int dividerHeight = (int) (context.getResources().getDisplayMetrics().density * 1); // 1dp to pixels
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dividerHeight);
+        lp.setMargins(0, 2, 0, 24);
+        linea.setLayoutParams(lp);
+        linea.setBackgroundColor(Color.parseColor("#cccccc"));
+
+       //linea.setBackgroundColor(context.getResources().getDrawable());
+
+        return linea;
 
     }
     public TextInputEditText inputtext(){

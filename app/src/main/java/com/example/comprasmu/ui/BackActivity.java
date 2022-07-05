@@ -16,7 +16,7 @@ import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment1;
+
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.listacompras.SelClienteFragment;
 import com.example.comprasmu.ui.listacompras.TabsFragment;
@@ -72,7 +72,7 @@ public class BackActivity extends AppCompatActivity {
             switch (opcionSel){
                 case OP_DETALLE_PRODUCTO:
                     myChildToolbar.setTitle(R.string.nuevo_informe);
-                    ft.add(R.id.back_fragment, new DetalleProductoFragment1());
+                  //  ft.add(R.id.back_fragment, new DetalleProductoFragment1());
                     break;
                 case OP_LISTACOMPRA:
                     myChildToolbar.setTitle(R.string.menu_ver_lista);

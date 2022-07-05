@@ -38,6 +38,7 @@ import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirPendService;
 
+import com.example.comprasmu.ui.gallery.PruebaFotosFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
 import com.example.comprasmu.ui.mantenimiento.BorrarDatosFragment;
@@ -274,8 +275,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 ft.add(R.id.nav_host_fragment, fragconfig);
 
                 ft.commit();*/
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+               /* FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 BorrarDatosFragment fragconfig=new BorrarDatosFragment();
+                ft.add(R.id.nav_host_fragment, fragconfig);
+
+                ft.commit();*/
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                PruebaFotosFragment fragconfig=new PruebaFotosFragment();
                 ft.add(R.id.nav_host_fragment, fragconfig);
 
                 ft.commit();
@@ -514,7 +520,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
        // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-       Constantes.INDICEACTUAL = "5.2022";
+       Constantes.INDICEACTUAL = "6.2022";
         Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
         //TODO falta pais trabajo
