@@ -13,6 +13,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
+import com.example.comprasmu.utils.Constantes;
 
 
 import java.util.ArrayList;
@@ -117,14 +118,14 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
         return icDao.findAllByIndice(indice);
     }
 
-   public int getUltimo(){
-       int ultimo=  icDao.getUltimoId();
+   public int getUltimo(String indice){
+       int ultimo=  icDao.getUltimoId(indice);
        return ultimo;
    }
-    public int getSiguienteId() {
+    public int getSiguienteId(String indice) {
         int siguiente=1;
 
-        int ultimo=  icDao.getUltimoId();
+        int ultimo=  icDao.getUltimoId(indice);
         if(ultimo>0){
             siguiente=ultimo+1;
         }

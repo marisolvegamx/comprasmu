@@ -85,7 +85,7 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
             " order by lid_orden ASC, ordtam DESC, ordemp ASC, ordtipa ASC, ordtipm")
     public abstract LiveData<List<ListaCompraDetalle>> getListasDetalleOrdByLista(int listaid);
 
-    @Query("update lista_compras_detalle set comprados=comprados+:cantidad WHERE id = :id and listaId=:listaid")
+    @Query("update lista_compras_detalle set comprados=:cantidad WHERE id = :id and listaId=:listaid")
     public abstract void actualizarCompra(int id,int listaid,int cantidad);
 
     @Query("UPDATE lista_compras_detalle SET productosId = :productosId, productoNombre = :productoNombre,tamanio=:tamanio, empaque=:empaque, " +

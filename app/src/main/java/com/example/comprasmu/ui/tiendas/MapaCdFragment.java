@@ -298,7 +298,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
             GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getActivity());
 
             for(Geocerca geo:zonas){
-                georep.insert(geo);
+                //georep.insert(geo);
                 String aux[]=geo.getGeo_p1().split(",");
                 LatLng p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
                 String aux2[]=geo.getGeo_p2().split(",");

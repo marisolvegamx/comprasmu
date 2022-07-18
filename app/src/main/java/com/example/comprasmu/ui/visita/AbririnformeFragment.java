@@ -77,6 +77,7 @@ import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.CampoForm;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
@@ -204,7 +205,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         TextView indice = root.findViewById(R.id.txtaiindice);
         indice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
-
+        ComprasLog log=new ComprasLog();
+        log.crearLog();
         //camposFotosProd();
         //  LinearLayout sv2 = root.findViewById(R.id.content_main2);
         //  sv2.addView(cf3.crearFormulario());
@@ -701,18 +703,18 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
                 return;
             }
-       if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+        if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
                 mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, (LocationListener) Local);
                 provedorgps = LocationManager.NETWORK_PROVIDER;
 
 
-        } else   if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
-           if (Local == null) { //Validación que evita NullPointerException
-               //Requiere actualización
-               mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, (LocationListener) Local);
-               provedorgps = LocationManager.GPS_PROVIDER;
-           }
-       } else
+        } else  if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+            //  if (Local == null) { //Validación que evita NullPointerException
+            //Requiere actualización
+            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, (LocationListener) Local);
+            provedorgps = LocationManager.GPS_PROVIDER;
+            // }
+        } else
                 Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
 
         Log.d(TAG,"quedo esta "+ provedorgps);
@@ -991,6 +993,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             campo.value = tienda.getUne_descripcion();
             campo.required = "required";
             campo.id = 1001;
+            campo.style=R.style.formlabel;
             campo.readonly = "readonly";
             camposTienda.add(campo);
 
@@ -1009,6 +1012,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             camposTienda.add(campo);
             campo = new CampoForm();
             campo.label = getString(R.string.tipo_tienda);
+            campo.style=R.style.formlabel;
             campo.nombre_campo = "tipoTienda";
             campo.type = "inputtext";
             campo.readonly = "readonly";
@@ -1341,7 +1345,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         }
         if (txtaiultubic.getText().toString().equals("")) {
-            Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (fotofachada.getText().toString().equals("")&&!cbfotofac.isChecked()) {
@@ -1359,7 +1363,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
             if(spinn2!=null) {
                 DescripcionGenerica cliente2 = (DescripcionGenerica) spinn2.getSelectedItem();
-                if (cliente2.getId() == 4) {
+                if (cliente2!=null&&cliente2.getId() == 4) {
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -1413,6 +1417,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }catch (Exception ex){
                 ex.printStackTrace();
                 Log.e(TAG,ex.getMessage());
+
             }
              Log.d(TAG,"encontré la zona "+punto);
                 mViewModel.visita.setPuntoCardinal(punto+"");
@@ -1573,7 +1578,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if(zonas!=null)
         for(Geocerca geo:zonas){
             Log.d(TAG,"probando "+geo.getGeo_region());
-
+            ComprasLog log=new ComprasLog();
+            log.grabarError("probando geocercas buscar zona"+geo.getGeo_region());
             String aux[]=geo.getGeo_p1().split(",");
              p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
             String aux2[]=geo.getGeo_p2().split(",");
@@ -1623,7 +1629,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
             if(spinn2!=null) {
                 DescripcionGenerica cliente2 = (DescripcionGenerica) spinn2.getSelectedItem();
-                if (cliente2.getId() == 4) {
+                if (cliente2!=null&&cliente2.getId() == 4) {
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -1988,7 +1994,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
              if(baseDir!=null&nombre_foto!=null) {
                  File file = new File(baseDir, nombre_foto);
                  if (file.exists()) {
-                     if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
+                 if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
                          //es la de fachada
                          //envio a la actividad dos para ver la foto
                    /* Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
@@ -2001,9 +2007,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                          txtfotofachada.setText(nombre_foto);
                   //       Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                         ComprasUtils cu = new ComprasUtils();
-                         cu.comprimirImagen(file.getAbsolutePath());
+                        cu.comprimirImagen(file.getAbsolutePath());
 
                          Bitmap bitmap1 =  ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(),100,100);
+                   //  Bitmap bitmap1 = (Bitmap) data.getExtras().get("data");
 
                          fotofac.setImageBitmap(bitmap1);
                          rotar.setVisibility(View.VISIBLE);

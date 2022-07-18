@@ -24,8 +24,8 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
     @Query("DELETE FROM visitas where indice=:indice")
     public abstract void deleteListasByIndice(String indice);
 
-    @Query("select max(id) from visitas")
-    public abstract int getUltimoId();
+    @Query("select max(id) from visitas where indice=:indice")
+    public abstract int getUltimoId(String indice);
     @Query("SELECT * FROM visitas")
     public  abstract LiveData<List<Visita>>findAll();
     @Query("SELECT * FROM visitas")

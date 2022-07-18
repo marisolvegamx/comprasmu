@@ -11,6 +11,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.util.Log;
@@ -28,6 +30,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 
+import com.example.comprasmu.ui.gallery.ImageGalleryAdapter;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
@@ -50,7 +53,7 @@ public class VerInformeDetFragment extends Fragment {
     List<CampoForm> camposForm;
     private List<CatalogoDetalle> tomadoDe;
     private List<Atributo>atributos;
-    HashMap<String,ImagenDetalle> fotos;
+    List<ImagenDetalle> fotos;
     MutableLiveData<Integer> cont;
     private int clienteSel;
     SimpleDateFormat sdf;
@@ -107,21 +110,30 @@ public class VerInformeDetFragment extends Fragment {
         clienteSel= params.getInt(NuevoinformeFragment.ARG_CLIENTEINFORME);
         int idmuestra=params.getInt(VerInformeFragment.ARG_IDMUESTRA);
         informeSel= dViewModel.getMuestra(idmuestra);
-
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,
+                false);
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.rv_viimagenes);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
         informeSel.observe(getViewLifecycleOwner(), new Observer<InformeCompraDetalle>() {
           @Override
            public void onChanged(InformeCompraDetalle informeCompraDetalle) {
               ponerDatos(informeCompraDetalle);
-
+              ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext(),fotos);
+              recyclerView.setAdapter(adapter);
 
             }
         });
+
+     //   List<ImagenDetalle> lista=this.buscarImagenes(1,2,null);
+
+
 
     }
 
     public void ponerDatos(InformeCompraDetalle informe) {
 
-        fotos= new HashMap<>();
+        fotos= new ArrayList<ImagenDetalle>();
         i=0;
 
 
@@ -172,7 +184,11 @@ public class VerInformeDetFragment extends Fragment {
     //objeto imagendetalle
 
     public void ponerFoto(String key, int idfoto){
-        fotos.put(key,niViewModel.getFoto(idfoto));
+        ImagenDetalle foto=niViewModel.getFoto(idfoto);
+
+        if(foto!=null) {
+         foto.setDescripcion(key);   fotos.add(foto);
+        }
 
     }
     public void crearFormulario(InformeCompraDetalle detalle){
@@ -307,7 +323,7 @@ public class VerInformeDetFragment extends Fragment {
         campo.value=detalle.getQr();
 
         camposForm.add(campo);
-        campo=new CampoForm();
+      /*  campo=new CampoForm();
         campo.label=getString(R.string.foto_codigo_produccion);
         campo.type="imagenView";
         campo.value=fotos.get(getString(R.string.foto_codigo_produccion))!=null?directorio+fotos.get(getString(R.string.foto_codigo_produccion)).getRuta():"";
@@ -386,7 +402,7 @@ public class VerInformeDetFragment extends Fragment {
 
             }
         };
-        camposForm.add(campo);
+        camposForm.add(campo);*/
 
 
         cf2=new CreadorFormulario(camposForm,getContext());
@@ -434,7 +450,7 @@ public class VerInformeDetFragment extends Fragment {
 
         camposForm.add(campo);
 
-        campo=new CampoForm();
+        /*campo=new CampoForm();
         campo.label=getString(R.string.foto_codigo_produccion);
         campo.type="imagenView";
         campo.value=fotos.get(getString(R.string.foto_codigo_produccion))!=null?directorio+fotos.get(getString(R.string.foto_codigo_produccion)).getRuta():"";
@@ -497,7 +513,7 @@ public class VerInformeDetFragment extends Fragment {
 
             }
         };
-        camposForm.add(campo);
+        camposForm.add(campo);*/
         cf2=new CreadorFormulario(camposForm,getContext());
 
     }

@@ -91,6 +91,8 @@ public interface APIService {
     @GET("tiendas")
     Call<TiendasResponse> getTiendas(@Query("pais") String pais,@Query("ciudad") String ciudad, @Query("plan") int planta,  @Query("cli") int cliente,@Query("fini") String fechaini,@Query("ffin") String fechafin,@Query("tipo") String tipo, @Query("nombre") String nombre, @Query("usuario") String usuario);
 
+    @GET("geocercas")
+    Call<TiendasResponse> getGeocercas(@Query("indice") String indice, @Query("usuario") String usuario);
 
     @GET("descresp")
     Call<RespInformesResponse> getRespaldoInf( @Query("indice") String indice, @Query("usuario") String usuario);

@@ -106,7 +106,7 @@ public class CreadorFormulario {
 
         for(CampoForm campo :listaCampos){
             this.infocampo=campo;
-            Log.d(Constantes.TAG,"nombre campo: " +this.infocampo.type);
+           // Log.d(Constantes.TAG,"nombre campo: " +this.infocampo.type);
             try {
 
             if(this.infocampo.type.equals("lista")) {
@@ -130,9 +130,15 @@ public class CreadorFormulario {
            // tv.setText(Html.fromHtml("<b>"+this.infocampo.label+"</b>"));
             tv.setText(this.infocampo.label);
             tv.setTextAppearance(context, R.style.formlabel);
+            if(infocampo.style== R.style.formlabel)
+                    tv.setTextAppearance(context, R.style.formlabel);
+                else
             if(infocampo.style>0)
                 tv.setTextAppearance(context, R.style.formlabel2);
-            if(!this.infocampo.type.equals("preguntasino")&&!this.infocampo.type.equals("listDivider")) {
+
+                if(infocampo.style== R.style.formlabel)
+                    formulario.addView(this.espacio());
+                    if(!this.infocampo.type.equals("preguntasino")&&!this.infocampo.type.equals("listDivider")) {
                 formulario.addView(tv);
             }
 
@@ -226,13 +232,26 @@ public class CreadorFormulario {
 
     public View listDivider(){
         View linea=new View(context);
-        int dividerHeight = (int) (context.getResources().getDisplayMetrics().density * 1); // 1dp to pixels
+        int dividerHeight = (int) (context.getResources().getDisplayMetrics().density * 2); // 1dp to pixels
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dividerHeight);
-        lp.setMargins(0, 2, 0, 24);
+        lp.setMargins(0, 60, 0, 80);
         linea.setLayoutParams(lp);
-        linea.setBackgroundColor(Color.parseColor("#cccccc"));
+        linea.setBackgroundColor(Color.parseColor("#FFBFBFBF"));
 
        //linea.setBackgroundColor(context.getResources().getDrawable());
+
+        return linea;
+
+    }
+
+    public View espacio(){
+        View linea=new View(context);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
+        //lp.setMargins(0, 60, 0, 80);
+        linea.setLayoutParams(lp);
+        //linea.setBackgroundColor(Color.parseColor("#FFBFBFBF"));
+
+        //linea.setBackgroundColor(context.getResources().getDrawable());
 
         return linea;
 

@@ -1,6 +1,7 @@
 package com.example.comprasmu.ui;
 
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,17 +9,24 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 
 import android.os.Environment;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.utils.ComprasUtils;
 
 
 import java.io.File;
@@ -38,6 +46,7 @@ public class RevisarFotoActivity extends AppCompatActivity {
     private static final int INTERVALO = 3000; //2 segundos para salir
     private long tiempoPrimerClick;
     private Toolbar myChildToolbar;
+    ScaleGestureDetector objScaleGesturDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,25 +60,31 @@ public class RevisarFotoActivity extends AppCompatActivity {
 
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
-        Bundle extras = getIntent().getExtras(); // Aquí es null
-        nombre_foto = extras.getString(IMG_PATH1);
         imagen1=findViewById(R.id.ivrfimagen);
         foto1=findViewById(R.id.txtrffoto1);
-        Log.d("algo******", nombre_foto);
-        File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
-        if (file.exists()) {
-            //   Bitmap imageBitmap = (Bitmap) extras.get("data");
-            Bitmap bitmap1 = BitmapFactory.decodeFile(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+        Bundle extras = getIntent().getExtras(); // Aquí es null
+        if(extras!=null) {
+            nombre_foto = extras.getString(IMG_PATH1);
+            Log.d("algo******", nombre_foto);
 
-            imagen1.setImageBitmap(bitmap1);
-            foto1.setText(nombre_foto);
+
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+            if (file.exists()) {
+                //   Bitmap imageBitmap = (Bitmap) extras.get("data");
+                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto,100,100);
+
+                imagen1.setImageBitmap(bitmap1);
+                foto1.setText(nombre_foto);
+            }
         }
-
+        objScaleGesturDetector=new ScaleGestureDetector(this,new PinchZoomListener());
 
 
     }
 
-        @Override
+
+
+    @Override
         public void onBackPressed(){
 
                 super.onBackPressed();
@@ -114,6 +129,42 @@ public class RevisarFotoActivity extends AppCompatActivity {
             super.onBackPressed();
             return;
 
+        }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        objScaleGesturDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    public class PinchZoomListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        RelativeLayout.LayoutParams params;
+        int startwith;
+        int startheight;
+        float dx = 0, dy = 0, x = 0, y = 0;
+        float angle = 0;
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+               float gesturefactor=detector.getScaleFactor();
+
+                if(gesturefactor>1) {
+                    Log.d(TAG,"Zoom out");
+                }else{
+                    Log.d(TAG,"zoom in");
+                }
+                return super.onScale(detector);
+
+            }
+
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector detector) {
+                return super.onScaleBegin(detector);
+            }
+
+            @Override
+            public void onScaleEnd(ScaleGestureDetector detector) {
+                super.onScaleEnd(detector);
+            }
         }
 
 }

@@ -122,7 +122,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         if (idVisita <= 0) {
             mIsNew= true;
             //busco el siguiente id
-            int idVisita=visitaRepository.getUltimo();
+            int idVisita=visitaRepository.getUltimo(Constantes.INDICEACTUAL);
             if(idVisita==0)//no hay nada busco en el serv
             {
                 if (prefvisita == 0&&ComprasUtils.isOnlineNet()) {

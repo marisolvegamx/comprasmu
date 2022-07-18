@@ -13,19 +13,23 @@ import android.util.Log;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
+import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
+import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
@@ -35,6 +39,8 @@ import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
+import com.example.comprasmu.ui.tiendas.PeticionMapaCd;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
@@ -55,6 +61,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     InformeComDetRepositoryImpl infdrepo;
     ImagenDetRepositoryImpl imagenDetRepo;
     ProductoExhibidoRepositoryImpl prodrepo;
+    GeocercaRepositoryImpl georep;
     boolean notificar=false;
     Activity act;
     int actualiza;
@@ -66,7 +73,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
     public DescargasIniAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
-                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo, DescargaRespAsyncTask.ProgresoRespListener proglist, SustitucionRepositoryImpl sustRepo) {
+                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo, DescargaRespAsyncTask.ProgresoRespListener proglist, SustitucionRepositoryImpl sustRepo,GeocercaRepositoryImpl georep) {
 
         this.cdrepo=cdrepo;
         this.atRepo=atRepo;
@@ -77,6 +84,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         this.act=act;
         sdfdias=new SimpleDateFormat("dd-MM-yyyy");
         this.proglist=proglist;
+        this.georep=georep;
     }
 
     @Override
@@ -89,7 +97,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
            // if (indice[0].equals("cat")) //descargo cats tmb
             catalogos();
             listacompras();
-
+            buscarZonas();
       /*  }else
               {
             notificar = true;
@@ -198,6 +206,66 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         }
     }
 
+    public void buscarZonas(){
+        TablaVersiones cats=tvRepo.getVersionByNombreTabla("geocercas");
+        //peticion al servidor
+
+        PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
+
+
+        if(cats!=null){
+            //si hoy ya se actualizó no actualizo
+            Log.d(TAG,"comprobando vers geocercas*"+sdfdias.format(cats.getVersion())+"--"+(sdfdias.format(new Date())));
+            //no actualice
+            if(actualiza==1) {
+                if(NavigationDrawerActivity.isOnlineNet()) {
+                  pedirZonas(petmap);
+                }
+                else
+
+                    notificar = true;
+                  /*  act.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("DescargasIniAsyncTask","estas al dia*");
+
+                          //  proglist.cerrarAlerta();
+                         //   proglist.todoBien();
+                        }
+                    });*/
+            }else
+            if(!sdfdias.format(cats.getVersion()).equals(sdfdias.format(new Date()))){
+                if(NavigationDrawerActivity.isOnlineNet()) {
+                    pedirZonas(petmap);
+                }
+
+                else
+
+                    notificar = true;
+
+            }
+
+        }else {   //primera vez
+            Log.d("DescargasIniAsyncTask","iniciando descarga geocercas");
+            if(NavigationDrawerActivity.isOnlineNet()) {
+                pedirZonas(petmap);
+            }
+            else
+                notificar = true;
+        }
+
+
+
+    }
+    public void pedirZonas(PeticionMapaCd petmap) {
+        DescargaIniListener listener=new DescargaIniListener();
+        petmap.getZonas("", Constantes.INDICEACTUAL,listener); //se agregarian filtros despues
+        // Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
+        //petmap.getTiendas("1","1",25,4,"2022-01-01","2022-04-01","",""); //se agregarian filtros despues
+
+
+    }
+
   /*  private void informes() {
         if(getTotVisitas()==0) { //veo si tengo datos en el servidor
            // InformeComDetRepositoryImpl ifodrepo=new InformeComDetRepositoryImpl(act);
@@ -269,6 +337,26 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     proglist.cerrarAlerta(notificar);
                 }*/
                 informes();
+            }
+            public void insertarZonas(List<Geocerca> zonas){
+
+                        if (zonas != null && zonas.size() > 0) {
+
+                            //insertar
+
+                            for(Geocerca geo:zonas) {
+                                georep.insert(geo);
+                            }
+                            //actualizo tabla versiones
+                            TablaVersiones tv=new TablaVersiones();
+                            tv.setNombreTabla("geocercas");
+                            tv.setTipo("C");
+                            tv.setVersion(new Date());
+                            tvRepo.insertUpdate(tv);
+
+                            tv=null;
+                        }
+
             }
             public void actualizar(ListaCompraResponse compraResp) {
                 //primero los inserts
@@ -364,7 +452,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             }
             public int getTotVisitas(){
                 visRepo=new VisitaRepositoryImpl(act);
-                int ultimo=visRepo.getUltimo();
+                int ultimo=visRepo.getUltimo(Constantes.INDICEACTUAL);
                 Log.d(TAG, "consecutivo encontrado"+ultimo);
 
                 return ultimo;

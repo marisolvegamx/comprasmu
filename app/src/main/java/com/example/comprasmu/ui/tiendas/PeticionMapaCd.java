@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.remote.ServiceGenerator;
@@ -51,6 +52,42 @@ public class PeticionMapaCd {
                         // lista.setValue(respuestaTiendas);
 
                         Log.d(TAG, "ya lo asigné" + respuestaTiendas.getTiendas());
+                    }
+                    //  return lista;
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<TiendasResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(TAG, t.getMessage());
+
+                }
+            }
+        });
+
+    }
+
+    public  void getZonas(String pais, String indice, DescargasIniAsyncTask.DescargaIniListener listener) {
+
+        final Call<TiendasResponse> batch = apiClient.getApiService().getGeocercas(indice,usuario);
+
+        batch.enqueue(new Callback<TiendasResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<TiendasResponse> call, @Nullable Response<TiendasResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG,"getZonas llego algo"+response.body().toString());
+
+                    TiendasResponse respuestaTiendas = response.body();
+                    if(respuestaTiendas!=null) {
+                      //  listatiendas.setValue(respuestaTiendas.getTiendas());
+                        listener.insertarZonas(respuestaTiendas.getGeocercas());
+
+                        // lista.setValue(respuestaTiendas);
+
+                        Log.d(TAG, "getZonas ya lo asigné" + respuestaTiendas.getTiendas());
                     }
                     //  return lista;
 

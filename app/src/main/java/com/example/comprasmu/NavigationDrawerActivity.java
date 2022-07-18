@@ -29,6 +29,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
+import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
@@ -520,7 +521,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
        // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-       Constantes.INDICEACTUAL = "6.2022";
+        Constantes.INDICEACTUAL = "7.2022";
+        if(Constantes.CLAVEUSUARIO.equals("4")){
+            Constantes.INDICEACTUAL = "6.2022";
+        }
+
         Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
         //TODO falta pais trabajo
@@ -544,7 +549,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,null,sustRepo);
+        GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,null,sustRepo,georep);
 
         task.execute("cat","");
       /*  AlertDialog.Builder builder=new AlertDialog.Builder(this);

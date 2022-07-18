@@ -1,6 +1,7 @@
 package com.example.comprasmu.ui.visita;
 
 import android.app.Application;
+import android.os.Environment;
 import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
@@ -43,7 +44,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
     private String nombreTienda;
     private String indiceSel;
     private Application application;
-
+   String directorio;
     public ListaVisitasViewModel(Application application) {
         super(application);
         this.application=application;
@@ -52,6 +53,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         imdRepository = new ImagenDetRepositoryImpl(application);
         idrepo = new InformeComDetRepositoryImpl(application);
         lcRepository=new ListaCompraDetRepositoryImpl(application);
+        directorio=application.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
     }
 
     public void cargarDetalles(){
@@ -67,7 +69,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         List<InformeCompra> informeCompras=infrepo.getAllByVisitasimple(id);
 
         //informes.removeObserver(this);
-        if(informeCompras!=null&&informeCompras.size()>0){
+        if(informeCompras!=null&&informeCompras.size()>0){ //tengo informes
             if(banpas==1) { //estoy eliminado uno de fecha anterior
 
 
@@ -80,7 +82,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
                     //no puedo borrar
             {     mSnackbarText.setValue("No se puede eliminar");
                     return;}
-            }
+        }
                    /* Visita im=null;
                     for(i=0;i<listas.getValue().size();i++){
                         im=listas.getValue().get(i);
@@ -96,7 +98,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
 
                 ImagenDetalle img1=imdRepository.findsimple(eliminar.getFotoFachada());
                 if(img1!=null) {//borro el archivo
-                    File fdelete = new File(img1.getRuta());
+                    File fdelete = new File(directorio+img1.getRuta());
                     if (fdelete.exists())
                         fdelete.delete();
                     }
@@ -111,7 +113,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
                             ImagenDetalle img2=imdRepository.findsimple(eliminar.getFotoFachada());
                             if(img2!=null)
                             { //borro el archivo
-                                 File fdelete2 = new File(img2.getRuta());
+                                 File fdelete2 = new File(directorio+img2.getRuta());
                                 if (fdelete2.exists())
                                     fdelete2.delete();}
                                 imdRepository.deleteById(prod.getImagenId());
@@ -127,14 +129,14 @@ public class ListaVisitasViewModel extends AndroidViewModel {
     public void borrarImagenesxInforme(InformeCompra inf){
         ImagenDetalle img1 = imdRepository.findsimple(inf.getTicket_compra());
         if(img1!=null) {//borro el archivo
-            File fdelete = new File(img1.getRuta());
+            File fdelete = new File(directorio+img1.getRuta());
             if (fdelete.exists())
                 fdelete.delete();
         }
         img1 = imdRepository.findsimple(inf.getCondiciones_traslado());
         //borro el archivo
         if(img1!=null) {
-            File fdelete = new File(img1.getRuta());
+            File fdelete = new File(directorio+img1.getRuta());
             if (fdelete.exists())
                 fdelete.delete();
         }
@@ -146,16 +148,21 @@ public class ListaVisitasViewModel extends AndroidViewModel {
             if(fotos!=null)
             for(ImagenDetalle img:fotos){
                 if(img!=null) {
-                    File fdelete = new File(img.getRuta());
+                    File fdelete = new File(directorio+img.getRuta());
                     if (fdelete.exists())
                         fdelete.delete();
                 }
             }
+            Log.d(TAG,"www"+infd.getComprasId()+"--"+infd.getComprasDetId());
             //ajusto cantidades
-            ListaCompraDetalle compradet=lcRepository.findsimple(infd.getComprasId(),infd.getId());
-            if(compradet!=null)
-            { int nvacant=compradet.getComprados()-1;
-            lcRepository.actualizarComprados(infd.getId(),infd.getComprasId(),nvacant);}
+            //solo si es normal
+            if(infd.getTipoMuestra()!=3) {
+                ListaCompraDetalle compradet = lcRepository.findsimple(infd.getComprasId(), infd.getComprasDetId());
+                if (compradet != null && compradet.getComprados() > 0) {
+                    int nvacant = compradet.getComprados() - 1;
+                    lcRepository.actualizarComprados(infd.getComprasDetId(), infd.getComprasId(), nvacant);
+                }
+            }
             //borro los detalles
             idrepo.delete(infd);
         }
