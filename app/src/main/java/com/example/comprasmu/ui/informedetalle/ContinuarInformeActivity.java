@@ -375,13 +375,12 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         InformeTemp resact=null;
         int idreact=0;
 
-            DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+        DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
 
-            if (fragment.isEdicion) {
-                resact = fragment.getUltimares();
-                idreact = resact.getId();
-            }
-
+        if (fragment.isEdicion) {
+            resact = fragment.getUltimares();
+            idreact = resact.getId();
+        }
 
         //busco el siguiente
         Reactivo reactivo = dViewModel.buscarReactivoAnterior(idreact,fragment.isEdicion);

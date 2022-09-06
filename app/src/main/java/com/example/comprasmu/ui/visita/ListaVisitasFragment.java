@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.R;
 
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
-import com.example.comprasmu.ui.BackActivity;
-import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.ContinuarInformeActivity;
 import com.example.comprasmu.ui.informedetalle.ValidadorDatos;
@@ -39,8 +34,6 @@ import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 
 import java.util.Date;
 import java.util.List;
-
-import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
 public class ListaVisitasFragment extends Fragment implements VisitaAdapter.AdapterCallback {
     private ListaVisitasViewModel mViewModel;
@@ -105,7 +98,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
        // mBinding.setLcviewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
 
-        coordinator=view.findViewById(R.id.coordinator);
+        coordinator=view.findViewById(R.id.coordinator3);
 
         setupListAdapter();
        // setupSnackbar();

@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.visita.AbririnformeFragment">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/dark_grey"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txtaiindice"
+            style="@style/subtitulo1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0dp"
+            android:gravity="fill_vertical"
+            android:text=""
+            android:textColor="@color/gray" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.015"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/content_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider4"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="30dp"
+                android:background="?android:attr/scrollbarThumbHorizontal" />
+
+            <LinearLayout
+                android:id="@+id/content_main2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView10"
+                    style="@style/formlabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/foto_fachada"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/txtaifotofachada"
+
+                        android:layout_width="98dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/btnaifotofachada"
+                        style="@style/imbutton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_menu_camera" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ivaifachada"
+                        android:layout_width="111dp"
+                        android:layout_height="99dp"
+                        android:layout_marginTop="20dp"
+                        android:visibility="gone"
+                        tools:src="@tools:sample/avatars"
+                        tools:visibility="visible" />
+
+                    <ImageButton
+                        android:id="@+id/btnairotar1"
+                        style="@style/imbutton"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="80dp"
+                        android:layout_marginEnd="190dp"
+                        android:contentDescription="rotar"
+                        android:src="@drawable/ic_baseline_loop_24"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/cbainpfachada"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_foto" />
+
+                <LinearLayout
+                    android:id="@+id/aiubicar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/txtairegub"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ubiquese" />
+
+                    <Button
+                        android:id="@+id/btnaiubic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="#00BCD4"
+                        android:text="@string/regubi" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView15"
+                    style="@style/formlabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/ubicación"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/txtaiultubic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/txtaiubicacion"
+                        android:layout_width="311dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txtaimensajeubicacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:maxWidth="100dp"
+                        android:maxHeight="100dp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView19"
+                    style="@style/formlabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="COMPLEMENTO DIRECCION"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/txtaicomplementodir"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="30dp"
+                    android:background="?android:attr/scrollbarThumbHorizontal" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView29"
+                style="@style/formlabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="@string/producto_exhibido" />
+
+            <TextView
+                android:id="@+id/textView30"
+                style="@style/formlabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/seleccione_cliente"
+                android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/spaiclientes1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/txtaifotoex1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/btnaifotoexhibido"
+                style="@style/imbutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_menu_camera" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/ivaifotoex1"
+                    android:layout_width="111dp"
+                    android:layout_height="99dp"
+                    android:tag="fotoex"
+                    android:visibility="gone"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageButton
+                    android:id="@+id/btnairotarfe1"
+                    style="@style/imbutton"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="55dp"
+                    android:layout_marginEnd="190dp"
+                    android:contentDescription="rotar"
+                    android:src="@drawable/ic_baseline_loop_24"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/cbainpexhibidor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_foto" />
+
+            <com.example.comprasmu.utils.Preguntasino
+                android:id="@+id/snaimascli1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </com.example.comprasmu.utils.Preguntasino>
+
+            <LinearLayout
+                android:id="@+id/llfotoex2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/txtaicliente2"
+                    style="@style/formlabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/seleccione_cliente"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/spaiclientes2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <ImageButton
+                    android:id="@+id/btnaifotoexhibido2"
+                    style="@style/imbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+
+                    android:src="@drawable/ic_menu_camera" />
+
+                <EditText
+                    android:id="@+id/txtaifotoex2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ivaifotoex2"
+                        android:layout_width="111dp"
+                        android:layout_height="95dp"
+                        android:tag="fotoex"
+                        android:visibility="gone"
+                        tools:src="@tools:sample/avatars"
+                        tools:visibility="visible" />
+
+                    <ImageButton
+                        android:id="@+id/btnairotarfe2"
+                        style="@style/imbutton"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="62dp"
+                        android:layout_marginEnd="190dp"
+                        android:contentDescription="rotar"
+                        android:src="@drawable/ic_baseline_loop_24"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/cbainpexhibidor2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/no_foto" />
+
+                <com.example.comprasmu.utils.Preguntasino
+                    android:id="@+id/snmascli2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </com.example.comprasmu.utils.Preguntasino>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llfotoex3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/txtaiselcliente3"
+                    style="@style/formlabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/seleccione_cliente"
+                    android:visibility="gone" />
+
+                <Spinner
+                    android:id="@+id/spaiclientes3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <ImageButton
+                    android:id="@+id/btnaifotoexhibido3"
+                    style="@style/imbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_menu_camera" />
+
+
+
+                <EditText
+                    android:id="@+id/txtaifotoex3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ivaifotoex3"
+                        android:layout_width="111dp"
+                        android:layout_height="95dp"
+                        android:tag="fotoex"
+                        android:visibility="gone"
+                        tools:src="@tools:sample/avatars" />
+
+                    <ImageButton
+                        android:id="@+id/btnairotarfe3"
+                        style="@style/imbutton"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="60dp"
+                        android:layout_marginEnd="190dp"
+                        android:contentDescription="rotar"
+                        android:src="@drawable/ic_baseline_loop_24"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </LinearLayout>
+                <CheckBox
+                    android:id="@+id/cbainpexhibidor3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/no_foto" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="30dp"
+                android:background="?android:attr/scrollbarThumbHorizontal" />
+
+            <Button
+                android:id="@+id/aibtnguardar"
+
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/guardar" />
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

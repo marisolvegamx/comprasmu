@@ -13,13 +13,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +99,7 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
 
         mBinding.setLcviewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
-        coordinator=view.findViewById(R.id.coordinator);
+        coordinator=view.findViewById(R.id.coordinator3);
 
         setupListAdapter();
         setupSnackbar();
@@ -232,10 +229,10 @@ public class ListaInformesFragment extends Fragment implements InformeCompraAdap
 
     @Override
     public void onClickEditar(int id) {
-        Bundle bundle = new Bundle();
+   /*     Bundle bundle = new Bundle();
         bundle.putInt(NuevoinformeFragment.INFORMESEL,id );
          bundle.putInt(NuevoinformeFragment.ISEDIT, 1);
-           NavHostFragment.findNavController(this).navigate(R.id.nav_continuar,bundle);
+           NavHostFragment.findNavController(this).navigate(R.id.nav_continuar,bundle);*/
     // Intent intent=new Intent(this,BackActivity.class);
 
     }

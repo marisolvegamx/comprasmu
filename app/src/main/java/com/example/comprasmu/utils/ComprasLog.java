@@ -19,25 +19,39 @@ import java.util.Date;
 public class ComprasLog {
     private static final String TAG = "ComprasLog";
     String ruta;
-    File fichero;
 
+    File fichero;
+    static private ComprasLog singletonLog = null;
+
+
+
+    static public ComprasLog getSingleton() {
+
+        if (singletonLog == null) {
+            singletonLog = new ComprasLog();
+        }
+        return singletonLog;
+    }
     public ComprasLog() {
-        ruta = Environment.getExternalStorageDirectory() + "/compraslog.txt";
-        fichero = new File(ruta);
+
+
 
     }
 
 
-    public void crearLog() {
+    public void crearLog(String dir) {
         //talvez borrarlo cada semana
 
         try {
+            ruta =dir + "/compraslog.txt";
 
+            fichero = new File(ruta);
             FileOutputStream fileOutputStream = null;
             if (!fichero.exists()) {
                 try {
                     fichero.createNewFile();
                 } catch (IOException e) {
+                    e.printStackTrace();
                     Log.e(TAG, "Error statusFile" + e.getMessage());
                 }
             }
@@ -60,11 +74,13 @@ public class ComprasLog {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
         try {
-            BufferedWriter br = new BufferedWriter(new FileWriter(fichero, true));
+            if(fichero!=null) {
+                BufferedWriter br = new BufferedWriter(new FileWriter(fichero, true));
 
-            br.write(sdf.format(new Date()) + ":" + error);
+                br.write(sdf.format(new Date()) + ":" + error);
 
-            br.close();
+                br.close();
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+
+        <ScrollView
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/llnepreg1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView16"
+                        style="@style/formlabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/seleccione_planta" />
+
+                    <Spinner
+                        android:id="@+id/spneplanta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/btnneac1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/aceptar" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llnepreg2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtnenumuestra"
+                        style="@style/formlabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/ticket_compra" />
+
+                    <EditText
+                        android:id="@+id/txtnetotalcajas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:visibility="visible" />
+
+                    <Button
+                        android:id="@+id/btnneac2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/aceptar" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llnepreg3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/txtneruta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:text="Name"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/btnnefoto"
+                        style="@style/imbutton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_menu_camera" />
+
+                    <ImageView
+                        android:id="@+id/ivnefotomue"
+                        android:layout_width="210dp"
+                        android:layout_height="97dp"
+
+                        android:layout_weight="1"
+                        android:visibility="gone"
+                        tools:srcCompat="@tools:sample/avatars" />
+
+                    <ImageButton
+                        android:id="@+id/btnnerotar1"
+                        style="@style/imbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="70dp"
+                        android:layout_marginEnd="190dp"
+                        android:layout_weight="1"
+                        android:background="@color/dark_grey"
+                        android:contentDescription="rotar"
+                        android:src="@drawable/ic_baseline_loop_24"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btnneac3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/aceptar" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/llnepre4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/form_detalle_producto_qr" />
+
+                    <EditText
+                        android:id="@+id/txtneqr"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:visibility="visible" />
+
+                    <ImageButton
+                        android:id="@+id/btnneobtqr"
+                        style="@style/imbutton"
+                        android:layout_width="396dp"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_menu_camera" />
+
+                    <Button
+                        android:id="@+id/btnneac4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/aceptar" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llnepre5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView24"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/comentarios" />
+
+                    <EditText
+                        android:id="@+id/txtnecomentarios"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine"
+                        android:text="" />
+
+                    <Button
+                        android:id="@+id/btnneguardar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/enviar" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </ScrollView>
+
+
+
+</layout>

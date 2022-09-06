@@ -14,8 +14,6 @@ public class ImagenDetalle {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-
-
     private String descripcion;
     private String ruta;
     private int estatus;

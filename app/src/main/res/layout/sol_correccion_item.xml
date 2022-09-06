@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="10dp">
+    <data >
+        <import type="com.example.comprasmu.utils.Constantes"/>
+        <import type="com.example.comprasmu.utils.ComprasUtils"/>
+        <import type="android.view.View"/>
+           <variable
+            name="sdf"
+            type="java.text.SimpleDateFormat" />
+        <variable name="detalle"
+            type="com.example.comprasmu.data.modelos.SolicitudCor"></variable>
+    </data>
+
+    <androidx.cardview.widget.CardView
+
+        android:id="@+id/ldcardview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtliindice"
+                style="@style/textolista1"
+                android:layout_width="139dp"
+                android:layout_height="wrap_content"
+                android:text='@{detalle.indice!=null?ComprasUtils.indiceLetra(detalle.indice):""}'
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/li_txtconsecutivo"
+                style="@style/textolista2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text='@{detalle.nombreTienda}'
+                android:visibility="gone" />
+            <TextView
+                android:id="@+id/li_txtid"
+                style="@style/textolista2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text='@{detalle.id+""}'
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ldprod"
+                    style="@style/textolista2"
+                    android:layout_width="133dp"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:layout_weight="5"
+                    android:text='@{detalle.createdAt!=null?sdf.format(detalle.createdAt):""}'
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtlicliente"
+                    style="@style/textolista2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text='@{detalle.clienteNombre}' />
+
+                <TextView
+                    android:id="@+id/txtliplanta"
+                    style="@style/textolista2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:layout_weight="1"
+                    android:text='@{detalle.plantaNombre}'/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtldpres"
+                    style="@style/textolista2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="3"
+                    android:layout_weight="1"
+                    android:text='@{detalle.nombreTienda}'
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtestatus"
+                    style="@style/textolista2"
+                    android:layout_width="168dp"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:layout_weight="4"
+                    android:text='@{detalle.descripcionFoto}'/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/button4"
+                    style="@style/btnverde"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:text="@string/corregir" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

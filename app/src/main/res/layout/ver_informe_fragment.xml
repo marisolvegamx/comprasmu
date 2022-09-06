@@ -55,17 +55,42 @@ xmlns:tools="http://schemas.android.com/tools">
 
 
                     <LinearLayout
-                        android:id="@+id/vidatosgen"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_height="match_parent"
                         android:orientation="vertical">
 
+                        <LinearLayout
+                            android:id="@+id/vidatosgen"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
+                            android:orientation="vertical">
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btnvifotos"
+                                style="@style/btnverde"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ver_fotos" />
+                        </LinearLayout>
 
                     </LinearLayout>
+
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -77,57 +102,12 @@ xmlns:tools="http://schemas.android.com/tools">
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="15dp"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     app:cardCornerRadius="10dp"
                     app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cardView">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/textView5"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/foto_fachada"
-                          />
-
-                        <ImageView
-                            android:id="@+id/ivvifoto_fachada"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-
-                            tools:src="@tools:sample/avatars" />
-
-
-                        <TextView
-                            android:id="@+id/textView25"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/producto_exhibido"
-                             />
-
-                        <ImageView
-                            android:id="@+id/ivuiprodex"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-
-                            tools:srcCompat="@tools:sample/avatars" />
-
-
-                    </LinearLayout>
-
 
                 </androidx.cardview.widget.CardView>
 
@@ -141,7 +121,7 @@ xmlns:tools="http://schemas.android.com/tools">
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/card2">
+                    app:layout_constraintTop_toBottomOf="@id/cardView">
 
                     <TextView
                         android:id="@+id/textView21"
@@ -150,8 +130,7 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:layout_height="41dp"
                         android:layout_marginStart="26dp"
                         android:layout_weight="1"
-                        android:text="@string/muestras"
-                         />
+                        android:text="@string/muestras" />
 
                     <include
                         android:id="@+id/vicontentmuestras"
@@ -181,37 +160,6 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:layout_marginBottom="8dp"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/textView6"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/ticket_compra"/>
-
-                        <ImageView
-                            android:id="@+id/ivuiticket_compra"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-
-                            tools:srcCompat="@tools:sample/avatars" />
-
-                        <TextView
-                            android:id="@+id/textView11"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/condiciones"
-                            />
-
-
-                        <ImageView
-                            android:id="@+id/ivuicondiciones"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_weight="1"
-
-                            tools:src="@tools:sample/avatars" />
 
                         <TextView
                             android:id="@+id/textView2"
@@ -222,7 +170,7 @@ xmlns:tools="http://schemas.android.com/tools">
                            />
 
                         <TextView
-                            android:id="@+id/txtvicomentarios"
+                            android:id="@+id/txtnecomentarios"
                             style="@style/verinforme2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

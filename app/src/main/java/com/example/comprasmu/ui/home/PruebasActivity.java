@@ -32,7 +32,7 @@ public class PruebasActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pruebas);
 
-        mTextView = (TextView) findViewById(R.id.text);
+        mTextView = (TextView) findViewById(R.id.txtlllog);
         Button boton = (Button) findViewById(R.id.btnpscan);
         boton.setOnClickListener(new View.OnClickListener() {
             @Override

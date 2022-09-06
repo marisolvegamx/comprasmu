@@ -41,6 +41,13 @@ public class SubirFoto {
             obj.onSuccess();
         }
     }
+    public void notificarObservadoresIm(ImagenDetalle imagen)
+    {
+        // Enviar la notificación a cada observador a través de su propio método
+        for (SubirFotoService.SubirFotoListener obj : observadores) {
+            obj.onSuccess2(imagen);
+        }
+    }
     public void notificarAvance(int progress)
     {
         // Enviar la notificación a cada observador a través de su propio método
@@ -148,6 +155,75 @@ public class SubirFoto {
                     }
                       Log.d("SubirFoto", "terminó de subir");
                       notificarObservadores();
+
+
+                }
+
+                @Override
+                public void onCancelled(UploadInfo uploadInfo) {
+                    Log.d("ejemplo", "se cancelo");
+                }
+
+
+            });
+
+            int i=0;
+
+            addFileToUploadRequest(uploadFileArrayList,1);
+
+            upload.startUpload();
+        } catch (Exception e) {
+            throw e;
+        }
+
+    }
+
+    public void subirFotoGen( String idusuario,String dir, ImagenDetalle imagen,String indice,  Context context,String tabla) throws Exception {
+
+//filenameGaleria=getFilename();
+
+        try {
+            this.idrepo=idrepo;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String uploadFileArrayList=dir + imagen.getRuta();
+            Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList);
+            upload= new MultipartUploadRequest(context,URL_SUBIRPICTURE)
+                    .setMaxRetries(2)
+                    .addParameter ("ruta", imagen.getRuta())
+                    .addParameter ("tabla",tabla )
+                    .addParameter ("idlocalim", imagen.getId() + "")
+                    .addParameter ("idusuario", idusuario)
+                    .addParameter("indice",indice)
+                    // .addParameter("indice", imagen.getIndice());
+                    //  .addParameter("recolector", recolector)
+                    //  .addParameter("planta", planta)
+
+                    .setUtf8Charset();
+            upload.setDelegate(new UploadStatusDelegate(){
+
+                @Override
+                public void onProgress(UploadInfo uploadInfo) {
+                    Log.d("SubirFoto","Subiendo foto....."+uploadFileArrayList);
+                    notificarAvance(uploadInfo.getProgressPercent());
+                }
+
+                @Override
+                public void onError(UploadInfo uploadInfo, Exception exception) {
+                    Log.d("SubirFoto","Error al subir"+uploadInfo.getUploadedBytes());
+                }
+
+                @Override
+                public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
+                    Log.d("ejemploimagen","Respuesta->"+serverResponse.getHttpCode());
+                    Log.d("ejemploimagen","Respuesta->"+serverResponse.getBodyAsString());
+                    if(serverResponse.getHttpCode()==200) {
+                        notificarObservadoresIm(imagen);
+                    }else { //hubo un error
+                      notificarObservadoresIm(null);
+                        Log.d("SubirFoto","Hubo un error al subir imagen "+serverResponse.getBodyAsString());
+                    }
+                    Log.d("SubirFoto", "terminó de subir");
+
 
 
                 }

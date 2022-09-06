@@ -793,6 +793,17 @@ public class CreadorFormulario {
         imagen.setOnClickListener(infocampo.funcionOnClick);
         return  imagen;
     }
+    public ImageView imagenViewd(){
+        ImageView imagen=new ImageView(context);
+        if(infocampo.value!=null&&!infocampo.value.equals("")) {
+            imagen.setImageResource(Integer.parseInt(infocampo.value));
+        }
+        imagen.setId(infocampo.id);
+        imagen.setLayoutParams(new ViewGroup.LayoutParams(350,150));
+        if(infocampo.funcionOnClick!=null)
+            imagen.setOnClickListener(infocampo.funcionOnClick);
+        return  imagen;
+    }
     public LinearLayout imagenViewr(){
         LinearLayout layout=new LinearLayout(context);
         layout.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));

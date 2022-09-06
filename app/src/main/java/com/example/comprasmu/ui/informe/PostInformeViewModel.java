@@ -5,17 +5,24 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
+import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.remote.InformeEnvio;
+import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TodoEnvio;
+import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
+import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
@@ -40,7 +47,10 @@ public class PostInformeViewModel {
    InformeComDetRepositoryImpl infoDetRepo;
    VisitaRepositoryImpl visitaRepo;
    ProductoExhibidoRepositoryImpl prodeRepo;
+   InfEtapaRepositoryImpl etapaRepo;
+   InfEtapaDetRepoImpl etapadetRepo;
    Context context;
+   CorreccionRepoImpl correccionRepo;
 
     public PostInformeViewModel(@NonNull Context context) {
 
@@ -117,6 +127,10 @@ public class PostInformeViewModel {
          infoDetRepo=new InformeComDetRepositoryImpl(context);
          visitaRepo=new VisitaRepositoryImpl(context);
          prodeRepo=new ProductoExhibidoRepositoryImpl(context);
+    }
+    public void iniciarBD(){
+       etapaRepo=new InfEtapaRepositoryImpl(context);
+       etapadetRepo=new InfEtapaDetRepoImpl(context);
     }
     public void actualizarEstatusInforme(InformeEnvio informe){
         if(informe.getVisita()!=null)
@@ -210,7 +224,82 @@ public class PostInformeViewModel {
         return envio;
     }
 
+    public  void sendInformeEta(InformeEtapaEnv informeEtapa) {
 
+         apiClient.getApiService().saveInformeEtapa(informeEtapa).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
+                //  { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+
+                    mensaje=response.body().getData();
+                    Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);
+                    //actualizo el estatus
+                    iniciarBD();
+                    actEstatusInfEtapa(informeEtapa);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+
+
+        });
+    }
+
+    public void actEstatusInfEtapa(InformeEtapaEnv informe){
+
+        //actualizo informe
+        etapaRepo.actualizarEstatusSync(informe.getInformeEtapa().getId(),Constantes.ENVIADO);
+        //actualizo detalles
+        etapadetRepo.actEstatusSyncxInfo(informe.getInformeEtapa().getId(),Constantes.ENVIADO);
+
+
+    }
+
+    public  void sendCorreccion(CorreccionEnvio correccion) {
+
+        Log.d("Correccion", "enviando correccion");
+        apiClient.getApiService().saveCorreccion(correccion).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
+                //  { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+
+                    mensaje=response.body().getData();
+                    Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);
+                    //actualizo el estatus
+                    iniciarDBCor();
+                    actEstatusCorreccion(correccion.getCorreccion());
+
+                    //listo para subir fotos
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+
+
+        });
+    }
+    public void iniciarDBCor(){
+        correccionRepo=new CorreccionRepoImpl(context);
+    }
+    public void actEstatusCorreccion(Correccion correccion){
+        correccionRepo.actualizarEstatusSync(correccion.getId(),2);
+    }
     public String getMensaje() {
         return mensaje;
     }

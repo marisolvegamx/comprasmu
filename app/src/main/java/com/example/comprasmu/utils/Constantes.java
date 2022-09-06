@@ -34,6 +34,7 @@ public class Constantes {
     /****estatus sync***/
     public static final int PENDIENTE =0 ;
     public static boolean LOGGEADO;
+
     public static final int SINCRONIZANDO = 1;
     public static final int ENVIADO =2;
     /********************/
@@ -46,7 +47,7 @@ public class Constantes {
     public static String[] ESTATUSINFORME={"CANCELADO","ABIERTO","FINALIZADO","CON INFORME"};
     public static String[] ESTATUSSYNC={"PENDIENTE","ENVIANDO","ENVIADO"};
     public static String[] PUNTOCARDINAL={"NORTE","SUR","ESTE","OESTE","CENTRO"};
-
+    public static boolean varciudades;
     public static List<DescripcionGenerica> clientesAsignados;
 
     public static HashMap<Integer,String> plantasAsignadas;
@@ -73,4 +74,5 @@ public class Constantes {
 
 
     }
+    public static int ETAPAACTUAL;
 }

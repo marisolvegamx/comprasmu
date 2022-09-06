@@ -5,9 +5,8 @@
 
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
-
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -16,6 +15,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -26,7 +26,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Comprasmu">
+        <!--
+               Set to true if your app is Standalone, that is, it does not require the handheld
+               app to run.
+        -->
 
+        <activity
+            android:name=".ui.mantenimiento.LeerLogActivity"
+            android:label="@string/title_activity_leer_log">
+
+        </activity>
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
@@ -37,25 +46,27 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                android:screenOrientation="portrait"
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.home.PruebasActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_pruebas" />
+            android:label="@string/title_activity_pruebas"
+            android:screenOrientation="portrait" />
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
         -->
         <activity
             android:name=".ui.informedetalle.ContinuarInformeActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_continuar_informe"
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
@@ -68,6 +79,7 @@
 
         <activity
             android:name=".ui.BackActivity"
+            android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".utils.ui.FiltrarListaActivity"
@@ -78,22 +90,29 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.tiendas.MapaCdActivity"
+            android:configChanges="orientation"
             android:label="@string/buscar_tienda"
-            android:screenOrientation="portrait" >
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.tiendas.FirstMapActivity"
             android:label="@string/buscar_tienda"
-            android:screenOrientation="portrait" >
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.correccion.NvaCorreccionFragment"
+            android:label="@string/informe_correccion"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.infetapa.NuevoInfEtapaActivity"
+            android:label="@string/nuevo_informe"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".NavigationDrawerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Comprasmu.NoActionBar"></activity>
+            android:theme="@style/Theme.Comprasmu.NoActionBar" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".ui.home.HomeActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

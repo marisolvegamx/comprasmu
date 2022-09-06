@@ -23,7 +23,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
     private List<ImagenDetalle> mSpacePhotos;
     private Context mContext;
     String directorio;
-
+   // private AdapterCallback callback;
     public ImageGalleryAdapter(Context context, List<ImagenDetalle> spacePhotos) {
         mContext = context;
         mSpacePhotos = spacePhotos;
@@ -31,6 +31,20 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
 
     }
+    public ImageGalleryAdapter(Context context) {
+        mContext = context;
+
+        directorio=context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
+
+
+    }
+
+
+
+    public void setmSpacePhotos(List<ImagenDetalle> mSpacePhotos) {
+        this.mSpacePhotos = mSpacePhotos;
+    }
+
     @Override
     public ImageGalleryAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -51,22 +65,27 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
               //  .placeholder(R.drawable.ic_cloud_off_red)
                 .into(imageView);
         holder.txtdesc.setText(spacePhoto.getDescripcion());
+        holder.txtruta.setText(spacePhoto.getRuta());
     }
 
     @Override
     public int getItemCount() {
+        if(mSpacePhotos!=null)
         return (mSpacePhotos.size());
+        return 0;
     }
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ImageView mPhotoImageView;
         public TextView txtdesc;
+        public TextView txtruta;
 
         public MyViewHolder(View itemView) {
 
             super(itemView);
             mPhotoImageView = (ImageView) itemView.findViewById(R.id.iv_photo);
             txtdesc=itemView.findViewById(R.id.txtfidesc);
+            txtruta=itemView.findViewById(R.id.txtfiruta);
             itemView.setOnClickListener(this);
         }
 
@@ -77,8 +96,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             if(position != RecyclerView.NO_POSITION) {
                 ImagenDetalle spacePhoto = mSpacePhotos.get(position);
                 Intent intent = new Intent(mContext, RevisarFotoActivity.class);
-                //intent.putExtra(RevisarFotoActivity.EXTRA_SPACE_PHOTO, spacePhoto);
-                //s(intent);
+                intent.putExtra(RevisarFotoActivity.IMG_PATH1,txtruta.getText().toString());
+                mContext.startActivity(intent);
             }
         }
     }

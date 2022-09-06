@@ -1,6 +1,5 @@
 package com.example.comprasmu.ui.visita;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +75,7 @@ public class VisitaAdapter extends RecyclerView.Adapter<VisitaAdapter.VisitaView
             binding.liBtnborrar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(view.getId()==R.id.li_btnborrar)
+                    if(view.getId()==R.id.btncigborrar)
                         callback.onClickEliminar(Integer.parseInt(binding.liTxtid.getText().toString()));
                 }
             });

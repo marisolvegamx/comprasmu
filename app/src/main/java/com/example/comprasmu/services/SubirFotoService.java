@@ -19,8 +19,12 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.SubirFoto;
+import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
+import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
+import com.example.comprasmu.utils.Constantes;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -32,13 +36,18 @@ public class SubirFotoService extends IntentService
 {
     private static final String TAG = "SubirFotoService";
     public static String EXTRA_INDICE="comprasmu.extraindice";
-
+    InfEtapaDetRepoImpl etapadetRepo;
+    CorreccionRepoImpl correccionRepo;
 
     String userId, indiceimagen;
     ImagenDetalle imagenSubir;
     PostInformeViewModel pvm;
+    private String tipo; //para saber que tabla actualizare
+
 
     public static final String ACTION_UPLOAD_IMG = "com.example.comprasmu.intentservice.action.PROGRESO";
+    public static final String ACTION_UPLOAD_ETA = "comprasmu.intentservice.action.etapa";
+    public static final String ACTION_UPLOAD_COR = "comprasmu.intentservice.action.correccion";
 
     public static final String EXTRA_IMG_PATH = "com.example.comprasmu.intentservice.extra.EXTRA_IMG_PATH";
     public static final String EXTRA_IMAGE_ID = "com.example.comprasmu.intentservice.extra.EXTRA_IMAGE_ID";
@@ -59,7 +68,7 @@ public class SubirFotoService extends IntentService
             final String action = intent.getAction();
            // intent.setAction(ACTION_UPLOAD_IMG);
 
-            if (ACTION_UPLOAD_IMG.equals(action))
+            if (ACTION_UPLOAD_IMG.equals(action)) //para informe compra
             {
               //  Log.d(TAG,"action"+action);
                 imagenSubir=new ImagenDetalle();
@@ -67,6 +76,15 @@ public class SubirFotoService extends IntentService
                 imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
                 indiceimagen=intent.getStringExtra(EXTRA_INDICE);
                 handleUploadImg();
+            }else
+
+            {
+                //  Log.d(TAG,"action"+action);
+                imagenSubir=new ImagenDetalle();
+                imagenSubir.setRuta(intent.getStringExtra(EXTRA_IMG_PATH));
+                imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
+                indiceimagen=intent.getStringExtra(EXTRA_INDICE);
+                handleUploadImg2(intent);
             }
         }
     }
@@ -93,6 +111,40 @@ public class SubirFotoService extends IntentService
                 Log.e(TAG,"error"+ex.getMessage());
                 ex.printStackTrace();
             }
+
+
+    }
+    private void handleUploadImg2(Intent intent)
+    {
+
+        // Instanciar y registrar un Observador
+        SubirFotoListener objObservador  = new SubirFotoListener();
+
+        try {
+            // notificar();
+             String action = intent.getAction();
+            SubirFoto sf = new SubirFoto();
+            sf.agregarObservador(objObservador);
+            //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dir=   this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
+           if(action.equals(ACTION_UPLOAD_COR)){
+               tipo="correccion";
+               correccionRepo=new CorreccionRepoImpl(getApplicationContext());
+           }
+           if(action.equals(ACTION_UPLOAD_ETA)){
+               tipo="etapa";
+               etapadetRepo=new InfEtapaDetRepoImpl(getApplicationContext());
+           }
+            sf.subirFotoGen(userId,dir, imagenSubir,indiceimagen, this,tipo);
+            // pvm.actualizarEstatusFoto(imagenSubir);
+            // Thread.sleep(10000);
+            // enviarOtra();
+        }catch (Exception ex){
+
+            Log.e(TAG,"error"+ex.getMessage());
+            ex.printStackTrace();
+        }
 
 
     }
@@ -187,8 +239,8 @@ public class SubirFotoService extends IntentService
     }
 
 
-    public class SubirFotoListener {
 
+    public class SubirFotoListener {
 
         boolean downloadComplete = false;
 
@@ -197,24 +249,35 @@ public class SubirFotoService extends IntentService
 
         }
 
+
         public void onProgress(int progress)
         {
            // updateNotification(progress);
         }
         public void onSuccess(){
-          /*  contador++;
-            //revisa si son todos
-            if(tamañolista==contador) {
-                progreso.setVisibility(View.GONE);
-                cargarLista();
-            }
-*/
-            //aviso a la actividad
-
-
 
             downloadComplete = true;
           //  onDownloadComplete(downloadComplete);
+
+        }
+        public void onSuccess2(ImagenDetalle imagen){
+            downloadComplete = true;
+           if(tipo.equals("correccion"))
+                //actualizo correccion
+            correccionRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
+           else
+               if(tipo.equals("etapa")){
+                   etapadetRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
+               }
+            //  onDownloadComplete(downloadComplete);
+
+        }
+        public void onSuccessEtapa(ImagenDetalle imagen){
+            downloadComplete = true;
+
+            //actualizo correccion
+
+            //  onDownloadComplete(downloadComplete);
 
         }
 

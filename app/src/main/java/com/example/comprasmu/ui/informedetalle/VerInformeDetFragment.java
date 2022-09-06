@@ -1,5 +1,7 @@
 package com.example.comprasmu.ui.informedetalle;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -19,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -30,6 +33,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 
+import com.example.comprasmu.ui.gallery.GalFotosFragment;
 import com.example.comprasmu.ui.gallery.ImageGalleryAdapter;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
@@ -44,9 +48,9 @@ import java.util.List;
 
 public class VerInformeDetFragment extends Fragment {
     public LiveData<InformeCompraDetalle> informeSel;
-    private VerInformeDetViewModel mViewModel;
+    //private VerInformeDetViewModel mViewModel;
     private NuevoDetalleViewModel dViewModel;
-    private NuevoinformeViewModel niViewModel;
+  //  private NuevoinformeViewModel niViewModel;
    int idInforme;
     CreadorFormulario cf;
     CreadorFormulario cf2;
@@ -60,15 +64,11 @@ public class VerInformeDetFragment extends Fragment {
     View root;
     int i;
     private static final String TAG="VerInformeDetFRAGMENT";
-
-
+    Button verFotos;
+    int idmuestra;
     LinearLayout sv2;
     LinearLayout sv1;
-    private int[] arrCampos={R.id.txtdpfecha_caducidad,R.id.txtdpcodigo_producto,R.string.form_detalle_producto_origen,R.string.form_detalle_producto_costo,R.string.form_detalle_producto_foto_cod,
-            R.string.form_detalle_producto_energia,R.string.form_detalle_producto_foto_num,R.string.form_detalle_producto_marca_tras,
-            R.string.form_detalle_producto_atributo_a,R.string.form_detalle_producto_atributob,R.string.form_detalle_producto_atributoc,
-            R.string.form_detalle_producto_etiqueta
-    };
+
 
 
     public static VerInformeDetFragment newInstance() {
@@ -80,17 +80,24 @@ public class VerInformeDetFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
          root= inflater.inflate(R.layout.ver_informe_det_fragment, container, false);
         cont=new MutableLiveData<>();
+        verFotos=root.findViewById(R.id.btnvidfotos);
+        verFotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verFotos();
+            }
+        });
          return  root;
     }
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mViewModel = new ViewModelProvider(this).get(VerInformeDetViewModel.class);
+    //    mViewModel = new ViewModelProvider(this).get(VerInformeDetViewModel.class);
         dViewModel=new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
 
 
-         niViewModel=new ViewModelProvider(this).get(NuevoinformeViewModel.class);
+     //    niViewModel=new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
         Log.d("VerInformeDFragment1","creando fragment");
 
@@ -108,19 +115,13 @@ public class VerInformeDetFragment extends Fragment {
 
         idInforme= params.getInt(NuevoinformeFragment.ARG_NUEVOINFORME);
         clienteSel= params.getInt(NuevoinformeFragment.ARG_CLIENTEINFORME);
-        int idmuestra=params.getInt(VerInformeFragment.ARG_IDMUESTRA);
+        idmuestra=params.getInt(VerInformeFragment.ARG_IDMUESTRA);
         informeSel= dViewModel.getMuestra(idmuestra);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,
-                false);
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.rv_viimagenes);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
+
         informeSel.observe(getViewLifecycleOwner(), new Observer<InformeCompraDetalle>() {
           @Override
            public void onChanged(InformeCompraDetalle informeCompraDetalle) {
               ponerDatos(informeCompraDetalle);
-              ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext(),fotos);
-              recyclerView.setAdapter(adapter);
 
             }
         });
@@ -133,21 +134,7 @@ public class VerInformeDetFragment extends Fragment {
 
     public void ponerDatos(InformeCompraDetalle informe) {
 
-        fotos= new ArrayList<ImagenDetalle>();
-        i=0;
 
-
-        ponerFoto(getString(R.string.foto_codigo_produccion),informe.getFoto_codigo_produccion());
-
-       // ponerFoto(informe.getEnergia());
-      //  ponerFoto(getString(R.string.foto_num_tienda),informe.getFoto_num_tienda());
-       // ponerFoto(getString(R.string.foto_codigo_produccion)informe.getMarca_traslape());
-        ponerFoto(getString(R.string.foto_atributoa),informe.getFoto_atributoa());
-        ponerFoto(getString(R.string.foto_atributob),informe.getFoto_atributob());
-        ponerFoto(getString(R.string.foto_atributoc),informe.getFoto_atributoc());
-        ponerFoto(getString(R.string.etiqueta_evaluacion),informe.getEtiqueta_evaluacion());
-       // ponerFoto(informe.getQr());
-      //  ponerFoto(informe.getAzucares());
         tomadoDe=dViewModel.cargarCatalogos();
         dViewModel.atributos=dViewModel.getAtributos();
         dViewModel.atributos.observe(getViewLifecycleOwner(), new Observer<List<Atributo>>() {
@@ -161,7 +148,7 @@ public class VerInformeDetFragment extends Fragment {
                 if(clienteSel==5||clienteSel==6)
                     crearFormularioPen(informe);
                 sv1.addView(cf.crearTabla());
-                sv2.addView(cf2.crearTabla());
+               /// sv2.addView(cfcf22.crearTabla());
 
            /* cont.observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
@@ -183,14 +170,7 @@ public class VerInformeDetFragment extends Fragment {
     //id imageview
     //objeto imagendetalle
 
-    public void ponerFoto(String key, int idfoto){
-        ImagenDetalle foto=niViewModel.getFoto(idfoto);
 
-        if(foto!=null) {
-         foto.setDescripcion(key);   fotos.add(foto);
-        }
-
-    }
     public void crearFormulario(InformeCompraDetalle detalle){
         String directorio=getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" ;
         Log.d(TAG,"haciendo formulario");
@@ -212,8 +192,9 @@ public class VerInformeDetFragment extends Fragment {
         camposForm.add(campo);
 
        this.crearCampo(getString(R.string.codigo_producto),detalle.getCodigo());
-        cf=new CreadorFormulario(camposForm,getContext());
-        camposForm= new ArrayList<CampoForm>();
+      //  cf=new CreadorFormulario(camposForm,getContext());
+
+       // camposForm= new ArrayList<CampoForm>();
          campo=new CampoForm();
         campo.style=R.style.verinforme2;
         campo.label=getString(R.string.origen);
@@ -404,8 +385,8 @@ public class VerInformeDetFragment extends Fragment {
         };
         camposForm.add(campo);*/
 
-
-        cf2=new CreadorFormulario(camposForm,getContext());
+        cf=new CreadorFormulario(camposForm,getContext());
+       /// cf2=new CreadorFormulario(camposForm,getContext());
 
     }
 
@@ -430,8 +411,8 @@ public class VerInformeDetFragment extends Fragment {
         camposForm.add(campo);
 
         this.crearCampo(getString(R.string.codigo_producto),detalle.getCodigo());
-        cf=new CreadorFormulario(camposForm,getContext());
-        camposForm= new ArrayList<CampoForm>();
+       // cf=new CreadorFormulario(camposForm,getContext());
+       // camposForm= new ArrayList<CampoForm>();
         campo=new CampoForm();
         campo.style=R.style.verinforme2;
         campo.label=getString(R.string.origen);
@@ -514,7 +495,8 @@ public class VerInformeDetFragment extends Fragment {
             }
         };
         camposForm.add(campo);*/
-        cf2=new CreadorFormulario(camposForm,getContext());
+        cf=new CreadorFormulario(camposForm,getContext());
+     //   cf2=new CreadorFormulario(camposForm,getContext());
 
     }
     private void crearCampo(String label, String value){
@@ -553,29 +535,37 @@ public class VerInformeDetFragment extends Fragment {
         return "";
 
     }
-    public void verImagen(String nombrearch){
-        //  ImageView imagen=(ImageView)v;
-        // imagen.get
-        Log.d(TAG,nombrearch);
-        Intent iverim=new Intent(getActivity(), RevisarFotoActivity.class);
-        iverim.putExtra(RevisarFotoActivity.IMG_PATH1,nombrearch);
-        startActivity(iverim);
+    public void verFotos(){
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(VerInformeFragment.ARG_IDMUESTRA,idmuestra);
+        Fragment fragment = new GalFotosFragment();
+        fragment.setArguments(bundle);
+        // Obtener el administrador de fragmentos a través de la actividad
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        // Definir una transacción
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // Remplazar el contenido principal por el fragmento
+        fragmentTransaction.replace(R.id.back_fragment, fragment);
+        fragmentTransaction.addToBackStack(null);
+        // Cambiar
+        fragmentTransaction.commit();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         informeSel=null;
-        mViewModel=null;
+        //mViewModel=null;
        dViewModel=null;
-       niViewModel=null;
+      // niViewModel=null;
 
        cf=null;
          cf2=null;
       camposForm=null;
          tomadoDe=null;
         atributos=null;
-        fotos=null;
+
        cont=null;
 
          sdf=null;

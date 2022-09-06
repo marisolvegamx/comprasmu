@@ -9,16 +9,12 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "lista_compras_detalle",primaryKeys = {"id", "listaId"})
 public class ListaCompraDetalle {
 
-
-
     protected int id;
-
     protected int listaId;
     protected int productosId;
     protected String productoNombre;
     protected String tamanio;
     protected int tamanioId;
-
     protected String empaque;
     protected int empaquesId;
     protected String tipoAnalisis;
@@ -46,6 +42,8 @@ public class ListaCompraDetalle {
 
     @ColumnInfo(name="lid_backup", defaultValue = "-1")
     protected int lid_backup;
+    @ColumnInfo(defaultValue = "0")
+    protected int lid_numtienbak;
     public ListaCompraDetalle(){
 
     }
@@ -293,5 +291,13 @@ public class ListaCompraDetalle {
 
     public void setOrdtipm(int ordtipm) {
         this.ordtipm = ordtipm;
+    }
+
+    public int getLid_numtienbak() {
+        return lid_numtienbak;
+    }
+
+    public void setLid_numtienbak(int lid_numtienbak) {
+        this.lid_numtienbak = lid_numtienbak;
     }
 }

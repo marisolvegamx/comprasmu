@@ -7,21 +7,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.os.Environment;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
@@ -31,7 +29,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -72,7 +69,6 @@ import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.informe.FotoExhibicionAdapter;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibViewModel;
-import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
@@ -88,7 +84,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.PolyUtil;
 import com.mobsandgeeks.saripaar.ValidationError;
@@ -96,11 +91,8 @@ import com.mobsandgeeks.saripaar.Validator;
 
 import java.io.File;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,11 +103,15 @@ import java.util.Locale;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.ACTIVITY_SERVICE;
 
+
 public class AbririnformeFragment extends Fragment implements Validator.ValidationListener, FotoExhibicionAdapter.AdapterCallback {
 
     private static final int REQUEST_CHECK_SETTINGS = 0;
-    public static final String ARG_FOTONUEVA = "comprasmu.nuevafoto";
-    protected Validator validator;
+    public static final String IMG_PATH = "comprasmu.abririnf.img_path1";
+    public static final String CODEREQ = "comprasmu.abririnf.codereq";
+    private static final String BLATITUD ="comprasmu.abririnf.latitud";
+    private static final String BLONGITUD ="comprasmu.abririnf.logitud";
+    // protected Validator validator;
     protected boolean guardado;
 
     private NuevoinformeViewModel mViewModel;
@@ -147,7 +143,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     private static final String TAG = "AbrirInformeFragment";
 
     private CreadorFormulario cf3;
-
+    String nombre_foto;
     private int totClientes = 0;
     private RecyclerView recycler;
     private Visita visitaEdi;
@@ -175,7 +171,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     private EditText txtfotoex3;
     CheckBox cbfotofac;
     CheckBox cbfotoex,cbfotoex2,cbfotoex3;
-
+    LinearLayout aifotofacgroup;
+    LinearLayout aiex1group;
+    LinearLayout aiex2group;
+    LinearLayout aiex3group;
     ImageButton btnrotar1;
     ImageButton btnrotar2;
     ImageButton btnrotar3;
@@ -186,6 +185,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public List<DescripcionGenerica> clientesAsignados3;
     List<ProductoExhibidoDao.ProductoExhibidoFoto> fotosExh;
     private boolean isEdicion;
+    private int globrequestcode;
+    double ultlongitud, ultlatitud;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -205,8 +206,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         TextView indice = root.findViewById(R.id.txtaiindice);
         indice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
-        ComprasLog log=new ComprasLog();
-        log.crearLog();
+        ComprasLog log=ComprasLog.getSingleton();
+        log.crearLog(getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
         //camposFotosProd();
         //  LinearLayout sv2 = root.findViewById(R.id.content_main2);
         //  sv2.addView(cf3.crearFormulario());
@@ -230,6 +231,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 rotar(view, txtfotofachada, fotofac);
             }
         });
+        if(savedInstanceState!=null){
+            Log.d(TAG,"aqui");
+            nombre_foto = savedInstanceState.getString(IMG_PATH);
+            globrequestcode=savedInstanceState.getInt(CODEREQ);
+            ultlatitud=savedInstanceState.getDouble(BLATITUD);
+            ultlongitud=savedInstanceState.getDouble(BLONGITUD);
+        }
         // continuar=(Button)root.findViewById(R.id.aibtnguardarcont);
         ImageButton fotoexhibido = (ImageButton) root.findViewById(R.id.btnaifotoexhibido);
         guardar.setOnClickListener(new View.OnClickListener() {
@@ -339,14 +347,19 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         cbfotoex = root.findViewById(R.id.cbainpexhibidor);
         cbfotoex2 = root.findViewById(R.id.cbainpexhibidor2);
         cbfotoex3 = root.findViewById(R.id.cbainpexhibidor3);
+        aifotofacgroup=root.findViewById(R.id.aifotofacgroup);
+        aiex1group=root.findViewById(R.id.aiex1group);
+        aiex2group=root.findViewById(R.id.aiex2group);
+        aiex3group=root.findViewById(R.id.aiex3group);
         cbfotofac.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ViewGroup grupo = root.findViewById(R.id.aiubicar);
                 if (cbfotofac.isChecked()) {
                     //muestro boton para ubicar
-
+                    preguntarBorrarFoto(view,txtfotofachada,fotofac,rotar,aifotofacgroup);
                     grupo.setVisibility(View.VISIBLE);
+
                 } else {
                     grupo.setVisibility(View.GONE);
                 }
@@ -367,8 +380,29 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             }
         });
+
+
+        cbfotoex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                preguntarBorrarFoto(view,txtfotoex1,fotoex1,btnrotar1,aiex1group);
+            }
+        });
+        cbfotoex2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                preguntarBorrarFoto(view,txtfotoex2,fotoex2,btnrotar2,aiex2group);
+            }
+        });
+        cbfotoex3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                preguntarBorrarFoto(view,txtfotoex3,fotoex3,btnrotar3,aiex3group);
+            }
+        });
         mensajedir = root.findViewById(R.id.txtaimensajeubicacion);
         locationStart();
+
         return root;
     }
 
@@ -909,6 +943,75 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         super.onDestroyView();
         if (Local != null)
             Local.desactivar();
+
+
+         mViewModel=null;
+        feviewModel=null;
+
+         cf2=null;
+       camposForm=null;
+        camposTienda=null;
+     fusedLocationClient=null; //cliente servicio de ubicación
+         locationRequest=null;
+   country=null;
+         guardar=null;
+         rotar=null;
+         root=null;
+
+         tienda=null;
+
+         txtubicacion=null;
+         txtaiultubic=null;
+
+        cf1=null;
+
+
+          cf3=null;
+
+    totClientes = 0;
+       recycler=null;
+         visitaEdi=null;
+      fotosExhibido=null;//para ir guardando las fotos de producto exhibido
+      efotoFachada=null;
+       mListAdapter=null;
+         fotofac=null;
+         fotoex1=null;
+         fotoex2=null;
+         fotoex3=null;
+       mensajedir=null;
+         mlocManager=null;
+         provedorgps=null;
+
+         ultimaLoc=null;
+         rutaArchivo=null;
+         txtcomplemento=null; // para complemento direccion
+     spinn=null;
+        spinn2=null;
+        spinn3=null;
+        lViewModel=null;
+       txtfotofachada=null;
+         txtfotoex1=null;
+       txtfotoex2=null;
+      txtfotoex3=null;
+         cbfotofac=null;
+         cbfotoex=null;
+         cbfotoex2=null;
+         cbfotoex3=null;
+         aifotofacgroup=null;
+         aiex1group=null;
+         aiex2group=null;
+         aiex3group=null;
+         btnrotar1=null;
+         btnrotar2=null;
+         btnrotar3=null;
+         snmascli1=null;
+         snmascli2=null;
+      clientesAsignados=null;
+        clientesAsignados2=null;
+       clientesAsignados3=null;
+       fotosExh=null;
+
+
     }
 
     private void setupSnackbar() {
@@ -916,7 +1019,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         mViewModel.getSnackbarText().observe(getActivity(), integerEvent -> {
             Integer stringId = integerEvent.getContentIfNotHandled();
             if (stringId != null) {
-                Snackbar.make(getActivity().findViewById(R.id.coordinator),
+                Snackbar.make(getActivity().findViewById(R.id.coordinator3),
                         stringId, Snackbar.LENGTH_LONG).show();
             }
         });
@@ -959,9 +1062,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             campo.required = "required";
             campo.id = 1004;
             camposTienda.add(campo);*/
-            campo = new CampoForm();
+         /*   campo = new CampoForm();
             campo.type = "listDivider";
-            camposTienda.add(campo);
+            camposTienda.add(campo);*/
             campo = new CampoForm();
             campo.label = "TIPO TIENDA";
             campo.nombre_campo = "tipoTienda";
@@ -1007,9 +1110,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             campo.readonly="readonly";
             campo.id = 1002;
             camposTienda.add(campo);*/
-            campo = new CampoForm();
+          /*  campo = new CampoForm();
             campo.type = "listDivider";
-            camposTienda.add(campo);
+            camposTienda.add(campo);*/
             campo = new CampoForm();
             campo.label = getString(R.string.tipo_tienda);
             campo.style=R.style.formlabel;
@@ -1282,7 +1385,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         savedInstanceState.putString(TXTUBICACION, ubicacion.getText().toString());
        */ // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString(IMG_PATH, nombre_foto);
+        savedInstanceState.putInt(CODEREQ,globrequestcode );
+        if(ultimaLoc!=null)
+        { savedInstanceState.putDouble(BLATITUD,ultimaLoc.getLatitude() );
+        savedInstanceState.putDouble(BLONGITUD,ultimaLoc.getLongitude() );}
     }
+
 
     private void updateValuesFromBundle(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -1544,7 +1653,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
         }
     }
-    public void guardarContinuar(){
+   /* public void guardarContinuar(){
         if(guardar()) {
 
             Bundle bundle = new Bundle();
@@ -1552,10 +1661,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             /* bundle.putString("plantaNombre", listaSeleccionable.get(i).getNombre());*/
             /*   NavHostFragment.findNavController(this).navigate(R.id.action_selclientetolistacompras,bundle);
              */
-            NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
+     /*       NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
 
         }
-    }
+    }*/
     //con la geolocalizacion de la tienda se busca la zona en la que esta
     //devuelve el id de la zona de acuerdo al catalogo
     //se puede consultar el catalogo en MapdaCDFragment
@@ -1578,7 +1687,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if(zonas!=null)
         for(Geocerca geo:zonas){
             Log.d(TAG,"probando "+geo.getGeo_region());
-            ComprasLog log=new ComprasLog();
+            ComprasLog log= ComprasLog.getSingleton();
             log.grabarError("probando geocercas buscar zona"+geo.getGeo_region());
             String aux[]=geo.getGeo_p1().split(",");
              p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
@@ -1837,12 +1946,15 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         //buscar direccion
         try {
-
+            if(ultlongitud>0){
+                ultimaLoc.setLongitude(ultlongitud);
+                ultimaLoc.setLatitude(ultlatitud);
+            }
             mensajedir.setText("Ubicación registrada");
             if (ComprasUtils.isOnlineNet()) {
                 Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
                 List<Address> list = new ArrayList<>();
-                if (geocoder != null)
+                if (geocoder != null&&ultimaLoc!=null)
                     list = geocoder.getFromLocation(
                             ultimaLoc.getLatitude(), ultimaLoc.getLongitude(), 1);
 
@@ -1914,55 +2026,55 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
         startActivityForResult(intento1, REQUEST_CODE_PROD);
     }*/
-    String nombre_foto;
-    public   void tomarFoto(EditText origen, ImageView destino, int REQUEST_CODE) {
+
+    public void tomarFoto(EditText origen, ImageView destino, int REQUEST_CODE) {
+
         if(getAvailableMemory(getActivity()).lowMemory)
         {
             Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
             return;
         }
-
+        globrequestcode=REQUEST_CODE;
         File foto=null;
         Activity activity=this.getActivity();
         Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try{
-        try{
+            try{
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-        String dateString = format.format(new Date());
+            String dateString = format.format(new Date());
 
 
-            nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
-            foto = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), nombre_foto);
-            Log.d(TAG, "****"+foto.getAbsolutePath());
-        } catch (Exception  ex) {
+                nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
+                foto = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), nombre_foto);
+                Log.d(TAG, "****"+foto.getAbsolutePath());
+            } catch (Exception  ex) {
+                ex.printStackTrace();
+                Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+
+            }
+            Uri photoURI = FileProvider.getUriForFile(activity,
+                    "com.example.comprasmu.fileprovider",
+                    foto);
+            intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+            //intento1.putExtra("origen", origen);
+            intento1.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            if(destino!=null) {
+              //   imageView = root.findViewById(destino);
+                 destino.setVisibility(View.VISIBLE);
+                // rotar = root.findViewById(R.id.btnairotar1);
+               //  rotar.setVisibility(View.VISIBLE);
+                 startActivityForResult(intento1, REQUEST_CODE);
+             }
+
+        } catch (OutOfMemoryError  ex) {
             ex.printStackTrace();
-            Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
 
         }
-        Uri photoURI = FileProvider.getUriForFile(activity,
-                "com.example.comprasmu.fileprovider",
-                foto);
-        intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
-        //intento1.putExtra("origen", origen);
-
-         if(destino!=null) {
-          //   imageView = root.findViewById(destino);
-             destino.setVisibility(View.VISIBLE);
-            // rotar = root.findViewById(R.id.btnairotar1);
-           //  rotar.setVisibility(View.VISIBLE);
-             startActivityForResult(intento1, REQUEST_CODE);
-         }
-
-    } catch (OutOfMemoryError  ex) {
-        ex.printStackTrace();
-        Toast.makeText(activity, "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-
-
-    }
 
     }
     /****vuelve el foco***/
@@ -1977,8 +2089,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //super.onActivityResult(requestCode, resultCode, data);
          if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode==REQUEST_CODE_PROD1||requestCode == REQUEST_CODE_PROD2||requestCode==REQUEST_CODE_PROD3) && resultCode == RESULT_OK) {
           //  super.onActivityResult(requestCode, resultCode, data);
-            //Log.d(TAG,"vars*"+requestCode +"=="+ resultCode+" =="+ RESULT_OK);
-            Log.d(TAG,"nombre archivo result "+nombre_foto);
+            Log.d(TAG,"vars*"+requestCode +"=="+ resultCode+" =="+ RESULT_OK);
+
              String state = Environment.getExternalStorageState();
              String baseDir;
              if(Environment.MEDIA_MOUNTED.equals(state)) {
@@ -1991,31 +2103,34 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
              } else {
                  baseDir = getActivity().getFilesDir().getAbsolutePath();
              }
-             if(baseDir!=null&nombre_foto!=null) {
+             if(baseDir!=null&&nombre_foto!=null) {
                  File file = new File(baseDir, nombre_foto);
                  if (file.exists()) {
+
                  if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
                          //es la de fachada
                          //envio a la actividad dos para ver la foto
                    /* Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
                     intento1.putExtra("ei.archivo", nombre_foto);
-                    intento1.putExtra("ei.opcionfoto", "nose");
-
+                    intento1.putExtra("ei.opcionfoto", "nose");*/
+                     Log.d(TAG,"*****"+file.exists()+"--"+file.getAbsolutePath());
                   //  startActivity(intento1);*/
                          yaTengoFoto = false;
                        //  probarUbicacion();
                          txtfotofachada.setText(nombre_foto);
+                      //   txtfotofachada.setVisibility(View.VISIBLE);
                   //       Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                         ComprasUtils cu = new ComprasUtils();
-                        cu.comprimirImagen(file.getAbsolutePath());
+                     Bitmap bitmap1= cu.comprimirImagen(file.getAbsolutePath());
 
-                         Bitmap bitmap1 =  ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(),100,100);
+                     //    Bitmap bitmap1 =  ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(),100,100);
                    //  Bitmap bitmap1 = (Bitmap) data.getExtras().get("data");
-
+                     Log.d(TAG,"*****"+bitmap1.getHeight());
                          fotofac.setImageBitmap(bitmap1);
+                     fotofac.setVisibility(View.VISIBLE);
                          rotar.setVisibility(View.VISIBLE);
                          //  agregarImagen();
-
+                         aifotofacgroup.setVisibility(View.VISIBLE);
                          guardarUbicacion();
                          yaTengoFoto = true;
                           nombre_foto=null;
@@ -2031,6 +2146,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                          fotoex1.setImageBitmap(bitmap1);
                          btnrotar1.setVisibility(View.VISIBLE);
+                         aiex1group.setVisibility(View.VISIBLE);
                          //  agregarImagen();
                      }
                      if (requestCode == REQUEST_CODE_PROD2) {
@@ -2058,11 +2174,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                  }
                  else
-                     Toast.makeText(getContext(),"No se encontró el archivo intente de nuevo" , Toast.LENGTH_SHORT).show();
+                     Toast.makeText(getContext(),"No se encontró el archivo intente de nuevo" , Toast.LENGTH_LONG).show();
 
              }
             else{
-                 Toast.makeText(getContext(),"No se encontró el archivo intente de nuevo" , Toast.LENGTH_SHORT).show();
+                 Toast.makeText(getContext(),"No se encontró la ruta del archivo intente de nuevo" , Toast.LENGTH_LONG).show();
 
 
                  Log.d(TAG,"Algo salió mal???");
@@ -2134,6 +2250,40 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         activityManager.getMemoryInfo(memoryInfo);
 
         return memoryInfo;
+    }
+
+    private void preguntarBorrarFoto(View cb,EditText txtruta,ImageView foto,ImageButton btnrotar,LinearLayout group) {
+        if(((CheckBox)cb).isChecked()) {
+            //veo si ya hay foto
+            if(txtruta.getText()!=null&&!txtruta.getText().toString().equals("")) {
+                //pregunto si habrá más clientes
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                // dialogo1.setTitle(R.string.);
+                dialogo1.setMessage(R.string.eliminar_foto);
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //eliminar foto
+                        txtruta.setText("");
+                        foto.setImageBitmap(null);
+
+                        foto.setVisibility(View.GONE);
+                        btnrotar.setVisibility(View.GONE);
+                    }
+                });
+                dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        ((CheckBox) cb).setChecked(false);
+                        dialogo1.cancel();
+                        //envio a la lista
+                        //  NavHostFragment.findNavController(AbririnformeFragment.this).navigate(R.id.action_nuevotolista);
+
+                    }
+                });
+                dialogo1.show();
+            }
+        }
     }
 
     class MayusTextWatcher implements TextWatcher {

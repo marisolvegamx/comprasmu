@@ -33,6 +33,7 @@ public class ListaDetalleBu extends ListaCompraDetalle {
         this.lid_fecharestringida = det.lid_fecharestringida;
         this.lid_orden = det.lid_orden;
         this.lid_backup = det.lid_backup;
+        this.lid_numtienbak=det.lid_numtienbak;
     }
 
     private List<InformeCompraDetalle> infcd;

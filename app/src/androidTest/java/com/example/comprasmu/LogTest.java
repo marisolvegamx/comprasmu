@@ -1,4 +1,5 @@
 package com.example.comprasmu;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -41,7 +42,7 @@ public class LogTest {
     @Test
     public void ecribirTest() throws Exception {
         ComprasLog clog=new ComprasLog();
-        clog.crearLog();
+        //clog.crearLog(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
         clog.grabarError("esta es una prueba");
         Log.d("Pruebas ",clog.leerArch());
         Assert.assertTrue(true);

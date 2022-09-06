@@ -79,10 +79,10 @@
                     android:text='@{visita.indice!=null?ComprasUtils.indiceLetra(visita.indice):""}' />
 
                 <TextView
-                    android:id="@+id/txtniciudad"
+                    android:id="@+id/txtnitienda"
                     style="@style/columna2"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
 
                     android:layout_weight="1"
                     android:text='@{visita.createdAt!=null?sdf.format(visita.createdAt):""}' />
@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text='@{productoSel.plantaNombre+(productoSel.siglas!=null?" ("+productoSel.siglas+")":"")}'
+                    android:text='@{productoSel.plantaNombre+(productoSel.siglas!=null&amp;&amp;!productoSel.siglas.equals("false")?" ("+productoSel.siglas+")":"")}'
                     android:visibility="gone"
                     tools:visibility="visible" />
 
@@ -133,7 +133,7 @@
                 tools:visibility="visible">
 
                 <TextView
-                    android:id="@+id/txtciprod"
+                    android:id="@+id/txtccliente"
                     style="@style/columna1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                 tools:visibility="visible">
 
                 <TextView
-                    android:id="@+id/txtciana"
+                    android:id="@+id/txtccomentario"
                     style="@style/columna1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

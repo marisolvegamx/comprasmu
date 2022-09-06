@@ -14,6 +14,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirPendService;
+import com.example.comprasmu.utils.ComprasLog;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ import java.util.List;
 public class SyncWork  extends Worker {
 
     final String TAG="SyncWork";
+    ComprasLog flog;
     public SyncWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
 
@@ -30,7 +32,9 @@ public class SyncWork  extends Worker {
     @NonNull
         @Override
         public Result doWork() {
-        Log.d(TAG," iniciando trabajo");
+
+       flog= ComprasLog.getSingleton();
+        flog.grabarError("iniciando trabajo");
            subirImagenes();
         return Result.success();
         }
@@ -43,7 +47,8 @@ public class SyncWork  extends Worker {
 
                 if(imagenDetalles!=null&&imagenDetalles.size()>0){
                     for(ImagenDetalle imagen:imagenDetalles){
-                        Log.d(TAG," subiendo a"+imagen.getDescripcion());
+                        flog.grabarError(" subiendo a"+imagen.getDescripcion());
+
                         //subo cada una
                         Intent msgIntent = new Intent(getApplicationContext(), SubirFotoService.class);
                         msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
@@ -66,7 +71,7 @@ public class SyncWork  extends Worker {
     }
     private void subirPendientes(){
         Intent msgIntent = new Intent(getApplicationContext(), SubirPendService.class);
-
+        flog.grabarError("subiendo pendientes");
         msgIntent.setAction(SubirPendService.ACTION_UPLOAD_PEND);
         getApplicationContext().startService(msgIntent);
     }

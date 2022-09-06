@@ -476,7 +476,7 @@ public class DetalleProductoFragment extends Fragment {
                         guardarCliente();
                     }
                     else
-                    siguiente();
+                        siguiente();
 
                 }
             });

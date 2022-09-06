@@ -1,8 +1,5 @@
 package com.example.comprasmu.ui.login;
 
-import android.app.Activity;
-
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
@@ -10,8 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
@@ -27,21 +22,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.LoggedInUser;
-import com.example.comprasmu.data.modelos.LoginDataSource;
-import com.example.comprasmu.data.modelos.TablaVersiones;
-import com.example.comprasmu.data.remote.ListaCompraResponse;
-import com.example.comprasmu.ui.visita.ListaVisitasViewModel;
+import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-import com.fasterxml.jackson.databind.ser.Serializers;
 
 
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -213,7 +201,7 @@ public class LoginActivity extends AppCompatActivity {
     public void entrar(){
         Constantes.LOGGEADO=true;
         //mando a la siguiente actividad
-        Intent intento=new Intent(this, NavigationDrawerActivity.class);
+        Intent intento=new Intent(this, HomeActivity.class);
         startActivity(intento);
 
     }

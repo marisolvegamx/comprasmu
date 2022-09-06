@@ -88,7 +88,8 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
        holder.binding.setMViewModel(this.mViewModel);
         holder.binding.setCriteriobu(this.criterio);
 //        Log.d(TAG, "va    rs " +listacomprasbu.size());
-       if(cliente==4&&numtienda>10&&!isbu) {
+      // if(cliente==4&&numtienda>10&&!isbu) {
+           if(!isbu) {
            holder.binding.setMostrarbcu(true);
        }
         if(cliente!=4&&!isbu) {
@@ -296,6 +297,16 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                @Override
                public void onClick(View view) {
                    if (view.getId()==R.id.btnldbackup) {
+//Log.d(TAG, "hice clikkkkkkkkk");
+                       callback.verBackup(binding.getDetalle());
+
+                   }
+               }
+           });
+           binding.btnldbackuppen.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   if (view.getId()==R.id.btnldbackuppen) {
 //Log.d(TAG, "hice clikkkkkkkkk");
                        callback.verBackup(binding.getDetalle());
 

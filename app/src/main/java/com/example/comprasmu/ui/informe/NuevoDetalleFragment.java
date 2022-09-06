@@ -1,6 +1,5 @@
 package com.example.comprasmu.ui.informe;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -15,12 +14,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.CreadorFormulario;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**********
@@ -47,7 +44,7 @@ public class NuevoDetalleFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
-        LinearLayout sv = root.findViewById(R.id.content_mainni);
+        LinearLayout sv = root.findViewById(R.id.llnepreg2);
 
         crearFormulario();
     }

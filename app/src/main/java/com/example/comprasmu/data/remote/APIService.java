@@ -97,6 +97,33 @@ public interface APIService {
     @GET("descresp")
     Call<RespInformesResponse> getRespaldoInf( @Query("indice") String indice, @Query("usuario") String usuario);
 
+    @POST("infetapa/create")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> saveInformeEtapa(@Body InformeEtapaEnv item);
+    @POST("informeseta/create")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> saveInformesEtaPend(@Body TodoEnvio item);
 
+    @GET("solcorreccion")
+    Call<SolCorreResponse> getSolicitudCorre(@Query("indice") String indice, @Query("usuario") String usuario);
 
+    @POST("correccion/create")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> saveCorreccion(@Body CorreccionEnvio item);
+
+    @POST("correcciones/create")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> saveCorreccionPend(@Body List<CorreccionEnvio> item);
 }

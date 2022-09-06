@@ -11,14 +11,20 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 
+import android.view.Gravity;
 import android.view.MenuItem;
 
 import android.view.Menu;
 
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.comprasmu.data.ComprasDataBase;
@@ -44,11 +50,13 @@ import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
 import com.example.comprasmu.ui.mantenimiento.BorrarDatosFragment;
 import com.example.comprasmu.ui.mantenimiento.DescRespaldoFragment;
+import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
 import com.example.comprasmu.ui.tiendas.FirstMapActivity;
 
 import com.example.comprasmu.ui.tiendas.MapaCdActivity;
 import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.workmanager.SyncWork;
@@ -61,6 +69,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -95,6 +104,7 @@ import java.util.concurrent.TimeUnit;
 /*esta es la clase principal***/
 public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String ETAPA = "comprasmu.ndetapa";
     private AppBarConfiguration mAppBarConfiguration;
     SubirFotoProgressReceiver rcv;
     String TAG="NavigationDrawerActivity";
@@ -106,14 +116,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     public static final String PROGRESS_UPDATE = "progress_update";
     public static final String PROGRESS_PEND = "progress_pend";
     public static final String NAVINICIAL="nd_navinicial";
+    TextView slideshow,gallery;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        definirTrabajo();
+
         setContentView(R.layout.activity_navigation_darawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        definirTrabajo();
       //  FloatingActionButton fab = findViewById(R.id.fab);
         //busco el mes actual y le agrego 1
          mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
@@ -128,21 +139,48 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             }
         });*/
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
+
+        Bundle extras = getIntent().getExtras(); // Aquí es null
+        String inicio="";
+
+        if(extras!=null) {
+             inicio = extras.getString(NAVINICIAL);
+             if(Constantes.ETAPAACTUAL==0)
+                 Constantes.ETAPAACTUAL=extras.getInt(ETAPA);
+        }
+
+        Log.d(TAG,"pso x aqui");
         NavigationView navigationView = findViewById(R.id.nav_view);
+        if(Constantes.ETAPAACTUAL==1) {
+            navigationView.getMenu().clear();
+
+            navigationView.inflateMenu(R.menu.activity_main_drawerprep);
+            View header=navigationView.getHeaderView(0);
+            header.setBackgroundResource(R.drawable.side_nav_barpre);
+            TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
+            mNameTextView.setText(R.string.preparacion);
+        }else{
+            navigationView.getMenu().clear();
+
+            navigationView.inflateMenu(R.menu.activity_main_drawer);
+            View header=navigationView.getHeaderView(0);
+            header.setBackgroundResource(R.drawable.side_nav_bar);
+            TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
+            mNameTextView.setText(R.string.compra);
+        }
+
         //navigationView.setNavigationItemSelectedListener(this);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.mobile_navigation)
                 .setDrawerLayout(drawer)
                 .build();
-        Bundle extras = getIntent().getExtras(); // Aquí es null
-        String inicio="";
-        if(extras!=null) {
-             inicio = extras.getString(NAVINICIAL);
-        }
+        //inicio el log
+        ComprasLog flog=ComprasLog.getSingleton();
+        flog.crearLog(this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
         NavController navController;
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -152,6 +190,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
       //  navigationView.setNavigationItemSelectedListener(this);
         NavInflater navInflater = navController.getNavInflater();
         NavGraph graph = navInflater.inflate(R.navigation.mobile_navigation);
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(SubirFotoService.ACTION_UPLOAD_IMG);
 
@@ -186,23 +225,32 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
 
-        }else   if(inicio.equals("listainforme")){
+        }else   if(inicio!=null&&inicio.equals("listainforme")){
             /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment fragment = new BuscarInformeFragment();
             ft.add(R.id., fragment);
             ft.commit();*/
             graph.setStartDestination(R.id.nav_listar);
-        } if(inicio.equals("continuarinf")){
+        } if(inicio!=null&&inicio.equals("continuarinf")){
             /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment fragment = new BuscarInformeFragment();
             ft.add(R.id., fragment);
             ft.commit();*/
-            graph.setStartDestination(R.id.nav_continuar);
+            graph.setStartDestination(R.id.nav_listarvisitas);
         }else{
             descargasIniciales();
             graph.setStartDestination(R.id.nav_home);
         }
         navController.setGraph(graph);
+        if(Constantes.ETAPAACTUAL==1)
+            gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_solcor2));
+        if(Constantes.ETAPAACTUAL==2)
+        gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                findItem(R.id.nav_solcor2));
+
+        initializeCountDrawer();
+        revisarCiudades();
         if (checkPermission()) {
             //main logic or main code
 
@@ -215,7 +263,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                  .setRequiresBatteryNotLow(true)
                 .build();
         PeriodicWorkRequest simpleRequest =
-                new PeriodicWorkRequest.Builder(SyncWork.class, 12, TimeUnit.HOURS)
+                new PeriodicWorkRequest.Builder(SyncWork.class, 5, TimeUnit.MINUTES)
                         .setConstraints(constraints)
                         .addTag("comprassync_worker")
                         .build();
@@ -225,6 +273,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 "comprassync_worker",
                 ExistingPeriodicWorkPolicy.KEEP,
                 simpleRequest);
+        flog.grabarError("archivo creado");
        /* ServicioCompras sbt = new ServicioCompras();
 
 
@@ -235,7 +284,27 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             e.printStackTrace();
         }*/
     }
+    //saber si tiene mas de una ciudad para mostrar seleccionar ciudad
+    public void revisarCiudades(){
 
+            mViewModel.getCiudades().observe(this, data -> {
+                 Log.d(TAG,"....regresó de la consulta "+ data.size());
+                if(data.size()>1)
+                Constantes.varciudades=true;
+                else if(data.size()>0) {
+                    Constantes.CIUDADTRABAJO=data.get(0).getCiudadNombre();
+                    Constantes.IDCIUDADTRABAJO=data.get(0).getCiudadesId();
+                    Constantes.varciudades = false;
+                    NavigationView navigationView =  findViewById(R.id.nav_view);
+                    navigationView.getMenu().findItem(R.id.nav_ciudad_trabajo).setVisible(false);
+
+                }
+
+
+            });
+
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -281,12 +350,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 ft.add(R.id.nav_host_fragment, fragconfig);
 
                 ft.commit();*/
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                PruebaFotosFragment fragconfig=new PruebaFotosFragment();
-                ft.add(R.id.nav_host_fragment, fragconfig);
+            //    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+              //  PruebaFotosFragment fragconfig=new PruebaFotosFragment();
+                //ft.add(R.id.nav_host_fragment, fragconfig);
 
-                ft.commit();
+                //ft.commit();
+                Intent homeIntent=new Intent(this, LeerLogActivity.class);
 
+                startActivity(homeIntent);
+                finish();
                 return true;
           /*  case R.id.action_save:
                 guardarInforme();
@@ -521,7 +593,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
        // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-        Constantes.INDICEACTUAL = "7.2022";
+        Constantes.INDICEACTUAL = "6.2022";
         if(Constantes.CLAVEUSUARIO.equals("4")){
             Constantes.INDICEACTUAL = "6.2022";
         }
@@ -569,6 +641,16 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 */
 
     }
+    private void initializeCountDrawer(){
+        //Gravity property aligns the text
+        gallery.setGravity(Gravity.CENTER_VERTICAL);
+        gallery.setTypeface(null, Typeface.BOLD);
+        gallery.setTextColor(Color.RED);
+      //  gallery.setTextSize(15);
+        gallery.setText("3");
+
+    }
+
 
     @Override
     public void onBackPressed() {

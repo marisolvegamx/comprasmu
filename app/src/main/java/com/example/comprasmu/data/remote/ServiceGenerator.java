@@ -30,8 +30,8 @@ public class ServiceGenerator {
                         .addConverterFactory(GsonConverterFactory.create());*/
 
         OkHttpClient httpClient =new OkHttpClient.Builder()
-                .readTimeout(15, TimeUnit.SECONDS)
-                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(25, TimeUnit.SECONDS)
+                .connectTimeout(25, TimeUnit.SECONDS)
                 .build();
 
         Gson gson = new GsonBuilder()

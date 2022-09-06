@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/nav_configurar"
-        android:name="com.example.comprasmu.ui.home.HomeFragment"
+        android:name="com.example.comprasmu.ui.home.HomeActivity"
         android:label="@string/menu_configuracion"
         tools:layout="@layout/fragment_home" >
         <action android:id="@+id/action_conftohome"
@@ -90,14 +90,6 @@
         android:name="com.example.comprasmu.ui.visita.AbririnformeFragment"
         android:label="@string/menu_nuevo_informe"
         tools:layout="@layout/fragment_abririnforme">
-        <action android:id="@+id/action_continuar"
-            app:destination="@id/nav_continuar"
-            app:popUpTo="@+id/nav_continuar"
-            app:popUpToInclusive="true"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action android:id="@+id/action_nuevotolista"
             app:destination="@id/nav_listarvisitas"
             app:popUpTo="@+id/nav_listarvisitas"
@@ -117,7 +109,7 @@
 </fragment>
     <activity
         android:id="@+id/nav_abririnf"
-        android:name="com.example.comprasmu.ui.visita.AbrirInformeActivity"
+        android:name="com.example.comprasmu.ui.informedetalle.ContinuarInformeActivity"
         android:label="@string/nuevo_informe" />
 
     <fragment
@@ -150,12 +142,6 @@
         android:name="com.example.comprasmu.ui.visita.ListaVisitasFragment"
         android:label="@string/menu_continuar_informe"
         tools:layout="@layout/lista_informes_fragment" >
-    <action android:id="@+id/action_visitatonuevo"
-        app:destination="@id/nav_continuar"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action android:id="@+id/action_visitatohome"
             app:destination="@id/nav_home"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -167,9 +153,9 @@
 
     <fragment
         android:id="@+id/nav_continuar"
-        android:name="com.example.comprasmu.ui.informe.NuevoinformeFragment"
+        android:name="com.example.comprasmu.ui.visita.ListaVisitasFragment"
         android:label="@string/menu_nuevo_informe"
-        tools:layout="@layout/fragment_nuevoinforme" >
+        tools:layout="@layout/fragment_nvoetiq" >
         <action android:id="@+id/action_informetolista"
             app:destination="@id/nav_listar"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -211,6 +197,91 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
+        android:id="@+id/nav_solcor2"
+        android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
+        android:label="@string/menu_correccion"
+        tools:layout="@layout/lista_selec_fragment">
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="c" />
+        <action android:id="@+id/action_selclitosolcor2"
+            app:destination="@id/nav_listasolcor"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+
+    </fragment>
+    <fragment
+        android:id="@+id/nav_listasolcor"
+        android:name="com.example.comprasmu.ui.solcorreccion.ListaSolCorreFragment"
+        android:label="@string/menu_ver_lissolcor"
+        />
+    <fragment
+        android:id="@+id/nav_rescorreccion2"
+        android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
+        android:label="@string/menu_ver_lissolcor"
+        >
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="rescor" />
+        <action android:id="@+id/action_selclitocor2"
+            app:destination="@id/nav_listacor2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_listacor2"
+        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:label="@string/menu_resumeninf"
+        />
+    <!--para preparacion-->
+
+    <activity
+        android:id="@+id/nav_nvoprep"
+        android:name="com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity"
+        android:label="@string/nuevo_informe"
+        >
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="1" />
+    </activity>
+    <fragment
+        android:id="@+id/nav_continuarprep"
+        android:name="com.example.comprasmu.ui.infetapa.ContInfEtapaFragment"
+        android:label="@string/continuar" >
+    <argument
+        android:name="comprasmu.cie.etapasel"
+        app:argType="integer"
+        android:defaultValue="1" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_resumenprep"
+        android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
+        android:label="@string/menu_ver_lista" >
+    <argument
+        android:name="comprasmu.correselcli.tipocons"
+        app:argType="string"
+            android:defaultValue="action_selclitoinf1" />
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="1" />
+    <action android:id="@+id/action_selclitoinf1"
+        app:destination="@id/nav_listacor2"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
+
+    <fragment
         android:id="@+id/nav_cerrarsesion"
         android:name="com.example.comprasmu.ui.home.CerrarSesionFragment"
         android:label="@string/cerrar_sesion"
@@ -218,5 +289,9 @@
 
 
     </fragment>
+
+
+
+
 
 </navigation>

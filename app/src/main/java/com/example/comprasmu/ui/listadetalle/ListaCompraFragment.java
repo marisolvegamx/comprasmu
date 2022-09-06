@@ -527,7 +527,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             totalcomprados=totalcomprados+detalle.getComprados()+bus;
             totalPedidos=totalPedidos+detalle.getCantidad();
         }
-        //   Log.d(TAG,"WWWWWWWWWW estoy en los totales"+listacomprasbu.size());
+      //  Log.d(TAG,"WWWWWWWWWW estoy en los totales"+detalles.);
         //sumo los bu
        /* if(detalles.!=null) {
             totalcomprados = totalcomprados + listacomprasbu.size();
@@ -549,7 +549,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
            // Log.d(Constantes.TAG, "revisando nuevos codigos " +lcd.getNvoCodigo());
             ListaDetalleBu nuevaitem= new ListaDetalleBu(lcdo);
 
-            //  Log.d(TAG, "---- viendo si tiene bu " + lcd.getListaId() + "--" + lcd.getId());
+              Log.d(TAG, "---- viendo si tiene numtienda " + lcdo.getListaId() + "--" + lcdo.getId()+"--"+lcdo.getLid_numtienbak());
             List<InformeCompraDetalle> comprabu = getBackup(lcdo);
             if (comprabu.size() > 0) {
              //   Log.d(TAG, "es bu " + comprabu.size());

@@ -58,11 +58,11 @@
     <string name="action_settings">Configuración</string>
 
     <string name="menu_configuracion">Configuración</string>
-    <string name="menu_descargar">Actualizar lista de compra</string>
+    <string name="menu_descargar">Actualizar</string>
     <string name="menu_ver_lista">Lista de compra</string>
     <string name="menu_abrir_informe">Abrir informe</string>
     <string name="menu_continuar_informe">Continuar informe</string>
-    <string name="menu_lista_informe">Lista de informes</string>
+    <string name="menu_lista_informe">Resumen informes</string>
     <string name="menu_borrar">Borrar datos</string>
     <string name="menu_borrar_lista">Lista de compras por índice</string>
     <string name="menu_borrar_informe">Informes por índice</string>
@@ -147,7 +147,7 @@
     <string name="ubicación">UBICACION</string>
     <string name="agregar_exhibido">AGREGAR PRODUCTO EXHIBIDO</string>
     <string name="muestras">MUESTRAS</string>
-    <string name="menu_nuevo_informe">Nuevo Informe</string>
+    <string name="menu_nuevo_informe">Nuevo informe</string>
     <string name="editar_informe">EDITAR INFORME</string>
     <string name="nuevo_informe">NUEVO INFORME</string>
     <string name="delete_muestra_message">La muestra se eliminó correctamente</string>
@@ -171,6 +171,7 @@
     <string name="no_hay_conexion">Sin conexión a internet este módulo no funcionará. Revise su conexión</string>
     <string name="error_fecha_caduca_prox">LA MUESTRA CADUCARÁ EN MENOS DE 30 DÍAS, VERIFIQUE</string>
     <string name="consecutivo">TIENDA</string>
+    <string name="consecutivor">CONSECUTIVO</string>
     <string name="fecha">FECHA</string>
     <string name="complementodir">COMPLEMENTO DIRECCION</string>
     <string name="puntocardinal">PUNTO CARDINAL</string>
@@ -241,5 +242,24 @@
     <string name="no_foto">NO SE PERMITE TOMAR FOTO</string>
     <string name="ubiquese">POR FAVOR REGISTRE SU UBICACIÓN</string>
     <string name="regubi">UBICAR</string>
+    <string name="ver_fotos">VER FOTOS</string>
+    <string name="eliminar_foto">¿ELIMINAR LA FOTO QUE TOMÓ?</string>
+    <string name="title_activity_leer_log">LeerLogActivity</string>
+    <string name="corregir">CORREGIR</string>
+    <string name="menu_correccion">Corrección</string>
+    <string name="informe_correccion">INFORME CORRECCION</string>
+    <string name="menu_ver_listasolcor">SOLICITUDES CORRECCION</string>
+    <string name="menu_ver_lissolcor">Correcciones</string>
+    <string name="menu_rescorreccion">Resumen correcciones</string>
+    <string name="descripcion">DESCRIPCION</string>
+    <string name="menu_nvopreparacion">Nuevo Inf Prep</string>
+    <string name="req_foto">¿REQUIERES OTRA FOTO?</string>
+    <string name="menu_resumeninf">Resumen informes</string>
+    <string name="preparacion">PREPARACION</string>
+    <string name="compra">COMPRA</string>
+    <string name="informe">INFORME</string>
+    <string name="foto_informe">FOTO EN EL INFORME</string>
+    <string name="etiquetado">etiquetado</string>
+
 
 </resources>

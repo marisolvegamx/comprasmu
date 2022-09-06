@@ -17,68 +17,47 @@
     <!--    <data>-->
     <!--        <variable android:name="post" android:type="com.example.comprasmu.modelos.Post"/>-->
     <!--    </data>-->
-    <TableLayout
-        android:id="@+id/tableLayout"
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/photo_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnrfcancelar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_child_toolbar3" />
+
+
+    <TextView
+        android:id="@+id/txtrffoto1"
+        android:layout_width="286dp"
+        android:layout_height="38dp"
+        android:layout_weight="1"
+
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_child_toolbar3" />
+
+
+    <Button
+        android:id="@+id/btnrfcancelar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+
+        android:layout_marginBottom="10dp"
+        android:layout_weight="1"
+        android:onClick="cancelar"
+        android:text="@string/regresar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.307"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_child_toolbar3">
-
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/ivrfimagen"
-                android:layout_width="363dp"
-                android:layout_height="249dp"
-                android:layout_weight="1"
-                tools:srcCompat="@tools:sample/avatars" />
-
-        </TableRow>
-
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/txtrffoto1"
-                android:layout_width="286dp"
-                android:layout_height="38dp"
-                android:layout_weight="1"
-
-                android:visibility="invisible"
-                tools:layout_editor_absoluteY="169dp" />
-
-        </TableRow>
-
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/btnrfcancelar"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="cancelar"
-
-                android:text="@string/regresar" />
-        </TableRow>
-
-
-    </TableLayout>
-
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

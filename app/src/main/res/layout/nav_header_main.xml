@@ -22,12 +22,18 @@
         app:srcCompat="@drawable/captura_de_pantalla" />-->
 
 
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
+
         android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/txthmmodulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 

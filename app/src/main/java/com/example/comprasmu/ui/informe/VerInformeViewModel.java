@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VerInformeViewModel extends AndroidViewModel {
-    LiveData<InformeWithDetalle> informeCompraSel;
+    public LiveData<InformeWithDetalle> informeCompraSel;
     LiveData<Visita> visita;
     LiveData<List<ImagenDetalle>> imagenDetalles;
 
@@ -93,6 +93,7 @@ public class VerInformeViewModel extends AndroidViewModel {
       return  imagenDetRepository.find(informe.getTicket_compra());
 
     }
+
 
 
 

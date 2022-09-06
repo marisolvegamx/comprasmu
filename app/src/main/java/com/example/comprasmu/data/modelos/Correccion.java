@@ -1,0 +1,90 @@
+package com.example.comprasmu.data.modelos;
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.comprasmu.data.Converters;
+
+import java.util.Date;
+
+@Entity(tableName = "correccion")
+public class Correccion {
+
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    private int solicitudId;
+    private String ruta_foto1;
+    private String ruta_foto2;
+    private String ruta_foto3;
+    private int estatus;
+    private int estatusSync;
+    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
+    @TypeConverters(Converters.class)
+    private Date createdAt;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getSolicitudId() {
+        return solicitudId;
+    }
+
+    public void setSolicitudId(int solicitudId) {
+        this.solicitudId = solicitudId;
+    }
+
+    public String getRuta_foto1() {
+        return ruta_foto1;
+    }
+
+    public void setRuta_foto1(String ruta_foto1) {
+        this.ruta_foto1 = ruta_foto1;
+    }
+
+    public String getRuta_foto2() {
+        return ruta_foto2;
+    }
+
+    public void setRuta_foto2(String ruta_foto2) {
+        this.ruta_foto2 = ruta_foto2;
+    }
+
+    public String getRuta_foto3() {
+        return ruta_foto3;
+    }
+
+    public void setRuta_foto3(String ruta_foto3) {
+        this.ruta_foto3 = ruta_foto3;
+    }
+
+    public int getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(int estatus) {
+        this.estatus = estatus;
+    }
+
+    public int getEstatusSync() {
+        return estatusSync;
+    }
+
+    public void setEstatusSync(int estatusSync) {
+        this.estatusSync = estatusSync;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+}

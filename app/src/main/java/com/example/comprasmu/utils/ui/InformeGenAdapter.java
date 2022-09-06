@@ -1,0 +1,93 @@
+package com.example.comprasmu.utils.ui;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.databinding.ListaInformegenItemBinding;
+import com.example.comprasmu.utils.Constantes;
+import java.util.List;
+
+//para todos los informes usando elinformeCompravisita
+public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.InformeGenViewHolder> {
+
+    private List<InformeEtapa> mInformesList;
+
+    private AdapterCallback callback;
+
+    public InformeGenAdapter( AdapterCallback callback) {
+
+        this.callback=callback;
+    }
+
+    public void setInformeCompraList(List<InformeEtapa> informesList) {
+        mInformesList = informesList;
+
+    }
+    @NonNull
+    @Override
+    public InformeGenAdapter.InformeGenViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ListaInformegenItemBinding binding = DataBindingUtil
+                .inflate(LayoutInflater.from(parent.getContext()),
+                        R.layout.lista_informegen_item, parent, false);
+        return new InformeGenViewHolder(binding,callback);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull InformeGenAdapter.InformeGenViewHolder holder, int position) {
+       // holder.binding.setViewModel(mViewModel);
+
+        holder.binding.setDetalle(mInformesList.get(position));
+        holder.binding.setSdf(Constantes.vistasdf);
+      //  holder.binding.setVisita();
+      //  holder.binding.executePendingBindings();
+
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return mInformesList == null ? 0 : mInformesList.size();
+    }
+
+    static class InformeGenViewHolder extends RecyclerView.ViewHolder {
+        final ListaInformegenItemBinding binding;
+
+
+
+
+
+        public InformeGenViewHolder(ListaInformegenItemBinding binding,AdapterCallback callback) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.liBtnedit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                   // view.setEnabled(false);
+                        callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()));
+                }
+            });
+            binding.liBtnsubir.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    view.setEnabled(false);
+                    callback.onClickSubir(Integer.parseInt(binding.liTxtid.getText().toString()));
+                }
+            });
+
+        }
+
+
+
+    }
+    public interface AdapterCallback {
+        void onClickVer(int idinforme);
+
+        void onClickSubir(int id);
+    }
+
+}

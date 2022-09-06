@@ -8,22 +8,18 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.modelos.Sustitucion;
+import com.example.comprasmu.utils.ui.ListaInformesEtaFragment;
+import com.example.comprasmu.utils.ui.VerInformeGenFragment;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.listacompras.SelClienteFragment;
-import com.example.comprasmu.ui.listacompras.TabsFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.sustitucion.SustitucionFragment;
-
-import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
 public class BackActivity extends AppCompatActivity {
 
@@ -35,12 +31,14 @@ public class BackActivity extends AppCompatActivity {
     public static final String OP_SELPLANTA="selplanta";
     public static final String OP_SELPLANTAMUE="selplantamue";
     public static final String OP_SUSTITUCION="sustitucion";
+
+    public static final String OP_INFORMECOR="informecor";
     public static final String TAG="BackActivity";
 
     public static final int REQUEST_CODE=1003;
     public static final String OP_PRODUCTOEX="productoex";
     Toolbar myChildToolbar;
-    private static final int INTERVALO = 3000; //2 segundos para salir
+    private static final int INTERVALO = 3000; //3 segundos para salir
     private long tiempoPrimerClick;
     String opcionSel;
     @Override
@@ -51,19 +49,15 @@ public class BackActivity extends AppCompatActivity {
 
         myChildToolbar =
                 (Toolbar) findViewById(R.id.my_child_toolbar2);
-        setSupportActionBar(myChildToolbar);
-        // Get a support ActionBar corresponding to this toolbar
-        ActionBar ab = getSupportActionBar();
 
-        // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
+
 // add
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
 
         //para saber que fragment cargar
         Bundle datosRecuperados = getIntent().getExtras();
-
+        Bundle bundle6=new Bundle();
         if (datosRecuperados != null) {
             // No hay datos, manejar excepción
             //no debería estar aqui
@@ -166,7 +160,7 @@ public class BackActivity extends AppCompatActivity {
                     break;
                 case OP_SUSTITUCION:
                     myChildToolbar.setTitle(R.string.menu_ver_lista);
-                    Bundle bundle6=new Bundle();
+                     bundle6=new Bundle();
                  //   bundle6.putInt(NuevoinformeFragment.INFORMESEL,datosRecuperados.getInt(NuevoinformeFragment.INFORMESEL));
 
                     bundle6.putInt("ciudadSel",datosRecuperados.getInt("ciudadSel"));
@@ -192,12 +186,27 @@ public class BackActivity extends AppCompatActivity {
                     detailFragment6.setArguments(bundle6);
                     ft.add(R.id.back_fragment, detailFragment6);
                     break;
+                case OP_INFORMECOR:
+
+                    myChildToolbar.setTitle(R.string.informe);
+                    VerInformeGenFragment detailFragment7 = new VerInformeGenFragment();
+                    bundle6.putString(ListaInformesEtaFragment.ARG_TIPOCONS, datosRecuperados.getString(ListaInformesEtaFragment.ARG_TIPOCONS));
+                    bundle6.putInt(ListaInformesEtaFragment.INFORMESEL,datosRecuperados.getInt(ListaInformesEtaFragment.INFORMESEL));
+                    detailFragment7.setArguments(bundle6);
+                    ft.add(R.id.back_fragment, detailFragment7);
+                    break;
                 default:
                     break;
             }
+        // Get a support ActionBar corresponding to this toolbar
+        setSupportActionBar(myChildToolbar);
+        ActionBar ab = getSupportActionBar();
 
-// alternatively add it with a tag
-// trx.add(R.id.your_placehodler, new YourFragment(), "detail");
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+
+        // alternatively add it with a tag
+        // trx.add(R.id.your_placehodler, new YourFragment(), "detail");
             ft.commit();
 
 

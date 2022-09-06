@@ -1,56 +1,58 @@
 package com.example.comprasmu.data;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.View;
-
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.dao.AtributoDao;
-import com.example.comprasmu.data.dao.BaseDao;
 import com.example.comprasmu.data.dao.CatalogoDetalleDao;
+import com.example.comprasmu.data.dao.CorreccionDao;
+import com.example.comprasmu.data.dao.DetalleCajaDao;
 import com.example.comprasmu.data.dao.GeocercaDao;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.dao.InformeCompraDetDao;
+import com.example.comprasmu.data.dao.InformeEtapaDao;
+import com.example.comprasmu.data.dao.InformeEtapaDetDao;
 import com.example.comprasmu.data.dao.InformeTempDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.dao.ListaCompraDetalleDao;
 import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.dao.ReactivoDao;
+import com.example.comprasmu.data.dao.SolicitudCorDao;
 import com.example.comprasmu.data.dao.SustitucionDao;
 import com.example.comprasmu.data.dao.TablaVersionesDao;
 import com.example.comprasmu.data.dao.VisitaDao;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.Correccion;
+import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
-import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
-
-import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
+import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.utils.CreadorFormulario;
-
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
 
 @Database(entities={ImagenDetalle.class,
         InformeCompra.class,
@@ -61,9 +63,11 @@ import java.util.Map;
         TablaVersiones.class,
         Visita.class,  InformeTemp.class,
         ProductoExhibido.class, Sustitucion.class,
-        CatalogoDetalle.class, Atributo.class, Geocerca.class},
+        CatalogoDetalle.class, Atributo.class, Geocerca.class,
+        InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
+        SolicitudCor.class, Correccion.class},
 
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=10, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=11, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -82,6 +86,12 @@ public abstract class ComprasDataBase extends RoomDatabase {
     public abstract InformeTempDao getInformeTempDao();
     public abstract SustitucionDao getSustitucionDao();
     public abstract GeocercaDao getGeocercaDao();
+    public abstract InformeEtapaDetDao getInformeEtapaDetDao();
+    public abstract InformeEtapaDao getInformeEtapaDao();
+    public abstract SolicitudCorDao getSolicitudCorDao();
+    public abstract CorreccionDao getCorreccionDao();
+    public abstract DetalleCajaDao getDetalleCajaDao();
+
     public static ComprasDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
             ctx=context;
@@ -93,7 +103,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .build();*/
                     INSTANCE =  Room.databaseBuilder(context,
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
-                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,MIGRATION_8_9,MIGRATION_9_10)
+                            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
+                                    MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -217,6 +228,14 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         }
     };
+    static final Migration MIGRATION_10_11 = new Migration(10,11) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE lista_compras_detalle ADD COLUMN lid_numtienbak INTEGER default 0 not null");
+
+        }
+    };
+
 
 
 
@@ -229,8 +248,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
                 List<Reactivo> myProducts=dao.findAllsimple();
                     if (myProducts == null||myProducts.size()==0) {
                         //no tengo datos
-
-
                      //   prepopulatelc();
                     //    prepopulatedetc();
                         prepopulateder();
@@ -244,6 +261,17 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
                     prepopulatederpeni();
                     prepopulatederele();
+                }
+
+                SolicitudCor myProducts2=getSolicitudCorDao().findSimple(1);
+                if (myProducts2 == null) {
+                    //no tengo datos
+                    //   prepopulatelc();
+                    //    prepopulatedetc();
+                    cargarSolicitudes();
+
+                    // catalogos();
+
                 }
 
             }
@@ -1714,6 +1742,46 @@ public abstract class ComprasDataBase extends RoomDatabase {
         cat.setCad_nombreCatalogo("ubicacion_muestra");
         lista.add(cat);
         getCatalogoDao().insertAll(lista);*/
+    }
+
+    public void cargarSolicitudes(){
+        List<SolicitudCor> lista=new ArrayList<>();
+        SolicitudCor solicitud=new SolicitudCor();
+        solicitud.setId(1);
+        solicitud.setClienteNombre("PEÑAFIEL");
+        solicitud.setClientesId(5);
+        solicitud.setIndice("6.2022");
+        solicitud.setPlantaNombre("IZTACALCO");
+        solicitud.setPlantasId(63);
+        solicitud.setEtapa(1);
+        solicitud.setInformesId(1);
+        solicitud.setEstatus(1);
+        solicitud.setNombreTienda("");
+        solicitud.setDescripcionFoto("ETIQUETAS");
+        solicitud.setNumFoto(1);
+        solicitud.setMotivo("Muy oscura");
+        solicitud.setTotal_fotos(1);
+        solicitud.setCreatedAt(new Date());
+        lista.add(solicitud);
+
+        solicitud=new SolicitudCor();
+        solicitud.setId(2);
+        solicitud.setClienteNombre("PEÑAFIEL");
+        solicitud.setClientesId(5);
+        solicitud.setPlantaNombre("IZTACALCO");
+        solicitud.setPlantasId(63);
+        solicitud.setIndice("6.2022");
+        solicitud.setEtapa(1);
+        solicitud.setInformesId(1);
+        solicitud.setEstatus(1);
+        solicitud.setNombreTienda("");
+        solicitud.setDescripcionFoto("360");
+        solicitud.setNumFoto(4);
+        solicitud.setMotivo("Muy oscura");
+        solicitud.setTotal_fotos(3);
+        solicitud.setCreatedAt(new Date());
+        lista.add(solicitud);
+        getSolicitudCorDao().insertAll(lista);
     }
   /*  static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override

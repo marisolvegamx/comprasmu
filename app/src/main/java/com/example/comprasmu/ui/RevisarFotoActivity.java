@@ -1,34 +1,20 @@
 package com.example.comprasmu.ui;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
-
 import android.os.Environment;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import com.example.comprasmu.R;
-import com.example.comprasmu.utils.ComprasUtils;
-
-
+import com.github.chrisbanes.photoview.PhotoView;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -38,12 +24,12 @@ public class RevisarFotoActivity extends AppCompatActivity {
     private ImageView imagen1;
 
     String nombre_foto;
-    Bitmap rotatedBitmap;
+
     private TextView foto1;
     public static final String IMG_PATH1 = "comprasmu.img_path1";
-    private static final int IMG_RESULT_OK = 201;
+
     private static final String TAG = RevisarFotoActivity.class.getSimpleName();
-    private static final int INTERVALO = 3000; //2 segundos para salir
+
     private long tiempoPrimerClick;
     private Toolbar myChildToolbar;
     ScaleGestureDetector objScaleGesturDetector;
@@ -60,8 +46,10 @@ public class RevisarFotoActivity extends AppCompatActivity {
 
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
-        imagen1=findViewById(R.id.ivrfimagen);
+     //   imagen1=findViewById(R.id.ivrfimagen);
         foto1=findViewById(R.id.txtrffoto1);
+        PhotoView photoView = (PhotoView) findViewById(R.id.photo_view);
+
         Bundle extras = getIntent().getExtras(); // Aquí es null
         if(extras!=null) {
             nombre_foto = extras.getString(IMG_PATH1);
@@ -71,13 +59,15 @@ public class RevisarFotoActivity extends AppCompatActivity {
             File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
             if (file.exists()) {
                 //   Bitmap imageBitmap = (Bitmap) extras.get("data");
-                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto,100,100);
+            //   Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto,200,200);
+                Bitmap bitmap1 = BitmapFactory.decodeFile(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
 
-                imagen1.setImageBitmap(bitmap1);
+               // imagen1.setImageBitmap(bitmap1);
+                photoView.setImageBitmap(bitmap1);
                 foto1.setText(nombre_foto);
             }
         }
-        objScaleGesturDetector=new ScaleGestureDetector(this,new PinchZoomListener());
+       // objScaleGesturDetector=new ScaleGestureDetector(this,new PinchZoomListener());
 
 
     }
@@ -92,7 +82,11 @@ public class RevisarFotoActivity extends AppCompatActivity {
 
         }
 
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return false;
+    }
         public static void rotarImagen(String nombre_foto,ImageView imagen1){ //conla ruta
 
 
@@ -131,13 +125,13 @@ public class RevisarFotoActivity extends AppCompatActivity {
 
         }
 
-    @Override
+ /*   @Override
     public boolean onTouchEvent(MotionEvent event) {
         objScaleGesturDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
-    }
+    }*/
 
-    public class PinchZoomListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+   /* public class PinchZoomListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         RelativeLayout.LayoutParams params;
         int startwith;
         int startheight;
@@ -165,6 +159,6 @@ public class RevisarFotoActivity extends AppCompatActivity {
             public void onScaleEnd(ScaleGestureDetector detector) {
                 super.onScaleEnd(detector);
             }
-        }
+        }*/
 
 }

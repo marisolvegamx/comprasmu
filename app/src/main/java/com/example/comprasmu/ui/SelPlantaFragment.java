@@ -33,7 +33,7 @@ import com.example.comprasmu.utils.Constantes;
 import java.util.ArrayList;
 import java.util.List;
 
-/*** para buscar las listas por planta***/
+/*** para buscar las listas por ciudades***/
 
 public class SelPlantaFragment extends ListaSelecFragment {
     private LiveData<List<ListaCompra>> listaCiudades;

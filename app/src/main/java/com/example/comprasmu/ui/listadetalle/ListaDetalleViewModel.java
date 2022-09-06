@@ -90,6 +90,19 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
+    public  LiveData<List<ListaCompra>>  getCiudades(){
+
+            return repository.getAllCdByIndice(Constantes.INDICEACTUAL);
+
+
+    }
+    public  List<ListaCompra>  cargarPestañasSimp(String ciudadSel){
+
+            return repository.getAllByIndiceCiudadSimpl(Constantes.INDICEACTUAL,ciudadSel);
+
+
+    }
+
     public  List<ListaCompra>  cargarPlantas(String ciudadSel,int clienteSel){
 
             return repository.getAllByIndiceCiudadClienteSim(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
