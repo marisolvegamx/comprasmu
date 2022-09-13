@@ -1753,7 +1753,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         solicitud.setIndice("6.2022");
         solicitud.setPlantaNombre("IZTACALCO");
         solicitud.setPlantasId(63);
-        solicitud.setEtapa(1);
+        solicitud.setEtapa(2);
         solicitud.setInformesId(1);
         solicitud.setEstatus(1);
         solicitud.setNombreTienda("");
@@ -1771,7 +1771,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         solicitud.setPlantaNombre("IZTACALCO");
         solicitud.setPlantasId(63);
         solicitud.setIndice("6.2022");
-        solicitud.setEtapa(1);
+        solicitud.setEtapa(2);
         solicitud.setInformesId(1);
         solicitud.setEstatus(1);
         solicitud.setNombreTienda("");

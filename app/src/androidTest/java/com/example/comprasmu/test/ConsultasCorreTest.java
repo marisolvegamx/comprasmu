@@ -63,4 +63,20 @@ public class ConsultasCorreTest {
             }
         });
     }
+    @Test
+    public void get1CorreccionTest(){
+
+        repository.findSolCor(1).observeForever(new Observer<SolicitudWithCor>() {
+            @Override
+            public void onChanged(@Nullable SolicitudWithCor todos) {
+                // Assert.assertNotNull(todos);
+                if(todos!=null)
+                    Log.d("hola>>",todos.solicitud.getMotivo()+"");
+                else
+                    Log.d("hola","es nulo");
+                //  Assert.assertTrue(todos.informe.getEstatus()==0);
+                Assert.assertTrue(todos.solicitud.getEtapa()==1);
+            }
+        });
+    }
 }

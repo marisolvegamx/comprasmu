@@ -85,13 +85,13 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
         icDao.actualizarComentariosPrep(id, comentarios);
     }
-    public void actualizarcomentariosEtiq(int id, int estatus) {
+    public void actualizarcomentariosEtiq(int id, String comentarios) {
 
-        icDao.actualizarEstatus(id, estatus);
+        icDao.actualizarComentariosEtiq(id, comentarios);
     }
-    public void actualizarComentariosEmp(int id, int estatus) {
+    public void actualizarComentariosEmp(int id, String comentarios) {
 
-        icDao.actualizarEstatus(id, estatus);
+        icDao.actualizarComentariosEmp(id, comentarios);
     }
     public void actualizarEstatusSync(int id, int estatus) {
 

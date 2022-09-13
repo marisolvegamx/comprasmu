@@ -124,18 +124,18 @@ public class SelClienteGenFragment extends ListaSelecFragment {
       //  bundle.putString(BuscarInformeFragment.INDICE, Constantes.INDICEACTUAL);
 
         if(tipoconsulta.equals("action_selclitoinf1")) {
-            bundle.putInt(ContInfEtapaFragment.ETAPA, 1);
+            bundle.putInt(ContInfEtapaFragment.ETAPA, Constantes.ETAPAACTUAL);
             bundle.putString(ARG_TIPOCONS,"e" );
 
             NavHostFragment.findNavController(this).navigate(R.id.action_selclitoinf1,bundle);
 
 
-        }if(tipoconsulta.equals("c")) {
+        }if(tipoconsulta.equals("c")) { //solicitudes
             bundle.putString(ARG_TIPOCONS,"action_selclitosolcor2" );
             NavHostFragment.findNavController(this).navigate(R.id.action_selclitosolcor2,bundle);
 
         }
-            if(tipoconsulta.equals("rescor")) {
+            if(tipoconsulta.equals("rescor")) { //informes correccion
                 bundle.putString(ARG_TIPOCONS,"action_selclitocor2" );
                 NavHostFragment.findNavController(this).navigate(R.id.action_selclitocor2,bundle);
 

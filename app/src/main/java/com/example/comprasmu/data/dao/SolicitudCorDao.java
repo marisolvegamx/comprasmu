@@ -14,6 +14,9 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
     @Query("SELECT * FROM solicitud_cor where etapa=:etapa and indice=:indice and plantasId=:plantaid and estatus=:estatus")
     public abstract LiveData<List<SolicitudCor>> getSolicitudes(int etapa, String indice, int plantaid, int estatus);
 
+    @Query("SELECT count(id) FROM solicitud_cor where etapa=:etapa and indice=:indice  and estatus=:estatus")
+    public abstract int getTotSols(int etapa, String indice,  int estatus);
+
     @Query("SELECT * FROM solicitud_cor WHERE id = :uuid")
     public abstract LiveData<SolicitudCor>  getSolicitud(int uuid);
 

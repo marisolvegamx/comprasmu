@@ -39,6 +39,10 @@ public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
         return icDao.getSolicitudes(etapa, indice,plantaid, estatus);
     }
 
+    public int totalSols(int etapa, String indice, int estatus) {
+        return icDao.getTotSols(etapa, indice, estatus);
+    }
+
     @Override
     public LiveData<SolicitudCor> find(int id) {
         return icDao.find(id);

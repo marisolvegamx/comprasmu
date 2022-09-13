@@ -2,14 +2,10 @@ package com.example.comprasmu.ui.solcorreccion;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.LayoutInflater;
-
 import android.view.View;
 import android.view.ViewGroup;
-
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -41,6 +37,7 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
     CoordinatorLayout coordinator;
 
     public ListaSolCorreFragment() {
+
     }
 
   /*  public  ListaInformesFragment(int planta, String onombrePlanta, String nomcliente) {
@@ -91,7 +88,7 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
     mViewModel.cargarDetalles(Constantes.ETAPAACTUAL,indice,plantasel,1).observe(getViewLifecycleOwner(), new Observer<List<SolicitudCor>>() {
         @Override
         public void onChanged(List<SolicitudCor> solicitudCors) {
-            Log.d(Constantes.TAG,"llego algo"+solicitudCors.get(0).getIndice());
+           // Log.d(Constantes.TAG,"llego algo"+solicitudCors.get(0).getIndice());
 
             mListAdapter.setSolicitudCorList(solicitudCors);
             mListAdapter.notifyDataSetChanged();

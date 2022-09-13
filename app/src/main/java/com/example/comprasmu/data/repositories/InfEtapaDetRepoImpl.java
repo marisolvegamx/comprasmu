@@ -24,8 +24,6 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         dao=comprasDataBase.getInformeEtapaDetDao();
     }
 
-
-
     public LiveData<List<InformeEtapaDet>> getAll(int idInforme) {
         return dao.findAll(idInforme);
     }
@@ -35,7 +33,6 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     public List<InformeEtapaDet> getAllSencillo(int idInforme) {
         return dao.getAllSencillo(idInforme);
     }
-
 
     @Override
     public LiveData<List<InformeEtapaDet>> getAll() {
@@ -54,6 +51,14 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
 
     public LiveData<InformeEtapaDet> getByDescripcion(String descripcion, int idinf) {
         return dao.getByDescripcion(idinf,descripcion);
+    }
+
+    public List<InformeEtapaDet> getByCaja( int idinf, int etapa, int numcaja) {
+        return dao.getByCaja(idinf,etapa, numcaja);
+    }
+
+    public void deleteByCaja( int idinf, int etapa, int numcaja) {
+         dao.deleteByCaja(idinf,etapa, numcaja);
     }
 
     @Override

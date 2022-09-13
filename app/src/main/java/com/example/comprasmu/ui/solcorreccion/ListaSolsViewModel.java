@@ -34,6 +34,9 @@ public class ListaSolsViewModel extends AndroidViewModel {
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
         return listas;
     }
+    public int  getTotalSols(int etapa,String indiceSel,int estatus){
+        return repository.totalSols(etapa,indiceSel, estatus);
+    }
     public LiveData<SolicitudCor>  getSolicitud(int id){
         LiveData<SolicitudCor> solicitud =repository.find(id);
         return solicitud;

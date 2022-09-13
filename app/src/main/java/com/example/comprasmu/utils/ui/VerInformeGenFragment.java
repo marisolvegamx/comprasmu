@@ -2,6 +2,7 @@ package com.example.comprasmu.utils.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class VerInformeGenFragment extends Fragment {
     private static String TAG = "VerInformeGenFragment";
     String directorio;
     String tipo;
+    String textoboton;
 
 
     public static VerInformeGenFragment newInstance() {
@@ -85,13 +87,23 @@ public class VerInformeGenFragment extends Fragment {
     }
 
     public void llenarDetalle() {
-        Log.d(TAG, "llenando detalles"+Constantes.ETAPAACTUAL);
+        if(Constantes.ETAPAACTUAL==1){
+           textoboton= getString(R.string.ver_fotos);
+        }
+        if(Constantes.ETAPAACTUAL==3){
+            textoboton= getString(R.string.ver_muestras);
+        }
+        Log.d(TAG, "llenando detalles"+Constantes.ETAPAACTUAL+tipo+"--"+informeSel);
         if(tipo.equals("action_selclitocor2")) {
             corViewModel.getCorreccion(informeSel).observe(getViewLifecycleOwner(), new Observer<SolicitudWithCor>() {
                 @Override
                 public void onChanged(SolicitudWithCor vcorreccion) {
+                    Log.d(TAG,"---"+vcorreccion.toString());
                     correccion=vcorreccion;
                     crearFormularioCor();
+                    mBinding.vidatosgen.addView(cf1.crearTabla());
+                    mBinding.btnverdet.setVisibility(View.GONE);
+
                 }
             });
 
@@ -102,7 +114,7 @@ public class VerInformeGenFragment extends Fragment {
                     informeEtapa=informeEtapax;
                     crearFormularioEta();
                     mBinding.vidatosgen.addView(cf1.crearTabla());
-                    mBinding.btnverdet.setText(R.string.ver_fotos);
+                    mBinding.btnverdet.setText(textoboton);
                     mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -116,6 +128,7 @@ public class VerInformeGenFragment extends Fragment {
 
 
     public void crearFormularioCor() {
+        String directorio=getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" ;
 
 
         List<CampoForm> camposTienda = new ArrayList<CampoForm>();
@@ -173,10 +186,44 @@ public class VerInformeGenFragment extends Fragment {
 
         campo = new CampoForm();
         campo.nombre_campo = "foto";
-        campo.type = "imagenViewd";
-        campo.value =correccion.correccion.getRuta_foto1();
+        campo.type = "imagenView";
+        campo.value =directorio+correccion.correccion.getRuta_foto1();
+        campo.funcionOnClick=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verImagen(correccion.correccion.getRuta_foto1());
+            }
+        };
         camposTienda.add(campo);
-        //faltan otras 2 fotos
+        //todo faltan otras 2 fotos
+        if(correccion.correccion.getRuta_foto2()!=null&&!correccion.correccion.getRuta_foto2().equals(""))
+        {
+            campo = new CampoForm();
+            campo.nombre_campo = "foto2";
+            campo.type = "imagenView";
+            campo.value =directorio+correccion.correccion.getRuta_foto2();
+            campo.funcionOnClick=new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    verImagen(correccion.correccion.getRuta_foto2());
+                }
+            };
+            camposTienda.add(campo);
+        }
+        if(correccion.correccion.getRuta_foto3()!=null&&!correccion.correccion.getRuta_foto3().equals(""))
+        {
+            campo = new CampoForm();
+            campo.nombre_campo = "foto3";
+            campo.type = "imagenView";
+            campo.value =directorio+correccion.correccion.getRuta_foto3();
+            campo.funcionOnClick=new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    verImagen(correccion.correccion.getRuta_foto3());
+                }
+            };
+            camposTienda.add(campo);
+        }
         campo = new CampoForm();
         campo.style = R.style.verinforme2;
         campo.nombre_campo = "tiendaNombre";
@@ -230,7 +277,14 @@ public class VerInformeGenFragment extends Fragment {
         campo.value = Constantes.vistasdf.format(informeEtapa.getCreatedAt());
 
         camposTienda.add(campo);
-
+        if (Constantes.ETAPAACTUAL==3) {
+            campo = new CampoForm();
+            campo.style = R.style.verinforme2;
+            campo.label = getString(R.string.num_cajas);
+            campo.type = "label";
+            campo.value = informeEtapa.getTotal_cajas()+"";
+            camposTienda.add(campo);
+        }
 
         campo = new CampoForm();
         campo.style = R.style.verinforme2;
@@ -240,10 +294,10 @@ public class VerInformeGenFragment extends Fragment {
             case 1:
                 campo.value = informeEtapa.getComentarios_prep();
                 break;
-            case 2:
+            case 3:
                 campo.value = informeEtapa.getComentarios_etiq();
                 break;
-            case 3:
+            case 4:
                 campo.value=informeEtapa.getComentarios_empaq();
                 break;
 
@@ -301,7 +355,7 @@ public class VerInformeGenFragment extends Fragment {
 
         Bundle bundle = new Bundle();
         bundle.putInt(VerInformeFragment.ARG_IDMUESTRA,informeSel);
-        bundle.putString(ARG_TIPOINF, "e");
+        bundle.putString(ARG_TIPOINF, tipo);
         Fragment fragment = new GalFotosFragment();
         fragment.setArguments(bundle);
         // Obtener el administrador de fragmentos a través de la actividad

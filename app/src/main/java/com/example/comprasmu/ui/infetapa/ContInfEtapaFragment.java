@@ -94,12 +94,13 @@ public class ContInfEtapaFragment extends Fragment implements ContInfEtaAdapter.
             public void onChanged(List<InformeEtapa> informeEtapas) {
                 if(informeEtapas.size()>0) {
                     mBinding.emptyStateText.setVisibility(View.GONE);
-                    mListAdapter.setInformeCompraList(informeEtapas);
-                    mListAdapter.notifyDataSetChanged();
+
                 }
                 else{
                     mBinding.emptyStateText.setVisibility(View.VISIBLE);
                 }
+                mListAdapter.setInformeCompraList(informeEtapas);
+                mListAdapter.notifyDataSetChanged();
             }
         });
 
@@ -159,7 +160,8 @@ public class ContInfEtapaFragment extends Fragment implements ContInfEtaAdapter.
     private void eliminar(int id) {
         Log.e(TAG,"eliminando "+ id);
         mViewModel.eliminarInformeEta(id);
-        cargarListaCont();
+      //  mListAdapter.setInformeCompraList(null);
+        //mListAdapter.notifyDataSetChanged();
     }
 
 }

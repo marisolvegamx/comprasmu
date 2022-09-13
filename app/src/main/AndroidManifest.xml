@@ -97,10 +97,7 @@
             android:name=".ui.tiendas.FirstMapActivity"
             android:label="@string/buscar_tienda"
             android:screenOrientation="portrait"></activity>
-        <activity
-            android:name=".ui.correccion.NvaCorreccionFragment"
-            android:label="@string/informe_correccion"
-            android:screenOrientation="portrait"></activity>
+
         <activity
             android:name=".ui.infetapa.NuevoInfEtapaActivity"
             android:label="@string/nuevo_informe"

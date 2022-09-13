@@ -17,17 +17,14 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.modelos.Correccion;
-import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.databinding.ActivityNuevoInfetapaBinding;
-import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
+import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.Constantes;
@@ -58,13 +55,11 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         setSupportActionBar(myChildToolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
-
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 // add
         infvm =
                 new ViewModelProvider(this).get(NuevoInfEtapaViewModel.class);
-
         dViewModel = new ViewModelProvider(this).get(NvaPreparacionViewModel.class);
         if (savedInstanceState != null) {    // Restore value of members from saved state
             //  idinformeSel = savedInstanceState.getInt("visitasel");
@@ -91,18 +86,40 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             if (etapa == 1) {
+                Bundle bundle=new Bundle();
+
+                bundle.putInt(NuevoInfEtapaActivity.INFORMESEL, idinformeSel);
+
+
                 if (det != null) {
 
 
                 //busco la pregunta actual en la decripcion
                 char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
                 Log.d(TAG, "preg=" + preg);
-                ft.add(R.id.continfeta_fragment, new NvaPreparacionFragment(Character.getNumericValue(preg), true, det));
-            }else{
-                    ft.add(R.id.continfeta_fragment, new NvaPreparacionFragment(0,true,det));
+                NvaPreparacionFragment frag=    new NvaPreparacionFragment(Character.getNumericValue(preg), true, det);
+                 frag.setArguments(bundle);
+                ft.add(R.id.continfeta_fragment,frag );
+
+                 }else{
+                 NvaPreparacionFragment frag=new NvaPreparacionFragment(0,true,det);
+                 frag.setArguments(bundle);
+                 ft.add(R.id.continfeta_fragment,frag );
 
                 }
             }
+            if (etapa == 3) {
+                if (det != null) {
+                    //busco la pregunta actual en la decripcion
+                    //char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
+                    //Log.d(TAG, "preg=" + preg);
+                    ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment(3,true,det,idinformeSel));
+
+                }else
+                    //todavía no capturaba detalle
+                {  ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment(3,true,null,idinformeSel));
+                }
+                 }
             ft.commit();
         }else {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -113,9 +130,12 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 frag.setArguments(bundle);
                 ft.add(R.id.continfeta_fragment, frag);
 
-            }
+            }else
             if(etapa==1)
-            ft.add(R.id.continfeta_fragment, new NvaPreparacionFragment(1,false,null));
+                ft.add(R.id.continfeta_fragment, new NvaPreparacionFragment(1,false,null));
+            else if(etapa==3)
+             ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment());
+
             ft.commit();
 
         }
@@ -237,29 +257,45 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     }
     @Override
     public void onBackPressed() {
-        if(infvm.cont==6){
-            return; //no puedo regresar de los comentarios porque la ultima preg de fotospuede ser variables
+
+        if(etapa==3)//el regreso se maneja en el fragment
+        {
+            NvoEtiquetadoFragment fragment = (NvoEtiquetadoFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+            fragment.atras();
+            return;
         }
-        if(infvm.cont>1) {
-            NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont-1, true, null);
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        if(etapa==1)//el regreso se maneja en el fragment
+        {
+            if(infvm.cont==6){
+                return; //no puedo regresar de los comentarios porque la ultima preg de fotospuede ser variables
+            }
+            if(infvm.cont==0) {
+                super.onBackPressed();
+                return;
+            }
+            if (infvm.cont > 1) {
+                NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont - 1, true, null);
+                FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
-        fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
-        // fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
+                // fragmentTransaction.addToBackStack(null);
 // Cambiar
-        fragmentTransaction.commit();
-    }if(infvm.cont==1&&dViewModel.variasPlantas) {
-            NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont-1, true, null);
-            FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentTransaction.commit();
+            }
+          if (infvm.cont == 1 && dViewModel.variasPlantas) {
+                NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont - 1, true, null);
+                FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
-            fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
-            // fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
+                // fragmentTransaction.addToBackStack(null);
 // Cambiar
-            fragmentTransaction.commit();
+                fragmentTransaction.commit();
+            }
+
         }
         else
                 super.onBackPressed();
@@ -272,10 +308,11 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             case R.id.csalir:
                 int numpreg=0;
                 //reviso que no sea de las que no debe salir
-              /*  if( infvm.cont==6) {
+                if(etapa==3)
+                if( dViewModel.preguntaAct==1||dViewModel.preguntaAct==3||dViewModel.preguntaAct==4) {
 
                         noSalir=true;
-                    }*/
+                    }
 
 
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
@@ -324,4 +361,15 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         return false;
     }
 
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+        mBinding = null;
+        dViewModel = null;
+        infvm = null;
+
+    }
+
 }
+

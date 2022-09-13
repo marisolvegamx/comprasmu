@@ -55,6 +55,7 @@ public class GalFotosFragment extends Fragment {
     private VerInformeViewModel mViewModel;
     private static final String TAG="GalFotosFragment";
     public String tipoinf;
+    LiveData<List<InformeEtapaDet>> listafotos;
 
     public static GalFotosFragment newInstance() {
         return new GalFotosFragment();
@@ -83,14 +84,20 @@ public class GalFotosFragment extends Fragment {
         if(params!=null) {
               tipoinf= params.getString(VerInformeGenFragment.ARG_TIPOINF);
             int idmuestra = params.getInt(VerInformeFragment.ARG_IDMUESTRA);
+
               if(tipoinf!=null&&tipoinf.equals("e")){
                   //es etapa
                   if(Constantes.ETAPAACTUAL==1){
+                      listafotos=igViewModel.getfotosPrep(idmuestra);
                     startuiEta(idmuestra);
+                  }
+                  if(Constantes.ETAPAACTUAL==3){
+                      listafotos=igViewModel.getfotosxetapa(idmuestra,3);
+                      startuiEta(idmuestra);
                   }
               }else {
 
-                  if (idmuestra > 0) //es detalle
+                  if (idmuestra > 0) //es compra detalle
                       startuiDet(idmuestra);
                   else {
                       int idinforme = params.getInt(NuevoinformeFragment.INFORMESEL);
@@ -168,13 +175,14 @@ public class GalFotosFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         //paso los detalle a imagenes
 
-        LiveData<List<InformeEtapaDet>> listafotos=igViewModel.getfotosPrep(idmuestra);
+
         listafotos.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapaDet>>() {
                     @Override
                     public void onChanged(List<InformeEtapaDet> informeEtapaDets) {
                         Log.d(TAG,informeEtapaDets.size()+"--");
                     //paso todo a imagendet
                         fotos=new ArrayList<>();
+                        if(Constantes.ETAPAACTUAL==1)
                         for(InformeEtapaDet inf:informeEtapaDets){
                             ImagenDetalle id=new ImagenDetalle();
                             id.setId(inf.getId());
@@ -183,6 +191,15 @@ public class GalFotosFragment extends Fragment {
                             id.setDescripcion("");
                             fotos.add(id);
                         }
+                        if(Constantes.ETAPAACTUAL==3)
+                            for(InformeEtapaDet inf:informeEtapaDets){
+                                ImagenDetalle id=new ImagenDetalle();
+                                id.setId(inf.getId());
+                                id.setRuta(inf.getRuta_foto());
+                                //  id.setDescripcion(inf.getDescripcion());
+                                id.setDescripcion(inf.getQr()+"\r\nCAJA:"+inf.getNum_caja());
+                                fotos.add(id);
+                            }
                       //  ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext());
                         adapter.setmSpacePhotos(fotos);
                         adapter.notifyDataSetChanged();

@@ -255,11 +255,14 @@
     <string name="menu_nvopreparacion">Nuevo Inf Prep</string>
     <string name="req_foto">¿REQUIERES OTRA FOTO?</string>
     <string name="menu_resumeninf">Resumen informes</string>
+    <string name="menu_resumencomp">Resumen compras</string>
     <string name="preparacion">PREPARACION</string>
     <string name="compra">COMPRA</string>
     <string name="informe">INFORME</string>
     <string name="foto_informe">FOTO EN EL INFORME</string>
     <string name="etiquetado">etiquetado</string>
+    <string name="num_cajas">NUMERO DE CAJAS A UTILIZAR</string>
+    <string name="ver_muestras">VER MUESTRAS</string>
 
 
 </resources>

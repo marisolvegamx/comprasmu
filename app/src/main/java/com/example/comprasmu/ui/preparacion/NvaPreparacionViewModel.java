@@ -39,7 +39,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     final String TAG="NvaPrepVM";
     Application application;
     public boolean variasPlantas;//indica si tengo varias plantas
-
+   public int preguntaAct;
     public NvaPreparacionViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
@@ -88,7 +88,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         informe.setClienteNombre(clienteNombre);
         informe.setEstatusSync(0);
         informe.setEstatus(1);
-        informe.setEtapa(1);
+        informe.setEtapa(3);
         informe.setTotal_cajas(num_cajas);
         informe.setTotal_muestras(tot_muestras);
         informe.setCreatedAt(new Date());
@@ -107,7 +107,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         detalle.setQr(qr);
         detalle.setNum_muestra(num_muestra);
         detalle.setEstatusSync(0);
-        detalle.setEtapa(1);
+        detalle.setEtapa(3);
         if(iddet>0)
             detalle.setId(iddet);
         iddetalle=(int)infDetRepo.insert(detalle);
@@ -137,12 +137,29 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public InformeEtapa getInformePend(String indice){
         return   infEtaRepository.getInformePend(indice, 1);
     }
+    public InformeEtapa getInformePend(String indice, int etapa){
+        return   infEtaRepository.getInformePend(indice, etapa);
+    }
     public LiveData<InformeEtapaDet> getDetalleEtEdit(int idinf, int preguntaAct){
-       Log.d(TAG,"buscando a "+idinf+"--"+preguntaAct);
+
         return infDetRepo.getByDescripcion("foto_preparacion"+preguntaAct,idinf);
+    }
+    public List<InformeEtapaDet> getDetEtaxCaja(int idinf, int etapa,int numcaja){
+       Log.d(TAG,"buscando a "+idinf+"--"+numcaja);
+         return infDetRepo.getByCaja(idinf, etapa, numcaja);
+    }
+    public void borrarDetEtaxCaja(int idinf, int etapa,int numcaja){
+        // Log.d(TAG,"buscando a "+idinf+"--"+numcaja);
+        infDetRepo.deleteByCaja(idinf, etapa, numcaja);
     }
     public void actualizarComentarios(int idinf, String comentarios){
         infEtaRepository.actualizarComentariosPrep(idinf,comentarios);
+    }
+    public void actualizarComentEtiq(int idinf, String comentarios){
+        infEtaRepository.actualizarcomentariosEtiq(idinf,comentarios);
+    }
+    public void actualizarComentEmp(int idinf, String comentarios){
+        infEtaRepository.actualizarComentariosEmp(idinf,comentarios);
     }
     public void actualizarInfEtapa(InformeEtapa informe){
         infEtaRepository.insert(informe);

@@ -23,10 +23,10 @@ import com.example.comprasmu.utils.Constantes;
 /****ahora si es la pagina de inicio******/
 public class HomeActivity extends AppCompatActivity {
 
-    private HomeViewModel homeViewModel;
+
     TextView textusuario;
     Button prep;
-    Button comp;
+    Button comp,etiq,emp;
     private boolean isEdit;
 
     @Override
@@ -35,9 +35,11 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_home);
 
         final TextView textView = findViewById(R.id.text_home);
-
+        Constantes.ETAPAACTUAL=0;
         textusuario= findViewById(R.id.txthmusuario);
         prep= findViewById(R.id.btnhmprep);
+        etiq= findViewById(R.id.btnetiq);
+        emp= findViewById(R.id.btnemp);
         prep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,6 +51,18 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ira(2);
+            }
+        });
+        etiq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ira(3);
+            }
+        });
+        emp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ira(4);
             }
         });
         //textusuario.on

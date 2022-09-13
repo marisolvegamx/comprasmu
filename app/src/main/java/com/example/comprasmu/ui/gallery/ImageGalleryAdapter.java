@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.ui.RevisarFotoActivity;
+import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
 
     }
+
 
 
 
@@ -66,7 +68,14 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
                 .into(imageView);
         holder.txtdesc.setText(spacePhoto.getDescripcion());
         holder.txtruta.setText(spacePhoto.getRuta());
+        if(Constantes.ETAPAACTUAL==3) {
+            holder.txtdesc.setText("MUESTRA "+(position+1));
+            holder.atr1.setText(spacePhoto.getDescripcion()); //qr
+            holder.atr1.setVisibility(View.VISIBLE);
+          //  holder.atr2.setText("CAJA: "+spacePhoto.getRuta());//caja
+        }
     }
+
 
     @Override
     public int getItemCount() {
@@ -79,6 +88,9 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         public ImageView mPhotoImageView;
         public TextView txtdesc;
         public TextView txtruta;
+        public TextView atr1;
+        public TextView atr2;
+
 
         public MyViewHolder(View itemView) {
 
@@ -86,6 +98,8 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             mPhotoImageView = (ImageView) itemView.findViewById(R.id.iv_photo);
             txtdesc=itemView.findViewById(R.id.txtfidesc);
             txtruta=itemView.findViewById(R.id.txtfiruta);
+            atr1=itemView.findViewById(R.id.txtfiatr1);
+            atr2=itemView.findViewById(R.id.txtfiatr2);
             itemView.setOnClickListener(this);
         }
 

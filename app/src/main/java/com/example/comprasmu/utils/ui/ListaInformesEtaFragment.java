@@ -38,6 +38,7 @@ import com.example.comprasmu.utils.Constantes;
 import java.util.ArrayList;
 import java.util.List;
 
+/*******para informes x etapa y correcciones******/
 public class ListaInformesEtaFragment extends Fragment implements InformeGenAdapter.AdapterCallback {
     public static final String INFORMESEL ="comprasmu.lie.informesel" ;
     public static final String ARG_TIPOCONS ="comprasmu.lie.tipocons" ;

@@ -2,28 +2,40 @@ package com.example.comprasmu.ui.etiquetado;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -43,34 +55,42 @@ import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
+import com.example.comprasmu.utils.Preguntasino;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 
 import static android.app.Activity.RESULT_OK;
 
 
 public class NvoEtiquetadoFragment extends Fragment {
 
-    LinearLayout sv1,sv2,sv3,sv4,sv5;
+    private  InformeEtapaDet detalleEdit;
+    LinearLayout sv1,sv2,sv3,sv4,sv5, svotra, svcoin;
     private static final String TAG = "NvoEtiquetadoFragment";
-    Button aceptar1,aceptar2,aceptar3,aceptar4,guardar;
+    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5,aceptar6,guardar;
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
     EditText txtnumcajas,txtrutaim,txtcomentarios, txtqr;
+    TextView txtnumuestra, txtcajaact;
     ImageView fotomos;
-    private ImageButton btnrotar;
+    private ImageButton btnrotar, btntomarf,btnqr;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
     String rutafotoo;
+    Preguntasino potra, pcoincide;
     private View root;
     private NvaPreparacionViewModel mViewModel;
     private int  informeSel;
@@ -83,11 +103,21 @@ public class NvoEtiquetadoFragment extends Fragment {
     int preguntaAct;
     private ListaDetalleViewModel lcViewModel;
     List<ListaCompra> listacomp;
-    int contcaja, contmuestra;
+    private static final int REQUEST_CODEQR = 345;
+    int contcaja, contmuestra, contmuint;
     int totcajas=0,totmuestras;
     private  ArrayList<DescripcionGenerica> listaPlantas;
     private boolean isEdicion;
+    Spinner spplanta;
+    public NvoEtiquetadoFragment(int preguntaAct,boolean edicion, InformeEtapaDet informeEdit,int informeSel) {
+        this.preguntaAct = preguntaAct;
+        this.isEdicion=edicion;
+        this.detalleEdit=informeEdit;
+        this.informeSel=informeSel;
+    }
+    public NvoEtiquetadoFragment() {
 
+    }
     public static NvoEtiquetadoFragment newInstance() {
         return new NvoEtiquetadoFragment();
     }
@@ -103,22 +133,113 @@ public class NvoEtiquetadoFragment extends Fragment {
         sv3 = root.findViewById(R.id.llnepreg3);
         sv4 = root.findViewById(R.id.llnepre4);
         sv5 = root.findViewById(R.id.llnepre5);
+        svotra = root.findViewById(R.id.llneotra);
+        svcoin = root.findViewById(R.id.llnecoincide);
         aceptar1 = root.findViewById(R.id.btnneac1);
         aceptar2 = root.findViewById(R.id.btnneac2);
         aceptar3 = root.findViewById(R.id.btnneac3);
         aceptar4 = root.findViewById(R.id.btnneac4);
+        aceptar5 = root.findViewById(R.id.btnneac5);
+        aceptar6 = root.findViewById(R.id.btnneac6);
         guardar = root.findViewById(R.id.btnneguardar);
-
+        btnrotar = root.findViewById(R.id.btnnerotar1);
+        btntomarf = root.findViewById(R.id.btnnefoto);
+        btnqr = root.findViewById(R.id.btnneobtqr);
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
 
-        sv1.setVisibility(View.VISIBLE);
+        sv1.setVisibility(View.GONE);
         sv2.setVisibility(View.GONE);
         sv3.setVisibility(View.GONE);
         sv4.setVisibility(View.GONE);
         sv5.setVisibility(View.GONE);
+        svotra.setVisibility(View.GONE);
+        svcoin.setVisibility(View.GONE);
+        fotomos=root.findViewById(R.id.ivnefotomue);
+        txtrutaim=root.findViewById(R.id.txtneruta);
+        txtnumuestra=root.findViewById(R.id.txtnemuestra);
+        pcoincide=root.findViewById(R.id.sinonecoincide);
+        potra=root.findViewById(R.id.sinoneotramu);
+        spplanta=root.findViewById(R.id.spneplanta);
+        txtcomentarios=root.findViewById(R.id.txtnecomentarios);
+        txtnumcajas=root.findViewById(R.id.txtnetotalcajas);
+        contmuestra=1;
+        contmuint=1;
+        contcaja=1;
 
+        txtcajaact=root.findViewById(R.id.txtnenumcaja);
+
+        txtqr=root.findViewById(R.id.txtneqr);
+        potra.setmLabel("¿INCLUIRAS OTRA MUESTRA EN ESTA CAJA?");
+
+        txtcajaact.setVisibility(View.GONE);
         aceptar1.setEnabled(false);
+        aceptar2.setEnabled(false);
+        aceptar3.setEnabled(false);
+        aceptar4.setEnabled(false);
+        aceptar5.setEnabled(false);
+        aceptar6.setEnabled(false);
+        txtqr.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        txtcomentarios.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+
+        txtqr.addTextChangedListener(new BotonTextWatcher(aceptar4));
+
+        txtnumcajas.addTextChangedListener(new BotonTextWatcher(aceptar2));
+
+        spplanta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                aceptar1.setEnabled(true);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+        potra.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                aceptar5.setEnabled(true);
+            }
+        });
+        pcoincide.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                aceptar6.setEnabled(true);
+            }
+        });
+        btnqr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iniciarLecQR();
+            }
+
+        });
+        aceptar1.setEnabled(false);
+        mViewModel.preguntaAct=preguntaAct;
+        if(!isEdicion&&preguntaAct<3&&mViewModel.getIdNuevo()==0) {
+            //reviso si ya tengo uno abierto
+            InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL);
+            Log.d(TAG, "buscando pend");
+           /* if (informeEtapa != null) {
+                Log.d(TAG, "encontré 1");
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setTitle(R.string.atencion);
+                dialogo1.setMessage(R.string.informe_abierto);
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        //lo mando a continuar
+                        getActivity().finish();
+
+                    }
+                });
+
+                dialogo1.show();
+            }*/
+        }
         //buscar la solicitud
         Bundle datosRecuperados = getArguments();
 
@@ -128,15 +249,22 @@ public class NvoEtiquetadoFragment extends Fragment {
         }
         //busco si tengo varias plantas
         listacomp= lcViewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
+        Log.d(TAG,"PLANTA"+listacomp.toString()+"ss"+mViewModel.getIdNuevo());
         preguntaAct=1;
         if(mViewModel.getIdNuevo()==0)
             if(listacomp.size()>1) {
                 //tengo varias plantas
-                preguntaAct=2;
+                preguntaAct=1;
 
                 convertirLista(listacomp);
+                cargarPantas(listaPlantas,"");
                 mViewModel.variasPlantas=true;
+                sv1.setVisibility(View.VISIBLE);
+                aceptar1.setEnabled(true);
             }else if(listacomp.size()>0) {
+                preguntaAct=2;
+
+                sv2.setVisibility(View.VISIBLE);
                 mViewModel.variasPlantas = false;
                 nombrePlantaSel=listacomp.get(0).getPlantaNombre();
                 plantaSel=listacomp.get(0).getPlantasId();
@@ -151,18 +279,27 @@ public class NvoEtiquetadoFragment extends Fragment {
                 ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(informetemp);
             }
 
-        if(isCont) { //busco el informe
+        if(isEdicion) { //busco el informe
+
+            //busco el informe y el detalle
+
             mViewModel.getInformeEdit(informeSel).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
                 @Override
                 public void onChanged(InformeEtapa informeEtapa) {
                     infomeEdit = informeEtapa;
+                    preguntaAct=3;
+                    mViewModel.preguntaAct=3;
+                    cargarPantas(listaPlantas,informeEtapa.getPlantasId()+"");
                     ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informeEtapa);
-                    cargarDatos();
-
+                    mViewModel.setIdNuevo(informeSel);
+                    mostrarCapMuestra();
 
                 }
 
+
+
             });
+
         }
 
         aceptar1.setOnClickListener(new View.OnClickListener() {
@@ -193,6 +330,20 @@ public class NvoEtiquetadoFragment extends Fragment {
 
             }
         });
+        aceptar5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                avanzar();
+
+            }
+        });
+        aceptar6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                avanzar();
+
+            }
+        });
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -206,47 +357,200 @@ public class NvoEtiquetadoFragment extends Fragment {
 
                 lastClickTime = currentClickTime;
 
-
                 actualizarComent();
+                finalizarInf();
+                Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
+                yaestoyProcesando = false;
+                salir();
 
 
             }
         });
-
-
-
+        btnrotar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(R.id.txtneruta);
+            }
+        });
+        btntomarf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tomarFoto(REQUEST_CODE_TAKE_PHOTO);
+            }
+        });
+        txtcajaact.setText("CAJA "+contcaja);
+        txtnumuestra.setText("MUESTRA "+contmuestra);
+        Log.d(TAG,"ando aqi");
+        mViewModel.preguntaAct=preguntaAct;
         return root;
     }
 
 
-    public void cargarDatos(){
 
-
-    }
     public void avanzar(){
+        Log.d(TAG,"--"+preguntaAct);
+
         switch (preguntaAct){
-            case 1:
+            case 1: //sel planta
                 sv1.setVisibility(View.GONE);
                 sv2.setVisibility(View.VISIBLE);
                 break;
-            case 2:
+            case 2: //num cajas
                  sv2.setVisibility(View.GONE);
                  sv3.setVisibility(View.VISIBLE);
-                 guardarInf();
+                 txtcajaact.setVisibility(View.VISIBLE);
+                isEdicion=false;
                   break;
-            case 3:
+            case 3: //foto
                 sv3.setVisibility(View.GONE);
                 sv4.setVisibility(View.VISIBLE);
+
                 break;
-            case 4:
+            case 4://qr
+                sv3.setVisibility(View.GONE);
                 sv4.setVisibility(View.GONE);
-                sv5.setVisibility(View.VISIBLE);
+                svotra.setVisibility(View.VISIBLE);
+                txtcajaact.setVisibility(View.GONE);
+
+                guardarDet();
+                isEdicion=false;
+                break;
+            case 5: //otra
+                capturarMuestra();
+                break;
+            case 6:
+                svcoin.setVisibility(View.GONE);
+                if(pcoincide.getRespuesta()){
+                    //voy con la sig caja
+                    Log.d(TAG,"contcaja "+contcaja+"--"+totcajas);
+                    if(contcaja<totcajas) {
+                        contcaja++;
+                        txtcajaact.setText("CAJA "+contcaja);
+                        contmuint=1;
+                            sv3.setVisibility(View.VISIBLE);
+                            txtcajaact.setVisibility(View.VISIBLE);
+                            preguntaAct = 3;
+                            mViewModel.preguntaAct=preguntaAct;
+                    }
+                    else{
+                        //me voy a comentarios
+                        sv5.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    //todo como regresar a la muestra 1
+
+                    mostrarCapMuestra();
+                    //borro las muestras
+                    mViewModel.borrarDetEtaxCaja(mViewModel.getIdNuevo(),3,contcaja);
+
+                }
+                break;
+
+        }
+        preguntaAct=preguntaAct+1;
+        mViewModel.preguntaAct=preguntaAct;
+    }
+    public void capturarMuestra(){
+        svotra.setVisibility(View.GONE);
+        txtcajaact.setText("CAJA "+contcaja);
+        if(potra.getRespuesta()) {
+            sv3.setVisibility(View.VISIBLE);
+            txtcajaact.setVisibility(View.VISIBLE);
+            preguntaAct = 3;
+            mViewModel.preguntaAct=preguntaAct;
+            //sv4.setVisibility(View.VISIBLE);
+        }
+        else{
+            pcoincide.setmLabel("CANTIDAD DE MUESTRAS EN ESTA CAJA: "+(contmuint-1)+ " ¿COINCIDE CON LO QUE TIENES EN CAJA?");
+            svcoin.setVisibility(View.VISIBLE);
+        }
+
+    }
+    public void mostrarCapMuestra(){
+        sv1.setVisibility(View.GONE);
+        sv2.setVisibility(View.GONE);
+        sv3.setVisibility(View.VISIBLE);
+        txtcajaact.setVisibility(View.VISIBLE);
+        preguntaAct = 3;
+        mViewModel.preguntaAct=preguntaAct;
+        if(isEdicion&&detalleEdit!=null){
+            //busco en la bd para regresar a la primer muestra
+            txtrutaim.setText(detalleEdit.getRuta_foto());
+            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + detalleEdit.getRuta_foto(),80,80);
+            fotomos.setImageBitmap(bitmap1);
+            fotomos.setVisibility(View.VISIBLE);
+            btnrotar.setVisibility(View.VISIBLE);
+            aceptar3.setEnabled(true);
+            txtqr.setText(detalleEdit.getQr());
+            contmuestra = detalleEdit.getNum_muestra();
+            contmuint=1;
+            contcaja=detalleEdit.getNum_caja();
+            totcajas=infomeEdit.getTotal_cajas();
+        }
+       else{
+            //busco en la bd para regresar a la primer muestra
+            List<InformeEtapaDet> informeEtapaDet= mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(),3,contcaja);
+            Log.e(TAG,"total"+informeEtapaDet.size());
+            if(informeEtapaDet!=null&&informeEtapaDet.size()>0) {
+                //   detalleEdit = informeEtapaDet.get(0);
+                // txtrutaim.setText(detalleEdit.getRuta_foto());
+                //  Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(detalleEdit.getRuta_foto(),80,80);
+                //  fotomos.setImageBitmap(bitmap1);
+                // txtqr.setText(detalleEdit.getQr());
+                contmuestra = informeEtapaDet.get(0).getNum_muestra();
+                contmuint=1;
+            }
+
+        }
+        Log.e(TAG,"--"+contmuestra);
+        //actualizo vista
+        txtnumuestra.setText("MUESTRA "+contmuestra);
+    }
+
+    public void atras(){
+        switch (preguntaAct){
+
+            case 2:
+                if(mViewModel.variasPlantas)
+                { sv1.setVisibility(View.VISIBLE);}
+
+                sv2.setVisibility(View.GONE);
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
+                break;
+            case 3:
+                break;
+                //  sv2.setVisibility(View.VISIBLE);
+              //  sv3.setVisibility(View.GONE);
+             //   txtcajaact.setVisibility(View.GONE);
+
+            case 4:
+                sv3.setVisibility(View.VISIBLE);
+                sv4.setVisibility(View.GONE);
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
                 break;
             case 5:
-                actualizarComent();
-                finalizarInf();
+               break;
+             //   sv4.setVisibility(View.VISIBLE);
+             //   svotra.setVisibility(View.GONE);
+             //   break;
+            case 6:
+                svotra.setVisibility(View.VISIBLE);
+                svcoin.setVisibility(View.GONE);
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
                 break;
+            case 7:
+                svcoin.setVisibility(View.VISIBLE);
+                sv5.setVisibility(View.GONE);
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
+                break;
+
         }
+        Log.d(TAG,"**"+preguntaAct);
+
     }
 
     public void mostrarlayout(){
@@ -275,14 +579,23 @@ public class NvoEtiquetadoFragment extends Fragment {
     public void guardarInf(){
         try {
             lastClickTime = 0;
-            int numcajas = 0;
-            txtnumcajas=root.findViewById(R.id.txtnetotalcajas);
-            numcajas =Integer.parseInt(txtnumcajas.getText().toString());
+            totcajas = 0;
+            if( mViewModel.variasPlantas) {
+                DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
 
-            if (preguntaAct == 1 && !isEdicion&&mViewModel.getNvoinforme()==null) {
+                //busco par de id, cliente
+                String aux[] = opcionsel.getDescripcion().split(",");
+                clienteId = Integer.parseInt(aux[0]);
+                clienteNombre = aux[1];
+                plantaSel = opcionsel.getId();
+                nombrePlantaSel = opcionsel.getNombre();
+            }
+            totcajas =Integer.parseInt(txtnumcajas.getText().toString());
+
+            if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null) {
                 Log.d(TAG, "creando nvo inf");
                 //creo el informe
-                 mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL,nombrePlantaSel,plantaSel,clienteNombre,clienteId,numcajas,totmuestras));
+                 mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL,nombrePlantaSel,plantaSel,clienteNombre,clienteId,totcajas,totmuestras));
             }
         }catch (Exception ex){
             ex.getStackTrace();
@@ -290,25 +603,42 @@ public class NvoEtiquetadoFragment extends Fragment {
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
         }
-            aceptar1.setEnabled(true);
+        ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(mViewModel.getNvoinforme());
+
+        aceptar1.setEnabled(true);
+            avanzar();
         }
         public void guardarDet(){
             try{
                 String rutafoto = null;
                 String qr = null;
-                txtrutaim=root.findViewById(R.id.txtneruta);
-                txtqr=root.findViewById(R.id.txtneqr);
+
+
                 rutafoto=txtrutaim.getText().toString();
                 qr=txtqr.getText().toString();
+                if(isEdicion){
+                    mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),1,"foto_etiqueta",rutafoto,detalleEdit.getId(),contcaja,qr,contmuestra);
+                    isEdicion=false;
+                }else
                 if(mViewModel.getIdNuevo()>0)
                     //guardo el detalle
-                     mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),1,"foto_etiquta",rutafoto,0,contcaja,qr,contmuestra);
+                     mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),1,"foto_etiqueta",rutafoto,0,contcaja,qr,contmuestra);
                //limpio campos
-                //muevo contadores
-                //actualizo vista
+                txtrutaim.setText("");
+                fotomos.setImageBitmap(null);
+                fotomos.setVisibility(View.GONE);
+                btnrotar.setVisibility(View.GONE);
+                aceptar3.setEnabled(false);
+                aceptar4.setEnabled(false);
+                txtqr.setText("");
 
+                //muevo contadores
+                contmuestra++;
+                contmuint++;
+                //actualizo vista
+                txtnumuestra.setText("MUESTRA "+contmuestra);
             }catch (Exception ex){
-                ex.getStackTrace();
+                ex.printStackTrace();
                 Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
                 Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
@@ -325,7 +655,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
         }catch(Exception ex){
-            ex.getStackTrace();
+            ex.printStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
@@ -339,19 +669,19 @@ public class NvoEtiquetadoFragment extends Fragment {
     public void actualizarComent(){
 
         String comentarios = null;
-        txtcomentarios=root.findViewById(R.id.txtnecomentarios);
+
         if(txtcomentarios.getText()!=null)
             comentarios=txtcomentarios.getText().toString().toUpperCase();
 
         try{
-            mViewModel.actualizarComentarios(mViewModel.getIdNuevo(),comentarios);
+            mViewModel.actualizarComentEtiq(mViewModel.getIdNuevo(),comentarios);
         }catch(Exception ex){
             ex.getStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
     }
-    public void rotar(int idcampo,int numimagen){
+    public void rotar(int idcampo){
         EditText txtruta = root.findViewById(idcampo);
         String foto=txtruta.getText().toString();
         if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
@@ -439,11 +769,37 @@ public class NvoEtiquetadoFragment extends Fragment {
             }
 
 
-        }
-        else
+        }else if(requestCode == REQUEST_CODEQR) {
+
+
+            //  IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
+            IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
+
+            Log.d(TAG,"res del qr "+result.getContents());
+            if(result != null) {
+
+                if(result.getContents() == null) {
+                    Toast.makeText(getActivity(), "Scan cancelled", Toast.LENGTH_LONG).show();
+                }
+                else
+                {   /* Update the textview with the scanned URL result */
+                    txtqr.setText(result.getContents());
+                    aceptar4.setEnabled(true);
+                    Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
+                }
+
+            }
+            else
+            {
+                super.onActivityResult(requestCode, resultCode, data);
+                Toast.makeText(getActivity(), "hubo un error",Toast.LENGTH_LONG ).show();
+
+            }
+        }    else
         {
             Log.e(TAG,"Algo salió muy mal**");
         }
+
     }
 
     public void mostrarFoto( EditText textorut,ImageView xfotomos, ImageButton xbtnrotar){
@@ -524,6 +880,111 @@ public class NvoEtiquetadoFragment extends Fragment {
 
         }
 
+    }
+    public void iniciarLecQR(){
+        IntentIntegrator integrator  =new  IntentIntegrator ( getActivity() ).forSupportFragment(NvoEtiquetadoFragment.this);
+        integrator.setRequestCode(REQUEST_CODEQR);
+        //  integrator.setOrientationLocked(false);
+        Log.d(TAG, "inciando scanner");
+        integrator.initiateScan();
+    }
+
+    class BotonTextWatcher implements TextWatcher {
+
+        boolean mEditing;
+        Button aceptar;
+        public BotonTextWatcher() {
+            mEditing = false;
+        }
+        public BotonTextWatcher(Button botonac) {
+            mEditing = false;
+            aceptar=botonac;
+        }
+        public synchronized void afterTextChanged(Editable s) {
+
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
+                aceptar.setEnabled(true);
+            }else{
+                aceptar.setEnabled(false);
+            }
+
+        }
+
+
+    }
+    private void cargarPantas(List<DescripcionGenerica> selectdes,String value){
+        ArrayAdapter catAdapter = new ArrayAdapter<DescripcionGenerica>(getContext(), android.R.layout.simple_spinner_dropdown_item, selectdes) {
+
+
+            // And the "magic" goes here
+            // This is for the "passive" state of the spinner
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
+                TextView label = (TextView) super.getView(position, convertView, parent);
+                label.setTextColor(Color.BLACK);
+                // Then you can get the current item using the values array (Users array) and the current position
+                // You can NOW reference each method you has created in your bean object (User class)
+                DescripcionGenerica item = getItem(position);
+                label.setText(item.getNombre());
+                //TODO elegir idioma
+
+                // And finally return your dynamic (or custom) view for each spinner item
+                return label;
+            }
+
+            // And here is when the "chooser" is popped up
+            // Normally is the same view, but you can customize it if you want
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                TextView label = (TextView) super.getDropDownView(position, convertView, parent);
+                label.setTextColor(Color.BLACK);
+                DescripcionGenerica item = getItem(position);
+                label.setText(item.getNombre());
+
+                return label;
+            }
+        };
+
+
+        spplanta.setAdapter(catAdapter);
+        spplanta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Get the value selected by the user
+                // e.g. to store it as a field or immediately call a method
+                DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        if(value!=null&&value.length()>0){
+            //busco el valor en la lista
+            for(DescripcionGenerica cat:selectdes){
+                Log.d("CreadorForm","val"+value+" cat"+cat.getId());
+                if(value.equals(cat.getId()+"")){
+                    // Log.d("CreadorForm","val"+infocampo.value+" cat"+cat.getId());
+                    spplanta.setSelection(catAdapter.getPosition(cat),true);
+                    break;
+                }
+                if(value.equals(cat.getNombre())){
+                    Log.d("CreadorForm",catAdapter.getPosition(cat)+"");
+
+                    spplanta.setSelection(catAdapter.getPosition(cat),true);
+                    break;
+                }
+            }
+        }
     }
 
     @Override

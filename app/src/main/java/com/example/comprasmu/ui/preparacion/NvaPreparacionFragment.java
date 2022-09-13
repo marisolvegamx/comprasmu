@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -33,12 +34,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -105,6 +108,7 @@ public class NvaPreparacionFragment extends Fragment {
     private InformeEtapa informeEdit;
     InformeEtapaDet detalleEdit;
     private NuevoInfEtapaViewModel infvm;
+    int informesel;
 
     public static NvaPreparacionFragment newInstance() {
         return new NvaPreparacionFragment();
@@ -130,11 +134,11 @@ public class NvaPreparacionFragment extends Fragment {
         infvm =
                 new ViewModelProvider(requireActivity()).get(NuevoInfEtapaViewModel.class);
 
-       infvm.cont =preguntaAct;
+
         //busco si tengo varias plantas
         listacomp= lcViewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
 
-        if(mViewModel.getIdNuevo()==0)
+        if(!isEdicion&&mViewModel.getIdNuevo()==0)
         if(listacomp.size()>1) {
             //tengo varias plantas
             preguntaAct=0;
@@ -166,7 +170,7 @@ public class NvaPreparacionFragment extends Fragment {
         //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
         if(!isEdicion&&preguntaAct<2&&mViewModel.getIdNuevo()==0) {
             //reviso si ya tengo uno abierto
-            InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL);
+            InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,Constantes.ETAPAACTUAL);
             Log.d(TAG, "buscando pend");
             if (informeEtapa != null) {
                 Log.d(TAG, "encontré 1");
@@ -187,7 +191,11 @@ public class NvaPreparacionFragment extends Fragment {
         }
         if(isEdicion) {
             aceptar.setEnabled(true);
+            Bundle datosRecuperados = getArguments();
 
+            if(datosRecuperados!=null) {
+                informesel= datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
+            }
             if(preguntaAct==6){
                 if(detalleEdit!=null){
                     //busco aqui el idinforme
@@ -206,29 +214,55 @@ public class NvaPreparacionFragment extends Fragment {
                 });
 
             }if(preguntaAct==0) {
-                crearFormulario();
-                spclientes = root.findViewById(1001);
-                if(spclientes!=null){
-                    spclientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                            aceptar.setEnabled(true);
-                        }
 
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parentView) {
-                            // your code here
-                        }
+                convertirLista(listacomp);
+                mViewModel.variasPlantas=true;
+                if(informesel>0)
+                    mViewModel.setIdNuevo( informesel);
+                Log.e(TAG,"--"+mViewModel.getIdNuevo());
+                //solo traigo el informe necesito el id
+                mViewModel.getInformeEdit(mViewModel.getIdNuevo()).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
+                    @Override
+                    public void onChanged(InformeEtapa informeEtapa) {
+                        ultimares=informeEtapa.getPlantasId()+"";
+                        informeEdit=informeEtapa;
+                        mViewModel.setNvoinforme(informeEdit);
+                        crearFormulario();
+                        spclientes = root.findViewById(1001);
+                        if(spclientes!=null){
+                            spclientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                                    aceptar.setEnabled(true);
+                                }
 
-                    });
-                }
+                                @Override
+                                public void onNothingSelected(AdapterView<?> parentView) {
+                                    // your code here
+                                }
+
+                            });
+                        }
+                    }
+                });
+
+
             }else
              {
                 if(detalleEdit!=null){
-                    //busco aqui el idinforme
+
+                        //busco aqui el idinforme
                     ultimares=detalleEdit.getRuta_foto();
                     mViewModel.setIdNuevo(detalleEdit.getInformeEtapaId());
-                    crearFormulario();
+                    mViewModel.getInformeEdit(mViewModel.getIdNuevo()).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
+  @Override
+                    public void onChanged(InformeEtapa informeEtapa) {
+
+                        informeEdit=informeEtapa;
+                        crearFormulario();
+                    }
+                });
+
                 }else
                 mViewModel.getDetalleEtEdit(mViewModel.getIdNuevo(),preguntaAct).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                     @Override
@@ -282,7 +316,7 @@ public class NvaPreparacionFragment extends Fragment {
             aceptar.setText(getString(R.string.enviar));
             aceptar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.botonvalido));
         }
-
+        infvm.cont =preguntaAct;
         return root;
     }
 
@@ -443,7 +477,7 @@ public class NvaPreparacionFragment extends Fragment {
         plantaSel=opcionsel.getId();
         nombrePlantaSel=opcionsel.getNombre();
 
-
+        Log.d(TAG, "creando nvo inf---"+mViewModel.getNvoinforme().toString());
 
        //creo el informe
         if ( !isEdicion&&mViewModel.getNvoinforme()==null) {

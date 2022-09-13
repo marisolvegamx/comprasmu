@@ -29,4 +29,21 @@
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/txtfiatr1"
+        style="@style/formlabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textAlignment="center"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/txtfiatr2"
+        style="@style/formlabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:visibility="gone" />
 </LinearLayout>

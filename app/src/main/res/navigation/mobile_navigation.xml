@@ -265,7 +265,7 @@
     <fragment
         android:id="@+id/nav_resumenprep"
         android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
-        android:label="@string/menu_ver_lista" >
+        android:label="@string/menu_resumeninf" >
     <argument
         android:name="comprasmu.correselcli.tipocons"
         app:argType="string"
@@ -280,6 +280,89 @@
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
+
+    <!---opciones etiquetado-->
+    <activity
+        android:id="@+id/nav_nvoetiq"
+        android:name="com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity"
+        android:label="@string/nuevo_informe"
+        >
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="3" />
+    </activity>
+    <fragment
+        android:id="@+id/nav_continuaretiq"
+        android:name="com.example.comprasmu.ui.infetapa.ContInfEtapaFragment"
+        android:label="@string/continuar" >
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="3" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_resumenetiq"
+        android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
+        android:label="@string/menu_resumeninf" >
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="action_selclitoinf1" />
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="3" />
+        <action android:id="@+id/action_selclitoinf1"
+            app:destination="@id/nav_listacor2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
+    <!---opciones empaque-->
+    <activity
+        android:id="@+id/nav_nvoemp"
+        android:name="com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity"
+        android:label="@string/nuevo_informe"
+        >
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="4" />
+    </activity>
+    <fragment
+        android:id="@+id/nav_continuaremp"
+        android:name="com.example.comprasmu.ui.infetapa.ContInfEtapaFragment"
+        android:label="@string/continuar" >
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="4" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_resumenemp"
+        android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
+        android:label="@string/menu_resumeninf" >
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="action_selclitoinf1" />
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="4" />
+        <action android:id="@+id/action_selclitoinf1"
+            app:destination="@id/nav_listacor2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
+
+
 
     <fragment
         android:id="@+id/nav_cerrarsesion"

@@ -51,6 +51,7 @@ import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.mantenimiento.BorrarDatosFragment;
 import com.example.comprasmu.ui.mantenimiento.DescRespaldoFragment;
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
+import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.ui.tiendas.FirstMapActivity;
 
 import com.example.comprasmu.ui.tiendas.MapaCdActivity;
@@ -110,13 +111,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     String TAG="NavigationDrawerActivity";
     private ListaDetalleViewModel mViewModel;
     SimpleDateFormat sdfparaindice=new SimpleDateFormat("M-yyyy");
-    SimpleDateFormat sdfparaindice2=new SimpleDateFormat("MMM yyyy");
-    private static final int PERMISSION_REQUEST_CODE = 200;
 
+    private static final int PERMISSION_REQUEST_CODE = 200;
+    private ListaSolsViewModel scViewModel;
     public static final String PROGRESS_UPDATE = "progress_update";
     public static final String PROGRESS_PEND = "progress_pend";
     public static final String NAVINICIAL="nd_navinicial";
     TextView slideshow,gallery;
+    int totCorrecciones;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +130,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
       //  FloatingActionButton fab = findViewById(R.id.fab);
         //busco el mes actual y le agrego 1
          mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-
+        scViewModel = new ViewModelProvider(this).get(ListaSolsViewModel.class);
 
      /*   fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +152,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                  Constantes.ETAPAACTUAL=extras.getInt(ETAPA);
         }
 
-        Log.d(TAG,"pso x aqui");
+        Log.d(TAG,"pso x aqui"+Constantes.ETAPAACTUAL);
         NavigationView navigationView = findViewById(R.id.nav_view);
         if(Constantes.ETAPAACTUAL==1) {
             navigationView.getMenu().clear();
@@ -160,7 +162,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             header.setBackgroundResource(R.drawable.side_nav_barpre);
             TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
             mNameTextView.setText(R.string.preparacion);
-        }else{
+        } if(Constantes.ETAPAACTUAL==2) {
             navigationView.getMenu().clear();
 
             navigationView.inflateMenu(R.menu.activity_main_drawer);
@@ -168,6 +170,24 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             header.setBackgroundResource(R.drawable.side_nav_bar);
             TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
             mNameTextView.setText(R.string.compra);
+        }
+        if(Constantes.ETAPAACTUAL==3) {
+            navigationView.getMenu().clear();
+
+            navigationView.inflateMenu(R.menu.activity_main_draweretiq);
+            View header=navigationView.getHeaderView(0);
+            header.setBackgroundResource(R.drawable.side_nav_barpre);
+            TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
+            mNameTextView.setText(R.string.etiquetado);
+        }
+        if(Constantes.ETAPAACTUAL==4) {
+            navigationView.getMenu().clear();
+
+            navigationView.inflateMenu(R.menu.activity_main_draweremp);
+            View header=navigationView.getHeaderView(0);
+            header.setBackgroundResource(R.drawable.side_nav_barpre);
+            TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
+            mNameTextView.setText(R.string.empaque);
         }
 
         //navigationView.setNavigationItemSelectedListener(this);
@@ -248,6 +268,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         if(Constantes.ETAPAACTUAL==2)
         gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                 findItem(R.id.nav_solcor2));
+        if(Constantes.ETAPAACTUAL==3)
+            gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_solcor2));
+        
+            gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_solcor2));
 
         initializeCountDrawer();
         revisarCiudades();
@@ -641,13 +667,18 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 */
 
     }
+    
+    private void contarCorrecc(){
+        totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
+    }
     private void initializeCountDrawer(){
+        contarCorrecc();
         //Gravity property aligns the text
         gallery.setGravity(Gravity.CENTER_VERTICAL);
         gallery.setTypeface(null, Typeface.BOLD);
         gallery.setTextColor(Color.RED);
       //  gallery.setTextSize(15);
-        gallery.setText("3");
+        gallery.setText(totCorrecciones+"");
 
     }
 
