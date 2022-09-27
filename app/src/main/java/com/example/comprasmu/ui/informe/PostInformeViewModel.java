@@ -235,7 +235,7 @@ public class PostInformeViewModel {
                 if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
 
                     mensaje=response.body().getData();
-                    Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);
+                    Log.d("sendInformeEta", "jjjjjjjjj"+mensaje);
                     //actualizo el estatus
                     iniciarBD();
                     actEstatusInfEtapa(informeEtapa);

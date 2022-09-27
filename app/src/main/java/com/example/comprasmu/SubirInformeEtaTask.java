@@ -4,12 +4,7 @@ package com.example.comprasmu;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
-
-import com.example.comprasmu.NavigationDrawerActivity;
-import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
-import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
 
 public class SubirInformeEtaTask extends AsyncTask<String, Float, Integer> {

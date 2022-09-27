@@ -39,6 +39,7 @@ import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 
@@ -176,7 +177,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
             navigationView.inflateMenu(R.menu.activity_main_draweretiq);
             View header=navigationView.getHeaderView(0);
-            header.setBackgroundResource(R.drawable.side_nav_barpre);
+            header.setBackgroundResource(R.drawable.side_nav_bareti);
             TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
             mNameTextView.setText(R.string.etiquetado);
         }
@@ -185,7 +186,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
             navigationView.inflateMenu(R.menu.activity_main_draweremp);
             View header=navigationView.getHeaderView(0);
-            header.setBackgroundResource(R.drawable.side_nav_barpre);
+            header.setBackgroundResource(R.drawable.side_nav_baremp);
             TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
             mNameTextView.setText(R.string.empaque);
         }
@@ -217,7 +218,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         rcv = new SubirFotoProgressReceiver();
         registerReceiver(rcv, filter);
         LocalBroadcastManager.getInstance(this).registerReceiver(rcv, filter);
-
+        Log.e(TAG,"wwww"+inicio);
         if( Constantes.CLAVEUSUARIO.equals("")){
             graph.setStartDestination(R.id.nav_configurar);
             //cargo todos o le digo que la configure?
@@ -651,6 +652,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,null,sustRepo,georep);
 
         task.execute("cat","");
+
+        //descarga solicitudes compra
+        SolicitudCorRepoImpl solcorRepo=new SolicitudCorRepoImpl(getApplicationContext());
+
+        DescCorrecAsyncTask corTask=new DescCorrecAsyncTask(solcorRepo,tvRepo,this,Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL);
+        corTask.execute("");
       /*  AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setIcon(android.R.drawable.stat_sys_download);

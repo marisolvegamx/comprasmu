@@ -114,7 +114,7 @@ public class DetalleProductoPenFragment extends Fragment {
     LinearLayout sv;
     boolean isEdicion;
     LoadingDialog loadingDialog ;
-    public int estatusPepsi;
+    public int estatusPepsi, estatusPen,estatusElec;
     NuevoDetalleViewModel.ProductoSel prodSel;
     public static  int REQUEST_CODE_TAKE_PHOTO=5;
 
@@ -400,7 +400,8 @@ public class DetalleProductoPenFragment extends Fragment {
             }
             tipoTienda=Constantes.DP_TIPOTIENDA;
             estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
-
+            estatusPen=mViewModel.visita.getEstatusPen();
+            estatusElec=mViewModel.visita.getEstatusElec();
             Log.d(TAG,"tipo tienda -----------*"+estatusPepsi);
 
         } catch (Exception e) {
@@ -581,9 +582,15 @@ public class DetalleProductoPenFragment extends Fragment {
         Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
         //if (clientesAsig == null||clientesAsig.size()<1){
         List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-        if(estatusPepsi==0){
-            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO);
-        }
+      /*  if(estatusPepsi==0){
+            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO,4);
+        }else
+        if(estatusPen==0){
+            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO,5);
+        }else
+        if(estatusElec==0){
+            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO,6);
+        }*/
        clientesAsig = convertirListaaClientesE(data,clientesprev);
         Log.d(TAG, "*regresó de la consulta de clientes " +  clientesAsig.size()+"");
     }
@@ -597,6 +604,12 @@ public class DetalleProductoPenFragment extends Fragment {
         if(lista!=null)
             for (ListaCompra listaCompra: lista ) {
                 DescripcionGenerica item=new DescripcionGenerica();
+                if(estatusPepsi==0&&listaCompra.getClientesId()==4)
+                    continue;
+                if(estatusPen==0&&listaCompra.getClientesId()==5)
+                    continue;
+                if(estatusElec==0&&listaCompra.getClientesId()==6)
+                    continue;
                 Log.d(TAG,"estoy aqui"+listaCompra.getClientesId());
                 if( clientesprev!=null)
                     if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))

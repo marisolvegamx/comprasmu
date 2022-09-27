@@ -4,7 +4,7 @@ public  class Contrato {
 
   public static String TBLLISTACOMPRAS="lista_compras";
     public static String TBLLISTACOMPRASDET="lista_compras_detalle";
-  //  public static String TBLLISTACOMPRAS="lista_compras";
+    public static String TBLSOLCORRECCIONES="solicitud_cor";
 
 
     public static class  CatalogosId{

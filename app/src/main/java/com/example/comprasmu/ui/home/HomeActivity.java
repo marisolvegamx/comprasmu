@@ -70,6 +70,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void ira(int etapa){
+        Constantes.ETAPAACTUAL=0;
         Intent intento=new Intent(this, NavigationDrawerActivity.class);
         intento.putExtra(NavigationDrawerActivity.ETAPA, etapa);
         startActivity(intento);

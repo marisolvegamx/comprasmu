@@ -123,15 +123,18 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
 
-    public List<ListaCompra> getClientesByIndiceCiudadSimplsp(String indice,String idCiudad) {
+    public List<ListaCompra> getClientesByIndiceCiudadSimplsp(String indice,String idCiudad, int cliente) {
         List<String> params= new ArrayList<>();
         params.add(indice);
-        String query="Select * from lista_compras where indice=? and clientesId!=4";
+        String query="Select * from lista_compras where indice=? and clientesId!=?";
+        params.add(cliente+"");
         if(!idCiudad.equals("")) {
             query = query + " and ciudadNombre like ?";
             params.add(idCiudad);
         }
-        query=query+               " group by clientesId";
+
+        query=query+" group by clientesId";
+      //  Log.d("ListaComrep",query+"--"+indice+"--"+idCiudad+"--"+cliente);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
@@ -250,6 +253,13 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
 
     public LiveData<List<ListaCompra>> getCiudades( String indice){
         return dao.findCiudades( indice);
+    }
+
+    public int getClientexPlanta( String indice, int planta){
+        ListaCompra comprat= dao.getClientexPlanta( indice, planta);
+        if(comprat!=null)
+            return comprat.getClientesId();
+        return 0;
     }
 
     @Override

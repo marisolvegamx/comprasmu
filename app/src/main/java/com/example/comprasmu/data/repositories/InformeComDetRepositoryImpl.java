@@ -109,5 +109,8 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     public List<InformeCompraDetalle> getDetallePendSubir(String indice) {
         return dao.getByEstatus(indice,0);
     }
+    public InformeCompraDetalle findByQr(String qr, String indice) {
+        return dao.findByQr(qr,indice);
+    }
 }
 

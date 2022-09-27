@@ -181,6 +181,7 @@ public class ComprasUtils {
 
 
         for (ListaCompra listaCompra: lista ) {
+
             DescripcionGenerica item=new DescripcionGenerica();
             item.setId(listaCompra.getClientesId());
             item.setNombre(listaCompra.getClienteNombre());

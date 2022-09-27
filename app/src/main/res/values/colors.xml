@@ -15,5 +15,9 @@
     <color name="gray">#5e6266</color>
     <color name="gray_light">#929292</color>
     <color name="dark_grey">#cccccc</color>
-
+    <color name="color_comp">#002060</color>
+    <color name="color_eti">#FF0000</color>
+    <color name="color_emp">#00B0F0</color>
+    <color name="color_env">#FFFF00</color>
+    <color name="color_gas">#92D050</color>
 </resources>

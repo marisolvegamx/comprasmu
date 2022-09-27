@@ -23,10 +23,10 @@ public class DescripcionGenericaAdapter extends RecyclerView.Adapter<Descripcion
 
     private DescripcionGenericaAdapter.AdapterCallback callback;
 
-    public DescripcionGenericaAdapter( DescripcionGenericaAdapter.AdapterCallback callback) {
+    public DescripcionGenericaAdapter( ) {
 
 
-        this.callback = callback;
+     //   this.callback = callback;
     }
 
     public List<DescripcionGenerica> getmDescripcionGenericaList() {

@@ -59,11 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
 
- * create an instance of this fragment.
- */
 public class MapaCdFragment extends Fragment implements OnMapReadyCallback , GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
         public static final String EXTRA_LATITUD = "extra_latitud";
         public static final String EXTRA_LONGITUD ="extra_longitud" ;
@@ -84,14 +80,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
         int cdId;
         boolean doubleBackToExitPressedOnce = false;
         ListaDetalleViewModel lcviewModel;
-        private NuevoinformeViewModel mViewModel;
+
         private long lastClickTime = 0;
-        Spinner spclientes;
+
         Spinner spplantas;
+    List<DescripcionGenerica>clientesAsignados;
 
       //  Spinner spindiceini;
       //  Spinner spindicefin;
     View view;
+    private int cliente;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -159,9 +157,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
             });
             //inicio colores tienda
             coloresTienda=new HashMap<>();
-            coloresTienda.put("verde", BitmapDescriptorFactory.HUE_GREEN);
-            coloresTienda.put("amarillo",BitmapDescriptorFactory.HUE_YELLOW);
-            coloresTienda.put("rojo",BitmapDescriptorFactory.HUE_RED);
+        coloresTienda.put("3",BitmapDescriptorFactory.HUE_GREEN);//verde
+        coloresTienda.put("2",BitmapDescriptorFactory.HUE_YELLOW);//amarillo
+        coloresTienda.put("1",BitmapDescriptorFactory.HUE_RED);
             return  view;
 
         }
@@ -339,7 +337,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
             fini=ComprasUtils.indiceaFecha2(indiceini);
             //busco el pais y cd de la planta
             int aux[]=lcviewModel.buscarClienCdxPlan(planta);
-            int cliente=aux[0];
+             cliente=aux[0];
             int ciudad=aux[1];
             Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);
 
@@ -379,22 +377,62 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
         public void dibujarTiendas(List<Tienda> listiendas){
             martiendas=new ArrayList<>();
             LatLng japon2 = null;
+            String color;
             for(Tienda tienda: listiendas){
-                Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
-                if(tienda.getUne_coordenadasxy()!=null&&tienda.getUne_coordenadasxy().length()>0) {
-                    String aux[] = tienda.getUne_coordenadasxy().split(",");
+                 Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
 
-                    japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-                    Marker mark=mMap.addMarker(new MarkerOptions()
-                            .position(japon2)
-                            .title(tienda.getUne_descripcion())
+                if(cliente==4&&tienda.getEstpep()>0) {
+                        color = tienda.getEstpep()+"";
+                        tienda.setColor(color);
+                        // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
+                        if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
+                            String aux[] = tienda.getUne_coordenadasxy().split(",");
 
-                            .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(tienda.getColor()))));
-                    mark.setTag(tienda);
-                    martiendas.add(mark);
+                            japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+                            Marker marker=mMap.addMarker(new MarkerOptions()
+                                    .position(japon2)
+                                    .title(tienda.getUne_descripcion())
+                                    .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color))));
+                            marker.setTag(tienda);
+                            martiendas.add(marker);
 
+                        }
+                    }else
+                    if(cliente==5&&tienda.getEstpen()>0) {
+
+                        color = tienda.getEstpen()+"";
+                        tienda.setColor(color);
+                        // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
+                        if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
+                            String aux[] = tienda.getUne_coordenadasxy().split(",");
+
+                            japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+                            Marker marker=mMap.addMarker(new MarkerOptions()
+                                    .position(japon2)
+                                    .title(tienda.getUne_descripcion())
+                                    .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color))));
+                            marker.setTag(tienda);
+                            martiendas.add(marker);
+                        }
+                    }
+                    else
+                    if(cliente==6&&tienda.getEstele()>0) {
+                        color = tienda.getEstele()+"";
+                        tienda.setColor(color);
+                        // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
+                        if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
+                            String aux[] = tienda.getUne_coordenadasxy().split(",");
+
+                            japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+                            Marker marker=mMap.addMarker(new MarkerOptions()
+                                    .position(japon2)
+                                    .title(tienda.getUne_descripcion())
+                                    .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color))));
+                            marker.setTag(tienda);
+                            martiendas.add(marker);
+                        }
+                    }
                 }
-            }
             if(japon2!=null)
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,10));
         }
@@ -409,7 +447,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
             List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
 
             Log.d(TAG, "regresó de la consulta de clientes " + data.size());
-            List<DescripcionGenerica>clientesAsignados = convertirListaaClientes(data);
+           clientesAsignados = convertirListaaClientes(data);
            // CreadorFormulario.cargarSpinnerDescr(getContext(),spclientes,clientesAsignados);
         }
 
@@ -504,8 +542,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
 
     @Override
     public void onInfoWindowClick(@NonNull Marker marker) {
+            //reviso si hay mas clientes si no no tiene caso
         Tienda tienda=(Tienda)marker.getTag();
-
+        if(tienda.getColor()=="2"&&clientesAsignados.size()==0){
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putBoolean("nuevatienda",false);
         bundle.putInt("idtienda", tienda.getUne_id());
@@ -513,6 +554,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
         bundle.putInt("tipotienda", tienda.getUne_tipotienda());
         bundle.putString("direccion", tienda.getUne_direccion());
         bundle.putString("color", tienda.getColor());
+        bundle.putInt("estpep", tienda.getEstpep());
+        bundle.putInt("estpen", tienda.getEstpen());
+        bundle.putInt("estele", tienda.getEstele());
         this.doubleBackToExitPressedOnce = false;
         NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo,bundle);
         //return false;

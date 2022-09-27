@@ -38,6 +38,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
@@ -46,6 +48,7 @@ import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
@@ -56,9 +59,11 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
+import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 
+import com.example.comprasmu.ui.tiendas.DescripcionGenericaAdapter;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
@@ -109,6 +114,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     private  ArrayList<DescripcionGenerica> listaPlantas;
     private boolean isEdicion;
     Spinner spplanta;
+    RecyclerView listaqr;
     public NvoEtiquetadoFragment(int preguntaAct,boolean edicion, InformeEtapaDet informeEdit,int informeSel) {
         this.preguntaAct = preguntaAct;
         this.isEdicion=edicion;
@@ -144,6 +150,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         guardar = root.findViewById(R.id.btnneguardar);
         btnrotar = root.findViewById(R.id.btnnerotar1);
         btntomarf = root.findViewById(R.id.btnnefoto);
+        listaqr = root.findViewById(R.id.rvnelisqr);
         btnqr = root.findViewById(R.id.btnneobtqr);
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
@@ -222,9 +229,9 @@ public class NvoEtiquetadoFragment extends Fragment {
         if(!isEdicion&&preguntaAct<3&&mViewModel.getIdNuevo()==0) {
             //reviso si ya tengo uno abierto
             InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL);
-            Log.d(TAG, "buscando pend");
-           /* if (informeEtapa != null) {
-                Log.d(TAG, "encontré 1");
+
+            if (informeEtapa != null) {
+
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                 dialogo1.setTitle(R.string.atencion);
                 dialogo1.setMessage(R.string.informe_abierto);
@@ -238,7 +245,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 });
 
                 dialogo1.show();
-            }*/
+            }
         }
         //buscar la solicitud
         Bundle datosRecuperados = getArguments();
@@ -394,33 +401,39 @@ public class NvoEtiquetadoFragment extends Fragment {
             case 1: //sel planta
                 sv1.setVisibility(View.GONE);
                 sv2.setVisibility(View.VISIBLE);
+                preguntaAct=preguntaAct+1;
                 break;
             case 2: //num cajas
                  sv2.setVisibility(View.GONE);
                  sv3.setVisibility(View.VISIBLE);
                  txtcajaact.setVisibility(View.VISIBLE);
                 isEdicion=false;
+                preguntaAct=preguntaAct+1;
                   break;
             case 3: //foto
                 sv3.setVisibility(View.GONE);
                 sv4.setVisibility(View.VISIBLE);
-
+                preguntaAct=preguntaAct+1;
                 break;
             case 4://qr
                 sv3.setVisibility(View.GONE);
                 sv4.setVisibility(View.GONE);
                 svotra.setVisibility(View.VISIBLE);
-                txtcajaact.setVisibility(View.GONE);
+               // txtcajaact.setVisibility(View.GONE);
 
                 guardarDet();
                 isEdicion=false;
+                preguntaAct=preguntaAct+1;
                 break;
             case 5: //otra
                 capturarMuestra();
+                preguntaAct=preguntaAct+1;
                 break;
-            case 6:
-                svcoin.setVisibility(View.GONE);
+            case 6: //coincide
+
                 if(pcoincide.getRespuesta()){
+                    svcoin.setVisibility(View.GONE);
+                    listaqr.setVisibility(View.GONE);
                     //voy con la sig caja
                     Log.d(TAG,"contcaja "+contcaja+"--"+totcajas);
                     if(contcaja<totcajas) {
@@ -433,21 +446,23 @@ public class NvoEtiquetadoFragment extends Fragment {
                             mViewModel.preguntaAct=preguntaAct;
                     }
                     else{
+                        preguntaAct=preguntaAct+1;
                         //me voy a comentarios
                         sv5.setVisibility(View.VISIBLE);
                     }
                 }else{
-                    //todo como regresar a la muestra 1
+                    //muestro la lista de qr capturados y los busco
+                    buscarQrCap(contcaja);
 
-                    mostrarCapMuestra();
+                   // mostrarCapMuestra();
                     //borro las muestras
-                    mViewModel.borrarDetEtaxCaja(mViewModel.getIdNuevo(),3,contcaja);
+                   // mViewModel.borrarDetEtaxCaja(mViewModel.getIdNuevo(),3,contcaja);
 
                 }
                 break;
 
         }
-        preguntaAct=preguntaAct+1;
+
         mViewModel.preguntaAct=preguntaAct;
     }
     public void capturarMuestra(){
@@ -465,6 +480,35 @@ public class NvoEtiquetadoFragment extends Fragment {
             svcoin.setVisibility(View.VISIBLE);
         }
 
+    }
+    public void buscarQrCap(int numCaja){
+        listaqr.setAdapter(null);
+        List<InformeCompraDetalle> prods=mViewModel.buscarProdsxQr(mViewModel.getIdNuevo(),3,numCaja);
+
+        DescripcionGenericaAdapter mListAdapter = new DescripcionGenericaAdapter();
+
+        listaqr.setLayoutManager(new LinearLayoutManager(getActivity()));
+        listaqr.setHasFixedSize(true);
+        mListAdapter.setmDescripcionGenericaList(deCompraADesc(prods));
+        listaqr.setAdapter(mListAdapter);
+        listaqr.setVisibility(View.VISIBLE);
+
+    }
+
+    public List<DescripcionGenerica> deCompraADesc(List<InformeCompraDetalle> prods){
+        DescripcionGenerica desc;
+        List<DescripcionGenerica> prodsdes=new ArrayList<>();
+        for(InformeCompraDetalle det:prods){
+            if(det!=null) {
+                desc = new DescripcionGenerica();
+                desc.setId(det.getId());
+                desc.setNombre(det.getProducto() + " " + det.getPresentacion() + " " + det.getEmpaque());
+                desc.setDescripcion(det.getQr());
+                prodsdes.add(desc);
+            }
+
+        }
+        return prodsdes;
     }
     public void mostrarCapMuestra(){
         sv1.setVisibility(View.GONE);
@@ -485,6 +529,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             contmuestra = detalleEdit.getNum_muestra();
             contmuint=1;
             contcaja=detalleEdit.getNum_caja();
+            txtcajaact.setText("CAJA "+contcaja);
             totcajas=infomeEdit.getTotal_cajas();
         }
        else{
@@ -498,7 +543,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 //  fotomos.setImageBitmap(bitmap1);
                 // txtqr.setText(detalleEdit.getQr());
                 contmuestra = informeEtapaDet.get(0).getNum_muestra();
-                contmuint=1;
+                contmuint=contmuestra;
             }
 
         }

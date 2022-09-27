@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DetalleCaja;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.Reactivo;
@@ -24,8 +25,10 @@ import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
+import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -172,6 +175,18 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
        // muestrasCap=detalleRepo.getAllSencillo(id);
         return null;
     }
+    public List<InformeCompraDetalle> buscarProdsxQr(int idNuevo, int etapa, int numcaja) {
+        List<InformeEtapaDet> qrs=infDetRepo.getByCaja(idNuevo,etapa,numcaja);
+       InformeComDetRepositoryImpl comrepo=new InformeComDetRepositoryImpl(application);
+       InformeCompraDetalle prod;
+        List<InformeCompraDetalle> listaProds=new ArrayList<>();
+        for(InformeEtapaDet detalle : qrs){
+            //busco el producto en el informe
+            prod=comrepo.findByQr(detalle.getQr(), Constantes.INDICEACTUAL);
+            listaProds.add(prod);
+        }
+        return  listaProds;
+    }
     public void finalizarInf(){
         infEtaRepository.actualizarEstatus(idNuevo,2);
     }
@@ -204,4 +219,6 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public void setNvoinforme(InformeEtapa nvoinforme) {
         this.nvoinforme = nvoinforme;
     }
+
+
 }

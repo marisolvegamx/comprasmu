@@ -111,7 +111,7 @@ public interface APIService {
     Call<PostResponse> saveInformesEtaPend(@Body TodoEnvio item);
 
     @GET("solcorreccion")
-    Call<SolCorreResponse> getSolicitudCorre(@Query("indice") String indice, @Query("usuario") String usuario);
+    Call<SolCorreResponse> getSolicitudCorre(@Query("indice") String indice, @Query("usuario") String usuario, @Query("etapa") int etapa,@Query("version") String version);
 
     @POST("correccion/create")
     @Headers({

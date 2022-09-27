@@ -18,7 +18,9 @@ public class Tienda {
     private int une_cadenacomercial;
     private String une_dir_referencia;
     private String color;
-
+    private int estpen; //para saber si compre en peñafiel
+    private int estpep;
+    private int estele;
 
     public int getUne_id() {
         return une_id;
@@ -132,11 +134,37 @@ public class Tienda {
         this.une_dir_referencia = une_dir_referencia;
     }
 
+
+
     public String getColor() {
         return color;
     }
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public int getEstpen() {
+        return estpen;
+    }
+
+    public void setEstpen(int estpen) {
+        this.estpen = estpen;
+    }
+
+    public int getEstpep() {
+        return estpep;
+    }
+
+    public void setEstpep(int estpep) {
+        this.estpep = estpep;
+    }
+
+    public int getEstele() {
+        return estele;
+    }
+
+    public void setEstele(int estele) {
+        this.estele = estele;
     }
 }

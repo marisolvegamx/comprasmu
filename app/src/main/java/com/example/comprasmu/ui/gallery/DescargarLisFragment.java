@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 
+import com.example.comprasmu.DescCorrecAsyncTask;
 import com.example.comprasmu.DescargaRespAsyncTask;
 import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.R;
@@ -23,8 +24,10 @@ import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.utils.Constantes;
 
 public class DescargarLisFragment extends Fragment implements DescargaRespAsyncTask.ProgresoRespListener {
      TextView textView;
@@ -62,7 +65,11 @@ public class DescargarLisFragment extends Fragment implements DescargaRespAsyncT
        pb.setVisibility(View.VISIBLE);
 
         task.execute("","act"); //para saber que estoy actualizando
+        //descarga solicitudes compra
+        SolicitudCorRepoImpl solcorRepo=new SolicitudCorRepoImpl(getContext());
 
+        DescCorrecAsyncTask corTask=new DescCorrecAsyncTask(solcorRepo,tvRepo,getActivity(), Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL);
+        corTask.execute("act");
         /*AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         builder.setCancelable(false);
         builder.setIcon(android.R.drawable.stat_sys_download);
@@ -92,6 +99,13 @@ public class DescargarLisFragment extends Fragment implements DescargaRespAsyncT
             textView.setVisibility(View.VISIBLE);
         }
         pb.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void actualizando() {
+        textView.setVisibility(View.GONE);
+        pb.setVisibility(View.VISIBLE);
 
     }
 

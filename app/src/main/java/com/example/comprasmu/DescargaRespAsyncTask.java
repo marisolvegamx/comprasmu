@@ -225,6 +225,7 @@ public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
         }
     public interface ProgresoRespListener {
          void cerrarAlerta(boolean res);
+         void actualizando();
          void todoBien();
 
     }

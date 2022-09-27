@@ -54,6 +54,11 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
     @Query("SELECT * FROM informe_detalle where comprasId=:idcompra and comprasDetId=:iddet and tipoMuestra=3")
     public abstract List<InformeCompraDetalle> findByCompraBu( int idcompra, int iddet);
 
+    @Query("SELECT informe_detalle.* FROM informe_detalle inner join informe_compras on informesId=informe_compras.id" +
+            " inner join visitas on visitasId=visitas.id" +
+            " where qr=:qr and visitas.indice=:indice")
+    public abstract InformeCompraDetalle findByQr( String qr, String indice);
+
     @Query("SELECT informe_detalle.foto_codigo_produccion FROM informe_detalle " +
             "            WHERE id =:id " +
             "union select energia FROM informe_detalle " +

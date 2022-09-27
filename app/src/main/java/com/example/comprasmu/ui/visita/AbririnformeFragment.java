@@ -131,7 +131,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     int nuevoId;
     private boolean yaTengoFoto;
     private int estatusPepsi; //para saber si la tienda se puede comprar pepsi
-
+    private int estatusPen;
+    private int estatusElec;
     EditText txtubicacion,txtaiultubic;
     public static String EXTRAPREINFORME_ID = "comprasmu.preinformeid";
     private CreadorFormulario cf1;
@@ -488,7 +489,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         spinn = root.findViewById(R.id.spaiclientes1);
         spinn2 = root.findViewById(R.id.spaiclientes2);
         spinn3 = root.findViewById(R.id.spaiclientes3);
-        estatusPepsi = 1;
+        estatusPepsi = estatusPen=estatusElec=1;
 
         if (getArguments() != null) {
 
@@ -521,6 +522,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                             tienda.setUne_direccion(visita.getDireccion());
                         }
                         estatusPepsi = visita.getEstatusPepsi();
+                        estatusPen = visita.getEstatusPen();
+                        estatusElec = visita.getEstatusElec();
                         //cargo la lista de clientes
                         cargarClientes();
                         crearFormulario(visita);
@@ -556,16 +559,23 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     tienda.setUne_id(getArguments().getInt("idtienda"));
                     tienda.setUne_descripcion(getArguments().getString("nombretienda"));
                     tienda.setUne_tipotienda(getArguments().getInt("tipotienda"));
-
+                    // tienda.setCliente(getArguments().getInt("cliente"));
                     tienda.setUne_direccion(getArguments().getString("direccion"));
                     String colortienda = getArguments().getString("color");
+                    tienda.setEstpep(getArguments().getInt("estpep"));
+                    tienda.setEstpen(getArguments().getInt("estpen"));
+                    tienda.setEstele(getArguments().getInt("estele"));
+                    tienda.setColor(colortienda);
                     Log.d(TAG, "wwwww" + tienda.getColor());
-                    if (colortienda != null) {
-                        if (colortienda.equals("amarillo"))
-                            estatusPepsi = 0;
-                        else
-                            estatusPepsi = 1;
-                    }
+                    if(tienda.getEstpep()==2)
+                    estatusPepsi =0 ;
+                    if(tienda.getEstpen()==2)
+                    estatusPen = 0;
+                    if(tienda.getEstele()==2)
+                    estatusElec = 0;
+
+
+
                 }
 
                 //cargo la lista de clientes
@@ -589,7 +599,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 }
             });
             nuevoId = mViewModel.start(0, getActivity());
-            estatusPepsi = 1;
+            estatusPepsi =estatusPen=estatusElec= 1;
             crearFormulario(new Visita());
 
             LinearLayout sv = root.findViewById(R.id.content_main);
@@ -759,14 +769,47 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public void cargarClientes() {
         // Log.d(TAG, "regresó de la consulta " + Constantes.CIUDADTRABAJO);
         //   if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
-        List<ListaCompra> data = lViewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
+
+        List<ListaCompra> data=null;
+        data = lViewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
+        List<ListaCompra> nvadata=new ArrayList<>();
         if (estatusPepsi == 0) {
-            data = lViewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO);
+
+            for (ListaCompra compra:data
+                 ) {
+                if(compra.getClientesId()==4) //quito pepsi
+                    continue;
+                nvadata.add(compra);
+            }
+            data=nvadata;
         }
-        totClientes = data.size();
+
+
+        if (estatusPen == 0) {
+            nvadata=new ArrayList<>();
+            for (ListaCompra compra:data
+            ) {
+                if(compra.getClientesId()==5) //quito penafiel
+                    continue;
+                nvadata.add(compra);
+            }
+            data=nvadata;
+        }
+        if (estatusElec == 0) {
+            nvadata=new ArrayList<>();
+            for (ListaCompra compra:data
+            ) {
+                if(compra.getClientesId()==6) //quito elec
+                    continue;
+                nvadata.add(compra);
+            }
+            data=nvadata;
+        }
+        if(data!=null)
+            totClientes = data.size();
         if (totClientes == 0) {
-            if (estatusPepsi == 0) {
-                Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+            if (estatusPepsi == 0||estatusElec == 0||estatusPen == 0) {
+                Toast.makeText(getActivity(), "En esta tienda no puede comprar producto", Toast.LENGTH_SHORT).show();
                 NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
 
                 return;
@@ -1538,6 +1581,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                  input1 = root.findViewById(1001);
                 EditText input2 = root.findViewById(1002);
                 mViewModel.visita.setEstatusPepsi(estatusPepsi);
+                mViewModel.visita.setEstatusPen(estatusPen);
+                mViewModel.visita.setEstatusElec(estatusElec);
                 mViewModel.visita.setTiendaId(tienda.getUne_id());
                 mViewModel.visita.setTiendaNombre(tienda.getUne_descripcion());
                 Log.d(TAG,"PPPPP"+tienda.getUne_tipotienda()+"--"+Constantes.TIPOTIENDA.get(tienda.getUne_tipotienda()));
@@ -1551,6 +1596,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             mViewModel.visita.setComplementodireccion(txtcomplemento.getText().toString());
             mViewModel.visita.setIndice(Constantes.INDICEACTUAL);
             mViewModel.visita.setEstatusPepsi(estatusPepsi);
+            mViewModel.visita.setEstatusPen(estatusPen);
+            mViewModel.visita.setEstatusElec(estatusElec);
             //guardo la foto
             //guardar imagen
             if(!cbfotofac.isChecked()) {
@@ -1824,11 +1871,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //la ciudad y el pais en el que está se definen en las propiedades
 
         visitaEdi.setEstatusPepsi(estatusPepsi);
+        visitaEdi.setEstatusPen(estatusPen);
+        visitaEdi.setEstatusElec(estatusElec);
         //   EditText input2 = root.findViewById(1001);
         //    mViewModel.informe.setNombreTemporal(nombreTemporal.getText().toString());
         visitaEdi.setEstatus(1);
         visitaEdi.setEstatusSync(0);
-        visitaEdi.setEstatusPepsi(estatusPepsi);
+        visitaEdi.setEstatusElec(estatusElec);
         visitaEdi.setUpdatedAt(new Date());
         visitaEdi.setGeolocalizacion(txtaiultubic.getText().toString());
         mViewModel.visita=visitaEdi;

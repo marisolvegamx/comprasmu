@@ -64,7 +64,7 @@ public class ValidadorDatos {
 
             }else {
                 Log.d("VAlidadorDatos","wwwwww"+sdf.format(fechacad)+"--"+sdf.format(cal.getTime()));
-                if (fechacad.compareTo(cal.getTime()) < 0) { //hoy+30>fechacad
+                if (fechacad.compareTo(cal.getTime()) < 0) { //hoy+30>fechacad  //de 30 dias para arriba se aceptan
                     //compra si Date>arg->>0
                     // Log.d("VAlidadorDatos","wwwwww"+fechacad.compareTo(cal.getTime()));
                     mensaje = R.string.error_fecha_caduca_prox;

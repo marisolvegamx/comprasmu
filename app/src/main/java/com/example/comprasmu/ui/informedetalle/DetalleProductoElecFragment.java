@@ -307,7 +307,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             Log.d(TAG,"tipo tienda -----------*"+Constantes.DP_TIPOTIENDA);
             tipoTienda=Constantes.DP_TIPOTIENDA;
             estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
-
+            estatusPen=mViewModel.visita.getEstatusPen();
+            estatusElec=mViewModel.visita.getEstatusElec();
 
         } catch (Exception e) {
             e.printStackTrace();

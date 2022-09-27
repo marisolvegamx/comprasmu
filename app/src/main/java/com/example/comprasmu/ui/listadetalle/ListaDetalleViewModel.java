@@ -121,11 +121,17 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public  List<ListaCompra>  cargarClientesSimplsp(String ciudadSel){
+    //trae la lsta menos el cliente enviado
+    public  List<ListaCompra>  cargarClientesSimplsp(String ciudadSel, int cliente){
 
-        return repository.getClientesByIndiceCiudadSimplsp(Constantes.INDICEACTUAL,ciudadSel);
+        return repository.getClientesByIndiceCiudadSimplsp(Constantes.INDICEACTUAL,ciudadSel,cliente);
 
 
+    }
+
+    public  int  getclientexPlanta(int planta){
+
+        return repository.getClientexPlanta(Constantes.INDICEACTUAL,planta);
     }
     public List<DescripcionGenerica> cargarOpcionesAnalisis(int idanalisis){
         List<DescripcionGenerica> opciones=new ArrayList<>();

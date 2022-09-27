@@ -27,13 +27,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.SubirInformeEtaTask;
+
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
-import com.example.comprasmu.data.remote.InformeEtapaEnv;
+
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -296,7 +296,7 @@ public class NvaCorreccionFragment extends Fragment {
             //paso a
             //creo el informe
             mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), valor, valor2, valor3));
-        actualizarSolicitud();
+            actualizarSolicitud();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
 
             salir();

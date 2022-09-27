@@ -138,7 +138,7 @@ public class DetalleProductoFragment extends Fragment {
     private String NOMBREPLANTASEL;
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
-    public int estatusPepsi;
+    public int estatusPepsi, estatusPen,estatusElec;
 
     public DetalleProductoFragment() {
 
@@ -210,7 +210,8 @@ public class DetalleProductoFragment extends Fragment {
            Log.d(TAG,"mmmmmmmmmmm"+isEdicion);
             estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
             Log.d(TAG,"estatuspep -----------*"+estatusPepsi);
-
+            estatusPen=mViewModel.visita.getEstatusPen();
+            estatusElec=mViewModel.visita.getEstatusElec();
             if(isEdicion) {
                 aceptar.setEnabled(true);
 
@@ -617,9 +618,7 @@ public class DetalleProductoFragment extends Fragment {
 
         //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
         List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-        if(estatusPepsi==0){
-            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO);
-        }
+
        // if(clientesprev!=null)
       //      Log.d(TAG, "regresó de la consulta de clientes " + clientesprev.length + "--" + data.size());
         clientesAsignados = convertirListaaClientesE(data, clientesprev);
@@ -638,6 +637,12 @@ public class DetalleProductoFragment extends Fragment {
 
         if(lista!=null)
             for (ListaCompra listaCompra: lista ) {
+                if(estatusPepsi==0&&listaCompra.getClientesId()==4)
+                continue;
+                if(estatusPen==0&&listaCompra.getClientesId()==5)
+                    continue;
+                if(estatusElec==0&&listaCompra.getClientesId()==6)
+                    continue;
                 DescripcionGenerica item=new DescripcionGenerica();
                 Log.d(TAG,"-estoy aqui"+listaCompra.getClientesId());
                 if( clientesprev!=null)
@@ -722,6 +727,18 @@ public class DetalleProductoFragment extends Fragment {
         if(valor==4&&estatusPepsi==0)//no puedo comprar pepsi
         {
             Toast.makeText(getActivity(),"No puede comprar producto de pepsi en esta tienda",Toast.LENGTH_LONG).show();
+            aceptar.setEnabled(true);
+            return;
+        }
+        if(valor==5&&estatusPen==0)//no puedo comprar pepsi
+        {
+            Toast.makeText(getActivity(),"No puede comprar producto de peñafiel en esta tienda",Toast.LENGTH_LONG).show();
+            aceptar.setEnabled(true);
+            return;
+        }
+        if(valor==6&&estatusElec==0)//no puedo comprar pepsi
+        {
+            Toast.makeText(getActivity(),"No puede comprar producto de electropura en esta tienda",Toast.LENGTH_LONG).show();
             aceptar.setEnabled(true);
             return;
         }

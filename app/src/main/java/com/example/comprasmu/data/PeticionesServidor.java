@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.comprasmu.DescCorrecAsyncTask;
 import com.example.comprasmu.DescargaRespAsyncTask;
 import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.data.modelos.Atributo;
@@ -27,6 +28,7 @@ import com.example.comprasmu.data.remote.PlantaResponse;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
+import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.remote.TiendasResponse;
 import com.example.comprasmu.data.remote.UltimoInfResponse;
 import com.example.comprasmu.data.remote.UltimosIdsResponse;
@@ -494,6 +496,43 @@ public class PeticionesServidor {
         tv3.setTipo("C");
         tv3.setVersion(new Date());
         trepo.insertUpdate(tv3);
+    }
+    public void pedirSolicitudesCorr(String indice,int etapa, String version,DescCorrecAsyncTask.DescargaCorrListener listener){
+
+        final Call<SolCorreResponse> batch = apiClient.getApiService().getSolicitudCorre(indice,usuario,etapa,version);
+
+        batch.enqueue(new Callback<SolCorreResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<SolCorreResponse> call, @Nullable Response<SolCorreResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+
+                    SolCorreResponse solicitudes = response.body();
+                    //reviso si está actualizado
+                    if(solicitudes.getStatus()==null||!solicitudes.getStatus().equals("error")) //falta actualizar
+                    {
+
+                        listener.actualizar(solicitudes);
+
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lpedirSolicitudesCorr "+solicitudes.getData());
+                        listener.noactualizar(solicitudes.getData());
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<SolCorreResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+
+                }
+            }
+        });
     }
 
     public MutableLiveData<List<Tienda>> getLista() {
