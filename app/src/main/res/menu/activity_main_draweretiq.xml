@@ -15,7 +15,7 @@
             android:icon="@android:drawable/ic_menu_compass"
             android:title="@string/menu_ciudad_trabajo" />
         <item
-            android:id="@+id/nav_selcliente"
+            android:id="@+id/nav_listar"
             android:icon="@android:drawable/ic_menu_compass"
             android:title="@string/menu_resumencomp" />
         <item
