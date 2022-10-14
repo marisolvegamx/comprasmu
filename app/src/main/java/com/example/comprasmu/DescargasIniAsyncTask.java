@@ -11,22 +11,21 @@ import android.os.Environment;
 import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+
 
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-import com.example.comprasmu.data.modelos.ListaCompra;
+
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
+import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
@@ -36,9 +35,11 @@ import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
+import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
+import com.example.comprasmu.ui.informe.InformeCompraAdapter;
 import com.example.comprasmu.ui.tiendas.PeticionMapaCd;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -62,18 +63,19 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     ImagenDetRepositoryImpl imagenDetRepo;
     ProductoExhibidoRepositoryImpl prodrepo;
     GeocercaRepositoryImpl georep;
+    InformeCompraRepositoryImpl infrepo;
     boolean notificar=false;
     Activity act;
     int actualiza;
-    DescargaRespAsyncTask.ProgresoRespListener proglist;
+   // DescargaRespAsyncTask.ProgresoRespListener proglist;
     final String TAG="DescargasIniAsyncTask";
     private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
-
+    private ProgresoListener miproglis;
 
     public DescargasIniAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
-                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo, DescargaRespAsyncTask.ProgresoRespListener proglist, SustitucionRepositoryImpl sustRepo,GeocercaRepositoryImpl georep) {
+                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener miproglis, SustitucionRepositoryImpl sustRepo,GeocercaRepositoryImpl georep) {
 
         this.cdrepo=cdrepo;
         this.atRepo=atRepo;
@@ -83,8 +85,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         this.sustRepo=sustRepo;
         this.act=act;
         sdfdias=new SimpleDateFormat("dd-MM-yyyy");
-        this.proglist=proglist;
+       // this.proglist=proglist;
         this.georep=georep;
+        this.miproglis=miproglis;
+
     }
 
     @Override
@@ -96,8 +100,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 actualiza=1;
            // if (indice[0].equals("cat")) //descargo cats tmb
             catalogos();
-            listacompras();
             buscarZonas();
+            listacompras(); //aqui esta informes
+
+
       /*  }else
               {
             notificar = true;
@@ -163,7 +169,9 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
     }
 
-    private void listacompras(){
+  /*  private void listacompras(){
+        Log.d("DescargasIniAsyncTask", "descargando listas");
+
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
         TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
@@ -186,8 +194,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     });*/
             }else {
 
-                Log.d("DescargasIniAsyncTask", "comprobando vers liscomp*" + sdfdias.format(comp.getVersion()) + "--" + (sdfdias.format(new Date())));
-                if (!sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))) {
+                 if (!sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))) {
                     if (NavigationDrawerActivity.isOnlineNet())
                         ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
                     else
@@ -205,7 +212,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 notificar = true;
         }
     }
-
+*/
     public void buscarZonas(){
         TablaVersiones cats=tvRepo.getVersionByNombreTabla("geocercas");
         //peticion al servidor
@@ -266,6 +273,8 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
     }
 
+
+
   /*  private void informes() {
         if(getTotVisitas()==0) { //veo si tengo datos en el servidor
            // InformeComDetRepositoryImpl ifodrepo=new InformeComDetRepositoryImpl(act);
@@ -294,6 +303,20 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     }*/
 
 
+    private void getRespaldo(){
+        Log.d("DescargasIniAsyncTask", "descargando respaldo");
+        infrepo = new InformeCompraRepositoryImpl(act);
+        infdrepo = new InformeComDetRepositoryImpl(act);
+        imagenDetRepo = new ImagenDetRepositoryImpl(act);
+        prodrepo = new ProductoExhibidoRepositoryImpl(act);
+        visRepo=new VisitaRepositoryImpl(act);
+        lcdrepo=new ListaCompraDetRepositoryImpl(act);
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        DescargaRespListener listener=new DescargaRespListener();
+        ps.pedirRespaldo(Constantes.INDICEACTUAL,listener);
+
+    }
+
 
     private void descargarImagenes(List<ImagenDetalle> imagenes){
         for(ImagenDetalle img:imagenes){
@@ -310,9 +333,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         request.setTitle("Downloading a file"); // Title for notification.
         request.setVisibleInDownloadsUi(true);
 
-        request.setDestinationInExternalFilesDir(act, Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
+        request.setDestinationInExternalFilesDir(act,Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
         ((DownloadManager) act.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
     }
+
 
 
     @Override
@@ -320,7 +344,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         super.onPostExecute(aVoid);
       /*  if(notificar)
             notificarSinConexion();*/
-        Log.e("DescargasIniAsyT","---"+actualiza);
+      //  Log.e("DescargasIniAsyT","---"+actualiza);
 
     }
 
@@ -357,18 +381,19 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                             tv=null;
                         }
 
+
             }
             public void actualizar(ListaCompraResponse compraResp) {
                 //primero los inserts
-                Log.d("Descargaini","resp1>>"+compraResp.getInserts());
+                Log.d("Descargaini","actualizando listas>>");
 
                 if (compraResp.getInserts() != null) {
                     if(compraResp.getInserts().getListaCompra()!=null) {
-                        Log.d("Descargaini","resp2>>"+compraResp.getInserts().getListaCompra());
+                       // Log.d("Descargaini","resp2>>"+compraResp.getInserts().getListaCompra());
 
                         lcrepo.insertAll(compraResp.getInserts().getListaCompra()); //inserto blblbl
                     }
-                    Log.d("Descargaini","resp3>>"+compraResp.getInserts().getListaCompraDetalle());
+                   // Log.d("Descargaini","resp3>>"+compraResp.getInserts().getListaCompraDetalle());
 
                     if(compraResp.getInserts().getListaCompraDetalle()!=null){
                             //como puede que ya existan reviso primero e inserto unoxuno
@@ -431,21 +456,21 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 tinfod.setIndice(Constantes.INDICEACTUAL);
                 tvRepo.insertUpdate(tinfo);
                 tvRepo.insertUpdate(tinfod);
-                informes();
+                if(actualiza==0)
+                 informes(); //solo en la descarga incial
+                else
 
+                    miproglis.cerrarAlerta(true);
             }
 
             public void informes(){
                 if(getTotVisitas()==0) {
                      //    DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespAsyncTask.DescargaRespListener();
 
-                    DescargaRespAsyncTask task = new DescargaRespAsyncTask( act, actualiza,proglist);
+                  //  DescargaRespAsyncTask task = new DescargaRespAsyncTask( act, actualiza,proglist);
+                    getRespaldo();
 
-
-                    task.execute("", "act"); //para saber que estoy actualizando
-                }else
-                         if(actualiza==1&&proglist!=null){
-                    proglist.cerrarAlerta(notificar);
+                 //   task.execute("", "act"); //para saber que estoy actualizando
                 }
 
 
@@ -457,6 +482,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
                 return ultimo;
             }
+
 
         }
     public interface ProgresoListener {
@@ -484,5 +510,127 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         });
         AlertDialog alert=builder.create();
         alert.show();
+    }
+
+    public class DescargaRespListener {
+        public DescargaRespListener() {
+            //if(proglist!=null&&actualiza==1)
+            //  proglist.cerrarAlerta();
+        }
+
+        public void noactualizar(String response){
+            //a ver como la regresamos
+            miproglis.cerrarAlerta(true);
+        }
+
+        public void actualizarInformes(RespInformesResponse infoResp) {
+            Log.d(TAG,"actualizando bd informes");
+            //primero los inserts
+            if (infoResp.getVisita() != null) {
+                //reviso cada uno y las inserto
+                for (Visita vis : infoResp.getVisita()) {
+                    visRepo.insert(vis); //inserto blblbl
+                }
+            }
+            if (infoResp.getInformeCompra() != null && infoResp.getInformeCompra().size() > 0) {
+                //como puede que ya existan reviso primero e inserto unoxuno
+                infrepo.insertAll(infoResp.getInformeCompra());
+            }
+            if (infoResp.getInformeCompraDetalles() != null && infoResp.getInformeCompraDetalles().size() > 0) {
+                //como puede que ya existan reviso primero e inserto unoxuno
+                infdrepo.insertAll(infoResp.getInformeCompraDetalles());
+            }
+
+
+            if (infoResp.getImagenDetalles() != null && infoResp.getImagenDetalles().size() > 0) {
+                //como puede que ya existan reviso primero e inserto unoxuno
+                imagenDetRepo.insertAll(infoResp.getImagenDetalles());
+              //  descargarImagenes(infoResp.getImagenDetalles());
+
+            }
+            if (infoResp.getProductosEx() != null && infoResp.getProductosEx().size() > 0) {
+                //como puede que ya existan reviso primero e inserto unoxuno
+                prodrepo.insertAll(infoResp.getProductosEx());
+            }
+            //sumo en la lista de compra
+            //   List<InformeCompraDetalle> detalles=infdrepo.getAllsimple();
+            //ajusto cantidades
+            Log.d(TAG,"ajusto cantidades");
+
+            if(infoResp.getInformeCompraDetalles()!=null)
+                for(InformeCompraDetalle det:infoResp.getInformeCompraDetalles()){
+                    Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getComprasDetId());
+                    if(det.getTipoMuestra()!=3) {//para normal o catchup
+                        ListaCompraDetalle compradet=lcdrepo.findsimple(det.getComprasId(),det.getComprasDetId());
+                        if(compradet!=null) {
+                            //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
+                            Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
+
+                            int nvacant = compradet.getComprados() + 1;
+                            //  lcdrepo.actualizarComprados(det.getId(),det.getComprasId(),nvacant);
+                            //actualizo lo codigos comprados
+                            String listaCodigos = "";
+                            SimpleDateFormat sdfcodigo = new SimpleDateFormat("dd-MM-yy");
+                            String nuevoCodigo = sdfcodigo.format(det.getCaducidad());
+                            //no aumento el comprado solo el codigo
+
+                            if (compradet.getNvoCodigo() != null)
+                            //reviso que no existe
+                            {
+                                if (!compradet.getNvoCodigo().contains(nuevoCodigo))
+                                    listaCodigos = nuevoCodigo + ";" + compradet.getNvoCodigo();
+                            } else
+                                listaCodigos = nuevoCodigo;
+                            compradet.setNvoCodigo(listaCodigos);
+
+                            compradet.setComprados(nvacant);
+                            //actualizo
+                            lcdrepo.insert(compradet);
+                        }
+                    }
+                    else{
+                        ListaCompraDetalle compradet = lcdrepo.findsimple(det.getComprasId(), det.getComprasDetId());
+                        if(compradet!=null) {
+                            //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
+                            Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
+
+                            int nvacant = compradet.getComprados() + 1;
+                            compradet.setComprados(nvacant);
+                            //actualizo
+                            lcdrepo.insert(compradet);
+                            //el codigo va en el comprado
+                            ListaCompraDetalle compradetbu = lcdrepo.findsimple(det.getComprasIdbu(), det.getComprasDetIdbu());
+                            if (compradetbu != null) {
+                                //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
+                                Log.d(TAG, "sss" + compradetbu.getProductoNombre() + "--" + compradetbu.getComprados());
+                                //actualizo lo codigos comprados
+                                String listaCodigos = "";
+                                SimpleDateFormat sdfcodigo = new SimpleDateFormat("dd-MM-yy");
+                                String nuevoCodigo = sdfcodigo.format(det.getCaducidad());
+                                //no aumento el comprado solo el codigo
+
+                                if (compradetbu.getNvoCodigo() != null)
+                                //reviso que no existe
+                                {
+                                    if (!compradetbu.getNvoCodigo().contains(nuevoCodigo))
+                                        listaCodigos = nuevoCodigo + ";" + compradetbu.getNvoCodigo();
+                                } else
+                                    listaCodigos = nuevoCodigo;
+                                compradetbu.setNvoCodigo(listaCodigos);
+
+
+                                //actualizo
+                                lcdrepo.insert(compradetbu);
+                            }
+                        }
+                    }
+
+
+                }
+
+
+            miproglis.cerrarAlerta(true);
+
+        }
     }
 }
