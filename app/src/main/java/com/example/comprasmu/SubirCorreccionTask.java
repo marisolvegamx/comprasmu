@@ -12,7 +12,7 @@ import com.example.comprasmu.ui.informe.PostInformeViewModel;
 
 public class SubirCorreccionTask extends AsyncTask<String, Float, Integer> {
 
-    public static String TAG = "SubirInfEtaTask";
+    public static String TAG = "SubirCorreccionTask";
     CorreccionEnvio envio;
     Context context;
 
@@ -79,7 +79,7 @@ public class SubirCorreccionTask extends AsyncTask<String, Float, Integer> {
     @Override
     protected void onPostExecute(Integer cantidadProcesados) {
         //   TV_mensaje.setText("DESPUÉS de TERMINAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
-        Log.v(TAG, "DESPUÉS de TERMINAR el envio. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
+      //  Log.v(TAG, "DESPUÉS de TERMINAR el envio. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
 
         // TV_mensaje.setTextColor(Color.GREEN);
     }

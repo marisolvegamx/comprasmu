@@ -65,8 +65,11 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         Glide.with(mContext)
                 .load(directorio+spacePhoto.getRuta())
               //  .placeholder(R.drawable.ic_cloud_off_red)
+
                 .into(imageView);
-        holder.txtdesc.setText(spacePhoto.getDescripcion());
+        String descripcion=spacePhoto.getDescripcion();
+
+        holder.txtdesc.setText(descripcion);
         holder.txtruta.setText(spacePhoto.getRuta());
         if(Constantes.ETAPAACTUAL==3) {
             holder.txtdesc.setText("MUESTRA "+(position+1));

@@ -11,25 +11,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-
-import com.example.comprasmu.DescCorrecAsyncTask;
-import com.example.comprasmu.DescargaRespAsyncTask;
 import com.example.comprasmu.DescargasIniAsyncTask;
+import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 
+import com.example.comprasmu.data.remote.InformeEnvio;
+import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.utils.Constantes;
 
-public class DescargarLisFragment extends Fragment implements DescargaRespAsyncTask.ProgresoRespListener {
+public class DescargarLisFragment extends Fragment implements DescargasIniAsyncTask.ProgresoListener {
      TextView textView;
 
     AlertDialog alert;
@@ -59,6 +58,7 @@ public class DescargarLisFragment extends Fragment implements DescargaRespAsyncT
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getContext());
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getContext());
+        ((NavigationDrawerActivity)getActivity()).pedirCorrecciones(1,Constantes.ETAPAACTUAL);
 
         DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep);
         textView.setText("Por favor mantengase en la aplicación hasta que termine la descarga");
@@ -66,11 +66,7 @@ public class DescargarLisFragment extends Fragment implements DescargaRespAsyncT
 
         task.execute("","act"); //para saber que estoy actualizando
         //descarga solicitudes compra
-        SolicitudCorRepoImpl solcorRepo=new SolicitudCorRepoImpl(getContext());
-
-        DescCorrecAsyncTask corTask=new DescCorrecAsyncTask(solcorRepo,tvRepo,getActivity(), Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL);
-        corTask.execute("act");
-        /*AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
+         /*AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         builder.setCancelable(false);
         builder.setIcon(android.R.drawable.stat_sys_download);
         builder.setTitle("Descargando");
@@ -103,17 +99,29 @@ public class DescargarLisFragment extends Fragment implements DescargaRespAsyncT
     }
 
     @Override
-    public void actualizando() {
-        textView.setVisibility(View.GONE);
-        pb.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    public void todoBien() {
+    public void todoBien(RespInformesResponse infoResp) {
         if(textView!=null) {
             textView.setVisibility(View.VISIBLE);
             textView.setText(getString(R.string.listas_actualiz));
         }
     }
+
+    @Override
+    public void estatusInf(int es) {
+
+    }
+
+    @Override
+    public void estatusLis(int es) {
+
+    }
+
+   /* @Override
+    public void actualizando() {
+        textView.setVisibility(View.GONE);
+        pb.setVisibility(View.VISIBLE);
+
+    }*/
+
+
 }

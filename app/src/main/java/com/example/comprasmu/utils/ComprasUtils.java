@@ -151,11 +151,15 @@ public class ComprasUtils {
 
     public static Bitmap decodeSampledBitmapFromResource( String nombre_foto,
                                                          int reqWidth, int reqHeight) {
-
+        File archivo = new File(nombre_foto);
+        if (!archivo.exists()) {
+            return null;
+        }
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
        // BitmapFactory.decodeResource(res, resId, options);
+
         BitmapFactory.decodeFile(nombre_foto,options);
 
         // Calculate inSampleSize

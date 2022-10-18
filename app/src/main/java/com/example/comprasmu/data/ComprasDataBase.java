@@ -261,8 +261,12 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
                     prepopulatederpeni();
                     prepopulatederele();
-                }
 
+                }
+                Reactivo myProductsem=   dao.findsimple(91);
+                if (myProductsem == null) {
+                    prepopulatereaEmp();
+                }
                 SolicitudCor myProducts2=getSolicitudCorDao().findSimple(1);
                 if (myProducts2 == null) {
                     //no tengo datos
@@ -1782,6 +1786,174 @@ public abstract class ComprasDataBase extends RoomDatabase {
         solicitud.setCreatedAt(new Date());
         lista.add(solicitud);
         getSolicitudCorDao().insertAll(lista);
+    }
+
+    private  void prepopulatereaEmp( ) {
+        Reactivo campo = new Reactivo();
+        String cliente = "PEPSI";
+        int cliid = 4;
+
+
+        List<Reactivo> camposForm = new ArrayList<Reactivo>();
+
+        campo.setId(91);
+        campo.setTabla("IE");
+        campo.setLabel(ctx.getString(R.string.planta));
+        campo.setNombreCampo("plantasId");
+        campo.setType("selectDes");
+
+        campo.setSigId(92);
+
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.acomodo_mues));
+        campo.setId(92);
+        campo.setTabla("ED");
+        campo.setNombreCampo("acomodo_muestras");
+        campo.setType("agregarImagen");
+        campo.setSigId(93);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.relleno_esp));
+        campo.setId(93);
+        campo.setTabla("ED");
+        campo.setNombreCampo("relleno_espacios");
+        campo.setType("agregarImagen");
+        campo.setSigId(94);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.proteccion_fin));
+        campo.setId(94);
+        campo.setTabla("ED");
+        campo.setNombreCampo("proteccion_antes");
+        campo.setType("agregarImagen");
+        campo.setSigId(95);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.caja_cer));
+        campo.setId(95);
+        campo.setTabla("ED");
+        campo.setNombreCampo("caja_cerrada");
+        campo.setType("agregarImagen");
+        campo.setSigId(96);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.largo));
+        campo.setId(96);
+        campo.setTabla("DC");
+        campo.setNombreCampo("dimensiones");
+        campo.setType("inputtext");
+        campo.setSigId(97);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.largo));
+        campo.setId(97);
+        campo.setTabla("ED");
+        campo.setNombreCampo("largo");
+        campo.setType("agregarImagen");
+        campo.setSigId(98);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.ancho));
+        campo.setId(98);
+        campo.setTabla("DC");
+        campo.setNombreCampo("dimensiones");
+        campo.setType("inputtext");
+        campo.setSigId(99);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.ancho));
+        campo.setId(99);
+        campo.setTabla("ED");
+        campo.setNombreCampo("ancho");
+        campo.setType("agregarImagen");
+        campo.setSigId(100);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.alto));
+        campo.setId(100);
+        campo.setTabla("DC");
+        campo.setNombreCampo("dimensiones");
+        campo.setType("inputtext");
+        campo.setSigId(101);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.alto));
+        campo.setId(101);
+        campo.setTabla("ED");
+        campo.setNombreCampo("alto");
+        campo.setType("agregarImagen");
+        campo.setSigId(102);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.peso));
+        campo.setId(102);
+        campo.setTabla("DC");
+        campo.setNombreCampo("dimensiones");
+        campo.setType("inputtext");
+        campo.setSigId(103);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.peso));
+        campo.setId(103);
+        campo.setTabla("ED");
+        campo.setNombreCampo("peso");
+        campo.setType("agregarImagen");
+        campo.setSigId(91);
+        campo.setSigAlt(104);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.comentarios));
+        campo.setId(104);
+        campo.setTabla("IE");
+        campo.setNombreCampo("comentarios_emp");
+        campo.setType("inputtext");
+        campo.setSigId(0);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        getReactivoDao().insertAll(camposForm);
     }
   /*  static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override

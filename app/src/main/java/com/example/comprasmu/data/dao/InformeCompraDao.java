@@ -138,6 +138,7 @@ public interface InformeCompraDao {
 
         public String ciudad;
         public Date createdAt;
+
     }
 
 }

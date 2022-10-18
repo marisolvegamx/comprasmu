@@ -6,7 +6,7 @@
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -26,20 +26,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Comprasmu">
-        <!--
-               Set to true if your app is Standalone, that is, it does not require the handheld
-               app to run.
-        -->
 
         <activity
             android:name=".ui.mantenimiento.LeerLogActivity"
-            android:label="@string/title_activity_leer_log">
-
-        </activity>
-        <!--
-               Set to true if your app is Standalone, that is, it does not require the handheld
-               app to run.
-        -->
+            android:label="@string/title_activity_leer_log" />
+        <meta-data
+            android:name="firebase_performance_collection_deactivated"
+            android:value="true" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -92,16 +85,15 @@
             android:name=".ui.tiendas.MapaCdActivity"
             android:configChanges="orientation"
             android:label="@string/buscar_tienda"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.tiendas.FirstMapActivity"
             android:label="@string/buscar_tienda"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.infetapa.NuevoInfEtapaActivity"
             android:label="@string/nuevo_informe"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".NavigationDrawerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

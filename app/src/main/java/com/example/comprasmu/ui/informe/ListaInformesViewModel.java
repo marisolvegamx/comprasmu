@@ -19,10 +19,7 @@ import com.example.comprasmu.data.modelos.InformeCompra;
 
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
-import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
-import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
@@ -41,6 +38,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
     private ImagenDetRepositoryImpl imrepository;
 
     private LiveData<List<InformeCompraDao.InformeCompravisita>> listas;
+    private LiveData<List<InformeCompraDao.InformeCompravisita>> cancelados;
      private  LiveData<Integer> size;
 
     private  LiveData<Boolean> empty;
@@ -178,6 +176,15 @@ public class ListaInformesViewModel extends AndroidViewModel {
 
             return repository.getPlantasByIndice(Constantes.INDICEACTUAL,nombreTienda,ciudad,planta,clienteSel);
 
+
+    }
+    public LiveData<List<InformeCompraDetalle>> cargarCancelados(String indiceSel ){
+        return detrepository.getCancelados(indiceSel);
+
+    }
+
+    public LiveData<List<InformeCompraDao.InformeCompravisita>> cargarCancelados2(String indiceSel ){
+        return detrepository.getCanceladosVis(indiceSel);
 
     }
     public MutableLiveData<Event<Integer>> getSnackbarText() {

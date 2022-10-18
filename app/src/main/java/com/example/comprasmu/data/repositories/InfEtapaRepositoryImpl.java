@@ -125,7 +125,11 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
 
     }
+    public InformeEtapa getInformexPlan(String indice,int etapa, int planta) {
+        return icDao.getInformexPlant(etapa,indice, planta);
 
+
+    }
 
 
 }

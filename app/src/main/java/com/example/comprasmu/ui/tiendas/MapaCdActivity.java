@@ -51,6 +51,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/****esta no se usa
+ * borrar
+ */
 public class MapaCdActivity extends FragmentActivity implements OnMapReadyCallback , GoogleMap.OnMarkerClickListener {
     public static final String EXTRA_LATITUD = "extra_latitud";
     public static final String EXTRA_LONGITUD ="extra_longitud" ;

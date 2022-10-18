@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -120,6 +121,7 @@ public class DetalleProductoFragment extends Fragment {
     boolean isEdicion;
     LoadingDialog loadingDialog ;
     List<DescripcionGenerica> clientesAsignados;
+    CheckBox nopermiso;
 
     NuevoDetalleViewModel.ProductoSel prodSel;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
@@ -370,6 +372,7 @@ public class DetalleProductoFragment extends Fragment {
             mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo()*/
             crearFormulario();
 
+
             if(preguntaAct.getType().equals(CreadorFormulario.SELECTCAT)||preguntaAct.getType().equals(CreadorFormulario.SELECTDES)||preguntaAct.getType().equals(CreadorFormulario.PSELECT)) {
                 spclientes = root.findViewById(1001);
             }
@@ -381,6 +384,22 @@ public class DetalleProductoFragment extends Fragment {
             }else
             {
                 textoint = root.findViewById(1001);
+            }
+            if(preguntaAct.getNombreCampo().equals("ticket_compra")) {
+                nopermiso=root.findViewById(R.id.ckgnoperm);
+                nopermiso.setVisibility(View.VISIBLE);
+
+                nopermiso.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(textoint.getText()!=null)
+                      aceptar.setEnabled(((CheckBox)view).isChecked());
+                        else
+                            aceptar.setEnabled(true);
+
+                        preguntarBorrarFoto(view,textoint,fotomos,btnrotar,null);
+                    }
+                });
             }
             if(preguntaAct.getType().equals(CreadorFormulario.FECHAMASK)){
                 textoint.addTextChangedListener(new TextWatcher() {
@@ -558,15 +577,24 @@ public class DetalleProductoFragment extends Fragment {
                // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 //ComprasUtils cu=new ComprasUtils();
                // bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
-                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor(), 100, 100);
+                if(ultimares.getValor().equals("0")){
+                    //veo si tengo el chbox
+                   nopermiso=root.findViewById(R.id.ckgnoperm);
+                   if(nopermiso!=null){
+                       nopermiso.setChecked(true);
+                       btnrotar.setVisibility(View.GONE);
+                   }
+                }else {
+                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor(), 100, 100);
 
-                fotomos.setImageBitmap(bitmap1);
-                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                fotomos.setVisibility(View.VISIBLE);
+                    fotomos.setImageBitmap(bitmap1);
+                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                    fotomos.setVisibility(View.VISIBLE);
 
-                btnrotar.setVisibility(View.VISIBLE);
-                btnrotar.setFocusableInTouchMode(true);
-                btnrotar.requestFocus();
+                    btnrotar.setVisibility(View.VISIBLE);
+                    btnrotar.setFocusableInTouchMode(true);
+                    btnrotar.requestFocus();
+                }
 
             }
            // btnrotar.setVisibility(View.VISIBLE);
@@ -1572,9 +1600,16 @@ public class DetalleProductoFragment extends Fragment {
 
             }
         }
+        Log.d(TAG, "guardando en temp" + preguntaAct.getId() + "val" + valor);
+        if(preguntaAct.getId()==5&& nopermiso.isChecked())//es ticket
+        {
+            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "0", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
+            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "1", "ticket_noemiten", preguntaAct.getTabla(), mViewModel.consecutivo, true);
+
+        }else
             //  if(!preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN))
             //paso a mayusculas
-            Log.d(TAG, "guardando en temp" + preguntaAct.getId() + "val" + valor);
+
             if (preguntaAct.getId() > 0 && valor != null && valor.length() > 0) {
               //actualizo la visita
                 if(mViewModel.visita.getEstatus()!=3)
@@ -1681,6 +1716,9 @@ public class DetalleProductoFragment extends Fragment {
                             btnrotar.requestFocus();
                             nombre_foto=null;
                             archivofoto=null;
+                            if(nopermiso!=null) {
+                                nopermiso.setChecked(false);
+                            }
                         }
 
                     }
@@ -2071,6 +2109,41 @@ public class DetalleProductoFragment extends Fragment {
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState!=null)
         nombre_foto= savedInstanceState.getParcelable("picUri");
+    }
+    private void preguntarBorrarFoto(View cb,EditText txtruta,ImageView foto,ImageButton btnrotar,LinearLayout group) {
+        if(((CheckBox)cb).isChecked()) {
+            //veo si ya hay foto
+            if(txtruta.getText()!=null&&!txtruta.getText().toString().equals("")) {
+                //pregunto si habrá más clientes
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                // dialogo1.setTitle(R.string.);
+                dialogo1.setMessage(R.string.eliminar_foto);
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //eliminar foto
+                        txtruta.setText("");
+                        foto.setImageBitmap(null);
+
+                        foto.setVisibility(View.GONE);
+                        btnrotar.setVisibility(View.GONE);
+                        aceptar.setEnabled(true);
+                    }
+                });
+                dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        ((CheckBox) cb).setChecked(false);
+                        dialogo1.cancel();
+
+                        //envio a la lista
+                        //  NavHostFragment.findNavController(AbririnformeFragment.this).navigate(R.id.action_nuevotolista);
+
+                    }
+                });
+                dialogo1.show();
+            }
+        }
     }
     @Override
     public void onDestroyView() {

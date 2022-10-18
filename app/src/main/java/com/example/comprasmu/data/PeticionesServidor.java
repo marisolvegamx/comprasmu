@@ -6,13 +6,11 @@ import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
-import com.example.comprasmu.DescCorrecAsyncTask;
-import com.example.comprasmu.DescargaRespAsyncTask;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.comprasmu.DescargasIniAsyncTask;
+import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
@@ -24,6 +22,7 @@ import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.remote.CatalogosResponse;
 import com.example.comprasmu.data.remote.GenericResponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
+
 import com.example.comprasmu.data.remote.PlantaResponse;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
@@ -83,7 +82,7 @@ public class PeticionesServidor {
                     insertarCatalogos(respuestaCats,catRep,trepo,atRepo);
 
                 }else
-                    Log.e("PeticionesServidor", "algo salio mal en peticio catalogo");
+                    Log.e("PeticionesServidor", "algo salio mal en peticion catalogo");
 
             }
 
@@ -266,6 +265,7 @@ public class PeticionesServidor {
 
 
     public void getListasdeCompra(TablaVersiones comp, TablaVersiones version2, String indice, DescargasIniAsyncTask.DescargaIniListener listener){
+
         //busco la version de la app
          SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 
@@ -337,7 +337,7 @@ public class PeticionesServidor {
         });
     }
 
-    public void pedirRespaldo(String indice, DescargaRespAsyncTask.DescargaRespListener listener){
+    public void pedirRespaldo(String indice, DescargasIniAsyncTask.DescargaRespListener listener){
 
         Log.d("PeticionesServidor","haciendo petición pedir respaldo "+usuario);
 
@@ -363,7 +363,7 @@ public class PeticionesServidor {
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lista vacia");
-                        listener.noactualizar("lista vacia");
+                        listener.noactualizar(null);
                     }
 
                 }
@@ -497,7 +497,7 @@ public class PeticionesServidor {
         tv3.setVersion(new Date());
         trepo.insertUpdate(tv3);
     }
-    public void pedirSolicitudesCorr(String indice,int etapa, String version,DescCorrecAsyncTask.DescargaCorrListener listener){
+    public void pedirSolicitudesCorr(String indice, int etapa, String version, NavigationDrawerActivity.ActualListener petsocor){
 
         final Call<SolCorreResponse> batch = apiClient.getApiService().getSolicitudCorre(indice,usuario,etapa,version);
 
@@ -511,15 +511,16 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(solicitudes.getStatus()==null||!solicitudes.getStatus().equals("error")) //falta actualizar
                     {
+                        Log.i(TAG,"respuesta sols"+solicitudes);
 
-                        listener.actualizar(solicitudes);
+                        petsocor.actualizarCorre(solicitudes);
 
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lpedirSolicitudesCorr "+solicitudes.getData());
-                        listener.noactualizar(solicitudes.getData());
+                        petsocor.noactualizar(solicitudes.getData());
                     }
 
                 }

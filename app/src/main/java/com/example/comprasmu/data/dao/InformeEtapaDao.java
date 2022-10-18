@@ -46,6 +46,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     /*@RawQuery(observedEntities = InformeEtapavisita.class)
     LiveData<List<InformeEtapavisita>> getInformesVisitaByFiltros(SupportSQLiteQuery query);
 */
+    @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and plantasId=:plantaid limit 1")
+    public abstract InformeEtapa getInformexPlant(int etapa, String indice, int plantaid);
 
 
 

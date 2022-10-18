@@ -53,7 +53,7 @@ public class RevisarFotoActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras(); // Aquí es null
         if(extras!=null) {
             nombre_foto = extras.getString(IMG_PATH1);
-            Log.d("algo******", nombre_foto);
+            Log.d("algo******", "lll"+nombre_foto);
 
 
             File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);

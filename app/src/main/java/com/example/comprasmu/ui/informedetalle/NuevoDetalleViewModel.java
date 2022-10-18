@@ -172,6 +172,12 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         else
             return null;
     }
+    public InformeTemp buscarTempxId(int id){
+
+
+            return itemprepo.findsimple(id);
+
+    }
     public Reactivo inftempToReac(InformeTemp inftemp){
         return reacRepo.findByNombre(inftemp.getNombre_campo(),inftemp.getClienteSel());
 

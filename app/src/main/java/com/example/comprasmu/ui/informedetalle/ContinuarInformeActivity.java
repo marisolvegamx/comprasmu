@@ -90,6 +90,10 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
 
         if(ultimares!=null) //es edicion
         {
+            if(ultimares.getNombre_campo().equals("ticket_noemiten")){
+                //me muevo a la anterior
+                ultimares=dViewModel.buscarTempxId(ultimares.getId()-1);
+            }
             preguntaAct=dViewModel.inftempToReac(ultimares);
 
             Log.d(TAG, "reactivo:" +preguntaAct.getId()+"--"+ultimares.getNombre_campo());

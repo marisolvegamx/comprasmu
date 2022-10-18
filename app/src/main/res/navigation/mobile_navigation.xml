@@ -239,6 +239,11 @@
         android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
         android:label="@string/menu_resumeninf"
         />
+    <fragment
+        android:id="@+id/nav_cancel"
+        android:name="com.example.comprasmu.ui.informe.ListaCancelFragment"
+        android:label="@string/menu_cancel"
+        tools:layout="@layout/lista_selec_fragment" ></fragment>
     <!--para preparacion-->
 
     <activity

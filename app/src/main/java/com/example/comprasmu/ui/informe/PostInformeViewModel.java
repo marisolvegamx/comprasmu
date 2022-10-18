@@ -265,7 +265,8 @@ public class PostInformeViewModel {
 
     public  void sendCorreccion(CorreccionEnvio correccion) {
 
-        Log.d("Correccion", "enviando correccion");
+        Log.d("Correccion", "enviando correccion"+correccion.toJson(correccion));
+
         apiClient.getApiService().saveCorreccion(correccion).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {

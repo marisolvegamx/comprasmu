@@ -99,6 +99,7 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
             prod1.setVisitasId(visitasId);
             prod1.setEstatusSync(0);
             prod1.setImagenId(0); //no se pudo tomar
+            prod1.setNoPermiten(1);
             prod1.setNombreCliente(cliente);
             repository.insert(prod1);
         }catch (Exception ex){

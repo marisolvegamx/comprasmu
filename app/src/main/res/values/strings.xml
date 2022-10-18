@@ -263,6 +263,29 @@
     <string name="etiquetado">ETIQUETADO</string>
     <string name="num_cajas">NUMERO DE CAJAS A UTILIZAR</string>
     <string name="ver_muestras">VER MUESTRAS</string>
+    <string name="foto">FOTO</string>
+    <!-- para empaque-->
+    <string name="acomodo_mues">ACOMODO DE MUESTRAS EMBOLSADAS DENTRO DE CAJA</string>
+    <string name="relleno_esp">RELLENO DE ESPACIOS DENTRO DE CAJA</string>
+    <string name="proteccion_fin">PROTECCIÓN FINAL ANTES DEL CIERRE</string>
+    <string name="caja_cer">CAJA CERRADA Y ETIQUETADA</string>
+    <string name="largo">LARGO</string>
+    <string name="ancho">ANCHO</string>
+    <string name="alto">ALTO</string>
+    <string name="peso">PESO</string>
+    <string name="caja_num">CAJA NUMERO</string>
+    <string name="muestras_en">MUESTRAS EN CAJA</string>
+    <string name="no_emiten_tik">NO EMITEN TICKET</string>
+    <string name="title_activity_actualizacion">ActualizacionActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="menu_cancel">Canceladas</string>
 
 
 </resources>

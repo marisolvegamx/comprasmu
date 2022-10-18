@@ -13,6 +13,7 @@ public class ProductoExhibido {
     private int clienteId;
     private String nombreCliente;
     private int estatusSync;
+    private int noPermiten;
 
     public int getId() {
         return id;
@@ -60,5 +61,13 @@ public class ProductoExhibido {
 
     public void setEstatusSync(int estatusSync) {
         this.estatusSync = estatusSync;
+    }
+
+    public int getNoPermiten() {
+        return noPermiten;
+    }
+
+    public void setNoPermiten(int noPermiten) {
+        this.noPermiten = noPermiten;
     }
 }

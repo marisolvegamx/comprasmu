@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -189,6 +190,22 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             }else
             {
                 textoint = root.findViewById(1001);
+            }
+            if(preguntaAct.getNombreCampo().equals("ticket_compra")) {
+                nopermiso=root.findViewById(R.id.ckgnoperm);
+                nopermiso.setVisibility(View.VISIBLE);
+
+                nopermiso.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(textoint.getText()!=null)
+                            aceptar.setEnabled(((CheckBox)view).isChecked());
+                        else
+                            aceptar.setEnabled(true);
+
+                        preguntarBorrarFoto(view,textoint,fotomos,btnrotar,null);
+                    }
+                });
             }
             if(preguntaAct.getType().equals(CreadorFormulario.FECHAMASK)){
                 textoint.addTextChangedListener(new TextWatcher() {
@@ -731,6 +748,9 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                         btnrotar.requestFocus();
                         nombre_foto=null;
                         archivofoto=null;
+                        if(nopermiso!=null) {
+                            nopermiso.setChecked(false);
+                        }
                     }
 
             }

@@ -583,16 +583,20 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             nuevo.setConsecutivo(info.getConsecutivo());
             nuevo.setId(info.getInformesId());
                 if(info.getNombre_campo().equals("ticket_compra")) {
-                    this.ticket_compra = new ImagenDetalle();
-                //    this.ticket_compra.setIndice(Constantes.INDICEACTUAL);
-                    this.ticket_compra.setRuta(info.getValor());
+                    if(info.getValor().equals("0")){
 
-                    this.ticket_compra.setDescripcion("ticket compra");
-                    this.ticket_compra.setEstatus(1);
-                    this.ticket_compra.setIndice(visita.getIndice());
-                    this.ticket_compra.setEstatusSync(0);
-                    this.ticket_compra.setCreatedAt(new Date());
-                    nuevo.setId(info.getInformesId());
+                    }else {
+                        this.ticket_compra = new ImagenDetalle();
+                        //    this.ticket_compra.setIndice(Constantes.INDICEACTUAL);
+                        this.ticket_compra.setRuta(info.getValor());
+
+                        this.ticket_compra.setDescripcion("ticket compra");
+                        this.ticket_compra.setEstatus(1);
+                        this.ticket_compra.setIndice(visita.getIndice());
+                        this.ticket_compra.setEstatusSync(0);
+                        this.ticket_compra.setCreatedAt(new Date());
+                        nuevo.setId(info.getInformesId());
+                    }
                 }else
                 if(info.getNombre_campo().equals("condiciones_traslado")) {
                     this.condiciones_traslado = new ImagenDetalle();
@@ -652,13 +656,19 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         if(ticket_compra!=null) //si hubo producto
         //validaciones
         {
-            int idt = (int) imagenDetRepository.insertImg(ticket_compra);
 
-            informe.setTicket_compra(idt);
+                int idt = (int) imagenDetRepository.insertImg(ticket_compra);
+
+                informe.setTicket_compra(idt);
+
+        }
+
+        if(condiciones_traslado!=null) {
             int idc = (int) imagenDetRepository.insertImg(condiciones_traslado);
 
             informe.setCondiciones_traslado(idc);
         }
+
         informe.setEstatus(1);
         informe.setEstatusSync(0);
 

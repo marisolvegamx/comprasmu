@@ -1,11 +1,13 @@
 package com.example.comprasmu.data.repositories;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.dao.InformeCompraDetDao;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 
@@ -74,6 +76,9 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     public InformeCompraDetalle findByCompra(int idcompra, int iddet) {
         return dao.findByCompra(idcompra,iddet);
     }
+    public InformeCompraDetalle findByInformeFoto(int informeid, int fotoatra) {
+        return dao.findByInformeAtra(informeid,fotoatra);
+    }
     public List<InformeCompraDetalle> findByCompraBu(int idcompra, int iddet) {
         return dao.findByCompraBu(idcompra,iddet);
     }
@@ -104,8 +109,25 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
 
         dao.actualizarEstatusSync(idinfo, estatus);
     }
+    public void actualizarEstatus(int idinfo, int estatus) {
 
+        dao.actualizarEstatus(idinfo, estatus);
+    }
+    public LiveData<List<InformeCompraDetalle>> getCancelados(String indice) {
+        Log.d("wwwwwww",indice);
+        return dao.getByEstatus2(indice,0);
+    }
 
+    public LiveData<List<InformeCompraDao.InformeCompravisita>> getCanceladosVis(String indice) {
+        return dao.getCancel(indice,0);
+    }
+    public int gettotCancelados(String indice) {
+        List<InformeCompraDetalle> cancel= dao.getByEstatussimpl(indice,0);
+        if(cancel!=null)
+            return cancel.size();
+        else
+        return 0;
+    }
     public List<InformeCompraDetalle> getDetallePendSubir(String indice) {
         return dao.getByEstatus(indice,0);
     }

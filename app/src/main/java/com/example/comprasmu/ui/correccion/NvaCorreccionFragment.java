@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +31,7 @@ import com.example.comprasmu.R;
 
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
@@ -45,6 +47,7 @@ import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.SubirCorreccionTask;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,7 +82,7 @@ public class NvaCorreccionFragment extends Fragment {
     private NvaCorreViewModel mViewModel;
     ListaSolsViewModel solViewModel;
     SolicitudCor solicitud;
-
+    TextView txtmotivo;
 
     public static NvaCorreccionFragment newInstance() {
         return new NvaCorreccionFragment();
@@ -95,6 +98,7 @@ public class NvaCorreccionFragment extends Fragment {
         sv2 = root.findViewById(R.id.content_generic2);
         sv3 = root.findViewById(R.id.content_generic3);
         aceptar = root.findViewById(R.id.btngaceptar);
+        txtmotivo=root.findViewById(R.id.txtcmotivo);
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaCorreViewModel.class);
         solViewModel = new ViewModelProvider(requireActivity()).get(ListaSolsViewModel.class);
         aceptar.setEnabled(false);
@@ -106,10 +110,13 @@ public class NvaCorreccionFragment extends Fragment {
 
         }
         fotoori1=root.findViewById(R.id.ivcoriginal);
+        fotoori2=root.findViewById(R.id.ivcoriginal2);
+        fotoori3=root.findViewById(R.id.ivcoriginal3);
         solViewModel.getSolicitud(solicitudSel).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
+                Log.e(TAG,"estatus "+solicitud.getEstatus());
                 ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud);
                 crearFormulario();
 
@@ -133,6 +140,58 @@ public class NvaCorreccionFragment extends Fragment {
                         });
                         break;
                     case 2:
+                        if(solicitud.getDescripcionFoto().equals("foto_atributoa")){
+                            //busco las otras fotos
+                            //busco el informe
+                            InformeCompraDetalle corrige=solViewModel.buscarInformeFoto(solicitud.getInformesId(), solicitud.getNumFoto(),Constantes.INDICEACTUAL);
+                            int numfoto2=corrige.getFoto_atributob();
+
+                            int numfoto3=corrige.getFoto_atributoc();
+                            solViewModel.buscarImagenCom(numfoto2).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                                @Override
+                                public void onChanged(ImagenDetalle imagenDetalle) {
+                                    if(imagenDetalle!=null) {
+                                        rutafotoo2 = imagenDetalle.getRuta();
+
+                                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 100, 100);
+                                            if(bitmap1!=null)
+                                            fotoori2.setImageBitmap(bitmap1);
+
+                                        fotoori2.setVisibility(View.VISIBLE);
+                                        root.findViewById(R.id.gpocfototo2).setVisibility(View.VISIBLE);
+
+                                    }
+                                    //como consigo las otras?
+                                }
+                            });
+                            solViewModel.buscarImagenCom(numfoto3).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                                @Override
+                                public void onChanged(ImagenDetalle imagenDetalle) {
+                                    if(imagenDetalle!=null) {
+                                        rutafotoo3 = imagenDetalle.getRuta();
+
+                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 100, 100);
+                                        if(bitmap1!=null)
+                                        fotoori3.setImageBitmap(bitmap1);
+                                        root.findViewById(R.id.gpofotoo3).setVisibility(View.VISIBLE);
+                                        fotoori3.setVisibility(View.VISIBLE);
+                                    }
+                                    //como consigo las otras?
+                                }
+                            });
+                            fotoori2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    verImagen(rutafotoo2);
+                                }
+                            });
+                            fotoori3.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    verImagen(rutafotoo3);
+                                }
+                            });
+                        }
                         solViewModel.buscarImagenCom(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
                             @Override
                             public void onChanged(ImagenDetalle imagenDetalle) {
@@ -140,17 +199,18 @@ public class NvaCorreccionFragment extends Fragment {
                                     rutafotoo = imagenDetalle.getRuta();
 
                                     Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 100, 100);
-
+                                    if(bitmap1!=null)
                                     fotoori1.setImageBitmap(bitmap1);
                                 }
                                 //como consigo las otras?
                             }
                         });
+                        break;
                 }
                 fotoori1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        verImagen(nombre_foto);
+                        verImagen(rutafotoo);
                     }
                 });
             }
@@ -185,7 +245,18 @@ public class NvaCorreccionFragment extends Fragment {
 
         camposForm=new ArrayList<>();
         CampoForm campo=new CampoForm();
-        campo.label=solicitud.getDescripcionFoto();
+        campo.label=solicitud.getMotivo();
+        campo.nombre_campo="label";
+        campo.type="label";
+        campo.style=R.style.textopeque;
+        camposForm.add(campo);
+        campo=new CampoForm();
+        campo.label="NUEVA";
+        campo.nombre_campo="label";
+        campo.type="label";
+        camposForm.add(campo);
+         campo=new CampoForm();
+        campo.label=solicitud.getDescMostrar();
         campo.nombre_campo="foto";
         campo.type="agregarImagen";
         campo.style=R.style.formlabel2;
@@ -214,10 +285,10 @@ public class NvaCorreccionFragment extends Fragment {
         cf=new CreadorFormulario(camposForm,getContext());
         sv.addView(cf.crearFormulario());
 
-        if(solicitud.getTotal_fotos()>1) {
+        if(solicitud.getDescripcionFoto().equals("foto_atributoa")) { //es 360
             camposForm = new ArrayList<>();
             campo = new CampoForm();
-            campo.label = "";
+            campo.label = getString(R.string.foto_posicion2);
             campo.nombre_campo = "foto2";
             campo.type = "agregarImagen";
             campo.style = R.style.formlabel2;
@@ -246,11 +317,10 @@ public class NvaCorreccionFragment extends Fragment {
             sv2.addView(cf.crearFormulario());
             sv2.setVisibility(View.VISIBLE);
             txtrutaim2 = root.findViewById(1002);
-        }
-        if(solicitud.getTotal_fotos()>2) {
+
             camposForm = new ArrayList<>();
             campo = new CampoForm();
-            campo.label = "";
+            campo.label = getString(R.string.foto_posicion3);
             campo.nombre_campo = "foto3";
             campo.type = "agregarImagen";
             campo.style = R.style.formlabel2;
@@ -263,15 +333,8 @@ public class NvaCorreccionFragment extends Fragment {
             };
             campo.tomarFoto = true;
 
-            fotomos3 = root.findViewById(R.id.ivgfoto3);
-          //  fotomos3.setVisibility(View.VISIBLE);
-            btnrotar3 = root.findViewById(R.id.btngrotar3);
-            btnrotar3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    rotar(1003,3);
-                }
-            });
+
+
 
 
             camposForm.add(campo);
@@ -280,6 +343,15 @@ public class NvaCorreccionFragment extends Fragment {
             sv3.addView(cf.crearFormulario());
             sv3.setVisibility(View.VISIBLE);
             txtrutaim3 = root.findViewById(1003);
+            fotomos3 = root.findViewById(R.id.ivgfoto3);
+            //  fotomos3.setVisibility(View.VISIBLE);
+            btnrotar3 = root.findViewById(R.id.btngrotar3);
+            btnrotar3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    rotar(1003,3);
+                }
+            });
         }
         textoint = root.findViewById(1001);
     }
@@ -292,6 +364,14 @@ public class NvaCorreccionFragment extends Fragment {
             if (textoint != null) {
                 valor = textoint.getText().toString();
                 valor = valor.toUpperCase();
+            }
+            if (txtrutaim2 != null) {
+                valor2 = txtrutaim2.getText().toString();
+                valor2 = valor2.toUpperCase();
+            }
+            if (txtrutaim3 != null) {
+                valor3 = txtrutaim3.getText().toString();
+                valor3 = valor3.toUpperCase();
             }
             //paso a
             //creo el informe
@@ -353,6 +433,7 @@ public class NvaCorreccionFragment extends Fragment {
     public void verImagen(String nombrearch){
         //  ImageView imagen=(ImageView)v;
         // imagen.get
+        Log.e(TAG,nombrearch);
         Intent iverim=new Intent(getActivity(), RevisarFotoActivity.class);
         iverim.putExtra(RevisarFotoActivity.IMG_PATH1,nombrearch);
         startActivity(iverim);
@@ -476,10 +557,11 @@ public class NvaCorreccionFragment extends Fragment {
     public void salir(){
         //mViewModel.eliminarTblTemp();
         //me voy a la lista de informes
-        getActivity().finish();
+       // getActivity().finish();
         Intent intento1 = new Intent(getActivity(), NavigationDrawerActivity.class);
         intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"listainformeeta");
         startActivity(intento1);
+        getActivity().finish();
         // NavHostFragment.(this).navigate(R.id.action_selclientetolistacompras,bundle);
 
 

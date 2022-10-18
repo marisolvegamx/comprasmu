@@ -31,6 +31,7 @@ public class InformeCompra {
      private int estatusSync;
     private boolean sinproducto;
     private String causa_nocompra;
+    private int ticket_noemiten;
     public String getClienteNombre() {
         return clienteNombre;
     }
@@ -168,5 +169,13 @@ public class InformeCompra {
 
     public void setCausa_nocompra(String causa_nocompra) {
         this.causa_nocompra = causa_nocompra;
+    }
+
+    public int getTicket_noemiten() {
+        return ticket_noemiten;
+    }
+
+    public void setTicket_noemiten(int ticket_noemiten) {
+        this.ticket_noemiten = ticket_noemiten;
     }
 }

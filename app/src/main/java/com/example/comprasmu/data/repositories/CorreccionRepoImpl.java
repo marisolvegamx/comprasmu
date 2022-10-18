@@ -39,8 +39,8 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
     }
 
     public LiveData<List<SolicitudWithCor>> getAllxEtaPlan(int plantaSel, String indice, int etapa) {
-        String query="Select * from correccion " +
-                "inner join solicitud_cor on correccion.solicitudId=solicitud_cor.id" +
+        String query="Select * from solicitud_cor  " +
+                "inner join correccion on correccion.solicitudId=solicitud_cor.id" +
                 " where indice=?";
         ArrayList<String> filtros=new ArrayList<String>();
         filtros.add(indice);
@@ -51,8 +51,8 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
 
         Object[] params=filtros.toArray();
 
-        for(int i=0;i<params.length;i++)
-            Log.d("CorreccionRepoImpl","***"+params[i]);
+      //  for(int i=0;i<params.length;i++)
+      //      Log.d("CorreccionRepoImpl","***"+params[i]);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 filtros.toArray());

@@ -38,6 +38,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
 
         correccion.setCreatedAt(new Date());
         idNuevo=(int)correpository.insert(correccion);
+        correccion.setId(idNuevo);
         this.nvocorreccion =correccion;
         return idNuevo;
 

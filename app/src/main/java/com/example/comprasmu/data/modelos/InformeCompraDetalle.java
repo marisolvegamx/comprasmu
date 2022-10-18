@@ -64,6 +64,10 @@ public class InformeCompraDetalle {
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
     private Date updatedAt;
+    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
+    @TypeConverters(Converters.class)
+    private Date fechaCancel;
+    private String motivoCancel;
 
 
     public int getId() {
@@ -436,6 +440,22 @@ public class InformeCompraDetalle {
     public String getCaducidadFormat(){
         SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yy");
         return sdf.format(caducidad);
+    }
+
+    public Date getFechaCancel() {
+        return fechaCancel;
+    }
+
+    public void setFechaCancel(Date fechaCancel) {
+        this.fechaCancel = fechaCancel;
+    }
+
+    public String getMotivoCancel() {
+        return motivoCancel;
+    }
+
+    public void setMotivoCancel(String motivoCancel) {
+        this.motivoCancel = motivoCancel;
     }
 }
 

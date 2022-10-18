@@ -3,6 +3,7 @@ package com.example.comprasmu;
 
 import android.Manifest;
 
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.content.pm.PackageManager;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,10 +31,17 @@ import android.widget.Toast;
 
 import com.example.comprasmu.data.ComprasDataBase;
 
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 
+import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 
+import com.example.comprasmu.data.modelos.SolicitudCor;
+import com.example.comprasmu.data.modelos.TablaVersiones;
+import com.example.comprasmu.data.remote.MuestraCancelada;
+import com.example.comprasmu.data.remote.RespInformesResponse;
+import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
@@ -104,7 +113,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /*esta es la clase principal***/
-public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,    DescargasIniAsyncTask.ProgresoListener  {
 
     public static final String ETAPA = "comprasmu.ndetapa";
     private AppBarConfiguration mAppBarConfiguration;
@@ -112,14 +121,21 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     String TAG="NavigationDrawerActivity";
     private ListaDetalleViewModel mViewModel;
     SimpleDateFormat sdfparaindice=new SimpleDateFormat("M-yyyy");
-
+    private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
+    private   String DESTINATION_PATH ;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private ListaSolsViewModel scViewModel;
     public static final String PROGRESS_UPDATE = "progress_update";
     public static final String PROGRESS_PEND = "progress_pend";
     public static final String NAVINICIAL="nd_navinicial";
-    TextView slideshow,gallery;
+    TextView txtcancel,gallery;
     int totCorrecciones;
+    SolicitudCorRepoImpl solRepo;
+    TablaVersionesRepImpl tvRepo;
+    boolean notificar=false;
+    int desclis; int descinf; int descfoto;
+    private int totCancel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -260,15 +276,19 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             graph.setStartDestination(R.id.nav_listarvisitas);
         }else{
             descargasIniciales();
+            pedirCorrecciones(0,Constantes.ETAPAACTUAL);
             graph.setStartDestination(R.id.nav_home);
         }
         navController.setGraph(graph);
         if(Constantes.ETAPAACTUAL==1)
             gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
-        if(Constantes.ETAPAACTUAL==2)
-        gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                findItem(R.id.nav_solcor2));
+        if(Constantes.ETAPAACTUAL==2) {
+            gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_solcor2));
+            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_cancel));
+        }
         if(Constantes.ETAPAACTUAL==3)
             gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
@@ -315,7 +335,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     public void revisarCiudades(){
 
             mViewModel.getCiudades().observe(this, data -> {
-                 Log.d(TAG,"....regresó de la consulta "+ data.size());
+              //   Log.d(TAG,"....regresó de la consulta "+ data.size());
                 if(data.size()>1)
                 Constantes.varciudades=true;
                 else if(data.size()>0) {
@@ -354,7 +374,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         switch (item.getItemId()) {
             case R.id.action_settings:
                 //  Log.d(TAG,"hice click en"+item.getItemId());
-                pruebadescarga();
+          //      pruebadescarga();
               //  startService(DownloadSongService.getDownloadService(this, IMAGE_DOWNLOAD_PATH, DirectoryHelper.ROOT_DIRECTORY_NAME.concat("/")));
 
                 return true;
@@ -562,6 +582,33 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
 
+    @Override
+    public void cerrarAlerta(boolean res) {
+        Log.d("LoginAct","quiero descargar "+desclis+"--"+descinf+"--"+descfoto);
+     //   if(desclis==0&&descinf==0&&descfoto==0)
+     //       entrar();
+    }
+
+    @Override
+    public void todoBien( RespInformesResponse infoResp) {
+        if (infoResp.getImagenDetalles() != null && infoResp.getImagenDetalles().size() > 0) {
+
+            descargarImagenes(infoResp.getImagenDetalles());
+
+        }
+
+    }
+
+    @Override
+    public void estatusInf(int es) {
+        descinf=es;
+    }
+
+    @Override
+    public void estatusLis(int es) {
+        desclis=es;
+    }
+
     public class SubirFotoProgressReceiver extends BroadcastReceiver {
 
         @Override
@@ -627,9 +674,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
-        //TODO falta pais trabajo
-        //  Constantes.CIUDADTRABAJO="Cd Juarez";
-        //  Constantes.PAISTRABAJO = "Mexico";
+
         //Constantes.IDCIUDADTRABAJO=1;
         // Constantes.IDPAISTRABAJO = 1;
         //  Constantes.CLAVEUSUARIO="marisol";
@@ -649,15 +694,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,null,sustRepo,georep);
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep);
 
         task.execute("cat","");
 
         //descarga solicitudes compra
         SolicitudCorRepoImpl solcorRepo=new SolicitudCorRepoImpl(getApplicationContext());
 
-        DescCorrecAsyncTask corTask=new DescCorrecAsyncTask(solcorRepo,tvRepo,this,Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL);
-        corTask.execute("");
+      //  DescCorrecAsyncTask corTask=new DescCorrecAsyncTask(solcorRepo,tvRepo,this,Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL);
+      //  corTask.execute("");
       /*  AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setIcon(android.R.drawable.stat_sys_download);
@@ -674,18 +719,55 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 */
 
     }
-    
+    private void descargarImagenes(List<ImagenDetalle> imagenes){
+        for(ImagenDetalle img:imagenes){
+            startDownload(DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta(), DESTINATION_PATH);
+            Log.d("LOginAct"," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
+        }
+        // cerrarAlerta(true);
+    }
+    private long startDownload(String downloadPath, String destinationPath) {
+        Uri uri = Uri.parse(downloadPath); // Path where you want to download file.
+        // registrer receiver in order to verify when download is complete
+        //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  // This will show notification on top when downloading the file.
+        request.setTitle("Downloading a file"); // Title for notification.
+        request.setVisibleInDownloadsUi(true);
+
+        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
+        long id=((DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
+        return id;
+
+    }
+
+
     private void contarCorrecc(){
         totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
+        Log.d(TAG,"wwww"+totCorrecciones+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+
+    }
+    private void contarCanceladas(){
+        totCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
+        Log.d(TAG,"wwww"+totCorrecciones+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+
     }
     private void initializeCountDrawer(){
         contarCorrecc();
+        contarCanceladas();
         //Gravity property aligns the text
         gallery.setGravity(Gravity.CENTER_VERTICAL);
         gallery.setTypeface(null, Typeface.BOLD);
         gallery.setTextColor(Color.RED);
       //  gallery.setTextSize(15);
         gallery.setText(totCorrecciones+"");
+        txtcancel.setGravity(Gravity.CENTER_VERTICAL);
+        txtcancel.setTypeface(null, Typeface.BOLD);
+        txtcancel.setTextColor(Color.RED);
+        //  gallery.setTextSize(15);
+        txtcancel.setText(totCancel+"");
 
     }
 
@@ -725,7 +807,96 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         fragmentTransaction.commit();
 
     }
+    public void pedirCorrecciones(int actualiza, int etapa) {
+        tvRepo = new TablaVersionesRepImpl(this);
+        solRepo = new SolicitudCorRepoImpl(this);
+        PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLSOLCORRECCIONES, Constantes.INDICEACTUAL);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String version;
+        if (comp != null && comp.getVersion() != null) {
+            version = sdf.format(comp.getVersion());
+            //
+
+        } else //es la 1a vez
+        {
+            version = "1999-09-09"; //una fecha muy antigua
 
 
+        }
+        if (actualiza == 1) {
+            version = "1999-09-09"; //una fecha muy antigua
+        }
+        //siempre actualizo
+        if (NavigationDrawerActivity.isOnlineNet())
+            ps.pedirSolicitudesCorr(Constantes.INDICEACTUAL, etapa, version, new ActualListener());
+        else
+            notificar = true;
+                  /*  act.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("DescargasIniAsyncTask","estas al dia*");
+
+                            proglist.cerrarAlerta();
+                            proglist.todoBien();
+                        }
+                    });*/
+
+    }
+    public class ActualListener {
+        public void noactualizar(String mensaje){
+
+        }
+        public int actualizarCorre(SolCorreResponse corrResp) {
+
+            //primero los inserts
+
+            if (corrResp.getInserts() != null) {
+                if (corrResp.getInserts() != null) {
+                    for (SolicitudCor sol:corrResp.getInserts()
+                         ) {
+                        //veo si ya existe
+                        SolicitudCor solt=solRepo.findsimple(sol.getId());
+                        if(solt!=null&&solt.getEstatus()<4){
+                            //actualizo
+                            solRepo.insert(sol);
+                        }
+
+                    }
+
+
+                }
+            }
+
+            //los updates
+            if (corrResp.getUpdates() != null) {
+
+                if (corrResp.getUpdates() != null)
+                    solRepo.insertAll(corrResp.getUpdates()); //inserto blblbl
+            }
+
+            //actualizar version en tabla
+            TablaVersiones tinfo = new TablaVersiones();
+            tinfo.setNombreTabla(Contrato.TBLSOLCORRECCIONES);
+            Date fecha1 = new Date();
+
+            tinfo.setVersion(fecha1);
+            tinfo.setIndice(Constantes.INDICEACTUAL);
+            tinfo.setTipo("I");
+
+            tvRepo.insertUpdate(tinfo);
+            Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
+            //veo las muestras canceladas
+            for (MuestraCancelada cancel:
+                 corrResp.getCanceladas()) {
+                //busco el informedetalle y actualizo el estatus
+                scViewModel.procesarCanceladas(cancel);
+
+            }
+            return 1;
+
+        }
+    }
 
 }

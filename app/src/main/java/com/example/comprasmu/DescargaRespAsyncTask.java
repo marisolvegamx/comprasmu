@@ -41,7 +41,7 @@ import static androidx.core.content.ContextCompat.getSystemService;
 
 public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
     AlertDialog alertDialog;
-    InformeCompraRepositoryImpl infrepo;
+
     InformeComDetRepositoryImpl infdrepo;
     ImagenDetRepositoryImpl imagenDetRepo;
     ListaCompraDetRepositoryImpl lcdrepo;
@@ -55,42 +55,28 @@ public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
     boolean notificar=false;
     Activity act;
     int actualiza;
-    ProgresoRespListener proglist;
-    DescargaRespListener listener;
 
-    public DescargaRespAsyncTask(Activity act, int actualiza, ProgresoRespListener proglist) {
+   // DescargaRespListener listener;
+
+    public DescargaRespAsyncTask(Activity act, int actualiza) {
 
         this.act = act;
 
         sdfdias=new SimpleDateFormat("dd-MM-yyyy");
-        this.proglist=proglist;
-        this.listener=new DescargaRespListener();
+       // this.proglist=proglist;
+       // this.listener=new DescargaRespListener();
         this.actualiza=actualiza; //indica si vengo del menu
         DESTINATION_PATH=act.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
     }
 
     @Override
     protected Void doInBackground(String... indice) {
-        getRespaldo();
+       // getRespaldo();
         return null;
 
     }
 
 
-
-    private void getRespaldo(){
-
-        infrepo = new InformeCompraRepositoryImpl(act);
-        infdrepo = new InformeComDetRepositoryImpl(act);
-        imagenDetRepo = new ImagenDetRepositoryImpl(act);
-        prodrepo = new ProductoExhibidoRepositoryImpl(act);
-        visRepo=new VisitaRepositoryImpl(act);
-        lcdrepo=new ListaCompraDetRepositoryImpl(act);
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-    //    DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespListener();
-        ps.pedirRespaldo(Constantes.INDICEACTUAL,listener);
-
-    }
 
     @Override
     protected void onPostExecute(Void aVoid) {
@@ -98,154 +84,7 @@ public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
 
     }
 
-        public class DescargaRespListener {
-            public DescargaRespListener() {
-                //if(proglist!=null&&actualiza==1)
-                //  proglist.cerrarAlerta();
-            }
-
-            public void noactualizar(String response){
-                //a ver como la regresamos
-                if(actualiza==1&&proglist!=null){
-                    proglist.cerrarAlerta(notificar);
-                }
-            }
-
-            public void actualizarInformes(RespInformesResponse infoResp) {
-                Log.d(TAG,"actualizando bd informes");
-                //primero los inserts
-                if (infoResp.getVisita() != null) {
-                    //reviso cada uno y las inserto
-                    for (Visita vis : infoResp.getVisita()) {
-                        visRepo.insert(vis); //inserto blblbl
-                    }
-                }
-                if (infoResp.getInformeCompra() != null && infoResp.getInformeCompra().size() > 0) {
-                    //como puede que ya existan reviso primero e inserto unoxuno
-                    infrepo.insertAll(infoResp.getInformeCompra());
-                }
-                if (infoResp.getInformeCompraDetalles() != null && infoResp.getInformeCompraDetalles().size() > 0) {
-                    //como puede que ya existan reviso primero e inserto unoxuno
-                    infdrepo.insertAll(infoResp.getInformeCompraDetalles());
-                 }
 
 
-                if (infoResp.getImagenDetalles() != null && infoResp.getImagenDetalles().size() > 0) {
-                    //como puede que ya existan reviso primero e inserto unoxuno
-                    imagenDetRepo.insertAll(infoResp.getImagenDetalles());
-                    descargarImagenes(infoResp.getImagenDetalles());
-
-                }
-                if (infoResp.getProductosEx() != null && infoResp.getProductosEx().size() > 0) {
-                    //como puede que ya existan reviso primero e inserto unoxuno
-                    prodrepo.insertAll(infoResp.getProductosEx());
-                }
-                //sumo en la lista de compra
-                //   List<InformeCompraDetalle> detalles=infdrepo.getAllsimple();
-                //ajusto cantidades
-                Log.d(TAG,"ajusto cantidades");
-
-                if(infoResp.getInformeCompraDetalles()!=null)
-                    for(InformeCompraDetalle det:infoResp.getInformeCompraDetalles()){
-                        Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getComprasDetId());
-                        if(det.getTipoMuestra()!=3) {//para normal o catchup
-                        ListaCompraDetalle compradet=lcdrepo.findsimple(det.getComprasId(),det.getComprasDetId());
-                        if(compradet!=null) {
-                            //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
-                            Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
-
-                            int nvacant = compradet.getComprados() + 1;
-                            //  lcdrepo.actualizarComprados(det.getId(),det.getComprasId(),nvacant);
-                            //actualizo lo codigos comprados
-                            String listaCodigos = "";
-                            SimpleDateFormat sdfcodigo = new SimpleDateFormat("dd-MM-yy");
-                            String nuevoCodigo = sdfcodigo.format(det.getCaducidad());
-                            //no aumento el comprado solo el codigo
-
-                            if (compradet.getNvoCodigo() != null)
-                            //reviso que no existe
-                            {
-                                if (!compradet.getNvoCodigo().contains(nuevoCodigo))
-                                    listaCodigos = nuevoCodigo + ";" + compradet.getNvoCodigo();
-                            } else
-                                listaCodigos = nuevoCodigo;
-                            compradet.setNvoCodigo(listaCodigos);
-
-                            compradet.setComprados(nvacant);
-                            //actualizo
-                            lcdrepo.insert(compradet);
-                        }
-                        }
-                        else{
-                            ListaCompraDetalle compradet = lcdrepo.findsimple(det.getComprasId(), det.getComprasDetId());
-                            if(compradet!=null) {
-                                //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
-                                Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
-
-                                int nvacant = compradet.getComprados() + 1;
-                                compradet.setComprados(nvacant);
-                                //actualizo
-                                lcdrepo.insert(compradet);
-                                //el codigo va en el comprado
-                                ListaCompraDetalle compradetbu = lcdrepo.findsimple(det.getComprasIdbu(), det.getComprasDetIdbu());
-                                if (compradetbu != null) {
-                                    //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
-                                    Log.d(TAG, "sss" + compradetbu.getProductoNombre() + "--" + compradetbu.getComprados());
-                                    //actualizo lo codigos comprados
-                                    String listaCodigos = "";
-                                    SimpleDateFormat sdfcodigo = new SimpleDateFormat("dd-MM-yy");
-                                    String nuevoCodigo = sdfcodigo.format(det.getCaducidad());
-                                    //no aumento el comprado solo el codigo
-
-                                    if (compradetbu.getNvoCodigo() != null)
-                                    //reviso que no existe
-                                    {
-                                        if (!compradetbu.getNvoCodigo().contains(nuevoCodigo))
-                                            listaCodigos = nuevoCodigo + ";" + compradetbu.getNvoCodigo();
-                                    } else
-                                        listaCodigos = nuevoCodigo;
-                                    compradetbu.setNvoCodigo(listaCodigos);
-
-
-                                    //actualizo
-                                    lcdrepo.insert(compradetbu);
-                                }
-                            }
-                        }
-
-
-                        }
-
-
-
-                if(actualiza==1&&proglist!=null){
-                    proglist.cerrarAlerta(notificar);
-                }
-            }
-        }
-    public interface ProgresoRespListener {
-         void cerrarAlerta(boolean res);
-         void actualizando();
-         void todoBien();
-
-    }
-    private void descargarImagenes(List<ImagenDetalle> imagenes){
-        for(ImagenDetalle img:imagenes){
-            startDownload(DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta(), DESTINATION_PATH);
-            Log.d(TAG," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
-        }
-
-    }
-    private void startDownload(String downloadPath, String destinationPath) {
-        Uri uri = Uri.parse(downloadPath); // Path where you want to download file.
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  // This will show notification on top when downloading the file.
-        request.setTitle("Downloading a file"); // Title for notification.
-        request.setVisibleInDownloadsUi(true);
-
-        request.setDestinationInExternalFilesDir(act,Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
-        ((DownloadManager) act.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
-    }
 
 }

@@ -24,16 +24,21 @@ import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.databinding.ActivityNuevoInfetapaBinding;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
+import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.Constantes;
+
+import java.text.SimpleDateFormat;
 
 
 public class NuevoInfEtapaActivity extends AppCompatActivity  {
     Toolbar myChildToolbar;
     private ActivityNuevoInfetapaBinding mBinding;
     public final static String INFORMESEL = "comprasmu.nie_informesel";
+    public final static String PLANTASEL = "comprasmu.nie_plantasel";
+
     public final static String CORRECCION = "comprasmu.nie_correc"; //para saber que es correccion
     private static final String TAG = "NvoInfEtapaAct";
     boolean noSalir;
@@ -120,6 +125,15 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 {  ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment(3,true,null,idinformeSel));
                 }
                  }
+            if (etapa == 4) {
+                if (det != null) {
+                    //busco la pregunta actual en la decripcion
+                    //char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
+                    //Log.d(TAG, "preg=" + preg);
+                    ft.add(R.id.continfeta_fragment, new NvoEmpaqueFragment(null,true));
+
+                }
+            }
             ft.commit();
         }else {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -135,7 +149,12 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 ft.add(R.id.continfeta_fragment, new NvaPreparacionFragment(1,false,null));
             else if(etapa==3)
              ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment());
+            else if (etapa == 4) {
 
+                    ft.add(R.id.continfeta_fragment, new NvoEmpaqueFragment(null,false));
+
+
+            }
             ft.commit();
 
         }
@@ -165,7 +184,11 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         temp.setClienteNombre(sol.getClienteNombre());
         actualizarBarra(temp);
       actualizarAtributo1(sol.getNombreTienda());
-      actualizarAtributo3(sol.getMotivo());
+        SimpleDateFormat sdf=Constantes.vistasdf;
+        if(sol.getCreatedAt()!=null)
+      actualizarAtributo2(sdf.format(sol.getCreatedAt()));
+      actualizarAtributo3(sol.getContador()+"");
+  //    actualizarAtributo3(sol.getMotivo());
 
     }
 
@@ -193,6 +216,10 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
     public void actualizarAtributo3(String atributo) {
         mBinding.txtnieatr3.setText(atributo);
+        mBinding.row4.setVisibility(View.VISIBLE);
+    }
+    public void actualizarAtributo4(String atributo) {
+        mBinding.txtnieatr4.setText(atributo);
         mBinding.row4.setVisibility(View.VISIBLE);
     }
 

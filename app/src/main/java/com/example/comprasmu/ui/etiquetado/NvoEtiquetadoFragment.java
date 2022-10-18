@@ -43,30 +43,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.SubirCorreccionTask;
+
 import com.example.comprasmu.SubirInformeEtaTask;
-import com.example.comprasmu.data.modelos.Correccion;
+
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.data.modelos.ImagenDetalle;
+
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.modelos.SolicitudCor;
-import com.example.comprasmu.data.remote.CorreccionEnvio;
+
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
-import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
+
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 
 import com.example.comprasmu.ui.tiendas.DescripcionGenericaAdapter;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.CreadorFormulario;
+
 import com.example.comprasmu.utils.Preguntasino;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;

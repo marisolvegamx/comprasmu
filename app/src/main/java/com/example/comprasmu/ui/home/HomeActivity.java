@@ -1,21 +1,17 @@
 package com.example.comprasmu.ui.home;
 
-import android.content.Context;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
-import android.view.LayoutInflater;
+
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
@@ -66,7 +62,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         //textusuario.on
-
+        Log.d("HomeActivity","entreeeee");
     }
 
     public void ira(int etapa){

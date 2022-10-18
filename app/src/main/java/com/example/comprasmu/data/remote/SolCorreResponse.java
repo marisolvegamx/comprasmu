@@ -12,7 +12,7 @@ public class SolCorreResponse {
     private String status;
     private String data;
     private List<SolicitudCor> inserts;
-
+    private List<MuestraCancelada> canceladas;
     public List<TablaVersiones> getVersiones() {
         return versiones;
     }
@@ -55,5 +55,11 @@ public class SolCorreResponse {
 
     private List<SolicitudCor> updates;
 
+    public List<MuestraCancelada> getCanceladas() {
+        return canceladas;
+    }
 
+    public void setCanceladas(List<MuestraCancelada> canceladas) {
+        this.canceladas = canceladas;
+    }
 }

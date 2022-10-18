@@ -226,9 +226,9 @@ public class GalFotosFragment extends Fragment {
        // ponerFoto(informe.getEnergia());
       //  ponerFoto(getString(R.string.foto_num_tienda),informe.getFoto_num_tienda());
        // ponerFoto(getString(R.string.foto_codigo_produccion)informe.getMarca_traslape());
-        ponerFoto(getString(R.string.foto_atributoa),informe.getFoto_atributoa());
-        ponerFoto(getString(R.string.foto_atributob),informe.getFoto_atributob());
-        ponerFoto(getString(R.string.foto_atributoc),informe.getFoto_atributoc());
+        ponerFoto(getString(R.string.foto_posicion1),informe.getFoto_atributoa());
+        ponerFoto(getString(R.string.foto_posicion2),informe.getFoto_atributob());
+        ponerFoto(getString(R.string.foto_posicion3),informe.getFoto_atributoc());
         ponerFoto(getString(R.string.etiqueta_evaluacion),informe.getEtiqueta_evaluacion());
        // ponerFoto(informe.getQr());
       //  ponerFoto(informe.getAzucares());
@@ -244,7 +244,8 @@ public class GalFotosFragment extends Fragment {
         ImagenDetalle foto=niViewModel.getFoto(idfoto);
 
         if(foto!=null) {
-         foto.setDescripcion(key);   fotos.add(foto);
+         foto.setDescripcion(key);
+         fotos.add(foto);
         }
 
     }

@@ -17,6 +17,9 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
     @Query("SELECT count(id) FROM solicitud_cor where etapa=:etapa and indice=:indice  and estatus=:estatus")
     public abstract int getTotSols(int etapa, String indice,  int estatus);
 
+    @Query("SELECT count(id) FROM solicitud_cor where etapa=:etapa and indice=:indice  and estatus=:estatus and plantasId=:plantaId")
+    public abstract int getTotSolsxPlanta(int etapa, String indice,  int estatus, int plantaId);
+
     @Query("SELECT * FROM solicitud_cor WHERE id = :uuid")
     public abstract LiveData<SolicitudCor>  getSolicitud(int uuid);
 
@@ -37,8 +40,9 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
             "FROM solicitud_cor ")
     public abstract int getUltimoId();
 
-    @Query("update solicitud_cor set estatus=:estatus WHERE id=:id")
+    @Query("update solicitud_cor set estatus=:estatus, contador=1 WHERE id=:id")
     public abstract  void actualizarEstatus(int id, int estatus);
+
 
 
     @Query("update solicitud_cor set estatusSync=:estatus WHERE id=:id")

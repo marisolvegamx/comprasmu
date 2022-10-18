@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.repositories;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -48,7 +49,10 @@ public  class ReactivoRepositoryImpl  extends BaseRepository<Reactivo> {
     public Reactivo findByNombre(String nombre, int cliente) {
         return dao.findByNombre(nombre, cliente);
     }
-
+    public List<Reactivo> getEmp(int cliente) {
+        Log.e("si es auqi","eee");
+        return dao.getEmp(cliente);
+    }
     @Override
     public long insert(Reactivo object) {
         return dao.insert(object);

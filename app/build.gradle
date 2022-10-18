@@ -35,6 +35,7 @@ android {
                 debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -53,6 +54,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.2.2'
 
     implementation 'androidx.annotation:annotation:1.1.0'
+
 
 
     def lifecycle_version = "2.3.1"

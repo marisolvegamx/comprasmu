@@ -25,6 +25,7 @@ import com.example.comprasmu.ui.informe.BuscarInformeFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
@@ -46,7 +47,10 @@ public class SelClienteGenFragment extends ListaSelecFragment {
     String tipoconsulta;
 
     int clienteSel;
+
     LiveData<List<ListaCompra>> listacomp;
+    private ListaSolsViewModel scViewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //busco los datos y los convierto al tipo String[]
@@ -54,6 +58,8 @@ public class SelClienteGenFragment extends ListaSelecFragment {
         ListaCompraDao dao=ComprasDataBase.getInstance(getContext()).getListaCompraDao();
         lcrepo = ListaCompraRepositoryImpl.getInstance(dao);
         mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
+        scViewModel = new ViewModelProvider(this).get(ListaSolsViewModel.class);
+
         Bundle bundle = getArguments();
         tipoconsulta="";
         ciudadSel =  Constantes.IDCIUDADTRABAJO;
@@ -63,12 +69,9 @@ public class SelClienteGenFragment extends ListaSelecFragment {
             //busco ciudad seleccionada
         mViewModel.ciudadSel = ciudadSel;
         mViewModel.nombreCiudadSel = ciudadNombre;
-        Log.d(TAG,"una cd sel  "+ciudadSel+"---");
-
+        Log.d(TAG,"una cd sel  "+ciudadSel+"---"+tipoconsulta);
 
         listacomp= mViewModel.cargarPestañas(ciudadNombre,clienteSel);
-
-
 
     }
     @Override
@@ -80,14 +83,22 @@ public class SelClienteGenFragment extends ListaSelecFragment {
         final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
             public void onChanged(@Nullable List<ListaCompra> lista) {
+                if(tipoconsulta.equals("c")) { //solicitudes
+                    //voy a buscar la solicitudes pendientes
+                    convertirListaCor(lista);
 
-                convertirLista(lista);
+                }else
+                    convertirLista(lista);
                 setLista(listaClientesEnv);
+
                 // siguiente(0);
                 //  Log.d(TAG,"------- "+lista.size());
                 if(lista.size()>1) {
 
                     setupListAdapter();
+                    if(tipoconsulta.equals("c")) {
+                        adaptadorLista.setDesc2(true);
+                    }
                 }else if(lista.size()>0)
                 {
                     //voy directo a la lista
@@ -113,7 +124,10 @@ public class SelClienteGenFragment extends ListaSelecFragment {
 
     }
 
-
+    private int contarCorrecc(int plantaId){
+       int  pendientes=scViewModel.getTotalSolsxplanta(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1, plantaId);
+        return pendientes;
+    }
     public void siguiente(int i){
         Log.d(TAG,"una planta "+tipoconsulta+"--"+listaSeleccionable.get(i).getId());
 
@@ -150,12 +164,27 @@ public class SelClienteGenFragment extends ListaSelecFragment {
           /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
           listaCompra.getPlantaNombre();*/
 
+
             listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre() + " " + listaCompra.getPlantaNombre(), listaCompra.getClienteNombre()));
 
         }
     }
 
+    private  void convertirListaCor(List<ListaCompra>lista) {
+        listaClientesEnv = new ArrayList<DescripcionGenerica>();
+        for (ListaCompra listaCompra : lista) {
+          /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
+          listaCompra.getPlantaNombre();*/
+            int pendientes=0;
 
+                //voy a buscar la solicitudes pendientes
+            pendientes=contarCorrecc(listaCompra.getPlantasId());
+
+
+            listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre() + " " + listaCompra.getPlantaNombre(), listaCompra.getClienteNombre(),pendientes+""));
+
+        }
+    }
 
 
 

@@ -134,7 +134,7 @@ public class CreadorFormulario {
                     tv.setTextAppearance(context, R.style.formlabel);
                 else
             if(infocampo.style>0)
-                tv.setTextAppearance(context, R.style.formlabel2);
+                tv.setTextAppearance(context,infocampo.style);
 
                 if(infocampo.style== R.style.formlabel)
                     formulario.addView(this.espacio());

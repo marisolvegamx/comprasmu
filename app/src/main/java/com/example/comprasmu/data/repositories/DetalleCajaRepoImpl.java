@@ -9,6 +9,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.DetalleCajaDao;
 import com.example.comprasmu.data.modelos.DetalleCaja;
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudWithCor;
 
 import java.util.ArrayList;
@@ -49,6 +50,11 @@ public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
         return icDao.findSimple(id);
     }
 
+    public List<DetalleCaja> getAllsimplexInf(int infid) {
+        return icDao.getdetallesSimple(infid);
+    }
+
+
     @Override
     public long insert(DetalleCaja newDetalleCaja) {
         return icDao.insert(newDetalleCaja);
@@ -66,8 +72,19 @@ public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
     public long getUltimo() {
         return icDao.getUltimoId();
     }
+    public DetalleCaja getUltimo(int idinf) {
+        List<DetalleCaja> lista=icDao.getUltimoxInf(idinf);
+        if(lista!=null&&lista.size()>0){
+            return lista.get(0);
+        }
+        return null;
+    }
 
 
+    public DetalleCaja getdetallexCaja(int idinf, int num_caja) {
+        return icDao.getdetallexCaja(idinf, num_caja);
+
+    }
     public void actualizarEstatusSync(int id, int estatus) {
 
         icDao.actualizarEstatusSync(id, estatus);

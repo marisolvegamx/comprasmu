@@ -9,6 +9,7 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DetalleCaja;
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudWithCor;
 
 import java.util.List;
@@ -22,12 +23,17 @@ public abstract class DetalleCajaDao extends  BaseDao<DetalleCaja>{
     @Query("SELECT * FROM detalle_caja where  informeEtapaId=:informeid")
     public abstract List<DetalleCaja> getdetallesSimple(int informeid);
 
+    @Query("SELECT * FROM detalle_caja where  informeEtapaId=:informeid and num_caja=:caja")
+    public abstract DetalleCaja getdetallexCaja(int informeid, int caja);
+
     @RawQuery(observedEntities = DetalleCaja.class)
     public abstract LiveData<List<DetalleCaja>> getdetalleByFiltros(SupportSQLiteQuery query);
 
     @Query("SELECT max(id) as ultimo " +
             "FROM detalle_caja ")
     public abstract int getUltimoId();
+    @Query("SELECT * FROM detalle_caja where informeEtapaId=:id order by id desc")
+    public abstract List<DetalleCaja> getUltimoxInf(int id);
 
     @Query("update detalle_caja set estatusSync=:estatus WHERE id=:id")
     public abstract  void actualizarEstatusSync(int id, int estatus);

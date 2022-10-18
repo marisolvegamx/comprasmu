@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -134,6 +135,7 @@ public class DetalleProductoPenFragment extends Fragment {
     protected long lastClickTime = 0;
    protected boolean yaestoyProcesando=false;
     List<DescripcionGenerica> clientesAsig;
+    CheckBox nopermiso;
 
     public DetalleProductoPenFragment() {
 
@@ -280,6 +282,22 @@ public class DetalleProductoPenFragment extends Fragment {
             {
                 textoint = root.findViewById(1001);
             }
+            if(preguntaAct.getNombreCampo().equals("ticket_compra")) {
+                nopermiso=root.findViewById(R.id.ckgnoperm);
+                nopermiso.setVisibility(View.VISIBLE);
+
+                nopermiso.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(textoint.getText()!=null)
+                            aceptar.setEnabled(((CheckBox)view).isChecked());
+                        else
+                            aceptar.setEnabled(true);
+
+                        preguntarBorrarFoto(view,textoint,fotomos,btnrotar,null);
+                    }
+                });
+            }
             if(preguntaAct.getType().equals(CreadorFormulario.FECHAMASK)){
                 textoint.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -412,6 +430,7 @@ public class DetalleProductoPenFragment extends Fragment {
     }
     //btnaifotoexhibido
     public void crearFormulario(){
+
         camposForm=new ArrayList<>();
         CampoForm campo=new CampoForm();
         campo.label=preguntaAct.getLabel();
@@ -441,8 +460,9 @@ public class DetalleProductoPenFragment extends Fragment {
             }
 
         }
-        if(campo.type.equals("agregarImagen")) {
 
+        if(campo.type.equals("agregarImagen")) {
+            Log.e(TAG,"creando form"+preguntaAct.getLabel());
             campo.funcionOnClick = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -454,6 +474,7 @@ public class DetalleProductoPenFragment extends Fragment {
             fotomos=root.findViewById(R.id.ivgfoto);
             fotomos.setVisibility(View.VISIBLE);
             btnrotar=root.findViewById(R.id.btngrotar);
+            btnrotar.setVisibility(View.GONE);
             btnrotar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -462,18 +483,26 @@ public class DetalleProductoPenFragment extends Fragment {
             });
 
             if(isEdicion){
-              //  Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                ComprasUtils cu=new ComprasUtils();
-                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor(),80,80);
+                 if(ultimares.getValor().equals("0")){
+                    //veo si tengo el chbox
+                   nopermiso=root.findViewById(R.id.ckgnoperm);
+                   if(nopermiso!=null){
+                       nopermiso.setChecked(true);
+                       btnrotar.setVisibility(View.GONE);
+                   }
+                }else {
+                     //  Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                     ComprasUtils cu = new ComprasUtils();
+                     Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor(), 80, 80);
 
-                fotomos.setImageBitmap(bitmap1);
-                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                fotomos.setVisibility(View.VISIBLE);
+                     fotomos.setImageBitmap(bitmap1);
+                     // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                     fotomos.setVisibility(View.VISIBLE);
 
-                btnrotar.setVisibility(View.VISIBLE);
-                btnrotar.setFocusableInTouchMode(true);
-                btnrotar.requestFocus();
-
+                     btnrotar.setVisibility(View.VISIBLE);
+                     btnrotar.setFocusableInTouchMode(true);
+                     btnrotar.requestFocus();
+                 }
             }
            // btnrotar.setVisibility(View.VISIBLE);
 
@@ -1319,6 +1348,12 @@ public class DetalleProductoPenFragment extends Fragment {
             //paso a mayusculas
 
             Log.d(TAG, "guardando en temp" + preguntaAct.getId() + "val" + valor);
+        if((preguntaAct.getId()==55||preguntaAct.getId()==75)&& nopermiso.isChecked())//es ticket
+        {
+            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "0", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
+            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "1", "ticket_noemiten", preguntaAct.getTabla(), mViewModel.consecutivo, true);
+
+        }else
             if (preguntaAct.getId() > 0 && valor != null && valor.length() > 0) {
               //actualizo la visita
                 if(mViewModel.visita.getEstatus()!=3)
@@ -1424,6 +1459,9 @@ public class DetalleProductoPenFragment extends Fragment {
                             btnrotar.requestFocus();
                             nombre_foto = null;
                             archivofoto=null;
+                            if(nopermiso!=null) {
+                                nopermiso.setChecked(false);
+                            }
                         }
 
 
@@ -1719,7 +1757,7 @@ public class DetalleProductoPenFragment extends Fragment {
                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                         fotomos.setVisibility(View.VISIBLE);
 
-                        btnrotar.setVisibility(View.VISIBLE);
+                      //  btnrotar.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -1732,7 +1770,41 @@ public class DetalleProductoPenFragment extends Fragment {
     public InformeTemp getUltimares() {
         return ultimares;
     }
+    protected void preguntarBorrarFoto(View cb,EditText txtruta,ImageView foto,ImageButton btnrotar,LinearLayout group) {
+        if(((CheckBox)cb).isChecked()) {
+            //veo si ya hay foto
+            if(txtruta.getText()!=null&&!txtruta.getText().toString().equals("")) {
+                //pregunto si habrá más clientes
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                // dialogo1.setTitle(R.string.);
+                dialogo1.setMessage(R.string.eliminar_foto);
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //eliminar foto
+                        txtruta.setText("");
+                        foto.setImageBitmap(null);
 
+                        foto.setVisibility(View.GONE);
+                        btnrotar.setVisibility(View.GONE);
+                        aceptar.setEnabled(true);
+                    }
+                });
+                dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        ((CheckBox) cb).setChecked(false);
+                        dialogo1.cancel();
+
+                        //envio a la lista
+                        //  NavHostFragment.findNavController(AbririnformeFragment.this).navigate(R.id.action_nuevotolista);
+
+                    }
+                });
+                dialogo1.show();
+            }
+        }
+    }
 
 
     class BotonTextWatcher implements TextWatcher {

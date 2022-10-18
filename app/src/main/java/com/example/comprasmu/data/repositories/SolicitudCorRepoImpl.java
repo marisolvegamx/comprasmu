@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.repositories;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -42,6 +43,9 @@ public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
     public int totalSols(int etapa, String indice, int estatus) {
         return icDao.getTotSols(etapa, indice, estatus);
     }
+    public int totalSolsxPlanta(int etapa, String indice, int estatus, int plantaid) {
+        return icDao.getTotSolsxPlanta(etapa, indice, estatus, plantaid);
+    }
 
     @Override
     public LiveData<SolicitudCor> find(int id) {
@@ -73,7 +77,7 @@ public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
 
 
     public void actualizarEstatus(int id, int estatus) {
-
+        Log.d("---","actalizando"+id+"--"+estatus);
          icDao.actualizarEstatus(id, estatus);
     }
 

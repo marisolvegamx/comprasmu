@@ -78,6 +78,14 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
 
+            <CheckBox
+                android:id="@+id/ckgnoperm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_emiten_tik"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
             <Button
                 android:id="@+id/btngvalidar"
                 android:layout_width="match_parent"
