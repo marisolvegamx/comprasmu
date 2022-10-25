@@ -394,10 +394,18 @@ public class NvaCorreccionFragment extends Fragment {
     public void actualizarSolicitud() {
         try {
             solViewModel.actualizarEstSolicitud(solicitudSel,4);
-            CorreccionEnvio envio=this.prepararEnvio();
+            CorreccionEnvio envio=mViewModel.prepararEnvio(mViewModel.getNvocorreccion());
             SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
             miTareaAsincrona.execute();
-            subirFotos(getActivity(),envio.getCorreccion());
+
+            subirFotos(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto1());
+
+
+            if(envio.getCorreccion().getRuta_foto2()!=null&&envio.getCorreccion().getRuta_foto2().length()>1)
+                subirFotos(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto2());
+            if(envio.getCorreccion().getRuta_foto3()!=null&&envio.getCorreccion().getRuta_foto3().length()>1)
+                subirFotos(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto3());
+
         }catch(Exception ex){
             ex.getStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
@@ -568,22 +576,14 @@ public class NvaCorreccionFragment extends Fragment {
     }
 
 
-    public CorreccionEnvio prepararEnvio(){
-        CorreccionEnvio envio=new CorreccionEnvio();
 
-        envio.setCorreccion(mViewModel.getNvocorreccion());
-        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
-        envio.setIndice(Constantes.INDICEACTUAL);
-        return envio;
 
-    }
-
-    public static void subirFotos(Activity activity, Correccion informe){
+    public static void subirFotos(Activity activity, int id, String ruta){
 
         //subo cada una
         Intent msgIntent = new Intent(activity, SubirFotoService.class);
-        msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, informe.getId());
-        msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,informe.getRuta_foto1());
+        msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID,id);
+        msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,ruta);
         //todo como envio las otras 2 fotos
         msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,Constantes.INDICEACTUAL);
         // Constantes.INDICEACTUAL
@@ -591,10 +591,9 @@ public class NvaCorreccionFragment extends Fragment {
 
         msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_COR);
 
-        //cambio su estatus a subiendo
-        informe.setEstatusSync(1);
+
         activity.startService(msgIntent);
-        //cambio su estatus a subiendo
+
 
 
 

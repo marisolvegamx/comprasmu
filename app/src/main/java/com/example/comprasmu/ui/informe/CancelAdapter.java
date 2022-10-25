@@ -81,20 +81,12 @@ public class CancelAdapter extends RecyclerView.Adapter<CancelAdapter.InformeCom
             binding.btnicnuevo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                  //  if(view.getId()==R.id.li_btnedit)
-                    //    callback.onClickEditar(Integer.parseInt(binding.liTxtid.getText().toString()));
-                    //    callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()));
+                    if(view.getId()==R.id.btnicnuevo)
+                        callback.onClickVer();
 
                 }
             });
-         /*   binding.liBtnborrar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("hola hola","hice clic");
-                    if(view.getId()==R.id.li_btnborrar)
-                        callback.onClickCancelar(Integer.parseInt(binding.liTxtid.getText().toString()));
-                }
-            });*/
+
 
 
         }
@@ -103,7 +95,7 @@ public class CancelAdapter extends RecyclerView.Adapter<CancelAdapter.InformeCom
 
     }
     public interface AdapterCallback {
-        void onClickVer(int idinforme);
+        void onClickVer();
 
     }
 

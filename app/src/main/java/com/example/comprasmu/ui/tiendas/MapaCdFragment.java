@@ -2,6 +2,7 @@ package com.example.comprasmu.ui.tiendas;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -31,6 +33,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ListaCompra;
@@ -60,28 +64,30 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MapaCdFragment extends Fragment implements OnMapReadyCallback , GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
-        public static final String EXTRA_LATITUD = "extra_latitud";
-        public static final String EXTRA_LONGITUD ="extra_longitud" ;
-        private MapaCdFragment mFirstMapFragment;
-        private static final int LOCATION_REQUEST_CODE = 1;
-        private NuevoDetalleViewModel dViewModel;
-        private GoogleMap mMap;
-        String[] coloreszon={"#1E90FF","#FF1493", "#32CD32", "#FF8C00", "#4B0082"};
-        Map<String,Float> coloresTienda;
-        private  final String TAG="MapaCdActivity";
-        private ArrayList<DescripcionGenerica> listaPlantasEnv;
-        MutableLiveData<List<Tienda>> listatiendas;
-        //  MutableLiveData<List<Tienda>> listatiendasRojas;
-        //  MutableLiveData<List<Tienda>> listatiendasAmarillas;
-        MutableLiveData<List<Geocerca>> listageocercas;
-        List<Polygon> regionPolygon;
-        List<Marker> martiendas;
-        int cdId;
-        boolean doubleBackToExitPressedOnce = false;
-        ListaDetalleViewModel lcviewModel;
+public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,GoogleMap.OnInfoWindowCloseListener,GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
+    public static final String EXTRA_LATITUD = "extra_latitud";
+    public static final String EXTRA_LONGITUD ="extra_longitud" ;
+    private MapaCdFragment mFirstMapFragment;
+    private static final int LOCATION_REQUEST_CODE = 1;
+    private NuevoDetalleViewModel dViewModel;
+    private GoogleMap mMap;
+    String[] coloreszon={"#1E90FF","#FF1493", "#32CD32", "#FF8C00", "#4B0082"};
+    Map<String,Float> coloresTienda;
+    private  final String TAG="MapaCdFragment";
+    private ArrayList<DescripcionGenerica> listaPlantasEnv;
+    MutableLiveData<List<Tienda>> listatiendas;
+    //  MutableLiveData<List<Tienda>> listatiendasRojas;
+    //  MutableLiveData<List<Tienda>> listatiendasAmarillas;
+    MutableLiveData<List<Geocerca>> listageocercas;
+    List<Polygon> regionPolygon;
+    List<Marker> martiendas;
+    int cdId;
+    boolean doubleBackToExitPressedOnce = false;
+    ListaDetalleViewModel lcviewModel;
+    Button btncancel;
+    Marker markerSel;
 
-        private long lastClickTime = 0;
+    private long lastClickTime = 0;
 
         Spinner spplantas;
     List<DescripcionGenerica>clientesAsignados;
@@ -90,6 +96,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
       //  Spinner spindicefin;
     View view;
     private int cliente;
+    private Spinner sptipoti, spcadena;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -109,10 +116,47 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
             mapFragment.getMapAsync(this);
            // spclientes=view.findViewById(R.id.spmcdcliente);
             spplantas=view.findViewById(R.id.spmcdplanta);
+            spcadena=view.findViewById(R.id.spmccadenati);
+            sptipoti=view.findViewById(R.id.spmctipoti);
         //    spindicefin=view.findViewById(R.id.spmcdindicefin);
         //    spindiceini=view.findViewById(R.id.spmcdindiceini);
+             btncancel=view.findViewById(R.id.btnmccancel);
+             btncancel.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     if(markerSel!=null) {
+                         Tienda tiendaSel=(Tienda)markerSel.getTag();
+                         new AlertDialog.Builder(getActivity())
+                                 .setIcon(android.R.drawable.ic_dialog_alert)
+                                 .setTitle(R.string.importante)
+                                 .setMessage(getString(R.string.cancelar_tienda)+" "+tiendaSel.getUne_descripcion()+ "?")
+                                 .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                                     public void onClick(DialogInterface dialog, int which) {
+                                         //hago la peticion en el servidor y recargo
+                                         //getActivity().finish();
+                                         PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
+                                         petmap.cancelTienda(tiendaSel.getUne_id());
+                                       //  martiendas.remove(markerSel);
+                                         markerSel.remove();
+                                       /*  DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
+                                         if(plantasel!=null) {
+                                             int planta = plantasel.id;
+                                             //  String indiceini = (String) spindiceini.getSelectedItem();
+                                             //  String indicefin = (String) spindicefin.getSelectedItem();
+                                             String indiceini = Constantes.INDICEACTUAL;
+                                             buscarTiendas(planta, indiceini);
+                                         }*/
+                                     }
+                                 })
+                                 .setNegativeButton(R.string.no, null)
+                                 .show();
+
+                     }
+                 }
+             });
             buscarClientes();
             buscarPlantas(Constantes.CIUDADTRABAJO,0);
+            cargarCatalogos();
           //  cargarIndices();
             Button btnbuscar=view.findViewById(R.id.btnmcdbuscar);
             btnbuscar.setOnClickListener(new View.OnClickListener() {
@@ -213,21 +257,24 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
 
         @Override
         public boolean onMarkerClick(final Marker marker) {
-        //if (marker.equals(markerPais)) {
+       // if (marker.equals(markerPais)) {
            /* FragmentTransaction ft = getParentFragmentManager().beginTransaction();
             AbririnformeFragment fragconfig=new AbririnformeFragment();
             ft.add(R.id.nav_host_fragment, fragconfig);
 
             ft.commit();*/
 
-            long currentClickTime= SystemClock.elapsedRealtime();
+       // }
+            btncancel.setVisibility(View.VISIBLE);
+            markerSel=marker;
+          /*  long currentClickTime= SystemClock.elapsedRealtime();
             // preventing double, using threshold of 1000 ms
             if (currentClickTime - lastClickTime < 3000){
              return false;
             }
 
             lastClickTime = currentClickTime;
-            Log.d(TAG,"di click :("+lastClickTime);
+            Log.d(TAG,"di click :("+lastClickTime);*/
 
 
 
@@ -320,7 +367,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
             }
 
         }
-        public void     buscarTiendas( int planta,String indicefin){
+        public void buscarTiendas( int planta,String indicefin){
             //peticion al servidor
             //cambio el inice
             PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
@@ -339,9 +386,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
             int aux[]=lcviewModel.buscarClienCdxPlan(planta);
              cliente=aux[0];
             int ciudad=aux[1];
-            Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);
-
-            petmap.getTiendas("0",ciudad+"",planta,cliente,fini,ffin,"",""); //se agregarian filtros despues
+          //  Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);
+            int tipo=((CatalogoDetalle)sptipoti.getSelectedItem()).getCad_idopcion();
+            int cadena=((CatalogoDetalle)spcadena.getSelectedItem()).getCad_idopcion();
+            petmap.getTiendas("0",ciudad+"",planta,cliente,fini,ffin,tipo+"",cadena+""); //se agregarian filtros despues
             // Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
             //petmap.getTiendas("1","1",25,4,"2022-01-01","2022-04-01","",""); //se agregarian filtros despues
             this.listatiendas=petmap.getListatiendas();
@@ -379,7 +427,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
             LatLng japon2 = null;
             String color;
             for(Tienda tienda: listiendas){
-                 Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
+             //    Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
 
                 if(cliente==4&&tienda.getEstpep()>0) {
                         color = tienda.getEstpep()+"";
@@ -395,6 +443,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
                                     .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color))));
                             marker.setTag(tienda);
                             martiendas.add(marker);
+
 
                         }
                     }else
@@ -437,7 +486,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,10));
         }
         public void buscarClientes(){
-            Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
+         //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
             if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
                 //TODO enviar a elegir cd de trabajo
                // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
@@ -494,6 +543,32 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
             listacomp.observe(getViewLifecycleOwner(),nameObserver);
 
         }
+
+        public void cargarCatalogos(){
+            CatalogoDetalle ins=new CatalogoDetalle();
+            ins.setCad_idopcion(0);
+            ins.setCad_idcatalogo(1);
+            ins.setCad_descripcionesp("TODAS");
+        List<CatalogoDetalle> listacadena=new ArrayList<>();
+            listacadena.add(ins);
+
+            listacadena.addAll(lcviewModel.buscarCadenaComer());
+
+        if(listacadena.size()>0) {
+            //cargo el spinner
+
+            CreadorFormulario.cargarSpinnerCat(getActivity(),spcadena,listacadena);
+        }
+        List<CatalogoDetalle> listatipo=new ArrayList<>();
+                ins.setCad_idcatalogo(Contrato.CatalogosId.CADENACOMER);
+            listatipo.add(ins);
+            listatipo.addAll(lcviewModel.buscarTipoTienda());
+        if(listatipo.size()>0) {
+            //cargo el spinner
+
+            CreadorFormulario.cargarSpinnerCat(getActivity(),sptipoti,listatipo);
+        }
+    }
 
    /* public void setupListAdapter() {
         adaptadorLista = new ListaSelecFragment.AdaptadorListas((AppCompatActivity) getActivity(),mViewModel);
@@ -560,5 +635,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback , Goo
         this.doubleBackToExitPressedOnce = false;
         NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo,bundle);
         //return false;
+    }
+
+    @Override
+    public void onInfoWindowClose(@NonNull Marker marker) {
+        Log.d(TAG,"eto cuando es???????");
+    }
+
+    @Override
+    public void onMapClick(@NonNull LatLng latLng) {
+        btncancel.setVisibility(View.GONE);
+        markerSel=null;
     }
 }

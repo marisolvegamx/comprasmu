@@ -52,6 +52,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         return repository.totalSols(etapa,indiceSel, estatus);
     }
     public int  getTotalSolsxplanta(int etapa,String indiceSel,int estatus, int planta){
+
         return repository.totalSolsxPlanta(etapa,indiceSel, estatus, planta);
     }
     public LiveData<SolicitudCor>  getSolicitud(int id){
@@ -92,21 +93,26 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     public void procesarCanceladas(MuestraCancelada cancelada){
         InformeCompraDetalle det=infcrepo.findsimple(cancelada.getInd_id());
-        if(det!=null){
-            det.setMotivoCancel(cancelada.getVas_observaciones());
-            det.setFechaCancel(cancelada.getVas_fecha());
-            det.setEstatus(0);
-            infcrepo.insert(det);
-            infcrepo.actualizarEstatus(det.getId(),0);
 
-        }
-        ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplication());
-        ListaCompraDetalle compradet=lcdrepo.findsimple(cancelada.getInd_comprasid(),cancelada.getInd_compraddetid());
-        if(compradet!=null){
-            //quito la comprada
-            int cantidad=compradet.getComprados()-1;
-            lcdrepo.actualizarComprados(compradet.getId(),compradet.getListaId(),cantidad);
+        if(det!=null) {
+            if (det.getEstatus() > 0)//yno está cancelada
+            {
+                det.setMotivoCancel(cancelada.getVas_observaciones());
+                det.setFechaCancel(cancelada.getVas_fecha());
+                det.setEstatus(0);
+                infcrepo.insert(det);
+                infcrepo.actualizarEstatus(det.getId(), 0);
 
+
+                ListaCompraDetRepositoryImpl lcdrepo = new ListaCompraDetRepositoryImpl(getApplication());
+                ListaCompraDetalle compradet = lcdrepo.findsimple(cancelada.getInd_comprasid(), cancelada.getInd_compraddetid());
+                if (compradet != null) {
+                    //quito la comprada
+                    int cantidad = compradet.getComprados() - 1;
+                    lcdrepo.actualizarComprados(compradet.getId(), compradet.getListaId(), cantidad);
+
+                }
+            }
         }
 
     }

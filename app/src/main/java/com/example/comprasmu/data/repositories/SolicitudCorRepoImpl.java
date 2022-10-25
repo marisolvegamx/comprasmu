@@ -44,6 +44,7 @@ public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
         return icDao.getTotSols(etapa, indice, estatus);
     }
     public int totalSolsxPlanta(int etapa, String indice, int estatus, int plantaid) {
+        Log.d("SolicitudCorRepoImpl","pendientes"+etapa+"--"+indice+"--"+estatus+"--"+plantaid);
         return icDao.getTotSolsxPlanta(etapa, indice, estatus, plantaid);
     }
 

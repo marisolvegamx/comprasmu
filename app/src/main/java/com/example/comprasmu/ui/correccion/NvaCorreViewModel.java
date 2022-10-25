@@ -7,7 +7,10 @@ import androidx.lifecycle.LiveData;
 
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.SolicitudWithCor;
+import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
+import com.example.comprasmu.utils.Constantes;
+
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +45,19 @@ public class NvaCorreViewModel extends AndroidViewModel {
         this.nvocorreccion =correccion;
         return idNuevo;
 
+    }
+
+    public CorreccionEnvio prepararEnvio(Correccion nvacorreccion){
+        CorreccionEnvio envio=new CorreccionEnvio();
+
+        envio.setCorreccion(nvacorreccion);
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(Constantes.INDICEACTUAL);
+        return envio;
+
+    }
+    public Correccion getCorreccionesxid(int idcor,String indice, int etapa){
+        return correpository.findsimple(idcor);
     }
     public LiveData<List<SolicitudWithCor>> getCorreccionesxEta(int etapa, String indice, int plantaSel){
         return correpository.getAllxEtaPlan(plantaSel,indice,etapa);

@@ -18,6 +18,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -29,6 +30,7 @@ import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.databinding.ListaGenericFragmentBinding;
 import com.example.comprasmu.ui.BackActivity;
 
+import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -164,11 +166,10 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
     }
 
     @Override
-    public void onClickVer(int informe) {
-        Intent intento1=new Intent(getActivity(), BackActivity.class);
-        intento1.putExtra(NuevoinformeFragment.INFORMESEL, informe);
-        intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORME);
-        startActivity(intento1);
+    public void onClickVer() {
+        Log.d(TAG,"di click en nvo inf");
+        NavHostFragment.findNavController(this).navigate(R.id.action_cantoinf);
+
     }
 
 

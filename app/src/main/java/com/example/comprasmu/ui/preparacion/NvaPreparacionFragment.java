@@ -207,7 +207,7 @@ public class NvaPreparacionFragment extends Fragment {
                 mViewModel.getInformeEdit(mViewModel.getIdNuevo()).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
                     @Override
                     public void onChanged(InformeEtapa informeEtapa) {
-                        ultimares=informeEtapa.getComentarios_prep();
+                        ultimares=informeEtapa.getComentarios();
                         informeEdit=informeEtapa;
                         crearFormulario();
                     }
@@ -477,7 +477,6 @@ public class NvaPreparacionFragment extends Fragment {
         plantaSel=opcionsel.getId();
         nombrePlantaSel=opcionsel.getNombre();
 
-        Log.d(TAG, "creando nvo inf---"+mViewModel.getNvoinforme().toString());
 
        //creo el informe
         if ( !isEdicion&&mViewModel.getNvoinforme()==null) {
@@ -487,6 +486,8 @@ public class NvaPreparacionFragment extends Fragment {
         } //   Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
         else{ //si es edicion
             //actualizo el cliente y la planta
+            Log.d(TAG, "creando nvo inf---"+mViewModel.getNvoinforme().toString());
+
             mViewModel.getNvoinforme().setClienteNombre(clienteNombre);
             mViewModel.getNvoinforme().setClientesId(clienteId);
             mViewModel.getNvoinforme().setPlantasId(plantaSel);
@@ -703,6 +704,7 @@ public class NvaPreparacionFragment extends Fragment {
                 Log.d(TAG, "creando nvo inf");
                 //busco el consecutivo
                 mViewModel.setIdNuevo( mViewModel.insertarInformeEtapa(Constantes.INDICEACTUAL, nombrePlantaSel, plantaSel, clienteNombre, clienteId));
+
             } //   Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
 
                 //
@@ -749,10 +751,10 @@ public class NvaPreparacionFragment extends Fragment {
                 Log.d(TAG,"guardando  detalle"+mViewModel.getIdNuevo());
             int nuevoid =0;
             if(isEdicion){
-                nuevoid = mViewModel.insertarInfEtaDet(mViewModel.getIdNuevo(), preguntaAct, "foto_preparacion" + preguntaAct, textoint.getText().toString(),detalleEdit.getId());
+                nuevoid = mViewModel.insertarInfEtaDet(mViewModel.getIdNuevo(), 10, "foto_preparacion" + preguntaAct, textoint.getText().toString(),detalleEdit.getId());
 
             }else {   //guardo la muestra
-                nuevoid = mViewModel.insertarInfEtaDet(mViewModel.getIdNuevo(), preguntaAct, "foto_preparacion" + preguntaAct, textoint.getText().toString(),0);
+                nuevoid = mViewModel.insertarInfEtaDet(mViewModel.getIdNuevo(), 10, "foto_preparacion" + preguntaAct, textoint.getText().toString(),0);
             }
                 if (nuevoid > 0) {
 
@@ -761,10 +763,6 @@ public class NvaPreparacionFragment extends Fragment {
                     Log.d(TAG,"en guaradar"+sig);
                         avanzarPregunta(sig);
                     }
-
-
-
-
 
         }catch (Exception ex){
             ex.printStackTrace();
@@ -776,8 +774,9 @@ public class NvaPreparacionFragment extends Fragment {
     }
     public InformeEtapaEnv preparaInforme(){
         InformeEtapaEnv envio=new InformeEtapaEnv();
+        //busco el informe
 
-        envio.setInformeEtapa(mViewModel.getNvoinforme());
+        envio.setInformeEtapa(mViewModel.getInformexId(mViewModel.getIdNuevo()));
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         envio.setInformeEtapaDet(mViewModel.cargarInformeDet(mViewModel.getIdNuevo()));

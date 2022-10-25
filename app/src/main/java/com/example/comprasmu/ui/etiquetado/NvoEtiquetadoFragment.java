@@ -660,12 +660,12 @@ public class NvoEtiquetadoFragment extends Fragment {
                 rutafoto=txtrutaim.getText().toString();
                 qr=txtqr.getText().toString();
                 if(isEdicion){
-                    mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),1,"foto_etiqueta",rutafoto,detalleEdit.getId(),contcaja,qr,contmuestra);
+                    mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,detalleEdit.getId(),contcaja,qr,contmuestra);
                     isEdicion=false;
                 }else
                 if(mViewModel.getIdNuevo()>0)
                     //guardo el detalle
-                     mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),1,"foto_etiqueta",rutafoto,0,contcaja,qr,contmuestra);
+                     mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,contcaja,qr,contmuestra);
                //limpio campos
                 txtrutaim.setText("");
                 fotomos.setImageBitmap(null);
@@ -888,7 +888,8 @@ public class NvoEtiquetadoFragment extends Fragment {
     public InformeEtapaEnv preparaInforme(){
         InformeEtapaEnv envio=new InformeEtapaEnv();
 
-        envio.setInformeEtapa(mViewModel.getNvoinforme());
+        envio.setInformeEtapa(mViewModel.getInformexId(mViewModel.getIdNuevo()));
+
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         envio.setInformeEtapaDet(mViewModel.cargarInformeDet(mViewModel.getIdNuevo()));

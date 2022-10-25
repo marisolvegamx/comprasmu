@@ -74,6 +74,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         informe.setEtapa(1);
         informe.setCreatedAt(new Date());
         idNuevo=(int)infEtaRepository.insert(informe);
+        informe.setId(idNuevo);
         this.nvoinforme=informe;
         return idNuevo;
 
@@ -90,6 +91,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         informe.setEtapa(etapa);
         informe.setCreatedAt(new Date());
         idNuevo=(int)infEtaRepository.insert(informe);
+        informe.setId(idNuevo);
         this.nvoinforme=informe;
         return idNuevo;
 
@@ -125,6 +127,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         informe.setTotal_muestras(tot_muestras);
         informe.setCreatedAt(new Date());
         idNuevo=(int)infEtaRepository.insert(informe);
+        informe.setId(idNuevo);
         this.nvoinforme=informe;
         return idNuevo;
 
@@ -182,6 +185,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     }
     public LiveData<InformeEtapa> getInformeEdit(int id){
      return   infEtaRepository.getInformeEtapa(id);
+    }
+    public InformeEtapa getInformexId(int id){
+        return   infEtaRepository.findsimple(id);
     }
     public InformeEtapa getInformePend(String indice){
         return   infEtaRepository.getInformePend(indice, 1);

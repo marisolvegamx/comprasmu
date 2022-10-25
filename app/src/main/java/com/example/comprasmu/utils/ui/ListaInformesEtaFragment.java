@@ -1,5 +1,6 @@
 package com.example.comprasmu.utils.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,11 +22,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
+import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeTask;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.SolicitudWithCor;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.remote.InformeEnvio;
+import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
+import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
@@ -149,7 +155,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     }
     private void setupListAdapter() {
-        mListAdapter = new InformeGenAdapter(this);
+        mListAdapter = new InformeGenAdapter(this,tipocons);
         mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.detalleList.setHasFixedSize(true);
         mBinding.detalleList.setAdapter(mListAdapter);
@@ -219,17 +225,58 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
 
     @Override
-    public void onClickSubir(int informe) {
+    public void onClickSubir(int informe, String tipo) {
         if(NavigationDrawerActivity.isOnlineNet()) {
-            NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
+            if(tipo.equals("e")) {
+                NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
-            InformeEnvio informeenv = niViewModel.preparaInforme(informe);
-            SubirInformeTask miTareaAsincrona = new SubirInformeTask(true, informeenv, getActivity(), niViewModel);
-            miTareaAsincrona.execute();
-            Log.d(TAG, "preparando informe**********");
-            NuevoinformeFragment.subirFotos(getActivity(), informeenv);
+            //    InformeEtapaEnv informeenv = niViewModel.preparaInforme(informe);
+                //SubirInformeTask miTareaAsincrona = new SubirInformeTask(true, informeenv, getActivity(), niViewModel);
+             //   miTareaAsincrona.execute();
+                Log.d(TAG, "preparando informe**********");
+             //   NuevoinformeFragment.subirFotos(getActivity(), informeenv);
+            }else
+            if(tipo.equals("action_selclitocor2")){//correccion
+                //busco la correccion x el id
+                Correccion corrsel=corViewModel.getCorreccionesxid(informe,Constantes.INDICEACTUAL,Constantes.ETAPAACTUAL);
+                CorreccionEnvio envio=corViewModel.prepararEnvio(corrsel);
+                SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
+                miTareaAsincrona.execute();
+
+                subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto1());
+
+
+                if(envio.getCorreccion().getRuta_foto2()!=null&&envio.getCorreccion().getRuta_foto2().length()>1)
+                    subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto2());
+                if(envio.getCorreccion().getRuta_foto3()!=null&&envio.getCorreccion().getRuta_foto3().length()>1)
+                    subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto3());
+
+
+            }
         }else
             Toast.makeText(getActivity(), getString(R.string.sin_conexion), Toast.LENGTH_LONG).show();
+
+    }
+    public static void subirFotosCor(Activity activity, int id, String ruta){
+
+        //subo cada una
+        Intent msgIntent = new Intent(activity, SubirFotoService.class);
+        msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID,id);
+        msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,ruta);
+
+        msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,Constantes.INDICEACTUAL);
+        // Constantes.INDICEACTUAL
+        Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+
+        msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_COR);
+
+
+        activity.startService(msgIntent);
+
+
+
+
+
 
     }
 

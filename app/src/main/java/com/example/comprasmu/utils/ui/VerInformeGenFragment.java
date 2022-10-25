@@ -292,13 +292,13 @@ public class VerInformeGenFragment extends Fragment {
         campo.label = getString(R.string.comentarios);
         switch (Constantes.ETAPAACTUAL) {
             case 1:
-                campo.value = informeEtapa.getComentarios_prep();
+                campo.value = informeEtapa.getComentarios();
                 break;
             case 3:
-                campo.value = informeEtapa.getComentarios_etiq();
+                campo.value = informeEtapa.getComentarios();
                 break;
             case 4:
-                campo.value=informeEtapa.getComentarios_empaq();
+                campo.value=informeEtapa.getComentarios();
                 break;
 
         }

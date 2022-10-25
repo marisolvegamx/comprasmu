@@ -83,22 +83,25 @@ public class SelClienteGenFragment extends ListaSelecFragment {
         final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
             public void onChanged(@Nullable List<ListaCompra> lista) {
-                if(tipoconsulta.equals("c")) { //solicitudes
-                    //voy a buscar la solicitudes pendientes
-                    convertirListaCor(lista);
 
-                }else
-                    convertirLista(lista);
-                setLista(listaClientesEnv);
+
 
                 // siguiente(0);
                 //  Log.d(TAG,"------- "+lista.size());
                 if(lista.size()>1) {
+                    if(tipoconsulta.equals("c")) { //solicitudes
+                        //voy a buscar la solicitudes pendientes
+                        convertirListaCor(lista);
 
+                    }else
+                        convertirLista(lista);
+                    setLista(listaClientesEnv);
                     setupListAdapter();
+
                     if(tipoconsulta.equals("c")) {
                         adaptadorLista.setDesc2(true);
                     }
+
                 }else if(lista.size()>0)
                 {
                     //voy directo a la lista
@@ -125,6 +128,7 @@ public class SelClienteGenFragment extends ListaSelecFragment {
     }
 
     private int contarCorrecc(int plantaId){
+
        int  pendientes=scViewModel.getTotalSolsxplanta(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1, plantaId);
         return pendientes;
     }
@@ -180,7 +184,7 @@ public class SelClienteGenFragment extends ListaSelecFragment {
                 //voy a buscar la solicitudes pendientes
             pendientes=contarCorrecc(listaCompra.getPlantasId());
 
-
+            Log.d(TAG,pendientes+"--"+listaCompra.getPlantasId());
             listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre() + " " + listaCompra.getPlantaNombre(), listaCompra.getClienteNombre(),pendientes+""));
 
         }

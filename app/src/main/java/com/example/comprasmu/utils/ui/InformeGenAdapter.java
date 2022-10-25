@@ -18,10 +18,12 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
     private List<InformeEtapa> mInformesList;
 
     private AdapterCallback callback;
+    public String tipo;
 
-    public InformeGenAdapter( AdapterCallback callback) {
+    public InformeGenAdapter( AdapterCallback callback, String tipo) {
 
         this.callback=callback;
+        this.tipo=tipo;
     }
 
     public void setInformeCompraList(List<InformeEtapa> informesList) {
@@ -34,7 +36,7 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
         ListaInformegenItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.lista_informegen_item, parent, false);
-        return new InformeGenViewHolder(binding,callback);
+        return new InformeGenViewHolder(binding,callback,this.tipo);
     }
 
     @Override
@@ -56,14 +58,16 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
 
     static class InformeGenViewHolder extends RecyclerView.ViewHolder {
         final ListaInformegenItemBinding binding;
+        public String tipo;
 
 
 
 
-
-        public InformeGenViewHolder(ListaInformegenItemBinding binding,AdapterCallback callback) {
+        public InformeGenViewHolder(ListaInformegenItemBinding binding,AdapterCallback callback,String tipo) {
             super(binding.getRoot());
             this.binding = binding;
+            this.tipo=tipo;
+
             binding.liBtnedit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -75,7 +79,7 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
                 @Override
                 public void onClick(View view) {
                     view.setEnabled(false);
-                    callback.onClickSubir(Integer.parseInt(binding.liTxtid.getText().toString()));
+                    callback.onClickSubir(Integer.parseInt(binding.liTxtid.getText().toString()),tipo);
                 }
             });
 
@@ -87,7 +91,7 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
     public interface AdapterCallback {
         void onClickVer(int idinforme);
 
-        void onClickSubir(int id);
+        void onClickSubir(int id, String tipo);
     }
 
 }

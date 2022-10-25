@@ -1752,11 +1752,11 @@ public abstract class ComprasDataBase extends RoomDatabase {
         List<SolicitudCor> lista=new ArrayList<>();
         SolicitudCor solicitud=new SolicitudCor();
         solicitud.setId(1);
-        solicitud.setClienteNombre("PEÑAFIEL");
+        solicitud.setClienteNombre("PEPSI");
         solicitud.setClientesId(5);
         solicitud.setIndice("6.2022");
         solicitud.setPlantaNombre("IZTACALCO");
-        solicitud.setPlantasId(63);
+        solicitud.setPlantasId(31);
         solicitud.setEtapa(1);
         solicitud.setInformesId(1);
         solicitud.setEstatus(1);
@@ -1770,10 +1770,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         solicitud=new SolicitudCor();
         solicitud.setId(2);
-        solicitud.setClienteNombre("PEÑAFIEL");
+        solicitud.setClienteNombre("PEPSI");
         solicitud.setClientesId(5);
         solicitud.setPlantaNombre("IZTACALCO");
-        solicitud.setPlantasId(63);
+        solicitud.setPlantasId(31);
         solicitud.setIndice("6.2022");
         solicitud.setEtapa(1);
         solicitud.setInformesId(2);
@@ -1785,6 +1785,25 @@ public abstract class ComprasDataBase extends RoomDatabase {
         solicitud.setTotal_fotos(3);
         solicitud.setCreatedAt(new Date());
         lista.add(solicitud);
+     /*   solicitud=new SolicitudCor();
+        solicitud.setId(3);
+        solicitud.setClienteNombre("pepsi");
+        solicitud.setClientesId(4);
+        solicitud.setPlantaNombre("IZTACALCO");
+        solicitud.setPlantasId(63);
+        solicitud.setIndice("6.2022");
+        solicitud.setEtapa(3);
+        solicitud.setInformesId(46);
+        solicitud.setEstatus(1);
+        solicitud.setNombreTienda("SORIANA");
+        solicitud.setDescripcionFoto("foto_ticket");
+        solicitud.setDescMostrar("FOTO TICKET");
+        solicitud.setNumFoto(171);
+        solicitud.setMotivo("Muy oscura");
+        solicitud.setTotal_fotos(1);
+        solicitud.setCreatedAt(new Date());
+        lista.add(solicitud);*/
+
         getSolicitudCorDao().insertAll(lista);
     }
 

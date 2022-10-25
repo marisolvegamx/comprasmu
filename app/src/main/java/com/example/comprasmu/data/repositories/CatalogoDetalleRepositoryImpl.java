@@ -47,6 +47,9 @@ public class CatalogoDetalleRepositoryImpl  extends BaseRepository<CatalogoDetal
             case "causas":
                 idcat=Contrato.CatalogosId.CAUSAS;
                 break;
+            case "cadena_comercial":
+                idcat=Contrato.CatalogosId.CADENACOMER;
+                break;
         }
 
         return dao.findAll(idcat);

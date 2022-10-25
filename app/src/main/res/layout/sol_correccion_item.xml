@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:layout_span="2"
                     android:layout_weight="4"
-                    android:text='@{detalle.descripcionFoto}'/>
+                    android:text='@{detalle.descMostrar}'/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/button4"

@@ -187,7 +187,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         SimpleDateFormat sdf=Constantes.vistasdf;
         if(sol.getCreatedAt()!=null)
       actualizarAtributo2(sdf.format(sol.getCreatedAt()));
-      actualizarAtributo3(sol.getContador()+"");
+      //actualizarAtributo3(sol.getContador()+"");
   //    actualizarAtributo3(sol.getMotivo());
 
     }

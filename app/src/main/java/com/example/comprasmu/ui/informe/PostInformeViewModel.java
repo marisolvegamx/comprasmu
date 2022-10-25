@@ -41,7 +41,7 @@ public class PostInformeViewModel {
     private ServiceGenerator apiClient;;
 
     public  String mensaje;
-    private String TAG="Ejemplo";
+    private String TAG="PostInformeViewModel";
    InformeCompraRepositoryImpl infoRepo;
    ImagenDetRepositoryImpl imagenRepo;
    InformeComDetRepositoryImpl infoDetRepo;
@@ -225,7 +225,7 @@ public class PostInformeViewModel {
     }
 
     public  void sendInformeEta(InformeEtapaEnv informeEtapa) {
-
+        Log.d("sendInformeEta", informeEtapa.toJson(informeEtapa));
          apiClient.getApiService().saveInformeEtapa(informeEtapa).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {

@@ -204,6 +204,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             View header=navigationView.getHeaderView(0);
             header.setBackgroundResource(R.drawable.side_nav_baremp);
             TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
+            mNameTextView.setTextColor(Color.BLACK);
             mNameTextView.setText(R.string.empaque);
         }
 
@@ -562,6 +563,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     protected void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(rcv);
+        Log.i(TAG," detuve");
     }
 
     @Override
@@ -584,14 +586,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     @Override
     public void cerrarAlerta(boolean res) {
-        Log.d("LoginAct","quiero descargar "+desclis+"--"+descinf+"--"+descfoto);
-     //   if(desclis==0&&descinf==0&&descfoto==0)
+       //   if(desclis==0&&descinf==0&&descfoto==0)
      //       entrar();
     }
 
     @Override
     public void todoBien( RespInformesResponse infoResp) {
         if (infoResp.getImagenDetalles() != null && infoResp.getImagenDetalles().size() > 0) {
+            Log.d(TAG,"quiero descargar "+desclis+"--"+descinf+"--"+descfoto);
 
             descargarImagenes(infoResp.getImagenDetalles());
 
@@ -699,7 +701,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         task.execute("cat","");
 
         //descarga solicitudes compra
-        SolicitudCorRepoImpl solcorRepo=new SolicitudCorRepoImpl(getApplicationContext());
+     //   SolicitudCorRepoImpl solcorRepo=new SolicitudCorRepoImpl(getApplicationContext());
 
       //  DescCorrecAsyncTask corTask=new DescCorrecAsyncTask(solcorRepo,tvRepo,this,Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL);
       //  corTask.execute("");
@@ -763,11 +765,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         gallery.setTextColor(Color.RED);
       //  gallery.setTextSize(15);
         gallery.setText(totCorrecciones+"");
-        txtcancel.setGravity(Gravity.CENTER_VERTICAL);
-        txtcancel.setTypeface(null, Typeface.BOLD);
-        txtcancel.setTextColor(Color.RED);
-        //  gallery.setTextSize(15);
-        txtcancel.setText(totCancel+"");
+        if(txtcancel!=null) {
+            txtcancel.setGravity(Gravity.CENTER_VERTICAL);
+            txtcancel.setTypeface(null, Typeface.BOLD);
+            txtcancel.setTextColor(Color.RED);
+            //  gallery.setTextSize(15);
+            txtcancel.setText(totCancel + "");
+        }
 
     }
 
@@ -853,20 +857,23 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             //primero los inserts
 
             if (corrResp.getInserts() != null) {
-                if (corrResp.getInserts() != null) {
+
                     for (SolicitudCor sol:corrResp.getInserts()
                          ) {
                         //veo si ya existe
                         SolicitudCor solt=solRepo.findsimple(sol.getId());
-                        if(solt!=null&&solt.getEstatus()<4){
-                            //actualizo
+                        if(solt!=null) {
+                            if (solt.getEstatus() < 4) {
+                                //actualizo
+
+                            }
+                        }else
                             solRepo.insert(sol);
-                        }
 
                     }
 
 
-                }
+
             }
 
             //los updates
@@ -898,5 +905,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG," mori");
+        // unregisterReceiver(onDownloadComplete);
+    }
+
+
 
 }

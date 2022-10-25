@@ -66,13 +66,13 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("update informe_etapa set estatusSync=:estatus WHERE id=:id")
     public abstract  void actualizarEstatusSync(int id, int estatus);
-    @Query("update informe_etapa set comentarios_prep=:comentarios WHERE id=:id")
+    @Query("update informe_etapa set comentarios=:comentarios WHERE id=:id")
     public abstract  void actualizarComentariosPrep(int id,String comentarios);
 
-    @Query("update informe_etapa set comentarios_etiq=:comentarios WHERE id=:id")
+    @Query("update informe_etapa set comentarios=:comentarios WHERE id=:id")
     public abstract  void actualizarComentariosEtiq(int id,String comentarios);
 
-    @Query("update informe_etapa set comentarios_empaq=:comentarios WHERE id=:id")
+    @Query("update informe_etapa set comentarios=:comentarios WHERE id=:id")
     public abstract  void actualizarComentariosEmp(int id,String comentarios);
 
     @Query("SELECT * FROM informe_etapa WHERE id =:id")

@@ -10,6 +10,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +60,9 @@ public class ListaSelecFragment extends Fragment {
     }
 
     public void setLista(ArrayList<DescripcionGenerica> lista){
+        for(DescripcionGenerica des:lista) {
+            Log.d("ListaSelectFragment",des.getNombre()+"--"+ des.getDescripcion2());
+        }
         this.listaSeleccionable=lista;
         mViewModel.setLista( this.listaSeleccionable);
 
@@ -77,6 +82,8 @@ public class ListaSelecFragment extends Fragment {
     public ListView getObjetosLV() {
         return objetosLV;
     }
+
+
     public class AdaptadorListas extends ArrayAdapter<DescripcionGenerica> {
 
         AppCompatActivity appCompatActivity;

@@ -12,12 +12,14 @@ import androidx.lifecycle.Transformations;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
+import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaDetalleBu;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
+import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
@@ -96,6 +98,19 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
+    public List<CatalogoDetalle> buscarTipoTienda(){
+        CatalogoDetalleRepositoryImpl catrepo=new CatalogoDetalleRepositoryImpl(getApplication());
+        return catrepo.getxCatalogo("tipo tienda");
+
+
+    }
+    public List<CatalogoDetalle>  buscarCadenaComer(){
+        CatalogoDetalleRepositoryImpl catrepo=new CatalogoDetalleRepositoryImpl(getApplication());
+       return catrepo.getxCatalogo("cadena_comercial");
+
+
+    }
+
     public  List<ListaCompra>  cargarPestañasSimp(String ciudadSel){
 
             return repository.getAllByIndiceCiudadSimpl(Constantes.INDICEACTUAL,ciudadSel);
@@ -183,7 +198,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
     public void consultaFisico(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int tamanio,int iddetorig ){
-        Log.d(TAG,"criterio"+opcionsel);
+   //     Log.d(TAG,"criterio"+opcionsel);
         switch (opcionsel) {
             case 1:
                 detallebu = detRepo.getDetalleByFiltrosUD(idlista,1, categoria, productoNombre, empaque, tamanio);
@@ -273,9 +288,9 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public int comprarMuestraPepsi(int idlista,int idDetalle,String nuevoCodigo, int isbu,int idlistabu,int iddetbu, int clienteSel){
 
         detRepo=new ListaCompraDetRepositoryImpl(context);
-        Log.d(TAG,"en comprar muestra pepsi"+idlista+"--"+idDetalle);
+
         ListaCompraDetalle listaCompraDetalle=detRepo.findsimple(idlista,idDetalle);
-        Log.d(TAG,"1seguimiento muestras "+isbu);
+
         //valido que se pueda comprar y no sea bu
         if(listaCompraDetalle.getCantidad()>=listaCompraDetalle.getComprados()+1){
           //  detRepo.actualizarComprados(idDetalle,1);
@@ -304,9 +319,9 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public int comprarMuestraPen(int idlista, int idDetalle, String nuevoCodigo, int isbu, InformeCompraDetalle prodsel,int plantaSel,String indice){
 
         detRepo=new ListaCompraDetRepositoryImpl(context);
-        Log.d(TAG,"en comprar muestra pepsi"+idlista+"--"+idDetalle);
+
         ListaCompraDetalle listaCompraDetalle=detRepo.findsimple(idlista,idDetalle);
-        Log.d(TAG,"1seguimiento muestras "+isbu);
+
         //valido que se pueda comprar y no sea bu
         if(listaCompraDetalle.getCantidad()>=listaCompraDetalle.getComprados()+1){
             //  detRepo.actualizarComprados(idDetalle,1);
@@ -409,13 +424,13 @@ public class ListaDetalleViewModel extends AndroidViewModel {
        // Log.d(TAG,otodo.size()+"--"+ otodo);
         SimpleDateFormat sdfcaducidad = new SimpleDateFormat("dd-MM-yy");
         for (int i = 0; i < otodo.size(); i++) {
-            Log.d(TAG, otodo.get(i));
+
             try {
                 if(fechas.contains(sdfcaducidad.parse(otodo.get(i)))){
                     continue; //para no meter duplicados
                 }
                 fechas.add(sdfcaducidad.parse(otodo.get(i)));
-                Log.d(TAG, "<<" + fechas);
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }

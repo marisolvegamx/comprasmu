@@ -17,9 +17,8 @@ public class InformeEtapa {
     private int clientesId;
     private String clienteNombre;
     private String indice;
-    private String comentarios_prep;
-    private String comentarios_etiq;
-    private String comentarios_empaq;
+    private String comentarios;
+
     private int etapa;
     private int total_cajas;
     private int total_muestras;//viene del servidor
@@ -85,28 +84,12 @@ public class InformeEtapa {
         this.indice = indice;
     }
 
-    public String getComentarios_prep() {
-        return comentarios_prep;
+    public String getComentarios() {
+        return comentarios;
     }
 
-    public void setComentarios_prep(String comentarios_prep) {
-        this.comentarios_prep = comentarios_prep;
-    }
-
-    public String getComentarios_etiq() {
-        return comentarios_etiq;
-    }
-
-    public void setComentarios_etiq(String comentarios_etiq) {
-        this.comentarios_etiq = comentarios_etiq;
-    }
-
-    public String getComentarios_empaq() {
-        return comentarios_empaq;
-    }
-
-    public void setComentarios_empaq(String comentarios_empaq) {
-        this.comentarios_empaq = comentarios_empaq;
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
     }
 
     public int getEtapa() {
