@@ -25,6 +25,7 @@ import com.example.comprasmu.data.remote.ListaCompraResponse;
 
 import com.example.comprasmu.data.remote.PlantaResponse;
 import com.example.comprasmu.data.remote.PostResponse;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.SolCorreResponse;
@@ -379,9 +380,48 @@ public class PeticionesServidor {
         });
     }
 
+    public void pedirRespaldo2(String indice, DescargasIniAsyncTask.DescargaRespListener listener){
+
+        Log.d("PeticionesServidor","haciendo petición pedir respaldo2 "+usuario);
+
+        final Call<RespInfEtapaResponse> batch = apiClient.getApiService().getRespaldoInf2(indice,usuario);
+
+        batch.enqueue(new Callback<RespInfEtapaResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<RespInfEtapaResponse> call, @Nullable Response<RespInfEtapaResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    RespInfEtapaResponse etapasResp = response.body();
+                    //reviso si está actualizado
+                    if(etapasResp!=null) //falta actualizar
+                    {
+
+                        listener.actualizarInfEtapa(etapasResp);
+                        /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
+                        lcdrepo.insertAll(compraResp.getDetalles());
+                        //actualizar version en tabla
+                        tvrepo.insertAll(compraResp.getVersiones());
+*/
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista vacia");
+                        listener.noactualizar(null);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+
+                }
+            }
+        });
+    }
+
     public void cancelarInforme(int informeId,InformeCancelar informe){
-
-
 
         Call<ResponseBody> respuesta= apiClient.getApiService().cancelarInforme(informeId,informe);
 

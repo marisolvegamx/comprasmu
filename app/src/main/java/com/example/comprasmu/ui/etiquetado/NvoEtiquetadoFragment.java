@@ -226,7 +226,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         mViewModel.preguntaAct=preguntaAct;
         if(!isEdicion&&preguntaAct<3&&mViewModel.getIdNuevo()==0) {
             //reviso si ya tengo uno abierto
-            InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL);
+            InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,3);
 
             if (informeEtapa != null) {
 
@@ -256,34 +256,56 @@ public class NvoEtiquetadoFragment extends Fragment {
         listacomp= lcViewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
         Log.d(TAG,"PLANTA"+listacomp.toString()+"ss"+mViewModel.getIdNuevo());
         preguntaAct=1;
-        if(mViewModel.getIdNuevo()==0)
-            if(listacomp.size()>1) {
+        if(mViewModel.getIdNuevo()==0) {
+            //reviso si ya tengo uno abierto
+            if(!isEdicion&&preguntaAct<2) {
+                InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL, Constantes.ETAPAACTUAL);
+                Log.d(TAG, "buscando pend");
+                if (informeEtapa != null) {
+                    Log.d(TAG, "encontré 1");
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                    dialogo1.setTitle(R.string.atencion);
+                    dialogo1.setMessage(R.string.informe_abierto);
+                    dialogo1.setCancelable(false);
+                    dialogo1.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                            //lo mando a continuar
+                            getActivity().finish();
+
+                        }
+                    });
+
+                    dialogo1.show();
+                }
+
+            }
+            if (listacomp.size() > 1) {
                 //tengo varias plantas
-                preguntaAct=1;
+                preguntaAct = 1;
 
                 convertirLista(listacomp);
-                cargarPantas(listaPlantas,"");
-                mViewModel.variasPlantas=true;
+                cargarPantas(listaPlantas, "");
+                mViewModel.variasPlantas = true;
                 sv1.setVisibility(View.VISIBLE);
                 aceptar1.setEnabled(true);
-            }else if(listacomp.size()>0) {
-                preguntaAct=2;
+            } else if (listacomp.size() > 0) {
+                preguntaAct = 2;
 
                 sv2.setVisibility(View.VISIBLE);
                 mViewModel.variasPlantas = false;
-                nombrePlantaSel=listacomp.get(0).getPlantaNombre();
-                plantaSel=listacomp.get(0).getPlantasId();
-                clienteId=listacomp.get(0).getClientesId();
-                clienteNombre=listacomp.get(0).getClienteNombre();
-                InformeEtapa informetemp=new InformeEtapa();
+                nombrePlantaSel = listacomp.get(0).getPlantaNombre();
+                plantaSel = listacomp.get(0).getPlantasId();
+                clienteId = listacomp.get(0).getClientesId();
+                clienteNombre = listacomp.get(0).getClienteNombre();
+                InformeEtapa informetemp = new InformeEtapa();
                 informetemp.setClienteNombre(clienteNombre);
                 informetemp.setClientesId(clienteId);
                 informetemp.setPlantasId(plantaSel);
                 informetemp.setPlantaNombre(nombrePlantaSel);
                 informetemp.setIndice(Constantes.INDICEACTUAL);
-                ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(informetemp);
+                ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informetemp);
             }
-
+        }
         if(isEdicion) { //busco el informe
 
             //busco el informe y el detalle
@@ -321,7 +343,7 @@ public class NvoEtiquetadoFragment extends Fragment {
 
             }
         });
-        aceptar3.setOnClickListener(new View.OnClickListener() {
+        aceptar3.setOnClickListener(new View.OnClickListener() { //foto
             @Override
             public void onClick(View view) {
                 avanzar();
@@ -342,7 +364,7 @@ public class NvoEtiquetadoFragment extends Fragment {
 
             }
         });
-        aceptar6.setOnClickListener(new View.OnClickListener() {
+        aceptar6.setOnClickListener(new View.OnClickListener() { //coincide
             @Override
             public void onClick(View view) {
                 avanzar();
@@ -424,17 +446,19 @@ public class NvoEtiquetadoFragment extends Fragment {
                 preguntaAct=preguntaAct+1;
                 break;
             case 5: //otra
+                //depende de la respuesta
+
                 capturarMuestra();
-                preguntaAct=preguntaAct+1;
+
                 break;
             case 6: //coincide
 
                 if(pcoincide.getRespuesta()){
                     svcoin.setVisibility(View.GONE);
                     listaqr.setVisibility(View.GONE);
-                    //voy con la sig caja
+
                     Log.d(TAG,"contcaja "+contcaja+"--"+totcajas);
-                    if(contcaja<totcajas) {
+                    if(contcaja<totcajas) {  //voy con la sig caja
                         contcaja++;
                         txtcajaact.setText("CAJA "+contcaja);
                         contmuint=1;
@@ -476,6 +500,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         else{
             pcoincide.setmLabel("CANTIDAD DE MUESTRAS EN ESTA CAJA: "+(contmuint-1)+ " ¿COINCIDE CON LO QUE TIENES EN CAJA?");
             svcoin.setVisibility(View.VISIBLE);
+            preguntaAct=preguntaAct+1;
         }
 
     }
@@ -718,6 +743,7 @@ public class NvoEtiquetadoFragment extends Fragment {
 
         try{
             mViewModel.actualizarComentEtiq(mViewModel.getIdNuevo(),comentarios);
+            mViewModel.actualizarMuestras(mViewModel.getIdNuevo(), contmuestra-1);
         }catch(Exception ex){
             ex.getStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());

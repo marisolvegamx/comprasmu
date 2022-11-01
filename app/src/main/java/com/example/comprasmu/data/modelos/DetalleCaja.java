@@ -9,7 +9,10 @@ public class DetalleCaja {
     private int id;
     private int informeEtapaId;
     private int num_caja;
-    private String dimensiones;
+    private String alto;
+    private String ancho;
+    private String largo;
+    private String peso;
     private int estatusSync;
 
     public int getId() {
@@ -36,12 +39,36 @@ public class DetalleCaja {
         this.num_caja = num_caja;
     }
 
-    public String getDimensiones() {
-        return dimensiones;
+    public String getAlto() {
+        return alto;
     }
 
-    public void setDimensiones(String dimensiones) {
-        this.dimensiones = dimensiones;
+    public void setAlto(String alto) {
+        this.alto = alto;
+    }
+
+    public String getAncho() {
+        return ancho;
+    }
+
+    public void setAncho(String ancho) {
+        this.ancho = ancho;
+    }
+
+    public String getLargo() {
+        return largo;
+    }
+
+    public void setLargo(String largo) {
+        this.largo = largo;
+    }
+
+    public String getPeso() {
+        return peso;
+    }
+
+    public void setPeso(String peso) {
+        this.peso = peso;
     }
 
     public int getEstatusSync() {

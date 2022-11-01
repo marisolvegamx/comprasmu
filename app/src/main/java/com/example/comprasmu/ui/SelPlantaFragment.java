@@ -29,6 +29,7 @@ import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 import com.example.comprasmu.utils.Constantes;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
     private static String TAG="SelPlantaFragment";
     private ListaDetalleViewModel mViewModel;
     String tipoconsulta;
+    int cdtrab;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //busco los datos y los convierto al tipo String[]
@@ -71,12 +73,13 @@ public class SelPlantaFragment extends ListaSelecFragment {
             public void onChanged(@Nullable List<ListaCompra> lista) {
 
                 convertirLista(lista);
+
                 setLista(listaCiudadesEnv);
                // siguiente(0);
-                if(lista.size()>1) {
+                if(listaCiudadesEnv.size()>1) {
 
                     setupListAdapter();
-                }else if(lista.size()>0)
+                }else if(listaCiudadesEnv.size()>0)
                 {
 
                     //voy directo a la lista
@@ -88,6 +91,15 @@ public class SelPlantaFragment extends ListaSelecFragment {
         };
        // Log.d(TAG,);
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+       if(Constantes.IDCIUDADTRABAJO==0){
+           //lo mando a definir ciudad de trabajo
+
+           NavHostFragment.findNavController(this).navigate(R.id.action_selplantocd,bundle);
+
+
+       }else
+
+
         lcrepo.getCiudades(Constantes.INDICEACTUAL).observe(getViewLifecycleOwner(), nameObserver);
          /*  SelectAsyncTask selec=new SelectAsyncTask(lcrepo);
         selec.execute();*/
@@ -166,9 +178,10 @@ public class SelPlantaFragment extends ListaSelecFragment {
         for (ListaCompra listaCompra: lista ) {
           /*String tupla=Integer.toString(listaCompra.getCiudadesId())+";"+
           listaCompra.getPlantaNombre();*/
-
-          listaCiudadesEnv.add(new DescripcionGenerica(listaCompra.getCiudadesId(), listaCompra.getCiudadNombre()));
-
+            if(listaCompra.getCiudadesId()==Constantes.IDCIUDADTRABAJO)
+            { listaCiudadesEnv.add(new DescripcionGenerica(listaCompra.getCiudadesId(), listaCompra.getCiudadNombre()));
+                break;
+            }
         }
 
     }

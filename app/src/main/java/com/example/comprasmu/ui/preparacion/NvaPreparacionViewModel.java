@@ -165,11 +165,11 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         iddetalle=(int)infDetRepo.insert(detalle);
         return iddetalle;
     }
-    public int insertarDetCaja(int idinf,int iddet,int numcaja,String dimensiones){
+    public int insertarDetCaja(int idinf,int iddet,int numcaja ){
         DetalleCaja detalle=new DetalleCaja();
         detalle.setNum_caja(numcaja);
         detalle.setInformeEtapaId(idinf);
-        detalle.setDimensiones(dimensiones);
+
 
         detalle.setEstatusSync(0);
 
@@ -178,6 +178,27 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         iddetalle=(int)cajaRepo.insert(detalle);
         return iddetalle;
     }
+    public void actDetCaja(int idinf,int iddet,int numcaja,String ancho,String alto,String peso,String largo ){
+        DetalleCaja detalle=new DetalleCaja();
+        detalle.setNum_caja(numcaja);
+        detalle.setInformeEtapaId(idinf);
+        if(!alto.equals(""))
+        detalle.setAlto(alto);
+        if(!ancho.equals(""))
+        detalle.setAncho(ancho);
+        if(!peso.equals(""))
+        detalle.setPeso(peso);
+        if(!largo.equals(""))
+        detalle.setLargo(largo);
+
+        detalle.setEstatusSync(0);
+
+
+        detalle.setId(iddet);
+        iddetalle=(int)cajaRepo.insert(detalle);
+
+    }
+
 
     public int actualizarInfEtaDet(InformeEtapaDet detalle){
         iddetalle=(int)infDetRepo.insert(detalle);
@@ -217,6 +238,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public void actualizarComentEtiq(int idinf, String comentarios){
         infEtaRepository.actualizarcomentariosEtiq(idinf,comentarios);
     }
+    public void actualizarMuestras(int idinf,int muestrastot){
+        infEtaRepository.actualizarMuestrasEtiq(idinf,muestrastot);
+    }
     public void actualizarComentEmp(int idinf, String comentarios){
         infEtaRepository.actualizarComentariosEmp(idinf,comentarios);
     }
@@ -234,6 +258,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
     }
 
+    public List<InformeEtapa> getPlantasconInf(String indice){
+        return   infEtaRepository.getPlantasconInf(indice);
+    }
     public DetalleCaja getUltimoDetalleCaja(int infid){
         return cajaRepo.getUltimo(infid);
 

@@ -39,6 +39,7 @@ import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
@@ -505,39 +506,42 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 }
                 try{
 
-                //guarda informe
-                this.actualizarInforme();
-                this.finalizar();
-                //limpiar tabla
-                limpiarTablTemp();
-                //reviso si hay más clientes, si no fin
-                buscarClientes();
-                if(clientesAsig!=null&&clientesAsig.size()>0) {
-                    loadingDialog.dismisDialog();
-                    yaestoyProcesando=false;
-                    avanzarPregunta(preguntaAct.getSigId());
-                }
-                else{
-                    //no hay mas clientes finalizo preinforme e informe
-                  //  mViewModel.finalizarInforme();
-                    //la muestra la guarde en la 42
+                    //guarda informe
+                    this.actualizarInforme();
+                    this.finalizar();
+                    //limpiar tabla
+                    limpiarTablTemp();
+                    //reviso si hay más clientes, si no fin
+                    buscarClientes();
+                    if(clientesAsig!=null&&clientesAsig.size()>0) {
+                        loadingDialog.dismisDialog();
+                        yaestoyProcesando=false;
+                        avanzarPregunta(preguntaAct.getSigId());
+                    }
+                    else{
+                        //no hay mas clientes finalizo preinforme e informe
+                      //  mViewModel.finalizarInforme();
+                        //la muestra la guarde en la 42
 
-                    Log.d(TAG,"dice que no");
-                    //es la 43 //finalizo preinforme
-                    mViewModel.finalizarVisita(mViewModel.visita.getId());
-                    mViewModel.eliminarTblTemp();
-                    loadingDialog.dismisDialog();
-                    Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
-                    yaestoyProcesando=false;
-                    salir();
-                    //  aceptar.setEnabled(true);
-                    return;
+                        Log.d(TAG,"dice que no");
+                        //es la 43 //finalizo preinforme
+                        mViewModel.finalizarVisita(mViewModel.visita.getId());
+                        mViewModel.eliminarTblTemp();
+                        loadingDialog.dismisDialog();
+                        Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
+                        yaestoyProcesando=false;
+                        salir();
+                        //  aceptar.setEnabled(true);
+                        return;
 
-                }
+                    }
                 }
                 catch(Exception ex){
                     ex.printStackTrace();
+                    ComprasLog flog=ComprasLog.getSingleton();
+                    flog.grabarError(ex.getMessage());
                     yaestoyProcesando=false;
+                    loadingDialog.dismisDialog();
                     Toast.makeText(getActivity(), "algo salio mal", Toast.LENGTH_SHORT).show();
 
 

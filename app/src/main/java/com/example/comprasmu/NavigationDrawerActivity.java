@@ -669,7 +669,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
        // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-        Constantes.INDICEACTUAL = "6.2022";
+        Constantes.INDICEACTUAL = "9.2022";
         if(Constantes.CLAVEUSUARIO.equals("4")){
             Constantes.INDICEACTUAL = "6.2022";
         }
@@ -794,23 +794,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
 
-    public void pruebadescarga() {
-        //pueda descargar
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        // Definir una transacción
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        Fragment fragment = new DescRespaldoFragment();
-// Obtener el administrador de fragmentos a través de la actividad
-
-      //  fragment.setArguments(bundle);
-
-        fragmentTransaction.replace(R.id.nav_host_fragment, fragment);
-        fragmentTransaction.addToBackStack(null);
-// Cambiar
-        fragmentTransaction.commit();
-
-    }
     public void pedirCorrecciones(int actualiza, int etapa) {
         tvRepo = new TablaVersionesRepImpl(this);
         solRepo = new SolicitudCorRepoImpl(this);

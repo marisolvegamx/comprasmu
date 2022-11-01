@@ -70,7 +70,7 @@ public class SelClienteGenFragment extends ListaSelecFragment {
         mViewModel.ciudadSel = ciudadSel;
         mViewModel.nombreCiudadSel = ciudadNombre;
         Log.d(TAG,"una cd sel  "+ciudadSel+"---"+tipoconsulta);
-
+        Log.d(TAG,"-una cd sel  "+ciudadNombre+"---"+clienteSel);
         listacomp= mViewModel.cargarPestañas(ciudadNombre,clienteSel);
 
     }
@@ -87,7 +87,7 @@ public class SelClienteGenFragment extends ListaSelecFragment {
 
 
                 // siguiente(0);
-                //  Log.d(TAG,"------- "+lista.size());
+                  Log.d(TAG,"------- "+lista.size());
                 if(lista.size()>1) {
                     if(tipoconsulta.equals("c")) { //solicitudes
                         //voy a buscar la solicitudes pendientes
@@ -104,6 +104,13 @@ public class SelClienteGenFragment extends ListaSelecFragment {
 
                 }else if(lista.size()>0)
                 {
+                    if(tipoconsulta.equals("c")) { //solicitudes
+                        //voy a buscar la solicitudes pendientes
+                        convertirListaCor(lista);
+
+                    }else
+                        convertirLista(lista);
+                    setLista(listaClientesEnv);
                     //voy directo a la lista
                     siguiente(0);
                 }

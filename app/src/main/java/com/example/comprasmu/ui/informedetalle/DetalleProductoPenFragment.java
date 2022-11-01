@@ -826,6 +826,7 @@ public class DetalleProductoPenFragment extends Fragment {
                     }
                 catch(Exception ex){
                     ex.printStackTrace();
+                    loadingDialog.dismisDialog();
                     yaestoyProcesando=false;
                     Toast.makeText(getActivity(), "algo salió mal", Toast.LENGTH_SHORT).show();
 

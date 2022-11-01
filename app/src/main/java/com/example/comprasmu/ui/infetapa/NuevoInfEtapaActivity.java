@@ -127,10 +127,15 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                  }
             if (etapa == 4) {
                 if (det != null) {
+                    Bundle bundle=new Bundle();
+
+                    bundle.putInt(NuevoInfEtapaActivity.INFORMESEL, idinformeSel);
                     //busco la pregunta actual en la decripcion
                     //char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
                     //Log.d(TAG, "preg=" + preg);
-                    ft.add(R.id.continfeta_fragment, new NvoEmpaqueFragment(null,true));
+                    NvoEmpaqueFragment empf=new NvoEmpaqueFragment(null,true);
+                    empf.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment,empf);
 
                 }
             }

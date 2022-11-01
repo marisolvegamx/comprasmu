@@ -74,6 +74,9 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("update informe_etapa set comentarios=:comentarios WHERE id=:id")
     public abstract  void actualizarComentariosEmp(int id,String comentarios);
+    @Query("update informe_etapa set total_muestras=:totmuestras WHERE id=:id")
+    public abstract  void actualizarMuestrasEtiq(int id, int totmuestras);
+
 
     @Query("SELECT * FROM informe_etapa WHERE id =:id")
     public abstract   InformeEtapa findSimple(int id);
@@ -82,5 +85,9 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     @Query("SELECT * FROM informe_etapa WHERE estatusSync =:estatus and indice=:indice")
     public abstract   List<InformeEtapa> getxEstatusSync(String indice,int estatus);
 
+
+
+    @Query("select * from informe_etapa where indice=:indice and etapa=3 and estatusSync =2 group by plantasId")
+    public abstract   List<InformeEtapa> getPlantasconInf(String indice);
 
 }

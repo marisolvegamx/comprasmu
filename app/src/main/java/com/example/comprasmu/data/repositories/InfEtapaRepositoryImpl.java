@@ -93,6 +93,10 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
         icDao.actualizarComentariosEmp(id, comentarios);
     }
+    public void actualizarMuestrasEtiq(int id, int totmuestras) {
+
+        icDao.actualizarMuestrasEtiq(id, totmuestras);
+    }
     public void actualizarEstatusSync(int id, int estatus) {
 
         icDao.actualizarEstatusSync(id, estatus);
@@ -113,6 +117,8 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
         return icDao.getInforme(id);
     }
 
+
+
     public InformeEtapa getInformePend(String indice,int etapa) {
         List<InformeEtapa> lista=icDao.getInformePendSimp(indice,etapa);
         if(lista!=null&&lista.size()>0){
@@ -129,6 +135,9 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
         return icDao.getInformexPlant(etapa,indice, planta);
 
 
+    }
+    public List<InformeEtapa> getPlantasconInf(String indice) {
+        return icDao.getPlantasconInf(indice);
     }
 
 

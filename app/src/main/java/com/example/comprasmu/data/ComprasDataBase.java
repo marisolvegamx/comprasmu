@@ -1876,7 +1876,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setLabel(ctx.getString(R.string.largo));
         campo.setId(96);
         campo.setTabla("DC");
-        campo.setNombreCampo("dimensiones");
+        campo.setNombreCampo("dimlargo");
         campo.setType("inputtext");
         campo.setSigId(97);
         campo.setCliente(cliente);
@@ -1898,7 +1898,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setLabel(ctx.getString(R.string.ancho));
         campo.setId(98);
         campo.setTabla("DC");
-        campo.setNombreCampo("dimensiones");
+        campo.setNombreCampo("dimancho");
         campo.setType("inputtext");
         campo.setSigId(99);
         campo.setCliente(cliente);
@@ -1920,7 +1920,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setLabel(ctx.getString(R.string.alto));
         campo.setId(100);
         campo.setTabla("DC");
-        campo.setNombreCampo("dimensiones");
+        campo.setNombreCampo("dimalto");
         campo.setType("inputtext");
         campo.setSigId(101);
         campo.setCliente(cliente);
@@ -1942,7 +1942,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setLabel(ctx.getString(R.string.peso));
         campo.setId(102);
         campo.setTabla("DC");
-        campo.setNombreCampo("dimensiones");
+        campo.setNombreCampo("dimpeso");
         campo.setType("inputtext");
         campo.setSigId(103);
         campo.setCliente(cliente);

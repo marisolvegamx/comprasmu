@@ -18,11 +18,16 @@ import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
+import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
+import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
+import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
@@ -309,7 +314,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         DescargaRespListener listener=new DescargaRespListener();
         ps.pedirRespaldo(Constantes.INDICEACTUAL,listener);
-
+        ps.pedirRespaldo2(Constantes.INDICEACTUAL,listener);
     }
 
 
@@ -522,6 +527,12 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             miproglis.todoBien(infoResp);
             miproglis.estatusInf(0);
         }
+        public void noactualizarE( ){
+            //a ver como la regresamos
+            //  miproglis.todoBien(infoResp);
+            miproglis.estatusInf(0);
+        }
+
 
         public void actualizarInformes(RespInformesResponse infoResp) {
             Log.d(TAG,"actualizando bd informes");
@@ -631,6 +642,26 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             miproglis.estatusInf(0);
             miproglis.todoBien( infoResp);
 
+        }
+
+        public void actualizarInfEtapa(RespInfEtapaResponse response){
+            InfEtapaRepositoryImpl erepo=new InfEtapaRepositoryImpl(act);
+            InfEtapaDetRepoImpl edrepo=new InfEtapaDetRepoImpl(act);
+            CorreccionRepoImpl correpo=new CorreccionRepoImpl(act);
+            DetalleCajaRepoImpl cajrepo=new DetalleCajaRepoImpl(act);
+
+            if(response.getCorrecciones()!=null){
+                correpo.insertAll(response.getCorrecciones());
+            }
+            if(response.getInformesEtapa()!=null){
+                erepo.insertAll(response.getInformesEtapa());
+            }
+            if(response.getInformesDetalles()!=null){
+                edrepo.insertAll(response.getInformesDetalles());
+            }
+            if(response.getDetalleCajas()!=null){
+                cajrepo.insertAll(response.getDetalleCajas());
+            }
         }
     }
 }

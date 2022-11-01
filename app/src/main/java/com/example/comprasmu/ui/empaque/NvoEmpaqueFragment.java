@@ -3,6 +3,7 @@ package com.example.comprasmu.ui.empaque;
 
 import android.app.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
@@ -33,6 +34,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -106,10 +108,10 @@ public class NvoEmpaqueFragment extends Fragment {
     private String clienteNombre;
     private int clienteId;
     private ListaDetalleViewModel lcViewModel;
-    private InformeEtapa infomeEdit;
 
 
-    List<ListaCompra> listacomp;
+
+    List<InformeEtapa> listainfetiq;
 
 
 
@@ -151,7 +153,8 @@ public class NvoEmpaqueFragment extends Fragment {
             aceptar = root.findViewById(R.id.btngaceptar);
             if(preguntaAct!=null)
             {
-
+                Log.d(TAG, "pregact"+preguntaAct.getLabel());
+                //llegué por siguiente
                 if(mViewModel.getIdNuevo()>0) {
                     if (preguntaAct.getTabla().equals("ED")) { //veo si ya está
                         mViewModel.getDetallexDesc(mViewModel.getIdNuevo(), preguntaAct.getNombreCampo()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
@@ -174,198 +177,216 @@ public class NvoEmpaqueFragment extends Fragment {
                         ultimarescaja = mViewModel.getDetalleCajaxCaja(mViewModel.getIdNuevo(), mViewModel.cajaAct);
                         if(ultimarescaja!=null) {
                             isEdicion = true;
-                            String[] aux = ultimarescaja.getDimensiones().split(";");
-                            if (aux.length > 0) {
 
-                                mViewModel.largoCaja = Float.parseFloat(aux[0]);
 
-                            }
+                            mViewModel.largoCaja = Float.parseFloat(ultimarescaja.getLargo());
+                            if(ultimarescaja.getAncho()!=null)
+                             mViewModel.anchoCaja = Float.parseFloat(ultimarescaja.getAncho());
+                            if(ultimarescaja.getAlto()!=null)
+                                mViewModel.altoCaja = Float.parseFloat(ultimarescaja.getAlto());
+                            if(ultimarescaja.getPeso()!=null)
+                                mViewModel.pesoCaja = Float.parseFloat(ultimarescaja.getPeso());
 
-                            if (aux.length > 1) {
-
-                                mViewModel.anchoCaja = Float.parseFloat(aux[1]);
-                            }
-                            if (aux.length > 2) {
-                                mViewModel.altoCaja = Float.parseFloat(aux[2]);
-                            }
-                            if (aux.length == 3) {
-
-                                mViewModel.pesoCaja = Float.parseFloat(aux[3]);
-                            }
                         }
                        // mViewModel.cajaAct=ulti
                         crearFormulario();
                     }
-                }else
+                }else {
+                   //no he guardado el informe
                     crearFormulario();
 
-            }else //es la primera o vengo de continuar
+                }
+
+            }else
             {
-                //busco si tengo varias plantas
-                listacomp= lcViewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
-                Log.d(TAG,"id nuevo"+mViewModel.getIdNuevo()+"--"+listacomp.size());
 
-                if(mViewModel.getIdNuevo()==0)
-                    if(listacomp.size()>1) {
-                        //tengo varias plantas
-                        // preguntaAct=1;
-                        convertirLista(listacomp);
-
-                        mViewModel.variasPlantas=true;
-
-
-                    }else if(listacomp.size()>0) {
-
-                        mViewModel.variasPlantas = false;
-                        nombrePlantaSel=listacomp.get(0).getPlantaNombre();
-                        plantaSel=listacomp.get(0).getPlantasId();
-                        clienteId=listacomp.get(0).getClientesId();
-                        clienteNombre=listacomp.get(0).getClienteNombre();
-                        InformeEtapa informetemp=new InformeEtapa();
-                        informetemp.setClienteNombre(clienteNombre);
-                        informetemp.setClientesId(clienteId);
-                        informetemp.setPlantasId(plantaSel);
-                        informetemp.setPlantaNombre(nombrePlantaSel);
-                        informetemp.setIndice(Constantes.INDICEACTUAL);
-                        ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(informetemp);
-
-
-                        mViewModel.buscarInformeEtiq(Constantes.INDICEACTUAL,plantaSel);
-                    }
-                //buscar la solicitud
                 Bundle datosRecuperados = getArguments();
 
-                if(datosRecuperados!=null) {
+                if (datosRecuperados != null) {
                     informeSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
 
-                }
-                if(informeSel>0) //vengo de continuar busco el informe
-                     mViewModel.getInformeEdit(informeSel).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
-                         @Override
-                         public void onChanged(InformeEtapa informeEtapa) {
-                             infomeEdit = informeEtapa;
-                             mViewModel.setNvoinforme(infomeEdit);
-                             mViewModel.setIdNuevo(informeSel);
-                             int pregact = 0;
-                             isEdicion=true;
-                             //busco si tengo detalle
-                             ultimares = mViewModel.getUltimoInformeDet(informeSel, 4);
-                             if (ultimares == null) {      //voy en la 91
-                                 pregact = 91;
-                                 mViewModel.buscarReactivo(pregact).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-                                     @Override
-                                     public void onChanged(Reactivo reactivo) {
-                                         preguntaAct = reactivo;
-                                         isEdicion=true;
-                                         crearFormulario();
-                                     }
-                                 });
-                             }else {
 
-                                     //ya tengo dimensiones?
-                                     ultimarescaja = mViewModel.getUltimoDetalleCaja(informeSel);
+                if (informeSel > 0) //vengo de continuar busco el informe
+                {
+                    mViewModel.getInformeEdit(informeSel).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
+                        @Override
+                        public void onChanged(InformeEtapa informeEtapa) {
 
-                                     if (ultimarescaja != null)//voy en dimensiones
-                                     {
-                                         String[] aux = ultimarescaja.getDimensiones().split(";");
-                                         if (aux.length > 0) {
-                                             pregact = 96;
-                                             mViewModel.largoCaja=Float.parseFloat(aux[0]);
+                            mViewModel.setNvoinforme(informeEtapa);
+                            mViewModel.setIdNuevo(informeSel);
+                            int pregact = 0;
+                            mViewModel.buscarInformeEtiq(Constantes.INDICEACTUAL, informeEtapa.getPlantasId());
+                            ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(informeEtapa);
+                            //busco si tengo detalle
+                            ultimares = mViewModel.getUltimoInformeDet(informeSel, 4);
+                            if (ultimares == null) {      //voy en la 91
+                                //no deberia estar aqui
+                                Log.e(TAG,"no deberia entrar aqui");
+                            } else {
 
-                                         }
+                                //ya tengo dimensiones?
+                                ultimarescaja = mViewModel.getUltimoDetalleCaja(informeSel);
+                                Log.d(TAG,"lol");
 
-                                         if (aux.length > 1) {
-                                             pregact = 98;
-                                             mViewModel.anchoCaja =Float.parseFloat( aux[1]);
-                                         }
-                                         if (aux.length > 2)
-                                         {   pregact = 100;
-                                             mViewModel.altoCaja = Float.parseFloat(aux[2]);
-                                         }
-                                         if (aux.length == 3) {
-                                             pregact = 102;
-                                             mViewModel.pesoCaja =Float.parseFloat( aux[3]);
-                                         }
+                                if (ultimarescaja != null)//voy en dimensiones
+                                {
+                                    Log.d(TAG,ultimarescaja.getInformeEtapaId()+"<--"+ultimarescaja.getLargo()+"--"+ultimarescaja.getAncho()+"--"+ultimarescaja.getAlto()+"--"+ultimarescaja.getPeso());
 
+                                    mViewModel.largoCaja = Float.parseFloat(ultimarescaja.getLargo());
+                                    if(ultimarescaja.getAncho()!=null)
+                                        mViewModel.anchoCaja = Float.parseFloat(ultimarescaja.getAncho());
+                                    if(ultimarescaja.getAlto()!=null)
+                                        mViewModel.altoCaja = Float.parseFloat(ultimarescaja.getAlto());
+                                    if(ultimarescaja.getPeso()!=null)
+                                        mViewModel.pesoCaja = Float.parseFloat(ultimarescaja.getPeso());
 
+                                    if(mViewModel.largoCaja>0)
+                                        pregact=96;
+                                    if(mViewModel.anchoCaja>0)
+                                        pregact=98;
+                                    if(mViewModel.altoCaja>0)
+                                        pregact=100;
+                                    if(mViewModel.pesoCaja>0)
+                                        pregact=102;
 
-                                     mViewModel.cajaAct = ultimares.getNum_caja();
+                                    mViewModel.cajaAct = ultimarescaja.getNum_caja();
 
-                                     if (pregact > 0) {
-                                         mViewModel.buscarReactivo(pregact).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-                                             @Override
-                                             public void onChanged(Reactivo reactivo) {
-                                                 preguntaAct = reactivo;
-                                                 isEdicion=true;
-                                                 crearFormulario();
-                                             }
-                                         });
-                                     }
-                                 } else {
-                                     //busco por la pregunta
-                                     preguntaAct = mViewModel.buscarReactivoxDesc(ultimares.getDescripcion(), 4);
-                                     isEdicion=true;
-                                         crearFormulario();
-                                 }
+                                    if (pregact > 0) {
+                                        mViewModel.buscarReactivo(pregact).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                                            @Override
+                                            public void onChanged(Reactivo reactivo) {
+                                                preguntaAct = reactivo;
+                                                isEdicion = true;
+                                                crearFormulario();
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        //solo es foto
+                                        preguntaAct=mViewModel.buscarReactivoxDesc(ultimares.getDescripcion(), 4);
 
-                             }
-                         }
-                             });
+                                        isEdicion = true;
+                                        crearFormulario();
 
+                                    }
+                                } else {
 
+                                    //busco por la pregunta
+                                    preguntaAct = mViewModel.buscarReactivoxDesc(ultimares.getDescripcion(), 4);
+                                    isEdicion = true;
+                                    crearFormulario();
+                                }
 
-                else{
-
-                    if(mViewModel.variasPlantas) {
-                        buscarPreguntas();
-                        preguntaAct = mViewModel.getListaPreguntas().get(0);
-                        crearFormulario();
-                    }
-
-                    else
-                        mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-                            @Override
-                            public void onChanged(Reactivo reactivo) {
-                                preguntaAct=reactivo;
-                                crearFormulario();
                             }
-                        });
+                        }
+                    });
+                }
+                } else { //es nuevo pregunta 91
+  //reviso si ya tengo uno abierto
+            InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,4);
+
+            if (informeEtapa != null) {
+
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setTitle(R.string.atencion);
+                dialogo1.setMessage(R.string.informe_abierto);
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        //lo mando a continuar
+                        getActivity().finish();
+
+                    }
+                });
+
+                dialogo1.show();
+            }
 
 
+                    //busco si tengo varias plantas
+                    listainfetiq = mViewModel.getPlantasconInf(Constantes.INDICEACTUAL);
+                    Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
 
+                    if (mViewModel.getIdNuevo() == 0)
+                        if (listainfetiq.size() > 1) {
+                            //tengo varias plantas
+                            // preguntaAct=1;
+                            convertirLista(listainfetiq);
+
+                            mViewModel.variasPlantas = true;
+                            buscarPreguntas();
+                            preguntaAct = mViewModel.getListaPreguntas().get(0);
+                            crearFormulario();
+
+                        } else if (listainfetiq.size() > 0) {
+
+                            mViewModel.variasPlantas = false;
+                            nombrePlantaSel = listainfetiq.get(0).getPlantaNombre();
+                            plantaSel = listainfetiq.get(0).getPlantasId();
+                            clienteId = listainfetiq.get(0).getClientesId();
+                            clienteNombre = listainfetiq.get(0).getClienteNombre();
+                            InformeEtapa informetemp = new InformeEtapa();
+                            informetemp.setClienteNombre(clienteNombre);
+                            informetemp.setClientesId(clienteId);
+                            informetemp.setPlantasId(plantaSel);
+                            informetemp.setPlantaNombre(nombrePlantaSel);
+                            informetemp.setIndice(Constantes.INDICEACTUAL);
+                            mViewModel.setNvoinforme(informetemp);
+                            ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informetemp);
+                            //me voy a la sig
+                            mViewModel.buscarInformeEtiq(Constantes.INDICEACTUAL,plantaSel);
+                            if(mViewModel.getInformeEtiq()==null){
+                                //no tengo inf etiqueta de esta planta
+                                Toast.makeText(getContext(),"NO TIENE INFORME DE ETIQUETADO DE "+nombrePlantaSel,Toast.LENGTH_SHORT).show();
+
+                                return root;
+                            }
+                            mViewModel.cajaAct=1;
+                            mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                                @Override
+                                public void onChanged(Reactivo reactivo) {
+                                    preguntaAct = reactivo;
+                                    crearFormulario();
+                                }
+                            });
+
+
+                        }else{
+                            Toast.makeText(getContext(),"NO TIENE INFORMES DE ETIQUETADO ",Toast.LENGTH_LONG).show();
+
+                           getActivity().finish();
+                        }
                 }
             }
 
 
-            aceptar.setEnabled(false);
+                aceptar.setEnabled(false);
 
 
-            aceptar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    aceptar.setEnabled(false);
-                    long currentClickTime=SystemClock.elapsedRealtime();
-                    // preventing double, using threshold of 1000 ms
-                    if (currentClickTime - lastClickTime < 5500){
-                        //  Log.d(TAG,"doble click :("+lastClickTime);
-                        return;
-                    }
+                aceptar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG,"DICLICK");
+                        aceptar.setEnabled(false);
+                        long currentClickTime = SystemClock.elapsedRealtime();
+                        // preventing double, using threshold of 1000 ms
+                        if (currentClickTime - lastClickTime < 5500) {
+                            //  Log.d(TAG,"doble click :("+lastClickTime);
+                            return;
+                        }
 
-                    lastClickTime = currentClickTime;
+                        lastClickTime = currentClickTime;
 
-                   // if(preguntaAct.getNombreCampo().equals("plantasId")){
-                     //   guardarCliente();
-                    //}
-                    //else
+                        // if(preguntaAct.getNombreCampo().equals("plantasId")){
+                        //   guardarCliente();
+                        //}
+                        //else
                         siguiente();
 
-                }
-            });
-            if(preguntaAct.getId()==104){
-                //cambio el boton a finalizar y muestro alerta
-                aceptar.setText(getString(R.string.enviar));
-                aceptar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.botonvalido));
-            }
+                    }
+                });
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -398,8 +419,25 @@ public class NvoEmpaqueFragment extends Fragment {
         campo.style=R.style.formlabel2;
         if(isEdicion&&preguntaAct.getTabla().equals("ED"))
             campo.value=ultimares.getRuta_foto();
+
         if(isEdicion&&preguntaAct.getTabla().equals("DC"))
-            campo.value=ultimarescaja.getDimensiones();
+        {
+            switch (preguntaAct.getId()) {
+                case 96:
+                    campo.value = mViewModel.largoCaja + "";
+                    break;
+                case 98:
+                    campo.value = mViewModel.anchoCaja + "";
+                    break;
+                case 100:
+                    campo.value = mViewModel.altoCaja + "";
+                    break;
+                case 102:
+                    campo.value = mViewModel.pesoCaja + "";
+                    break;
+
+            }
+        }
         campo.id=1001;
         //para las plantas
         if(preguntaAct.getType().equals(CreadorFormulario.SELECTDES)){
@@ -478,8 +516,14 @@ public class NvoEmpaqueFragment extends Fragment {
             textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
             aceptar.setEnabled(true);
         }
-
-
+        if(isEdicion&&!textoint.getText().equals("")){
+            aceptar.setEnabled(true);
+        }
+        if (preguntaAct!=null&&preguntaAct.getId() == 104) {
+            //cambio el boton a finalizar y muestro alerta
+            aceptar.setText(getString(R.string.enviar));
+            aceptar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.botonvalido));
+        }
 
         if(spplanta!=null){
             spplanta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -634,11 +678,14 @@ public class NvoEmpaqueFragment extends Fragment {
                 //quito la info de la barra gris
               //  ((NuevoInfEtapaActivity)getActivity()).reiniciarBarraCaja();
                // Log.d(TAG,"antes de guardar num muestra"+nummuestra);
+                //avanzarPregunta(preguntaAct.getSigId());
+            }else {
+                if (preguntaAct.getId() > 91)
+                    if (!guardarDet())
+                        return;
 
-            }else
-                 if(preguntaAct.getId()>91)
-                    guardarDet();
-                avanzarPregunta(preguntaAct.getSigId());
+            }
+            avanzarPregunta(preguntaAct.getSigId());
 
         }
         aceptar.setEnabled(true);
@@ -758,7 +805,7 @@ public class NvoEmpaqueFragment extends Fragment {
         aceptar.setEnabled(true);
       //  avanzarPregunta(preguntaAct);
     }
-    public void guardarDet(){
+    public boolean guardarDet(){
         try{
             String rutafoto = null;
             String qr = null;
@@ -775,54 +822,66 @@ public class NvoEmpaqueFragment extends Fragment {
                 } else if (mViewModel.getIdNuevo() > 0)
                     //guardo el detalle
                     mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), 1, preguntaAct.getNombreCampo(), rutafoto, 0, mViewModel.cajaAct);
+                fotomos.setImageBitmap(null);
+                 fotomos.setVisibility(View.GONE);
+                  btnrotar.setVisibility(View.GONE);
             }else
             if(preguntaAct.getTabla().equals("DC")) {
-                String dimensiones;
-                if(preguntaAct.getLabel().equals(R.string.peso)) {
-                    dimensiones = mViewModel.largoCaja + ";" + mViewModel.anchoCaja + ";" + mViewModel.altoCaja + ";" + rutafoto;
-                    //guardo hasta tener el peso
-                    if (isEdicion) {
 
-                        mViewModel.insertarDetCaja(mViewModel.getIdNuevo(),ultimares.getId(), mViewModel.cajaAct, dimensiones);
-                        isEdicion = false;
-                    } else if (mViewModel.getIdNuevo() > 0)
+                  if (mViewModel.getIdNuevo() > 0&&ultimarescaja==null)
                         //guardo el detalle
-                        mViewModel.insertarDetCaja(mViewModel.getIdNuevo(),0, mViewModel.cajaAct, dimensiones );
-                }
-                else
-                    //guardo en el viewmodel
+                    {
+                        Log.d(TAG,"guardando caja"+mViewModel.cajaAct);
+                        mViewModel.setIddetalle( mViewModel.insertarDetCaja(mViewModel.getIdNuevo(), 0, mViewModel.cajaAct));
+
+                    }
                 try {
+                    if(ultimarescaja!=null&&ultimarescaja.getId()>0){
+                        mViewModel.setIddetalle(ultimarescaja.getId());
+                    }
                     switch (preguntaAct.getId()) {
                         case 96:
                             mViewModel.largoCaja = Float.parseFloat(rutafoto);
+                            mViewModel.actDetCaja(mViewModel.getIdNuevo(),mViewModel.getIddetalle(), mViewModel.cajaAct,  "", "", "", mViewModel.largoCaja+"");
+
                             break;
                         case 98:
                             mViewModel.anchoCaja = Float.parseFloat(rutafoto);
+                            mViewModel.actDetCaja(mViewModel.getIdNuevo(),mViewModel.getIddetalle(), mViewModel.cajaAct,   mViewModel.anchoCaja+"", "", "", "");
+
                             break;
                         case 100:
                             mViewModel.altoCaja = Float.parseFloat(rutafoto);
+                            mViewModel.actDetCaja(mViewModel.getIdNuevo(),mViewModel.getIddetalle(), mViewModel.cajaAct,  "",  mViewModel.altoCaja+"", "", "");
+
                             break;
                         case 102:
                             mViewModel.pesoCaja = Float.parseFloat(rutafoto);
+                            mViewModel.actDetCaja(mViewModel.getIdNuevo(),mViewModel.getIddetalle(), mViewModel.cajaAct,  "", "",  mViewModel.pesoCaja+"", "");
+
                             break;
                     }
                 }catch(NumberFormatException ex){
                     Toast.makeText(getContext(),"Número incorrecto, verifique",Toast.LENGTH_SHORT).show();
                 }
+                if(isEdicion)
+                    isEdicion=false;
+
+
+
+
             }
 
             //limpio campos
             textoint.setText("");
-            fotomos.setImageBitmap(null);
-            fotomos.setVisibility(View.GONE);
-            btnrotar.setVisibility(View.GONE);
+//
 
-
+            return true;
         }catch (Exception ex){
             ex.printStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
-
+            return  false;
         }
 
     }
@@ -930,9 +989,9 @@ public class NvoEmpaqueFragment extends Fragment {
         mViewModel.buscarReactivos();
 
     }
-    private  void convertirLista(List<ListaCompra>lista){
+    private  void convertirLista(List<InformeEtapa>lista){
         listaPlantas=new ArrayList<DescripcionGenerica>();
-        for (ListaCompra listaCompra: lista ) {
+        for (InformeEtapa listaCompra: lista ) {
 
             listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+","+listaCompra.getClienteNombre()));
 
@@ -945,6 +1004,13 @@ public class NvoEmpaqueFragment extends Fragment {
             Log.e(TAG,plantaSel+"..");
             //ya tengo la planta busco el informe etiquetado
             mViewModel.buscarInformeEtiq(Constantes.INDICEACTUAL,plantaSel);
+
+            if(mViewModel.getInformeEtiq()==null){
+                //no tengo inf etiqueta de esta planta
+                Toast.makeText(getContext(),"NO TIENE INFORME DE ETIQUETADO DE "+nombrePlantaSel,Toast.LENGTH_SHORT).show();
+
+                return ;
+            }
             mViewModel.cajaAct=1;
         }
         if(sig==0){
@@ -958,12 +1024,19 @@ public class NvoEmpaqueFragment extends Fragment {
             requireActivity().finish();
             startActivity(intento1);
         }
+        if(sig==91) //reviso si hay otra caja
+        {
+            if(mViewModel.cajaAct+1<=mViewModel.getInformeEtiq().getTotal_cajas()){
+
+            }else
+                sig=preguntaAct.getSigAlt();
+        }
         //busco el siguiente reactivo
         LiveData<Reactivo> nvoReac = mViewModel.buscarReactivo(sig);
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
             public void onChanged(Reactivo reactivo) {
-
+                Log.d(TAG,"sigu "+reactivo.getId()+"--"+reactivo.getNombreCampo());
                 NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment(reactivo,false);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
