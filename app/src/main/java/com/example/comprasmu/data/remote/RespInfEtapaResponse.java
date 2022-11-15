@@ -10,9 +10,9 @@ import java.util.List;
 public class RespInfEtapaResponse { //y correcciones
 
     private List<Correccion> correcciones;
-    private List<InformeEtapa> informesEtapa;
-    private List<InformeEtapaDet> informesDetalles;
-    private List<DetalleCaja> detalleCajas;
+    private List<InformeEtapa> informeEtapa;
+    private List<InformeEtapaDet> informeEtapaDet;
+    private List<DetalleCaja> detalleCaja;
 
     public List<Correccion> getCorrecciones() {
         return correcciones;
@@ -22,27 +22,27 @@ public class RespInfEtapaResponse { //y correcciones
         this.correcciones = correcciones;
     }
 
-    public List<InformeEtapa> getInformesEtapa() {
-        return informesEtapa;
+    public List<InformeEtapa> getInformeEtapa() {
+        return informeEtapa;
     }
 
-    public void setInformesEtapa(List<InformeEtapa> informesEtapa) {
-        this.informesEtapa = informesEtapa;
+    public void setInformeEtapa(List<InformeEtapa> informeEtapa) {
+        this.informeEtapa = informeEtapa;
     }
 
-    public List<InformeEtapaDet> getInformesDetalles() {
-        return informesDetalles;
+    public List<InformeEtapaDet> getInformeEtapaDet() {
+        return informeEtapaDet;
     }
 
-    public void setInformesDetalles(List<InformeEtapaDet> informesDetalles) {
-        this.informesDetalles = informesDetalles;
+    public void setInformeEtapaDet(List<InformeEtapaDet> informeEtapaDet) {
+        this.informeEtapaDet = informeEtapaDet;
     }
 
-    public List<DetalleCaja> getDetalleCajas() {
-        return detalleCajas;
+    public List<DetalleCaja> getDetalleCaja() {
+        return detalleCaja;
     }
 
-    public void setDetalleCajas(List<DetalleCaja> detalleCajas) {
-        this.detalleCajas = detalleCajas;
+    public void setDetalleCaja(List<DetalleCaja> detalleCaja) {
+        this.detalleCaja = detalleCaja;
     }
 }

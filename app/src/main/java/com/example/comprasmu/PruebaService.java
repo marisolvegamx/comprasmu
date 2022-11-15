@@ -17,7 +17,7 @@ import androidx.core.app.NotificationCompat;
 
 public class PruebaService extends Service implements  PruebaListener{
 
-    private int[] numbers={56,76,23,56,78,98,1,3,65,33,57,94,27};
+    private final int[] numbers={56,76,23,56,78,98,1,3,65,33,57,94,27};
 
 
     private NotificationManager nm;
@@ -61,7 +61,7 @@ public class PruebaService extends Service implements  PruebaListener{
             nm = getSystemService(NotificationManager.class);
             nm.createNotificationChannel(channel);
         }else
-            nm = (NotificationManager)getSystemService(NotificationManager.class);
+            nm = getSystemService(NotificationManager.class);
         NotificationCompat.Builder notificacion=new NotificationCompat.Builder(this,"tutorialspoint_01")
                 .setSmallIcon(R.drawable.ic_baseline_emoji_emotions_24)
                 .setContentTitle("Ya terminé")

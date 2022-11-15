@@ -1,5 +1,6 @@
 package com.example.comprasmu.data.modelos;
 
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -24,13 +25,16 @@ public class SolicitudCor {
     private int descripcionId;
     private String descMostrar; //como la ven
     private int numFoto; //para inf etapa será el id del detalle, para compra el id de imagendet
-   private int numFoto2;
+
+    private int numFoto2;
+
    private int numfoto3;
     private String motivo;
     private int total_fotos;
     private int etapa;
     private int estatus;
     private int estatusSync;
+
     private int contador;
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)

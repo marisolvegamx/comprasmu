@@ -51,17 +51,17 @@ import java.util.List;
 
 public class NuevoinformeViewModel extends AndroidViewModel {
 
-    private MutableLiveData<HashMap<Integer,String>> listaClientes;
-    private MutableLiveData<HashMap<Integer,String>> tiposTienda;
+    private final MutableLiveData<HashMap<Integer,String>> listaClientes;
+    private final MutableLiveData<HashMap<Integer,String>> tiposTienda;
 
     private final MutableLiveData<Event<Integer>> mSnackbarText = new MutableLiveData<>();
 
     private final InformeCompraRepositoryImpl repository;
 
-    private ImagenDetRepositoryImpl imagenDetRepository;
+    private final ImagenDetRepositoryImpl imagenDetRepository;
 
-    private ProductoExhibidoRepositoryImpl prodRepo;
-    private VisitaRepositoryImpl visitaRepository;
+    private final ProductoExhibidoRepositoryImpl prodRepo;
+    private final VisitaRepositoryImpl visitaRepository;
     public InformeCompra informe;
     public  int consecutivo;
     public ImagenDetalle ticket_compra;
@@ -70,7 +70,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public ImagenDetalle fotoFachada;
 
     public String[] clientesFoto;
-    private InformeComDetRepositoryImpl detalleRepo;
+    private final InformeComDetRepositoryImpl detalleRepo;
 
     private int idInformeNuevo;
     public int clienteSel;
@@ -235,14 +235,16 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         Log.d(TAG,"wwwwwwwww"+info.informe.getId()+"---"+visita.getTiendaNombre());
         envio.setIndice(visita.getIndice());
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
-        if(visita.getEstatusSync()==0)
+        //if(visita.getEstatusSync()==0)
             envio.setVisita(visita);
         envio.setInformeCompra(info.informe);
-        envio.setProductosEx(prodRepo.getAllsimplePendSync(visita.getId()));
+        //envio.setProductosEx(prodRepo.getAllsimplePendSync(visita.getId()));
+        envio.setProductosEx(prodRepo.getAllsimple(visita.getId()));
         //busco los detalles
         List<InformeCompraDetalle> detalles=detalleRepo.getAllSencillo(info.informe.getId());
         envio.setInformeCompraDetalles(detalles);
-        envio.setImagenDetalles(buscarImagenes(visita,info.informe,detalles));
+      //  envio.setImagenDetalles(buscarImagenes(visita,info.informe,detalles));
+        envio.setImagenDetalles(buscarImagenesRe(visita,info.informe,detalles));
         return envio;
     }
 
@@ -288,6 +290,44 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         }
 
        return fotosinfo;
+
+
+    }
+    //para reenviar imagenes
+    public List<ImagenDetalle> buscarImagenesRe(Visita visita, InformeCompra informe, List<InformeCompraDetalle> detalles){
+        //todas las fotos aqui
+        List<ImagenDetalle> fotosinfo=new ArrayList<>();
+        //la visita
+
+        ImagenDetalle imagenDetalle = getFoto(visita.getFotoFachada());
+        if(imagenDetalle!=null)
+            fotosinfo.add(imagenDetalle);
+
+
+        //las del informe
+        List<Integer> arrFotos=new ArrayList<>();
+        arrFotos.add(informe.getCondiciones_traslado());
+        arrFotos.add(informe.getTicket_compra());
+        List<ImagenDetalle> imagenDetalles=imagenDetRepository.findListsencillo(arrFotos);
+        if(imagenDetalles!=null)
+            fotosinfo.addAll(imagenDetalles);
+
+        //las del los detalles
+        if(detalles!=null)
+            for(InformeCompraDetalle detalle:detalles) {
+                List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
+                List<ImagenDetalle> imagenDetalles2=imagenDetRepository.findListsencillo(fotos);
+                fotosinfo.addAll(imagenDetalles2);
+
+            }
+
+        //las de producto ex
+
+        List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimplePend(visita.getId());
+            fotosinfo.addAll(productoExhibidos);
+
+
+        return fotosinfo;
 
 
     }

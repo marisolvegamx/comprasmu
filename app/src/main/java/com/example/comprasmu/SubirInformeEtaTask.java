@@ -104,7 +104,7 @@ public class SubirInformeEtaTask extends AsyncTask<String, Float, Integer> {
             postviewModel.sendInformeEta(envio);
 
           //  String result = postviewModel.getMensaje();
-         //   Log.d(TAG, result+" fin envio");
+
         }
     }
 

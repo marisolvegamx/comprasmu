@@ -90,12 +90,9 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
             Log.d(TAG,"------"+ Constantes.NM_TOTALISTA+"---"+mViewModel.consecutivo);
 
-            if(ultimares!=null) {    //es edicion
-                isEdicion = true;
-            }
-            else
-                //if(this.preguntaAct.getId()==2||this.preguntaAct.getId()==3||this.preguntaAct.getId()==5)
-                isEdicion=false;
+            //es edicion
+            //if(this.preguntaAct.getId()==2||this.preguntaAct.getId()==3||this.preguntaAct.getId()==5)
+            isEdicion = ultimares != null;
 
 
             if(isEdicion) {
@@ -228,11 +225,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
-                            aceptar.setEnabled(true);
-                        }else{
-                            aceptar.setEnabled(false);
-                        }
+                        //count es cantidad de caracteres que tiene
+                        aceptar.setEnabled(charSequence.length() > 0);
 
                     }
 

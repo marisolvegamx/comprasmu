@@ -50,7 +50,7 @@ import java.util.List;
 public class NuevoInfEtapaViewModel extends AndroidViewModel {
 
     public int cont;
-    private InfEtapaDetRepoImpl infDetRepo;
+    private final InfEtapaDetRepoImpl infDetRepo;
 
     public NuevoInfEtapaViewModel(@NonNull Application application) {
         super(application);

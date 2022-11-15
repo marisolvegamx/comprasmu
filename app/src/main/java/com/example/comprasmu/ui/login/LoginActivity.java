@@ -272,7 +272,7 @@ public class LoginActivity extends AppCompatActivity
         cal.add(Calendar.MONTH, +1);
         String mesactual = sdfparaindice.format(cal.getTime());
 
-        String aux[] = mesactual.split("-");
+        String[] aux = mesactual.split("-");
         int mes = Integer.parseInt(aux[0])+1;
         int anio = Integer.parseInt(aux[1]);
 
@@ -408,7 +408,7 @@ public class LoginActivity extends AppCompatActivity
             loadingProgressBar.setVisibility(View.GONE);
             guardarUsuario( cveusr);
             //busco la clave de usuario
-            String aux[]=cveusr.split("=");
+            String[] aux =cveusr.split("=");
             if(aux.length<=0){
                 Toast.makeText(getApplicationContext(),getString(R.string.error_sesion) , Toast.LENGTH_LONG).show();
                 return;

@@ -39,7 +39,7 @@ public class RevisarFotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_revisar_foto);
         myChildToolbar =
-                (Toolbar) findViewById(R.id.my_child_toolbar3);
+                findViewById(R.id.my_child_toolbar3);
         setSupportActionBar(myChildToolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
@@ -48,7 +48,7 @@ public class RevisarFotoActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
      //   imagen1=findViewById(R.id.ivrfimagen);
         foto1=findViewById(R.id.txtrffoto1);
-        PhotoView photoView = (PhotoView) findViewById(R.id.photo_view);
+        PhotoView photoView = findViewById(R.id.photo_view);
 
         Bundle extras = getIntent().getExtras(); // Aquí es null
         if(extras!=null) {

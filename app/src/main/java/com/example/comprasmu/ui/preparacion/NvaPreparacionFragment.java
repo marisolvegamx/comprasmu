@@ -48,8 +48,10 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.SubirInformeTask;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -68,6 +70,7 @@ import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
+import com.example.comprasmu.utils.Event;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -109,6 +112,7 @@ public class NvaPreparacionFragment extends Fragment {
     InformeEtapaDet detalleEdit;
     private NuevoInfEtapaViewModel infvm;
     int informesel;
+
 
     public static NvaPreparacionFragment newInstance() {
         return new NvaPreparacionFragment();
@@ -341,11 +345,8 @@ public class NvaPreparacionFragment extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
-                aceptar.setEnabled(true);
-            }else{
-                aceptar.setEnabled(false);
-            }
+            //count es cantidad de caracteres que tiene
+            aceptar.setEnabled(charSequence.length() > 0);
 
         }
 
@@ -471,11 +472,11 @@ public class NvaPreparacionFragment extends Fragment {
         DescripcionGenerica opcionsel = (DescripcionGenerica) spclientes.getSelectedItem();
 
         //busco par de id, cliente
-        String aux[]=opcionsel.getDescripcion().split(",");
+        String[] aux =opcionsel.getDescripcion().split(",");
         clienteId=Integer.parseInt(aux[0]);
         clienteNombre=aux[1];
         plantaSel=opcionsel.getId();
-        nombrePlantaSel=opcionsel.getNombre();
+        nombrePlantaSel=opcionsel.getDescripcion2();
 
 
        //creo el informe
@@ -564,7 +565,7 @@ public class NvaPreparacionFragment extends Fragment {
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
-        //todo limpio variables de sesion
+        //limpio variables de sesion
         infvm.cont=0;
         mViewModel.setIdNuevo(0);
         mViewModel.setIddetalle(0);
@@ -751,10 +752,16 @@ public class NvaPreparacionFragment extends Fragment {
                 Log.d(TAG,"guardando  detalle"+mViewModel.getIdNuevo());
             int nuevoid =0;
             if(isEdicion){
-                nuevoid = mViewModel.insertarInfEtaDet(mViewModel.getIdNuevo(), 10, "foto_preparacion" + preguntaAct, textoint.getText().toString(),detalleEdit.getId());
+                //todo solo actualizaria imagen detalle
+                nuevoid = mViewModel.actualizarImagenDet(Integer.parseInt(detalleEdit.getRuta_foto()),"foto_preparacion" + preguntaAct,textoint.getText().toString(),Constantes.INDICEACTUAL);
 
             }else {   //guardo la muestra
-                nuevoid = mViewModel.insertarInfEtaDet(mViewModel.getIdNuevo(), 10, "foto_preparacion" + preguntaAct, textoint.getText().toString(),0);
+
+
+
+                nuevoid = mViewModel.insertarInfEtaDetIm(mViewModel.getIdNuevo(), 10, "foto_preparacion" + preguntaAct,textoint.getText().toString(),0,Constantes.INDICEACTUAL);
+
+
             }
                 if (nuevoid > 0) {
 
@@ -780,11 +787,44 @@ public class NvaPreparacionFragment extends Fragment {
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         envio.setInformeEtapaDet(mViewModel.cargarInformeDet(mViewModel.getIdNuevo()));
+        //busco las imagenes
+        if(envio.getInformeEtapa().getEtapa()==1) //por ahora solo tengo prep
+        {
+            List<ImagenDetalle> imagenes=mViewModel.buscarImagenes(envio.getInformeEtapaDet());
+
+            envio.setImagenDetalles(imagenes);
+        }
+
          return envio;
     }
 
     public static void subirFotos(Activity activity, InformeEtapaEnv informe){
         //las imagenes
+        if(informe.getInformeEtapa().getEtapa()==1){
+            //busco la imagenes
+            for(ImagenDetalle imagen:informe.getImagenDetalles()){
+                //
+                //subo cada una
+                Intent msgIntent = new Intent(activity, SubirFotoService.class);
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
+                msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+                // Constantes.INDICEACTUAL
+                Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+
+                msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
+
+                //cambio su estatus a subiendo
+                imagen.setEstatusSync(1);
+                activity.startService(msgIntent);
+                //cambio su estatus a subiendo
+
+
+
+            }
+
+
+        }else
         for(InformeEtapaDet imagen:informe.getInformeEtapaDet()){
             //subo cada una
             Intent msgIntent = new Intent(activity, SubirFotoService.class);
@@ -916,10 +956,13 @@ public class NvaPreparacionFragment extends Fragment {
     private  void convertirLista(List<ListaCompra>lista){
         listaPlantas=new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
+            //reviso si ya tengo informe
+            InformeEtapa inf=mViewModel.getInformexPlantaEta(listaCompra.getPlantasId(),1,Constantes.INDICEACTUAL);
           /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
           listaCompra.getPlantaNombre();*/
-
-            listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+","+listaCompra.getClienteNombre()));
+           if(inf!=null)
+               continue;
+            listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+","+listaCompra.getClienteNombre(),listaCompra.getPlantaNombre()));
 
         }
 

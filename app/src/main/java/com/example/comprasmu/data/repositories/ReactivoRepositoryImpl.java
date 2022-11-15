@@ -16,7 +16,7 @@ import java.util.List;
 
 public  class ReactivoRepositoryImpl  extends BaseRepository<Reactivo> {
 
-    private ReactivoDao dao;
+    private final ReactivoDao dao;
 
     private LiveData<List<Reactivo>> allReactivo;
 
@@ -39,8 +39,8 @@ public  class ReactivoRepositoryImpl  extends BaseRepository<Reactivo> {
     public LiveData<Reactivo> find(int id) {
         return dao.find(id);
     }
-    public LiveData<Reactivo> findAnterior(int id) {
-        return dao.find(id);
+    public Reactivo findAnterior(int id) {
+        return dao.findbySigid(id);
     }
     @Override
     public Reactivo findsimple(int id) {

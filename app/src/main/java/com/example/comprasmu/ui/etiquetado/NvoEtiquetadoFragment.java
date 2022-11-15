@@ -62,6 +62,7 @@ import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 
 import com.example.comprasmu.ui.tiendas.DescripcionGenericaAdapter;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 
@@ -113,6 +114,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     private boolean isEdicion;
     Spinner spplanta;
     RecyclerView listaqr;
+    ComprasLog milog;
     public NvoEtiquetadoFragment(int preguntaAct,boolean edicion, InformeEtapaDet informeEdit,int informeSel) {
         this.preguntaAct = preguntaAct;
         this.isEdicion=edicion;
@@ -152,7 +154,8 @@ public class NvoEtiquetadoFragment extends Fragment {
         btnqr = root.findViewById(R.id.btnneobtqr);
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-
+        milog=ComprasLog.getSingleton();
+        milog.grabarError(TAG+" se muere aqui");
         sv1.setVisibility(View.GONE);
         sv2.setVisibility(View.GONE);
         sv3.setVisibility(View.GONE);
@@ -245,6 +248,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 dialogo1.show();
             }
         }
+        milog.grabarError(TAG+" o x aca");
         //buscar la solicitud
         Bundle datosRecuperados = getArguments();
 
@@ -652,7 +656,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
 
                 //busco par de id, cliente
-                String aux[] = opcionsel.getDescripcion().split(",");
+                String[] aux = opcionsel.getDescripcion().split(",");
                 clienteId = Integer.parseInt(aux[0]);
                 clienteNombre = aux[1];
                 plantaSel = opcionsel.getId();
@@ -854,7 +858,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 {   /* Update the textview with the scanned URL result */
                     txtqr.setText(result.getContents());
                     aceptar4.setEnabled(true);
-                    Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
+                  //  Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
                 }
 
             }
@@ -978,11 +982,8 @@ public class NvoEtiquetadoFragment extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
-                aceptar.setEnabled(true);
-            }else{
-                aceptar.setEnabled(false);
-            }
+            //count es cantidad de caracteres que tiene
+            aceptar.setEnabled(charSequence.length() > 0);
 
         }
 

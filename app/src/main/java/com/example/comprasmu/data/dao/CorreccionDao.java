@@ -40,8 +40,8 @@ public abstract class CorreccionDao extends  BaseDao<Correccion>{
     public abstract void deleteCorreccion(int id);
 
     @Query("SELECT max(id) as ultimo " +
-            "FROM correccion ")
-    public abstract int getUltimoId();
+            "FROM correccion where indice=:indice ")
+    public abstract int getUltimoId(String indice);
 
     @Query("update correccion set estatus=:estatus WHERE id=:id")
     public abstract  void actualizarEstatus(int id, int estatus);

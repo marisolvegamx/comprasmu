@@ -66,7 +66,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     final String TAG="DescargasIniAsyncTask";
    // private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
   //  private   String DESTINATION_PATH ;
-    private ProgresoListener miproglis;
+    private final ProgresoListener miproglis;
 
     public DescargasIniAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
@@ -96,7 +96,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
            // if (indice[0].equals("cat")) //descargo cats tmb
             catalogos();
             buscarZonas();
-            miproglis.cerrarAlerta(true);
+
             listacompras(); //aqui esta informes
 
 
@@ -314,7 +314,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         DescargaRespListener listener=new DescargaRespListener();
         ps.pedirRespaldo(Constantes.INDICEACTUAL,listener);
-        ps.pedirRespaldo2(Constantes.INDICEACTUAL,listener);
+
     }
 
 
@@ -344,9 +344,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 miproglis.estatusLis(0);
                 if(actualiza==0)
                     informes();
+                else
+                    miproglis.cerrarAlerta(false);
 
 
-                miproglis.cerrarAlerta(true);
 
 
             }
@@ -355,6 +356,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
              /*  if(actualiza==1&&proglist!=null){
                     proglist.cerrarAlerta(notificar);
                 }*/
+                if (actualiza==1)
                 miproglis.cerrarAlerta(notificar);
 
             }
@@ -456,14 +458,18 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 if(actualiza==0)
                  informes(); //solo en la descarga incial
 
-
-                    miproglis.cerrarAlerta(true);
+                else
+                if (actualiza==1)
+                    miproglis.cerrarAlerta(false);
             }
 
 
 
         }
     public void informes(){
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        DescargaRespListener listener=new DescargaRespListener();
+        int ban=0;
         if(getTotVisitas()==0) {
             //    DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespAsyncTask.DescargaRespListener();
 
@@ -471,12 +477,22 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             getRespaldo();
 
             //   task.execute("", "act"); //para saber que estoy actualizando
-        }
+        }else ban=1;
 
-        else {
 
-            miproglis.cerrarAlerta(true);
-        }
+        if(getTotInfEtapas()==0){
+
+
+            ps.pedirRespaldo2(Constantes.INDICEACTUAL,listener);
+        }else ban=1;
+        if(getTotCorre()==0)
+        {
+           ps.pedirRespaldoCor(Constantes.INDICEACTUAL,listener);
+        }else ban=1;
+            if (ban==1&&actualiza==1)
+
+            miproglis.cerrarAlerta(false);
+
 
     }
     public int getTotVisitas(){
@@ -487,11 +503,28 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         return ultimo;
     }
 
+    public int getTotInfEtapas(){
+        InfEtapaRepositoryImpl ierepo=new InfEtapaRepositoryImpl(act);
+        int ultimo=(int)ierepo.getUltimo(Constantes.INDICEACTUAL);
+        Log.d(TAG, "consecutivo  infe encontrado"+ultimo);
+
+        return ultimo;
+    }
+    public int getTotCorre(){
+        CorreccionRepoImpl correccionRepo=new CorreccionRepoImpl(act);
+        int ultimo=(int)correccionRepo.getUltimo(Constantes.INDICEACTUAL);
+        Log.d(TAG, "getTotCorre "+ultimo);
+
+        return ultimo;
+    }
+
+
     public interface ProgresoListener {
          void cerrarAlerta(boolean res);
          void todoBien(RespInformesResponse infoResp);
          void estatusInf(int es);
          void estatusLis(int es);
+         void imagenesEtapa(RespInfEtapaResponse infoResp);
 
     }
     public void notificarSinConexion(){
@@ -531,7 +564,17 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             //a ver como la regresamos
             //  miproglis.todoBien(infoResp);
             miproglis.estatusInf(0);
+            if(actualiza==1)
+                miproglis.cerrarAlerta(false);
         }
+        public void noactualizarCor( ){
+            //a ver como la regresamos
+            //  miproglis.todoBien(infoResp);
+            miproglis.estatusInf(0);
+            if(actualiza==1)
+                miproglis.cerrarAlerta(false);
+        }
+
 
 
         public void actualizarInformes(RespInformesResponse infoResp) {
@@ -647,21 +690,36 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         public void actualizarInfEtapa(RespInfEtapaResponse response){
             InfEtapaRepositoryImpl erepo=new InfEtapaRepositoryImpl(act);
             InfEtapaDetRepoImpl edrepo=new InfEtapaDetRepoImpl(act);
-            CorreccionRepoImpl correpo=new CorreccionRepoImpl(act);
+
             DetalleCajaRepoImpl cajrepo=new DetalleCajaRepoImpl(act);
+
+
+            if(response.getInformeEtapa()!=null){
+                Log.d(TAG,"actualizarInfEtapa "+response.getInformeEtapa().size());
+                erepo.insertAll(response.getInformeEtapa());
+            }
+            if(response.getInformeEtapaDet()!=null){
+                edrepo.insertAll(response.getInformeEtapaDet());
+            }
+            if(response.getDetalleCaja()!=null){
+                cajrepo.insertAll(response.getDetalleCaja());
+            }
+            miproglis.imagenesEtapa(response);
+            if(actualiza==1)
+            miproglis.cerrarAlerta(false);
+        }
+
+        public void actualizarCorre(RespInfEtapaResponse response){
+
+            CorreccionRepoImpl correpo=new CorreccionRepoImpl(act);
+
 
             if(response.getCorrecciones()!=null){
                 correpo.insertAll(response.getCorrecciones());
             }
-            if(response.getInformesEtapa()!=null){
-                erepo.insertAll(response.getInformesEtapa());
-            }
-            if(response.getInformesDetalles()!=null){
-                edrepo.insertAll(response.getInformesDetalles());
-            }
-            if(response.getDetalleCajas()!=null){
-                cajrepo.insertAll(response.getDetalleCajas());
-            }
+            miproglis.imagenesEtapa(response);
+            if(actualiza==1)
+                miproglis.cerrarAlerta(false);
         }
     }
 }

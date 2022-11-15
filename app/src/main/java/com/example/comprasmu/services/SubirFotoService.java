@@ -102,7 +102,7 @@ public class SubirFotoService extends IntentService
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String dir=   this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
                 ImagenDetRepositoryImpl idrepo=new ImagenDetRepositoryImpl(this);
-                sf.subirFoto(userId,dir, imagenSubir,indiceimagen, this,idrepo);
+                sf.subirFoto(Constantes.CLAVEUSUARIO,dir, imagenSubir,indiceimagen, this,idrepo);
                // pvm.actualizarEstatusFoto(imagenSubir);
                // Thread.sleep(10000);
                 // enviarOtra();
@@ -136,7 +136,7 @@ public class SubirFotoService extends IntentService
                tipo="etapa";
                etapadetRepo=new InfEtapaDetRepoImpl(getApplicationContext());
            }
-            sf.subirFotoGen(userId,dir, imagenSubir,indiceimagen, this,tipo);
+            sf.subirFotoGen(Constantes.CLAVEUSUARIO,dir, imagenSubir,indiceimagen, this,tipo);
             // pvm.actualizarEstatusFoto(imagenSubir);
             // Thread.sleep(10000);
             // enviarOtra();

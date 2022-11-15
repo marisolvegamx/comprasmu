@@ -87,7 +87,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     Button btncancel;
     Marker markerSel;
 
-    private long lastClickTime = 0;
+    private final long lastClickTime = 0;
 
         Spinner spplantas;
     List<DescripcionGenerica>clientesAsignados;
@@ -344,13 +344,13 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
             for(Geocerca geo:zonas){
                 //georep.insert(geo);
-                String aux[]=geo.getGeo_p1().split(",");
+                String[] aux =geo.getGeo_p1().split(",");
                 LatLng p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-                String aux2[]=geo.getGeo_p2().split(",");
+                String[] aux2 =geo.getGeo_p2().split(",");
                 LatLng p2 =new LatLng(Double.parseDouble(aux2[0]), Double.parseDouble(aux2[1]));
-                String aux3[]=geo.getGeo_p3().split(",");
+                String[] aux3 =geo.getGeo_p3().split(",");
                 LatLng p3 =new LatLng(Double.parseDouble(aux3[0]), Double.parseDouble(aux3[1]));
-                String aux4[]=geo.getGeo_p4().split(",");
+                String[] aux4 =geo.getGeo_p4().split(",");
                 LatLng p4 =new LatLng(Double.parseDouble(aux4[0]), Double.parseDouble(aux4[1]));
 
                 regionPolygon.add( mMap.addPolygon(new PolygonOptions()
@@ -383,7 +383,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             String indiceini=aux1[0]+"."+anioant;
             fini=ComprasUtils.indiceaFecha2(indiceini);
             //busco el pais y cd de la planta
-            int aux[]=lcviewModel.buscarClienCdxPlan(planta);
+            int[] aux =lcviewModel.buscarClienCdxPlan(planta);
              cliente=aux[0];
             int ciudad=aux[1];
           //  Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);
@@ -395,7 +395,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             this.listatiendas=petmap.getListatiendas();
             this.listageocercas=petmap.getListageocercas();
             //observo
-            this.listatiendas.observe((LifecycleOwner) this, new Observer<List<Tienda>>() {
+            this.listatiendas.observe(this, new Observer<List<Tienda>>() {
                 @Override
                 public void onChanged(List<Tienda> tiendas) {
                     if(tiendas!=null&&tiendas.size()>0) {
@@ -410,7 +410,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                     }
                 }
             });
-            this.listageocercas.observe((LifecycleOwner) this, new Observer<List<Geocerca>>() {
+            this.listageocercas.observe(this, new Observer<List<Geocerca>>() {
                 @Override
                 public void onChanged(List<Geocerca> zonas) {
                     if(zonas!=null&&zonas.size()>0) {
@@ -434,7 +434,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                         tienda.setColor(color);
                         // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
                         if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
-                            String aux[] = tienda.getUne_coordenadasxy().split(",");
+                            String[] aux = tienda.getUne_coordenadasxy().split(",");
 
                             japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
                             Marker marker=mMap.addMarker(new MarkerOptions()
@@ -453,7 +453,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                         tienda.setColor(color);
                         // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
                         if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
-                            String aux[] = tienda.getUne_coordenadasxy().split(",");
+                            String[] aux = tienda.getUne_coordenadasxy().split(",");
 
                             japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
                             Marker marker=mMap.addMarker(new MarkerOptions()
@@ -470,7 +470,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                         tienda.setColor(color);
                         // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
                         if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
-                            String aux[] = tienda.getUne_coordenadasxy().split(",");
+                            String[] aux = tienda.getUne_coordenadasxy().split(",");
 
                             japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
                             Marker marker=mMap.addMarker(new MarkerOptions()

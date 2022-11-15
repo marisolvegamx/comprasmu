@@ -82,7 +82,7 @@
                     android:id="@+id/txtnitienda"
                     style="@style/columna2"
                     android:layout_width="wrap_content"
-                    android:layout_height="32dp"
+                    android:layout_height="wrap_content"
 
                     android:layout_weight="1"
                     android:text='@{visita.createdAt!=null?sdf.format(visita.createdAt):""}' />

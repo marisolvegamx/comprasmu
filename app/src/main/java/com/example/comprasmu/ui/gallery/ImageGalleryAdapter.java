@@ -22,7 +22,7 @@ import java.util.List;
 public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapter.MyViewHolder>  {
 
     private List<ImagenDetalle> mSpacePhotos;
-    private Context mContext;
+    private final Context mContext;
     String directorio;
    // private AdapterCallback callback;
     public ImageGalleryAdapter(Context context, List<ImagenDetalle> spacePhotos) {
@@ -98,7 +98,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         public MyViewHolder(View itemView) {
 
             super(itemView);
-            mPhotoImageView = (ImageView) itemView.findViewById(R.id.iv_photo);
+            mPhotoImageView = itemView.findViewById(R.id.iv_photo);
             txtdesc=itemView.findViewById(R.id.txtfidesc);
             txtruta=itemView.findViewById(R.id.txtfiruta);
             atr1=itemView.findViewById(R.id.txtfiatr1);

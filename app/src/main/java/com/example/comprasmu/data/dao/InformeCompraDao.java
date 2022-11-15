@@ -27,11 +27,11 @@ public interface InformeCompraDao {
 
     @Transaction
     @RawQuery(observedEntities = InformeWithDetalle.class)
-    public  LiveData<List<InformeWithDetalle>> getInformesWithDetalleByFiltros(SupportSQLiteQuery query);
+    LiveData<List<InformeWithDetalle>> getInformesWithDetalleByFiltros(SupportSQLiteQuery query);
 
     @Transaction
     @Query("SELECT * FROM informe_compras WHERE id = :id ")
-    public  LiveData<InformeWithDetalle> getInformeWithDetalleById(int id);
+    LiveData<InformeWithDetalle> getInformeWithDetalleById(int id);
 
 
     @Query("SELECT * FROM informe_compras WHERE id = :uuid")
@@ -76,10 +76,10 @@ public interface InformeCompraDao {
     int getLastConsecutivoInforme(String indice, int planta);*/
 
     @Query("update informe_compras set estatus=:estatus WHERE id=:id")
-    public void actualizarEstatus(int id, int estatus);
+    void actualizarEstatus(int id, int estatus);
 
     @Query("update informe_compras set estatusSync=:estatus WHERE id=:id")
-    public void actualizarEstatusSync(int id, int estatus);
+    void actualizarEstatusSync(int id, int estatus);
 
     @Transaction
     @Query("SELECT * FROM informe_compras WHERE visitasId=:visita and estatusSync=2")
@@ -89,20 +89,20 @@ public interface InformeCompraDao {
     List<InformeCompra> getInformexEstatus(String indice, int estatus);
 
     @Query("SELECT * FROM informe_compras WHERE visitasId =:visitaId")
-    abstract LiveData<List<InformeCompra>> getInformesByVisita(int visitaId);
+    LiveData<List<InformeCompra>> getInformesByVisita(int visitaId);
 
     @Query("SELECT * FROM informe_compras WHERE visitasId =:visitaId")
-    abstract List<InformeCompra> getInformesByVisitasimple(int visitaId);
+    List<InformeCompra> getInformesByVisitasimple(int visitaId);
 
     @Query("SELECT * FROM informe_compras WHERE id =:id")
-    public abstract InformeCompra findSimple(int id);
+    InformeCompra findSimple(int id);
 
     @RawQuery(observedEntities = InformeCompravisita.class)
-    public abstract LiveData<List<InformeCompravisita>> getInformesWithVisita(SupportSQLiteQuery query);
+    LiveData<List<InformeCompravisita>> getInformesWithVisita(SupportSQLiteQuery query);
 
     @Transaction
     @Query("SELECT * FROM informe_compras WHERE id = :id ")
-    public abstract  InformeWithDetalle getInformeWithDetalleByIdsimple(int id);
+    InformeWithDetalle getInformeWithDetalleByIdsimple(int id);
 
 
    /* @Query("SELECT indice, createdAt as fecha,clienteNombre, plantaNombre, " +
@@ -123,7 +123,7 @@ public interface InformeCompraDao {
             "informe_compras.estatusSync, " +
             "indice, tiendaNombre, ciudad ,createdAt FROM informe_compras " +
             "INNER JOIN visitas ON informe_compras.visitasId = visitas.id")
-    public static class InformeCompravisita {
+    class InformeCompravisita {
         public int idinforme;
         public int visitasId;
         public int consecutivo;

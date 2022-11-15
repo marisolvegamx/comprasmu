@@ -80,9 +80,9 @@ public class NuevaFotoExhibFragment extends Fragment {
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        ruta1 = (EditText) view.findViewById(R.id.txtferutafoto);
+        ruta1 = view.findViewById(R.id.txtferutafoto);
 
-        imagen1=(ImageView) view.findViewById(R.id.ivfefotoproducto);
+        imagen1= view.findViewById(R.id.ivfefotoproducto);
         Bundle extras = getActivity().getIntent().getExtras();
         nombre_foto=extras.getString(NuevoinformeFragment.ARG_FOTOPRODUCTO);
         visitasId=extras.getInt(NuevaFotoExhibFragment.ARG_VISITASID);

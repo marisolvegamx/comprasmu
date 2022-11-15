@@ -22,7 +22,7 @@ import com.google.zxing.integration.android.IntentResult;
 public class PruebasActivity  extends AppCompatActivity {
 
     private TextView mTextView;
-    private int PERMISSION_REQUEST_CAMERA=200;
+    private final int PERMISSION_REQUEST_CAMERA=200;
     private static final int REQUEST_CODEQR = 341;
     //   private PreviewView previewView;
  //   private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
@@ -32,8 +32,8 @@ public class PruebasActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pruebas);
 
-        mTextView = (TextView) findViewById(R.id.txtlllog);
-        Button boton = (Button) findViewById(R.id.btnpscan);
+        mTextView = findViewById(R.id.txtlllog);
+        Button boton = findViewById(R.id.btnpscan);
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

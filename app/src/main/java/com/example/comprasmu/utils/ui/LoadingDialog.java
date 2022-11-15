@@ -10,7 +10,7 @@ import com.example.comprasmu.R;
 public class LoadingDialog {
 
 
-        private Activity activity;
+        private final Activity activity;
         private AlertDialog alertDialog;
 
         public LoadingDialog(Activity myactivity)

@@ -72,7 +72,7 @@ public class PeticionesServidor {
 
     public void getCatalogos(CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atRepo) {
 
-        final Call<CatalogosResponse> batch = apiClient.getApiService().getCatalogosNuevoInforme(usuario);
+        final Call<CatalogosResponse> batch = ServiceGenerator.getApiService().getCatalogosNuevoInforme(usuario);
 
         batch.enqueue(new Callback<CatalogosResponse>() {
             @Override
@@ -99,7 +99,7 @@ public class PeticionesServidor {
 
     public void getSustitucion(TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo) {
 
-        final Call<List<Sustitucion>> batch = apiClient.getApiService().getSustitucion(usuario);
+        final Call<List<Sustitucion>> batch = ServiceGenerator.getApiService().getSustitucion(usuario);
         Log.d("PeticionesServidor","enviando sustitucion ");
 
         batch.enqueue(new Callback<List<Sustitucion>>() {
@@ -130,7 +130,7 @@ public class PeticionesServidor {
     public  void getUltimoInforme(String indice,int plantaSel, NuevoinformeViewModel.EnvioListener listener ) {
         resp=new  MutableLiveData<Boolean>();
         Log.d(TAG,"haciendo peticion"+plantaSel);
-        final Call<UltimoInfResponse> batch = apiClient.getApiService().getUltimosIdsI(indice,plantaSel,usuario);
+        final Call<UltimoInfResponse> batch = ServiceGenerator.getApiService().getUltimosIdsI(indice,plantaSel,usuario);
 
         batch.enqueue(new Callback<UltimoInfResponse>() {
             @Override
@@ -166,7 +166,7 @@ public class PeticionesServidor {
     public  void getPlantaPeniafiel(String siglas, DetalleProductoPenFragment.EnvioListener listener) {
         CatalogoDetalle resp=null;
         Log.d(TAG,"haciendo peticion"+siglas);
-        final Call<PlantaResponse> batch = apiClient.getApiService().getPlantaPeniafiel(siglas,usuario);
+        final Call<PlantaResponse> batch = ServiceGenerator.getApiService().getPlantaPeniafiel(siglas,usuario);
 
         batch.enqueue(new Callback<PlantaResponse>() {
             @Override
@@ -209,7 +209,7 @@ public class PeticionesServidor {
     public  UltimoInfResponse getUltimoInformex(String indice,int plantaSel, NuevoinformeViewModel.EnvioListener listener ) {
 
         Log.d(TAG,"haciendo peticion"+plantaSel);
-        final Call<UltimoInfResponse> batch = apiClient.getApiService().getUltimosIdsI(indice,plantaSel,usuario);
+        final Call<UltimoInfResponse> batch = ServiceGenerator.getApiService().getUltimosIdsI(indice,plantaSel,usuario);
 
         UltimoInfResponse respuesta = null;
         try {
@@ -234,7 +234,7 @@ public class PeticionesServidor {
 
     public  MutableLiveData<Boolean> getUltimaVisita(String indice, NuevoinformeViewModel.EnvioListener listener ) {
         resp=new  MutableLiveData<Boolean>();
-        final Call<UltimosIdsResponse> batch = apiClient.getApiService().getUltimosIdsV(indice,usuario);
+        final Call<UltimosIdsResponse> batch = ServiceGenerator.getApiService().getUltimosIdsV(indice,usuario);
 
         batch.enqueue(new Callback<UltimosIdsResponse>() {
             @Override
@@ -299,7 +299,7 @@ public class PeticionesServidor {
 
         Log.d("PeticionesServidor","haciendo petición"+peticion.version_lista+"--"+peticion.version_detalle);
 
-        final Call<ListaCompraResponse> batch = apiClient.getApiService().getListasCompra(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle);
+        final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompra(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle);
 
         batch.enqueue(new Callback<ListaCompraResponse>() {
             @Override
@@ -342,7 +342,7 @@ public class PeticionesServidor {
 
         Log.d("PeticionesServidor","haciendo petición pedir respaldo "+usuario);
 
-        final Call<RespInformesResponse> batch = apiClient.getApiService().getRespaldoInf(indice,usuario);
+        final Call<RespInformesResponse> batch = ServiceGenerator.getApiService().getRespaldoInf(indice,usuario);
 
         batch.enqueue(new Callback<RespInformesResponse>() {
             @Override
@@ -374,7 +374,7 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<RespInformesResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
-
+                    listener.noactualizar(null);
                 }
             }
         });
@@ -384,7 +384,7 @@ public class PeticionesServidor {
 
         Log.d("PeticionesServidor","haciendo petición pedir respaldo2 "+usuario);
 
-        final Call<RespInfEtapaResponse> batch = apiClient.getApiService().getRespaldoInf2(indice,usuario);
+        final Call<RespInfEtapaResponse> batch = ServiceGenerator.getApiService().getRespaldoInf2(indice,usuario);
 
         batch.enqueue(new Callback<RespInfEtapaResponse>() {
             @Override
@@ -394,6 +394,7 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(etapasResp!=null) //falta actualizar
                     {
+                        Log.d("PeticionesServidor","respaldo2 "+etapasResp.getInformeEtapa());
 
                         listener.actualizarInfEtapa(etapasResp);
                         /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
@@ -405,7 +406,7 @@ public class PeticionesServidor {
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lista vacia");
-                        listener.noactualizar(null);
+                        listener.noactualizarE();
                     }
 
                 }
@@ -415,15 +416,57 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
+                    listener.noactualizarE();
+                }
+            }
+        });
+    }
+    public void pedirRespaldoCor(String indice, DescargasIniAsyncTask.DescargaRespListener listener){
 
+        Log.d("PeticionesServidor","haciendo petición pedir resp correc "+usuario);
+
+        final Call<RespInfEtapaResponse> batch = ServiceGenerator.getApiService().getRespaldoCor(indice,usuario);
+
+        batch.enqueue(new Callback<RespInfEtapaResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<RespInfEtapaResponse> call, @Nullable Response<RespInfEtapaResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    RespInfEtapaResponse etapasResp = response.body();
+                    //reviso si está actualizado
+                    if(etapasResp!=null) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","resp correc  "+etapasResp.getInformeEtapa());
+
+                        listener.actualizarCorre(etapasResp);
+                        /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
+                        lcdrepo.insertAll(compraResp.getDetalles());
+                        //actualizar version en tabla
+                        tvrepo.insertAll(compraResp.getVersiones());
+*/
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista vacia");
+                        listener.noactualizarCor();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+                    listener.noactualizarCor();
                 }
             }
         });
     }
 
+
     public void cancelarInforme(int informeId,InformeCancelar informe){
 
-        Call<ResponseBody> respuesta= apiClient.getApiService().cancelarInforme(informeId,informe);
+        Call<ResponseBody> respuesta= ServiceGenerator.getApiService().cancelarInforme(informeId,informe);
 
         respuesta.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -448,7 +491,7 @@ public class PeticionesServidor {
 
         Log.d("PeticionesServidor","haciendo petición logeo "+new String(android.util.Base64.encode(username.getBytes(), Base64.NO_WRAP))+"--"+new String(Base64.encode(password.getBytes(),Base64.NO_WRAP)));
 
-        final Call<PostResponse>  batch = apiClient.getApiService().autenticarUser(new String(android.util.Base64.encode(username.getBytes(), Base64.NO_WRAP)), new String(Base64.encode(password.getBytes(),Base64.NO_WRAP)));
+        final Call<PostResponse>  batch = ServiceGenerator.getApiService().autenticarUser(new String(android.util.Base64.encode(username.getBytes(), Base64.NO_WRAP)), new String(Base64.encode(password.getBytes(),Base64.NO_WRAP)));
        // final Call<PostResponse>  batch = apiClient.getApiService().autenticarUser(username, password);
 
 
@@ -539,7 +582,7 @@ public class PeticionesServidor {
     }
     public void pedirSolicitudesCorr(String indice, int etapa, String version, NavigationDrawerActivity.ActualListener petsocor){
 
-        final Call<SolCorreResponse> batch = apiClient.getApiService().getSolicitudCorre(indice,usuario,etapa,version);
+        final Call<SolCorreResponse> batch = ServiceGenerator.getApiService().getSolicitudCorre(indice,usuario,etapa,version);
 
         batch.enqueue(new Callback<SolCorreResponse>() {
             @Override

@@ -44,7 +44,7 @@ public class SelClienteFragment extends ListaSelecFragment {
     private LiveData<List<ListaCompra>> listaclientes;
     private  ArrayList<DescripcionGenerica> listaClientesEnv;
     ListaCompraRepositoryImpl lcrepo;
-    private static String TAG="SelClienteFragment";
+    private static final String TAG="SelClienteFragment";
     private ListaDetalleViewModel mViewModel;
     public static String ARG_TIPOCONS="comprasmu.selcli.tipocons";
     int ciudadSel;
@@ -131,7 +131,7 @@ public class SelClienteFragment extends ListaSelecFragment {
 
         Bundle bundle = new Bundle();
         bundle.putInt(ListaCompraFragment.ARG_PLANTASEL,listaSeleccionable.get(i).getId() );
-        bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getNombre());
+        bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getDescripcion2());
         bundle.putString(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
         bundle.putInt(DetalleProductoFragment.NUMMUESTRA,numMuestra);
        bundle.putString(ListaCompraFragment.ARG_MUESTRA, isMuestra);
@@ -162,7 +162,7 @@ public class SelClienteFragment extends ListaSelecFragment {
                 Intent intento1 = new Intent(getActivity(), BackActivity.class);
                 intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_LISTACOMPRA);
                 intento1.putExtra(ListaCompraFragment.ARG_PLANTASEL, listaSeleccionable.get(i).getId());
-                intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getNombre());
+                intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getDescripcion2());
                 intento1.putExtra(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
                 intento1.putExtra(DetalleProductoFragment.NUMMUESTRA, numMuestra);
                 intento1.putExtra(ListaCompraFragment.ARG_MUESTRA, isMuestra);
@@ -186,7 +186,7 @@ public class SelClienteFragment extends ListaSelecFragment {
           /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
           listaCompra.getPlantaNombre();*/
 
-          listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClienteNombre()));
+          listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClienteNombre(),listaCompra.getPlantaNombre()));
 
         }
 

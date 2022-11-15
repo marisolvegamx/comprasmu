@@ -40,9 +40,9 @@ public class VerInformeViewModel extends AndroidViewModel {
     LiveData<ImagenDetalle> fotocondiciones;
     LiveData<ImagenDetalle> fotoFachada;
     Application context;
-    private ImagenDetRepositoryImpl imagenDetRepository;
+    private final ImagenDetRepositoryImpl imagenDetRepository;
     private ProductoExhibidoRepositoryImpl prodRepo;
-    private static String TAG="VerInformeViewModel";
+    private static final String TAG="VerInformeViewModel";
 
 
 

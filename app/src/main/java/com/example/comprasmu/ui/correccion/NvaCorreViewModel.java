@@ -17,7 +17,7 @@ import java.util.List;
 
 public class NvaCorreViewModel extends AndroidViewModel {
 
-    private CorreccionRepoImpl correpository;
+    private final CorreccionRepoImpl correpository;
     private int idNuevo;
     private Correccion nvocorreccion;
     final String TAG="NvaCorreViewModel";
@@ -30,7 +30,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
 
     }
 
-    public int insertarCorreccion(int solicitudid,String ruta1, String ruta2,String ruta3){
+    public int insertarCorreccion(int solicitudid,int numFoto,String ruta1, String ruta2,String ruta3){
         Correccion correccion=new Correccion();
         correccion.setSolicitudId(solicitudid);
         correccion.setRuta_foto1(ruta1);
@@ -38,6 +38,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
         correccion.setRuta_foto3(ruta3);
         correccion.setEstatusSync(0);
         correccion.setEstatus(1);
+        correccion.setNumfoto(numFoto);
 
         correccion.setCreatedAt(new Date());
         idNuevo=(int)correpository.insert(correccion);

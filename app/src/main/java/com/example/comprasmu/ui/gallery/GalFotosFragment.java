@@ -26,12 +26,14 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Visita;
+import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
 import com.example.comprasmu.ui.informe.VerInformeViewModel;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.InformesGenViewModel;
 import com.example.comprasmu.utils.ui.VerInformeGenFragment;
@@ -47,7 +49,6 @@ public class GalFotosFragment extends Fragment {
     public LiveData<InformeEtapaDet> informeEtaSel;
     private NuevoDetalleViewModel dViewModel;
     private NuevoinformeViewModel niViewModel;
-
     private InformesGenViewModel igViewModel;
     List<ImagenDetalle> fotos;
     MutableLiveData<Integer> cont;
@@ -56,6 +57,7 @@ public class GalFotosFragment extends Fragment {
     private static final String TAG="GalFotosFragment";
     public String tipoinf;
     LiveData<List<InformeEtapaDet>> listafotos;
+  ComprasLog compraslog;
 
     public static GalFotosFragment newInstance() {
         return new GalFotosFragment();
@@ -71,6 +73,7 @@ public class GalFotosFragment extends Fragment {
         igViewModel=new ViewModelProvider(this).get(InformesGenViewModel.class);
         root= inflater.inflate(R.layout.gal_fotos_fragment, container, false);
         cont=new MutableLiveData<>();
+       compraslog=ComprasLog.getSingleton();
         return  root;
     }
 
@@ -93,6 +96,12 @@ public class GalFotosFragment extends Fragment {
                   }
                   if(Constantes.ETAPAACTUAL==3){
                       listafotos=igViewModel.getfotosxetapa(idmuestra,3);
+
+                      startuiEta(idmuestra);
+                  }
+                  if(Constantes.ETAPAACTUAL==4){
+                      listafotos=igViewModel.getfotosxetapa(idmuestra,3);
+
                       startuiEta(idmuestra);
                   }
               }else {
@@ -114,7 +123,7 @@ public class GalFotosFragment extends Fragment {
         informeSel= dViewModel.getMuestra(idmuestra);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,
                 false);
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.rv_viimagenes);
+        RecyclerView recyclerView = root.findViewById(R.id.rv_viimagenes);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         informeSel.observe(getViewLifecycleOwner(), new Observer<InformeCompraDetalle>() {
@@ -135,7 +144,7 @@ public class GalFotosFragment extends Fragment {
     public void startuiInf(int infid){
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,
                 false);
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.rv_viimagenes);
+        RecyclerView recyclerView = root.findViewById(R.id.rv_viimagenes);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         mViewModel.buscarInforme(infid);
@@ -167,14 +176,13 @@ public class GalFotosFragment extends Fragment {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,
                 false);
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.rv_viimagenes);
+        RecyclerView recyclerView = root.findViewById(R.id.rv_viimagenes);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext());
 
         recyclerView.setAdapter(adapter);
         //paso los detalle a imagenes
-
 
         listafotos.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapaDet>>() {
                     @Override
@@ -184,12 +192,15 @@ public class GalFotosFragment extends Fragment {
                         fotos=new ArrayList<>();
                         if(Constantes.ETAPAACTUAL==1)
                         for(InformeEtapaDet inf:informeEtapaDets){
-                            ImagenDetalle id=new ImagenDetalle();
-                            id.setId(inf.getId());
-                            id.setRuta(inf.getRuta_foto());
-                          //  id.setDescripcion(inf.getDescripcion());
-                            id.setDescripcion("");
-                            fotos.add(id);
+                            //busco la imagen detalle
+                            try {
+                                ImagenDetalle id= igViewModel.getfotoxid(inf.getRuta_foto());
+                                fotos.add(id);
+                            }catch (NumberFormatException ex){
+                                compraslog.grabarError(TAG+ " "+ex.getMessage());
+                        }
+
+
                         }
                         if(Constantes.ETAPAACTUAL==3)
                             for(InformeEtapaDet inf:informeEtapaDets){

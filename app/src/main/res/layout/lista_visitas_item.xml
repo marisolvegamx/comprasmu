@@ -88,7 +88,7 @@
                     android:layout_marginTop="14dp"
                     android:layout_weight="1"
                     android:text='@{detalle.tiendaId+""}'
-                    android:visibility="@{detalle.tiendaId>0?View.VISIBLE:View.GONE}" />
+                    android:visibility="@{View.GONE}" />
 
                 <TextView
                     android:id="@+id/txtldpres"

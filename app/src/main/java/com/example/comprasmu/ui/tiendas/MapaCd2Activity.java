@@ -134,7 +134,7 @@ public class MapaCd2Activity extends FragmentActivity implements
             ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
 
             String title = marker.getTitle();
-            TextView titleUi = ((TextView) view.findViewById(R.id.title));
+            TextView titleUi = view.findViewById(R.id.title);
             if (title != null) {
                 // Spannable string allows us to edit the formatting of the text.
                 SpannableString titleText = new SpannableString(title);
@@ -145,7 +145,7 @@ public class MapaCd2Activity extends FragmentActivity implements
             }
 
             String snippet = marker.getSnippet();
-            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
+            TextView snippetUi = view.findViewById(R.id.snippet);
             if (snippet != null && snippet.length() > 12) {
                 SpannableString snippetText = new SpannableString(snippet);
                 snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
@@ -198,15 +198,15 @@ public class MapaCd2Activity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
      //   setContentView(R.layout.marker_demo);
 
-        mTopText = (TextView) findViewById(R.id.top_text);
+        mTopText = findViewById(R.id.top_text);
 
-        mRotationBar = (SeekBar) findViewById(R.id.rotationSeekBar);
+        mRotationBar = findViewById(R.id.rotationSeekBar);
         mRotationBar.setMax(360);
         mRotationBar.setOnSeekBarChangeListener(this);
 
-        mFlatBox = (CheckBox) findViewById(R.id.flat);
+        mFlatBox = findViewById(R.id.flat);
 
-        mOptions = (RadioGroup) findViewById(R.id.custom_info_window_options);
+        mOptions = findViewById(R.id.custom_info_window_options);
         mOptions.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -355,11 +355,8 @@ public class MapaCd2Activity extends FragmentActivity implements
     }
 
     private boolean checkReady() {
-        if (mMap == null) {
-          //  Toast.makeText(this, R.string.map_not_ready, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
+        //  Toast.makeText(this, R.string.map_not_ready, Toast.LENGTH_SHORT).show();
+        return mMap != null;
     }
 
     /** Called when the Clear button is clicked. */

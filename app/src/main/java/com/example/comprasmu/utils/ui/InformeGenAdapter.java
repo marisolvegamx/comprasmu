@@ -17,7 +17,7 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
 
     private List<InformeEtapa> mInformesList;
 
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
     public String tipo;
 
     public InformeGenAdapter( AdapterCallback callback, String tipo) {

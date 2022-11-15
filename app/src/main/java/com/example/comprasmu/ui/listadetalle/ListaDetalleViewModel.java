@@ -403,7 +403,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             }
       //  Log.d(TAG,"xxxxx "+numTienda+"--"+nvoCodigos+"--"+noPermitidos);
     if(nvoCodigos!=null&&nvoCodigos.length()>0) {
-        String auxnvo[] = nvoCodigos.split(";");
+        String[] auxnvo = nvoCodigos.split(";");
 
         if(auxnvo.length>0) {
             List<String> lnvo= Arrays.asList(auxnvo);
@@ -413,7 +413,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         else
             otodo.add(nvoCodigos);
         if (noPermitidos != null && noPermitidos.length() > 0) {
-            String auxno[] = noPermitidos.split(";");
+            String[] auxno = noPermitidos.split(";");
             if(auxno.length>0) {
                List<String> lperm= Arrays.asList(auxno);
                 otodo.addAll(lperm);

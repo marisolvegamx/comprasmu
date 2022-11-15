@@ -27,7 +27,7 @@ public class InformeCompraAdapter extends RecyclerView.Adapter<InformeCompraAdap
     private List<InformeCompraDao.InformeCompravisita> mInformeCompraList;
 
     private final ListaInformesViewModel mViewModel;
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
 
     public InformeCompraAdapter(ListaInformesViewModel viewModel, AdapterCallback callback) {
 

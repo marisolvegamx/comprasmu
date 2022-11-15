@@ -35,7 +35,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
     private final InformeCompraRepositoryImpl repository;
     private final VisitaRepositoryImpl visitaRepo;
     private final InformeComDetRepositoryImpl detrepository;
-    private ImagenDetRepositoryImpl imrepository;
+    private final ImagenDetRepositoryImpl imrepository;
 
     private LiveData<List<InformeCompraDao.InformeCompravisita>> listas;
     private LiveData<List<InformeCompraDao.InformeCompravisita>> cancelados;

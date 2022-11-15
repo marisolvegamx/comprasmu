@@ -15,7 +15,7 @@ import java.util.List;
 
 public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
 
-    private InformeEtapaDetDao dao;
+    private final InformeEtapaDetDao dao;
 
     private LiveData<List<InformeEtapaDet>> allInformeEtapaDet;
 
@@ -53,6 +53,10 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         return dao.getByDescripcion(idinf,descripcion);
     }
 
+
+    public LiveData<InformeEtapaDet> getByDescripcionCaja(String descripcion, int idinf, int caja) {
+        return dao.getByDescripcionCaja(idinf,descripcion, caja);
+    }
     public List<InformeEtapaDet> getByCaja( int idinf, int etapa, int numcaja) {
         return dao.getByCaja(idinf,etapa, numcaja);
     }
@@ -93,6 +97,13 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     }
     public InformeEtapaDet getUltimo(int idinf, int etapa) {
         List<InformeEtapaDet> lista=dao.getUltimo(idinf,etapa);
+        if(lista!=null&&lista.size()>0){
+            return lista.get(0);
+        }
+        return null;
+    }
+    public InformeEtapaDet getUltimoCaja(int idinf, int etapa, int caja) {
+        List<InformeEtapaDet> lista=dao.getUltimoCaja(idinf,etapa,caja);
         if(lista!=null&&lista.size()>0){
             return lista.get(0);
         }

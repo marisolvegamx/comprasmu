@@ -14,7 +14,7 @@ import java.util.List;
 public class InformeCompraRepositoryImpl   {
 
 
-    private InformeCompraDao icDao;
+    private final InformeCompraDao icDao;
     private LiveData<List<InformeCompra>> allInformeCompra;
 
     public InformeCompraRepositoryImpl(Context context) {

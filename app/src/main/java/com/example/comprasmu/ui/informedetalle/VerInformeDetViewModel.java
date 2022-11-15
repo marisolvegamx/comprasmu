@@ -35,12 +35,12 @@ public class VerInformeDetViewModel extends AndroidViewModel {
     public ImagenDetalle foto_atributoc;
     public ImagenDetalle marca_traslape;
     public ImagenDetalle etiqueta_evaluacion;
-    private ImagenDetRepositoryImpl imagenDetRepository;
+    private final ImagenDetRepositoryImpl imagenDetRepository;
 
-    private InformeComDetRepositoryImpl detalleRepo;
+    private final InformeComDetRepositoryImpl detalleRepo;
     public List<CatalogoDetalle> atributos;
     public List<CatalogoDetalle> tomadoDe;
-    private CatalogoDetalleRepositoryImpl catRepo;
+    private final CatalogoDetalleRepositoryImpl catRepo;
 
     public VerInformeDetViewModel(@NonNull Application application) {
         super(application);

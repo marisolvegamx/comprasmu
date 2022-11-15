@@ -37,8 +37,15 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa order by id desc")
     public abstract List<InformeEtapaDet> getUltimo( int id,int etapa);
 
+    @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:caja order by id desc")
+    public abstract List<InformeEtapaDet> getUltimoCaja( int id,int etapa, int caja);
+
+
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and descripcion=:descripcion")
     public abstract LiveData<InformeEtapaDet> getByDescripcion( int id,String descripcion);
+
+    @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and descripcion=:descripcion and num_caja=:caja")
+    public abstract LiveData<InformeEtapaDet> getByDescripcionCaja( int id,String descripcion, int caja);
 
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja order by num_muestra")
     public abstract List<InformeEtapaDet> getByCaja( int id,int etapa, int numcaja);

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class TablaVersionesRepImpl extends BaseRepository<TablaVersiones> {
 
-    private TablaVersionesDao dao;
+    private final TablaVersionesDao dao;
 
     private LiveData<List<InformeCompra>> allInformeCompra;
 

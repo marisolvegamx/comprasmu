@@ -31,7 +31,7 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
 
     private final ProductoExhibidoRepositoryImpl repository;
 
-    private ImagenDetRepositoryImpl imagenDetRepository;
+    private final ImagenDetRepositoryImpl imagenDetRepository;
     private final MutableLiveData<Event<Integer>> mSnackbarText = new MutableLiveData<>();
     private int prefimagen;
 

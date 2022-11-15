@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhibido> {
 
-    private ProductoExhibidoDao dao;
+    private final ProductoExhibidoDao dao;
 
 
 

@@ -18,7 +18,7 @@ import java.util.List;
 public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
 
 
-    private DetalleCajaDao icDao;
+    private final DetalleCajaDao icDao;
 
     public DetalleCajaRepoImpl(Context context) {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
@@ -60,6 +60,12 @@ public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
         return icDao.insert(newDetalleCaja);
     }
 
+
+    public long actualizar(DetalleCaja newDetalleCaja) {
+         icDao.actualizarDims(newDetalleCaja.getId(),newDetalleCaja.getLargo(),newDetalleCaja.getAncho(),newDetalleCaja.getAlto(),newDetalleCaja.getPeso(),newDetalleCaja.getNum_caja());
+        return 1;
+    }
+
     @Override
     public void delete(DetalleCaja object) {
         icDao.delete(object);
@@ -79,6 +85,14 @@ public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
         }
         return null;
     }
+    public DetalleCaja getUltimoxCaja(int idinf,int numcaja) {
+        List<DetalleCaja> lista=icDao.getUltimoxInfcaj(idinf, numcaja);
+        if(lista!=null&&lista.size()>0){
+            return lista.get(0);
+        }
+        return null;
+    }
+
 
 
     public DetalleCaja getdetallexCaja(int idinf, int num_caja) {
@@ -90,6 +104,10 @@ public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
         icDao.actualizarEstatusSync(id, estatus);
     }
 
+    public void actualizarEstSyncxInf(int infid, int estatus) {
+
+        icDao.actualizarEstSyncxInf(infid, estatus);
+    }
 
     public void deleteDetalleCaja(int id) {
        icDao.deleteDetalle( id);

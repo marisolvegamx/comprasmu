@@ -23,7 +23,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
   //  private final List<String> mFragmentTitles = new ArrayList<>();
 
 
-    private ListaDetalleViewModel mViewModel;
+    private final ListaDetalleViewModel mViewModel;
     //private  final String[][] TAB_TITLES;
     private  final String[] TAB_TITLES;
     private int plantaSel;

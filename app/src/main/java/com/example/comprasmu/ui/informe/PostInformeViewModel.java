@@ -20,6 +20,7 @@ import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TodoEnvio;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
+import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
@@ -38,10 +39,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PostInformeViewModel {
-    private ServiceGenerator apiClient;;
+    private ServiceGenerator apiClient;
 
     public  String mensaje;
-    private String TAG="PostInformeViewModel";
+    private final String TAG="PostInformeViewModel";
    InformeCompraRepositoryImpl infoRepo;
    ImagenDetRepositoryImpl imagenRepo;
    InformeComDetRepositoryImpl infoDetRepo;
@@ -63,7 +64,7 @@ public class PostInformeViewModel {
     public  void sendInforme(InformeEnvio informeCompra) {
 
         Log.d("Informe", "kkkkkkkkkk"+informeCompra.toJson(informeCompra));
-        apiClient.getApiService().saveInformeEnvio(informeCompra).enqueue(new Callback<PostResponse>() {
+        ServiceGenerator.getApiService().saveInformeEnvio(informeCompra).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
 
@@ -94,8 +95,8 @@ public class PostInformeViewModel {
 
     public  void sendTodo(TodoEnvio informes, SubirPendService.SubirTodoListener listen) {
 
-        Log.d("Informe", "kkkkkkkkkk"+informes.toJson(informes));
-        apiClient.getApiService().saveInformesPend(informes).enqueue(new Callback<PostResponse>() {
+        Log.d("InformePend", "kkkkkkkkkk"+informes.toJson(informes));
+        ServiceGenerator.getApiService().saveInformesPend(informes).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
 
@@ -226,7 +227,7 @@ public class PostInformeViewModel {
 
     public  void sendInformeEta(InformeEtapaEnv informeEtapa) {
         Log.d("sendInformeEta", informeEtapa.toJson(informeEtapa));
-         apiClient.getApiService().saveInformeEtapa(informeEtapa).enqueue(new Callback<PostResponse>() {
+         ServiceGenerator.getApiService().saveInformeEtapa(informeEtapa).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
 
@@ -259,7 +260,11 @@ public class PostInformeViewModel {
         etapaRepo.actualizarEstatusSync(informe.getInformeEtapa().getId(),Constantes.ENVIADO);
         //actualizo detalles
         etapadetRepo.actEstatusSyncxInfo(informe.getInformeEtapa().getId(),Constantes.ENVIADO);
-
+        //actualizo detalle caja
+        DetalleCajaRepoImpl dcrepo=new DetalleCajaRepoImpl(context);
+        if(informe.getDetalleCaja()!=null&&informe.getDetalleCaja().size()>0){
+            dcrepo.actualizarEstSyncxInf(informe.getInformeEtapa().getId(),Constantes.ENVIADO);
+        }
 
     }
 
@@ -267,7 +272,7 @@ public class PostInformeViewModel {
 
         Log.d("Correccion", "enviando correccion"+correccion.toJson(correccion));
 
-        apiClient.getApiService().saveCorreccion(correccion).enqueue(new Callback<PostResponse>() {
+        ServiceGenerator.getApiService().saveCorreccion(correccion).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
 

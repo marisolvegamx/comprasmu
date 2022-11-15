@@ -20,7 +20,7 @@ public class SolCorreAdapter extends RecyclerView.Adapter<SolCorreAdapter.Solici
 
 
     private List<SolicitudCor> mSolicitudCorList;
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
 
     public SolCorreAdapter( AdapterCallback callback) {
 

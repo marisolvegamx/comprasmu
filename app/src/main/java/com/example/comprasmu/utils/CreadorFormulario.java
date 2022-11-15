@@ -64,7 +64,7 @@ public class CreadorFormulario {
     private List<CampoForm> listaCampos;
     private String required,disabled;
     private boolean readonly;
-    private Context context;
+    private final Context context;
     public static String AGREGARIMAGEN="agregarImagen";
     public static String BOTON="boton";
     public static String BOTONMICRO="botonMicro";
@@ -119,7 +119,7 @@ public class CreadorFormulario {
             }
 
             this.required=(infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
-            this.readonly=infocampo.readonly!=null?true:false;
+            this.readonly= infocampo.readonly != null;
             this.disabled=(this.infocampo.disabled!=null)?"disabled":"";
 
             //    echo "<br>".this.infocampo["nombre_campo"];
@@ -178,7 +178,7 @@ public class CreadorFormulario {
         for(CampoForm campo :listaCampos){
             this.infocampo=campo;
             this.required=(infocampo.required!=null)&&this.infocampo.required.equals("required")?"required":"";
-            this.readonly=infocampo.readonly!=null?true:false;
+            this.readonly= infocampo.readonly != null;
             this.disabled=(this.infocampo.disabled!=null)?"disabled":"";
             //    echo "<br>".this.infocampo["nombre_campo"];
             //  func=this.infocampo["type"];
@@ -769,7 +769,6 @@ public class CreadorFormulario {
             CheckBox rb = new CheckBox(context);
             rb.setId(this.infocampo.id) ;
             rb.setText(registro.getValue());
-            ;
             if(this.infocampo.value!=null&&this.infocampo.value.equals(registro.getKey())) {
                 rb.setChecked(true);
 

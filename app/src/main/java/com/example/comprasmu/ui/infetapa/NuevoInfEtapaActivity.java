@@ -21,6 +21,7 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
+import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.databinding.ActivityNuevoInfetapaBinding;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
@@ -48,6 +49,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     private NvaPreparacionViewModel dViewModel;
     private NuevoInfEtapaViewModel infvm;
     private int etapa;
+    private int plantaSel;
     private boolean isCor; //para saber si es correccion
 
     @Override
@@ -56,7 +58,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_nuevo_infetapa);
         // get fragment manager
         myChildToolbar =
-                (Toolbar) findViewById(R.id.toolbarinf);
+                findViewById(R.id.toolbarinf);
         setSupportActionBar(myChildToolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
@@ -126,10 +128,25 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 }
                  }
             if (etapa == 4) {
+                if(plantaSel>1)//es una nueva caja
+                {
+                    isEdicion=false;
+                    Bundle bundle=new Bundle();
+
+                    bundle.putInt(NuevoInfEtapaActivity.INFORMESEL, idinformeSel);
+                    bundle.putInt(NuevoInfEtapaActivity.PLANTASEL,plantaSel);
+                    //busco la pregunta actual en la decripcion
+                    //char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
+                    //Log.d(TAG, "preg=" + preg);
+                    NvoEmpaqueFragment empf=new NvoEmpaqueFragment(null,false);
+                    empf.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment,empf);
+                }else
                 if (det != null) {
                     Bundle bundle=new Bundle();
 
                     bundle.putInt(NuevoInfEtapaActivity.INFORMESEL, idinformeSel);
+                    bundle.putInt(NuevoInfEtapaActivity.PLANTASEL,plantaSel);
                     //busco la pregunta actual en la decripcion
                     //char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
                     //Log.d(TAG, "preg=" + preg);
@@ -237,11 +254,14 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             idinformeSel = datosRecuperados.getInt(INFORMESEL);
             etapa = datosRecuperados.getInt(ContInfEtapaFragment.ETAPA);
             isCor = datosRecuperados.getBoolean(CORRECCION);
+            plantaSel = datosRecuperados.getInt( NuevoInfEtapaActivity.PLANTASEL);
+
 
             if(!isCor&&idinformeSel>0) {
                 isEdicion = true;
 
             }
+
         }
         else { //lo recupero
             if (savedInstanceState != null) {    // Restore value of members from saved state
@@ -296,7 +316,42 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             fragment.atras();
             return;
         }
-        if(etapa==1)//el regreso se maneja en el fragment
+        if(etapa==4)//el regreso se maneja en el fragment
+        {
+            Log.d(TAG,"regresando de "+dViewModel.preguntaAct);
+            //busco el siguiente
+            Reactivo reactivo = dViewModel.buscarReactivoAnterior(dViewModel.preguntaAct);
+            if(reactivo!=null)
+            //busco el reactivo anterior
+            {
+                if (dViewModel.preguntaAct > 1) {
+                    NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment(reactivo, true);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+// Definir una transacción
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+// Remplazar el contenido principal por el fragmento
+                    fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
+                    // fragmentTransaction.addToBackStack(null);
+// Cambiar
+                    fragmentTransaction.commit();
+                }
+                if (dViewModel.preguntaAct == 1 && dViewModel.variasPlantas) {
+                    NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment(reactivo, true);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+// Definir una transacción
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+// Remplazar el contenido principal por el fragmento
+                    fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
+                    // fragmentTransaction.addToBackStack(null);
+// Cambiar
+                    fragmentTransaction.commit();
+                }
+            }else {
+                super.onBackPressed();
+                return;
+            }
+        }
+        else if(etapa==1)//el regreso se maneja en el fragment
         {
             if(infvm.cont==6){
                 return; //no puedo regresar de los comentarios porque la ultima preg de fotospuede ser variables

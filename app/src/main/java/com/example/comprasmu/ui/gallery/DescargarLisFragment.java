@@ -18,6 +18,7 @@ import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 
 import com.example.comprasmu.data.remote.InformeEnvio;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
@@ -62,7 +63,8 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
 
         DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep);
         textView.setText("Por favor mantengase en la aplicación hasta que termine la descarga");
-       pb.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.VISIBLE);
+        pb.setVisibility(View.VISIBLE);
 
         task.execute("","act"); //para saber que estoy actualizando
         //descarga solicitudes compra
@@ -93,6 +95,7 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         if(!res) {
             textView.setText(getString(R.string.listas_actualiz));
             textView.setVisibility(View.VISIBLE);
+
         }
         pb.setVisibility(View.GONE);
 
@@ -113,6 +116,11 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
 
     @Override
     public void estatusLis(int es) {
+
+    }
+
+    @Override
+    public void imagenesEtapa(RespInfEtapaResponse infoResp) {
 
     }
 

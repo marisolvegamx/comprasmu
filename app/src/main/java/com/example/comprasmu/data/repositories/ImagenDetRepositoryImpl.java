@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
 
-    private ImagenDetalleDao dao;
+    private final ImagenDetalleDao dao;
     List<ImagenDetalle> fotos ;
 
     public ImagenDetRepositoryImpl(Context context) {

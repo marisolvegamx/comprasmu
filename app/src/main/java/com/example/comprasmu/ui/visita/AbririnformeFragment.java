@@ -215,12 +215,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //   createLocationRequest();
         //  validator = new Validator(this);
         //  validator.setValidationListener(this);
-        guardar = (Button) root.findViewById(R.id.aibtnguardar);
-        rotar = (ImageButton) root.findViewById(R.id.btnairotar1);
-        fotofac = (ImageView) root.findViewById(R.id.ivaifachada);
-        fotoex1 = (ImageView) root.findViewById(R.id.ivaifotoex1);
-        fotoex2 = (ImageView) root.findViewById(R.id.ivaifotoex2);
-        fotoex3 = (ImageView) root.findViewById(R.id.ivaifotoex3);
+        guardar = root.findViewById(R.id.aibtnguardar);
+        rotar = root.findViewById(R.id.btnairotar1);
+        fotofac = root.findViewById(R.id.ivaifachada);
+        fotoex1 = root.findViewById(R.id.ivaifotoex1);
+        fotoex2 = root.findViewById(R.id.ivaifotoex2);
+        fotoex3 = root.findViewById(R.id.ivaifotoex3);
         rotar.setVisibility(View.GONE);
         txtfotofachada = root.findViewById(R.id.txtaifotofachada);
         txtfotoex1 = root.findViewById(R.id.txtaifotoex1);
@@ -240,7 +240,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             ultlongitud=savedInstanceState.getDouble(BLONGITUD);
         }
         // continuar=(Button)root.findViewById(R.id.aibtnguardarcont);
-        ImageButton fotoexhibido = (ImageButton) root.findViewById(R.id.btnaifotoexhibido);
+        ImageButton fotoexhibido = root.findViewById(R.id.btnaifotoexhibido);
         guardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //    v.setEnabled(false);
@@ -263,7 +263,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         });
         // Button ubicar=(Button)root.findViewById(R.id.btnaiubicar);
-        ImageButton fotofachada = (ImageButton) root.findViewById(R.id.btnaifotofachada);
+        ImageButton fotofachada = root.findViewById(R.id.btnaifotofachada);
 
         fotofachada.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,14 +281,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             }
         });
-        ImageButton fotoexhibido2 = (ImageButton) root.findViewById(R.id.btnaifotoexhibido2);
+        ImageButton fotoexhibido2 = root.findViewById(R.id.btnaifotoexhibido2);
 
         fotoexhibido2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 tomarFoto(txtfotoex2, fotoex2, REQUEST_CODE_PROD2);
             }
         });
-        ImageButton fotoexhibido3 = (ImageButton) root.findViewById(R.id.btnaifotoexhibido3);
+        ImageButton fotoexhibido3 = root.findViewById(R.id.btnaifotoexhibido3);
 
         fotoexhibido3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -485,7 +485,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     }
 
     private void loadData() {
-        Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolbar);
+        Toolbar toolbar = root.findViewById(R.id.toolbar);
         spinn = root.findViewById(R.id.spaiclientes1);
         spinn2 = root.findViewById(R.id.spaiclientes2);
         spinn3 = root.findViewById(R.id.spaiclientes3);
@@ -748,14 +748,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 return;
             }
         if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, (LocationListener) Local);
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, Local);
                 provedorgps = LocationManager.NETWORK_PROVIDER;
 
 
         } else  if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
             //  if (Local == null) { //Validación que evita NullPointerException
             //Requiere actualización
-            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, (LocationListener) Local);
+            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, Local);
             provedorgps = LocationManager.GPS_PROVIDER;
             // }
         } else
@@ -1350,7 +1350,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
             if (child instanceof ImageView) {
                 // Do something
-                if (((ImageView) child).getTag() != null && ((ImageView) child).getTag().toString().equals("fotoex"))
+                if (child.getTag() != null && child.getTag().toString().equals("fotoex"))
                     ((ImageView) child).setImageBitmap(null);
             } else if (child instanceof LinearLayout) {
 
@@ -1562,17 +1562,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 mViewModel.visita.setDireccion(mensajedir.getText().toString());
 
                // mViewModel.visita.setCadenaComercial(input6.getText().toString());
-                //busco el punto cardinal
-                int punto=0;
-                try {
-                 punto = buscarZona(txtaiultubic.getText().toString());
-            }catch (Exception ex){
-                ex.printStackTrace();
-                Log.e(TAG,ex.getMessage());
 
-            }
-             Log.d(TAG,"encontré la zona "+punto);
-                mViewModel.visita.setPuntoCardinal(punto+"");
 
             }else
             {//ya existe
@@ -1592,6 +1582,19 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
             }
+            int punto=0;
+            try {
+                //busco el punto cardinal
+
+                punto = buscarZona(txtaiultubic.getText().toString());
+            }catch (Exception ex){
+                ex.printStackTrace();
+                ComprasLog flog=ComprasLog.getSingleton();
+                flog.grabarError(ex.getMessage());
+
+            }
+            Log.d(TAG,"encontré la zona "+punto);
+            mViewModel.visita.setPuntoCardinal(punto+"");
 
             mViewModel.visita.setComplementodireccion(txtcomplemento.getText().toString());
             mViewModel.visita.setIndice(Constantes.INDICEACTUAL);
@@ -1736,13 +1739,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Log.d(TAG,"probando "+geo.getGeo_region());
             ComprasLog log= ComprasLog.getSingleton();
             log.grabarError("probando geocercas buscar zona"+geo.getGeo_region());
-            String aux[]=geo.getGeo_p1().split(",");
+            String[] aux =geo.getGeo_p1().split(",");
              p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-            String aux2[]=geo.getGeo_p2().split(",");
+            String[] aux2 =geo.getGeo_p2().split(",");
              p2 =new LatLng(Double.parseDouble(aux2[0]), Double.parseDouble(aux2[1]));
-            String aux3[]=geo.getGeo_p3().split(",");
+            String[] aux3 =geo.getGeo_p3().split(",");
              p3 =new LatLng(Double.parseDouble(aux3[0]), Double.parseDouble(aux3[1]));
-            String aux4[]=geo.getGeo_p4().split(",");
+            String[] aux4 =geo.getGeo_p4().split(",");
              p4 =new LatLng(Double.parseDouble(aux4[0]), Double.parseDouble(aux4[1]));
             List<LatLng> poly=new ArrayList<>();
             poly.add(p1);

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
 
-    private SustitucionDao dao;
+    private final SustitucionDao dao;
 
 
 

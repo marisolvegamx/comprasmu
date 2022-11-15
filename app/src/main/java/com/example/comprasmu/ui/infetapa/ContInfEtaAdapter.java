@@ -21,7 +21,7 @@ public class ContInfEtaAdapter extends RecyclerView.Adapter<ContInfEtaAdapter.Co
 
     private List<InformeEtapa> mInformeEtaList;
     //private List<String> mInformeCompraList;
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
 
     public ContInfEtaAdapter( AdapterCallback callback) {
 

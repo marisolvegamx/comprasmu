@@ -22,7 +22,7 @@ import java.util.List;
 public class SustitucionAdapter extends RecyclerView.Adapter<SustitucionAdapter.SustitucionViewHolder> {
 
     private List<Sustitucion> mSustitucionList;
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
     private final static String TAG=SustitucionAdapter.class.getName();
     int numtienda;
     boolean isbu, ismuestra;//para saber si ya estoy en lista de bu o agregando muestra

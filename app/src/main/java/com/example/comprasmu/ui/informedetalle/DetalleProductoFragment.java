@@ -305,6 +305,8 @@ public class DetalleProductoFragment extends Fragment {
                         Constantes.VarDetalleProd.nvoatra = valor;
                         ((ContinuarInformeActivity) getActivity()).actualizarAtributo1();
                     }
+                    else
+                        aceptar.setEnabled(false);
                 }
                 if (preguntaAct.getId() >= 36&&preguntaAct.getId()!=47) {
                     InformeTemp resp=dViewModel.buscarxNombreCam("atributob",mViewModel.numMuestra);
@@ -319,6 +321,8 @@ public class DetalleProductoFragment extends Fragment {
                         Constantes.VarDetalleProd.nvoatrb = resp == null ? "" : valor;
                         ((ContinuarInformeActivity) getActivity()).actualizarAtributo2();
                     }
+                    else
+                        aceptar.setEnabled(false);
                 }
                 if (preguntaAct.getId() >= 39&&preguntaAct.getId()!=47) {
                     InformeTemp resp=dViewModel.buscarxNombreCam("atributoc",mViewModel.numMuestra);
@@ -333,6 +337,8 @@ public class DetalleProductoFragment extends Fragment {
                         Constantes.VarDetalleProd.nvoatrc = resp == null ? "" : valor;
                         ((ContinuarInformeActivity) getActivity()).actualizarAtributo2();
                     }
+                    else
+                        aceptar.setEnabled(false);
                 }
                 //busco el total de prods en la lista
                 if(Constantes.NM_TOTALISTA==0) {
@@ -346,6 +352,7 @@ public class DetalleProductoFragment extends Fragment {
             }
             else {
                 aceptar.setEnabled(false);
+
             }
                 //es un nuevo informe o una nueva pregunta
                //if(mViewModel.numMuestra==0) {
@@ -421,11 +428,8 @@ public class DetalleProductoFragment extends Fragment {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
-                            aceptar.setEnabled(true);
-                        }else{
-                            aceptar.setEnabled(false);
-                        }
+                        //count es cantidad de caracteres que tiene
+                        aceptar.setEnabled(charSequence.length() > 0);
 
                     }
 
@@ -448,11 +452,23 @@ public class DetalleProductoFragment extends Fragment {
             }
             if(preguntaAct.getId()==48)
                 aceptar.setEnabled(true);
+
+
             if(spclientes!=null){
+
                 spclientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                      aceptar.setEnabled(true);
+                     // Log.d(TAG,"está aqui************************");
+                        aceptar.setEnabled(true);
+                      if(preguntaAct.getId()==33||preguntaAct.getId()==36||preguntaAct.getId()==39) {
+
+                          CatalogoDetalle opcion = (CatalogoDetalle) parentView.getSelectedItem();
+                        //  Log.d(TAG,"está aqui************************"+opcion.getCad_idopcion());
+                          if (opcion.getCad_idopcion()==0)
+                              aceptar.setEnabled(false);
+                      }
+
                     }
 
                     @Override
@@ -462,6 +478,7 @@ public class DetalleProductoFragment extends Fragment {
 
                 });
             }
+
             if(pregunta!=null){
                 pregunta.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
@@ -479,6 +496,7 @@ public class DetalleProductoFragment extends Fragment {
                     }
                 });
             }
+
             aceptar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -654,7 +672,7 @@ public class DetalleProductoFragment extends Fragment {
 
     }
 
-    public  List<DescripcionGenerica> convertirListaaClientesE(List<ListaCompra> lista, Integer clientesprev[]){
+    public  List<DescripcionGenerica> convertirListaaClientesE(List<ListaCompra> lista, Integer[] clientesprev){
         int i=0;
         List<DescripcionGenerica> mapa=new ArrayList<>();
         List<Integer> coninf;
@@ -719,14 +737,13 @@ public class DetalleProductoFragment extends Fragment {
     public void getAtributos(){
       //  Log.d(TAG,"buscando atributos"+dViewModel.productoSel.empaque+"--"+dViewModel.productoSel.idempaque+"--"+dViewModel.productoSel.clienteSel);
         dViewModel.cargarCatalogos(dViewModel.productoSel.empaque,dViewModel.productoSel.idempaque,dViewModel.productoSel.clienteSel);
-
-
-
         List<Atributo> atrs=dViewModel.satributos;
-
-        atributos = atributoaCat(atrs);
-
-
+       atributos=new ArrayList<>();
+       CatalogoDetalle selop=new CatalogoDetalle();
+       selop.setCad_idopcion(0);
+       selop.setCad_descripcionesp(getString(R.string.seleccione_opcion));
+       atributos.add(selop);
+       atributos.addAll(atributoaCat(atrs));
     }
 
     public void getCausas(){
@@ -1796,7 +1813,7 @@ public class DetalleProductoFragment extends Fragment {
                     else
                     {   /* Update the textview with the scanned URL result */
                         textoint.setText(result.getContents());
-                        Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
+                        //Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
                     }
 
                 }
@@ -2057,11 +2074,8 @@ public class DetalleProductoFragment extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
-                aceptar.setEnabled(true);
-            }else{
-                aceptar.setEnabled(false);
-            }
+            //count es cantidad de caracteres que tiene
+            aceptar.setEnabled(charSequence.length() > 0);
 
         }
 
@@ -2086,11 +2100,8 @@ public class DetalleProductoFragment extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
-                aceptar.setEnabled(true);
-            }else{
-                aceptar.setEnabled(false);
-            }
+            //count es cantidad de caracteres que tiene
+            aceptar.setEnabled(charSequence.length() > 0);
 
         }
 

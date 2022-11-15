@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
 
                 android:text='@{String.valueOf(detalle.id)}'
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"

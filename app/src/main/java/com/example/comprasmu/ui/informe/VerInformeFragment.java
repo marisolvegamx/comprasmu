@@ -64,7 +64,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     CampoForm campo2;
     private VerInformeFragmentBinding mBinding;
     private InformeDetalleAdapter mListAdapter;
-    private static String TAG = "VerInformeFragment";
+    private static final String TAG = "VerInformeFragment";
 
     private int cliente;
 

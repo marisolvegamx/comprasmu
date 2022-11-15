@@ -43,7 +43,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
     private String ciudadSel;
     private String nombreTienda;
     private String indiceSel;
-    private Application application;
+    private final Application application;
    String directorio;
     public ListaVisitasViewModel(Application application) {
         super(application);

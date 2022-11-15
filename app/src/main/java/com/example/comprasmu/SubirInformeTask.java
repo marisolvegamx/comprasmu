@@ -20,7 +20,7 @@ import com.example.comprasmu.ui.informe.PostInformeViewModel;
 import java.util.List;
 
 public class SubirInformeTask extends AsyncTask<String, Float, Integer> {
-    private boolean cancelarSiHayMas100Archivos;
+    private final boolean cancelarSiHayMas100Archivos;
     private ProgressBar miBarraDeProgreso;
     public static String TAG = "SubirInformeTask";
     InformeEnvio envio;

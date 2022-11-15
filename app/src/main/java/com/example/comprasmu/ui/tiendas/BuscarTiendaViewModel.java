@@ -23,7 +23,7 @@ import java.util.List;
 
 public class BuscarTiendaViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<Tienda>> listaTiendas;
+    private final MutableLiveData<List<Tienda>> listaTiendas;
      private  LiveData<Integer> size;
     private MutableLiveData<HashMap<Integer,String>> listaCiudades;
     private MutableLiveData<HashMap<Integer,String>> tiposTienda;

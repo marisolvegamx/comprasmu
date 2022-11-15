@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        cancelButton= (Button) findViewById(R.id.btncancelar);
-        sortButton= (Button) findViewById(R.id.btnejecutar);
+        cancelButton= findViewById(R.id.btncancelar);
+        sortButton= findViewById(R.id.btnejecutar);
         progressLabel=  findViewById(R.id.progresslabel);
         sortButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {

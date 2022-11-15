@@ -34,7 +34,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
     private List<ListaDetalleBu> mListaCompraDetalleList;
 
     private final ListaDetalleViewModel mViewModel;
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
     ListaDetalleBuAdapter childAdapter;
     private final static String TAG=ListaCompraDetalleAdapter.class.getName();
     int numtienda;

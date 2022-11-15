@@ -23,7 +23,7 @@ public class CancelAdapter extends RecyclerView.Adapter<CancelAdapter.InformeCom
     private List<InformeCompraDao.InformeCompravisita> mInformeCompraList;
     private List<InformeCompraDetalle> mdetalle;
 
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
 
     public CancelAdapter(AdapterCallback callback) {
 

@@ -42,7 +42,7 @@ public class HomeActivity extends AppCompatActivity {
                 ira(1);
             }
         });
-         comp = (Button)findViewById(R.id.btnhmcom);
+         comp = findViewById(R.id.btnhmcom);
         comp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.remote;
 
 import com.example.comprasmu.data.modelos.DetalleCaja;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.google.gson.Gson;
@@ -16,6 +17,7 @@ public class InformeEtapaEnv {
     private List<DetalleCaja> detalleCaja;
     private String claveUsuario;
     private String indice;
+    private List<ImagenDetalle> imagenDetalles;
 
     public InformeEtapa getInformeEtapa() {
         return informeEtapa;
@@ -55,6 +57,14 @@ public class InformeEtapaEnv {
 
     public void setIndice(String indice) {
         this.indice = indice;
+    }
+
+    public List<ImagenDetalle> getImagenDetalles() {
+        return imagenDetalles;
+    }
+
+    public void setImagenDetalles(List<ImagenDetalle> imagenDetalles) {
+        this.imagenDetalles = imagenDetalles;
     }
 
     public String toJson(InformeEtapaEnv informe) {

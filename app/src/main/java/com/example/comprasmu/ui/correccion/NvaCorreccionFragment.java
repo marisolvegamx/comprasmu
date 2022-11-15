@@ -66,7 +66,7 @@ public class NvaCorreccionFragment extends Fragment {
     Button aceptar;
 
     private long lastClickTime = 0;
-    private boolean yaestoyProcesando=false;
+    private final boolean yaestoyProcesando=false;
 
     int solicitudSel;
     EditText textoint,txtrutaim2,txtrutaim3;
@@ -333,10 +333,6 @@ public class NvaCorreccionFragment extends Fragment {
             };
             campo.tomarFoto = true;
 
-
-
-
-
             camposForm.add(campo);
             Log.d(TAG, "haciendo form");
             cf = new CreadorFormulario(camposForm, getContext());
@@ -375,7 +371,7 @@ public class NvaCorreccionFragment extends Fragment {
             }
             //paso a
             //creo el informe
-            mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), valor, valor2, valor3));
+            mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), solicitud.getNumFoto(),valor, valor2, valor3));
             actualizarSolicitud();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
 
@@ -535,7 +531,7 @@ public class NvaCorreccionFragment extends Fragment {
         }
     }
 
-    public void mostrarFoto(       EditText textorut,ImageView xfotomos, ImageButton xbtnrotar){
+    public void mostrarFoto(EditText textorut,ImageView xfotomos, ImageButton xbtnrotar){
 
 
             textorut.setText(nombre_foto);
@@ -584,7 +580,7 @@ public class NvaCorreccionFragment extends Fragment {
         Intent msgIntent = new Intent(activity, SubirFotoService.class);
         msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID,id);
         msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,ruta);
-        //todo como envio las otras 2 fotos
+
         msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,Constantes.INDICEACTUAL);
         // Constantes.INDICEACTUAL
         Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());

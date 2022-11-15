@@ -6,8 +6,8 @@ public interface PruebaListener {
 
 
 
-        public void onSuccess();
-        public void onRequestError(String errorMessage, int index);
+        void onSuccess();
+        void onRequestError(String errorMessage, int index);
 
 
 

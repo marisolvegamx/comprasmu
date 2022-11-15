@@ -17,7 +17,7 @@ import java.util.List;
 public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
 
-    private InformeEtapaDao icDao;
+    private final InformeEtapaDao icDao;
     private LiveData<List<InformeEtapa>> allInformeEtapa;
 
     public InfEtapaRepositoryImpl(Context context) {
@@ -72,8 +72,8 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
          icDao.insertAll(newInformeEtapa);
     }
 
-    public long getUltimo() {
-        return icDao.getUltimoId();
+    public long getUltimo(String indice) {
+        return icDao.getUltimoId( indice);
     }
 
 

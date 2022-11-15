@@ -1,6 +1,8 @@
 package com.example.comprasmu.data;
 
 import android.content.Context;
+
+import androidx.room.ColumnInfo;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -67,7 +69,7 @@ import java.util.List;
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class},
 
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=11, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=12, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -104,7 +106,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     INSTANCE =  Room.databaseBuilder(context,
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
-                                    MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11)
+                                    MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -235,7 +237,72 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         }
     };
+    static final Migration MIGRATION_11_12 = new Migration(11,12) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE correccion ADD COLUMN numfoto INTEGER not null default 0");
+            database.execSQL("ALTER TABLE correccion ADD COLUMN indice TEXT ");
 
+            database.execSQL("ALTER TABLE informe_detalle ADD COLUMN fechaCancel INTEGER");
+            database.execSQL(" UPDATE informe_detalle SET fechaCancel = CURRENT_TIMESTAMP");
+            database.execSQL("ALTER TABLE informe_detalle ADD COLUMN motivoCancel TEXT");
+            database.execSQL("drop TABLE if exists informe_etapa ");
+            database.execSQL("create  TABLE informe_etapa ( id integer not null," +
+                    "consecutivo integer not null, plantasId integer not null, " +
+                    "plantaNombre TEXT,clientesId INTEGER not null," +
+                    " clienteNombre TEXT,    indice TEXT," +
+                    "    comentarios TEXT," +
+                    "     etapa INTEGER not null," +
+                    "   total_cajas INTEGER not null," +
+                    "    total_muestras INTEGER not null," +
+                    "    estatus INTEGER not null," +
+                    "    estatusSync INTEGER not null,createdAt INTEGER DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY(ID)) ");
+            database.execSQL("drop TABLE if exists detalle_caja ");
+            database.execSQL("create  TABLE detalle_caja ( id integer not null," +
+             "informeEtapaId INTEGER not null,"+
+            "num_caja INTEGER not null,"+
+             "alto TEXT,"+
+            "ancho TEXT,"+
+             "largo TEXT,"+
+           " peso TEXT,"+
+                    "    estatusSync INTEGER not null,  PRIMARY KEY(id)) ");
+
+
+            database.execSQL("drop TABLE if exists solicitud_cor ");
+            database.execSQL("create  TABLE solicitud_cor ( id integer not null, " +
+                            " informesId INTEGER not null," +
+                            "   plantasId INTEGER not null," +
+                            " plantaNombre TEXT," +
+                            "   clientesId INTEGER not null," +
+                            "    clienteNombre TEXT," +
+                            "   indice TEXt," +
+                            "  nombreTienda TEXT," +
+                            "  descripcionFoto TEXT," +
+                            "    descripcionId INTEGER not null," +
+                            " descMostrar TEXT," +
+          "numFoto INTEGER not null," +
+                    "numFoto2 INTEGER not null," +
+            "numfoto3 INTEGER not null," +
+
+            "motivo TEXT," +
+            "total_fotos INTEGER not null," +
+             "etapa INTEGER not null," +
+            "estatus INTEGER not null," +
+            "estatusSync INTEGER not null," +
+           " contador INTEGER not null," +
+
+                    "createdAt INTEGER DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY(ID)) ");
+            database.execSQL("drop TABLE if exists detalle_caja ");
+            database.execSQL("create  TABLE detalle_caja ( id integer not null," +
+                    "informeEtapaId INTEGER not null,"+
+                    "num_caja INTEGER not null,"+
+                    "alto TEXT,"+
+                    "ancho TEXT,"+
+                    "largo TEXT,"+
+                    " peso TEXT,"+
+                    "    estatusSync INTEGER not null,  PRIMARY KEY(id)) ");
+        }
+    };
 
 
 
@@ -272,7 +339,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     //no tengo datos
                     //   prepopulatelc();
                     //    prepopulatedetc();
-                    cargarSolicitudes();
+                   // cargarSolicitudes();
 
                     // catalogos();
 

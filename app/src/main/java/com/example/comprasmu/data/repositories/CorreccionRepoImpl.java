@@ -17,7 +17,7 @@ import java.util.List;
 public class CorreccionRepoImpl extends BaseRepository<Correccion> {
 
 
-    private CorreccionDao icDao;
+    private final CorreccionDao icDao;
 
     public CorreccionRepoImpl(Context context) {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
@@ -41,7 +41,7 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
     public LiveData<List<SolicitudWithCor>> getAllxEtaPlan(int plantaSel, String indice, int etapa) {
         String query="Select * from solicitud_cor  " +
                 "inner join correccion on correccion.solicitudId=solicitud_cor.id" +
-                " where indice=?";
+                " where solicitud_cor.indice=?";
         ArrayList<String> filtros=new ArrayList<String>();
         filtros.add(indice);
         query = query + " and plantasId=?";
@@ -92,8 +92,8 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
          icDao.insertAll(newCorreccion);
     }
 
-    public long getUltimo() {
-        return icDao.getUltimoId();
+    public long getUltimo(String indice) {
+        return icDao.getUltimoId(indice);
     }
 
 

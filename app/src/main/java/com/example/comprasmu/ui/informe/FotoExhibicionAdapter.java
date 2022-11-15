@@ -24,7 +24,7 @@ public class FotoExhibicionAdapter extends RecyclerView.Adapter<FotoExhibicionAd
     private List<ProductoExhibidoDao.ProductoExhibidoFoto> mProductoExhibidoList;
 
  //   private final ListaInformesViewModel mViewModel;
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
     private String directorio;
     public FotoExhibicionAdapter( AdapterCallback callback) {
 

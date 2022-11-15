@@ -35,11 +35,11 @@ public class Preguntasino extends LinearLayout {
     }
 
     private void initializeViews(Context context) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.preguntasino, this);
-        label = (TextView) this.findViewById(R.id.cvtxtlabel);
-        si = (RadioButton) this.findViewById(R.id.cvrbsi);
-        no = (RadioButton) this.findViewById(R.id.cvrbno);
+        label = this.findViewById(R.id.cvtxtlabel);
+        si = this.findViewById(R.id.cvrbsi);
+        no = this.findViewById(R.id.cvrbno);
         this.setOrientation(VERTICAL);
 
     }

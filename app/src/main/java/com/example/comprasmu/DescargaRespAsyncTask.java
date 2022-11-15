@@ -50,7 +50,7 @@ public class DescargaRespAsyncTask extends AsyncTask<String, Void, Void> {
     SimpleDateFormat sdfdias;
     String TAG="DescargarRespAsynTask";
     private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
-    private   String DESTINATION_PATH ;
+    private final String DESTINATION_PATH ;
 
     boolean notificar=false;
     Activity act;

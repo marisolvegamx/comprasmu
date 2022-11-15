@@ -62,7 +62,7 @@ public class DescargasIni {
     final String TAG="DescargasIni";
     private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
-    private ProgresoListener miproglis;
+    private final ProgresoListener miproglis;
 
     public DescargasIni(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,

@@ -24,7 +24,7 @@ public class InformeDetalleAdapter extends  RecyclerView.Adapter<InformeDetalleA
 
     private List<InformeCompraDetalle> mInformeCompraDetalleList;
 
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
     boolean consulta=false;
 
     public InformeDetalleAdapter( AdapterCallback callback) {
@@ -74,7 +74,7 @@ public class InformeDetalleAdapter extends  RecyclerView.Adapter<InformeDetalleA
         public InformeCompraDetalleViewHolder(MuestraItemBinding binding,AdapterCallback callback) {
             super(binding.getRoot());
             this.binding = binding;
-            Log.d("InformeDetalleAdapter","estatussync"+binding.txtmestatussync.getText().toString());
+         //   Log.d("InformeDetalleAdapter","estatussync"+binding.txtmestatussync.getText().toString());
          //  if( binding.txtmestatussync.getText().toString().equals("0")) //no puedo eliminar
              //  binding.btnmeliminar.setVisibility(View.VISIBLE);
            //else

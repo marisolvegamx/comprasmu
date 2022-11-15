@@ -14,7 +14,7 @@ import java.util.List;
 public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
 
 
-    private SolicitudCorDao icDao;
+    private final SolicitudCorDao icDao;
     private LiveData<List<SolicitudCor>> allSolicitudCor;
 
     public SolicitudCorRepoImpl(Context context) {

@@ -55,8 +55,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     public abstract void deleteInforme(int id);
 
     @Query("SELECT max(id) as ultimo " +
-            "FROM informe_etapa ")
-    public abstract int getUltimoId();
+            "FROM informe_etapa where indice=:indice ")
+    public abstract int getUltimoId(String indice);
 
     @Query("update informe_etapa set estatus=:estatus WHERE id=:id")
     public abstract  void actualizarEstatus(int id, int estatus);

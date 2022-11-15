@@ -17,7 +17,7 @@ import java.util.List;
 
 public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDetalle> {
 
-    private InformeCompraDetDao dao;
+    private final InformeCompraDetDao dao;
 
     private LiveData<List<InformeCompraDetalle>> allInformeCompraDetalle;
 

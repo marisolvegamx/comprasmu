@@ -14,8 +14,8 @@ import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import java.util.List;
 
 public class ContInfEtaViewModel extends AndroidViewModel {
-    private InfEtapaRepositoryImpl infEtaRepository;
-    private InfEtapaDetRepoImpl infEtaDetRepository;
+    private final InfEtapaRepositoryImpl infEtaRepository;
+    private final InfEtapaDetRepoImpl infEtaDetRepository;
     Application application;
 
     public ContInfEtaViewModel(@NonNull Application application) {

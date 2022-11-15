@@ -21,7 +21,7 @@ public class FiltrarListaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filtrar_lista);
         Toolbar myChildToolbar =
-        (Toolbar) findViewById(R.id.my_child_toolbar);
+                findViewById(R.id.my_child_toolbar);
         setSupportActionBar(myChildToolbar);
        // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();

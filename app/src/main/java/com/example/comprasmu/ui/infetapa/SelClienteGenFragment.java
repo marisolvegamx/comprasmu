@@ -39,7 +39,7 @@ public class SelClienteGenFragment extends ListaSelecFragment {
 
     private  ArrayList<DescripcionGenerica> listaClientesEnv;
     ListaCompraRepositoryImpl lcrepo;
-    private static String TAG="SelClienteGenFragment";
+    private static final String TAG="SelClienteGenFragment";
     private ListaDetalleViewModel mViewModel;
     public static String ARG_TIPOCONS="comprasmu.correselcli.tipocons";
     int ciudadSel;
@@ -144,7 +144,7 @@ public class SelClienteGenFragment extends ListaSelecFragment {
 
         Bundle bundle = new Bundle();
         bundle.putInt(ListaCompraFragment.ARG_PLANTASEL,listaSeleccionable.get(i).getId() );
-        bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getNombre());
+        bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getDescripcion2());
         bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL,clienteSel );
       //  bundle.putString(BuscarInformeFragment.INDICE, Constantes.INDICEACTUAL);
 
@@ -176,7 +176,7 @@ public class SelClienteGenFragment extends ListaSelecFragment {
           listaCompra.getPlantaNombre();*/
 
 
-            listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre() + " " + listaCompra.getPlantaNombre(), listaCompra.getClienteNombre()));
+            listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre() + " " + listaCompra.getPlantaNombre(), listaCompra.getClienteNombre(),listaCompra.getPlantaNombre()));
 
         }
     }

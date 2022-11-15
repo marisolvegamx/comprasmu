@@ -22,7 +22,7 @@ public class VisitaAdapter extends RecyclerView.Adapter<VisitaAdapter.VisitaView
     private List<Visita> mVisitaList;
 
     //private final ListaRecyclerViewModel mViewModel;
-    private AdapterCallback callback;
+    private final AdapterCallback callback;
 
     public VisitaAdapter(AdapterCallback callback) {
 
@@ -75,7 +75,7 @@ public class VisitaAdapter extends RecyclerView.Adapter<VisitaAdapter.VisitaView
             binding.liBtnborrar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(view.getId()==R.id.btncigborrar)
+                    if(view.getId()==R.id.li_btnborrar)
                         callback.onClickEliminar(Integer.parseInt(binding.liTxtid.getText().toString()));
                 }
             });

@@ -102,6 +102,9 @@ public interface APIService {
     @GET("descresp2")
     Call<RespInfEtapaResponse> getRespaldoInf2( @Query("indice") String indice, @Query("usuario") String usuario);
 
+    @GET("descresp/cor")
+    Call<RespInfEtapaResponse> getRespaldoCor( @Query("indice") String indice, @Query("usuario") String usuario);
+
     @POST("infetapa/create")
     @Headers({
             "Accept: application/json",

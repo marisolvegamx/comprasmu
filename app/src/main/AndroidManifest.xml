@@ -67,7 +67,7 @@
             android:enabled="true"
             android:exported="true" />
         <service android:name=".services.SubirPendService" />
-
+        <service android:name=".services.SubirLogService" />
         <activity
             android:name=".ui.BackActivity"
             android:configChanges="orientation"

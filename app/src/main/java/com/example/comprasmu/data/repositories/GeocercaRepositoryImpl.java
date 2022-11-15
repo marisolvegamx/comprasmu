@@ -14,7 +14,7 @@ import java.util.List;
 
 public  class GeocercaRepositoryImpl extends BaseRepository<Geocerca> {
 
-    private GeocercaDao dao;
+    private final GeocercaDao dao;
 
     private LiveData<List<Geocerca>> allGeocerca;
 

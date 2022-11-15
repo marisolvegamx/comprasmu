@@ -49,7 +49,7 @@ public class VerInformeGenFragment extends Fragment {
     CampoForm campo2;
     private VerInformegenFragmentBinding mBinding;
     NvaCorreViewModel corViewModel;
-    private static String TAG = "VerInformeGenFragment";
+    private static final String TAG = "VerInformeGenFragment";
     String directorio;
     String tipo;
     String textoboton;

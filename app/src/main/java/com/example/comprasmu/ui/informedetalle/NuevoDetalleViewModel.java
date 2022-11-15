@@ -71,10 +71,10 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public ImagenDetalle etiqueta_evaluacion;
     public ImagenDetalle fotoazucares;
     public ImagenDetalle fotoqr;
-    private ImagenDetRepositoryImpl imagenDetRepository;
-    private AtributoRepositoryImpl atrRepo;
+    private final ImagenDetRepositoryImpl imagenDetRepository;
+    private final AtributoRepositoryImpl atrRepo;
     private int iddetalleNuevo;
-    private InformeComDetRepositoryImpl detalleRepo;
+    private final InformeComDetRepositoryImpl detalleRepo;
     InformeTempRepositoryImpl itemprepo;
     private final MutableLiveData<Event<Integer>> mSnackbarText = new MutableLiveData<>();
     public ProductoSel productoSel;
@@ -82,8 +82,8 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public List<Atributo> satributos;
     public List<CatalogoDetalle> tomadoDe;
     public List<CatalogoDetalle> causas;
-    private CatalogoDetalleRepositoryImpl catRepo;
-    private ReactivoRepositoryImpl reacRepo;
+    private final CatalogoDetalleRepositoryImpl catRepo;
+    private final ReactivoRepositoryImpl reacRepo;
     public LiveData<List<Reactivo>> listaPreguntas;
     final String TAG="NvoDetVM";
     Application application;
@@ -361,7 +361,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
             Class claseCargada = InformeCompraDetalle.class;
 
-            Class params[] = new Class[1];
+            Class[] params = new Class[1];
             if(info.getNombre_campo().equals(""))
                 continue;
             /*if(info.getNombre_campo().equals("siglas"))

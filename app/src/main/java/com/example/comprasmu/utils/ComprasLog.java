@@ -32,7 +32,7 @@ public class ComprasLog {
         }
         return singletonLog;
     }
-    public ComprasLog() {
+    private ComprasLog() {
 
 
 
@@ -77,7 +77,7 @@ public class ComprasLog {
             if(fichero!=null) {
                 BufferedWriter br = new BufferedWriter(new FileWriter(fichero, true));
 
-                br.write(sdf.format(new Date()) + ":" + error);
+                br.write(sdf.format(new Date()) + ":" + error+"\r");
 
                 br.close();
             }

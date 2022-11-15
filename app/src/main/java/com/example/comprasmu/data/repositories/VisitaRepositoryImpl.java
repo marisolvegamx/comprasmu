@@ -21,7 +21,7 @@ import java.util.List;
 
 public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
     private static VisitaRepositoryImpl sInstance;
-    private VisitaDao icDao;
+    private final VisitaDao icDao;
     private LiveData<List<Visita>> allVisita;
 
     public VisitaRepositoryImpl(Context context) {

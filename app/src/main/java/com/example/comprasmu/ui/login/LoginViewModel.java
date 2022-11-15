@@ -10,8 +10,6 @@ import android.util.Patterns;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.LoggedInUser;
-import com.example.comprasmu.data.modelos.LoginDataSource;
-import com.example.comprasmu.data.modelos.Result;
 import com.example.comprasmu.data.repositories.LoginRepository;
 
 
@@ -21,7 +19,7 @@ public class LoginViewModel extends ViewModel {
     private LoginFormState loginFormState;
    // private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
-    private PeticionesServidor petServ;
+    private final PeticionesServidor petServ;
 
     public LoginViewModel() {
        this.petServ=new PeticionesServidor("");

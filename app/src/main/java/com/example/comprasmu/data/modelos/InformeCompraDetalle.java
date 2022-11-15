@@ -64,8 +64,7 @@ public class InformeCompraDetalle {
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
     private Date updatedAt;
-    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
-    @TypeConverters(Converters.class)
+
     private Date fechaCancel;
     private String motivoCancel;
 

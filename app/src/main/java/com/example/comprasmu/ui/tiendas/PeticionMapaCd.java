@@ -39,7 +39,7 @@ public class PeticionMapaCd {
     public  void getTiendas(String pais, String ciudad,int planta,int cliente, String fechaini,String fechafin, String tipo, String nombre ) {
         Log.d(TAG,"haciendo petición "+nombre+"--"+tipo);
 
-        final Call<TiendasResponse> batch = apiClient.getApiService().getTiendas(pais, ciudad, planta, cliente, fechaini,fechafin,tipo,nombre,usuario);
+        final Call<TiendasResponse> batch = ServiceGenerator.getApiService().getTiendas(pais, ciudad, planta, cliente, fechaini,fechafin,tipo,nombre,usuario);
 
         batch.enqueue(new Callback<TiendasResponse>() {
             @Override
@@ -71,7 +71,7 @@ public class PeticionMapaCd {
 
     public  void getZonas(String pais, String indice, DescargasIniAsyncTask.DescargaIniListener listener) {
 
-        final Call<TiendasResponse> batch = apiClient.getApiService().getGeocercas(indice,usuario);
+        final Call<TiendasResponse> batch = ServiceGenerator.getApiService().getGeocercas(indice,usuario);
 
         batch.enqueue(new Callback<TiendasResponse>() {
             @Override
@@ -109,7 +109,7 @@ public class PeticionMapaCd {
     public  void cancelTienda( int idtienda ) {
         Log.d(TAG,"haciendo petición borrar"+idtienda);
 
-        final Call<PostResponse> batch = apiClient.getApiService().tiendaCancel(idtienda,usuario);
+        final Call<PostResponse> batch = ServiceGenerator.getApiService().tiendaCancel(idtienda,usuario);
 
         batch.enqueue(new Callback<PostResponse>() {
             @Override

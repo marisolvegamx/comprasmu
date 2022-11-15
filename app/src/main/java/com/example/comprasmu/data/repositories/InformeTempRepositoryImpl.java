@@ -18,7 +18,7 @@ import java.util.List;
 public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
 
 
-    private InformeTempDao icDao;
+    private final InformeTempDao icDao;
     private LiveData<List<InformeTemp>> allInformeTemp;
 
     public InformeTempRepositoryImpl(Context context) {

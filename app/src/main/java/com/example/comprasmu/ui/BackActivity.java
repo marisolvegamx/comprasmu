@@ -48,7 +48,7 @@ public class BackActivity extends AppCompatActivity {
         // get fragment manager
 
         myChildToolbar =
-                (Toolbar) findViewById(R.id.my_child_toolbar2);
+                findViewById(R.id.my_child_toolbar2);
 
 
 // add

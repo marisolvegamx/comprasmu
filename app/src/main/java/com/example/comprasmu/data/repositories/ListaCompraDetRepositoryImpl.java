@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ListaCompraDetRepositoryImpl {
 
-    private ListaCompraDetalleDao dao;
+    private final ListaCompraDetalleDao dao;
 
 
 

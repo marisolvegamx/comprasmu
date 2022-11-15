@@ -161,13 +161,12 @@ public class FirstMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        if (marker.equals(markerPais)) {
-         /*   Intent intent = new Intent(this, MarkerDetailActivity.class);
+        /*   Intent intent = new Intent(this, MarkerDetailActivity.class);
             intent.putExtra(EXTRA_LATITUD, marker.getPosition().latitude);
             intent.putExtra(EXTRA_LONGITUD, marker.getPosition().longitude);
 
             startActivity(intent);*/
-            /*mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), new GoogleMap.CancelableCallback() {
+        /*mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), new GoogleMap.CancelableCallback() {
                 @Override
                 public void onFinish() {
                     Intent intent = new Intent(FirstMapActivity.this, MarkerDetailActivity.class);
@@ -181,10 +180,7 @@ public class FirstMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                 }
             });*/
-
-            return true;
-        }
-        return false;
+        return marker.equals(markerPais);
     }
 
 }

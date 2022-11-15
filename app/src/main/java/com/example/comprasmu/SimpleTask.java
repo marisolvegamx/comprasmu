@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class SimpleTask extends AsyncTask<Void, Integer, Void> {
 
 
-    private int[] numbers;
+    private final int[] numbers;
     public TextView progressLabel;
 
 
@@ -28,7 +28,7 @@ public class SimpleTask extends AsyncTask<Void, Integer, Void> {
       //  this.progressLabel = progressLabel;
     }
 
-    private ArrayList<PruebaListener> observadores = new ArrayList<PruebaListener>();
+    private final ArrayList<PruebaListener> observadores = new ArrayList<PruebaListener>();
 
 
     public void agregarObservador(PruebaListener o)

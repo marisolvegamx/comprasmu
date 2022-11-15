@@ -5,8 +5,6 @@ import android.util.Log;
 
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.LoggedInUser;
-import com.example.comprasmu.data.modelos.LoginDataSource;
-import com.example.comprasmu.data.modelos.Result;
 import com.example.comprasmu.ui.login.LoginActivity;
 
 /**
@@ -17,7 +15,7 @@ public class LoginRepository {
 
     private static volatile LoginRepository instance;
 
-    private PeticionesServidor petServ;
+    private final PeticionesServidor petServ;
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore

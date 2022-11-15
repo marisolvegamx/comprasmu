@@ -26,7 +26,7 @@
 
         <item
             android:id="@+id/nav_continuarprep"
-            android:icon="@drawable/ic_baseline_note_24"
+            android:icon="@drawable/ic_baseline_edit_24"
             android:title="@string/menu_continuar_informe" />
         <item
             android:id="@+id/nav_resumenprep"
@@ -35,7 +35,7 @@
 
         <item
             android:id="@+id/nav_solcor2"
-            android:icon="@android:drawable/ic_dialog_alert"
+            android:icon="@drawable/ic_baseline_notifications_active_24"
             android:title="@string/menu_correccion"
             app:actionViewClass="android.widget.TextView" />
         <item

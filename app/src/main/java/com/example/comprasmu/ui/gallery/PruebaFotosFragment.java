@@ -93,7 +93,7 @@ public class PruebaFotosFragment extends Fragment {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,
                 false);
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.rv_imagenes);
+        RecyclerView recyclerView = root.findViewById(R.id.rv_imagenes);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         List<ImagenDetalle> lista=this.buscarImagenes(1,2,null);

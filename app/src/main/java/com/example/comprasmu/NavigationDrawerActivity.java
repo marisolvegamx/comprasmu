@@ -35,11 +35,14 @@ import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.remote.MuestraCancelada;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
@@ -177,7 +180,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             navigationView.inflateMenu(R.menu.activity_main_drawerprep);
             View header=navigationView.getHeaderView(0);
             header.setBackgroundResource(R.drawable.side_nav_barpre);
-            TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
+            TextView mNameTextView = header.findViewById(R.id.txthmmodulo);
             mNameTextView.setText(R.string.preparacion);
         } if(Constantes.ETAPAACTUAL==2) {
             navigationView.getMenu().clear();
@@ -185,7 +188,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             navigationView.inflateMenu(R.menu.activity_main_drawer);
             View header=navigationView.getHeaderView(0);
             header.setBackgroundResource(R.drawable.side_nav_bar);
-            TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
+            TextView mNameTextView = header.findViewById(R.id.txthmmodulo);
             mNameTextView.setText(R.string.compra);
         }
         if(Constantes.ETAPAACTUAL==3) {
@@ -194,7 +197,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             navigationView.inflateMenu(R.menu.activity_main_draweretiq);
             View header=navigationView.getHeaderView(0);
             header.setBackgroundResource(R.drawable.side_nav_bareti);
-            TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
+            TextView mNameTextView = header.findViewById(R.id.txthmmodulo);
             mNameTextView.setText(R.string.etiquetado);
         }
         if(Constantes.ETAPAACTUAL==4) {
@@ -203,7 +206,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             navigationView.inflateMenu(R.menu.activity_main_draweremp);
             View header=navigationView.getHeaderView(0);
             header.setBackgroundResource(R.drawable.side_nav_baremp);
-            TextView mNameTextView = (TextView) header.findViewById(R.id.txthmmodulo);
+            TextView mNameTextView = header.findViewById(R.id.txthmmodulo);
             mNameTextView.setTextColor(Color.BLACK);
             mNameTextView.setText(R.string.empaque);
         }
@@ -311,7 +314,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                  .setRequiresBatteryNotLow(true)
                 .build();
         PeriodicWorkRequest simpleRequest =
-                new PeriodicWorkRequest.Builder(SyncWork.class, 5, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(SyncWork.class, 30, TimeUnit.MINUTES)
                         .setConstraints(constraints)
                         .addTag("comprassync_worker")
                         .build();
@@ -321,7 +324,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 "comprassync_worker",
                 ExistingPeriodicWorkPolicy.KEEP,
                 simpleRequest);
-        flog.grabarError("archivo creado");
+       // flog.grabarError("archivo creado");
        /* ServicioCompras sbt = new ServicioCompras();
 
 
@@ -380,7 +383,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
                 return true;
             case R.id.action_mapa:
-                //  Log.d(TAG,"hice click en"+item.getItemId());
+                  Log.d(TAG,"hice click en"+item.getItemId());
               //  Intent homeIntent=new Intent(this, MapaCdActivity.class);
               //  Intent homeIntent=new Intent(this, FirstMapActivity.class);
 
@@ -406,7 +409,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 Intent homeIntent=new Intent(this, LeerLogActivity.class);
 
                 startActivity(homeIntent);
-                finish();
+
                 return true;
           /*  case R.id.action_save:
                 guardarInforme();
@@ -450,11 +453,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
        // finishAndRemoveTask();
     }
     private boolean checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            return false;
-        }
-        return true;
+        // Permission is not granted
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
@@ -465,7 +465,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
@@ -516,6 +516,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
         return false;
     }
+   //para el envio forzoso pero ya es automatico y es por informe
+    /*
     public void subirImagenes(){
         subirPendientes();
         //busco las imagenes pendientes de subir
@@ -547,7 +549,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         });
 
 
-    }
+    }*/
     private void subirPendientes(){
         Intent msgIntent = new Intent(NavigationDrawerActivity.this, SubirPendService.class);
 
@@ -578,7 +580,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             }
         }
         //close navigation drawer
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
 
@@ -609,6 +611,33 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     @Override
     public void estatusLis(int es) {
         desclis=es;
+    }
+
+    @Override
+    public void imagenesEtapa(RespInfEtapaResponse infoResp) {
+        if (infoResp.getInformeEtapaDet() != null && infoResp.getInformeEtapaDet().size() > 0) {
+
+                for(InformeEtapaDet img:infoResp.getInformeEtapaDet()){
+                    startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto(), DESTINATION_PATH);
+                        Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto());
+                }
+                // cerrarAlerta(true);
+
+
+        }
+
+        if (infoResp.getCorrecciones() != null && infoResp.getCorrecciones().size() > 0) {
+
+            for(Correccion img:infoResp.getCorrecciones()){
+                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto1(), DESTINATION_PATH);
+                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto2(), DESTINATION_PATH);
+                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto3(), DESTINATION_PATH);
+                // Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto1());
+            }
+            // cerrarAlerta(true);
+
+
+        }
     }
 
     public class SubirFotoProgressReceiver extends BroadcastReceiver {
@@ -648,7 +677,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         cal.add(Calendar.MONTH, +1);
         String mesactual = sdfparaindice.format(cal.getTime());
         Log.d(TAG, "***** hoy " + mesactual);
-        String aux[] = mesactual.split("-");
+        String[] aux = mesactual.split("-");
         int mes = Integer.parseInt(aux[0])+1;
         int anio = Integer.parseInt(aux[1]);
 
@@ -724,10 +753,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private void descargarImagenes(List<ImagenDetalle> imagenes){
         for(ImagenDetalle img:imagenes){
             startDownload(DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta(), DESTINATION_PATH);
-            Log.d("LOginAct"," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
+            Log.d(TAG," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
         }
         // cerrarAlerta(true);
     }
+
+
     private long startDownload(String downloadPath, String destinationPath) {
         Uri uri = Uri.parse(downloadPath); // Path where you want to download file.
         // registrer receiver in order to verify when download is complete

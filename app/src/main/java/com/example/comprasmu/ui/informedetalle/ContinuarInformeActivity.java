@@ -41,7 +41,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     private NuevoDetalleViewModel dViewModel;
     private ActivityContinuarInformeBinding mBinding;
     Visita visitaCont;
-    private static boolean hayDatos = false;
+    private static final boolean hayDatos = false;
     public final static String INFORMESEL = "comprasmu.ni_informesel";
     private static final String TAG = "ContInformeAct";
     private DetalleProductoFragment fragementAct;
@@ -58,7 +58,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         // get fragment manager
 
         myChildToolbar =
-                (Toolbar) findViewById(R.id.toolbarinf);
+                findViewById(R.id.toolbarinf);
         setSupportActionBar(myChildToolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();

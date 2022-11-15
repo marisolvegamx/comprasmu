@@ -24,6 +24,9 @@ public class Correccion {
     @TypeConverters(Converters.class)
     private Date createdAt;
 
+     private String indice;
+    @ColumnInfo(defaultValue = "0")
+    private int numfoto;
     public int getId() {
         return id;
     }
@@ -86,5 +89,21 @@ public class Correccion {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getIndice() {
+        return indice;
+    }
+
+    public void setIndice(String indice) {
+        this.indice = indice;
+    }
+
+    public int getNumfoto() {
+        return numfoto;
+    }
+
+    public void setNumfoto(int numfoto) {
+        this.numfoto = numfoto;
     }
 }

@@ -25,9 +25,9 @@ import net.gotev.uploadservice.UploadStatusDelegate;
 public class SubirFoto {
     MultipartUploadRequest upload;
     String URL_SUBIRPICTURE="https://muesmerc.mx/comprasv1/api/public/subirfoto";
-    private ArrayList<SubirFotoService.SubirFotoListener> observadores = new ArrayList<SubirFotoService.SubirFotoListener>();
+    private final ArrayList<SubirFotoService.SubirFotoListener> observadores = new ArrayList<SubirFotoService.SubirFotoListener>();
     ImagenDetRepositoryImpl idrepo;
-    private String TAG="SubirFoto";
+    private final String TAG="SubirFoto";
 
     public void agregarObservador(SubirFotoService.SubirFotoListener o)
     {

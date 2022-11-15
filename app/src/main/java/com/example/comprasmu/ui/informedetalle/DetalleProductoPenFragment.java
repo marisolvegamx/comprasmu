@@ -315,11 +315,8 @@ public class DetalleProductoPenFragment extends Fragment {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
-                            aceptar.setEnabled(true);
-                        }else{
-                            aceptar.setEnabled(false);
-                        }
+                        //count es cantidad de caracteres que tiene
+                        aceptar.setEnabled(charSequence.length() > 0);
 
                     }
 
@@ -624,7 +621,7 @@ public class DetalleProductoPenFragment extends Fragment {
         Log.d(TAG, "*regresó de la consulta de clientes " +  clientesAsig.size()+"");
     }
 
-    public  List<DescripcionGenerica> convertirListaaClientesE(List<ListaCompra> lista, Integer clientesprev[]){
+    public  List<DescripcionGenerica> convertirListaaClientesE(List<ListaCompra> lista, Integer[] clientesprev){
         int i=0;
         List<DescripcionGenerica> mapa=new ArrayList<>();
         List<Integer> coninf;
@@ -1228,6 +1225,7 @@ public class DetalleProductoPenFragment extends Fragment {
                 return false;
             }else
             //busco que no haya otra muestra con la misma fecha en el muestreo
+            //ni en el mismo informe
                 if(dViewModel.productoSel.tipoMuestra!=3||mViewModel.numMuestra>1) //solo si no es bu
             if(this.buscarMuestraCodigoPeniafiel(fechacad)) {
                 Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
@@ -1570,9 +1568,9 @@ public class DetalleProductoPenFragment extends Fragment {
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.clienteNombre+"","clienteNombre","I",mViewModel.consecutivo,false);
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.clienteSel+"","clientesId","I",mViewModel.consecutivo,false);
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.codigosnop+"","codigosnop","",mViewModel.consecutivo,false);
-        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.codigosperm+"","codigosperm","",mViewModel.consecutivo,false);
+          mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.codigosperm+"","codigosperm","",mViewModel.consecutivo,false);
 
-        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasDetIdbu+"","comprasDetIdbu","ID",mViewModel.consecutivo,false);
+          mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasDetIdbu+"","comprasDetIdbu","ID",mViewModel.consecutivo,false);
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasIdbu+"","comprasIdbu","ID",mViewModel.consecutivo,false);
 
       }
@@ -1588,7 +1586,7 @@ public class DetalleProductoPenFragment extends Fragment {
            dViewModel.productoSel.siglas=siglas;
        }else {
            textoint.setEnabled(true);
-            validar.setEnabled(true);
+           validar.setEnabled(true);
        }
    }
         Date fechacad = null;
@@ -1609,24 +1607,24 @@ public class DetalleProductoPenFragment extends Fragment {
         lcviewModel = null;
         dViewModel=null;
         cf=null;
-         camposForm=null;
+        camposForm=null;
         tomadoDe=null;
-       atributos=null;
-      causas=null;
-         root=null;
-         textoint=null;
-         pregunta=null;
-         respgen=null;
-         spclientes=null ;
-          preguntaAct=null;
-         micbtn=null;
-         fotomos=null;
-         sv=null;
+        atributos=null;
+        causas=null;
+        root=null;
+        textoint=null;
+        pregunta=null;
+        respgen=null;
+        spclientes=null ;
+        preguntaAct=null;
+        micbtn=null;
+        fotomos=null;
+        sv=null;
         btnrotar=null;
-         loadingDialog=null ;
-         aceptar=null;
-         validar=null;
-         lcviewModel=null;
+        loadingDialog=null ;
+        aceptar=null;
+        validar=null;
+        lcviewModel=null;
         nombre_foto=null;
         archivofoto=null;
     }
@@ -1824,11 +1822,8 @@ public class DetalleProductoPenFragment extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length()>0){ //count es cantidad de caracteres que tiene
-                aceptar.setEnabled(true);
-            }else{
-                aceptar.setEnabled(false);
-            }
+            //count es cantidad de caracteres que tiene
+            aceptar.setEnabled(charSequence.length() > 0);
 
         }
 

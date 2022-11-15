@@ -90,7 +90,7 @@ public class ValidadorDatos {
                 }
 
                 //comparo con los no permitidos
-                String arrecodigos[]=codigonoper.split(";");
+                String[] arrecodigos =codigonoper.split(";");
                 if(arrecodigos!=null&&arrecodigos.length>0) {
                     Log.d("ValidadorDatos","mi codigo"+codigo);
                     List<String> lista = Arrays.asList(arrecodigos);
@@ -120,7 +120,7 @@ public class ValidadorDatos {
             }
 
             //comparo con los no permitidos
-            String arrecodigos[]=codigonoper.split(";");
+            String[] arrecodigos =codigonoper.split(";");
             if(arrecodigos!=null&&arrecodigos.length>0) {
                 Log.d("ValidadorDatos","mi codigo"+codigo);
                 List<String> lista = Arrays.asList(arrecodigos);
@@ -161,29 +161,25 @@ public class ValidadorDatos {
                     if (possimb > 0) {
                         rango = codigonoper.substring(possimb);
                         Date fecharan=sdfcod.parse(rango);
-                        if(vfecha.before(fecharan) )
-                            return false;
+                        return !vfecha.before(fecharan);
                     }
                 } else {
                     rango = codigonoper.substring(possimb);
                     Date fecharan=sdfcod.parse(rango);
-                    if(vfecha.after(fecharan) )
-                        return false;
+                    return !vfecha.after(fecharan);
                 }
 
 
             } else {
                 rango = codigonoper.substring(possimb);
                 Date fecharan=sdfcod.parse(rango);
-                if(vfecha.after(fecharan) )
-                    return false;
+                return !vfecha.after(fecharan);
             }
         }
         else {
             rango = codigonoper.substring(possimb);
             Date fecharan=sdfcod.parse(rango);
-            if(vfecha.before(fecharan) )
-                return false;
+            return !vfecha.before(fecharan);
         }
         return true; //todo bien
         } catch (ParseException e) {

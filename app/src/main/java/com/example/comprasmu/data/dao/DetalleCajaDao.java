@@ -35,8 +35,17 @@ public abstract class DetalleCajaDao extends  BaseDao<DetalleCaja>{
     @Query("SELECT * FROM detalle_caja where informeEtapaId=:id order by id desc")
     public abstract List<DetalleCaja> getUltimoxInf(int id);
 
+    @Query("SELECT * FROM detalle_caja where informeEtapaId=:id   and num_caja=:caja order by id desc")
+    public abstract List<DetalleCaja> getUltimoxInfcaj(int id, int caja);
+
     @Query("update detalle_caja set estatusSync=:estatus WHERE id=:id")
     public abstract  void actualizarEstatusSync(int id, int estatus);
+
+    @Query("update detalle_caja set estatusSync=:estatus WHERE informeEtapaId=:infid")
+    public abstract  void actualizarEstSyncxInf(int infid, int estatus);
+
+    @Query("update detalle_caja set alto=:alto, ancho=:ancho, peso=:peso, largo=:largo  WHERE id=:id and num_caja=:numcaja")
+    public abstract  void actualizarDims(int id, String largo, String ancho, String alto, String peso, int numcaja);
 
     @Query("SELECT * FROM detalle_caja WHERE id =:id")
     public abstract   DetalleCaja findSimple(int id);

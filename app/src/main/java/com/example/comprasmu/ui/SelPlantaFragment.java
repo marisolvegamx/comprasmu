@@ -40,7 +40,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
     private LiveData<List<ListaCompra>> listaCiudades;
     private  ArrayList<DescripcionGenerica> listaCiudadesEnv;
     ListaCompraRepositoryImpl lcrepo;
-    private static String TAG="SelPlantaFragment";
+    private static final String TAG="SelPlantaFragment";
     private ListaDetalleViewModel mViewModel;
     String tipoconsulta;
     int cdtrab;
@@ -188,7 +188,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
 
     static class SelectAsyncTask extends AsyncTask<Void, Void, LiveData<List<ListaCompra>>> {
 
-        private ListaCompraRepositoryImpl lcrepo;
+        private final ListaCompraRepositoryImpl lcrepo;
 
         public SelectAsyncTask(ListaCompraRepositoryImpl lcrepo) {
             this.lcrepo = lcrepo;
