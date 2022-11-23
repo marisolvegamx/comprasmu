@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.SolicitudCorDao;
@@ -40,7 +41,7 @@ public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
         return icDao.getSolicitudes(etapa, indice,plantaid, estatus);
     }
 
-    public int totalSols(int etapa, String indice, int estatus) {
+    public LiveData<Integer> totalSols(int etapa, String indice, int estatus) {
         return icDao.getTotSols(etapa, indice, estatus);
     }
     public int totalSolsxPlanta(int etapa, String indice, int estatus, int plantaid) {

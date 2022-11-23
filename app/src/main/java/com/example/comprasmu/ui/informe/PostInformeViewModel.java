@@ -193,7 +193,7 @@ public class PostInformeViewModel {
                 visitaenv.add(visitapend.visita);
             Log.d(TAG,"buscando prodexh"+visitapend.visita.getId());
             List<ProductoExhibido> productoExhibidos=prodeRepo.getAllsimple(visitapend.visita.getId());
-            Log.d(TAG,"buscando prodexh"+productoExhibidos.size());
+
             for(ProductoExhibido produc:productoExhibidos){
                 if(produc.getEstatusSync()==0)
                     productosExenv.add(produc);

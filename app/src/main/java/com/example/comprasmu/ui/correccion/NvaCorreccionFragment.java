@@ -248,7 +248,7 @@ public class NvaCorreccionFragment extends Fragment {
         campo.label=solicitud.getMotivo();
         campo.nombre_campo="label";
         campo.type="label";
-        campo.style=R.style.textopeque;
+        campo.style=R.style.formlabel2;
         camposForm.add(campo);
         campo=new CampoForm();
         campo.label="NUEVA";

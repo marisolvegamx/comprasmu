@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -46,7 +47,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
         return listas;
     }
-    public int  getTotalSols(int etapa,String indiceSel,int estatus){
+    public LiveData<Integer> getTotalSols(int etapa, String indiceSel, int estatus){
         Log.d(TAG,"wwww"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
         return repository.totalSols(etapa,indiceSel, estatus);
@@ -59,7 +60,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         LiveData<SolicitudCor> solicitud =repository.find(id);
         return solicitud;
     }
-    public int  getTotalCancel(String indiceSel){
+    public MutableLiveData<Integer>  getTotalCancel(String indiceSel){
         Log.d(TAG,"wwww"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
         return infcrepo.gettotCancelados(indiceSel);
@@ -95,25 +96,35 @@ public class ListaSolsViewModel extends AndroidViewModel {
         InformeCompraDetalle det=infcrepo.findsimple(cancelada.getInd_id());
 
         if(det!=null) {
-            if (det.getEstatus() > 0)//yno está cancelada
+            if (det.getEstatus() != 2&&det.getEstatus()!=4)//no está cancelada
             {
-                det.setMotivoCancel(cancelada.getVas_observaciones());
-                det.setFechaCancel(cancelada.getVas_fecha());
-                det.setEstatus(0);
-                infcrepo.insert(det);
-                infcrepo.actualizarEstatus(det.getId(), 0);
-
-
+                String codigo=Constantes.sdfcaducidad.format(det.getCaducidad());
                 ListaCompraDetRepositoryImpl lcdrepo = new ListaCompraDetRepositoryImpl(getApplication());
                 ListaCompraDetalle compradet = lcdrepo.findsimple(cancelada.getInd_comprasid(), cancelada.getInd_compraddetid());
                 if (compradet != null) {
                     //quito la comprada
-                    int cantidad = compradet.getComprados() - 1;
-                    lcdrepo.actualizarComprados(compradet.getId(), compradet.getListaId(), cantidad);
-
+                    if (compradet.getComprados() > 0) {
+                        int cantidad = compradet.getComprados() - 1;
+                        lcdrepo.actualizarComprados(compradet.getId(), compradet.getListaId(), cantidad);
+                    }
+                    //quito en nuevo codigo
+                    if (compradet.getNvoCodigo() != "") {
+                        String nuevoscods = compradet.getNvoCodigo().replace(codigo + ";", "");//elimino elcodigo
+                        lcdrepo.actualizarNvosCodigos(compradet.getId(), compradet.getListaId(), nuevoscods);
+                    }
                 }
             }
-        }
+                det.setMotivoCancel(cancelada.getVas_observaciones());
+                det.setFechaCancel(cancelada.getVas_fecha());
+                det.setEstatus(2);
+
+                infcrepo.insert(det);
+                infcrepo.actualizarEstatus(det.getId(), 2);
+
+
+
+            }
+
 
     }
 }

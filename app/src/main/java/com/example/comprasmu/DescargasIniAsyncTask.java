@@ -616,7 +616,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getComprasDetId());
                     if(det.getTipoMuestra()!=3) {//para normal o catchup
                         ListaCompraDetalle compradet=lcdrepo.findsimple(det.getComprasId(),det.getComprasDetId());
-                        if(compradet!=null) {
+                        if(compradet!=null&&det.getEstatus()!=2&&det.getEstatus()!=4) {
                             //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
                             Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
 
@@ -644,7 +644,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     }
                     else{
                         ListaCompraDetalle compradet = lcdrepo.findsimple(det.getComprasId(), det.getComprasDetId());
-                        if(compradet!=null) {
+                        if(compradet!=null&&det.getEstatus()!=2&&det.getEstatus()!=4) {
                             //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
                             Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
 

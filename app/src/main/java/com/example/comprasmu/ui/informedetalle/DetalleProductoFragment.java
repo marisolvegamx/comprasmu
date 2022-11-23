@@ -70,6 +70,7 @@ import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.CampoForm;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
@@ -122,7 +123,7 @@ public class DetalleProductoFragment extends Fragment {
     LoadingDialog loadingDialog ;
     List<DescripcionGenerica> clientesAsignados;
     CheckBox nopermiso;
-
+    ComprasLog compraslog;
     NuevoDetalleViewModel.ProductoSel prodSel;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
     SpeechRecognizer sspeechRecognizer;
@@ -170,6 +171,7 @@ public class DetalleProductoFragment extends Fragment {
         /**llegan los datos del producto el cliente y la planta seleccionada
          * desde la lista de compra
          */
+        compraslog=ComprasLog.getSingleton();
         try {
             if(preguntaAct==null){
                 return root;
@@ -959,8 +961,8 @@ public class DetalleProductoFragment extends Fragment {
                 }catch(Exception ex){
                     ex.printStackTrace();
                     yaestoyProcesando=false;
-
-                    Toast.makeText(getActivity(), "algo salió mal", Toast.LENGTH_SHORT).show();
+                    compraslog.grabarError(TAG+" Error al guardar informe " +ex.getMessage());
+                    Toast.makeText(getActivity(), "El informe no pudo guardarse", Toast.LENGTH_LONG).show();
 
                 }
 
@@ -1113,8 +1115,8 @@ public class DetalleProductoFragment extends Fragment {
             subirFotos(getActivity(),informe);
         }catch(Exception ex){
             ex.getStackTrace();
-            Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
-            Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
+            compraslog.grabarError(TAG+"Algo salió mal al enviar"+ex.getMessage());
+            Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_LONG).show();
         }
         //limpio variables de sesion
         Constantes.productoSel=null;

@@ -533,10 +533,10 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 catch(Exception ex){
                     ex.printStackTrace();
                     ComprasLog flog=ComprasLog.getSingleton();
-                    flog.grabarError(ex.getMessage());
+                    flog.grabarError(TAG+" ERROR AL GUARDAR EL INFORME "+ex.getMessage());
                     yaestoyProcesando=false;
                     loadingDialog.dismisDialog();
-                    Toast.makeText(getActivity(), "algo salio mal", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "ERROR AL GUARDAR EL INFORME", Toast.LENGTH_LONG).show();
 
 
                 }

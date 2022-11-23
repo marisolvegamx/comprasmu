@@ -120,6 +120,9 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
     @RawQuery(observedEntities = ListaCompraDetalle.class)
     public abstract LiveData<List<ListaCompraDetalle>> getDetallesByFiltros(SupportSQLiteQuery query);
 
+    @Query("update lista_compras_detalle set nvoCodigo=:nvocodigo WHERE id = :id and listaId=:listaid")
+    public abstract void actualizarNvosCodigos(int id, int listaid, String nvocodigo) ;
+
 
     /*  public class MinimalLstaDet{
         public int productosId;

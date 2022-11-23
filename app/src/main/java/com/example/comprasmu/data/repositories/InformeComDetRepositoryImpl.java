@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
@@ -115,18 +116,18 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     }
     public LiveData<List<InformeCompraDetalle>> getCancelados(String indice) {
         Log.d("wwwwwww",indice);
-        return dao.getByEstatus2(indice,0);
+        return dao.getByEstatus2(indice,2);
     }
 
     public LiveData<List<InformeCompraDao.InformeCompravisita>> getCanceladosVis(String indice) {
-        return dao.getCancel(indice,0);
+        return dao.getCancel(indice,2);
     }
-    public int gettotCancelados(String indice) {
-        List<InformeCompraDetalle> cancel= dao.getByEstatussimpl(indice,0);
+    public MutableLiveData<Integer> gettotCancelados(String indice) {
+        MutableLiveData<Integer> valor=new MutableLiveData<>();
+        List<InformeCompraDetalle> cancel= dao.getByEstatussimpl(indice,2);
         if(cancel!=null)
-            return cancel.size();
-        else
-        return 0;
+            valor.setValue( cancel.size());
+       return valor;
     }
     public List<InformeCompraDetalle> getDetallePendSubir(String indice) {
         return dao.getByEstatus(indice,0);

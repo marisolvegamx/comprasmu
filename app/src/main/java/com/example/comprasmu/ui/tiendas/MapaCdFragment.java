@@ -126,18 +126,19 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                  public void onClick(View view) {
                      if(markerSel!=null) {
                          Tienda tiendaSel=(Tienda)markerSel.getTag();
-                         new AlertDialog.Builder(getActivity())
-                                 .setIcon(android.R.drawable.ic_dialog_alert)
-                                 .setTitle(R.string.importante)
-                                 .setMessage(getString(R.string.cancelar_tienda)+" "+tiendaSel.getUne_descripcion()+ "?")
-                                 .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-                                     public void onClick(DialogInterface dialog, int which) {
-                                         //hago la peticion en el servidor y recargo
-                                         //getActivity().finish();
-                                         PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
-                                         petmap.cancelTienda(tiendaSel.getUne_id());
-                                       //  martiendas.remove(markerSel);
-                                         markerSel.remove();
+                         if(tiendaSel!=null) {
+                             new AlertDialog.Builder(getActivity())
+                                     .setIcon(android.R.drawable.ic_dialog_alert)
+                                     .setTitle(R.string.importante)
+                                     .setMessage(getString(R.string.cancelar_tienda) + " " + tiendaSel.getUne_descripcion() + "?")
+                                     .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                                         public void onClick(DialogInterface dialog, int which) {
+                                             //hago la peticion en el servidor y recargo
+                                             //getActivity().finish();
+                                             PeticionMapaCd petmap = new PeticionMapaCd(Constantes.CLAVEUSUARIO);
+                                             petmap.cancelTienda(tiendaSel.getUne_id());
+                                             //  martiendas.remove(markerSel);
+                                             markerSel.remove();
                                        /*  DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
                                          if(plantasel!=null) {
                                              int planta = plantasel.id;
@@ -146,11 +147,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                                              String indiceini = Constantes.INDICEACTUAL;
                                              buscarTiendas(planta, indiceini);
                                          }*/
-                                     }
-                                 })
-                                 .setNegativeButton(R.string.no, null)
-                                 .show();
-
+                                         }
+                                     })
+                                     .setNegativeButton(R.string.no, null)
+                                     .show();
+                         }
                      }
                  }
              });
@@ -373,6 +374,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
             //usaria la ciudad de trabajo
             //25guadalajara
+            markerSel=null;
+            Log.d(TAG,"ocultando"+btncancel.getVisibility());
+            btncancel.setVisibility(View.GONE);
             String ffin= "";
             ffin= ComprasUtils.indiceaFecha2(indicefin);
             String fini="";
@@ -398,16 +402,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             this.listatiendas.observe(this, new Observer<List<Tienda>>() {
                 @Override
                 public void onChanged(List<Tienda> tiendas) {
-                    if(tiendas!=null&&tiendas.size()>0) {
+                   // if(tiendas!=null&&tiendas.size()>0) {
 
 
                         dibujarTiendas(tiendas);
-                    }
-                    else
+                    //}
+                    //else
                     //pongo anuncio sin tiendas
-                    {
+                    //{
 
-                    }
+                    //}
                 }
             });
             this.listageocercas.observe(this, new Observer<List<Geocerca>>() {
@@ -426,6 +430,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             martiendas=new ArrayList<>();
             LatLng japon2 = null;
             String color;
+            mMap.clear();
+            if(listiendas!=null)
             for(Tienda tienda: listiendas){
              //    Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
 
@@ -644,6 +650,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
     @Override
     public void onMapClick(@NonNull LatLng latLng) {
+            Log.d(TAG,"ocultando++"+btncancel.getVisibility());
         btncancel.setVisibility(View.GONE);
         markerSel=null;
     }

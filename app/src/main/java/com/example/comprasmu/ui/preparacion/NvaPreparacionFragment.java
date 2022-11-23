@@ -388,7 +388,7 @@ public class NvaPreparacionFragment extends Fragment {
 
         }else
         if(preguntaAct<6){ //es para foto
-        campo.label="FOTO "+preguntaAct;
+        campo.label="ETIQUETAS FOTO "+preguntaAct;
         campo.nombre_campo="foto";
         campo.type="agregarImagen";
         campo.style=R.style.formlabel2;

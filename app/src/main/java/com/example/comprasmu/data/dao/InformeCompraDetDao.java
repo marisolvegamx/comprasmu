@@ -34,7 +34,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
 
 
 
-    @Query("update  informe_detalle set estatus=0, estatusSync=0 where informesId=:informe")
+    @Query("update  informe_detalle set estatus=2, estatusSync=0 where informesId=:informe")
     public  abstract void cancelAll(int informe);
 
     @Query("update informe_detalle set estatusSync=:estatus WHERE id=:id")
@@ -54,7 +54,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
     public abstract InformeCompraDetalle findByCompra( int idcompra, int iddet);
 
     //que no esté cancelada
-    @Query("SELECT * FROM informe_detalle where comprasId=:idcompra and comprasDetId=:iddet and tipoMuestra=3 and estatus>0")
+    @Query("SELECT * FROM informe_detalle where comprasId=:idcompra and comprasDetId=:iddet and tipoMuestra=3 and estatus<>2 and estatus<>4")
     public abstract List<InformeCompraDetalle> findByCompraBu( int idcompra, int iddet);
 
     @Query("SELECT * FROM informe_detalle where informesId=:idinf and foto_atributoa=:fotoatra")

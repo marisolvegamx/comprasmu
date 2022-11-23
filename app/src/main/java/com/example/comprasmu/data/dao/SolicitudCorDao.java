@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.dao;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.RawQuery;
@@ -15,7 +16,7 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
     public abstract LiveData<List<SolicitudCor>> getSolicitudes(int etapa, String indice, int plantaid, int estatus);
 
     @Query("SELECT count(id) FROM solicitud_cor where etapa=:etapa and indice=:indice  and estatus=:estatus")
-    public abstract int getTotSols(int etapa, String indice,  int estatus);
+    public abstract LiveData<Integer> getTotSols(int etapa, String indice, int estatus);
 
     @Query("SELECT count(id) FROM solicitud_cor where etapa=:etapa and indice=:indice  and estatus=:estatus and plantasId=:plantaId")
     public abstract int getTotSolsxPlanta(int etapa, String indice,  int estatus, int plantaId);

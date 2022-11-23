@@ -499,6 +499,10 @@ public class ListaCompraDetRepositoryImpl {
         dao.actualizarCompra(id,  listaid, cantidad);
     }
 
+    public void actualizarNvosCodigos(int id,int listaid, String nvocodigo){
+        dao.actualizarNvosCodigos(id,  listaid, nvocodigo);
+    }
+
     public void deleteByLista(int id) {
         dao.deleteByLista(id);
     }

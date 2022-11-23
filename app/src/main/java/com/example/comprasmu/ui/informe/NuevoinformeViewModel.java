@@ -226,7 +226,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     /**para envio***/
     public InformeEnvio preparaInforme(int informe){
         InformeWithDetalle info=repository.getInformeWithDetalleByIdsimple(informe);
-        Log.d(TAG,"wwwwwwwww"+info.informe.getId()+info.informe.getVisitasId());
+        Log.d(TAG,"xxxx"+info.informe.getId()+info.informe.getVisitasId());
 
         InformeEnvio envio=new InformeEnvio();
         //busco la visita pero tiene que estar en estatussync pendiente

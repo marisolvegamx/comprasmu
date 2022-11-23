@@ -68,6 +68,7 @@ import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.CampoForm;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
@@ -136,6 +137,7 @@ public class DetalleProductoPenFragment extends Fragment {
    protected boolean yaestoyProcesando=false;
     List<DescripcionGenerica> clientesAsig;
     CheckBox nopermiso;
+    private ComprasLog compraslog;
 
     public DetalleProductoPenFragment() {
 
@@ -152,6 +154,7 @@ public class DetalleProductoPenFragment extends Fragment {
        // setHasOptionsMenu(true);
          sdf = new SimpleDateFormat("dd-MM-yyyy");
         sdfcodigo = new SimpleDateFormat("dd-MM-yy");
+        compraslog=ComprasLog.getSingleton();
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -798,6 +801,7 @@ public class DetalleProductoPenFragment extends Fragment {
                     limpiarTablTemp();
                     //reviso si hay más clientes, si no fin
                     buscarClientes();
+                    compraslog.grabarError(TAG+" finalizando buscando clientes ");
                     if (clientesAsig != null && clientesAsig.size() > 0) {
                         loadingDialog.dismisDialog();
                          yaestoyProcesando=false;
@@ -825,7 +829,8 @@ public class DetalleProductoPenFragment extends Fragment {
                     ex.printStackTrace();
                     loadingDialog.dismisDialog();
                     yaestoyProcesando=false;
-                    Toast.makeText(getActivity(), "algo salió mal", Toast.LENGTH_SHORT).show();
+                    compraslog.grabarError(TAG+" HUBO UN ERROR AL FINALIZAR EL INFORME "+ex.getMessage());
+                    Toast.makeText(getActivity(), "HUBO UN ERROR AL FINALIZAR EL INFORME", Toast.LENGTH_LONG).show();
 
 
                 }
@@ -980,10 +985,12 @@ public class DetalleProductoPenFragment extends Fragment {
       prodSel=null;
     }
     public void finalizar() {
+        compraslog.grabarError(TAG+" iniciando finalizar ");
 
         //validar que si hay producto realmente tenga un producto capturado
         mViewModel.eliminarTblTemp();
         mViewModel.finalizarInforme();
+        compraslog.grabarError(TAG+" finalizando finalizar "+mViewModel.visita);
         try {
             InformeEnvio informe=this.preparaInforme();
             SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informe,getActivity(),mViewModel);
@@ -991,8 +998,9 @@ public class DetalleProductoPenFragment extends Fragment {
             subirFotos(getActivity(),informe);
         }catch(Exception ex){
             ex.getStackTrace();
-            Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
-            Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
+          //  Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
+            compraslog.grabarError(TAG+" Algo salió mal al enviar "+ex.getMessage());
+            Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_LONG).show();
         }
         //limpio variables de sesion
         Constantes.productoSel=null;
@@ -1467,13 +1475,13 @@ public class DetalleProductoPenFragment extends Fragment {
 
 
                 } else {
-                    Toast.makeText(getActivity(), "Algo salió mal intente de nuevo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Algo salió mal intente de nuevo", Toast.LENGTH_LONG).show();
 
 
                     Log.e(TAG, "Algo salió mal???");
                 }
             }catch (Exception ex){
-                Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion, intente de nuevo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion, intente de nuevo", Toast.LENGTH_LONG).show();
 
                 ex.printStackTrace();
 
