@@ -69,7 +69,7 @@ import java.util.List;
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class},
 
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=12, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=14, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -106,7 +106,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     INSTANCE =  Room.databaseBuilder(context,
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
-                                    MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12)
+                                    MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -290,7 +290,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
             "estatus INTEGER not null," +
             "estatusSync INTEGER not null," +
            " contador INTEGER not null," +
-
                     "createdAt INTEGER DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY(ID)) ");
             database.execSQL("drop TABLE if exists detalle_caja ");
             database.execSQL("create  TABLE detalle_caja ( id integer not null," +
@@ -304,7 +303,43 @@ public abstract class ComprasDataBase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_12_13 = new Migration(12,13) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE visitas ADD COLUMN consecutivocd INTEGER default 0 not null");
 
+        }
+    };
+
+    static final Migration MIGRATION_13_14 = new Migration(13,14) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("drop TABLE if exists solicitud_cor ");
+            database.execSQL("create  TABLE solicitud_cor ( id integer not null, " +
+                    " informesId INTEGER not null," +
+                    "   plantasId INTEGER not null," +
+                    " plantaNombre TEXT," +
+                    "   clientesId INTEGER not null," +
+                    "    clienteNombre TEXT," +
+                    "   indice TEXt," +
+                    "  nombreTienda TEXT," +
+                    "  descripcionFoto TEXT," +
+                    "    descripcionId INTEGER not null," +
+                    " descMostrar TEXT," +
+                    "numFoto INTEGER not null," +
+                    "numFoto2 INTEGER not null," +
+                    "numfoto3 INTEGER not null," +
+
+                    "motivo TEXT," +
+                    "total_fotos INTEGER not null," +
+                    "etapa INTEGER not null," +
+                    "estatus INTEGER not null," +
+                    "estatusSync INTEGER not null," +
+                    " contador INTEGER not null," +
+                    "createdAt INTEGER DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY(id,numFoto )) ");
+
+        }
+    };
 
     private void cargandodatos(){
 
@@ -313,7 +348,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
             public void run() {
                 ReactivoDao dao = getReactivoDao();
                 List<Reactivo> myProducts=dao.findAllsimple();
-                    if (myProducts == null||myProducts.size()==0) {
+                   // if (myProducts == null||myProducts.size()==0) {
                         //no tengo datos
                      //   prepopulatelc();
                     //    prepopulatedetc();
@@ -321,7 +356,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
                        // catalogos();
 
-                    }
+                   // }
                 List<Reactivo> myProductsP=   dao.findByCliente(5);
                 if (myProductsP == null||myProductsP.size()==0) {
                     //no tengo datos
@@ -333,16 +368,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
                 Reactivo myProductsem=   dao.findsimple(91);
                 if (myProductsem == null) {
                     prepopulatereaEmp();
-                }
-                SolicitudCor myProducts2=getSolicitudCorDao().findSimple(1);
-                if (myProducts2 == null) {
-                    //no tengo datos
-                    //   prepopulatelc();
-                    //    prepopulatedetc();
-                   // cargarSolicitudes();
-
-                    // catalogos();
-
                 }
 
             }
@@ -894,7 +919,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         String cliente="PEPSI";
         int cliid=4;
         Reactivo campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.cliente));
+        campo.setLabel(ctx.getString(R.string.planta));
         campo.setNombreCampo( "clientesId");
         campo.setType("selectDes");
         campo.setCatalogo(true);

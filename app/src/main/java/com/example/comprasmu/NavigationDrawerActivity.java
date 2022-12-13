@@ -117,7 +117,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /*esta es la clase principal***/
-public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,    DescargasIniAsyncTask.ProgresoListener  {
+public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String ETAPA = "comprasmu.ndetapa";
     private AppBarConfiguration mAppBarConfiguration;
@@ -280,7 +280,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             ft.commit();*/
             graph.setStartDestination(R.id.nav_listarvisitas);
         }else{
-            descargasIniciales();
+            //descargasIniciales();
             pedirCorrecciones(0,Constantes.ETAPAACTUAL);
             graph.setStartDestination(R.id.nav_home);
         }
@@ -587,59 +587,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
 
-    @Override
-    public void cerrarAlerta(boolean res) {
-       //   if(desclis==0&&descinf==0&&descfoto==0)
-     //       entrar();
-    }
-
-    @Override
-    public void todoBien( RespInformesResponse infoResp) {
-        if (infoResp.getImagenDetalles() != null && infoResp.getImagenDetalles().size() > 0) {
-            Log.d(TAG,"quiero descargar "+desclis+"--"+descinf+"--"+descfoto);
-
-            descargarImagenes(infoResp.getImagenDetalles());
-
-        }
-
-    }
-
-    @Override
-    public void estatusInf(int es) {
-        descinf=es;
-    }
-
-    @Override
-    public void estatusLis(int es) {
-        desclis=es;
-    }
-
-    @Override
-    public void imagenesEtapa(RespInfEtapaResponse infoResp) {
-        if (infoResp.getInformeEtapaDet() != null && infoResp.getInformeEtapaDet().size() > 0) {
-
-                for(InformeEtapaDet img:infoResp.getInformeEtapaDet()){
-                    startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto(), DESTINATION_PATH);
-                        Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto());
-                }
-                // cerrarAlerta(true);
-
-
-        }
-
-        if (infoResp.getCorrecciones() != null && infoResp.getCorrecciones().size() > 0) {
-
-            for(Correccion img:infoResp.getCorrecciones()){
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto1(), DESTINATION_PATH);
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto2(), DESTINATION_PATH);
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto3(), DESTINATION_PATH);
-                // Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto1());
-            }
-            // cerrarAlerta(true);
-
-
-        }
-    }
 
     public class SubirFotoProgressReceiver extends BroadcastReceiver {
 
@@ -699,7 +646,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
        // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-        Constantes.INDICEACTUAL = "9.2022";
+        Constantes.INDICEACTUAL = "10.2022";
         if(Constantes.CLAVEUSUARIO.equals("4")){
             Constantes.INDICEACTUAL = "6.2022";
         }
@@ -714,69 +661,18 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
 
 
-    public void descargasIniciales(){
-        //pueda descargar
-        //Inicio un servicio que se encargue de descargar
-        CatalogoDetalleRepositoryImpl cdrepo=new CatalogoDetalleRepositoryImpl(getApplicationContext());
-        TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getApplicationContext());
 
-        AtributoRepositoryImpl atRepo=new AtributoRepositoryImpl(getApplicationContext());
-        ListaCompraDao dao= ComprasDataBase.getInstance(getApplicationContext()).getListaCompraDao();
-        ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
-        ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
-        SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
-        GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep);
+    /*private BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Fetching the download id received with the broadcast
+            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            //Checking if the received broadcast is for our enqueued download by matching download id
+            if (archact == id) {
 
-        task.execute("cat","");
-
-        //descarga solicitudes compra
-     //   SolicitudCorRepoImpl solcorRepo=new SolicitudCorRepoImpl(getApplicationContext());
-
-      //  DescCorrecAsyncTask corTask=new DescCorrecAsyncTask(solcorRepo,tvRepo,this,Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL);
-      //  corTask.execute("");
-      /*  AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setIcon(android.R.drawable.stat_sys_download);
-        builder.setTitle("Descargando");
-        builder.setMessage("Por favor mantengase en la aplicación hasta que termine la descarga");
-        builder.setInverseBackgroundForced(true);
-
-        AlertDialog alert=builder.create();
-        alert.show();*/
-
-      /*  Dialog builder = new Dialog(act);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.setCancelable(false);
-*/
-
-    }
-    private void descargarImagenes(List<ImagenDetalle> imagenes){
-        for(ImagenDetalle img:imagenes){
-            startDownload(DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta(), DESTINATION_PATH);
-            Log.d(TAG," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
+                 }
         }
-        // cerrarAlerta(true);
-    }
-
-
-    private long startDownload(String downloadPath, String destinationPath) {
-        Uri uri = Uri.parse(downloadPath); // Path where you want to download file.
-        // registrer receiver in order to verify when download is complete
-        //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  // This will show notification on top when downloading the file.
-        request.setTitle("Downloading a file"); // Title for notification.
-        request.setVisibleInDownloadsUi(true);
-
-        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
-        long id=((DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
-        return id;
-
-    }
-
+    };*/
 
     private void contarCorrecc(){
         totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
@@ -889,12 +785,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     for (SolicitudCor sol:corrResp.getInserts()
                          ) {
                         //veo si ya existe
-                        SolicitudCor solt=solRepo.findsimple(sol.getId());
+                        SolicitudCor solt=solRepo.findsimple(sol.getId(),sol.getNumFoto());
                         if(solt!=null) {
                             if (solt.getEstatus() < 4) {
                                 //actualizo
+                            solRepo.actualizarEst(sol.getMotivo(),sol.getContador(),sol.getCreatedAt(),sol.getEstatus(),sol.getId(),sol.getNumFoto());
+                            }else
+                                if(sol.getContador()>1)
+                                    solRepo.actualizarEst(sol.getMotivo(),sol.getContador(),sol.getCreatedAt(),sol.getEstatus(),sol.getId(),sol.getNumFoto());
+                                else
+                            solRepo.actualizar(sol.getMotivo(),sol.getContador(),sol.getCreatedAt(),sol.getId(),sol.getNumFoto());
 
-                            }
                         }else
                             solRepo.insert(sol);
 

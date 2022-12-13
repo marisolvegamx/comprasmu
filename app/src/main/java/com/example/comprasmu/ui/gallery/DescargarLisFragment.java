@@ -86,41 +86,35 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
     }
 
 
-    @Override
-    public void cerrarAlerta(boolean res) {
 
-       /* if(alert!=null)
-        alert.cancel();*/
 
-        if(!res) {
-            textView.setText(getString(R.string.listas_actualiz));
-            textView.setVisibility(View.VISIBLE);
 
-        }
-        pb.setVisibility(View.GONE);
-
-    }
-
-    @Override
-    public void todoBien(RespInformesResponse infoResp) {
+    public void success() {
         if(textView!=null) {
             textView.setVisibility(View.VISIBLE);
             textView.setText(getString(R.string.listas_actualiz));
         }
+        pb.setVisibility(View.GONE);
+    }
+    @Override
+    public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, RespInfEtapaResponse mainRespcor) {
+
+        success();
     }
 
-    @Override
-    public void estatusInf(int es) {
-
-    }
 
     @Override
-    public void estatusLis(int es) {
-
-    }
-
-    @Override
-    public void imagenesEtapa(RespInfEtapaResponse infoResp) {
+    public void notificarSinConexion() {
+        //pasaría a otra actividad
+        textView.setVisibility(View.VISIBLE);
+      //
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText("No se encontró conexión a internet, verifique");
+                pb.setVisibility(View.GONE);
+            }
+        });
 
     }
 

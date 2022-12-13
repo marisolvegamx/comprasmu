@@ -88,7 +88,6 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
     mViewModel.cargarDetalles(Constantes.ETAPAACTUAL,indice,plantasel,1).observe(getViewLifecycleOwner(), new Observer<List<SolicitudCor>>() {
         @Override
         public void onChanged(List<SolicitudCor> solicitudCors) {
-           // Log.d(Constantes.TAG,"llego algo"+solicitudCors.get(0).getIndice());
 
             mListAdapter.setSolicitudCorList(solicitudCors);
             mListAdapter.notifyDataSetChanged();
@@ -112,9 +111,10 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
 
 
     @Override
-    public void onClickVer(int sol) {
+    public void onClickVer(int sol, int numfoto) {
         Intent intento1=new Intent(getActivity(), NuevoInfEtapaActivity.class);
         intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL, sol);
+        intento1.putExtra(NuevoInfEtapaActivity.NUMFOTO, numfoto);
         intento1.putExtra(NuevoInfEtapaActivity.CORRECCION,true);
         startActivity(intento1);
     }

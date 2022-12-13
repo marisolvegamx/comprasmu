@@ -30,7 +30,8 @@ public class Visita {
   /*  private int producto_exhibido;
     private int producto_exhibido;
     private int producto_exhibido;*/
-  private int fotoFachada;
+    private int consecutivocd;
+    private int fotoFachada;
     private int estatus;
     private String claveUsuario;
     private int estatusSync;
@@ -235,5 +236,13 @@ public class Visita {
 
     public void setEstatusElec(int estatusElec) {
         this.estatusElec = estatusElec;
+    }
+
+    public int getConsecutivocd() {
+        return consecutivocd;
+    }
+
+    public void setConsecutivocd(int consecutivocd) {
+        this.consecutivocd = consecutivocd;
     }
 }

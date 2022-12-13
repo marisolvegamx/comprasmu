@@ -143,6 +143,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
+    public  LiveData<List<ListaCompra>>  cargarPlantas(String ciudadSel){
+
+        return repository.getAllByIndiceCiudad(Constantes.INDICEACTUAL,ciudadSel);
+
+
+    }
 
     public  int  getclientexPlanta(int planta){
 
@@ -176,6 +182,17 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
         }
         return devolver;
+    }
+    public String buscarClientexPlan(int planta){
+
+        List<ListaCompra> res=repository.getByPlanta(planta);
+        if(res!=null&&res.size()>0){
+            return res.get(0).getClienteNombre();
+
+
+        }
+        return "";
+
     }
 
     //para las colsultas de bu

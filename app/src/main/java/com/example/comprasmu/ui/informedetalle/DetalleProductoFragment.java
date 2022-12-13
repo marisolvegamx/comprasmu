@@ -196,13 +196,13 @@ public class DetalleProductoFragment extends Fragment {
                 //no puedo modificar  avanzo a la siguiente
 
                 preguntaAct=dViewModel.buscarReactivoxId(preguntaAct.getSigId());
-                     Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
-                     InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
-                     if(inft!=null) {
-                         mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
-                         mViewModel.consecutivo = inft.getConsecutivo();
-                         Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
-                     }
+                Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
+                InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
+                if(inft!=null) {
+                    mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
+                    mViewModel.consecutivo = inft.getConsecutivo();
+                    Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
+                }
                 ultimares=null;
                 isEdicion=false;
 
@@ -653,28 +653,29 @@ public class DetalleProductoFragment extends Fragment {
 
     }
     public void cargarClientes(CampoForm campo) {
-       buscarClientes();
-          campo.selectdes= clientesAsignados;
+        Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
+            //ahora son plantas
+        //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
+      //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
+        List<ListaCompra> listacomp= lcviewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
+        clientesAsignados = convertirListaaPlantas(listacomp, clientesprev);
+        Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsignados.size());
+        if(campo!=null)
+            campo.selectdes= clientesAsignados;
+
+        // if(clientesprev!=null)
+        //      Log.d(TAG, "regresó de la consulta de clientes " + clientesprev.length + "--" + data.size());
+
+
 
           //  }
       //  else
         //    campo.selectdes= Constantes.clientesAsignados;
     }
 
-    public void buscarClientes(){
-        Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
 
-        //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
-        List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
 
-       // if(clientesprev!=null)
-      //      Log.d(TAG, "regresó de la consulta de clientes " + clientesprev.length + "--" + data.size());
-        clientesAsignados = convertirListaaClientesE(data, clientesprev);
-        Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsignados.size());
-
-    }
-
-    public  List<DescripcionGenerica> convertirListaaClientesE(List<ListaCompra> lista, Integer[] clientesprev){
+   /* public  List<DescripcionGenerica> convertirListaaClientesE(List<ListaCompra> lista, Integer[] clientesprev){
         int i=0;
         List<DescripcionGenerica> mapa=new ArrayList<>();
         List<Integer> coninf;
@@ -701,6 +702,43 @@ public class DetalleProductoFragment extends Fragment {
 
                 item.setId(listaCompra.getClientesId());
                 item.setNombre(listaCompra.getClienteNombre());
+                mapa.add(item);
+
+            }
+        return mapa;
+    }*/
+
+    public  List<DescripcionGenerica> convertirListaaPlantas(List<ListaCompra> lista, Integer[] clientesprev){
+        int i=0;
+        List<DescripcionGenerica> mapa=new ArrayList<>();
+        List<Integer> coninf;
+        if( clientesprev!=null) {
+            Log.d(TAG, "*estoy aqui" + clientesprev.length);
+            coninf=Arrays.asList(clientesprev);
+        }
+
+        if(lista!=null)
+            for (ListaCompra listaCompra: lista ) {
+                if(estatusPepsi==0&&listaCompra.getClientesId()==4)
+                    continue;
+                if(estatusPen==0&&listaCompra.getClientesId()==5)
+                    continue;
+                if(estatusElec==0&&listaCompra.getClientesId()==6)
+                    continue;
+                DescripcionGenerica item=new DescripcionGenerica();
+                Log.d(TAG,"-estoy aqui"+listaCompra.getClientesId());
+                if( clientesprev!=null)
+                    if(Arrays.asList(clientesprev).contains(listaCompra.getPlantasId()))
+                    {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
+                        Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
+                        continue;}
+
+                item.setId(listaCompra.getPlantasId());
+                item.setNombre(listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre());
+              //pongo solo el nombre de la planta
+                item.setDescripcion(listaCompra.getPlantaNombre());
+                //pareja idcliente;nombreclientes
+                item.setDescripcion2(listaCompra.getClientesId()+";"+listaCompra.getClienteNombre());
                 mapa.add(item);
 
             }
@@ -770,37 +808,57 @@ public class DetalleProductoFragment extends Fragment {
     public void guardarCliente(){
         lastClickTime=0;
         DescripcionGenerica opcionsel = (DescripcionGenerica) spclientes.getSelectedItem();
-        int valor = opcionsel.getId();
-        if(valor==4&&estatusPepsi==0)//no puedo comprar pepsi
+        int valor = opcionsel.getId(); //esta es la planta
+        String aux=opcionsel.getDescripcion2();
+        String arraux[]=aux.split(";");
+        int clienteid=0;
+        String nombreCliente="";
+
+        if(aux.length()>1){
+            clienteid=Integer.parseInt(arraux[0]);
+            nombreCliente=arraux[1];
+        }
+
+        if(clienteid==4&&estatusPepsi==0)//no puedo comprar pepsi
         {
             Toast.makeText(getActivity(),"No puede comprar producto de pepsi en esta tienda",Toast.LENGTH_LONG).show();
             aceptar.setEnabled(true);
             return;
         }
-        if(valor==5&&estatusPen==0)//no puedo comprar pepsi
+        if(clienteid==5&&estatusPen==0)//no puedo comprar pepsi
         {
             Toast.makeText(getActivity(),"No puede comprar producto de peñafiel en esta tienda",Toast.LENGTH_LONG).show();
             aceptar.setEnabled(true);
             return;
         }
-        if(valor==6&&estatusElec==0)//no puedo comprar pepsi
+        if(clienteid==6&&estatusElec==0)//no puedo comprar pepsi
         {
             Toast.makeText(getActivity(),"No puede comprar producto de electropura en esta tienda",Toast.LENGTH_LONG).show();
             aceptar.setEnabled(true);
             return;
         }
-        mViewModel.clienteSel=valor;
-        Constantes.ni_clientesel=opcionsel.getNombre();
+        mViewModel.clienteSel=clienteid;
+        Constantes.ni_clientesel=nombreCliente;
         mViewModel.informe=new InformeCompra();
-        mViewModel.informe.setClienteNombre(opcionsel.getNombre());
-        mViewModel.informe.setClientesId(valor);
+        mViewModel.informe.setClienteNombre(nombreCliente);
+        mViewModel.informe.setClientesId(clienteid);
+        //ya tengo planta
+        mViewModel.informe.setPlantaNombre(opcionsel.getDescripcion());
+        mViewModel.informe.setPlantasId(valor);
+        plantaSel =valor;
+        NOMBREPLANTASEL = opcionsel.getDescripcion();
         Log.d(TAG,"ssssss"+mViewModel.clienteSel);
         //actualizo barra
         ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
-        guardarResp();
+      //  guardarResp();
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),nombreCliente+"","clienteNombre","I",mViewModel.consecutivo,false);
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),clienteid+"","clientesId","I",mViewModel.consecutivo,true);
+
         //dependiendo el cliente avanzo
         if(mViewModel.clienteSel==4)
-        avanzarPregunta(preguntaAct.getSigId());
+            avanzarPregunta(preguntaAct.getSigId());
         if(mViewModel.clienteSel==5)
             irInfoPen();
         if(mViewModel.clienteSel==6)
@@ -936,7 +994,7 @@ public class DetalleProductoFragment extends Fragment {
                     this.finalizar();
 
                     //reviso si hay más clientes, si no fin
-                    buscarClientes();
+                    cargarClientes(null);
                     if (clientesAsignados != null && clientesAsignados.size() > 0) {
 
                         yaestoyProcesando = false;
@@ -1129,7 +1187,6 @@ public class DetalleProductoFragment extends Fragment {
         Constantes.ni_clientesel=null;
         mViewModel.limpiarVarInforme();
         mViewModel.setIdInformeNuevo(0);
-
 
     }
 
@@ -1342,7 +1399,7 @@ public class DetalleProductoFragment extends Fragment {
             Intent msgIntent = new Intent(activity, SubirFotoService.class);
             msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
             msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
-            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getVisita().getIndice());
+            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
             // Constantes.INDICEACTUAL
             Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
 
@@ -1435,30 +1492,27 @@ public class DetalleProductoFragment extends Fragment {
             //empiezo de 0
             Bundle bundle = new Bundle();
             bundle.putInt(ContinuarInformeActivity.INFORMESEL,mViewModel.visita.getId());
-
+            Log.d(TAG,"donde entras doble");
             //NavHostFragment.findNavController(this).navigate(R.id.action_visitatonuevo,bundle);
             Intent intento1=new Intent(getActivity(), ContinuarInformeActivity.class);
             intento1.putExtras(bundle);
             requireActivity().finish();
             startActivity(intento1);
+            return;
         }
         //busco el siguiente
-        LiveData<Reactivo> nvoReac = dViewModel.buscarReactivo(sig);
-        nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-            @Override
-            public void onChanged(Reactivo reactivo) {
+        Reactivo nvoReac = dViewModel.buscarReactivoSimpl(sig);
 
-                DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        DetalleProductoFragment nvofrag = new DetalleProductoFragment(nvoReac,false);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
-                fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+        fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
            //     fragmentTransaction.addToBackStack(null);
 // Cambiar
-                fragmentTransaction.commit();
-            }
-        });
+        fragmentTransaction.commit();
+
     }
 
 
@@ -1940,9 +1994,9 @@ public class DetalleProductoFragment extends Fragment {
         String opcion = "";
         Intent intento1 = new Intent(getActivity(), BackActivity.class);
 
-        //busco la planta
-        if(nummuestra<2) {
-            List<ListaCompra> listapl = lcviewModel.cargarPlantas(mViewModel.visita.getCiudad(), mViewModel.clienteSel);
+
+      //  if(nummuestra<2) {
+          /*  List<ListaCompra> listapl = lcviewModel.cargarPlantas(mViewModel.visita.getCiudad(), mViewModel.clienteSel);
             // Log.d(TAG,"todavia no se que hacer"+listapl.size());
 
             if (listapl.size() > 1) {
@@ -1953,11 +2007,11 @@ public class DetalleProductoFragment extends Fragment {
             } else if (listapl.size() > 0) {
                 //voy directo a la lista
                 plantaSel = listapl.get(0).getPlantasId();
-                NOMBREPLANTASEL = listapl.get(0).getPlantaNombre();
+                NOMBREPLANTASEL = listapl.get(0).getPlantaNombre();*/
                 opcion = BackActivity.OP_LISTACOMPRA;
 
-            }
-        }else{
+           // }
+      //  }else{
             //ya tengo la planta
             InformeTemp inf= dViewModel.buscarxNombreCam("plantasId");
             if(inf!=null) {
@@ -1971,7 +2025,7 @@ public class DetalleProductoFragment extends Fragment {
             }
 
             opcion = BackActivity.OP_LISTACOMPRA;
-        }
+      //  }
 
                     //ya existe el informe
                     intento1.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.getIdInformeNuevo());

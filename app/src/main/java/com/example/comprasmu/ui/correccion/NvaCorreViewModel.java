@@ -1,14 +1,18 @@
 package com.example.comprasmu.ui.correccion;
 
 import android.app.Application;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.comprasmu.data.modelos.Correccion;
+import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.SolicitudWithCor;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
+import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.utils.Constantes;
 
 import java.util.Date;
@@ -18,6 +22,7 @@ import java.util.List;
 public class NvaCorreViewModel extends AndroidViewModel {
 
     private final CorreccionRepoImpl correpository;
+    private final SolicitudCorRepoImpl solRepo;
     private int idNuevo;
     private Correccion nvocorreccion;
     final String TAG="NvaCorreViewModel";
@@ -27,6 +32,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
         super(application);
         this.application = application;
         this.correpository = new CorreccionRepoImpl(application);
+        this.solRepo=new SolicitudCorRepoImpl(application);
 
     }
 
@@ -63,10 +69,14 @@ public class NvaCorreViewModel extends AndroidViewModel {
     public LiveData<List<SolicitudWithCor>> getCorreccionesxEta(int etapa, String indice, int plantaSel){
         return correpository.getAllxEtaPlan(plantaSel,indice,etapa);
     }
-    public LiveData<SolicitudWithCor> getCorreccion(int id){
-        return correpository.findSolCor(id);
+    public LiveData<Correccion> getCorreccion(int id){
+        Log.d(TAG,"ESTOY AQUI");
+        return correpository.find(id);
     }
+    public SolicitudCor getSolicitud(int id, int numfoto){
 
+        return solRepo.findsimple(id,numfoto);
+    }
     public int getIdNuevo() {
         return idNuevo;
     }

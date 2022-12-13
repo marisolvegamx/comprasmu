@@ -92,7 +92,7 @@ public class SubirInformeTask extends AsyncTask<String, Float, Integer> {
     @Override
     protected void onPostExecute(Integer cantidadProcesados) {
         //   TV_mensaje.setText("DESPUÉS de TERMINAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
-        Log.v(TAG, "DESPUÉS de TERMINAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
+     //   Log.v(TAG, "DESPUÉS de TERMINAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
 
         // TV_mensaje.setTextColor(Color.GREEN);
     }

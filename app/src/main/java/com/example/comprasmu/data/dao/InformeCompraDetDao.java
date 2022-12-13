@@ -21,6 +21,8 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
     @RawQuery(observedEntities = InformeCompraDetalle.class)
     public abstract LiveData<List<InformeCompraDetalle>> getInformeCompraDetByFiltros(SupportSQLiteQuery query);
 
+    @RawQuery(observedEntities = InformeCompraDetalle.class)
+    public abstract InformeCompraDetalle getInfCompraDetByFiltros(SupportSQLiteQuery query);
 
 
     @Query("SELECT * FROM informe_detalle where informesId=:informe")
@@ -132,13 +134,13 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
             "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
             "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
-            "comprasIdbu,comprasDetIdbu  " +
+            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel  " +
             "FROM informe_detalle " +
             " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
             " inner join visitas on visitas.id=informe_compras.visitasId" +
             " where productoId=:producto and presentacion=:tamanio" +
             " and empaquesId=:empaque and tipoAnalisis=:analisis " +
-            " and visitas.indice=:indice and informe_compras.plantasId=:planta" +
+            " and visitas.indice=:indice and informe_compras.plantasId=:planta and informe_detalle.estatus=1" +
             " group by caducidad order by caducidad desc" )
     public abstract List<InformeCompraDetalle> getByProductoAna(String indice, int planta,int producto, int analisis, int empaque, String tamanio);
 
@@ -149,7 +151,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
             "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
             "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
-            "comprasIdbu,comprasDetIdbu  " +
+            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel  " +
             "FROM informe_detalle " +
             " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
             " inner join visitas on visitas.id=informe_compras.visitasId" +

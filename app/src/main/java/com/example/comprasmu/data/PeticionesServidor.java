@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
+import com.example.comprasmu.SimpleTask;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
@@ -70,7 +71,7 @@ public class PeticionesServidor {
         lista=new MutableLiveData<>();
     }
 
-    public void getCatalogos(CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atRepo) {
+    public void getCatalogos(CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atRepo,DescargasIniAsyncTask.DescargaIniListener listener) {
 
         final Call<CatalogosResponse> batch = ServiceGenerator.getApiService().getCatalogosNuevoInforme(usuario);
 
@@ -80,7 +81,7 @@ public class PeticionesServidor {
                 if (response.isSuccessful() && response.body() != null) {
                     CatalogosResponse respuestaCats = response.body();
                     Log.d("PeticionesServidor","leyendo cats "+respuestaCats.getCatalogos().size());
-                    insertarCatalogos(respuestaCats,catRep,trepo,atRepo);
+                    insertarCatalogos(respuestaCats,catRep,trepo,atRepo,listener);
 
                 }else
                     Log.e("PeticionesServidor", "algo salio mal en peticion catalogo");
@@ -91,13 +92,13 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<CatalogosResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e("PeticionesServidor", "algo salio mal en peticio catalogo"+t.getMessage());
-
+                    listener.finalizar();
                 }
             }
         });
     }
 
-    public void getSustitucion(TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo) {
+    public void getSustitucion(TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo, DescargasIniAsyncTask.DescargaIniListener listener) {
 
         final Call<List<Sustitucion>> batch = ServiceGenerator.getApiService().getSustitucion(usuario);
         Log.d("PeticionesServidor","enviando sustitucion ");
@@ -108,18 +109,19 @@ public class PeticionesServidor {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Sustitucion> respuestaCats = response.body();
                     Log.d("PeticionesServidor","leyendo sust "+respuestaCats.size());
-                    insertarSustitucion(respuestaCats,trepo,sustRepo);
+                    insertarSustitucion(respuestaCats,trepo,sustRepo,listener);
 
-                }else
+                }else {
                     Log.e("PeticionesServidor", "algo salio mal en peticion catalogo");
-
+                    listener.finalizar();
+                }
             }
 
             @Override
             public void onFailure(@Nullable Call<List<Sustitucion>> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e("PeticionesServidor", "algo salio mal en peticio catalogo"+t.getMessage());
-
+                    listener.finalizar();
                 }
             }
         });
@@ -322,7 +324,7 @@ public class PeticionesServidor {
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
-                        listener.noactualizar(compraResp.getData());
+                        listener.actualizar(null);
                     }
 
                 }
@@ -332,7 +334,7 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<ListaCompraResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
-
+                    listener.actualizar(null);
                 }
             }
         });
@@ -364,17 +366,17 @@ public class PeticionesServidor {
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lista vacia");
-                        listener.noactualizar(null);
+                        listener.actualizarInformes(null);
                     }
 
-                }
+                }else  listener.actualizarInformes(null);
             }
 
             @Override
             public void onFailure(@Nullable Call<RespInformesResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
-                    listener.noactualizar(null);
+                    listener.actualizarInformes(null);
                 }
             }
         });
@@ -406,9 +408,13 @@ public class PeticionesServidor {
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lista vacia");
-                        listener.noactualizarE();
+                        listener.actualizarInfEtapa(null);
                     }
 
+                }else //aviso al usuario //solo si esta desde descargar lista
+                {
+
+                    listener.actualizarInfEtapa(null);
                 }
             }
 
@@ -416,7 +422,7 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
-                    listener.noactualizarE();
+                    listener.actualizarInfEtapa(null);
                 }
             }
         });
@@ -447,18 +453,20 @@ public class PeticionesServidor {
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lista vacia");
-                        listener.noactualizarCor();
+                        listener.actualizarCorre(null);
                     }
 
-                }
+                }else
+                    listener.actualizarCorre(null);
             }
 
             @Override
             public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
-                    listener.noactualizarCor();
+
                 }
+                listener.actualizarCorre(null);
             }
         });
     }
@@ -538,7 +546,7 @@ public class PeticionesServidor {
         });
     }
 
-    public void insertarCatalogos(CatalogosResponse respuestaCats, CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atrRepo){
+    public void insertarCatalogos(CatalogosResponse respuestaCats, CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atrRepo, DescargasIniAsyncTask.DescargaIniListener listener){
         List<CatalogoDetalle> lista=respuestaCats.getCatalogos();
         //borro los catalogos que traigo
         catRep.deletexIdCat(2);
@@ -566,10 +574,11 @@ public class PeticionesServidor {
         tv2.setVersion(new Date());
         trepo.insertUpdate(tv2);
         tv=tv2=null;
+        listener.finalizar();
 
     }
 
-    public void insertarSustitucion(List<Sustitucion> respuestaCats,TablaVersionesRepImpl trepo,  SustitucionRepositoryImpl sustRepo){
+    public void insertarSustitucion(List<Sustitucion> respuestaCats,TablaVersionesRepImpl trepo,  SustitucionRepositoryImpl sustRepo,DescargasIniAsyncTask.DescargaIniListener listener){
 
         sustRepo.deleteAll();
         sustRepo.insertAll(respuestaCats);
@@ -579,9 +588,10 @@ public class PeticionesServidor {
         tv3.setTipo("C");
         tv3.setVersion(new Date());
         trepo.insertUpdate(tv3);
+        listener.finalizar();
     }
     public void pedirSolicitudesCorr(String indice, int etapa, String version, NavigationDrawerActivity.ActualListener petsocor){
-
+        Log.d(TAG,"pidiendo correcciones");
         final Call<SolCorreResponse> batch = ServiceGenerator.getApiService().getSolicitudCorre(indice,usuario,etapa,version);
 
         batch.enqueue(new Callback<SolCorreResponse>() {
@@ -614,6 +624,32 @@ public class PeticionesServidor {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
 
+                }
+            }
+        });
+    }
+    public void getCatalogosPrueb(SimpleTask.STListener stListener) {
+
+        final Call<CatalogosResponse> batch = ServiceGenerator.getApiService().getCatalogosNuevoInforme(usuario);
+
+        batch.enqueue(new Callback<CatalogosResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<CatalogosResponse> call, @Nullable Response<CatalogosResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    CatalogosResponse respuestaCats = response.body();
+                    Log.d("PeticionesServidor","leyendo cats "+respuestaCats.getCatalogos().size());
+                    stListener.actualizar(true);
+
+                }else
+                    Log.e("PeticionesServidor", "algo salio mal en peticion catalogo");
+
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<CatalogosResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio catalogo"+t.getMessage());
+                    stListener.actualizar(false);
                 }
             }
         });

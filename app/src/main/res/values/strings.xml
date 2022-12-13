@@ -288,6 +288,10 @@
     <string name="menu_cancel">Canceladas</string>
     <string name="cadena_comer">CADENA COMERCIAL</string>
     <string name="cancelar_tienda">¿ESTA SEGURO DE CANCELAR LA TIENDA</string>
+    <string name="seleccione_opcion">SELECCIONE UNA OPCION</string>
+    <string name="enviar_errores">Enviar errores</string>
+    <string name="menu_informescorrec">Informes Correcciones</string>
+    <string name="coreccion_pend">Correcciones pendientes</string>
 
 
 </resources>

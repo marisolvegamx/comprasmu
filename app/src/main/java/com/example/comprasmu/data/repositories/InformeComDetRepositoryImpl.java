@@ -5,14 +5,17 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.dao.InformeCompraDetDao;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -80,9 +83,40 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     public InformeCompraDetalle findByInformeFoto(int informeid, int fotoatra) {
         return dao.findByInformeAtra(informeid,fotoatra);
     }
+
     public List<InformeCompraDetalle> findByCompraBu(int idcompra, int iddet) {
         return dao.findByCompraBu(idcompra,iddet);
     }
+    public InformeCompraDetalle getInformeByFoto(int informeid, int numfoto, int descripcionId ) {
+
+        String query="select * from informe_detalle where informesId=? ";
+        switch (descripcionId) {
+            // case 2: query="and foto_atributoa=?";
+            //     break;
+
+            case 7:
+                query =query+ "and etiqueta_evaluacion=?";
+                break;
+            case 9:
+                query =query+ "and foto_codigo_produccion=?";
+                break;
+        }
+        ArrayList<Integer> filtros=new ArrayList<Integer>();
+        filtros.add(informeid);
+        filtros.add(numfoto);
+
+        Object[] params=filtros.toArray();
+
+        for(int i=0;i<params.length;i++)
+            Log.d("InformeComDetRepoImpl","***"+params[i]);
+        Log.d("InformeComDetRepoImpl","****"+query);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,filtros.toArray()
+        );
+
+        return dao.getInfCompraDetByFiltros(sqlquery);
+    }
+
     @Override
     public long insert(InformeCompraDetalle object) {
         return dao.insert(object);

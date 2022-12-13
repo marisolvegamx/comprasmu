@@ -83,6 +83,7 @@ public class NvaCorreccionFragment extends Fragment {
     ListaSolsViewModel solViewModel;
     SolicitudCor solicitud;
     TextView txtmotivo;
+    int numfoto;
 
     public static NvaCorreccionFragment newInstance() {
         return new NvaCorreccionFragment();
@@ -107,12 +108,13 @@ public class NvaCorreccionFragment extends Fragment {
 
         if(datosRecuperados!=null) {
             solicitudSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
+            numfoto = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
 
         }
         fotoori1=root.findViewById(R.id.ivcoriginal);
         fotoori2=root.findViewById(R.id.ivcoriginal2);
         fotoori3=root.findViewById(R.id.ivcoriginal3);
-        solViewModel.getSolicitud(solicitudSel).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
+        solViewModel.getSolicitud(solicitudSel,numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
@@ -140,13 +142,17 @@ public class NvaCorreccionFragment extends Fragment {
                         });
                         break;
                     case 2:
+                        String producto="";
+                        InformeCompraDetalle corrige=null;
                         if(solicitud.getDescripcionFoto().equals("foto_atributoa")){
                             //busco las otras fotos
                             //busco el informe
-                            InformeCompraDetalle corrige=solViewModel.buscarInformeFoto(solicitud.getInformesId(), solicitud.getNumFoto(),Constantes.INDICEACTUAL);
+                             corrige=solViewModel.buscarInformeFoto(solicitud.getInformesId(), solicitud.getNumFoto(),Constantes.INDICEACTUAL);
                             int numfoto2=corrige.getFoto_atributob();
 
                             int numfoto3=corrige.getFoto_atributoc();
+                            //pongo datos del producto
+                           //  producto=corrige.getProducto()+" "+corrige.getPresentacion();
                             solViewModel.buscarImagenCom(numfoto2).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
                                 @Override
                                 public void onChanged(ImagenDetalle imagenDetalle) {
@@ -191,6 +197,17 @@ public class NvaCorreccionFragment extends Fragment {
                                     verImagen(rutafotoo3);
                                 }
                             });
+                        }else
+                        {
+                           if(solicitud.getDescripcionId()==9||solicitud.getDescripcionId()==7)
+                            //busco el producto
+                            corrige= solViewModel.buscarInformeByFoto(solicitud.getInformesId(), solicitud.getNumFoto(),solicitud.getDescripcionId());
+                          }
+                        if(corrige!=null) {
+                            producto = corrige.getProducto() + " "+corrige.getPresentacion()+" "+corrige.getEmpaque() ;
+                            Log.e(TAG, "qqq" + producto);
+                            ((NuevoInfEtapaActivity) getActivity()).actualizarAtributo3(producto);
+                            ((NuevoInfEtapaActivity) getActivity()).actualizarAtributo4(corrige.getNombreAnalisis());
                         }
                         solViewModel.buscarImagenCom(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
                             @Override
@@ -389,7 +406,7 @@ public class NvaCorreccionFragment extends Fragment {
     //cambiar estatus sol
     public void actualizarSolicitud() {
         try {
-            solViewModel.actualizarEstSolicitud(solicitudSel,4);
+            solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
             CorreccionEnvio envio=mViewModel.prepararEnvio(mViewModel.getNvocorreccion());
             SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
             miTareaAsincrona.execute();

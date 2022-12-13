@@ -10,9 +10,10 @@ import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.SolicitudCorDao;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 
+import java.util.Date;
 import java.util.List;
 
-public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
+public class SolicitudCorRepoImpl  {
 
 
     private final SolicitudCorDao icDao;
@@ -27,15 +28,8 @@ public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
         return icDao;
     }
 
-    @Override
-    public LiveData<List<SolicitudCor>> getAll() {
-        return null;
-    }
 
-    @Override
-    public List<SolicitudCor> getAllsimple() {
-        return null;
-    }
+
 
     public LiveData<List<SolicitudCor>> getAll(int etapa, String indice, int plantaid, int estatus) {
         return icDao.getSolicitudes(etapa, indice,plantaid, estatus);
@@ -49,22 +43,22 @@ public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
         return icDao.getTotSolsxPlanta(etapa, indice, estatus, plantaid);
     }
 
-    @Override
-    public LiveData<SolicitudCor> find(int id) {
-        return icDao.find(id);
+
+    public LiveData<SolicitudCor> find(int id,int numfoto) {
+        return icDao.find(id,numfoto);
     }
 
-    @Override
-    public SolicitudCor findsimple(int id) {
-        return icDao.findSimple(id);
+
+    public SolicitudCor findsimple(int id,int numfoto) {
+        return icDao.findSimple(id,numfoto);
     }
 
-    @Override
+
     public long insert(SolicitudCor newSolicitudCor) {
         return icDao.insert(newSolicitudCor);
     }
 
-    @Override
+
     public void delete(SolicitudCor object) {
         icDao.delete(object);
     }
@@ -78,14 +72,14 @@ public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
     }
 
 
-    public void actualizarEstatus(int id, int estatus) {
+    public void actualizarEstatus(int id,int numfoto, int estatus) {
         Log.d("---","actalizando"+id+"--"+estatus);
-         icDao.actualizarEstatus(id, estatus);
+         icDao.actualizarEstatus(id,numfoto, estatus);
     }
 
-    public void actualizarEstatusSync(int id, int estatus) {
+    public void actualizarEstatusSync(int id,int numfoto, int estatus) {
 
-        icDao.actualizarEstatusSync(id, estatus);
+        icDao.actualizarEstatusSync(id,numfoto, estatus);
     }
 
     public List<SolicitudCor> getSolicitudesPendSubir(String indice) {
@@ -93,13 +87,15 @@ public class SolicitudCorRepoImpl extends BaseRepository<SolicitudCor> {
         return icDao.getxEstatusSync(indice, 0);
     }
 
-    public void deleteSolicitudCor(int id) {
-       icDao.deleteSolicitud( id);
-    }
-
-    public LiveData<SolicitudCor> getSolicitudCor(int id) {
-        return icDao.getSolicitud(id);
+    public void deleteSolicitudCor(int id,int numfoto) {
+       icDao.deleteSolicitud( id,numfoto);
     }
 
 
+    public void actualizarEst(String motivo, int contador, Date fecha,int estatus,int idsol, int numfoto) {
+        icDao.actualizarEst(motivo,contador,fecha,  estatus,idsol,numfoto);
+    }
+    public void actualizar(String motivo, int contador, Date fecha,int idsol, int numfoto) {
+        icDao.actualizar(motivo,contador,fecha,  idsol,numfoto);
+    }
 }

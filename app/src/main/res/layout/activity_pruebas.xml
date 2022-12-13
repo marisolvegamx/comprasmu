@@ -1,36 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_grey"
-    android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".ui.home.PruebasActivity"
-   >
+    android:orientation="vertical">
 
-    <FrameLayout
+    <ProgressBar
+        android:id="@+id/progressBarpba"
+        style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/inner_frame_layout_padding"
->
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/txtlllog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_world" />
+    <TextView
+        android:id="@+id/destxtsincon"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|fill_vertical"
+        android:layout_marginTop="50dp"
+        android:text="Para actualizar requiere conexion a internet, verifique"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-        <Button
-            android:id="@+id/btnpscan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button" />
-<!--        <androidx.camera.view.PreviewView-->
-<!--            android:id="@+id/activity_main_previewView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent" />-->
-
-
-    </FrameLayout>
-</androidx.wear.widget.BoxInsetLayout>
+    <Button
+        android:id="@+id/btnpscan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Salir"
+        android:visibility="gone" />
+</LinearLayout>

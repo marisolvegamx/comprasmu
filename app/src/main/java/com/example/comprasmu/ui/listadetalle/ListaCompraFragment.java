@@ -137,12 +137,15 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
             mViewModel.setClienteSel(bundle.getInt(ARG_CLIENTESEL));
             clienteSel=bundle.getInt(ARG_CLIENTESEL);//ya llega como la clave
-     //       Log.d(TAG," cliente"+clienteSel);
+
+            //busco el nombre
+
+            nombreCliente =mViewModel.buscarClientexPlan(plantaSel);
             int  consecutivo = niViewModel.getConsecutivo(plantaSel, getActivity(), this);
             //  Log.d(TAG, "*genere cons=" + consecutivo);
 
-                    Log.d(TAG, "genere cons=" + consecutivo);
-                    consecutivoTienda = consecutivo;
+            Log.d(TAG, "plantasel " + plantaSel);
+            consecutivoTienda = consecutivo;
 
 
             if(bundle.getString(ARG_MUESTRA)!=null&&bundle.getString(ARG_MUESTRA).equals("true")) {
@@ -239,6 +242,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                     if(nombreCliente==null)
                         nombreCliente="";
                     mBinding.txtlcplanta.setText(nombreCliente+" "+nombrePlanta+" ("+mViewModel.listaSelec.getSiglas()+")");
+
                     mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio)+" "+opcionbu);
                     mBinding.lllc3.setVisibility(View.VISIBLE);
                     if(opcionbu>2)
@@ -417,7 +421,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                             if (ismuestra)
                                 mBinding.txtlcplanta.setText(nombreCliente + " " + nombrePlanta + siglas);
                             else
-                                mBinding.txtlcplanta.setText(nombrePlanta + siglas);
+                                mBinding.txtlcplanta.setText(nombreCliente + " " +nombrePlanta + siglas);
 
                             //   Log.d(TAG, "qqqqqqqqqqqqq" + ismuestra);
                             //cambio las cantidades si es bu

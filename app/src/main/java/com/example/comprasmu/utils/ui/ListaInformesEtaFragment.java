@@ -35,6 +35,7 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
+import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
@@ -133,7 +134,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 }
             });
         }
-        if(tipocons.equals("action_selclitocor2")){
+        if(tipocons.equals("action_selclitocor2")){ //CORRECCIONES
             etapa=Constantes.ETAPAACTUAL;
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             LiveData<List<SolicitudWithCor>> listacor = corViewModel.getCorreccionesxEta(etapa, indice, plantasel);
@@ -204,6 +205,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             temp.setEstatus(cor.correccion.getEstatus());
             temp.setEstatusSync(cor.correccion.getEstatusSync());
             temp.setCreatedAt(cor.correccion.getCreatedAt());
+            temp.setComentarios(cor.solicitud.getNombreTienda());
+            temp.setConsecutivo(cor.solicitud.getNumFoto());
             informes.add(temp);
 
         }
@@ -214,6 +217,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     public void onClickVer(int informe) {
         Intent intento1=new Intent(getActivity(), BackActivity.class);
         intento1.putExtra(INFORMESEL, informe);
+      //  intento1.putExtra(NuevoInfEtapaActivity.NUMFOTO, numFoto);
         intento1.putExtra(ARG_TIPOCONS, tipocons);
         Constantes.ETAPAACTUAL=etapa;
         intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);

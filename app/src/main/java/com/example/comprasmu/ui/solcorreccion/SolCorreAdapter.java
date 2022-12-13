@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.databinding.SolCorreccionItemBinding;
-import com.example.comprasmu.ui.informe.ListaInformesViewModel;
 import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
@@ -46,8 +45,6 @@ public class SolCorreAdapter extends RecyclerView.Adapter<SolCorreAdapter.Solici
         holder.binding.setDetalle(mSolicitudCorList.get(position));
         holder.binding.setSdf(Constantes.vistasdf);
       //  holder.binding.set
-
-
     }
 
 
@@ -87,7 +84,7 @@ public class SolCorreAdapter extends RecyclerView.Adapter<SolCorreAdapter.Solici
                 @Override
                 public void onClick(View view) {
                    // view.setEnabled(false);
-                        callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()));
+                        callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()),Integer.parseInt(binding.liTxtnumfoto.getText().toString()));
                 }
             });
 
@@ -97,7 +94,7 @@ public class SolCorreAdapter extends RecyclerView.Adapter<SolCorreAdapter.Solici
 
     }
     public interface AdapterCallback {
-        void onClickVer(int idinforme);
+        void onClickVer(int idinforme,int numfoto);
 
     }
 

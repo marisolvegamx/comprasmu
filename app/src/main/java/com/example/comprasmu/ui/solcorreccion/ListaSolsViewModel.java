@@ -56,18 +56,18 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
         return repository.totalSolsxPlanta(etapa,indiceSel, estatus, planta);
     }
-    public LiveData<SolicitudCor>  getSolicitud(int id){
-        LiveData<SolicitudCor> solicitud =repository.find(id);
+    public LiveData<SolicitudCor>  getSolicitud(int id,int numfoto){
+        LiveData<SolicitudCor> solicitud =repository.find(id,numfoto);
         return solicitud;
     }
     public MutableLiveData<Integer>  getTotalCancel(String indiceSel){
-        Log.d(TAG,"wwww"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+        Log.d(TAG,"wwww*"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
         return infcrepo.gettotCancelados(indiceSel);
     }
-    public void actualizarEstSolicitud(int id, int estatus){
+    public void actualizarEstSolicitud(int id,int numfoto, int estatus){
         Log.d(TAG,"actalizando"+id+"--"+estatus);
-      repository.actualizarEstatus(id,estatus);
+      repository.actualizarEstatus(id,numfoto,estatus);
 
     }
     public LiveData<ImagenDetalle> buscarImagenCom(int numfoto){
@@ -91,6 +91,9 @@ public class ListaSolsViewModel extends AndroidViewModel {
     public InformeCompraDetalle buscarInformeFoto(int informesId, int numfoto, String indiceactual) {
         return infcrepo.findByInformeFoto(informesId,numfoto);
     }
+    public InformeCompraDetalle buscarInformeByFoto(int informesId, int numfoto, int descrId) {
+        return infcrepo.getInformeByFoto(informesId,numfoto, descrId);
+    }
 
     public void procesarCanceladas(MuestraCancelada cancelada){
         InformeCompraDetalle det=infcrepo.findsimple(cancelada.getInd_id());
@@ -108,8 +111,14 @@ public class ListaSolsViewModel extends AndroidViewModel {
                         lcdrepo.actualizarComprados(compradet.getId(), compradet.getListaId(), cantidad);
                     }
                     //quito en nuevo codigo
-                    if (compradet.getNvoCodigo() != "") {
+                    if (compradet.getNvoCodigo()!=null&&compradet.getNvoCodigo() != "") {
+                       // Log.d(TAG,"quitando el codigo"+compradet.getNvoCodigo());
+                       // Log.d(TAG,det.getId()+"--"+det.getInformesId()+"--"+codigo);
+
                         String nuevoscods = compradet.getNvoCodigo().replace(codigo + ";", "");//elimino elcodigo
+                        nuevoscods = compradet.getNvoCodigo().replace(codigo, "");//elimino elcodigo
+
+                       // Log.d(TAG,compradet.getId()+"--"+compradet.getListaId()+"--"+nuevoscods);
                         lcdrepo.actualizarNvosCodigos(compradet.getId(), compradet.getListaId(), nuevoscods);
                     }
                 }

@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.utils.ui.ListaInformesEtaFragment;
 import com.example.comprasmu.utils.ui.VerInformeGenFragment;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibFragment;
@@ -192,6 +193,8 @@ public class BackActivity extends AppCompatActivity {
                     VerInformeGenFragment detailFragment7 = new VerInformeGenFragment();
                     bundle6.putString(ListaInformesEtaFragment.ARG_TIPOCONS, datosRecuperados.getString(ListaInformesEtaFragment.ARG_TIPOCONS));
                     bundle6.putInt(ListaInformesEtaFragment.INFORMESEL,datosRecuperados.getInt(ListaInformesEtaFragment.INFORMESEL));
+                   // bundle6.putInt(NuevoInfEtapaActivity.NUMFOTO,datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO));
+
                     detailFragment7.setArguments(bundle6);
                     ft.add(R.id.back_fragment, detailFragment7);
                     break;

@@ -10,9 +10,9 @@ import com.example.comprasmu.data.Converters;
 
 import java.util.Date;
 
-@Entity(tableName = "solicitud_cor")
+@Entity(tableName = "solicitud_cor",primaryKeys = {"id", "numFoto"})
 public class SolicitudCor {
-    @PrimaryKey(autoGenerate = true)
+
     private int id; //val_id
     private int informesId;
     private int plantasId;

@@ -30,10 +30,13 @@ public abstract class CorreccionDao extends  BaseDao<Correccion>{
     public abstract LiveData<List<Correccion>> getCorreccionesByFiltros(SupportSQLiteQuery query);
 
     @RawQuery(observedEntities = SolicitudWithCor.class)
+    public abstract LiveData<SolicitudWithCor> getCorreSolByFiltro(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = SolicitudWithCor.class)
     public abstract LiveData<List<SolicitudWithCor>> getCorreSolByFiltros(SupportSQLiteQuery query);
 
-    @Transaction
-    @Query("SELECT * FROM correccion WHERE id = :id ")
+    @Query("SELECT * FROM correccion inner join solicitud_cor on correccion.solicitudId=solicitud_cor.id" +
+            " and correccion.numfoto=solicitud_cor.numfoto  WHERE correccion.id = :id")
     public abstract LiveData<SolicitudWithCor> getWithSol(int id);
 
     @Query("DELETE FROM correccion where id=:id")

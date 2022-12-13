@@ -50,7 +50,9 @@
         <activity
             android:name=".ui.home.PruebasActivity"
             android:label="@string/title_activity_pruebas"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+
+        </activity>
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.

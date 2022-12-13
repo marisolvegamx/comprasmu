@@ -1,5 +1,6 @@
 package com.example.comprasmu;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +10,12 @@ import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.remote.InformeEnvio;
+import com.example.comprasmu.data.remote.RespInformesResponse;
+import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
+import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
 
 import java.util.ArrayList;
@@ -17,14 +23,14 @@ import java.util.ArrayList;
 public class SimpleTask extends AsyncTask<Void, Integer, Void> {
 
 
-    private final int[] numbers;
+   // private final int[] numbers;
     public TextView progressLabel;
+    Activity act;
 
 
-
-    public SimpleTask(int[] numbers) {
-
-        this.numbers = numbers;
+    public SimpleTask( Activity act) {
+        this.act=act;
+        //this.numbers = numbers;
       //  this.progressLabel = progressLabel;
     }
 
@@ -62,30 +68,12 @@ public class SimpleTask extends AsyncTask<Void, Integer, Void> {
    */
     @Override
     protected Void doInBackground(Void... params) {
-        int aux;
+        CatalogoDetalleRepositoryImpl catrep=new CatalogoDetalleRepositoryImpl(act);
+        TablaVersionesRepImpl verepo=new TablaVersionesRepImpl(act);
+        AtributoRepositoryImpl atrrepo=new AtributoRepositoryImpl(act);
+        PeticionesServidor ps=new PeticionesServidor(4+"");
+        ps.getCatalogosPrueb(new STListener());
 
-        for (int i = 0; i < numbers.length - 1; i++) {
-            for (int j = 0; j < numbers.length -1; j++) {
-                if (numbers[j] > numbers[j+1])
-                {
-                    aux          = numbers[j];
-                    numbers[j]   = numbers[j+1];
-                    numbers[j+1] = aux;
-                }
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            // Notifica a onProgressUpdate() del progreso actual
-            if(!isCancelled())
-                publishProgress((int)(((i+1)/(float)(numbers.length-1))*100));
-            else break;
-            Log.d("Ejemplo ","Vuelta"+i);
-        }
-        Log.d("Ejemplo ","Ya terminé");
-        notificarObservadores();
         return null;
     }
 
@@ -119,6 +107,24 @@ public class SimpleTask extends AsyncTask<Void, Integer, Void> {
      //   progressLabel.setText("Completado");
 
     }
+    public class STListener {
 
+
+
+        public void actualizar( boolean resp){
+            //a ver como la regresamos
+            //  miproglis.todoBien(infoResp);
+            if(resp){
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            notificarObservadores();
+        }
+    }
 
 }

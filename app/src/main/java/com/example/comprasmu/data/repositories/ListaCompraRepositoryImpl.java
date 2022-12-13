@@ -262,6 +262,14 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         return 0;
     }
 
+    public String getClientexId(  int clienteId){
+        ListaCompra comprat= dao.getClientexId( clienteId);
+        if(comprat!=null)
+            return comprat.getClienteNombre();
+        return "";
+    }
+
+
     @Override
     public long insert(ListaCompra object) {
         return dao.insert(object);

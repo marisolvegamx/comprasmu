@@ -87,11 +87,13 @@ public class PeticionMapaCd {
                         // lista.setValue(respuestaTiendas);
 
                         Log.d(TAG, "getZonas ya lo asigné" + respuestaTiendas.getTiendas());
+                    }else {
+                        listener.insertarZonas(null);
                     }
                     //  return lista;
 
 
-                }
+                }else  listener.insertarZonas(null);
             }
 
             @Override
@@ -100,7 +102,7 @@ public class PeticionMapaCd {
                     Log.e(TAG, t.getMessage());
 
                 }
-                listener.noactualizar2("fin");
+                listener.insertarZonas(null);
             }
         });
 

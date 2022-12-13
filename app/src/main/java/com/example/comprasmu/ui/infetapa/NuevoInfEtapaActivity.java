@@ -39,12 +39,13 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     private ActivityNuevoInfetapaBinding mBinding;
     public final static String INFORMESEL = "comprasmu.nie_informesel";
     public final static String PLANTASEL = "comprasmu.nie_plantasel";
-
+    public final static String NUMFOTO = "comprasmu.nie_numfoto";
     public final static String CORRECCION = "comprasmu.nie_correc"; //para saber que es correccion
     private static final String TAG = "NvoInfEtapaAct";
     boolean noSalir;
     boolean isEdicion;
     int idinformeSel;
+    int numfoto;
     int contfoto;
     private NvaPreparacionViewModel dViewModel;
     private NuevoInfEtapaViewModel infvm;
@@ -162,6 +163,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             Bundle bundle=new Bundle();
             if(isCor){
                 bundle.putInt(NuevoInfEtapaActivity.INFORMESEL, idinformeSel);
+                bundle.putInt(NuevoInfEtapaActivity.NUMFOTO, numfoto);
                 NvaCorreccionFragment frag=new NvaCorreccionFragment();
                 frag.setArguments(bundle);
                 ft.add(R.id.continfeta_fragment, frag);
@@ -255,7 +257,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             etapa = datosRecuperados.getInt(ContInfEtapaFragment.ETAPA);
             isCor = datosRecuperados.getBoolean(CORRECCION);
             plantaSel = datosRecuperados.getInt( NuevoInfEtapaActivity.PLANTASEL);
-
+            numfoto = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
 
             if(!isCor&&idinformeSel>0) {
                 isEdicion = true;

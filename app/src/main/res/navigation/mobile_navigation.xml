@@ -210,7 +210,7 @@
     <fragment
         android:id="@+id/nav_solcor2"
         android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
-        android:label="@string/menu_correccion"
+        android:label="@string/coreccion_pend"
         tools:layout="@layout/lista_selec_fragment">
         <argument
             android:name="comprasmu.correselcli.tipocons"
@@ -248,7 +248,7 @@
     <fragment
         android:id="@+id/nav_listacor2"
         android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
-        android:label="@string/menu_resumeninf"
+        android:label="@string/menu_informescorrec"
         />
     <fragment
         android:id="@+id/nav_cancel"

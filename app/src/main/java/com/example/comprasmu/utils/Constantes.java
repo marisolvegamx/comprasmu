@@ -34,6 +34,7 @@ public class Constantes {
     /****estatus sync***/
     public static final int PENDIENTE =0 ;
     public static boolean LOGGEADO;
+    public static boolean ACTUALIZADO;
 
     public static final int SINCRONIZANDO = 1;
     public static final int ENVIADO =2;

@@ -610,7 +610,7 @@ public class DetalleProductoPenFragment extends Fragment {
     public void buscarClientes(){
         Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
         //if (clientesAsig == null||clientesAsig.size()<1){
-        List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
+      //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
       /*  if(estatusPepsi==0){
             data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO,4);
         }else
@@ -620,8 +620,54 @@ public class DetalleProductoPenFragment extends Fragment {
         if(estatusElec==0){
             data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO,6);
         }*/
-       clientesAsig = convertirListaaClientesE(data,clientesprev);
-        Log.d(TAG, "*regresó de la consulta de clientes " +  clientesAsig.size()+"");
+     //  clientesAsig = convertirListaaClientesE(data,clientesprev);
+      //  Log.d(TAG, "*regresó de la consulta de clientes " +  clientesAsig.size()+"");
+
+        //Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
+        //ahora son plantas
+        //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
+        //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
+        List<ListaCompra> listacomp= lcviewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
+        clientesAsig = convertirListaaPlantas(listacomp, clientesprev);
+        Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsig.size());
+
+
+    }
+    public  List<DescripcionGenerica> convertirListaaPlantas(List<ListaCompra> lista, Integer[] clientesprev){
+        int i=0;
+        List<DescripcionGenerica> mapa=new ArrayList<>();
+        List<Integer> coninf;
+        if( clientesprev!=null) {
+            //Log.d(TAG, "*estoy aqui" + clientesprev.length);
+            coninf=Arrays.asList(clientesprev);
+        }
+
+        if(lista!=null)
+            for (ListaCompra listaCompra: lista ) {
+                if(estatusPepsi==0&&listaCompra.getClientesId()==4)
+                    continue;
+                if(estatusPen==0&&listaCompra.getClientesId()==5)
+                    continue;
+                if(estatusElec==0&&listaCompra.getClientesId()==6)
+                    continue;
+                DescripcionGenerica item=new DescripcionGenerica();
+                Log.d(TAG,"-estoy aqui"+listaCompra.getClientesId());
+                if( clientesprev!=null)
+                    if(Arrays.asList(clientesprev).contains(listaCompra.getPlantasId()))
+                    {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
+                        Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
+                        continue;}
+
+                item.setId(listaCompra.getPlantasId());
+                item.setNombre(listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre());
+                //pongo solo el nombre de la planta
+                item.setDescripcion(listaCompra.getPlantaNombre());
+                //pareja idcliente;nombreclientes
+                item.setDescripcion2(listaCompra.getClientesId()+";"+listaCompra.getClienteNombre());
+                mapa.add(item);
+
+            }
+        return mapa;
     }
 
     public  List<DescripcionGenerica> convertirListaaClientesE(List<ListaCompra> lista, Integer[] clientesprev){
@@ -696,11 +742,33 @@ public class DetalleProductoPenFragment extends Fragment {
         DescripcionGenerica opcionsel = (DescripcionGenerica) spclientes.getSelectedItem();
         int valor = opcionsel.getId();
         lastClickTime=0;
-        mViewModel.clienteSel=valor;
-        Constantes.ni_clientesel=opcionsel.getNombre();
+
+        String aux=opcionsel.getDescripcion2();
+        String arraux[]=aux.split(";");
+        int clienteid=0;
+        String nombreCliente="";
+
+        if(aux.length()>1){
+            clienteid=Integer.parseInt(arraux[0]);
+            nombreCliente=arraux[1];
+        }
+        mViewModel.clienteSel=clienteid;
+        Constantes.ni_clientesel=nombreCliente;
         mViewModel.informe=new InformeCompra();
-        mViewModel.informe.setClienteNombre(opcionsel.getNombre());
-        mViewModel.informe.setClientesId(valor);
+        mViewModel.informe.setClienteNombre(nombreCliente);
+        mViewModel.informe.setClientesId(clienteid);
+        mViewModel.informe.setPlantaNombre(opcionsel.getNombre());
+        mViewModel.informe.setPlantasId(valor);
+        plantaSel =valor;
+        NOMBREPLANTASEL = opcionsel.getDescripcion();
+        Log.d(TAG,"ssssss"+mViewModel.clienteSel);
+        //actualizo barra
+        ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
+        //  guardarResp();
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),nombreCliente+"","clienteNombre","I",mViewModel.consecutivo,false);
+        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),clienteid+"","clientesId","I",mViewModel.consecutivo,true);
 
         //actualizo barra
         ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
@@ -990,14 +1058,15 @@ public class DetalleProductoPenFragment extends Fragment {
         //validar que si hay producto realmente tenga un producto capturado
         mViewModel.eliminarTblTemp();
         mViewModel.finalizarInforme();
-        compraslog.grabarError(TAG+" finalizando finalizar "+mViewModel.visita);
+
         try {
             InformeEnvio informe=this.preparaInforme();
+            compraslog.grabarError(TAG+" finalizando finalizar "+mViewModel.visita);
             SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informe,getActivity(),mViewModel);
             miTareaAsincrona.execute();
             subirFotos(getActivity(),informe);
         }catch(Exception ex){
-            ex.getStackTrace();
+            ex.printStackTrace();
           //  Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             compraslog.grabarError(TAG+" Algo salió mal al enviar "+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_LONG).show();
@@ -1172,10 +1241,9 @@ public class DetalleProductoPenFragment extends Fragment {
     public InformeEnvio preparaInforme(){
         InformeEnvio envio=new InformeEnvio();
         Log.d(TAG,"wwwwwwwww"+mViewModel.visita.getEstatus());
-
+        envio.setIndice(mViewModel.visita.getIndice());
         if(mViewModel.visita.getEstatusSync()==0) {
             envio.setVisita(mViewModel.visita);
-
         }
 
         envio.setInformeCompra(mViewModel.informe);
@@ -1196,18 +1264,24 @@ public class DetalleProductoPenFragment extends Fragment {
         //las imagenes
         for(ImagenDetalle imagen:informe.getImagenDetalles()){
             //subo cada una
-            Intent msgIntent = new Intent(activity, SubirFotoService.class);
-            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
-            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
-            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getVisita().getIndice());
-            // Constantes.INDICEACTUAL
-            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+            try {
+                Intent msgIntent = new Intent(activity, SubirFotoService.class);
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH, imagen.getRuta());
+                msgIntent.putExtra(SubirFotoService.EXTRA_INDICE, informe.getIndice());
+                // Constantes.INDICEACTUAL
+                Log.d(TAG, "subiendo fotos" + activity.getLocalClassName());
 
-            msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_IMG);
-            //cambio su estatus a subiendo
-            imagen.setEstatusSync(1);
-            activity.startService(msgIntent);
-            //cambio su estatus a subiendo
+                msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_IMG);
+                //cambio su estatus a subiendo
+                imagen.setEstatusSync(1);
+                activity.startService(msgIntent);
+                //cambio su estatus a subiendo
+            }catch(Exception ex){
+                ex.printStackTrace();
+                ComprasLog.getSingleton().grabarError(TAG+" Algo salió mal al enviarfoto "+ex.getMessage());
+
+            }
         }
 
     }
@@ -1286,18 +1360,18 @@ public class DetalleProductoPenFragment extends Fragment {
             @Override
             public void onChanged(Reactivo reactivo) {
                  if(sig==1) //pregunta de cliente o confirmacion vuelvo al detalleproducto1
-        {
+                    {
 
-            DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
-            fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-         //   fragmentTransaction.addToBackStack(null);
-// Cambiar
-            fragmentTransaction.commit();
-        }else {
+                        DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            // Definir una transacción
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            // Remplazar el contenido principal por el fragmento
+                        fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+                     //   fragmentTransaction.addToBackStack(null);
+            // Cambiar
+                        fragmentTransaction.commit();
+                    }else {
                      DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo, false);
                      FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción

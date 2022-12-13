@@ -44,6 +44,7 @@ import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.home.HomeActivity;
+import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 
@@ -244,7 +245,7 @@ public class LoginActivity extends AppCompatActivity
 
         Log.d("LoginActivity","entre");
         //mando a la siguiente actividad
-        Intent intento=new Intent(this, HomeActivity.class);
+        Intent intento=new Intent(this, PruebasActivity.class);
         startActivity(intento);
         finish();
     }

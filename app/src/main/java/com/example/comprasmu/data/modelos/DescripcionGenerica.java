@@ -7,6 +7,7 @@ public class DescripcionGenerica {
 
     public String descripcion;
     public String descripcion2;
+    public String descripcion3;
 
     public DescripcionGenerica() {
 
@@ -28,6 +29,14 @@ public class DescripcionGenerica {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.descripcion2 = descripcion2;
+    }
+
+    public DescripcionGenerica(int id, String nombre, String descripcion, String descripcion2, String descripcion3) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.descripcion2 = descripcion2;
+        this.descripcion3 = descripcion3;
     }
 
     public int getId() {
@@ -60,5 +69,13 @@ public class DescripcionGenerica {
 
     public void setDescripcion2(String descripcion2) {
         this.descripcion2 = descripcion2;
+    }
+
+    public String getDescripcion3() {
+        return descripcion3;
+    }
+
+    public void setDescripcion3(String descripcion3) {
+        this.descripcion3 = descripcion3;
     }
 }

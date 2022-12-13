@@ -20,11 +20,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.SolicitudWithCor;
 import com.example.comprasmu.databinding.VerInformegenFragmentBinding;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
+import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
 import com.example.comprasmu.utils.CampoForm;
@@ -53,6 +55,7 @@ public class VerInformeGenFragment extends Fragment {
     String directorio;
     String tipo;
     String textoboton;
+    int numfoto;
 
 
     public static VerInformeGenFragment newInstance() {
@@ -78,6 +81,7 @@ public class VerInformeGenFragment extends Fragment {
         if(bundle!=null){
             informeSel=bundle.getInt(ListaInformesEtaFragment.INFORMESEL);
             tipo=bundle.getString(ListaInformesEtaFragment.ARG_TIPOCONS);
+            numfoto= bundle.getInt(NuevoInfEtapaActivity.NUMFOTO);
             llenarDetalle();
 
         }
@@ -95,11 +99,15 @@ public class VerInformeGenFragment extends Fragment {
         }
         Log.d(TAG, "llenando detalles"+Constantes.ETAPAACTUAL+tipo+"--"+informeSel);
         if(tipo.equals("action_selclitocor2")) {
-            corViewModel.getCorreccion(informeSel).observe(getViewLifecycleOwner(), new Observer<SolicitudWithCor>() {
+            corViewModel.getCorreccion(informeSel).observe(getViewLifecycleOwner(), new Observer<Correccion>() {
                 @Override
-                public void onChanged(SolicitudWithCor vcorreccion) {
-                    Log.d(TAG,"---"+vcorreccion.toString());
-                    correccion=vcorreccion;
+                public void onChanged(Correccion vcorreccion) {
+                  //  Log.d(TAG,"---"+vcorreccion.correccion.getSolicitudId()+"--"+vcorreccion.solicitud.getId()+"--"+vcorreccion.correccion.getNumfoto()+"--"+vcorreccion.solicitud.getNumFoto());
+                   //busco la solicitud
+                   SolicitudCor solicitudCor=corViewModel.getSolicitud(vcorreccion.getSolicitudId(),vcorreccion.getNumfoto());
+                    correccion=new SolicitudWithCor();
+                    correccion.correccion=vcorreccion;
+                    correccion.solicitud=solicitudCor;
                     crearFormularioCor();
                     mBinding.vidatosgen.addView(cf1.crearTabla());
                     mBinding.btnverdet.setVisibility(View.GONE);
@@ -178,10 +186,10 @@ public class VerInformeGenFragment extends Fragment {
 
         campo = new CampoForm();
         campo.style = R.style.verinforme2;
-        campo.nombre_campo = "tiendaNombre";
+        campo.nombre_campo = "descripcion";
         campo.label = getString(R.string.descripcion);
         campo.type = "label";
-        campo.value =correccion.solicitud.getDescripcionFoto();
+        campo.value =correccion.solicitud.getDescMostrar();
         camposTienda.add(campo);
 
         campo = new CampoForm();

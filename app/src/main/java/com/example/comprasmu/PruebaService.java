@@ -91,9 +91,9 @@ public class PruebaService extends Service implements  PruebaListener{
     }
 
     public void execWithAsyncTask(){
-        SimpleTask simpleTask= new SimpleTask(numbers);
-        simpleTask.agregarObservador(this);
-        simpleTask.execute();
+       // SimpleTask simpleTask= new SimpleTask(getApplicationContext());
+       // simpleTask.agregarObservador(this);
+       // simpleTask.execute();
     }
 
 

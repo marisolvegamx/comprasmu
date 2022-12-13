@@ -54,6 +54,9 @@ public abstract class ListaCompraDao  extends  BaseDao<ListaCompra> {
     @Query("SELECT * FROM lista_compras where indice=:indice and plantasId=:planta group by plantasId")
     public  abstract ListaCompra getClientexPlanta( String indice, int planta);
 
+    @Query("SELECT * FROM lista_compras where clientesId=:clienteId limit 1")
+    public  abstract ListaCompra getClientexId(  int clienteId);
+
     @Query("SELECT * FROM lista_compras where id=:id")
     public abstract LiveData<ListaCompra> find( int id);
 

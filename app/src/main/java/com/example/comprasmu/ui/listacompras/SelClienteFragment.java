@@ -29,6 +29,7 @@ import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.sustitucion.SustitucionFragment;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
@@ -128,7 +129,14 @@ public class SelClienteFragment extends ListaSelecFragment {
         Log.d(TAG,"una planta "+listaSeleccionable.get(i).getId()+"--"+listaSeleccionable.get(i).getNombre());
 
 
-
+        if(clienteSel==0){
+            try {
+                clienteSel = Integer.parseInt(listaSeleccionable.get(i).getDescripcion3());
+            }catch (Exception ex){
+                ex.printStackTrace();
+                ComprasLog.getSingleton().grabarError(TAG+" No había cliente "+ex.getMessage());
+            }
+        }
         Bundle bundle = new Bundle();
         bundle.putInt(ListaCompraFragment.ARG_PLANTASEL,listaSeleccionable.get(i).getId() );
         bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getDescripcion2());
@@ -186,7 +194,7 @@ public class SelClienteFragment extends ListaSelecFragment {
           /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
           listaCompra.getPlantaNombre();*/
 
-          listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClienteNombre(),listaCompra.getPlantaNombre()));
+          listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClienteNombre(),listaCompra.getPlantaNombre(),listaCompra.getClientesId()+""));
 
         }
 

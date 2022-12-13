@@ -110,7 +110,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
     }
     //ver si tiene informe la visita y devuelve el cliente o los clientes
-    public Integer[] tieneInforme(Visita visita){
+   /* public Integer[] tieneInforme(Visita visita){
         Integer[] clienteAnt=null;
         InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(application);
         List<InformeCompra> informeCompras=infoRepo.getAllByVisitasimple(visita.getId());
@@ -118,6 +118,22 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
             clienteAnt=new Integer[informeCompras.size()];
             for (int i = 0; i < informeCompras.size(); i++)
                 clienteAnt[i] = informeCompras.get(i).getClientesId();
+        }
+
+
+        return clienteAnt;
+
+    }*/
+
+    //ver si tiene informe la visita y devuelve el cliente o los clientes
+    public Integer[] tieneInforme(Visita visita){
+        Integer[] clienteAnt=null;
+        InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(application);
+        List<InformeCompra> informeCompras=infoRepo.getAllByVisitasimple(visita.getId());
+        if(informeCompras!=null&&informeCompras.size()>0) {
+            clienteAnt=new Integer[informeCompras.size()];
+            for (int i = 0; i < informeCompras.size(); i++)
+                clienteAnt[i] = informeCompras.get(i).getPlantasId();
         }
 
 
