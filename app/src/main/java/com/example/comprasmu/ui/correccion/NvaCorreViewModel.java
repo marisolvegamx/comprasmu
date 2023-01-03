@@ -36,7 +36,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
 
     }
 
-    public int insertarCorreccion(int solicitudid,int numFoto,String ruta1, String ruta2,String ruta3){
+    public int insertarCorreccion(int solicitudid,String indice,int numFoto,String ruta1, String ruta2,String ruta3){
         Correccion correccion=new Correccion();
         correccion.setSolicitudId(solicitudid);
         correccion.setRuta_foto1(ruta1);
@@ -44,6 +44,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
         correccion.setRuta_foto3(ruta3);
         correccion.setEstatusSync(0);
         correccion.setEstatus(1);
+        correccion.setIndice(indice);
         correccion.setNumfoto(numFoto);
 
         correccion.setCreatedAt(new Date());
@@ -66,8 +67,11 @@ public class NvaCorreViewModel extends AndroidViewModel {
     public Correccion getCorreccionesxid(int idcor,String indice, int etapa){
         return correpository.findsimple(idcor);
     }
-    public LiveData<List<SolicitudWithCor>> getCorreccionesxEta(int etapa, String indice, int plantaSel){
+    public LiveData<List<SolicitudWithCor>> getCorreccionesxEtaPlan(int etapa, String indice, int plantaSel){
         return correpository.getAllxEtaPlan(plantaSel,indice,etapa);
+    }
+    public LiveData<List<SolicitudWithCor>> getCorreccionesxEta(int etapa, String indice, int plantaSel){
+        return correpository.getAllxEta(indice,etapa);
     }
     public LiveData<Correccion> getCorreccion(int id){
         Log.d(TAG,"ESTOY AQUI");

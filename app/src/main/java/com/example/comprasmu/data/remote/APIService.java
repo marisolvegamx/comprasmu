@@ -1,5 +1,6 @@
 package com.example.comprasmu.data.remote;
 
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
@@ -103,7 +104,7 @@ public interface APIService {
     Call<RespInfEtapaResponse> getRespaldoInf2( @Query("indice") String indice, @Query("usuario") String usuario);
 
     @GET("descresp/cor")
-    Call<RespInfEtapaResponse> getRespaldoCor( @Query("indice") String indice, @Query("usuario") String usuario);
+    Call<List<Correccion>> getRespaldoCor(@Query("indice") String indice, @Query("usuario") String usuario);
 
     @POST("infetapa/create")
     @Headers({

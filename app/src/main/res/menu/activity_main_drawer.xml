@@ -35,12 +35,12 @@
             android:title="@string/menu_lista_informe" />
 
         <item
-            android:id="@+id/nav_solcor2"
+            android:id="@+id/nav_listasolcor"
             android:icon="@drawable/ic_baseline_notifications_active_24"
             android:title="@string/menu_correccion"
             app:actionViewClass="android.widget.TextView" />
         <item
-            android:id="@+id/nav_rescorreccion2"
+            android:id="@+id/nav_listacor2"
             android:icon="@drawable/ic_baseline_check_24"
             android:title="@string/menu_rescorreccion" />
 

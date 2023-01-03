@@ -17,6 +17,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and plantasId=:plantaid")
     public abstract LiveData<List<InformeEtapa>> getInformes(int etapa, String indice, int plantaid);
+    @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice")
+    public abstract LiveData<List<InformeEtapa>> getInformesAll(int etapa, String indice);
 
     @Query("SELECT * FROM informe_etapa where etapa=:etapa")
     public abstract List<InformeEtapa> getInformesSimple(int etapa);

@@ -31,10 +31,13 @@ public class SolicitudCorRepoImpl  {
 
 
 
-    public LiveData<List<SolicitudCor>> getAll(int etapa, String indice, int plantaid, int estatus) {
-        return icDao.getSolicitudes(etapa, indice,plantaid, estatus);
+    public LiveData<List<SolicitudCor>> getAllxPlan(int etapa, String indice, int plantaid, int estatus) {
+        return icDao.getSolicitudesPlan(etapa, indice,plantaid, estatus);
     }
 
+    public LiveData<List<SolicitudCor>> getAll(int etapa, String indice, int estatus) {
+        return icDao.getSolicitudes(etapa, indice, estatus);
+    }
     public LiveData<Integer> totalSols(int etapa, String indice, int estatus) {
         return icDao.getTotSols(etapa, indice, estatus);
     }

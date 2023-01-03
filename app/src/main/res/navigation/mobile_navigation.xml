@@ -248,8 +248,26 @@
     <fragment
         android:id="@+id/nav_listacor2"
         android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
-        android:label="@string/menu_informescorrec"
-        />
+        android:label="@string/menu_informescorrec">
+    <argument
+        android:name="comprasmu.correselcli.tipocons"
+        app:argType="string"
+        android:defaultValue="rescor" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/nav_listaprep"
+        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:label="@string/menu_informescorrec">
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="e" />
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="1" />
+    </fragment>
     <fragment
         android:id="@+id/nav_cancel"
         android:name="com.example.comprasmu.ui.informe.ListaCancelFragment"

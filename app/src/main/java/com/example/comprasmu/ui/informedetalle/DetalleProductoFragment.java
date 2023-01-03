@@ -176,7 +176,7 @@ public class DetalleProductoFragment extends Fragment {
             if(preguntaAct==null){
                 return root;
             }
-            Log.d(TAG,"creando fragment "+preguntaAct.getId());
+            Log.d(TAG,"creando fragment "+preguntaAct.getNombreCampo());
             dViewModel.reactivoAct=preguntaAct.getId();
             sv = root.findViewById(R.id.content_generic);
             aceptar = root.findViewById(R.id.btngaceptar);
@@ -189,6 +189,8 @@ public class DetalleProductoFragment extends Fragment {
             if(this.preguntaAct!=null)
                  ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
          //   Log.d(TAG,"------"+Constantes.NM_TOTALISTA+"---"+mViewModel.consecutivo);
+            Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
+            Log.e(TAG, "1-------------cons" + Constantes.DP_CONSECUTIVO);
 
             if(ultimares!=null) {    //es edicion
                isEdicion = true;
@@ -196,7 +198,6 @@ public class DetalleProductoFragment extends Fragment {
                 //no puedo modificar  avanzo a la siguiente
 
                 preguntaAct=dViewModel.buscarReactivoxId(preguntaAct.getSigId());
-                Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
                 InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
                 if(inft!=null) {
                     mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
@@ -213,7 +214,6 @@ public class DetalleProductoFragment extends Fragment {
                isEdicion=false;
            Log.d(TAG,"mmmmmmmmmmm"+isEdicion);
             estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
-            Log.d(TAG,"estatuspep -----------*"+estatusPepsi);
             estatusPen=mViewModel.visita.getEstatusPen();
             estatusElec=mViewModel.visita.getEstatusElec();
             if(isEdicion) {
@@ -267,7 +267,6 @@ public class DetalleProductoFragment extends Fragment {
                     dViewModel.fromTemp(); //guardo datos del producto selec
                     ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
-                    Log.d(TAG,">>>>>"+dViewModel.productoSel.nombreTipoMuestra);
                     ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
                 }
                 if (preguntaAct.getId() >= 25&&preguntaAct.getId() !=47) {//si compro prod
@@ -359,17 +358,25 @@ public class DetalleProductoFragment extends Fragment {
                 //es un nuevo informe o una nueva pregunta
                //if(mViewModel.numMuestra==0) {
                    // &&preguntaAct.getId()!=5) {
-                   if (preguntaAct.getId() == 2)
+            Log.e(TAG, "2-------------cons" + Constantes.DP_CONSECUTIVO);
+
+                   if (preguntaAct.getId() == 2) {
+
+                       mViewModel.consecutivo=Constantes.DP_CONSECUTIVO;
                        mViewModel.numMuestra = 1;
+                       Log.e(TAG, "-------------cons" + mViewModel.consecutivo);
+
+                   }
 
                    if (preguntaAct.getId() == 3) {
+                       mViewModel.consecutivo=Constantes.DP_CONSECUTIVO;
                        mViewModel.numMuestra = 2;
                    }
                    if (preguntaAct.getId() == 4) {
+                       mViewModel.consecutivo=Constantes.DP_CONSECUTIVO;
                        mViewModel.numMuestra = 3;
                    }
-                   Log.e(TAG, "-------------nuevo nummuestras:" + mViewModel.numMuestra);
-               //}
+                     //}
                // if(preguntaAct.getId()==2||preguntaAct.getId() == 3||preguntaAct.getId() == 4) //estot en siglas y es una nueva muestra
                //     mViewModel.numMuestra=mViewModel.numMuestra+1;
                 //reviso que no haya muesmtras guardadas de ese informe :O como se que es uno nuevo
@@ -847,7 +854,7 @@ public class DetalleProductoFragment extends Fragment {
         mViewModel.informe.setPlantasId(valor);
         plantaSel =valor;
         NOMBREPLANTASEL = opcionsel.getDescripcion();
-        Log.d(TAG,"ssssss"+mViewModel.clienteSel);
+        Log.d(TAG,"ssssss"+mViewModel.consecutivo);
         //actualizo barra
         ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
       //  guardarResp();
@@ -855,6 +862,17 @@ public class DetalleProductoFragment extends Fragment {
         mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
         mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),nombreCliente+"","clienteNombre","I",mViewModel.consecutivo,false);
         mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),clienteid+"","clientesId","I",mViewModel.consecutivo,true);
+        if(mViewModel.consecutivo==0) {
+            int consecutivo = mViewModel.getConsecutivo(plantaSel, getActivity(), this);
+
+            Log.d(TAG, "genere cons=" + consecutivo);
+
+            mViewModel.informe.setConsecutivo(consecutivo);
+
+            mViewModel.consecutivo = consecutivo;
+            Constantes.DP_CONSECUTIVO = consecutivo;
+        }
+        Log.e(TAG, "3-------------cons" + Constantes.DP_CONSECUTIVO);
 
         //dependiendo el cliente avanzo
         if(mViewModel.clienteSel==4)
@@ -1417,6 +1435,7 @@ public class DetalleProductoFragment extends Fragment {
     }
     public boolean validarFecha(){
         ValidadorDatos valdat=new ValidadorDatos();
+        Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
 
         if (dViewModel.productoSel.clienteNombre.toUpperCase().trim().equals("PEPSI")) {
             valdat.validarFechaPep(textoint.getText().toString(),tipoTienda);
@@ -1502,6 +1521,7 @@ public class DetalleProductoFragment extends Fragment {
         }
         //busco el siguiente
         Reactivo nvoReac = dViewModel.buscarReactivoSimpl(sig);
+        Log.e(TAG, "4-------------cons" + Constantes.DP_CONSECUTIVO);
 
         DetalleProductoFragment nvofrag = new DetalleProductoFragment(nvoReac,false);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -1673,7 +1693,7 @@ public class DetalleProductoFragment extends Fragment {
 
             }
         }
-        Log.d(TAG, "guardando en temp" + preguntaAct.getId() + "val" + valor);
+        Log.d(TAG, "guardando en temp" + preguntaAct.getId() + "val" + mViewModel.consecutivo);
         if(preguntaAct.getId()==5&& nopermiso.isChecked())//es ticket
         {
             mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "0", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
@@ -1819,33 +1839,17 @@ public class DetalleProductoFragment extends Fragment {
                     //guardo el total de la lista
                     //generar consecutivo tienda
                     Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
-                    if(mViewModel.consecutivo==0) {
-                       int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
-                      //  Log.d(TAG, "*genere cons=" + consecutivo);
-                               Log.d(TAG, "genere cons=" + consecutivo);
 
-                                mViewModel.informe.setConsecutivo(consecutivo);
 
-                                mViewModel.consecutivo = consecutivo;
-                                Constantes.DP_CONSECUTIVO=consecutivo;
-                                //actualizo barra
-                                Log.d(TAG,"tengo el tipo muestra "+dViewModel.productoSel);
-                                ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
-                                mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-                                ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
-                                avanzarPregunta(23);
-
-                    }else
-                    {
                         //actualizo barra
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                         mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
 
                         avanzarPregunta(23);
-                    }
+
                 }else
                 Log.e(TAG,"Algo salió muy mal al elegir el producto");
 
@@ -2036,7 +2040,7 @@ public class DetalleProductoFragment extends Fragment {
                     intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, NOMBREPLANTASEL);
                     intento1.putExtra(ListaCompraFragment.ARG_MUESTRA, "true");
 
-                    Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
+                   // Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
                     // intento1.putExtra(ListaCompraFragment.ARG_MUESTRA,"true");
                     // spclientes = root.findViewById(1001);
                     Log.d(TAG, " antes de ir a listacom planta" + plantaSel + "--" + NOMBREPLANTASEL);

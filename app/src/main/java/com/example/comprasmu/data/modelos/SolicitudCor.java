@@ -34,7 +34,7 @@ public class SolicitudCor {
     private int etapa;
     private int estatus;
     private int estatusSync;
-
+    private int val_vis_id;
     private int contador;
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
@@ -208,5 +208,13 @@ public class SolicitudCor {
 
     public void setNumfoto3(int numfoto3) {
         this.numfoto3 = numfoto3;
+    }
+
+    public int getVal_vis_id() {
+        return val_vis_id;
+    }
+
+    public void setVal_vis_id(int val_vis_id) {
+        this.val_vis_id = val_vis_id;
     }
 }

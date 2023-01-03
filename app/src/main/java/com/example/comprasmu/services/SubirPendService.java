@@ -179,16 +179,15 @@ public class SubirPendService extends IntentService
         //reviso si tengo conexion
         if(ComprasUtils.isOnlineNet()) {
             //busco los pendientes
-
             PostInformeViewModel postviewModel = new PostInformeViewModel(this);
-          postviewModel.iniciarConexiones();
+            postviewModel.iniciarConexiones();
             //hago el post
-            TodoEnvio envio= postviewModel.prepararInformes();
+            TodoEnvio envio= postviewModel.prepararInformesPen();
             if((envio.getProductosEx()!=null&&envio.getProductosEx().size()>0)||(envio.getInformeCompraDetalles()!=null&&envio.getInformeCompraDetalles().size()>0)
                     ||(envio.getInformeCompra()!=null&&envio.getInformeCompra().size()>0)
                         ||(envio.getVisita()!=null&&envio.getVisita().size()>0)
                             ||(envio.getImagenDetalles()!=null&&envio.getImagenDetalles().size()>0))
-            postviewModel.sendTodo(envio,listener);
+                postviewModel.sendTodo(envio,listener);
 
 
         }

@@ -41,8 +41,8 @@ public class ListaSolsViewModel extends AndroidViewModel {
         infcrepo=new InformeComDetRepositoryImpl(application);
     }
 
-    public LiveData<List<SolicitudCor>>  cargarDetalles(int etapa,String indiceSel,int plantaSel, int estatus){
-        LiveData<List<SolicitudCor>> listas =repository.getAll(etapa,indiceSel,plantaSel, estatus);
+    public LiveData<List<SolicitudCor>>  cargarDetalles(int etapa,String indiceSel, int estatus){
+        LiveData<List<SolicitudCor>> listas =repository.getAll(etapa,indiceSel, estatus);
         size = Transformations.map(listas, res->{ return listas.getValue().size();});
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
         return listas;

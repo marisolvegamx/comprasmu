@@ -192,11 +192,20 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return iddetalle;
     }
 
-    public int insertarEmpDet(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja){
+    public int insertarEmpDet(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja,String indice){
+
+        ImagenDetalle foto=new ImagenDetalle();
+        foto.setRuta( ruta);
+        foto.setDescripcion(descripcion);
+        foto.setEstatus(1);
+        foto.setEstatusSync(0);
+        foto.setIndice(indice);
+        foto.setCreatedAt(new Date());
+        int nvoidimagem =(int)imagenDetRepository.insertImg(foto);
         InformeEtapaDet detalle=new InformeEtapaDet();
         detalle.setDescripcion(descripcion);
         detalle.setInformeEtapaId(idinf);
-        detalle.setRuta_foto(ruta);
+        detalle.setRuta_foto(nvoidimagem+"");
         detalle.setDescripcionId(descripcionid);
         detalle.setNum_caja(numcaja);
 
@@ -435,5 +444,10 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
     public InformeEtapa getInformexPlantaEta(int plantasId, int etapa, String indice) {
         return infEtaRepository.getInformexPlan(indice,etapa,plantasId);
+    }
+    public ImagenDetalle getFoto(int idfoto) {
+
+        //return imagenDetRepository.find(visita.getFotoFachada());
+        return imagenDetRepository.findsimpleInd(idfoto,Constantes.INDICEACTUAL);
     }
 }

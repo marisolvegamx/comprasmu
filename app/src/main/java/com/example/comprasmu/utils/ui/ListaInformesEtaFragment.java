@@ -122,7 +122,10 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         //y de los informes correccion
         if(tipocons.equals("e")){
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
+            if(etapa>1)
             listainfs=mViewModel.cargarEtapa(etapa,indice,plantasel);
+            else
+                listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
                 @Override
                 public void onChanged(List<InformeEtapa> informeEtapas) {
@@ -134,10 +137,15 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 }
             });
         }
-        if(tipocons.equals("action_selclitocor2")){ //CORRECCIONES
+        if(tipocons.equals("rescor")){ //CORRECCIONES
             etapa=Constantes.ETAPAACTUAL;
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
-            LiveData<List<SolicitudWithCor>> listacor = corViewModel.getCorreccionesxEta(etapa, indice, plantasel);
+            LiveData<List<SolicitudWithCor>> listacor=null;
+            if(etapa==2)
+                 listacor = corViewModel.getCorreccionesxEta(etapa, indice, plantasel);
+
+            else
+                listacor = corViewModel.getCorreccionesxEtaPlan(etapa, indice, plantasel);
             listacor.observe(getViewLifecycleOwner(), new Observer<List<SolicitudWithCor>>() {
                 @Override
                 public void onChanged(List<SolicitudWithCor> correccions) {

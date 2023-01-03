@@ -539,7 +539,7 @@ public class DetalleProductoPenFragment extends Fragment {
         {
             //  Constantes.ni_clientesel=opcionsel.getNombre();
             //int consecutivo=mViewModel.getConsecutivo(valor);
-            // Log.d(TAG,"genere cons="+consecutivo);
+
             mViewModel.informe=new InformeCompra();
             // nviewModel.informe.setClienteNombre(opcionsel.getNombre());
             //  nviewModel.informe.setClientesId(ultimares.getValor());
@@ -769,7 +769,16 @@ public class DetalleProductoPenFragment extends Fragment {
         mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
         mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),nombreCliente+"","clienteNombre","I",mViewModel.consecutivo,false);
         mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),clienteid+"","clientesId","I",mViewModel.consecutivo,true);
+        if(mViewModel.consecutivo==0) {
+            int consecutivo = mViewModel.getConsecutivo(plantaSel, getActivity(), this);
 
+            Log.d(TAG, "genere cons=" + consecutivo);
+
+            mViewModel.informe.setConsecutivo(consecutivo);
+
+            mViewModel.consecutivo = consecutivo;
+            Constantes.DP_CONSECUTIVO = consecutivo;
+        }
         //actualizo barra
         ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
         guardarResp();
@@ -1592,32 +1601,11 @@ public class DetalleProductoPenFragment extends Fragment {
             //guardo el total de la lista
             //generar consecutivo tienda
             Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
-            if(mViewModel.consecutivo==0) {
-                int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
-                //  Log.d(TAG, "*genere cons=" + consecutivo);
-                        Log.d(TAG, "genere cons=" + consecutivo);
+            //actualizo barra
+            ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
+            mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
+            avanzarPregunta(58);
 
-                        mViewModel.informe.setConsecutivo(consecutivo);
-
-                        mViewModel.consecutivo = consecutivo;
-                        Constantes.DP_CONSECUTIVO=consecutivo;
-                        //actualizo barra
-                        ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
-
-                        mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-                        ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
-
-                        avanzarPregunta(58);
-
-            }else
-            {
-                //actualizo barra
-                ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
-
-                mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-
-                avanzarPregunta(58);
-            }
         }else
             Log.e(TAG,"Algo salió muy mal al elegir el producto");
 
@@ -1794,7 +1782,6 @@ public class DetalleProductoPenFragment extends Fragment {
         intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, NOMBREPLANTASEL);
         intento1.putExtra(ListaCompraFragment.ARG_MUESTRA, "true");
 
-        Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
         // intento1.putExtra(ListaCompraFragment.ARG_MUESTRA,"true");
         // spclientes = root.findViewById(1001);
         Log.d(TAG, " antes de ir a listacom planta" + plantaSel + "--" + NOMBREPLANTASEL);
@@ -1820,9 +1807,7 @@ public class DetalleProductoPenFragment extends Fragment {
     public void onResume() {
             super.onResume();
             if(textoint!=null) {
-               // Log.d(TAG, "genere cons=" + textoint.getText().toString());
-
-                if (!textoint.getText().toString().equals("") && preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN)) {
+                 if (!textoint.getText().toString().equals("") && preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN)) {
                     if(
                             ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
                     {

@@ -9,18 +9,12 @@ import java.util.List;
 
 public class RespInfEtapaResponse { //y correcciones
 
-    private List<Correccion> correcciones;
+
     private List<InformeEtapa> informeEtapa;
     private List<InformeEtapaDet> informeEtapaDet;
     private List<DetalleCaja> detalleCaja;
 
-    public List<Correccion> getCorrecciones() {
-        return correcciones;
-    }
 
-    public void setCorrecciones(List<Correccion> correcciones) {
-        this.correcciones = correcciones;
-    }
 
     public List<InformeEtapa> getInformeEtapa() {
         return informeEtapa;

@@ -52,12 +52,12 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        if (getArguments() != null) {
+      /*  if (getArguments() != null) {
 
             plantasel=getArguments().getInt(ListaCompraFragment.ARG_PLANTASEL);
            // indice=getArguments().getString(BuscarInformeFragment.INDICE);
 
-        }
+        }*/
             indice = Constantes.INDICEACTUAL;
 
 
@@ -85,7 +85,7 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
 
     public void cargarLista(){
         Log.d(Constantes.TAG,"etapa y planta sel"+Constantes.ETAPAACTUAL+"--"+plantasel);
-    mViewModel.cargarDetalles(Constantes.ETAPAACTUAL,indice,plantasel,1).observe(getViewLifecycleOwner(), new Observer<List<SolicitudCor>>() {
+    mViewModel.cargarDetalles(Constantes.ETAPAACTUAL,indice,1).observe(getViewLifecycleOwner(), new Observer<List<SolicitudCor>>() {
         @Override
         public void onChanged(List<SolicitudCor> solicitudCors) {
 

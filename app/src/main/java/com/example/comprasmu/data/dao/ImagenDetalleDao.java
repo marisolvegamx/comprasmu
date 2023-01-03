@@ -11,6 +11,7 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -49,6 +50,9 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
     @Query("SELECT * FROM imagen_detalle where id=:id")
     public  abstract LiveData<ImagenDetalle> find( int id);
 
+    @Query("SELECT * FROM imagen_detalle where id=:id and indice=:indice")
+    public  abstract ImagenDetalle findInd( int id, String indice);
+
     @Query("SELECT * FROM imagen_detalle where id=:id")
     public  abstract ImagenDetalle findsimple( int id);
     @Query("delete FROM imagen_detalle where id=:id")
@@ -65,6 +69,8 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
     @Query("delete FROM imagen_detalle where indice=:indice")
     public abstract void deleteByIndice(int indice);
 
+    @Query("SELECT * FROM imagen_detalle WHERE estatus =:estatus and estatusSync=:estatusSync and createdAt<:fecha")
+    public abstract List<ImagenDetalle> getImagenByEstSyncsim2(int estatus, int estatusSync, long fecha);
 
     @Query("SELECT * FROM imagen_detalle WHERE estatus =:estatus and estatusSync=:estatusSync")
     public abstract List<ImagenDetalle> getImagenByEstSyncsimple(int estatus, int estatusSync);

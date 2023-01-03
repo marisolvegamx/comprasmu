@@ -131,7 +131,7 @@ public class NvaCorreccionFragment extends Fragment {
                             public void onChanged(InformeEtapaDet informeEtapaDet) {
                                 rutafotoo=informeEtapaDet.getRuta_foto();
 
-                                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 100, 100);
+                                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 150, 150);
 
                                 fotoori1.setImageBitmap(bitmap1);
 
@@ -159,7 +159,7 @@ public class NvaCorreccionFragment extends Fragment {
                                     if(imagenDetalle!=null) {
                                         rutafotoo2 = imagenDetalle.getRuta();
 
-                                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 100, 100);
+                                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 150, 150);
                                             if(bitmap1!=null)
                                             fotoori2.setImageBitmap(bitmap1);
 
@@ -176,7 +176,7 @@ public class NvaCorreccionFragment extends Fragment {
                                     if(imagenDetalle!=null) {
                                         rutafotoo3 = imagenDetalle.getRuta();
 
-                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 100, 100);
+                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 150, 150);
                                         if(bitmap1!=null)
                                         fotoori3.setImageBitmap(bitmap1);
                                         root.findViewById(R.id.gpofotoo3).setVisibility(View.VISIBLE);
@@ -215,7 +215,7 @@ public class NvaCorreccionFragment extends Fragment {
                                 if(imagenDetalle!=null) {
                                     rutafotoo = imagenDetalle.getRuta();
 
-                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 100, 100);
+                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 150, 150);
                                     if(bitmap1!=null)
                                     fotoori1.setImageBitmap(bitmap1);
                                 }
@@ -298,7 +298,7 @@ public class NvaCorreccionFragment extends Fragment {
 
 
         camposForm.add(campo);
-        Log.d(TAG,"haciendo form");
+       // Log.d(TAG,"haciendo form");
         cf=new CreadorFormulario(camposForm,getContext());
         sv.addView(cf.crearFormulario());
 
@@ -388,7 +388,7 @@ public class NvaCorreccionFragment extends Fragment {
             }
             //paso a
             //creo el informe
-            mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), solicitud.getNumFoto(),valor, valor2, valor3));
+            mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, valor2, valor3));
             actualizarSolicitud();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
 

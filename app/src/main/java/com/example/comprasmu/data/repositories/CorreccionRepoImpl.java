@@ -60,6 +60,25 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
                 filtros.toArray());
         return icDao.getCorreSolByFiltros( sqlquery);
     }
+    public LiveData<List<SolicitudWithCor>> getAllxEta( String indice, int etapa) {
+        String query="Select * from solicitud_cor  " +
+                "inner join correccion on correccion.solicitudId=solicitud_cor.id" +
+                " and correccion.numfoto=solicitud_cor.numfoto" +
+                " where solicitud_cor.indice=?";
+        ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(indice);
+        query = query + " and etapa = ?";
+        filtros.add(etapa+"");
+
+        Object[] params=filtros.toArray();
+
+        //  for(int i=0;i<params.length;i++)
+        //      Log.d("CorreccionRepoImpl","***"+params[i]);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,
+                filtros.toArray());
+        return icDao.getCorreSolByFiltros( sqlquery);
+    }
 
 
 

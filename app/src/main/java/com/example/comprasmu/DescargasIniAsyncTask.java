@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 
@@ -33,6 +34,7 @@ import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
+import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
@@ -72,7 +74,8 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     private final ProgresoListener miproglis;
     RespInfEtapaResponse maininfoetaResp;
     RespInformesResponse maininfoResp; //para bajar las fotos desde la actividad
-    RespInfEtapaResponse mainRespcor;
+    List<Correccion> mainRespcor;
+
     public DescargasIniAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
                                  AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener miproglis, SustitucionRepositoryImpl sustRepo,GeocercaRepositoryImpl georep) {
@@ -100,7 +103,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 actualiza=1;
            // if (indice[0].equals("cat")) //descargo cats tmb
            listenprin=new DescargaIniListener();
-        if(!NavigationDrawerActivity.isOnlineNet()) {
+        if(!isOnlineNet()) {
             miproglis.notificarSinConexion();
            return null;
         }
@@ -185,7 +188,21 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         }
 
     }
+    public static Boolean isOnlineNet() {
 
+        try {
+            Process p = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.es");
+
+            int val           = p.waitFor();
+            boolean reachable = (val == 0);
+            return reachable;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return false;
+    }
     private void listacompras(){
         Log.d("DescargasIniAsyncTask", "descargando listas");
 
@@ -513,7 +530,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
        //  void cerrarAlerta(boolean res);
          void todoBien(RespInfEtapaResponse maininfoetaResp,
                  RespInformesResponse maininfoResp, //para bajar las fotos desde la actividad
-                 RespInfEtapaResponse mainRespcor);
+                       List<Correccion> mainRespcor);
        //  void estatusInf(int es);
        //  void estatusLis(int es);
         // void imagenesEtapa(RespInfEtapaResponse infoResp);
@@ -697,17 +714,24 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
         }
 
-        public void actualizarCorre(RespInfEtapaResponse response){
+        public void actualizarCorre(List<Correccion> response){
             Log.d(TAG, "actualizarCorre ");
 
             if(response!=null) {
               mainRespcor=response;
               CorreccionRepoImpl correpo = new CorreccionRepoImpl(act);
 
+                SolicitudCorRepoImpl repository;
+                repository=new SolicitudCorRepoImpl(act);
 
-              if (response.getCorrecciones() != null) {
-                  correpo.insertAll(response.getCorrecciones());
-              }
+              correpo.insertAll(response);
+                for (Correccion corr:response
+                     ) {
+
+                    repository.actualizarEstatus(corr.getSolicitudId(),corr.getNumfoto(),4);
+
+                }
+
 
           }
             finalizar();

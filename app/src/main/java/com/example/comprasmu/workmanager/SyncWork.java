@@ -16,6 +16,8 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirPendService;
 import com.example.comprasmu.utils.ComprasLog;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -43,9 +45,16 @@ public class SyncWork  extends Worker {
         subirPendientes();
         //busco las imagenes pendientes de subir
         ImagenDetRepositoryImpl imagenRepo=new ImagenDetRepositoryImpl(super.getApplicationContext());
-        List<ImagenDetalle> imagenDetalles=imagenRepo.getImagenPendSyncsimple();
+        Calendar calhoy = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
+        calhoy.setTime(new Date());
+        calhoy.set(Calendar.HOUR_OF_DAY, -2);
+        calhoy.set(Calendar.MINUTE, 0);
+        calhoy.set(Calendar.SECOND, 0);
+        calhoy.set(Calendar.MILLISECOND, 0);
 
-                if(imagenDetalles!=null&&imagenDetalles.size()>0){
+        List<ImagenDetalle> imagenDetalles=imagenRepo.getImagenPendSyncsimple2(calhoy.getTime().getTime());
+
+        if(imagenDetalles!=null&&imagenDetalles.size()>0){
                     for(ImagenDetalle imagen:imagenDetalles){
                         flog.grabarError(" subiendo a"+imagen.getDescripcion());
 

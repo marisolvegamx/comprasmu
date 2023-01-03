@@ -29,7 +29,7 @@
             android:icon="@drawable/ic_baseline_edit_24"
             android:title="@string/menu_continuar_informe" />
         <item
-            android:id="@+id/nav_resumenprep"
+            android:id="@+id/nav_listaprep"
             android:icon="?attr/actionModePasteDrawable"
             android:title="@string/menu_resumeninf" />
 

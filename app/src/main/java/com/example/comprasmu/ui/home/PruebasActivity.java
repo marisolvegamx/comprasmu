@@ -5,6 +5,7 @@ import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -42,12 +43,16 @@ import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class PruebasActivity  extends AppCompatActivity  implements    DescargasIniAsyncTask.ProgresoListener  {
@@ -57,7 +62,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
     private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
-
+    SimpleDateFormat sdfparaindice=new SimpleDateFormat("M-yyyy");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +82,8 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
        // mTextView = findViewById(R.id.txtlllog);
 
 
-
-
+        //todo va a cambiar, se definirá en el servidor
+        definirIndice();
 
 
         descargasIniciales();
@@ -101,7 +106,56 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         startActivity(intento);
         finish();
     }
+    private void definirIndice() {
+        SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
 
+        Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
+
+        Constantes.TIPOTIENDA=new HashMap<>();
+
+        Constantes.TIPOTIENDA.put(1,getString(R.string.grande));
+        Constantes.TIPOTIENDA.put(2,getString(R.string.mediana));
+        Constantes.TIPOTIENDA.put(3,getString(R.string.chica));
+        Constantes.TIPOTIENDA.put(4,getString(R.string.otras));
+        //obtengo solo mes
+
+        Calendar cal = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
+        Date hoy=new Date();
+        cal.setTime(hoy);
+        cal.add(Calendar.MONTH, +1);
+        String mesactual = sdfparaindice.format(cal.getTime());
+        Log.d(TAG, "***** hoy " + mesactual);
+        String[] aux = mesactual.split("-");
+        int mes = Integer.parseInt(aux[0])+1;
+        int anio = Integer.parseInt(aux[1]);
+
+        Constantes.listaindices = new String[4];
+        int j = 3;
+        int nuevomes = mes;
+        for (int i = 1; i < 5; i++) {
+            Constantes.listaindices[j] = ComprasUtils.mesaLetra(nuevomes + "") + " " + anio + "";
+
+            nuevomes = nuevomes - 1;
+            if (nuevomes == 0) //empezo en 1
+            {
+                nuevomes = 12;
+                anio = anio - 1;
+            }
+            j--;
+        }
+
+        Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
+        // Constantes.INDICEACTUAL=mesactual.replace('-','.');
+        Constantes.INDICEACTUAL = "10.2022";
+        if(Constantes.CLAVEUSUARIO.equals("4")){
+            Constantes.INDICEACTUAL = "6.2022";
+        }
+
+        Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
+
+
+
+    }
 
     public void descargasIniciales(){
         //pueda descargar
@@ -143,19 +197,33 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
 
     @Override
-    public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, RespInfEtapaResponse mainRespcor) {
+    public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
         if (maininfoResp!=null&&maininfoResp.getImagenDetalles() != null && maininfoResp.getImagenDetalles().size() > 0) {
 
             descargarImagenes(maininfoResp.getImagenDetalles());
 
         }
         imagenesEtapa(maininfoetaResp);
-        imagenesEtapa(mainRespcor);
+        imagenesCor(mainRespcor);
         success();
     }
 
 
 
+
+    public void imagenesCor(List<Correccion> infoResp) {
+        if (infoResp!=null&& infoResp.size() > 0) {
+            for(Correccion img:infoResp){
+                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto1(), DESTINATION_PATH);
+                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto2(), DESTINATION_PATH);
+                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto3(), DESTINATION_PATH);
+                // Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto1());
+            }
+            // cerrarAlerta(true);
+
+
+        }
+    }
 
     public void imagenesEtapa(RespInfEtapaResponse infoResp) {
         if (infoResp!=null&&infoResp.getInformeEtapaDet() != null && infoResp.getInformeEtapaDet().size() > 0) {
@@ -169,21 +237,8 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         }
 
-        if (infoResp!=null&&infoResp.getCorrecciones() != null && infoResp.getCorrecciones().size() > 0) {
 
-            for(Correccion img:infoResp.getCorrecciones()){
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto1(), DESTINATION_PATH);
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto2(), DESTINATION_PATH);
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto3(), DESTINATION_PATH);
-                // Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto1());
-            }
-            // cerrarAlerta(true);
-
-
-        }
     }
-
-
     private void descargarImagenes(List<ImagenDetalle> imagenes){
         for(ImagenDetalle img:imagenes){
             startDownload(DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta(), DESTINATION_PATH);

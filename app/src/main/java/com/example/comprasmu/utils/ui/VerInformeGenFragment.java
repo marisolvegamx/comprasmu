@@ -98,7 +98,7 @@ public class VerInformeGenFragment extends Fragment {
             textoboton= getString(R.string.ver_muestras);
         }
         Log.d(TAG, "llenando detalles"+Constantes.ETAPAACTUAL+tipo+"--"+informeSel);
-        if(tipo.equals("action_selclitocor2")) {
+        if(tipo.equals("rescor")) {
             corViewModel.getCorreccion(informeSel).observe(getViewLifecycleOwner(), new Observer<Correccion>() {
                 @Override
                 public void onChanged(Correccion vcorreccion) {

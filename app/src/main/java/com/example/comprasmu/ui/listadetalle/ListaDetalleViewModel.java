@@ -88,7 +88,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             //ya elegi cliente vengo de muestra
             return repository.getAllByIndiceCiudadCliente(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
         }else
-        return repository.getAllByIndiceCiudad(Constantes.INDICEACTUAL,ciudadSel);
+         return repository.getAllByIndiceCiudad(Constantes.INDICEACTUAL,ciudadSel);
 
 
     }

@@ -17,6 +17,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
@@ -28,6 +29,8 @@ import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.utils.Constantes;
+
+import java.util.List;
 
 public class DescargarLisFragment extends Fragment implements DescargasIniAsyncTask.ProgresoListener {
      TextView textView;
@@ -97,7 +100,7 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         pb.setVisibility(View.GONE);
     }
     @Override
-    public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, RespInfEtapaResponse mainRespcor) {
+    public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
 
         success();
     }

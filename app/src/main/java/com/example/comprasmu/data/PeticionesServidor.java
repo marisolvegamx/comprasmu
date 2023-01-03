@@ -14,6 +14,7 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.SimpleTask;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.LoggedInUser;
@@ -431,17 +432,17 @@ public class PeticionesServidor {
 
         Log.d("PeticionesServidor","haciendo petición pedir resp correc "+usuario);
 
-        final Call<RespInfEtapaResponse> batch = ServiceGenerator.getApiService().getRespaldoCor(indice,usuario);
+        final Call<List<Correccion>> batch = ServiceGenerator.getApiService().getRespaldoCor(indice,usuario);
 
-        batch.enqueue(new Callback<RespInfEtapaResponse>() {
+        batch.enqueue(new Callback<List<Correccion>>() {
             @Override
-            public void onResponse(@Nullable Call<RespInfEtapaResponse> call, @Nullable Response<RespInfEtapaResponse> response) {
+            public void onResponse(@Nullable Call<List<Correccion>> call, @Nullable Response<List<Correccion>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    RespInfEtapaResponse etapasResp = response.body();
+                    List<Correccion> etapasResp = response.body();
                     //reviso si está actualizado
                     if(etapasResp!=null) //falta actualizar
                     {
-                        Log.d("PeticionesServidor","resp correc  "+etapasResp.getInformeEtapa());
+                        Log.d("PeticionesServidor","resp correc  "+etapasResp.size());
 
                         listener.actualizarCorre(etapasResp);
                         /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
@@ -461,7 +462,7 @@ public class PeticionesServidor {
             }
 
             @Override
-            public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
+            public void onFailure(@Nullable Call<List<Correccion>> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
 

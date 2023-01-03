@@ -50,6 +50,7 @@ import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 
@@ -398,7 +399,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
 
                 aceptar.setEnabled(false);
-            if(isEdicion||preguntaAct.getId()==104){
+            if(isEdicion||preguntaAct!=null&&preguntaAct.getId()==104){
                 aceptar.setEnabled(true);
             }
 
@@ -460,7 +461,11 @@ public class NvoEmpaqueFragment extends Fragment {
         campo.type=preguntaAct.getType();
         campo.style=R.style.formlabel2;
         if(isEdicion&&preguntaAct.getTabla().equals("ED"))
-            campo.value=ultimares.getRuta_foto();
+        {
+            ImagenDetalle foto=mViewModel.getFoto(Integer.parseInt(ultimares.getRuta_foto()));
+
+            campo.value=foto.getRuta();
+        }
 
         if(isEdicion&&preguntaAct.getTabla().equals("DC"))
         {
@@ -517,7 +522,9 @@ public class NvoEmpaqueFragment extends Fragment {
                 // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 //ComprasUtils cu=new ComprasUtils();
                 // bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
-                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getRuta_foto(), 100, 100);
+                ImagenDetalle foto=mViewModel.getFoto(Integer.parseInt(ultimares.getRuta_foto()));
+
+                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 100, 100);
 
                 fotomos.setImageBitmap(bitmap1);
                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
@@ -874,15 +881,17 @@ public class NvoEmpaqueFragment extends Fragment {
             //es foto o dimension?
             if(preguntaAct.getTabla().equals("ED")) {
                 if (isEdicion) {
+                    //actualizo imagen detalle
+                    mViewModel.actualizarImagenDet(Integer.parseInt(ultimares.getRuta_foto()),"foto_empaque" + preguntaAct,textoint.getText().toString(),Constantes.INDICEACTUAL);
 
-                    mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), 1, preguntaAct.getNombreCampo(), rutafoto, ultimares.getId(), mViewModel.cajaAct);
+                  //  mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), 1, preguntaAct.getNombreCampo(), rutafoto, ultimares.getId(), mViewModel.cajaAct);
                     isEdicion = false;
                 } else if (mViewModel.getIdNuevo() > 0)
                     //guardo el detalle
-                    mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), 1, preguntaAct.getNombreCampo(), rutafoto, 0, mViewModel.cajaAct);
-                fotomos.setImageBitmap(null);
-                 fotomos.setVisibility(View.GONE);
-                  btnrotar.setVisibility(View.GONE);
+                    mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), 1, preguntaAct.getNombreCampo(), rutafoto, 0, mViewModel.cajaAct,Constantes.INDICEACTUAL);
+                    fotomos.setImageBitmap(null);
+                    fotomos.setVisibility(View.GONE);
+                    btnrotar.setVisibility(View.GONE);
             }else
             if(preguntaAct.getTabla().equals("DC")) {
 

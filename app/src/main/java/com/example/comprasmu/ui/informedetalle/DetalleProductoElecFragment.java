@@ -776,34 +776,14 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     //guardo el total de la lista
                     //generar consecutivo tienda
                     Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
-                    if(mViewModel.consecutivo==0) {
-                        int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
-                        //  Log.d(TAG, "*genere cons=" + consecutivo);
 
-                                Log.d(TAG, "genere cons=" + consecutivo);
-
-                                mViewModel.informe.setConsecutivo(consecutivo);
-
-                                mViewModel.consecutivo = consecutivo;
-                                Constantes.DP_CONSECUTIVO=consecutivo;
-                                //actualizo barra
-                                ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
-
-                                mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-                                ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
-
-                                avanzarPregunta(78);
-
-
-                    }else
-                    {
                         //actualizo barra
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                         mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
 
                         avanzarPregunta(78);
-                    }
+
                 }else
                     Log.e(TAG,"Algo salió muy mal al elegir el producto");
 

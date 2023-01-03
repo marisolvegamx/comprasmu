@@ -589,13 +589,13 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         List<InformeTemp> temps=itemprepo.getAllByTabla("I",0);
         InformeTemp inft=buscarCampo("plantasId",temps);
         if(inft!=null)
-        nuevo.setPlantasId(Integer.parseInt(inft.getValor()));
+            nuevo.setPlantasId(Integer.parseInt(inft.getValor()));
          inft=buscarCampo("plantaNombre",temps);
         if(inft!=null)
-        nuevo.setPlantaNombre(inft.getValor());
+         nuevo.setPlantaNombre(inft.getValor());
         inft=buscarCampo("clientesId",temps);
         if(inft!=null)
-        nuevo.setClientesId(Integer.parseInt(inft.getValor()));
+            nuevo.setClientesId(Integer.parseInt(inft.getValor()));
         inft=buscarCampo("clienteNombre",temps);
         if(inft!=null)
         nuevo.setClienteNombre(inft.getValor());
@@ -620,6 +620,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                     params[0] = Boolean.class;
                 }*/
             nuevo.setVisitasId(info.getVisitasId());
+            Log.d(TAG,"******otro cons"+info.getConsecutivo());
             nuevo.setConsecutivo(info.getConsecutivo());
             nuevo.setId(info.getInformesId());
                 if(info.getNombre_campo().equals("ticket_compra")) {

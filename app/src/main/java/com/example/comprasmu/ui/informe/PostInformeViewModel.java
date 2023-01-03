@@ -32,6 +32,8 @@ import com.example.comprasmu.services.SubirPendService;
 import com.example.comprasmu.utils.Constantes;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -95,7 +97,7 @@ public class PostInformeViewModel {
 
     public  void sendTodo(TodoEnvio informes, SubirPendService.SubirTodoListener listen) {
 
-        Log.d("InformePend", "kkkkkkkkkk"+informes.toJson(informes));
+        Log.d("InformePend", "sendtodo "+informes.toJson(informes));
         ServiceGenerator.getApiService().saveInformesPend(informes).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -176,6 +178,60 @@ public class PostInformeViewModel {
     public void actualizarEstatusFoto(ImagenDetalle imagen){
            imagenRepo.actualizarEstatusSync(imagen.getId(),Constantes.ENVIADO);
     }
+    /**para envio***/
+    public TodoEnvio prepararInformesPen(){
+
+        TodoEnvio envio=new TodoEnvio();
+        List<Visita> visitaenv=new ArrayList<>();
+        List<InformeCompra> informeCompraenv=new ArrayList<>();
+        List<InformeCompraDetalle> informeCompraDetallesenv=new ArrayList<>();
+        List<ImagenDetalle> imagenDetallesenv=new ArrayList<>();
+        List<ProductoExhibido> productosExenv=new ArrayList<>();
+        List<VisitaWithInformes> visitas= visitaRepo.getVisitaWithInformesByIndice(Constantes.INDICEACTUAL);
+        for(VisitaWithInformes visitapend:visitas) {
+            if (visitapend.visita.getEstatusSync() == 0&&visitapend.visita.getEstatus()==2)//finalizado
+                visitaenv.add(visitapend.visita);
+            Log.d(TAG,"buscando prodexh"+visitapend.visita.getId());
+            List<ProductoExhibido> productoExhibidos=prodeRepo.getAllsimple(visitapend.visita.getId());
+
+            for(ProductoExhibido produc:productoExhibidos){
+                if(produc.getEstatusSync()==0)
+                    productosExenv.add(produc);
+            }
+            for (InformeCompra informe:visitapend.informes){
+                if(informe.getEstatusSync()==0) {
+                    informeCompraenv.add(informe);
+                    //busco los detalles
+                    List<InformeCompraDetalle> detalles = infoDetRepo.getAllSencillo(informe.getId());
+                    informeCompraDetallesenv.addAll(detalles);
+                    //   envio.setImagenDetalles(buscarImagenes(visita, informe, detalles));
+                }
+            }
+        }
+
+        Calendar calhoy = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
+        calhoy.setTime(new Date());
+        calhoy.set(Calendar.HOUR_OF_DAY, -2);
+        calhoy.set(Calendar.MINUTE, 0);
+        calhoy.set(Calendar.SECOND, 0);
+        calhoy.set(Calendar.MILLISECOND, 0);
+
+        imagenDetallesenv=imagenRepo.getImagenPendSyncsimple2(calhoy.getTime().getTime());
+        if(imagenDetallesenv.size()>0)
+            envio.setImagenDetalles(imagenDetallesenv);
+        if(informeCompraenv.size()>0)
+            envio.setInformeCompra(informeCompraenv);
+        if(informeCompraDetallesenv.size()>0)
+            envio.setInformeCompraDetalles(informeCompraDetallesenv);
+        if(productosExenv.size()>0)
+            envio.setProductosEx(productosExenv);
+        if(visitaenv.size()>0)
+            envio.setVisita(visitaenv);
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        //TODO talvez sacar el de la visita
+        envio.setIndice(Constantes.INDICEACTUAL);
+        return envio;
+    }
 
     /**para envio***/
     public TodoEnvio prepararInformes(){
@@ -188,8 +244,7 @@ public class PostInformeViewModel {
         List<ProductoExhibido> productosExenv=new ArrayList<>();
         List<VisitaWithInformes> visitas= visitaRepo.getVisitaWithInformesByIndice(Constantes.INDICEACTUAL);
         for(VisitaWithInformes visitapend:visitas) {
-            if (visitapend.visita.getEstatusSync() == 0)
-
+            if (visitapend.visita.getEstatusSync() == 0&&visitapend.visita.getEstatus()==2)//finalizado
                 visitaenv.add(visitapend.visita);
             Log.d(TAG,"buscando prodexh"+visitapend.visita.getId());
             List<ProductoExhibido> productoExhibidos=prodeRepo.getAllsimple(visitapend.visita.getId());

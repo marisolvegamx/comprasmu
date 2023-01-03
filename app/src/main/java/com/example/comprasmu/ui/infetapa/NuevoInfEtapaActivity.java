@@ -353,8 +353,9 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 return;
             }
         }
-        else if(etapa==1)//el regreso se maneja en el fragment
+        else if(etapa==1)
         {
+            //infvm.cont es la preg actual
             if(infvm.cont==6){
                 return; //no puedo regresar de los comentarios porque la ultima preg de fotospuede ser variables
             }
@@ -363,7 +364,15 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 return;
             }
             if (infvm.cont > 1) {
-                NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont - 1, true, null);
+                NvaPreparacionFragment nvofrag;
+                if(infvm.cont>100){
+                    nvofrag= new NvaPreparacionFragment(infvm.cont - 101, true, null);
+
+                }
+
+                else
+                    nvofrag=new NvaPreparacionFragment(infvm.cont +100, true, null);
+
                 FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

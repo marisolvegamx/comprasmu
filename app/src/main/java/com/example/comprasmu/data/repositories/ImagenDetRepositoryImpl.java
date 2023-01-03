@@ -49,6 +49,9 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
     public ImagenDetalle findsimple(int id) {
         return dao.findsimple(id);
     }
+    public ImagenDetalle findsimpleInd(int id, String indice) {
+        return dao.findInd(id, indice);
+    }
 
   //  public ImagenDetalle findsimple(int id) {
     //    return dao.find(id);
@@ -118,6 +121,9 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
 
     public  List<ImagenDetalle> getImagenPendSyncsimple(){
         return  dao.getImagenByEstSyncsimple(1,0);
+    }
+    public  List<ImagenDetalle> getImagenPendSyncsimple2(long fecha){
+        return  dao.getImagenByEstSyncsim2(1,0,fecha);
     }
 
     public List<ImagenDetalle> getFotosInfDet(InformeCompraDetalle informe) {

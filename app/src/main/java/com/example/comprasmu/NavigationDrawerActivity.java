@@ -3,7 +3,6 @@ package com.example.comprasmu;
 
 import android.Manifest;
 
-import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +13,7 @@ import android.content.pm.PackageManager;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,49 +28,31 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.comprasmu.data.ComprasDataBase;
-
 import com.example.comprasmu.data.PeticionesServidor;
-import com.example.comprasmu.data.dao.ListaCompraDao;
+
 
 import com.example.comprasmu.data.modelos.Contrato;
-import com.example.comprasmu.data.modelos.Correccion;
-import com.example.comprasmu.data.modelos.ImagenDetalle;
 
-import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.remote.MuestraCancelada;
-import com.example.comprasmu.data.remote.RespInfEtapaResponse;
-import com.example.comprasmu.data.remote.RespInformesResponse;
+
 import com.example.comprasmu.data.remote.SolCorreResponse;
-import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
-import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
-import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
-import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
-import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
+
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 
 import com.example.comprasmu.services.SubirFotoService;
-import com.example.comprasmu.services.SubirPendService;
 
-import com.example.comprasmu.ui.gallery.PruebaFotosFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
-import com.example.comprasmu.ui.mantenimiento.BorrarDatosFragment;
-import com.example.comprasmu.ui.mantenimiento.DescRespaldoFragment;
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
-import com.example.comprasmu.ui.tiendas.FirstMapActivity;
 
-import com.example.comprasmu.ui.tiendas.MapaCdActivity;
-import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasLog;
-import com.example.comprasmu.utils.ComprasUtils;
+
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.workmanager.SyncWork;
 
@@ -85,10 +66,9 @@ import androidx.core.view.GravityCompat;
 
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -109,10 +89,9 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+
 import java.util.concurrent.TimeUnit;
 
 
@@ -124,7 +103,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     SubirFotoProgressReceiver rcv;
     String TAG="NavigationDrawerActivity";
     private ListaDetalleViewModel mViewModel;
-    SimpleDateFormat sdfparaindice=new SimpleDateFormat("M-yyyy");
+
     private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -147,12 +126,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         setContentView(R.layout.activity_navigation_darawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        definirTrabajo();
+
       //  FloatingActionButton fab = findViewById(R.id.fab);
         //busco el mes actual y le agrego 1
          mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
         scViewModel = new ViewModelProvider(this).get(ListaSolsViewModel.class);
-
+        definirTrabajo();
      /*   fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -290,14 +269,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     findItem(R.id.nav_solcor2));
         if(Constantes.ETAPAACTUAL==2) {
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcor2));
+                    findItem(R.id.nav_listasolcor));
             txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_cancel));
         }
         if(Constantes.ETAPAACTUAL==3)
             gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
-        
+        if(Constantes.ETAPAACTUAL==4)
             gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
 
@@ -551,12 +530,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
     }*/
-    private void subirPendientes(){
-        Intent msgIntent = new Intent(NavigationDrawerActivity.this, SubirPendService.class);
 
-        msgIntent.setAction(SubirPendService.ACTION_UPLOAD_PEND);
-        startService(msgIntent);
-    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -600,65 +574,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
     }
 
-    private void definirTrabajo() {
-        SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
-        Constantes.CIUDADTRABAJO = prefe.getString("ciudadtrabajo", "");
-        Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
-        Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
-        //  prefe.getString("ciudadtrabajo","");
-    /*    Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");
-        Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
-        Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
-        Constantes.CLAVEUSUARIO=prefe.getString("claveusuario","");
-*/
-        Constantes.TIPOTIENDA=new HashMap<>();
 
-       Constantes.TIPOTIENDA.put(1,getString(R.string.grande));
-        Constantes.TIPOTIENDA.put(2,getString(R.string.mediana));
-        Constantes.TIPOTIENDA.put(3,getString(R.string.chica));
-        Constantes.TIPOTIENDA.put(4,getString(R.string.otras));
-        //obtengo solo mes
-
-        Calendar cal = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
-        Date hoy=new Date();
-        cal.setTime(hoy);
-        cal.add(Calendar.MONTH, +1);
-        String mesactual = sdfparaindice.format(cal.getTime());
-        Log.d(TAG, "***** hoy " + mesactual);
-        String[] aux = mesactual.split("-");
-        int mes = Integer.parseInt(aux[0])+1;
-        int anio = Integer.parseInt(aux[1]);
-
-        Constantes.listaindices = new String[4];
-        int j = 3;
-        int nuevomes = mes;
-        for (int i = 1; i < 5; i++) {
-            Constantes.listaindices[j] = ComprasUtils.mesaLetra(nuevomes + "") + " " + anio + "";
-
-            nuevomes = nuevomes - 1;
-            if (nuevomes == 0) //empezo en 1
-            {
-                nuevomes = 12;
-                anio = anio - 1;
-            }
-            j--;
-        }
-
-        Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
-       // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-        Constantes.INDICEACTUAL = "10.2022";
-        if(Constantes.CLAVEUSUARIO.equals("4")){
-            Constantes.INDICEACTUAL = "6.2022";
-        }
-
-        Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
-
-
-        //Constantes.IDCIUDADTRABAJO=1;
-        // Constantes.IDPAISTRABAJO = 1;
-        //  Constantes.CLAVEUSUARIO="marisol";
-        //inicio catalogo clientes y plantas
-    }
 
 
 
@@ -733,7 +649,26 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
     }
+    private void definirTrabajo() {
+        SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        Constantes.CIUDADTRABAJO = prefe.getString("ciudadtrabajo", "");
+        Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
+        Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
+        //  prefe.getString("ciudadtrabajo","");
+    /*    Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");
+        Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
+        Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
+        Constantes.CLAVEUSUARIO=prefe.getString("claveusuario","");
+*/
 
+        Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
+
+
+        //Constantes.IDCIUDADTRABAJO=1;
+        // Constantes.IDPAISTRABAJO = 1;
+        //  Constantes.CLAVEUSUARIO="marisol";
+        //inicio catalogo clientes y plantas
+    }
 
     public void pedirCorrecciones(int actualiza, int etapa) {
         tvRepo = new TablaVersionesRepImpl(this);
@@ -822,8 +757,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             tinfo.setTipo("I");
 
             tvRepo.insertUpdate(tinfo);
-            Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
+//            Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
             //veo las muestras canceladas
+            if(corrResp.getCanceladas()!=null)
             for (MuestraCancelada cancel:
                  corrResp.getCanceladas()) {
                 //busco el informedetalle y actualizo el estatus

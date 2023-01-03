@@ -42,6 +42,9 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     public LiveData<List<InformeEtapa>> getAll(int etapa, String indice, int plantaid) {
         return icDao.getInformes(etapa, indice,plantaid);
     }
+    public LiveData<List<InformeEtapa>> getAllsp(int etapa, String indice) {
+        return icDao.getInformesAll(etapa, indice);
+    }
 
 
     public List<InformeEtapa> getAllsimple(int etapa) {
