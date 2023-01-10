@@ -146,7 +146,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
         // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-        Constantes.INDICEACTUAL = "10.2022";
+        Constantes.INDICEACTUAL = "11.2022";
         if(Constantes.CLAVEUSUARIO.equals("4")){
             Constantes.INDICEACTUAL = "6.2022";
         }

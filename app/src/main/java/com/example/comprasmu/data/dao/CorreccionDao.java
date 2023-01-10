@@ -17,8 +17,8 @@ import java.util.List;
 @Dao
 public abstract class CorreccionDao extends  BaseDao<Correccion>{
 
-    @Query("SELECT * FROM correccion where   solicitudId=:solicitudId")
-    public abstract LiveData<List<Correccion>> tgetCorrecciones( int solicitudId);
+    @Query("SELECT * FROM correccion where   solicitudId=:solicitudId and indice=:indice ")
+    public abstract LiveData<List<Correccion>> tgetCorrecciones( int solicitudId, String indice);
 
     @Query("SELECT * FROM correccion where  solicitudId=:solicitudId")
     public abstract List<Correccion> getCorreccionesSimple(int solicitudId);

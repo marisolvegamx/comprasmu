@@ -87,7 +87,9 @@ public class GalFotosFragment extends Fragment {
         if(params!=null) {
               tipoinf= params.getString(VerInformeGenFragment.ARG_TIPOINF);
             int idmuestra = params.getInt(VerInformeFragment.ARG_IDMUESTRA);
-
+            if(tipoinf!=null&&tipoinf.equals("action_selclitocor2")) {
+            }
+            else
               if(tipoinf!=null&&tipoinf.equals("e")){
                   //es etapa
                   if(Constantes.ETAPAACTUAL==1){

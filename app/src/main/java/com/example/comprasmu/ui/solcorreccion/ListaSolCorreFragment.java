@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
+import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.utils.Constantes;
@@ -115,6 +116,7 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
         Intent intento1=new Intent(getActivity(), NuevoInfEtapaActivity.class);
         intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL, sol);
         intento1.putExtra(NuevoInfEtapaActivity.NUMFOTO, numfoto);
+        intento1.putExtra(ContInfEtapaFragment.ETAPA, Constantes.ETAPAACTUAL);
         intento1.putExtra(NuevoInfEtapaActivity.CORRECCION,true);
         startActivity(intento1);
     }

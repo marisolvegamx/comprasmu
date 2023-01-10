@@ -783,11 +783,11 @@ public class CreadorFormulario {
     public ImageView imagenView(){
         ImageView imagen=new ImageView(context);
         if(infocampo.value!=null&&!infocampo.value.equals("")) {
-            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(infocampo.value,80,80);
+            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(infocampo.value,150,150);
             imagen.setImageBitmap(bitmap1);
         }
         imagen.setId(infocampo.id);
-        imagen.setLayoutParams(new ViewGroup.LayoutParams(350,150));
+        imagen.setLayoutParams(new ViewGroup.LayoutParams(350,450));
         if(infocampo.funcionOnClick!=null)
         imagen.setOnClickListener(infocampo.funcionOnClick);
         return  imagen;
@@ -814,19 +814,17 @@ public class CreadorFormulario {
         }
         imagen.setVisibility(!infocampo.visible?View.GONE:View.VISIBLE);
         imagen.setId(infocampo.id);
+        Log.d("creadorform","creando form"+infocampo.id);
         imagen.setLayoutParams(new ViewGroup.LayoutParams(900,500));
         layout.addView(imagen);
         //Pongo el boton
-        ImageButton button=new ImageButton(context);
-        Drawable replacer = context.getDrawable(R.drawable.ic_baseline_loop_24);
+        BotonRotar button=new BotonRotar(context);
 
-        button.setImageDrawable(replacer);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-       // ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) button.getLayoutParams();
-        //params.rightMargin = 100; params.topMargin = 100;
-        button.setVisibility(View.GONE);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(80, TableLayout.LayoutParams.WRAP_CONTENT);
+
+      //  button.setVisibility(View.GONE);
        // LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, 97, 80, 0);
+        lp.setMargins(0, 97, 10, 0);
         button.setLayoutParams(lp);
         button.setOnClickListener(infocampo.funcionOnClick);
         button.setId(infocampo.id+500);

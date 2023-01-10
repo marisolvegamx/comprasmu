@@ -42,6 +42,10 @@
             android:id="@+id/nav_rescorreccion2"
             android:icon="@drawable/ic_baseline_check_24"
             android:title="@string/menu_rescorreccion" />
+        <item
+            android:id="@+id/nav_precancel"
+            android:icon="@android:drawable/ic_dialog_alert"
+            android:title="@string/menu_cancel" />
 
         <item
             android:id="@+id/nav_cerrarsesion"

@@ -11,12 +11,14 @@ import androidx.lifecycle.Transformations;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.MuestraCancelada;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
+import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
@@ -33,12 +35,15 @@ public class ListaSolsViewModel extends AndroidViewModel {
     ImagenDetRepositoryImpl imrepo;
     InfEtapaDetRepoImpl etadetRepo;
     InformeComDetRepositoryImpl infcrepo;
+    InfEtapaRepositoryImpl infetarepo;
 
 
     public ListaSolsViewModel(Application application) {
         super(application);
         repository = new SolicitudCorRepoImpl(application);
         infcrepo=new InformeComDetRepositoryImpl(application);
+        infetarepo=new InfEtapaRepositoryImpl(application);
+
     }
 
     public LiveData<List<SolicitudCor>>  cargarDetalles(int etapa,String indiceSel, int estatus){
@@ -78,6 +83,15 @@ public class ListaSolsViewModel extends AndroidViewModel {
     public LiveData<InformeEtapaDet> buscarEtapaDet(int iddet){
         etadetRepo=new InfEtapaDetRepoImpl(getApplication());
         return etadetRepo.find(iddet);
+    }
+
+    public LiveData<InformeEtapaDet> buscarFotoEta(int numfoto,int idinf, int etapa){
+        etadetRepo=new InfEtapaDetRepoImpl(getApplication());
+        return etadetRepo.getBynumfoto(idinf,etapa,numfoto);
+    }
+    public LiveData<List<ImagenDetalle>> buscarFotosEta(int idinf, int etapa){
+        etadetRepo=new InfEtapaDetRepoImpl(getApplication());
+        return etadetRepo.getImagenxInf(idinf,etapa);
     }
 
     public LiveData<Integer> getSize() {
@@ -133,6 +147,25 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
 
             }
+
+
+    }
+
+    public void procesarCanceladasEta(MuestraCancelada cancelada){
+         InformeEtapa det=infetarepo.findsimple(cancelada.getInd_id());
+
+        if(det!=null) {
+
+            det.setMotivoCancel(cancelada.getVas_observaciones());
+            det.setFechaCancel(cancelada.getVas_fecha());
+            det.setEstatus(2);
+
+            infetarepo.insert(det);
+            infetarepo.actualizarEstatus(det.getId(), 2);
+
+
+
+        }
 
 
     }

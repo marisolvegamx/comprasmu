@@ -708,62 +708,67 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
     public class ActualListener {
-        public void noactualizar(String mensaje){
 
-        }
-        public int actualizarCorre(SolCorreResponse corrResp) {
+        public int actualizarCorre(SolCorreResponse corrResp, int etapa) {
 
             //primero los inserts
-
-            if (corrResp.getInserts() != null) {
-
-                    for (SolicitudCor sol:corrResp.getInserts()
-                         ) {
+            if (corrResp!=null) {
+                if (corrResp != null && corrResp.getInserts() != null) {
+                    for (SolicitudCor sol : corrResp.getInserts()
+                    ) {
                         //veo si ya existe
-                        SolicitudCor solt=solRepo.findsimple(sol.getId(),sol.getNumFoto());
-                        if(solt!=null) {
+                        SolicitudCor solt = solRepo.findsimple(sol.getId(), sol.getNumFoto());
+                        if (solt != null) {
                             if (solt.getEstatus() < 4) {
                                 //actualizo
-                            solRepo.actualizarEst(sol.getMotivo(),sol.getContador(),sol.getCreatedAt(),sol.getEstatus(),sol.getId(),sol.getNumFoto());
-                            }else
-                                if(sol.getContador()>1)
-                                    solRepo.actualizarEst(sol.getMotivo(),sol.getContador(),sol.getCreatedAt(),sol.getEstatus(),sol.getId(),sol.getNumFoto());
-                                else
-                            solRepo.actualizar(sol.getMotivo(),sol.getContador(),sol.getCreatedAt(),sol.getId(),sol.getNumFoto());
+                                solRepo.actualizarEst(sol.getMotivo(), sol.getContador(), sol.getCreatedAt(), sol.getEstatus(), sol.getId(), sol.getNumFoto());
+                            } else if (sol.getContador() > 1)
+                                solRepo.actualizarEst(sol.getMotivo(), sol.getContador(), sol.getCreatedAt(), sol.getEstatus(), sol.getId(), sol.getNumFoto());
+                            else
+                                solRepo.actualizar(sol.getMotivo(), sol.getContador(), sol.getCreatedAt(), sol.getId(), sol.getNumFoto());
 
-                        }else
+                        } else
                             solRepo.insert(sol);
 
                     }
 
 
+                }
 
-            }
+                //los updates
+                if (corrResp != null && corrResp.getUpdates() != null) {
 
-            //los updates
-            if (corrResp.getUpdates() != null) {
+                    if (corrResp.getUpdates() != null)
+                        solRepo.insertAll(corrResp.getUpdates()); //inserto blblbl
+                }
 
-                if (corrResp.getUpdates() != null)
-                    solRepo.insertAll(corrResp.getUpdates()); //inserto blblbl
-            }
+                //actualizar version en tabla
+                TablaVersiones tinfo = new TablaVersiones();
+                tinfo.setNombreTabla(Contrato.TBLSOLCORRECCIONES);
+                Date fecha1 = new Date();
 
-            //actualizar version en tabla
-            TablaVersiones tinfo = new TablaVersiones();
-            tinfo.setNombreTabla(Contrato.TBLSOLCORRECCIONES);
-            Date fecha1 = new Date();
+                tinfo.setVersion(fecha1);
+                tinfo.setIndice(Constantes.INDICEACTUAL);
+                tinfo.setTipo("I");
 
-            tinfo.setVersion(fecha1);
-            tinfo.setIndice(Constantes.INDICEACTUAL);
-            tinfo.setTipo("I");
-
-            tvRepo.insertUpdate(tinfo);
+                tvRepo.insertUpdate(tinfo);
 //            Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
-            //veo las muestras canceladas
-            if(corrResp.getCanceladas()!=null)
-            for (MuestraCancelada cancel:
-                 corrResp.getCanceladas()) {
-                //busco el informedetalle y actualizo el estatus
-                scViewModel.procesarCanceladas(cancel);
+                //veo las muestras canceladas
+                if (corrResp.getCanceladas() != null)
+                    if (etapa == 2)//solo para compra
+                        for (MuestraCancelada cancel :
+                                corrResp.getCanceladas()) {
+                            //busco el informedetalle y actualizo el estatus
+                            scViewModel.procesarCanceladas(cancel);
+
+                        }
+                else
+                    for (MuestraCancelada cancel :
+                                corrResp.getCanceladas()) {
+                            //busco el informedetalle y actualizo el estatus
+                            scViewModel.procesarCanceladasEta(cancel);
+
+                    }
 
             }
             return 1;

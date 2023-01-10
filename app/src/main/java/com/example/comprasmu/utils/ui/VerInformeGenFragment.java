@@ -115,7 +115,28 @@ public class VerInformeGenFragment extends Fragment {
                 }
             });
 
-        }else
+        }
+        else if(tipo.equals("action_selclitocor2")) {
+            if (Constantes.ETAPAACTUAL == 1) {
+                corViewModel.getCorreccion(informeSel).observe(getViewLifecycleOwner(), new Observer<Correccion>() {
+                    @Override
+                    public void onChanged(Correccion vcorreccion) {
+                        //  Log.d(TAG,"---"+vcorreccion.correccion.getSolicitudId()+"--"+vcorreccion.solicitud.getId()+"--"+vcorreccion.correccion.getNumfoto()+"--"+vcorreccion.solicitud.getNumFoto());
+                        //busco la solicitud
+                        SolicitudCor solicitudCor = corViewModel.getSolicitud(vcorreccion.getSolicitudId(), vcorreccion.getNumfoto());
+                        correccion = new SolicitudWithCor();
+                        correccion.correccion = vcorreccion;
+                        correccion.solicitud = solicitudCor;
+                        crearFormCorVarFotos();
+
+
+                    }
+                });
+
+            }
+
+        }
+        else
             mViewModel.getInforme(informeSel,Constantes.INDICEACTUAL).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
                 @Override
                 public void onChanged(InformeEtapa informeEtapax) {
@@ -244,6 +265,84 @@ public class VerInformeGenFragment extends Fragment {
 
         cf1 = new CreadorFormulario(camposTienda, getActivity());
 
+    }
+    //para las correcciones de varias fotos busco por el idsol cuando me llega uno
+    //de los idcorrecciones
+    public void crearFormCorVarFotos() {
+        String directorio=getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" ;
+
+        corViewModel.getCorreccionesxsol(correccion.solicitud.getId(),correccion.solicitud.getIndice())
+                .observe(getViewLifecycleOwner(), new Observer<List<Correccion>>() {
+            @Override
+            public void onChanged(List<Correccion> correccions) {
+
+
+        List<CampoForm> camposTienda = new ArrayList<CampoForm>();
+        CampoForm campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.label = getString(R.string.indice);
+        campo.type = "label";
+        campo.value = correccion.solicitud.getIndice();
+
+
+        campo = new CampoForm();
+        campo.label = getString(R.string.cliente);
+        campo.style = R.style.verinforme2;
+        campo.type = "label";
+        campo.value = correccion.solicitud.getClienteNombre();
+
+        camposTienda.add(campo);
+        campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.label = getString(R.string.planta);
+        campo.type = "label";
+        campo.value = correccion.solicitud.getPlantaNombre();
+
+        camposTienda.add(campo);
+        campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.label = getString(R.string.fecha);
+        campo.type = "label";
+        campo.value = Constantes.vistasdf.format(correccion.correccion.getCreatedAt());
+        camposTienda.add(campo);
+
+        campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.nombre_campo = "descripcion";
+        campo.label = getString(R.string.descripcion);
+        campo.type = "label";
+        campo.value =correccion.solicitud.getDescMostrar();
+        camposTienda.add(campo);
+        //ciclo para las fotos
+        for (Correccion incorr:correccions) {
+                    campo = new CampoForm();
+                    campo.nombre_campo = "foto";
+                    campo.type = "imagenView";
+                    campo.value = directorio + incorr.getRuta_foto1();
+                    campo.funcionOnClick = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            verImagen(incorr.getRuta_foto1());
+                        }
+                    };
+                    camposTienda.add(campo);
+        }
+
+        campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.nombre_campo = "tiendaNombre";
+        campo.label = getString(R.string.estatus_envio);
+        campo.type = "label";
+        campo.value = Constantes.ESTATUSSYNC[correccion.correccion.getEstatusSync()];
+        camposTienda.add(campo);
+
+
+
+        cf1 = new CreadorFormulario(camposTienda, getActivity());
+                mBinding.vidatosgen.addView(cf1.crearTabla());
+                mBinding.btnverdet.setVisibility(View.GONE);
+            }
+                });
     }
 
     public void crearFormularioEta() {

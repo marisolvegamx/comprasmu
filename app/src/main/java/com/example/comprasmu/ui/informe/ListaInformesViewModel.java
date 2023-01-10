@@ -18,9 +18,11 @@ import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
 
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
@@ -50,7 +52,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
     private String ciudadSel;
     private String nombreTienda;
     private String indiceSel;
-
+    private InfEtapaRepositoryImpl inferepo;
 
 
 
@@ -60,7 +62,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
         imrepository=new ImagenDetRepositoryImpl(application);
          detrepository = new InformeComDetRepositoryImpl(application);
         visitaRepo = new VisitaRepositoryImpl(application);
-
+        inferepo=new InfEtapaRepositoryImpl(application);
 
     }
 
@@ -180,6 +182,12 @@ public class ListaInformesViewModel extends AndroidViewModel {
     }
     public LiveData<List<InformeCompraDetalle>> cargarCancelados(String indiceSel ){
         return detrepository.getCancelados(indiceSel);
+
+    }
+
+    public LiveData<List<InformeEtapa>> cargarCanceladosEta(String indiceSel,int etapa ){
+
+        return inferepo.getInformesxEstatus(indiceSel,etapa,2);
 
     }
 

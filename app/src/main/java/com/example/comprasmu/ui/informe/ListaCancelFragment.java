@@ -27,9 +27,11 @@ import com.example.comprasmu.SubirInformeTask;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.databinding.ListaGenericFragmentBinding;
 import com.example.comprasmu.ui.BackActivity;
 
+import com.example.comprasmu.ui.infetapa.CancelEtaAdapter;
 import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
@@ -44,7 +46,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
     public static final String TAG = "ListaCancelFragment";
    private ListaGenericFragmentBinding mBinding;
     private CancelAdapter mListAdapter;
-
+    private CancelEtaAdapter mEtaAdapter;
     private int clienteid;
     private String ciudad;
     private int plantaid;
@@ -85,8 +87,10 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         coordinator=view.findViewById(R.id.coordinator3);
 
         setupListAdapter();
+
+
+
         setupSnackbar();
-       cargarLista();
     }
 
     public void cargarLista(){
@@ -120,13 +124,46 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
             }
             });
     }
+
+    public void cargarListaEtapa(){
+
+
+
+
+        mViewModel.cargarCanceladosEta(indice, Constantes.ETAPAACTUAL).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+            @Override
+            public void onChanged(List<InformeEtapa> informes) {
+                if (informes.size() < 1) {
+                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
+                }
+                Log.d(TAG, "YA CARGÓ " + informes.size());
+
+
+                mEtaAdapter.setInformeCompraList(informes);
+
+                mEtaAdapter.notifyDataSetChanged();
+
+
+            }
+        });
+    }
     private void setupListAdapter() {
-        mListAdapter = new CancelAdapter(this);
         mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.detalleList.setHasFixedSize(true);
-        mBinding.detalleList.setAdapter(mListAdapter);
+        if(Constantes.ETAPAACTUAL==1){
+            mEtaAdapter = new CancelEtaAdapter();
+            mBinding.detalleList.setAdapter(mEtaAdapter);
+            cargarListaEtapa();
+        }else {
+            mListAdapter = new CancelAdapter(this);
+
+            mBinding.detalleList.setAdapter(mListAdapter);
+            cargarLista();
+        }
 
     }
+
+
     private void setupSnackbar() {
         // Mostrar snackbar en resultados positivos de operaciones (crear, editar y eliminar)
         mViewModel.getSnackbarText().observe(getActivity(), integerEvent -> {

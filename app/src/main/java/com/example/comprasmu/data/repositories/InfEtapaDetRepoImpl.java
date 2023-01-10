@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.InformeCompraDetDao;
 import com.example.comprasmu.data.dao.InformeEtapaDetDao;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -17,7 +18,7 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
 
     private final InformeEtapaDetDao dao;
 
-    private LiveData<List<InformeEtapaDet>> allInformeEtapaDet;
+
 
     public InfEtapaDetRepoImpl(Context context) {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
@@ -60,7 +61,13 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     public List<InformeEtapaDet> getByCaja( int idinf, int etapa, int numcaja) {
         return dao.getByCaja(idinf,etapa, numcaja);
     }
+    public LiveData<InformeEtapaDet> getBynumfoto( int idinf, int etapa, int numfoto) {
+        return dao.getBynumfoto(idinf,etapa, numfoto);
+    }
 
+    public LiveData<List<ImagenDetalle>> getImagenxInf(int idinf, int etapa) {
+        return dao.getImagenxInf(idinf,etapa);
+    }
     public void deleteByCaja( int idinf, int etapa, int numcaja) {
          dao.deleteByCaja(idinf,etapa, numcaja);
     }

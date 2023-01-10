@@ -27,6 +27,8 @@ public class InformeEtapa {
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
     private Date createdAt;
+    private Date fechaCancel;
+    private String motivoCancel;
 
     public int getId() {
         return id;
@@ -138,5 +140,21 @@ public class InformeEtapa {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getFechaCancel() {
+        return fechaCancel;
+    }
+
+    public void setFechaCancel(Date fechaCancel) {
+        this.fechaCancel = fechaCancel;
+    }
+
+    public String getMotivoCancel() {
+        return motivoCancel;
+    }
+
+    public void setMotivoCancel(String motivoCancel) {
+        this.motivoCancel = motivoCancel;
     }
 }

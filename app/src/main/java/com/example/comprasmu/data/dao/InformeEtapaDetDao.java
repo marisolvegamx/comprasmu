@@ -7,6 +7,7 @@ import androidx.room.RawQuery;
 
 import androidx.sqlite.db.SupportSQLiteQuery;
 
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 
 import java.util.List;
@@ -40,7 +41,6 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:caja order by id desc")
     public abstract List<InformeEtapaDet> getUltimoCaja( int id,int etapa, int caja);
 
-
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and descripcion=:descripcion")
     public abstract LiveData<InformeEtapaDet> getByDescripcion( int id,String descripcion);
 
@@ -50,6 +50,11 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja order by num_muestra")
     public abstract List<InformeEtapaDet> getByCaja( int id,int etapa, int numcaja);
 
+    @Query("SELECT imagen_detalle.* FROM informe_etapa_det inner join imagen_detalle on informe_etapa_det.ruta_foto=imagen_detalle.id where informeEtapaId=:informe and etapa=:etapa ")
+    public  abstract LiveData<List<ImagenDetalle>> getImagenxInf(int informe, int etapa);
+
+    @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and ruta_foto=:numfoto")
+    public abstract LiveData<InformeEtapaDet> getBynumfoto( int id,int etapa, int numfoto);
 
     @Query("DELETE FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja")
     public abstract void deleteByCaja( int id,int etapa, int numcaja);

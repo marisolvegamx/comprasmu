@@ -10,7 +10,7 @@ import java.util.List;
 public class CorreccionEnvio {
 
     private Correccion correccion;
-
+    private List<Correccion> correcciones;
     private String claveUsuario;
     private String indice;
 
@@ -36,6 +36,14 @@ public class CorreccionEnvio {
 
     public void setIndice(String indice) {
         this.indice = indice;
+    }
+
+    public List<Correccion> getCorrecciones() {
+        return correcciones;
+    }
+
+    public void setCorrecciones(List<Correccion> correcciones) {
+        this.correcciones = correcciones;
     }
 
     public String toJson(CorreccionEnvio informe) {

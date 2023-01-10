@@ -25,6 +25,7 @@ import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.databinding.ActivityNuevoInfetapaBinding;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
+import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
 import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
@@ -164,9 +165,16 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             if(isCor){
                 bundle.putInt(NuevoInfEtapaActivity.INFORMESEL, idinformeSel);
                 bundle.putInt(NuevoInfEtapaActivity.NUMFOTO, numfoto);
-                NvaCorreccionFragment frag=new NvaCorreccionFragment();
-                frag.setArguments(bundle);
-                ft.add(R.id.continfeta_fragment, frag);
+                if(etapa==1) {
+                    NvaCorreccionPreFragment frag = new NvaCorreccionPreFragment();
+                    frag.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment, frag);
+                }else
+                {
+                    NvaCorreccionFragment frag = new NvaCorreccionFragment();
+                    frag.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment, frag);
+                }
 
             }else
             if(etapa==1)

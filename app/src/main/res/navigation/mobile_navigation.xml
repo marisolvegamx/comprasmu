@@ -322,7 +322,14 @@
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
+    <fragment
+        android:id="@+id/nav_precancel"
+        android:name="com.example.comprasmu.ui.informe.ListaCancelFragment"
+        android:label="@string/menu_cancel"
+        tools:layout="@layout/lista_selec_fragment" >
 
+
+    </fragment>
     <!---opciones etiquetado-->
     <activity
         android:id="@+id/nav_nvoetiq"

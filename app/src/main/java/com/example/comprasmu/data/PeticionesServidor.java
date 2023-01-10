@@ -607,14 +607,14 @@ public class PeticionesServidor {
                     {
                         Log.i(TAG,"respuesta sols"+solicitudes);
 
-                        petsocor.actualizarCorre(solicitudes);
+                        petsocor.actualizarCorre(solicitudes,etapa);
 
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lpedirSolicitudesCorr "+solicitudes.getData());
-                        petsocor.noactualizar(solicitudes.getData());
+                        petsocor.actualizarCorre(null,etapa);
                     }
 
                 }

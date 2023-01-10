@@ -137,7 +137,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 }
             });
         }
-        if(tipocons.equals("rescor")){ //CORRECCIONES
+        if(tipocons.equals("rescor")||tipocons.equals("action_selclitocor2")){ //CORRECCIONES
             etapa=Constantes.ETAPAACTUAL;
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             LiveData<List<SolicitudWithCor>> listacor=null;

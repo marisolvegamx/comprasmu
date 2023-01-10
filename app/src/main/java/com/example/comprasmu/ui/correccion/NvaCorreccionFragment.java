@@ -125,7 +125,24 @@ public class NvaCorreccionFragment extends Fragment {
                 //BUSCO LA FOTO ORIGINAL
                 //n donde la busco
                 switch (solicitud.getEtapa()){
-                    case 1:case 3:case 4:case 5:case 6:
+                    case 1:
+                        solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
+                            @Override
+                            public void onChanged(InformeEtapaDet informeEtapaDet) {
+                                rutafotoo=informeEtapaDet.getRuta_foto();
+
+                                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 150, 150);
+
+                                fotoori1.setImageBitmap(bitmap1);
+
+                                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                                //fotoori1.setVisibility(View.VISIBLE);
+
+                            }
+                        });
+                        break;
+
+                        case 3:case 4:case 5:case 6:
                         solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                             @Override
                             public void onChanged(InformeEtapaDet informeEtapaDet) {

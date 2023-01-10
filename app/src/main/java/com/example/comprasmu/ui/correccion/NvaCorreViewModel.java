@@ -54,6 +54,24 @@ public class NvaCorreViewModel extends AndroidViewModel {
         return idNuevo;
 
     }
+    public Correccion insertarCorreccion2(int solicitudid,String indice,int numFoto,String ruta1, String ruta2,String ruta3){
+        Correccion correccion=new Correccion();
+        correccion.setSolicitudId(solicitudid);
+        correccion.setRuta_foto1(ruta1);
+        correccion.setRuta_foto2(ruta2);
+        correccion.setRuta_foto3(ruta3);
+        correccion.setEstatusSync(0);
+        correccion.setEstatus(1);
+        correccion.setIndice(indice);
+        correccion.setNumfoto(numFoto);
+
+        correccion.setCreatedAt(new Date());
+        idNuevo=(int)correpository.insert(correccion);
+        correccion.setId(idNuevo);
+        this.nvocorreccion =correccion;
+        return correccion;
+
+    }
 
     public CorreccionEnvio prepararEnvio(Correccion nvacorreccion){
         CorreccionEnvio envio=new CorreccionEnvio();
@@ -64,8 +82,21 @@ public class NvaCorreViewModel extends AndroidViewModel {
         return envio;
 
     }
+    public CorreccionEnvio prepararEnvioVar(List<Correccion> nvacorreccion){
+        CorreccionEnvio envio=new CorreccionEnvio();
+
+        envio.setCorrecciones(nvacorreccion);
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(Constantes.INDICEACTUAL);
+        return envio;
+
+    }
     public Correccion getCorreccionesxid(int idcor,String indice, int etapa){
         return correpository.findsimple(idcor);
+    }
+
+    public LiveData<List<Correccion>> getCorreccionesxsol(int idsol,String indice){
+        return correpository.getxsol(idsol,indice);
     }
     public LiveData<List<SolicitudWithCor>> getCorreccionesxEtaPlan(int etapa, String indice, int plantaSel){
         return correpository.getAllxEtaPlan(plantaSel,indice,etapa);
