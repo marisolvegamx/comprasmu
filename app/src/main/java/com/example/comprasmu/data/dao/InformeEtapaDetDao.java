@@ -62,6 +62,9 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where id=:id")
     public abstract InformeEtapaDet findsimple( int id);
 
+    @Query("SELECT count(*) FROM informe_etapa_det where informeEtapaId=:idinf and num_caja=:numcaja and etapa=3")
+    public abstract int totalMuesxCaja( int  numcaja, int idinf);
+
     @Query("update informe_etapa_det set estatusSync=:estatus WHERE informeEtapaId=:idinforme")
     public abstract void actEstatusSyncLis(int idinforme, int estatus);
 }

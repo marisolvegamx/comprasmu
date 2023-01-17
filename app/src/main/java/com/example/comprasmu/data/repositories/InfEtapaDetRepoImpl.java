@@ -120,5 +120,9 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     public void actEstatusSyncxInfo(int idinforme, int estatus) {
         dao.actEstatusSyncLis(idinforme, estatus);
     }
+
+    public int getTotMuesxCaja(int cajaAct, int informeEtiId) {
+       return dao.totalMuesxCaja(cajaAct,informeEtiId);
+    }
 }
 

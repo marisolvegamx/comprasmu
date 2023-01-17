@@ -1249,7 +1249,7 @@ public class DetalleProductoPenFragment extends Fragment {
     }
     public InformeEnvio preparaInforme(){
         InformeEnvio envio=new InformeEnvio();
-        Log.d(TAG,"wwwwwwwww"+mViewModel.visita.getEstatus());
+      //  Log.d(TAG,"wwwwwwwww"+mViewModel.visita.getEstatus());
         envio.setIndice(mViewModel.visita.getIndice());
         if(mViewModel.visita.getEstatusSync()==0) {
             envio.setVisita(mViewModel.visita);

@@ -95,9 +95,6 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
 
     public void cargarLista(){
 
-
-
-
         mViewModel.cargarCancelados(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDetalle>>() {
             @Override
             public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {

@@ -375,7 +375,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             //usaria la ciudad de trabajo
             //25guadalajara
             markerSel=null;
-            Log.d(TAG,"ocultando"+btncancel.getVisibility());
+          //  Log.d(TAG,"ocultando"+btncancel.getVisibility());
             btncancel.setVisibility(View.GONE);
             String ffin= "";
             ffin= ComprasUtils.indiceaFecha2(indicefin);
@@ -433,12 +433,12 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             mMap.clear();
             if(listiendas!=null)
             for(Tienda tienda: listiendas){
-             //    Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
+                // Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
 
                 if(cliente==4&&tienda.getEstpep()>0) {
                         color = tienda.getEstpep()+"";
                         tienda.setColor(color);
-                        // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
+                       //  Log.d(TAG,"--"+cliente+" "+color+".."+tienda.getUne_descripcion());
                         if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
                             String[] aux = tienda.getUne_coordenadasxy().split(",");
 

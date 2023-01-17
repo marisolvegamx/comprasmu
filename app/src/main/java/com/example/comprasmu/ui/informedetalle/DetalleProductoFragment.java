@@ -56,6 +56,7 @@ import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
@@ -1257,7 +1258,7 @@ public class DetalleProductoFragment extends Fragment {
             //Creo el informe en nuevo informe y lo busco aqui
             //necestio saber si ya habia guardado informe
             //veo si ya existe el informe o hay que crearlo
-            Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
+         //   Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
         //   exit(0);
             if (mViewModel.numMuestra == 1 || mViewModel.getIdInformeNuevo() <= 0) {
                 Log.d(TAG, "guardando informe");
@@ -1288,7 +1289,10 @@ public class DetalleProductoFragment extends Fragment {
                                int res=lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getTipoMuestra(),dViewModel.icdNuevo.getComprasIdbu(),dViewModel.icdNuevo.getComprasDetIdbu(),4);
                                //limpiar tabla temp
                                //   limpiarTablTempMenCli();
-
+                               //reviso si es x una cancelacion para actualizar el estatus
+                               InformeCompraDetalle detallecan=mViewModel.getCancelada(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(),2);
+                               if(detallecan!=null)
+                                     mViewModel.actualizarCancelada(detallecan.getId(),4);
                                mViewModel.eliminarMuestra(mViewModel.numMuestra);
                                dViewModel.setIddetalleNuevo(0);
                                dViewModel.limpiarVarsMuestra();

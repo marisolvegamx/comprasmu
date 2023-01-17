@@ -65,7 +65,7 @@ public class PostInformeViewModel {
 
     public  void sendInforme(InformeEnvio informeCompra) {
 
-        Log.d("Informe", "kkkkkkkkkk"+informeCompra.toJson(informeCompra));
+       // Log.d("Informe", "kkkkkkkkkk"+informeCompra.toJson(informeCompra));
         ServiceGenerator.getApiService().saveInformeEnvio(informeCompra).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -281,7 +281,7 @@ public class PostInformeViewModel {
     }
 
     public  void sendInformeEta(InformeEtapaEnv informeEtapa) {
-        Log.d("sendInformeEta", informeEtapa.toJson(informeEtapa));
+     //   Log.d("sendInformeEta", informeEtapa.toJson(informeEtapa));
          ServiceGenerator.getApiService().saveInformeEtapa(informeEtapa).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {

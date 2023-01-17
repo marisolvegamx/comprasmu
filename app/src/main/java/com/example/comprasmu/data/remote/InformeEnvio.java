@@ -1,19 +1,13 @@
 package com.example.comprasmu.data.remote;
 
-import android.util.Log;
-
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Uneimagenes;
 import com.example.comprasmu.data.modelos.Visita;
-import com.example.comprasmu.utils.Constantes;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -93,8 +87,8 @@ public class InformeEnvio {
 
     public String toJson(InformeEnvio informe) {
         //  this.inf_visitasIdlocal=informe.getVisitasId();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
 
       //  Gson gson = new Gson();

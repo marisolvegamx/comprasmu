@@ -169,5 +169,9 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     public InformeCompraDetalle findByQr(String qr, String indice) {
         return dao.findByQr(qr,indice);
     }
+
+    public InformeCompraDetalle getCancelda(int comprasId, int comprasDetId, int estatus) {
+        return dao.findByCompraEst( comprasId, comprasDetId);
+    }
 }
 

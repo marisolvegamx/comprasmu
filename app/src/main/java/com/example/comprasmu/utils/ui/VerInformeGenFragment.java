@@ -91,7 +91,7 @@ public class VerInformeGenFragment extends Fragment {
     }
 
     public void llenarDetalle() {
-        if(Constantes.ETAPAACTUAL==1){
+        if(Constantes.ETAPAACTUAL==1||Constantes.ETAPAACTUAL==4){
            textoboton= getString(R.string.ver_fotos);
         }
         if(Constantes.ETAPAACTUAL==3){

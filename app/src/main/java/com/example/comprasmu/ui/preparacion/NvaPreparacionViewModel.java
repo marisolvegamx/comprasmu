@@ -175,11 +175,19 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return idNuevo;
 
     }
-    public int insertarEtiqDet(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja,String qr,int num_muestra){
+    public int insertarEtiqDet(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja,String qr,int num_muestra,String indice){
+        ImagenDetalle foto=new ImagenDetalle();
+        foto.setRuta( ruta);
+        foto.setDescripcion(descripcion);
+        foto.setEstatus(1);
+        foto.setEstatusSync(0);
+        foto.setIndice(indice);
+        foto.setCreatedAt(new Date());
+        int nvoidimagem =(int)imagenDetRepository.insertImg(foto);
         InformeEtapaDet detalle=new InformeEtapaDet();
         detalle.setDescripcion(descripcion);
         detalle.setInformeEtapaId(idinf);
-        detalle.setRuta_foto(ruta);
+        detalle.setRuta_foto(nvoidimagem+"");
         detalle.setDescripcionId(descripcionid);
         detalle.setNum_caja(numcaja);
         detalle.setQr(qr);
@@ -338,8 +346,8 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     }
     public List<DetalleCaja> cargarDetCajas(int idinf){
 
-        cajaRepo.getAllsimplexInf(idinf);
-        return null;
+
+        return cajaRepo.getAllsimplexInf(idinf);
     }
     public LiveData<Reactivo> buscarReactivo(int id){
         return reacRepo.find(id);
@@ -449,5 +457,10 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
         //return imagenDetRepository.find(visita.getFotoFachada());
         return imagenDetRepository.findsimpleInd(idfoto,Constantes.INDICEACTUAL);
+    }
+
+    public void buscatTMuesxCaj(int cajaAct, int informeEtiId) {
+         this.numMuestras=infDetRepo.getTotMuesxCaja(cajaAct,informeEtiId);
+
     }
 }

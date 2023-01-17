@@ -48,6 +48,7 @@ import com.example.comprasmu.SubirInformeEtaTask;
 
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -288,7 +289,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 preguntaAct = 1;
 
                 convertirLista(listacomp);
-                cargarPantas(listaPlantas, "");
+                cargarPlantas(listaPlantas, "");
                 mViewModel.variasPlantas = true;
                 sv1.setVisibility(View.VISIBLE);
                 aceptar1.setEnabled(true);
@@ -320,7 +321,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                     infomeEdit = informeEtapa;
                     preguntaAct=3;
                     mViewModel.preguntaAct=3;
-                    cargarPantas(listaPlantas,informeEtapa.getPlantasId()+"");
+                    cargarPlantas(listaPlantas,informeEtapa.getPlantasId()+"");
                     ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informeEtapa);
                     mViewModel.setIdNuevo(informeSel);
                     mostrarCapMuestra();
@@ -543,11 +544,13 @@ public class NvoEtiquetadoFragment extends Fragment {
         sv3.setVisibility(View.VISIBLE);
         txtcajaact.setVisibility(View.VISIBLE);
         preguntaAct = 3;
+        ImagenDetalle foto;
         mViewModel.preguntaAct=preguntaAct;
         if(isEdicion&&detalleEdit!=null){
             //busco en la bd para regresar a la primer muestra
-            txtrutaim.setText(detalleEdit.getRuta_foto());
-            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + detalleEdit.getRuta_foto(),80,80);
+            foto=mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));
+            txtrutaim.setText(foto.getRuta());
+            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(),80,80);
             fotomos.setImageBitmap(bitmap1);
             fotomos.setVisibility(View.VISIBLE);
             btnrotar.setVisibility(View.VISIBLE);
@@ -689,12 +692,12 @@ public class NvoEtiquetadoFragment extends Fragment {
                 rutafoto=txtrutaim.getText().toString();
                 qr=txtqr.getText().toString();
                 if(isEdicion){
-                    mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,detalleEdit.getId(),contcaja,qr,contmuestra);
+                    mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,detalleEdit.getId(),contcaja,qr,contmuestra,Constantes.INDICEACTUAL);
                     isEdicion=false;
                 }else
                 if(mViewModel.getIdNuevo()>0)
                     //guardo el detalle
-                     mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,contcaja,qr,contmuestra);
+                     mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,contcaja,qr,contmuestra,Constantes.INDICEACTUAL);
                //limpio campos
                 txtrutaim.setText("");
                 fotomos.setImageBitmap(null);
@@ -923,16 +926,20 @@ public class NvoEtiquetadoFragment extends Fragment {
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         envio.setInformeEtapaDet(mViewModel.cargarInformeDet(mViewModel.getIdNuevo()));
+        List<ImagenDetalle> imagenes=mViewModel.buscarImagenes(envio.getInformeEtapaDet());
+
+        envio.setImagenDetalles(imagenes);
         return envio;
     }
 
     public static void subirFotos(Activity activity, InformeEtapaEnv informe){
         //las imagenes
-        for(InformeEtapaDet imagen:informe.getInformeEtapaDet()){
+        for(ImagenDetalle imagen:informe.getImagenDetalles()){
+            //
             //subo cada una
             Intent msgIntent = new Intent(activity, SubirFotoService.class);
             msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
-            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta_foto());
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
             msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
             // Constantes.INDICEACTUAL
             Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
@@ -989,7 +996,7 @@ public class NvoEtiquetadoFragment extends Fragment {
 
 
     }
-    private void cargarPantas(List<DescripcionGenerica> selectdes,String value){
+    private void cargarPlantas(List<DescripcionGenerica> selectdes,String value){
         ArrayAdapter catAdapter = new ArrayAdapter<DescripcionGenerica>(getContext(), android.R.layout.simple_spinner_dropdown_item, selectdes) {
 
 

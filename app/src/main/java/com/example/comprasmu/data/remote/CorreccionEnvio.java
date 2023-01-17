@@ -48,8 +48,8 @@ public class CorreccionEnvio {
 
     public String toJson(CorreccionEnvio informe) {
         //  this.inf_visitasIdlocal=informe.getVisitasId();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
 
       //  Gson gson = new Gson();

@@ -794,6 +794,15 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return  new EnvioListener(actividad);
     }
 
+    public InformeCompraDetalle getCancelada(int comprasId, int comprasDetId, int estatus) {
+        return detalleRepo.getCancelda(comprasId,comprasDetId,estatus);
+
+    }
+
+    public void actualizarCancelada(int id, int estatus) {
+         detalleRepo.actualizarEstatus(id, estatus);
+    }
+
     public class EnvioListener {
         Activity actividad;
 

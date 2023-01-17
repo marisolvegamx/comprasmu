@@ -56,6 +56,10 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
     public abstract InformeCompraDetalle findByCompra( int idcompra, int iddet);
 
     //que no esté cancelada
+    @Query("SELECT * FROM informe_detalle where comprasId=:idcompra and comprasDetId=:iddet and (estatus=2 or estatus=5)")
+    public abstract InformeCompraDetalle findByCompraEst( int idcompra, int iddet);
+
+    //que no esté cancelada
     @Query("SELECT * FROM informe_detalle where comprasId=:idcompra and comprasDetId=:iddet and tipoMuestra=3 and estatus<>2 and estatus<>4")
     public abstract List<InformeCompraDetalle> findByCompraBu( int idcompra, int iddet);
 

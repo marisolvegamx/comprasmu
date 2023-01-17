@@ -83,8 +83,8 @@ public class ValidadorDatos {
       //  codigo=codigo.replace("-","");
         Log.d("ValidadorDatos", "mensaje"+codigonoper);
         if(!codigo.equals("")&&codigonoper.length()>1){
-                if(!validarCodigoPepRango(codigo,codigonoper)){
-                    mensaje=R.string.error_codigo_per;
+            if(!validarCodigoPepRango(codigo,codigonoper)){
+                mensaje=R.string.error_codigo_per;
 
                     return false;
                 }

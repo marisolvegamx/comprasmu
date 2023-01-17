@@ -148,7 +148,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         // Constantes.INDICEACTUAL=mesactual.replace('-','.');
         Constantes.INDICEACTUAL = "11.2022";
         if(Constantes.CLAVEUSUARIO.equals("4")){
-            Constantes.INDICEACTUAL = "6.2022";
+            Constantes.INDICEACTUAL = "11.2022";
         }
 
         Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);

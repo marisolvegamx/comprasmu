@@ -160,7 +160,8 @@ public class NvoEmpaqueFragment extends Fragment {
                                 if(ultimares!=null)
                                 { mViewModel.cajaAct = ultimares.getNum_caja();
 
-                                isEdicion=true;}
+                                isEdicion=true;
+                                }
                                 crearFormulario();
 
 
@@ -173,17 +174,25 @@ public class NvoEmpaqueFragment extends Fragment {
                          Log.d(TAG,"num caja"+mViewModel.cajaAct);
                         ultimarescaja = mViewModel.getDetalleCajaxCaja(mViewModel.getIdNuevo(), mViewModel.cajaAct);
                         if(ultimarescaja!=null) {
-                            isEdicion = true;
 
-                            if(ultimarescaja.getLargo()!=null)
-                            mViewModel.largoCaja = Float.parseFloat(ultimarescaja.getLargo());
-                            if(ultimarescaja.getAncho()!=null)
-                             mViewModel.anchoCaja = Float.parseFloat(ultimarescaja.getAncho());
-                            if(ultimarescaja.getAlto()!=null)
+
+                            if(ultimarescaja.getLargo()!=null) {
+                                mViewModel.largoCaja = Float.parseFloat(ultimarescaja.getLargo());
+                                if(preguntaAct.getId()==96)
+                                    isEdicion = true;
+                            }if(ultimarescaja.getAncho()!=null) {
+                                mViewModel.anchoCaja = Float.parseFloat(ultimarescaja.getAncho());
+                                if(preguntaAct.getId()==98)
+                                    isEdicion = true;
+                            }if(ultimarescaja.getAlto()!=null) {
                                 mViewModel.altoCaja = Float.parseFloat(ultimarescaja.getAlto());
-                            if(ultimarescaja.getPeso()!=null)
+                                if(preguntaAct.getId()==100)
+                                    isEdicion = true;
+                            }if(ultimarescaja.getPeso()!=null) {
                                 mViewModel.pesoCaja = Float.parseFloat(ultimarescaja.getPeso());
-
+                                if(preguntaAct.getId()==102)
+                                    isEdicion = true;
+                            }
                         }
                          crearFormulario();
 
@@ -442,18 +451,19 @@ public class NvoEmpaqueFragment extends Fragment {
     public void crearFormulario(){
         camposForm=new ArrayList<>();
         CampoForm campo=new CampoForm();
-        Log.d(TAG, "pregunta "+preguntaAct.getId());
+        Log.d(TAG, "pregunta "+preguntaAct.getId()+"--"+isEdicion);
         if(preguntaAct.getId()>91&&preguntaAct.getId()<104) {
+            //busco total de muestras en la caja
+            if(mViewModel.numMuestras<1&&mViewModel.getInformeEtiq()!=null){
+                mViewModel.buscatTMuesxCaj(mViewModel.cajaAct, mViewModel.getInformeEtiq().getId());
+            }
             campo.label = "CAJA NUMERO " + mViewModel.cajaAct;
             campo.type = "label";
             camposForm.add(campo);
-
             campo = new CampoForm();
-            campo.label = "MUESTRAS EN CAJA " + mViewModel.getInformeEtiq().getTotal_muestras();
+            campo.label = "MUESTRAS EN CAJA " + mViewModel.numMuestras;
             campo.type = "label";
             camposForm.add(campo);
-
-
             campo = new CampoForm();
         }
         campo.label=preguntaAct.getLabel();
@@ -600,11 +610,10 @@ public class NvoEmpaqueFragment extends Fragment {
             subirFotos(getActivity(),envio);
         }catch(Exception ex){
             compraslog.grabarError("Algo salió mal al finalizar inf"+ex.getMessage());
-            //Log.e(TAG,"Algo salió mal al finalizar inf"+ex.getMessage());
-            Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
+          ex.printStackTrace();
+          Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
         //todo limpio variables de sesion
-
         mViewModel.setIdNuevo(0);
         mViewModel.setIddetalle(0);
         mViewModel.setNvoinforme(null);
@@ -684,11 +693,11 @@ public class NvoEmpaqueFragment extends Fragment {
 
 
 
-                       Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
-                        yaestoyProcesando = false;
-                        salir();
+                    Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
+                    yaestoyProcesando = false;
+                    salir();
                         //  aceptar.setEnabled(true);
-                        return;
+                    return;
 
 
                 }catch(Exception ex){
@@ -710,6 +719,14 @@ public class NvoEmpaqueFragment extends Fragment {
                 //reviso si hay más cajas, si no fin
                 int sig=mViewModel.cajaAct+1;
                 mViewModel.cajaAct=sig;
+                //limpio variables
+                mViewModel.largoCaja=0;
+                mViewModel.altoCaja=0;
+                mViewModel.anchoCaja=0;
+
+                mViewModel.pesoCaja=0;
+                mViewModel.numMuestras=0;
+
                 Log.d(TAG,"cajas"+sig+"--"+mViewModel.getInformeEtiq().getTotal_cajas());
                 if(sig<=mViewModel.getInformeEtiq().getTotal_cajas()){
                     //empiezo en las preguntas con nueva caja
@@ -778,8 +795,8 @@ public class NvoEmpaqueFragment extends Fragment {
             mViewModel.actualizarComentEmp(mViewModel.getIdNuevo(),comentarios);
         }catch(Exception ex){
 
-            compraslog.grabarError(TAG+" Algo salio mal al enviar"+ex.getMessage());
-
+            compraslog.grabarError(TAG+" Algo salio mal al guardar coments"+ex.getMessage());
+            ex.printStackTrace();
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
     }
@@ -1031,33 +1048,41 @@ public class NvoEmpaqueFragment extends Fragment {
     public InformeEtapaEnv preparaInforme(){
         InformeEtapaEnv envio=new InformeEtapaEnv();
 
-        envio.setInformeEtapa(mViewModel.getNvoinforme());
+        envio.setInformeEtapa(mViewModel.getInformexId(mViewModel.getIdNuevo()));
+       // Log.d(TAG,"comentario "+mViewModel.getNvoinforme().getComentarios());
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
+        Log.d(TAG, mViewModel.getIdNuevo()+"");
         envio.setInformeEtapaDet(mViewModel.cargarInformeDet(mViewModel.getIdNuevo()));
         envio.setDetalleCaja(mViewModel.cargarDetCajas(mViewModel.getIdNuevo()));
-        Log.d(TAG, " det cajas "+envio.getDetalleCaja().get(0).getNum_caja());
+        List<ImagenDetalle> imagenes=mViewModel.buscarImagenes(envio.getInformeEtapaDet());
+
+        envio.setImagenDetalles(imagenes);
+       // Log.d(TAG, mViewModel.getIdNuevo()+" det cajas "+envio.getDetalleCaja().size());
         return envio;
     }
 
     public static void subirFotos(Activity activity, InformeEtapaEnv informe){
         //las imagenes
-        for(InformeEtapaDet imagen:informe.getInformeEtapaDet()){
+        for(ImagenDetalle imagen:informe.getImagenDetalles()){
+            //
             //subo cada una
             Intent msgIntent = new Intent(activity, SubirFotoService.class);
             msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
-            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta_foto());
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
             msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
             // Constantes.INDICEACTUAL
-            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+        //    Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
 
             msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
 
             //cambio su estatus a subiendo
             imagen.setEstatusSync(1);
             activity.startService(msgIntent);
+            //cambio su estatus a subiendo
 
         }
+
 
     }
     public void buscarPreguntas() {

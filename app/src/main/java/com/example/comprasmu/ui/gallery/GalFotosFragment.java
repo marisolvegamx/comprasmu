@@ -96,7 +96,7 @@ public class GalFotosFragment extends Fragment {
                       listafotos=igViewModel.getfotosPrep(idmuestra);
                     startuiEta(idmuestra);
                   }
-                  if(Constantes.ETAPAACTUAL==3){
+                  if(Constantes.ETAPAACTUAL==3){//etiquetado
                       listafotos=igViewModel.getfotosxetapa(idmuestra,3);
 
                       startuiEta(idmuestra);
@@ -192,7 +192,7 @@ public class GalFotosFragment extends Fragment {
                         Log.d(TAG,informeEtapaDets.size()+"--");
                     //paso todo a imagendet
                         fotos=new ArrayList<>();
-                        if(Constantes.ETAPAACTUAL==1)
+                        if(Constantes.ETAPAACTUAL==1||Constantes.ETAPAACTUAL==4)
                         for(InformeEtapaDet inf:informeEtapaDets){
                             //busco la imagen detalle
                             try {
@@ -206,9 +206,8 @@ public class GalFotosFragment extends Fragment {
                         }
                         if(Constantes.ETAPAACTUAL==3)
                             for(InformeEtapaDet inf:informeEtapaDets){
-                                ImagenDetalle id=new ImagenDetalle();
-                                id.setId(inf.getId());
-                                id.setRuta(inf.getRuta_foto());
+                                ImagenDetalle id= igViewModel.getfotoxid(inf.getRuta_foto());
+
                                 //  id.setDescripcion(inf.getDescripcion());
                                 id.setDescripcion(inf.getQr()+"\r\nCAJA:"+inf.getNum_caja());
                                 fotos.add(id);
