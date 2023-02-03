@@ -75,10 +75,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     RespInfEtapaResponse maininfoetaResp;
     RespInformesResponse maininfoResp; //para bajar las fotos desde la actividad
     List<Correccion> mainRespcor;
-
+    private boolean descargarListas;
     public DescargasIniAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
-                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener miproglis, SustitucionRepositoryImpl sustRepo,GeocercaRepositoryImpl georep) {
+                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener miproglis, SustitucionRepositoryImpl sustRepo,GeocercaRepositoryImpl georep,boolean descargarListas) {
 
         this.cdrepo=cdrepo;
         this.atRepo=atRepo;
@@ -91,6 +91,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
        // this.proglist=proglist;
         this.georep=georep;
         this.miproglis=miproglis;
+        this.descargarListas=descargarListas;
 
     }
 
@@ -105,13 +106,18 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
            listenprin=new DescargaIniListener();
         if(!isOnlineNet()) {
             miproglis.notificarSinConexion();
-           return null;
+          //  miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
+
+            return null;
         }
 
             catalogos();
             buscarZonas();
-
-            listacompras(); //aqui esta informes
+            if(descargarListas) {
+                listacompras(); //aqui esta informes
+            }else
+                procesos++;
+            if(Constantes.INDICEACTUAL!=""){
         DescargaRespListener listdesc=new DescargaRespListener();
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         if(actualiza==0) {
@@ -128,6 +134,8 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 listdesc.finalizar();
             }
         }
+        }else
+            procesos=procesos+2;
 
       /*  }else
               {
@@ -205,6 +213,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     }
     private void listacompras(){
         Log.d("DescargasIniAsyncTask", "descargando listas");
+
 
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);

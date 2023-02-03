@@ -151,7 +151,7 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
     }
 
 
-
-
-
+    public void deleteByIndice(String indice) {
+        icDao.deleteByIndice(indice);
+    }
 }

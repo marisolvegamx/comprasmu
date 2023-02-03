@@ -124,5 +124,10 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     public int getTotMuesxCaja(int cajaAct, int informeEtiId) {
        return dao.totalMuesxCaja(cajaAct,informeEtiId);
     }
+
+    public void deleteAll() {
+        dao.deleteAll();
+    }
+
 }
 

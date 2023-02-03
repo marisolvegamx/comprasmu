@@ -292,6 +292,7 @@
     <string name="enviar_errores">Enviar errores</string>
     <string name="menu_informescorrec">Informes Correcciones</string>
     <string name="coreccion_pend">Correcciones pendientes</string>
+    <string name="title_activity_borrar">BORRAR</string>
 
 
 </resources>

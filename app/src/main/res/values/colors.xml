@@ -20,4 +20,8 @@
     <color name="color_emp">#00B0F0</color>
     <color name="color_env">#FFFF00</color>
     <color name="color_gas">#92D050</color>
+    <color name="light_blue_400">#FF29B6F6</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="gray_400">#FFBDBDBD</color>
+    <color name="gray_600">#FF757575</color>
 </resources>

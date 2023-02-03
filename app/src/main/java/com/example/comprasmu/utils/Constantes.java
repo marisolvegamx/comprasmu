@@ -18,7 +18,7 @@ public class Constantes {
     public static int PLANTASEL;
     public static int CIUDADSEL;
     public static final int REQUEST_CODE_TAKE_PHOTO = 1;
-
+    public static int ETAPAMENU; //para mostrar el boton
     public static  String CLAVEUSUARIO ;
     public static  String CIUDADTRABAJO ;
     public static  int IDCIUDADTRABAJO ;

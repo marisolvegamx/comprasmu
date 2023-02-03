@@ -180,10 +180,10 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             if(etapa==1)
                 ft.add(R.id.continfeta_fragment, new NvaPreparacionFragment(1,false,null));
             else if(etapa==3)
-             ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment());
+                ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment());
             else if (etapa == 4) {
 
-                    ft.add(R.id.continfeta_fragment, new NvoEmpaqueFragment(null,false));
+                ft.add(R.id.continfeta_fragment, new NvoEmpaqueFragment(null,false));
 
 
             }
@@ -212,13 +212,13 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         //convierto la solicitud en informeEtapa
       InformeEtapa temp=new InformeEtapa();
       temp.setIndice(sol.getIndice());
-        temp.setPlantaNombre(sol.getPlantaNombre());
-        temp.setClienteNombre(sol.getClienteNombre());
-        actualizarBarra(temp);
+      temp.setPlantaNombre(sol.getPlantaNombre());
+      temp.setClienteNombre(sol.getClienteNombre());
+      actualizarBarra(temp);
       actualizarAtributo1(sol.getNombreTienda());
-        SimpleDateFormat sdf=Constantes.vistasdf;
-        if(sol.getCreatedAt()!=null)
-      actualizarAtributo2(sdf.format(sol.getCreatedAt()));
+      SimpleDateFormat sdf=Constantes.vistasdf;
+      if(sol.getCreatedAt()!=null)
+        actualizarAtributo2(sdf.format(sol.getCreatedAt()));
       //actualizarAtributo3(sol.getContador()+"");
   //    actualizarAtributo3(sol.getMotivo());
 

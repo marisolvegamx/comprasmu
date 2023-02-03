@@ -53,12 +53,12 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-      /*  if (getArguments() != null) {
-
+        if (getArguments() != null) {
+                //porque lo habia comentado????
             plantasel=getArguments().getInt(ListaCompraFragment.ARG_PLANTASEL);
            // indice=getArguments().getString(BuscarInformeFragment.INDICE);
 
-        }*/
+        }
             indice = Constantes.INDICEACTUAL;
 
 
@@ -85,7 +85,22 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
     }
 
     public void cargarLista(){
-        Log.d(Constantes.TAG,"etapa y planta sel"+Constantes.ETAPAACTUAL+"--"+plantasel);
+        Log.d(TAG,"etapa y planta sel"+Constantes.ETAPAACTUAL+"--"+plantasel);
+
+   if(plantasel>0){
+       mViewModel.cargarDetallesPlan(Constantes.ETAPAACTUAL,indice,plantasel,1).observe(getViewLifecycleOwner(), new Observer<List<SolicitudCor>>() {
+           @Override
+           public void onChanged(List<SolicitudCor> solicitudCors) {
+
+               mListAdapter.setSolicitudCorList(solicitudCors);
+               mListAdapter.notifyDataSetChanged();
+               if(solicitudCors!=null&&solicitudCors.size()>0)
+                   mBinding.emptyStateText.setVisibility(View.INVISIBLE);
+               else
+                   mBinding.emptyStateText.setVisibility(View.VISIBLE);
+           }
+       });
+   }else
     mViewModel.cargarDetalles(Constantes.ETAPAACTUAL,indice,1).observe(getViewLifecycleOwner(), new Observer<List<SolicitudCor>>() {
         @Override
         public void onChanged(List<SolicitudCor> solicitudCors) {

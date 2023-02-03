@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
+import com.example.comprasmu.ui.login.LoginActivity;
 import com.example.comprasmu.utils.Constantes;
 /****ahora si es la pagina de inicio******/
 public class HomeActivity extends AppCompatActivity {
@@ -32,8 +33,11 @@ public class HomeActivity extends AppCompatActivity {
 
         final TextView textView = findViewById(R.id.text_home);
         Constantes.ETAPAACTUAL=0;
+        Log.d("HomeActivity","entreeeee"+Constantes.ETAPAMENU);
         textusuario= findViewById(R.id.txthmusuario);
         prep= findViewById(R.id.btnhmprep);
+        TextView mensaje= findViewById(R.id.txtherror);
+
         etiq= findViewById(R.id.btnetiq);
         emp= findViewById(R.id.btnemp);
         prep.setOnClickListener(new View.OnClickListener() {
@@ -61,12 +65,48 @@ public class HomeActivity extends AppCompatActivity {
                 ira(4);
             }
         });
+        if(Constantes.ETAPAMENU==0){
+            //no puede empezar
+            mensaje.setText("No puede empezar");
+            mensaje.setVisibility(View.VISIBLE);
+            emp.setVisibility(View.GONE);
+            comp.setVisibility(View.GONE);
+            prep.setVisibility(View.GONE);
+            etiq.setVisibility(View.GONE);
+            Button btnsalir=findViewById(R.id.btnhsalir);
+            btnsalir.setVisibility(View.VISIBLE);
+            btnsalir.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    salir();
+                }
+            });
+
+        }else
+            switch (Constantes.ETAPAMENU){
+                case 1:  prep.setVisibility(View.VISIBLE);
+                    break;
+                case 2:  comp.setVisibility(View.VISIBLE);
+                    break;
+                case 3:  etiq.setVisibility(View.VISIBLE);
+                    break;
+                case 4:  emp.setVisibility(View.VISIBLE);
+                    break;
+            }
         //textusuario.on
-        Log.d("HomeActivity","entreeeee");
+
+    }
+
+    private void salir() {
+        Constantes.LOGGEADO=false;
+        Intent intento=new Intent(this, LoginActivity.class);
+        intento.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intento);
+        finish();
     }
 
     public void ira(int etapa){
-        Constantes.ETAPAACTUAL=0;
+        Constantes.ETAPAACTUAL=etapa;
         Intent intento=new Intent(this, NavigationDrawerActivity.class);
         intento.putExtra(NavigationDrawerActivity.ETAPA, etapa);
         startActivity(intento);

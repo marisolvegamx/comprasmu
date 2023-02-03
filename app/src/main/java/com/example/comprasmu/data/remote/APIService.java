@@ -135,4 +135,9 @@ public interface APIService {
             "Content-Type: application/json"
     })
     Call<PostResponse> saveCorreccionPend(@Body List<CorreccionEnvio> item);
+
+    @GET("etapa")
+    Call<EtapaResponse> getEtapaAct( @Query("cvereco") String usuario);
+
+
 }

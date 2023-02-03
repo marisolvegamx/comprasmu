@@ -294,6 +294,21 @@
             android:defaultValue="1" />
     </activity>
     <fragment
+        android:id="@+id/nav_nuevoinformeprep"
+        android:name="com.example.comprasmu.ui.preparacion.NvaPreparacionFragment"
+        android:label="@string/menu_nuevo_informe"
+        tools:layout="@layout/fragment_generic">
+
+        <action android:id="@+id/action_nuevopretociudad"
+            app:destination="@id/nav_ciudad_trabajo"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+
+
+    </fragment>
+    <fragment
         android:id="@+id/nav_continuarprep"
         android:name="com.example.comprasmu.ui.infetapa.ContInfEtapaFragment"
         android:label="@string/continuar" >

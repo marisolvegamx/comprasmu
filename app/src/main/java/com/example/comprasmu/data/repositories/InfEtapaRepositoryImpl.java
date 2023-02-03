@@ -70,6 +70,9 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     public void delete(InformeEtapa object) {
         icDao.delete(object);
     }
+    public void deleteByIndice(String indice) {
+        icDao.deleteByIndice(indice);
+    }
 
     public void  insertAll(List<InformeEtapa> newInformeEtapa) {
          icDao.insertAll(newInformeEtapa);

@@ -22,6 +22,7 @@ import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.remote.CatalogosResponse;
+import com.example.comprasmu.data.remote.EtapaResponse;
 import com.example.comprasmu.data.remote.GenericResponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 
@@ -42,9 +43,11 @@ import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.login.LoginActivity;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
 import java.io.IOException;
@@ -67,6 +70,7 @@ public class PeticionesServidor {
     static final String TAG="PeticionesServidor";
     static final String TABLA_DETALLE="pr_listacompradetalle";
     MutableLiveData<List<Tienda>> lista;
+
     public PeticionesServidor(String usuario ) {
         this.usuario = usuario;
         lista=new MutableLiveData<>();
@@ -300,7 +304,7 @@ public class PeticionesServidor {
 
     public void pedirLista(PeticionLista peticion, DescargasIniAsyncTask.DescargaIniListener listener){
 
-        Log.d("PeticionesServidor","haciendo petición"+peticion.version_lista+"--"+peticion.version_detalle);
+        Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
 
         final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompra(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle);
 
@@ -655,7 +659,32 @@ public class PeticionesServidor {
             }
         });
     }
+    public void getEtapaAct(PruebasActivity.EtapaListener listener) {
 
+        final Call<EtapaResponse> batch = ServiceGenerator.getApiService().getEtapaAct(usuario);
+
+        batch.enqueue(new Callback<EtapaResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<EtapaResponse> call, @Nullable Response<EtapaResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    EtapaResponse respuesta = response.body();
+                    Log.d("PeticionesServidor","leyendo etapaact ");
+                   listener.validarEtapa(respuesta);
+                }else {
+                    Log.e("PeticionesServidor", "algo salio mal en peticion de etapa");
+
+                      }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<EtapaResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio etapa"+t.getMessage());
+                    listener.validarEtapa(null);
+                }
+            }
+        });
+    }
     public MutableLiveData<List<Tienda>> getLista() {
         return lista;
     }

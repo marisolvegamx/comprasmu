@@ -339,6 +339,14 @@ public class PostInformeViewModel {
                     Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);
                     //actualizo el estatus
                     iniciarDBCor();
+                    if(correccion.getCorrecciones()!=null&&correccion.getCorrecciones().size()>0){
+                     //actualizo cada uno
+                        for (Correccion corre:correccion.getCorrecciones()
+                             ) {
+                            actEstatusCorreccion(corre);
+                        }
+                    }else
+                        if(correccion.getCorreccion()!=null)
                     actEstatusCorreccion(correccion.getCorreccion());
 
                     //listo para subir fotos
@@ -359,6 +367,7 @@ public class PostInformeViewModel {
         correccionRepo=new CorreccionRepoImpl(context);
     }
     public void actEstatusCorreccion(Correccion correccion){
+
         correccionRepo.actualizarEstatusSync(correccion.getId(),2);
     }
     public String getMensaje() {

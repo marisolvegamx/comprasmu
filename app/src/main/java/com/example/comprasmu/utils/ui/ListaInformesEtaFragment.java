@@ -23,8 +23,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
+import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.SubirInformeTask;
 import com.example.comprasmu.data.modelos.Correccion;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudWithCor;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
@@ -40,6 +43,7 @@ import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
+import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.Constantes;
 
 import java.util.ArrayList;
@@ -63,7 +67,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     private int etapa;
     String tipocons; //e para etapa, action_selclitocor2 para correccion
     private NvaCorreViewModel corViewModel;
-
+    NvaPreparacionViewModel npViewModel;
     public ListaInformesEtaFragment() {
 
     }
@@ -99,6 +103,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
         mViewModel = new ViewModelProvider(this).get(InformesGenViewModel.class);
         corViewModel=new ViewModelProvider(this).get(NvaCorreViewModel.class);
+         npViewModel = new ViewModelProvider(this).get(NvaPreparacionViewModel.class);
+
         setHasOptionsMenu(true);
         return    mBinding.getRoot();
     }
@@ -240,11 +246,11 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     public void onClickSubir(int informe, String tipo) {
         if(NavigationDrawerActivity.isOnlineNet()) {
             if(tipo.equals("e")) {
-                NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
-            //    InformeEtapaEnv informeenv = niViewModel.preparaInforme(informe);
-                //SubirInformeTask miTareaAsincrona = new SubirInformeTask(true, informeenv, getActivity(), niViewModel);
-             //   miTareaAsincrona.execute();
+                InformeEtapaEnv informeEta=this.preparaInforme(informe);
+                SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(informeEta,getActivity());
+                miTareaAsincrona.execute();
+                subirFotos(getActivity(),informeEta);
                 Log.d(TAG, "preparando informe**********");
              //   NuevoinformeFragment.subirFotos(getActivity(), informeenv);
             }else
@@ -292,7 +298,73 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     }
 
+    public InformeEtapaEnv preparaInforme(int informeid){
+
+        InformeEtapaEnv envio=new InformeEtapaEnv();
+        //busco el informe
+
+        envio.setInformeEtapa(npViewModel.getInformexId(informeid));
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(Constantes.INDICEACTUAL);
+        envio.setInformeEtapaDet(npViewModel.cargarInformeDet(informeid));
+        //busco las imagenes
+        if(envio.getInformeEtapa().getEtapa()==1) //por ahora solo tengo prep
+        {
+            List<ImagenDetalle> imagenes=npViewModel.buscarImagenes(envio.getInformeEtapaDet());
+
+            envio.setImagenDetalles(imagenes);
+        }
+
+        return envio;
+    }
+
+    public static void subirFotos(Activity activity, InformeEtapaEnv informe){
+        //las imagenes
+        if(informe.getInformeEtapa().getEtapa()==1){
+            //busco la imagenes
+            for(ImagenDetalle imagen:informe.getImagenDetalles()){
+                //
+                //subo cada una
+                Intent msgIntent = new Intent(activity, SubirFotoService.class);
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
+                msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+                // Constantes.INDICEACTUAL
+                Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+
+                msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
+
+                //cambio su estatus a subiendo
+                imagen.setEstatusSync(1);
+                activity.startService(msgIntent);
+                //cambio su estatus a subiendo
 
 
+
+            }
+
+
+        }else
+            for(InformeEtapaDet imagen:informe.getInformeEtapaDet()){
+                //subo cada una
+                Intent msgIntent = new Intent(activity, SubirFotoService.class);
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta_foto());
+                msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+                // Constantes.INDICEACTUAL
+                Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+
+                msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
+
+                //cambio su estatus a subiendo
+                imagen.setEstatusSync(1);
+                activity.startService(msgIntent);
+                //cambio su estatus a subiendo
+
+
+
+            }
+
+    }
 
 }

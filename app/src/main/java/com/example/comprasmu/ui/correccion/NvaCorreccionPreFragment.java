@@ -284,7 +284,8 @@ public class NvaCorreccionPreFragment extends Fragment {
                 mViewModel.setIdNuevo(mViewModel.getNvocorreccion().getId());
 
             }
-            solViewModel.actualizarEstSolicitud(solicitudSel,solicitud.getId(),4);
+           milog.grabarError(TAG+" solicitud sel "+solicitudSel+"--"+solicitud.getNumFoto());
+            solViewModel.actualizarEstSolicitud(solicitudSel,solicitud.getNumFoto(),4);
             enviarSolicitud();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
 

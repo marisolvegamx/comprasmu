@@ -64,7 +64,7 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getContext());
         ((NavigationDrawerActivity)getActivity()).pedirCorrecciones(1,Constantes.ETAPAACTUAL);
 
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep);
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep,true);
         textView.setText("Por favor mantengase en la aplicación hasta que termine la descarga");
         textView.setVisibility(View.VISIBLE);
         pb.setVisibility(View.VISIBLE);

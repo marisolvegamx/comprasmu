@@ -77,9 +77,6 @@ public class BorrarDatosFragment extends Fragment {
 
             txtipo.setText(datosRecuperados.getString(TIPODATA));
         }
-
-
-
     }
 
     public void borrarxindice(){
@@ -123,28 +120,17 @@ public class BorrarDatosFragment extends Fragment {
 
 
     public void borrarautomatico(){
-        //buscar indice anterior
-        //TODO como obtener el indice
-        SimpleDateFormat sdfparaindice=new SimpleDateFormat("MM");
-        SimpleDateFormat sdfanio=new SimpleDateFormat("yyyy");
-        String mes=sdfparaindice.format(new Date());
-        String anio=sdfanio.format(new Date());
-        int mes_anterior=Integer.parseInt(mes)-1;
-        int anio_anterior=Integer.parseInt(anio);
-        if(mes_anterior<1){
-            mes_anterior=1;
-            anio_anterior=Integer.parseInt(anio)-1;
-        }
-        String indice_anterior= ComprasUtils.indiceLetra(mes_anterior+"-"+anio_anterior);
-        indice_anterior="3.2022";
+
+     String indice_anterior=Constantes.INDICEACTUAL;
         EliminadorIndice ei=new EliminadorIndice(getActivity(),indice_anterior);
         ei.eliminarVisitas();
         aviso.setVisibility(View.VISIBLE);
-       //  mViewModel.borrarInformes(indice_anterior);
+        //todo borrar informes etapa
+        // mViewModel.borrarInformes(indice_anterior);
          mViewModel.borrarListasCompra(indice_anterior);
        // Log.d("Comprasmu.BorrarDatosFragment","Se eliminaron las listas");
 
-
+       mViewModel.borrarInformesetapa(indice_anterior);
 
 
     }

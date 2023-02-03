@@ -67,4 +67,7 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
 
     @Query("update informe_etapa_det set estatusSync=:estatus WHERE informeEtapaId=:idinforme")
     public abstract void actEstatusSyncLis(int idinforme, int estatus);
+
+    @Query("delete  from informe_etapa_det")
+    public abstract void deleteAll() ;
 }

@@ -223,7 +223,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
 
     @Override
     public List<ListaCompra> getAllsimple() {
-        return null;
+        return dao.findAllSimp();
     }
 
     @Override

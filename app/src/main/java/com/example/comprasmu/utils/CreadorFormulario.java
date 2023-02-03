@@ -805,7 +805,7 @@ public class CreadorFormulario {
     }
     public LinearLayout imagenViewr(){
         LinearLayout layout=new LinearLayout(context);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        layout.setLayoutParams(new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT,1.0f));
         layout.setOrientation(LinearLayout.HORIZONTAL);
         ImageView imagen=new ImageView(context);
         if(infocampo.value!=null&&!infocampo.value.equals("")) {
@@ -814,22 +814,23 @@ public class CreadorFormulario {
         }
         imagen.setVisibility(!infocampo.visible?View.GONE:View.VISIBLE);
         imagen.setId(infocampo.id);
-        Log.d("creadorform","creando form"+infocampo.id);
-        imagen.setLayoutParams(new ViewGroup.LayoutParams(900,500));
+        LinearLayout.LayoutParams lpi=new LinearLayout.LayoutParams(600,500);
+        lpi.setMarginStart(30);
+        lpi.setMargins(0,30,0,0);
+        imagen.setLayoutParams(lpi);
         layout.addView(imagen);
         //Pongo el boton
         BotonRotar button=new BotonRotar(context);
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(80, TableLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
 
-      //  button.setVisibility(View.GONE);
-       // LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, 97, 10, 0);
+        button.setVisibility(View.GONE);
+        lp.setMargins(20, 200, 0, 0);
         button.setLayoutParams(lp);
         button.setOnClickListener(infocampo.funcionOnClick);
         button.setId(infocampo.id+500);
        // button.setBackgroundColor(context.getColor(R.color.blue_principal));
-        button.setLayoutParams(lp);
+
         layout.addView(button);
         return  layout;
     }

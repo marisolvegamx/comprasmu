@@ -3,6 +3,7 @@ package com.example.comprasmu.utils;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -13,14 +14,17 @@ import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
 import com.example.comprasmu.data.remote.TodoEnvio;
+import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
+import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirPendService;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
+import com.example.comprasmu.ui.mantenimiento.BorrarActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
@@ -34,12 +38,14 @@ public class EliminadorIndice {
     private final ImagenDetRepositoryImpl imdRepository;
     private final InformeComDetRepositoryImpl idrepo;
     private final ProductoExhibidoRepositoryImpl prodeRepository;
+    private final CorreccionRepoImpl corRepo;
+    private final SolicitudCorRepoImpl solRepo;
     private Snackbar mSnackbarText;
     InformeCompraRepositoryImpl infrepo;
     String indice;
     Activity actividad;
     Context application;
-
+    ComprasLog complog;
     public EliminadorIndice(Context application , String indice) {
         this.visitaRepository = new VisitaRepositoryImpl(application);
         prodeRepository=new ProductoExhibidoRepositoryImpl(application);
@@ -49,6 +55,9 @@ public class EliminadorIndice {
         infrepo=new InformeCompraRepositoryImpl(application);
         this.indice=indice;
         this.application=application;
+        corRepo = new CorreccionRepoImpl(application);
+        solRepo=new SolicitudCorRepoImpl(application);
+        complog=ComprasLog.getSingleton();
     }
     public void eliminarVisitas(){ //banpas indica si se elimina por que es de 1 dia anterior
         //solo puedo eliminar si no tiene informes
@@ -95,9 +104,15 @@ public class EliminadorIndice {
         pendsi=imdRepository.getByIndice(indice);
         if(pendsi!=null&&pendsi.size()>0)
             for ( ImagenDetalle img2:pendsi) {
-                    File fdelete2 = new File(img2.getRuta());
+                complog.grabarError("liminando archivo "+Environment.DIRECTORY_PICTURES+img2.getRuta());
+                    File fdelete2 = new File(application.getExternalFilesDir(Environment.DIRECTORY_PICTURES),img2.getRuta());
                     if (fdelete2.exists())
-                        fdelete2.delete();}
+                    {
+                        boolean resp= fdelete2.delete();
+                        complog.grabarError("*eliminando archivo "+Environment.DIRECTORY_PICTURES+img2.getRuta()+"--"+resp);
+
+                    }
+            }
 
         List<VisitaWithInformes> pend = visitaRepository.getVisitaWithInformesByIndice(indice);
         if(pend!=null&pend.size()>0) {
@@ -150,5 +165,17 @@ public class EliminadorIndice {
                 Log.d("hola","eliminando");
 
         }
+    }
+
+    public void eliminarCorrecciones(){
+        corRepo.deleteByIndice(indice);
+    }
+    public void eliminarSolicitudes(){
+        solRepo.deleteByIndice(indice);
+    }
+    public void borrarImagenes(){
+
+        //busco los detalles
+       imdRepository.deleteByIndice(indice);
     }
 }

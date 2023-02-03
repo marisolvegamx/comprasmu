@@ -173,5 +173,8 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     public InformeCompraDetalle getCancelda(int comprasId, int comprasDetId, int estatus) {
         return dao.findByCompraEst( comprasId, comprasDetId);
     }
+
+    public void deleteByIndice(String indice) {
+    }
 }
 

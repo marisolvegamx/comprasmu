@@ -33,4 +33,5 @@ public abstract class BaseRepository<T> {
     public abstract void insertAll(List<T> words);
 
 
+
 }

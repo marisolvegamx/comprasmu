@@ -67,4 +67,6 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
 
     @Query("update solicitud_cor set motivo=:motivo, contador=:contador, createdAt=:fecha WHERE id=:idsol and numfoto=:numfoto")
     public abstract void actualizar(String motivo, int contador, Date fecha,  int idsol, int numfoto);
+    @Query("delete from solicitud_cor where indice=:indice ")
+    public abstract  void deleteByIndice(String indice);
 }

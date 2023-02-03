@@ -22,6 +22,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Environment;
 import android.os.SystemClock;
@@ -332,12 +333,21 @@ public class NvaPreparacionFragment extends Fragment {
         infvm.cont =preguntaAct;
         return root;
     }
-
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        if (Constantes.CIUDADTRABAJO == null || Constantes.CIUDADTRABAJO.equals("")) {
+            //falta definir
+            Toast.makeText(getActivity(), "Falta definir ciudad de trabajo", Toast.LENGTH_SHORT).show();
 
+            Intent intento1 = new Intent(getActivity(), NavigationDrawerActivity.class);
+            intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"nav_ciudad_trabajo");
+            intento1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intento1);
+            getActivity().finish();
+        }
     }
+
+
     class BotonTextWatcher implements TextWatcher {
 
         boolean mEditing;
@@ -397,7 +407,7 @@ public class NvaPreparacionFragment extends Fragment {
 
         }else
         if(preguntaAct<6){ //es para foto
-            campo.label="ETIQUETAS FOTO "+preguntaAct;
+            campo.label="ETIQUETAS Y/O MATERIALES FOTO "+preguntaAct;
             campo.nombre_campo="foto";
             campo.type="agregarImagen";
             campo.style=R.style.formlabel2;

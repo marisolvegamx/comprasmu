@@ -38,6 +38,9 @@ public class SolicitudCorRepoImpl  {
     public LiveData<List<SolicitudCor>> getAll(int etapa, String indice, int estatus) {
         return icDao.getSolicitudes(etapa, indice, estatus);
     }
+    public LiveData<List<SolicitudCor>> getAllPlan(int etapa, String indice, int plan, int estatus) {
+        return icDao.getSolicitudesPlan(etapa, indice,plan, estatus);
+    }
     public LiveData<Integer> totalSols(int etapa, String indice, int estatus) {
         return icDao.getTotSols(etapa, indice, estatus);
     }
@@ -100,5 +103,8 @@ public class SolicitudCorRepoImpl  {
     }
     public void actualizar(String motivo, int contador, Date fecha,int idsol, int numfoto) {
         icDao.actualizar(motivo,contador,fecha,  idsol,numfoto);
+    }
+    public void deleteByIndice(String indice) {
+        icDao.deleteByIndice(indice);
     }
 }

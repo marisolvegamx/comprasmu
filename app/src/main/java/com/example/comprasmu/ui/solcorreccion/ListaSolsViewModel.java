@@ -52,6 +52,12 @@ public class ListaSolsViewModel extends AndroidViewModel {
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
         return listas;
     }
+    public LiveData<List<SolicitudCor>>  cargarDetallesPlan(int etapa,String indiceSel,int plantaSel, int estatus){
+        LiveData<List<SolicitudCor>> listas =repository.getAllPlan(etapa,indiceSel,plantaSel, estatus);
+        size = Transformations.map(listas, res->{ return listas.getValue().size();});
+        empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
+        return listas;
+    }
     public LiveData<Integer> getTotalSols(int etapa, String indiceSel, int estatus){
         Log.d(TAG,"wwww"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 

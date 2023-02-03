@@ -162,4 +162,7 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
         return dao.insert(object);
     }
 
+    public void deleteByIndice(String indice) {
+        dao.deleteByIndice(indice);
+    }
 }
