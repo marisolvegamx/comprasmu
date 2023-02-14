@@ -160,9 +160,11 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
     public long insert(Visita object)
     {
         //busco el consecutivo x ciudad
-        int consecutivocd=icDao.getUltimoConsCd(object.getIndice(),object.getCiudadId());
-        consecutivocd=consecutivocd+1;
-        object.setConsecutivocd(consecutivocd);
+        if(object.getConsecutivocd()==0) {
+            int consecutivocd = icDao.getUltimoConsCd(object.getIndice(), object.getCiudadId());
+            consecutivocd = consecutivocd + 1;
+            object.setConsecutivocd(consecutivocd);
+        }
             return icDao.insert(object);
     }
 

@@ -33,16 +33,26 @@ import com.example.comprasmu.data.PeticionesServidor;
 
 import com.example.comprasmu.data.modelos.Contrato;
 
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
+import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.MuestraCancelada;
 
+import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.SolCorreResponse;
 
+import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
+import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 
+import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
 
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
@@ -103,7 +113,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     SubirFotoProgressReceiver rcv;
     String TAG="NavigationDrawerActivity";
     private ListaDetalleViewModel mViewModel;
-
+    VisitaRepositoryImpl visRepo;
+    InformeComDetRepositoryImpl infdrepo;
+    InformeCompraRepositoryImpl infrepo;
     private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -273,9 +285,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_cancel));
         }
-        if(Constantes.ETAPAACTUAL==3)
-            gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+        if(Constantes.ETAPAACTUAL==3) {
+            pedirInformes(0);
+            gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
+        }
         if(Constantes.ETAPAACTUAL==4)
             gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
@@ -707,12 +721,45 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     });*/
 
     }
+
+    public void pedirInformes(int actualiza) {
+        tvRepo=new TablaVersionesRepImpl(this);
+        visRepo=new VisitaRepositoryImpl(this);
+        infdrepo=new InformeComDetRepositoryImpl(this);
+         infrepo=new InformeCompraRepositoryImpl(this);
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+         TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLINFORMESCOMP, Constantes.INDICEACTUAL);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String version;
+        if (comp != null && comp.getVersion() != null) {
+            version = sdf.format(comp.getVersion());
+            //
+
+        } else //es la 1a vez
+        {
+            version = "1999-09-09"; //una fecha muy antigua
+
+
+        }
+        if (actualiza == 1) {
+            version = "1999-09-09"; //una fecha muy antigua
+        }
+        //siempre actualizo
+        if (NavigationDrawerActivity.isOnlineNet())
+            ps.pedirInformes(Constantes.INDICEACTUAL,version,new ActualListener());
+
+        else
+            notificar = true;
+
+
+    }
     public class ActualListener {
 
         public int actualizarCorre(SolCorreResponse corrResp, int etapa) {
 
             //primero los inserts
-            if (corrResp!=null) {
+            if (corrResp != null) {
                 if (corrResp != null && corrResp.getInserts() != null) {
                     for (SolicitudCor sol : corrResp.getInserts()
                     ) {
@@ -762,16 +809,51 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                             scViewModel.procesarCanceladas(cancel);
 
                         }
-                else
-                    for (MuestraCancelada cancel :
+                    else
+                        for (MuestraCancelada cancel :
                                 corrResp.getCanceladas()) {
                             //busco el informedetalle y actualizo el estatus
                             scViewModel.procesarCanceladasEta(cancel);
 
-                    }
+                        }
 
             }
             return 1;
+
+        }
+
+        public void actualizarInformes(RespInformesResponse infoResp) {
+            Log.d(TAG, "actualizando bd informes");
+            //primero los inserts
+            if (infoResp != null) {
+
+                if (infoResp.getVisita() != null) {
+                    //reviso cada uno y las inserto
+                    for (Visita vis : infoResp.getVisita()) {
+                        visRepo.insert(vis); //inserto blblbl
+                    }
+                }
+                if (infoResp.getInformeCompra() != null && infoResp.getInformeCompra().size() > 0) {
+                    //como puede que ya existan reviso primero e inserto unoxuno
+                    infrepo.insertAll(infoResp.getInformeCompra());
+                }
+                if (infoResp.getInformeCompraDetalles() != null && infoResp.getInformeCompraDetalles().size() > 0) {
+                    //como puede que ya existan reviso primero e inserto unoxuno
+                    infdrepo.insertAll(infoResp.getInformeCompraDetalles());
+                }
+
+            }
+            //actualizar version en tabla
+            TablaVersiones tinfo = new TablaVersiones();
+            tinfo.setNombreTabla(Contrato.TBLINFORMESCOMP);
+            Date fecha1 = new Date();
+            Log.d("DescargasAsyncTask", "insertando fecha version 1" + fecha1);
+
+            tinfo.setVersion(fecha1);
+            tinfo.setIndice(Constantes.INDICEACTUAL);
+            tinfo.setTipo("I");
+
+            tvRepo.insertUpdate(tinfo);
 
         }
     }

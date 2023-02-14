@@ -349,7 +349,7 @@ public class PeticionesServidor {
 
         Log.d("PeticionesServidor","haciendo petición pedir respaldo "+usuario);
 
-        final Call<RespInformesResponse> batch = ServiceGenerator.getApiService().getRespaldoInf(indice,usuario);
+        final Call<RespInformesResponse> batch = ServiceGenerator.getApiService().getRespaldoInf(indice,usuario,"");
 
         batch.enqueue(new Callback<RespInformesResponse>() {
             @Override
@@ -476,7 +476,47 @@ public class PeticionesServidor {
         });
     }
 
+    public void pedirInformes(String indice,String version, NavigationDrawerActivity.ActualListener listener){
 
+        Log.d("PeticionesServidor","haciendo petición pedir respaldo "+usuario);
+
+        final Call<RespInformesResponse> batch = ServiceGenerator.getApiService().getRespaldoInf(indice,usuario,version);
+
+        batch.enqueue(new Callback<RespInformesResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<RespInformesResponse> call, @Nullable Response<RespInformesResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    RespInformesResponse compraResp = response.body();
+                    //reviso si está actualizado
+                    if(compraResp!=null) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","resp>>"+compraResp.getVisita());
+
+                        listener.actualizarInformes(compraResp);
+                        /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
+                        lcdrepo.insertAll(compraResp.getDetalles());
+                        //actualizar version en tabla
+                        tvrepo.insertAll(compraResp.getVersiones());
+*/
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista vacia");
+                        listener.actualizarInformes(null);
+                    }
+
+                }else  listener.actualizarInformes(null);
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<RespInformesResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+                    listener.actualizarInformes(null);
+                }
+            }
+        });
+    }
     public void cancelarInforme(int informeId,InformeCancelar informe){
 
         Call<ResponseBody> respuesta= ServiceGenerator.getApiService().cancelarInforme(informeId,informe);

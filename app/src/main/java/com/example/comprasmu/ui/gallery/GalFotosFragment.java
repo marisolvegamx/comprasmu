@@ -271,19 +271,14 @@ public class GalFotosFragment extends Fragment {
         } else {
             fotos = new ArrayList<ImagenDetalle>();
             ponerFoto(getString(R.string.foto_fachada), visita.getFotoFachada());
-            ponerFoto(getString(R.string.condiciones), informe.getCondiciones_traslado());
-            ponerFoto(getString(R.string.ticket_compra), informe.getTicket_compra());
+            List<ProductoExhibidoDao.ProductoExhibidoFoto> productoExhibidoFotos= mViewModel.getproductoExhibsimp(visita.getId(), informe.getClientesId());
 
-
-            mViewModel.getproductoExhib(visita.getId(), informe.getClientesId()).observe(getViewLifecycleOwner(), new Observer<List<ProductoExhibidoDao.ProductoExhibidoFoto>>() {
-                @Override
-                public void onChanged(List<ProductoExhibidoDao.ProductoExhibidoFoto> productoExhibidoFotos) {
-                    if (productoExhibidoFotos != null && productoExhibidoFotos.size() > 0) {
+            if (productoExhibidoFotos != null && productoExhibidoFotos.size() > 0) {
                         //      mBinding.setProdex(productoExhibidoFotos.get(0));
                         //    mBinding.ivuiprodex.setImageBitmap(ComprasUtils.decodeSampledBitmapFromResource(directorio+productoExhibidoFotos.get(0).ruta
                         //         , 100, 100));
                         //convierto el prod exhibido a imagen detalle
-                        for (ProductoExhibidoDao.ProductoExhibidoFoto pf : productoExhibidoFotos) {
+                for (ProductoExhibidoDao.ProductoExhibidoFoto pf : productoExhibidoFotos) {
                             ImagenDetalle id = new ImagenDetalle();
                             id.setRuta(pf.ruta);
                             id.setDescripcion("EXHIBIDOR " + pf.nombreCliente);
@@ -296,10 +291,11 @@ public class GalFotosFragment extends Fragment {
                           verImagen(productoExhibidoFotos.get(0).ruta);
                       }
                   });*/
-                    }
+            }
 
-                }
-            });
+            ponerFoto(getString(R.string.ticket_compra), informe.getTicket_compra());
+            ponerFoto(getString(R.string.condiciones), informe.getCondiciones_traslado());
+
         }
 
     }

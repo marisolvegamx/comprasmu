@@ -5,7 +5,9 @@ public  class Contrato {
   public static String TBLLISTACOMPRAS="lista_compras";
     public static String TBLLISTACOMPRASDET="lista_compras_detalle";
     public static String TBLSOLCORRECCIONES="solicitud_cor";
-
+    public static String TBLINFORMESCOMP="informe_compras";
+    public static String TBLINFORMESDET="informe_detalle";
+    public static String TBLVISITAS="visitas";
 
     public static class  CatalogosId{
         public static final int CADENACOMER =1 ;

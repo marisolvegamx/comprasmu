@@ -18,7 +18,6 @@ import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 
 import com.example.comprasmu.data.modelos.Correccion;
-import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
@@ -62,7 +61,6 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getContext());
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getContext());
-        ((NavigationDrawerActivity)getActivity()).pedirCorrecciones(1,Constantes.ETAPAACTUAL);
 
         DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep,true);
         textView.setText("Por favor mantengase en la aplicación hasta que termine la descarga");
@@ -70,6 +68,8 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         pb.setVisibility(View.VISIBLE);
 
         task.execute("","act"); //para saber que estoy actualizando
+        ((NavigationDrawerActivity)getActivity()).pedirCorrecciones(1,Constantes.ETAPAACTUAL);
+
         //descarga solicitudes compra
          /*AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         builder.setCancelable(false);

@@ -67,7 +67,7 @@ public interface InformeCompraDao {
 
    @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +
             "FROM informe_compras inner join visitas on visitasId=visitas.id " +
-            "where indice=:indice and plantasId=:planta")
+            "where indice=:indice and plantasId=:planta and (causa_nocompra is null or causa_nocompra!='4') ")
     int getLastConsecutivoInforme(String indice, int planta);
 
    /* @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +

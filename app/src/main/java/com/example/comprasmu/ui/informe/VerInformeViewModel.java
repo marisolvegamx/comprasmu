@@ -113,6 +113,15 @@ public class VerInformeViewModel extends AndroidViewModel {
 
     }
 
+    public List<ProductoExhibidoDao.ProductoExhibidoFoto> getproductoExhibsimp(int idvisita, int cliente) {
+        // return prodRepo.getAllByVisita(visita.getId());
+        //fotos prod exhibido
+        return prodRepo.getAllByVisitaClisimp(idvisita,cliente);
+
+
+
+    }
+
 
 
     public  void cargarImagenesDet( InformeCompraDetalle detalle){

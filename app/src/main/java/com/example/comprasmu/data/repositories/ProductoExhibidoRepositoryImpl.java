@@ -125,7 +125,9 @@ public class ProductoExhibidoRepositoryImpl extends BaseRepository<ProductoExhib
     public  LiveData<List<ProductoExhibidoDao.ProductoExhibidoFoto>> getAllByVisitaCli(int id, int cliente){
         return  dao.getAllByVisitaCliente(id,cliente);
     }
-
+    public  List<ProductoExhibidoDao.ProductoExhibidoFoto> getAllByVisitaClisimp(int id, int cliente){
+        return  dao.getAllByVisitaClienteSimp(id,cliente);
+    }
     public List<ProductoExhibido> getProdPendSubir(String indice) {
         return dao.getByEstatusSync(indice,0);
     }

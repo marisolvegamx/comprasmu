@@ -1471,7 +1471,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
            // ultimaLoc=mlocManager.getLastKnownLocation(provedorgps);
             txtaiultubic.setText(txtubicacion.getText().toString());
-            buscarDireccion();
+           // buscarDireccion();
       //  }
     }
     public boolean guardar(){

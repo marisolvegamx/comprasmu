@@ -88,6 +88,8 @@ public abstract class ProductoExhibidoDao extends BaseDao<ProductoExhibido> {
 
     @Query("SELECT * FROM ProductoExhibidoFoto where visitasId=:id and clienteId=:cliente")
     public abstract LiveData<List<ProductoExhibidoFoto>> getAllByVisitaCliente(int id, int cliente);
+    @Query("SELECT * FROM ProductoExhibidoFoto where visitasId=:id and clienteId=:cliente")
+    public abstract List<ProductoExhibidoFoto> getAllByVisitaClienteSimp(int id, int cliente);
 
     @DatabaseView("SELECT producto_exhibido.id as idprodex, " +
             "producto_exhibido.visitasId, " +

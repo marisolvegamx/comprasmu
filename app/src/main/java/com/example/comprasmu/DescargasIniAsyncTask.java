@@ -55,7 +55,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     SimpleDateFormat sdfdias;
     ListaCompraDetRepositoryImpl lcdrepo;
     ListaCompraRepositoryImpl lcrepo;
-    InformeCompraRepositoryImpl inforepo;
+
     VisitaRepositoryImpl visRepo;
     InformeComDetRepositoryImpl infdrepo;
     ImagenDetRepositoryImpl imagenDetRepo;
@@ -494,8 +494,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
         }
     public void informes(){
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-        DescargaRespListener listener=new DescargaRespListener();
+          DescargaRespListener listener=new DescargaRespListener();
         int ban=0;
         if(getTotVisitas()==0) {
             //    DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespAsyncTask.DescargaRespListener();

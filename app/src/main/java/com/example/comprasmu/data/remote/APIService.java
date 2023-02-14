@@ -99,7 +99,7 @@ public interface APIService {
     Call<TiendasResponse> getGeocercas(@Query("indice") String indice, @Query("usuario") String usuario);
 
     @GET("descresp")
-    Call<RespInformesResponse> getRespaldoInf( @Query("indice") String indice, @Query("usuario") String usuario);
+    Call<RespInformesResponse> getRespaldoInf( @Query("indice") String indice, @Query("usuario") String usuario,@Query("version") String version);
     @GET("descresp2")
     Call<RespInfEtapaResponse> getRespaldoInf2( @Query("indice") String indice, @Query("usuario") String usuario);
 

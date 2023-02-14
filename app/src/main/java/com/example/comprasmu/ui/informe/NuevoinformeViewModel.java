@@ -620,8 +620,10 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                     params[0] = Boolean.class;
                 }*/
             nuevo.setVisitasId(info.getVisitasId());
-            Log.d(TAG,"******otro cons"+info.getConsecutivo());
-            nuevo.setConsecutivo(info.getConsecutivo());
+            if(info.getNombre_campo().equals("plantasId")) {
+                Log.d(TAG, "******otro cons" + info.getConsecutivo() + info.getNombre_campo());
+                nuevo.setConsecutivo(info.getConsecutivo());
+            }
             nuevo.setId(info.getInformesId());
                 if(info.getNombre_campo().equals("ticket_compra")) {
                     if(info.getValor().equals("0")){
@@ -640,6 +642,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                     }
                 }else
                 if(info.getNombre_campo().equals("condiciones_traslado")) {
+                    Log.d(TAG,"******otro cons"+info.getConsecutivo()+info.getNombre_campo());
+                    nuevo.setConsecutivo(info.getConsecutivo());
                     this.condiciones_traslado = new ImagenDetalle();
                     this.condiciones_traslado.setRuta(info.getValor());
                     this.condiciones_traslado.setDescripcion("condiciones traslado");
