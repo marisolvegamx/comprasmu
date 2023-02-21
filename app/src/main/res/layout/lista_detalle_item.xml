@@ -49,6 +49,7 @@
             android:id="@+id/ldcardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardBackgroundColor='@{isBu?@color/white:(detalle.comprados==detalle.cantidad?@color/green_pas:(detalle.comprados==0?@color/white:@color/yellow_pas))}'
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp"
             app:cardUseCompatPadding="true"
@@ -88,9 +89,9 @@
                         style="@style/textolistagrisb"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="@{isBu?View.INVISIBLE:View.VISIBLE}"
                         android:text="@{String.valueOf(detalle.comprados)+'/'+String.valueOf(detalle.cantidad)}"
-                        android:textAlignment="textEnd" />
+                        android:textAlignment="textEnd"
+                        android:visibility="@{isBu?View.INVISIBLE:View.VISIBLE}" />
                 </LinearLayout>
 
                 <TextView
@@ -152,6 +153,7 @@
                             android:layout_marginTop="4dp"
                             android:text='@{detalle.nombreTipoMuestra}'
                             android:visibility="@{isBu?View.INVISIBLE:View.VISIBLE}" />
+
                         <TextView
                             android:id="@+id/txtldisbu3"
                             android:layout_width="59dp"
@@ -173,6 +175,7 @@
                         android:theme="@android:style/Widget.Material.Button.Small"
                         android:visibility='@{(cliente==4&amp;&amp;((detalle.infcd!=null?detalle.infcd.size():0)+detalle.comprados+1&lt;=detalle.cantidad)&amp;&amp;((detalle.lid_numtienbak>0?numTienda>=detalle.lid_numtienbak:numTienda>10)&amp;&amp;mostrarbcu&amp;&amp;detalle.lid_backup==-1))?View.VISIBLE:View.GONE}'
                         app:srcCompat="@drawable/ic_baseline_repeat_24" />
+
                     <ImageButton
                         android:id="@+id/btnldbackuppen"
                         style="@style/imbutton"
@@ -200,7 +203,6 @@
                     android:gravity="right"
                     android:orientation="horizontal"
                     android:visibility="gone">
-
 
 
                     <TextView
@@ -231,8 +233,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text='@{@string/ver_codigos+">"}'
-                     />
+                    android:text='@{@string/ver_codigos+">"}' />
 
                 <TextView
                     android:id="@+id/txtcodigos"
@@ -283,16 +284,15 @@
 
                     android:id="@+id/informebudata"
 
-                    android:orientation="vertical"
-                    android:visibility="@{!isBu&amp;&amp;detalle.infcd!=null?View.VISIBLE:View.GONE}"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_width="match_parent">
+                    android:orientation="vertical"
+                    android:visibility="@{!isBu&amp;&amp;detalle.infcd!=null?View.VISIBLE:View.GONE}">
 
                 </LinearLayout>
 
 
-
-               <!-- <include
+                <!-- <include
                     android:id="@+id/informebudata"
                     layout="@layout/lista_detalle_item2"
                     android:layout_width="match_parent"

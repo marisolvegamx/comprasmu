@@ -6,6 +6,7 @@ public class ListaDetalleBu extends ListaCompraDetalle {
     boolean botonbu;
     boolean botonAgregar;
     boolean completado;
+    String color;
     public ListaDetalleBu(){
 
     }
@@ -68,5 +69,13 @@ public class ListaDetalleBu extends ListaCompraDetalle {
 
     public void setCompletado(boolean completado) {
         this.completado = completado;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }
