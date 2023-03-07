@@ -102,6 +102,7 @@ import java.text.SimpleDateFormat;
 
 import java.util.Date;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -129,7 +130,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     TablaVersionesRepImpl tvRepo;
     boolean notificar=false;
     int desclis; int descinf; int descfoto;
-    LiveData <Integer> totCancel;
+    LiveData<List<InformeCompraDetalle>> totCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -634,12 +635,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             txtcancel.setTypeface(null, Typeface.BOLD);
             txtcancel.setTextColor(Color.RED);
             //  gallery.setTextSize(15);
-            totCancel.observe(this, new Observer<Integer>() {
+            totCancel.observe(this, new Observer<List<InformeCompraDetalle>>() {
                 @Override
-                public void onChanged(Integer integer) {
-                    txtcancel.setText(integer + "");
+                public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
+                    if(informeCompraDetalles!=null)
+                    txtcancel.setText(informeCompraDetalles.size() + "");
                 }
             });
+
 
         }
 

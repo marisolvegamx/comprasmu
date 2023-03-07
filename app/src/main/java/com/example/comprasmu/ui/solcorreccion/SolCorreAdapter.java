@@ -43,7 +43,7 @@ public class SolCorreAdapter extends RecyclerView.Adapter<SolCorreAdapter.Solici
     public void onBindViewHolder(@NonNull SolCorreAdapter.SolicitudCorViewHolder holder, int position) {
        // holder.binding.setViewModel(mViewModel);
         holder.binding.setDetalle(mSolicitudCorList.get(position));
-        holder.binding.setSdf(Constantes.vistasdf);
+        holder.binding.setSdf(Constantes.sdfsolofecha);
       //  holder.binding.set
     }
 

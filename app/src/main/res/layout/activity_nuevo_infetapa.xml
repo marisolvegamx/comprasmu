@@ -104,8 +104,8 @@
                     android:layout_height="wrap_content"
 
                     android:layout_weight="1"
-                    android:text=''
-                    android:visibility="gone" />
+                    android:text='@{informe.consecutivo>0?@string/consecutivo+" "+informe.consecutivo:""}'
+                    />
             </TableRow>
 
             <TableRow
@@ -174,9 +174,9 @@
 
         <fragment
             android:id="@+id/continfeta_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:name="androidx.navigation.fragment.NavHostFragment"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

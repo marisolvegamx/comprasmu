@@ -31,6 +31,7 @@ import com.example.comprasmu.R;
 
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
@@ -118,8 +119,16 @@ public class NvaCorreccionFragment extends Fragment {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
-                Log.e(TAG,"estatus "+solicitud.getEstatus());
-                ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud);
+                Log.e(TAG,"estatus "+solicitud.getInformesId());
+                //busco el consecutivo de la tienda
+                int constienda=0;
+                if(solicitudCor.getInformesId()>0) {
+                    InformeCompra informe = solViewModel.getInformeSol(solicitudCor.getInformesId());
+                    Log.d(TAG,"inf "+informe.getConsecutivo());
+                    if(informe!=null)
+                        constienda=informe.getConsecutivo();
+                }
+                    ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud, constienda);
                 crearFormulario();
 
                 //BUSCO LA FOTO ORIGINAL

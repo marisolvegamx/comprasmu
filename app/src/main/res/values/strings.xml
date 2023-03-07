@@ -207,7 +207,7 @@
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="cerrar_app">¿ESTÁ SEGURO DE SALIR DE LA APLICACIÓN?</string>
     <string name="continuar">CONTINUAR</string>
-    <string name="listas_actualiz">LAS LISTAS YA ESTÁN ACTUALIZADAS</string>
+    <string name="listas_actualiz">LA INFORMACION ESTÁ ACTUALIZADA</string>
     <string name="pregunta_salir">¿ESTÁ SEGURO DE SALIR DE LA CAPTURA DEL INFORME?</string>
     <string name="selecciones_causa">SELECCIONE CAUSA</string>
     <string name="muestra_atras">SI VUELVE ATRÁS SE CANCELARÁ LA MUESTRA Y LO QUE LLEVE CAPTURADO ¿ESTÁ SEGURO?</string>
@@ -293,6 +293,13 @@
     <string name="menu_informescorrec">Informes Correcciones</string>
     <string name="coreccion_pend">Correcciones pendientes</string>
     <string name="title_activity_borrar">BORRAR</string>
+    <string name="agregar_caja">Agregar caja</string>
+    <string name="selecc_planta">Sel. planta</string>
+    <string name="reubicar">Reubicar muestra</string>
+    <string name="title_activity_reubic_etiq">ReubicEtiqActivity</string>
+    <string name="reubicarEtiq">REUBICAR MUESTRA</string>
+    <string name="menu_reubiqetiq">Reubicar muestra</string>
+    <string name="menu_eliminaretiq">"Eliminar caja "</string>
 
 
 </resources>

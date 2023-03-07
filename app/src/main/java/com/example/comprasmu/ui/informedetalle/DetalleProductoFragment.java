@@ -813,7 +813,7 @@ public class DetalleProductoFragment extends Fragment {
 
     }
 
-    public void guardarCliente(){
+    public void guardarCliente(){ //ahora tambien es planta
         lastClickTime=0;
         DescripcionGenerica opcionsel = (DescripcionGenerica) spclientes.getSelectedItem();
         int valor = opcionsel.getId(); //esta es la planta
@@ -855,7 +855,7 @@ public class DetalleProductoFragment extends Fragment {
         mViewModel.informe.setPlantasId(valor);
         plantaSel =valor;
         NOMBREPLANTASEL = opcionsel.getDescripcion();
-        Log.d(TAG,"ssssss"+mViewModel.consecutivo);
+
         //actualizo barra
         ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
       //  guardarResp();

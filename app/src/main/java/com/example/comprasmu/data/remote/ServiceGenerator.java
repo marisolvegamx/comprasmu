@@ -40,6 +40,7 @@ public class ServiceGenerator {
         {
             BASE_URL = "https://muesmerc.mx/comprasv1/api/public/";
         }
+       // BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
         OkHttpClient httpClient =new OkHttpClient.Builder()
                 .readTimeout(25, TimeUnit.SECONDS)
                 .connectTimeout(25, TimeUnit.SECONDS)

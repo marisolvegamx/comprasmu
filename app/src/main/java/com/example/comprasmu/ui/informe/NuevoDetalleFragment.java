@@ -44,7 +44,7 @@ public class NuevoDetalleFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
-        LinearLayout sv = root.findViewById(R.id.llnepreg2);
+     //   LinearLayout sv = root.findViewById(R.id.llnepreg2);
 
         crearFormulario();
     }

@@ -4,22 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <ScrollView
 
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/linearLayout10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="30dp"
             android:layout_marginEnd="16dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:id="@+id/llnepreg1"
@@ -49,39 +48,16 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/llnepreg2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/txtnenumuestra"
-                    style="@style/formlabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/num_cajas" />
-
-                <EditText
-                    android:id="@+id/txtnetotalcajas"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="30dp"
-                    android:inputType="textPersonName"
-                    android:visibility="visible" />
-
-                <Button
-                    android:id="@+id/btnneac2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/aceptar" />
-            </LinearLayout>
-
             <TextView
                 android:id="@+id/txtnenumcaja"
+                style="@style/formlabel2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="0dp" />
+
+            <TextView
+                android:id="@+id/txtnetotmues"
                 style="@style/formlabel2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +74,8 @@
                     style="@style/formlabel2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp" />
 
                 <EditText
                     android:id="@+id/txtneruta"
@@ -150,7 +127,7 @@
 
 
             <LinearLayout
-                android:id="@+id/llnepre4"
+                android:id="@+id/llrepre4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -191,54 +168,16 @@
                 android:id="@+id/llneotra"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <com.example.comprasmu.utils.Preguntasino
-                    android:id="@+id/sinoneotramu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="30dp">
-
-                </com.example.comprasmu.utils.Preguntasino>
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/btnneac5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/aceptar" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llnecoincide"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvnelisqr"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-
-                <com.example.comprasmu.utils.Preguntasino
-                    android:id="@+id/sinonecoincide"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="30dp">
-
-                </com.example.comprasmu.utils.Preguntasino>
-
-                <Button
-                    android:id="@+id/btnneac6"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/aceptar" />
+                    android:text="@string/aceptar"
+                    android:visibility="visible" />
 
             </LinearLayout>
 
@@ -273,10 +212,61 @@
                     android:text="@string/enviar" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llnepre6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spnecaja"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btnneacep6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/guardar" />
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/llnebotones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-    </ScrollView>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/btnnecajamas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:text="@string/agregar_caja" />
+
+          <!--  <Button
+                android:id="@+id/btnneselplanta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:text="@string/reubicar" />-->
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

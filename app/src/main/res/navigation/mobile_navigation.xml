@@ -258,7 +258,7 @@
     <fragment
         android:id="@+id/nav_listaprep"
         android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
-        android:label="@string/menu_informescorrec">
+        android:label="@string/menu_resumeninf">
         <argument
             android:name="comprasmu.correselcli.tipocons"
             app:argType="string"
@@ -355,6 +355,7 @@
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
             android:defaultValue="3" />
+
     </activity>
     <fragment
         android:id="@+id/nav_continuaretiq"
@@ -364,6 +365,12 @@
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
             android:defaultValue="3" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_reubicetiq"
+        android:name="com.example.comprasmu.ui.etiquetado.ReubicEtiqFragment"
+        android:label="@string/reubicarEtiq" >
+
     </fragment>
 
 

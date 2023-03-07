@@ -25,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,10 +34,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -57,12 +57,12 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
+import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 
-import com.example.comprasmu.ui.tiendas.DescripcionGenericaAdapter;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -76,7 +76,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Observable;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -84,13 +83,13 @@ import static android.app.Activity.RESULT_OK;
 public class NvoEtiquetadoFragment extends Fragment {
 
     private  InformeEtapaDet detalleEdit;
-    LinearLayout sv1,sv2,sv3,sv4,sv5, svotra, svcoin;
+    LinearLayout sv1, sv6,sv3,sv4,sv5, svotra, svcoin;
     private static final String TAG = "NvoEtiquetadoFragment";
-    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5,aceptar6,guardar;
+    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5,aceptar6,nvacaja,selplanta,guardar;
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
-    EditText txtnumcajas,txtrutaim,txtcomentarios, txtqr;
-    TextView txtnumuestra, txtcajaact;
+    EditText txtrutaim,txtcomentarios, txtqr;
+    TextView txtnumuestra, txtcajaact,txttotmues;
     ImageView fotomos;
     private ImageButton btnrotar, btntomarf,btnqr;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
@@ -113,7 +112,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     int totcajas=0,totmuestras;
     private  ArrayList<DescripcionGenerica> listaPlantas;
     private boolean isEdicion;
-    Spinner spplanta;
+    Spinner spplanta,spcaja;
     RecyclerView listaqr;
     ComprasLog milog;
     public NvoEtiquetadoFragment(int preguntaAct,boolean edicion, InformeEtapaDet informeEdit,int informeSel) {
@@ -136,42 +135,47 @@ public class NvoEtiquetadoFragment extends Fragment {
 
         root= inflater.inflate(R.layout.fragment_nvoetiq, container, false);
         sv1 = root.findViewById(R.id.llnepreg1);
-        sv2 = root.findViewById(R.id.llnepreg2);
+        sv6 = root.findViewById(R.id.llnepre6);
         sv3 = root.findViewById(R.id.llnepreg3);
-        sv4 = root.findViewById(R.id.llnepre4);
+        sv4 = root.findViewById(R.id.llrepre4);
         sv5 = root.findViewById(R.id.llnepre5);
-        svotra = root.findViewById(R.id.llneotra);
-        svcoin = root.findViewById(R.id.llnecoincide);
+        svotra = root.findViewById(R.id.llnebotones);
+      //  svcoin = root.findViewById(R.id.llnecoincide);
         aceptar1 = root.findViewById(R.id.btnneac1);
-        aceptar2 = root.findViewById(R.id.btnneac2);
+      //  aceptar2 = root.findViewById(R.id.btnneac2);
         aceptar3 = root.findViewById(R.id.btnneac3);
         aceptar4 = root.findViewById(R.id.btnneac4);
         aceptar5 = root.findViewById(R.id.btnneac5);
-        aceptar6 = root.findViewById(R.id.btnneac6);
+        aceptar6 = root.findViewById(R.id.btnneacep6);
+        nvacaja = root.findViewById(R.id.btnnecajamas);
+    //    selplanta = root.findViewById(R.id.btnneselplanta);
         guardar = root.findViewById(R.id.btnneguardar);
         btnrotar = root.findViewById(R.id.btnnerotar1);
         btntomarf = root.findViewById(R.id.btnnefoto);
-        listaqr = root.findViewById(R.id.rvnelisqr);
+       // listaqr = root.findViewById(R.id.rvnelisqr);
         btnqr = root.findViewById(R.id.btnneobtqr);
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
         milog=ComprasLog.getSingleton();
-        milog.grabarError(TAG+" se muere aqui");
+        //todo borrar
+        totmuestras=2;
+        /////////////////
         sv1.setVisibility(View.GONE);
-        sv2.setVisibility(View.GONE);
+        sv6.setVisibility(View.GONE);
         sv3.setVisibility(View.GONE);
         sv4.setVisibility(View.GONE);
         sv5.setVisibility(View.GONE);
         svotra.setVisibility(View.GONE);
-        svcoin.setVisibility(View.GONE);
+       // svcoin.setVisibility(View.GONE);
         fotomos=root.findViewById(R.id.ivnefotomue);
         txtrutaim=root.findViewById(R.id.txtneruta);
         txtnumuestra=root.findViewById(R.id.txtnemuestra);
-        pcoincide=root.findViewById(R.id.sinonecoincide);
-        potra=root.findViewById(R.id.sinoneotramu);
+       // pcoincide=root.findViewById(R.id.sinonecoincide);
+       // potra=root.findViewById(R.id.sinoneotramu);
         spplanta=root.findViewById(R.id.spneplanta);
+        spcaja=root.findViewById(R.id.spnecaja);
         txtcomentarios=root.findViewById(R.id.txtnecomentarios);
-        txtnumcajas=root.findViewById(R.id.txtnetotalcajas);
+        txttotmues=root.findViewById(R.id.txtnetotmues);
         contmuestra=1;
         contmuint=1;
         contcaja=1;
@@ -179,22 +183,28 @@ public class NvoEtiquetadoFragment extends Fragment {
         txtcajaact=root.findViewById(R.id.txtnenumcaja);
 
         txtqr=root.findViewById(R.id.txtneqr);
-        potra.setmLabel("¿INCLUIRAS OTRA MUESTRA EN ESTA CAJA?");
-
+       // potra.setmLabel("¿INCLUIRAS OTRA MUESTRA EN ESTA CAJA?");
+        txttotmues.setText("TOTAL MUESTRAS: 2");
+        txttotmues.setVisibility(View.GONE);
         txtcajaact.setVisibility(View.GONE);
         aceptar1.setEnabled(false);
-        aceptar2.setEnabled(false);
+       // aceptar2.setEnabled(false);
         aceptar3.setEnabled(false);
         aceptar4.setEnabled(false);
         aceptar5.setEnabled(false);
-        aceptar6.setEnabled(false);
+        //aceptar6.setEnabled(false);
         txtqr.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         txtcomentarios.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 
         txtqr.addTextChangedListener(new BotonTextWatcher(aceptar4));
 
-        txtnumcajas.addTextChangedListener(new BotonTextWatcher(aceptar2));
+     //   txtnumcajas.addTextChangedListener(new BotonTextWatcher(aceptar2));
+        List<String> spinnerValues = new ArrayList<>();
+        spinnerValues.add("1");
+        spinnerValues.add("2");
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
+        spcaja.setAdapter(adapter);
         spplanta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -207,18 +217,18 @@ public class NvoEtiquetadoFragment extends Fragment {
             }
 
         });
-        potra.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+    /*    potra.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 aceptar5.setEnabled(true);
             }
-        });
-        pcoincide.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        });*/
+      /*  pcoincide.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 aceptar6.setEnabled(true);
             }
-        });
+        });*/
         btnqr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -228,7 +238,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         });
         aceptar1.setEnabled(false);
         mViewModel.preguntaAct=preguntaAct;
-        if(!isEdicion&&preguntaAct<3&&mViewModel.getIdNuevo()==0) {
+        if(!isEdicion&&preguntaAct<2&&mViewModel.getIdNuevo()==0) {
             //reviso si ya tengo uno abierto
             InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,3);
 
@@ -263,7 +273,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         preguntaAct=1;
         if(mViewModel.getIdNuevo()==0) {
             //reviso si ya tengo uno abierto
-            if(!isEdicion&&preguntaAct<2) {
+            if(!isEdicion&&preguntaAct<1) {
                 InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL, Constantes.ETAPAACTUAL);
                 Log.d(TAG, "buscando pend");
                 if (informeEtapa != null) {
@@ -296,7 +306,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             } else if (listacomp.size() > 0) {
                 preguntaAct = 2;
 
-                sv2.setVisibility(View.VISIBLE);
+                sv3.setVisibility(View.VISIBLE);
                 mViewModel.variasPlantas = false;
                 nombrePlantaSel = listacomp.get(0).getPlantaNombre();
                 plantaSel = listacomp.get(0).getPlantasId();
@@ -341,17 +351,17 @@ public class NvoEtiquetadoFragment extends Fragment {
 
             }
         });
-        aceptar2.setOnClickListener(new View.OnClickListener() {
+     /*  aceptar2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                guardarInf();
+
 
             }
-        });
+        });*/
         aceptar3.setOnClickListener(new View.OnClickListener() { //foto
             @Override
             public void onClick(View view) {
-                avanzar();
+                guardarInf();
 
             }
         });
@@ -369,10 +379,42 @@ public class NvoEtiquetadoFragment extends Fragment {
 
             }
         });
-        aceptar6.setOnClickListener(new View.OnClickListener() { //coincide
+        nvacaja.setOnClickListener(new View.OnClickListener() { //coincide
             @Override
             public void onClick(View view) {
+                nvacaja();
+
+            }
+        });
+      /*  selplanta.setOnClickListener(new View.OnClickListener() { //coincide
+            @Override
+            public void onClick(View view) {
+
+
+                //iraReubicar();
+
+            }
+        });*/
+        aceptar6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                aceptar1.setEnabled(false);
+             /*   long currentClickTime= SystemClock.elapsedRealtime();
+                // preventing double, using threshold of 1000 ms
+                if (currentClickTime - lastClickTime < 5500){
+                    //  Log.d(TAG,"doble click :("+lastClickTime);
+                    return;
+                }
+
+                lastClickTime = currentClickTime;
+
+                actualizarComent();
+                finalizarInf();
+                Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
+                yaestoyProcesando = false;
+                salir();*/
                 avanzar();
+
 
             }
         });
@@ -416,101 +458,143 @@ public class NvoEtiquetadoFragment extends Fragment {
         mViewModel.preguntaAct=preguntaAct;
         return root;
     }
-
-
+/*public void iraReubicar(){
+    Intent intento1 = new Intent(getActivity(), NavigationDrawerActivity.class);
+    intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"listainformeeta");
+    startActivity(intento1);
+    getActivity().finish();
+}*/
+public void nvacaja(){
+        contcaja++;
+    preguntaAct=2;
+    txtcajaact.setText("CAJA "+contcaja);
+    //avanzar();
+    }
 
     public void avanzar(){
         Log.d(TAG,"--"+preguntaAct);
 
         switch (preguntaAct){
             case 1: //sel planta
+                svotra.setVisibility(View.VISIBLE);
+                txtcajaact.setVisibility(View.VISIBLE);
+                txtnumuestra.setVisibility(View.VISIBLE);
                 sv1.setVisibility(View.GONE);
-                sv2.setVisibility(View.VISIBLE);
+                txttotmues.setVisibility(View.VISIBLE);
+                sv3.setVisibility(View.VISIBLE);
                 preguntaAct=preguntaAct+1;
                 break;
-            case 2: //num cajas
-                 sv2.setVisibility(View.GONE);
-                 sv3.setVisibility(View.VISIBLE);
-                 txtcajaact.setVisibility(View.VISIBLE);
-                isEdicion=false;
-                preguntaAct=preguntaAct+1;
-                  break;
-            case 3: //foto
+            case 2: //foto
                 sv3.setVisibility(View.GONE);
+                svotra.setVisibility(View.GONE);
                 sv4.setVisibility(View.VISIBLE);
                 preguntaAct=preguntaAct+1;
-                break;
-            case 4://qr
-                sv3.setVisibility(View.GONE);
+                  break;
+            case 3: //qr
+                //sv3.setVisibility(View.GONE);
                 sv4.setVisibility(View.GONE);
-                svotra.setVisibility(View.VISIBLE);
-               // txtcajaact.setVisibility(View.GONE);
 
-                guardarDet();
-                isEdicion=false;
-                preguntaAct=preguntaAct+1;
-                break;
-            case 5: //otra
-                //depende de la respuesta
+                if(contcaja>1)
+                {
+                    preguntaAct=4;
+                    //pido caja
+                    sv6.setVisibility(View.VISIBLE);
 
-                capturarMuestra();
+                }else {
 
-                break;
-            case 6: //coincide
+                    guardarDet();
+                    isEdicion = false;
+                    if(contmuestra<=totmuestras) {
 
-                if(pcoincide.getRespuesta()){
-                    svcoin.setVisibility(View.GONE);
-                    listaqr.setVisibility(View.GONE);
+                        capturarMuestra();
 
-                    Log.d(TAG,"contcaja "+contcaja+"--"+totcajas);
-                    if(contcaja<totcajas) {  //voy con la sig caja
-                        contcaja++;
-                        txtcajaact.setText("CAJA "+contcaja);
-                        contmuint=1;
-                            sv3.setVisibility(View.VISIBLE);
-                            txtcajaact.setVisibility(View.VISIBLE);
-                            preguntaAct = 3;
-                            mViewModel.preguntaAct=preguntaAct;
                     }
-                    else{
-                        preguntaAct=preguntaAct+1;
+                    else
+
+                    {
+
+                        preguntaAct=5;
                         //me voy a comentarios
                         sv5.setVisibility(View.VISIBLE);
+                        break;
                     }
-                }else{
-                    //muestro la lista de qr capturados y los busco
-                    buscarQrCap(contcaja);
+                }
+                break;
+            case 4: //numcaja
 
-                   // mostrarCapMuestra();
-                    //borro las muestras
-                   // mViewModel.borrarDetEtaxCaja(mViewModel.getIdNuevo(),3,contcaja);
+                sv6.setVisibility(View.GONE);
+                guardarDet();
+
+                isEdicion = false;
+                if(contmuestra<=totmuestras) {
+                    preguntaAct=2;
+                    capturarMuestra();
 
                 }
+                else
+
+                {
+                    preguntaAct=5;
+                    //me voy a comentarios
+                    sv5.setVisibility(View.VISIBLE);
+                    break;
+                }
+
+                break;
+            case 5: //comentarios
+
+               preguntaAct=preguntaAct+1;
+
+            //  pantallaPlantas();
+                salir();
                 break;
 
         }
 
         mViewModel.preguntaAct=preguntaAct;
     }
-    public void capturarMuestra(){
+    public void pantallaPlantas(){
+        sv6.setVisibility(View.GONE);
+        sv4.setVisibility(View.GONE);
+        mViewModel.setIdNuevo(0);
+        mViewModel.setIddetalle(0);
+        mViewModel.setNvoinforme(null);
+        sv3.setVisibility(View.GONE);
+        txttotmues.setVisibility(View.GONE);
+        txtcajaact.setVisibility(View.GONE);
         svotra.setVisibility(View.GONE);
-        txtcajaact.setText("CAJA "+contcaja);
-        if(potra.getRespuesta()) {
-            sv3.setVisibility(View.VISIBLE);
-            txtcajaact.setVisibility(View.VISIBLE);
-            preguntaAct = 3;
-            mViewModel.preguntaAct=preguntaAct;
-            //sv4.setVisibility(View.VISIBLE);
-        }
-        else{
-            pcoincide.setmLabel("CANTIDAD DE MUESTRAS EN ESTA CAJA: "+(contmuint-1)+ " ¿COINCIDE CON LO QUE TIENES EN CAJA?");
-            svcoin.setVisibility(View.VISIBLE);
-            preguntaAct=preguntaAct+1;
-        }
+        if (listacomp.size() > 1) {
+            //tengo varias plantas
+            preguntaAct = 1;
+            sv1.setVisibility(View.VISIBLE);
+            aceptar1.setEnabled(true);
+        } else if (listacomp.size() > 0) {
+          //fin
+            salir();
+             }
 
     }
-    public void buscarQrCap(int numCaja){
-        listaqr.setAdapter(null);
+    public void capturarMuestra(){
+       // svotra.setVisibility(View.GONE);
+        txtcajaact.setText("CAJA "+contcaja);
+       // contmuestra++;
+        //if(potra.getRespuesta()) {
+        sv3.setVisibility(View.VISIBLE);
+        txtcajaact.setVisibility(View.VISIBLE);
+        svotra.setVisibility(View.VISIBLE);
+        preguntaAct = 2;
+        mViewModel.preguntaAct=preguntaAct;
+            //sv4.setVisibility(View.VISIBLE);
+       // }
+       // else{
+          //  pcoincide.setmLabel("CANTIDAD DE MUESTRAS EN ESTA CAJA: "+(contmuint-1)+ " ¿COINCIDE CON LO QUE TIENES EN CAJA?");
+           // svcoin.setVisibility(View.VISIBLE);
+          //  preguntaAct=preguntaAct+1;
+       // }
+
+    }
+   /* public void buscarQrCap(int numCaja){
+       // listaqr.setAdapter(null);
         List<InformeCompraDetalle> prods=mViewModel.buscarProdsxQr(mViewModel.getIdNuevo(),3,numCaja);
 
         DescripcionGenericaAdapter mListAdapter = new DescripcionGenericaAdapter();
@@ -521,7 +605,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         listaqr.setAdapter(mListAdapter);
         listaqr.setVisibility(View.VISIBLE);
 
-    }
+    }*/
 
     public List<DescripcionGenerica> deCompraADesc(List<InformeCompraDetalle> prods){
         DescripcionGenerica desc;
@@ -540,10 +624,10 @@ public class NvoEtiquetadoFragment extends Fragment {
     }
     public void mostrarCapMuestra(){
         sv1.setVisibility(View.GONE);
-        sv2.setVisibility(View.GONE);
+        sv6.setVisibility(View.GONE);
         sv3.setVisibility(View.VISIBLE);
         txtcajaact.setVisibility(View.VISIBLE);
-        preguntaAct = 3;
+        preguntaAct = 2;
         ImagenDetalle foto;
         mViewModel.preguntaAct=preguntaAct;
         if(isEdicion&&detalleEdit!=null){
@@ -589,13 +673,13 @@ public class NvoEtiquetadoFragment extends Fragment {
                 if(mViewModel.variasPlantas)
                 { sv1.setVisibility(View.VISIBLE);}
 
-                sv2.setVisibility(View.GONE);
+                sv3.setVisibility(View.GONE);
                 preguntaAct=preguntaAct-1;
                 mViewModel.preguntaAct=preguntaAct;
                 break;
             case 3:
                 break;
-                //  sv2.setVisibility(View.VISIBLE);
+                //  sv6.setVisibility(View.VISIBLE);
               //  sv3.setVisibility(View.GONE);
              //   txtcajaact.setVisibility(View.GONE);
 
@@ -612,12 +696,12 @@ public class NvoEtiquetadoFragment extends Fragment {
              //   break;
             case 6:
                 svotra.setVisibility(View.VISIBLE);
-                svcoin.setVisibility(View.GONE);
+               // svcoin.setVisibility(View.GONE);
                 preguntaAct=preguntaAct-1;
                 mViewModel.preguntaAct=preguntaAct;
                 break;
             case 7:
-                svcoin.setVisibility(View.VISIBLE);
+                //svcoin.setVisibility(View.VISIBLE);
                 sv5.setVisibility(View.GONE);
                 preguntaAct=preguntaAct-1;
                 mViewModel.preguntaAct=preguntaAct;
@@ -632,10 +716,10 @@ public class NvoEtiquetadoFragment extends Fragment {
         switch (preguntaAct){
             case 1:
                 sv1.setVisibility(View.GONE);
-                sv2.setVisibility(View.VISIBLE);
+                sv6.setVisibility(View.VISIBLE);
                 break;
             case 2:
-                sv2.setVisibility(View.GONE);
+                sv6.setVisibility(View.GONE);
                 sv3.setVisibility(View.VISIBLE);
                 break;
             case 3:
@@ -665,7 +749,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 plantaSel = opcionsel.getId();
                 nombrePlantaSel = opcionsel.getNombre();
             }
-            totcajas =Integer.parseInt(txtnumcajas.getText().toString());
+            //totcajas =Integer.parseInt(txtnumcajas.getText().toString());
 
             if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null) {
                 Log.d(TAG, "creando nvo inf");
@@ -673,8 +757,8 @@ public class NvoEtiquetadoFragment extends Fragment {
                  mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL,nombrePlantaSel,plantaSel,clienteNombre,clienteId,totcajas,totmuestras));
             }
         }catch (Exception ex){
-            ex.getStackTrace();
-            Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
+            ex.printStackTrace();
+            Log.e(TAG,"Algo salió mal al guardarInf"+ex.getMessage());
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
         }
@@ -714,7 +798,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 txtnumuestra.setText("MUESTRA "+contmuestra);
             }catch (Exception ex){
                 ex.printStackTrace();
-                Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
+                Log.e(TAG,"Algo salió mal al guardarDet"+ex.getMessage());
                 Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
             }
@@ -731,7 +815,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             subirFotos(getActivity(),envio);
         }catch(Exception ex){
             ex.printStackTrace();
-            Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
+            Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
         //todo limpio variables de sesion
@@ -752,7 +836,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             mViewModel.actualizarComentEtiq(mViewModel.getIdNuevo(),comentarios);
             mViewModel.actualizarMuestras(mViewModel.getIdNuevo(), contmuestra-1);
         }catch(Exception ex){
-            ex.getStackTrace();
+            ex.printStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
@@ -1074,7 +1158,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         txtrutaim=null;
 
         fotomos=null;
-        sv1=sv2=sv3=sv4=null;
+        sv1= sv6 =sv3=sv4=null;
         btnrotar=null;
         aceptar1=null;
         nombre_foto=null;

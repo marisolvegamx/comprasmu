@@ -28,11 +28,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Comprasmu">
         <activity
+            android:name=".ReubicEtiqActivity"
+            android:exported="false"
+            android:label="@string/title_activity_reubic_etiq"
+            android:theme="@style/Theme.Comprasmu.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.mantenimiento.BorrarActivity"
             android:label="@string/title_activity_borrar"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.mantenimiento.LeerLogActivity"
             android:label="@string/title_activity_leer_log" />
@@ -56,7 +63,7 @@
         <activity
             android:name=".ui.home.PruebasActivity"
             android:label="@string/title_activity_pruebas"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.

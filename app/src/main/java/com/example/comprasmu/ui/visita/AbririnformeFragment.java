@@ -17,6 +17,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Environment;
@@ -1471,7 +1472,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
            // ultimaLoc=mlocManager.getLastKnownLocation(provedorgps);
             txtaiultubic.setText(txtubicacion.getText().toString());
-            buscarDireccion();
+        if (Build.PRODUCT.contains ("sdk")) {
+
+
+        } else
+            {   buscarDireccion();}
       //  }
     }
     public boolean guardar(){
@@ -2015,8 +2020,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     Address DirCalle = list.get(0);
                     String state = DirCalle.getAdminArea();
                     country = DirCalle.getCountryName();
-
-                    mensajedir.setText(DirCalle.getAddressLine(0));
+                    String dir=DirCalle.getAddressLine(0);
+                    mensajedir.setText(dir.toUpperCase());
                     //   ubicacion.setText(state+","+country);
                 }
             }

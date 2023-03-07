@@ -208,15 +208,16 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         mBinding.row2.setVisibility(View.VISIBLE);
 
     }
-    public void actualizarBarraCor(SolicitudCor sol) {
+    public void actualizarBarraCor(SolicitudCor sol,int constienda) {
         //convierto la solicitud en informeEtapa
       InformeEtapa temp=new InformeEtapa();
       temp.setIndice(sol.getIndice());
       temp.setPlantaNombre(sol.getPlantaNombre());
       temp.setClienteNombre(sol.getClienteNombre());
+      temp.setConsecutivo(constienda);
       actualizarBarra(temp);
       actualizarAtributo1(sol.getNombreTienda());
-      SimpleDateFormat sdf=Constantes.vistasdf;
+      SimpleDateFormat sdf=Constantes.sdfsolofecha;
       if(sol.getCreatedAt()!=null)
         actualizarAtributo2(sdf.format(sol.getCreatedAt()));
       //actualizarAtributo3(sol.getContador()+"");
@@ -406,6 +407,11 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         else
                 super.onBackPressed();
 
+}
+
+public void cambiarTitulo(String titulo){
+
+    myChildToolbar.setTitle(titulo);
 }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -33,6 +33,14 @@
             android:icon="@drawable/ic_baseline_edit_24"
             android:title="@string/menu_continuar_informe" />
         <item
+            android:id="@+id/nav_reubicetiq"
+            android:icon="@drawable/ic_baseline_edit_24"
+            android:title="@string/menu_reubiqetiq" />
+        <item
+            android:id="@+id/nav_eliminaretiq"
+            android:icon="@drawable/ic_baseline_edit_24"
+            android:title="@string/menu_eliminaretiq" />
+        <item
             android:id="@+id/nav_resumenetiq"
             android:icon="?attr/actionModePasteDrawable"
             android:title="@string/menu_resumeninf" />

@@ -36,6 +36,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
     InfEtapaDetRepoImpl etadetRepo;
     InformeComDetRepositoryImpl infcrepo;
     InfEtapaRepositoryImpl infetarepo;
+    InformeCompraRepositoryImpl infrepo;
 
 
     public ListaSolsViewModel(Application application) {
@@ -43,6 +44,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         repository = new SolicitudCorRepoImpl(application);
         infcrepo=new InformeComDetRepositoryImpl(application);
         infetarepo=new InfEtapaRepositoryImpl(application);
+        infrepo=new InformeCompraRepositoryImpl(application);
 
     }
 
@@ -71,10 +73,15 @@ public class ListaSolsViewModel extends AndroidViewModel {
         LiveData<SolicitudCor> solicitud =repository.find(id,numfoto);
         return solicitud;
     }
-    public MutableLiveData<Integer>  getTotalCancel(String indiceSel){
+    /*public MutableLiveData<Integer>  getTotalCancel(String indiceSel){
         Log.d(TAG,"wwww*"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
         return infcrepo.gettotCancelados(indiceSel);
+    }*/
+
+    public LiveData<List<InformeCompraDetalle>> getTotalCancel(String indiceSel ){
+        return infcrepo.getCancelados(indiceSel);
+
     }
     public void actualizarEstSolicitud(int id,int numfoto, int estatus){
         Log.d(TAG,"actalizando"+id+"--"+estatus);
@@ -174,5 +181,9 @@ public class ListaSolsViewModel extends AndroidViewModel {
         }
 
 
+    }
+
+    public InformeCompra getInformeSol(int informesId) {
+        return infrepo.findSimple(informesId);
     }
 }
