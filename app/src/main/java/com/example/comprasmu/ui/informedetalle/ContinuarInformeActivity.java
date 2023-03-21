@@ -94,6 +94,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 //me muevo a la anterior
                 ultimares=dViewModel.buscarTempxId(ultimares.getId()-1);
             }
+            Log.d(TAG,"++"+ultimares.getNombre_campo());
             preguntaAct=dViewModel.inftempToReac(ultimares);
 
             Log.d(TAG, "reactivo:" +preguntaAct.getId()+"--"+ultimares.getNombre_campo());
@@ -112,6 +113,8 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                      ft.add(R.id.continf_fragment, new DetalleProductoPenFragment(preguntaAct,true));
                 if(nviewModel.clienteSel==6)
                      ft.add(R.id.continf_fragment, new DetalleProductoElecFragment(preguntaAct,true));
+                 if(nviewModel.clienteSel==7)
+                     ft.add(R.id.continf_fragment, new DetalleProductoJumFragment(preguntaAct,true));
 
                  ft.commit();
 
@@ -185,6 +188,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         Constantes.VarDetalleProd.nvoatrb="";
         mBinding.setDanioc("");
         mBinding.row6.setVisibility(View.GONE);
+        mBinding.row8.setVisibility(View.GONE);
         Constantes.VarDetalleProd.tomadode="";
 
     }
@@ -207,6 +211,11 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         mBinding.setDanioc(Constantes.VarDetalleProd.nvoatrc);
         mBinding.row6.setVisibility(View.VISIBLE);
     }
+    public void actualizarAtributo3() {
+        mBinding.setDaniod(Constantes.VarDetalleProd.nvoatrd);
+       mBinding.row8.setVisibility(View.VISIBLE);
+    }
+
 
     public void buscarPreguntas() {
         dViewModel.buscarReactivos();
@@ -300,6 +309,10 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         if( nviewModel.clienteSel==6) {
             DetalleProductoElecFragment fragment3 = (DetalleProductoElecFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
              numpreg = fragment3.getNumPregunta();
+        }else
+        if( nviewModel.clienteSel==7) {
+            DetalleProductoJumFragment fragment2 = (DetalleProductoJumFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+            numpreg = fragment2.getNumPregunta();
         }
 
 
@@ -370,7 +383,9 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         if( nviewModel.clienteSel==6) {
             regresarElec();
         }
-
+        if( nviewModel.clienteSel==7) {
+            regresarJum();
+        }
 
 
     }
@@ -475,6 +490,42 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             super.onBackPressed();
 
     }
+
+    public void regresarJum(){
+        InformeTemp resact=null;
+        int idreact=0;
+
+        DetalleProductoJumFragment fragment = (DetalleProductoJumFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+
+        if (fragment.isEdicion) {
+            resact = fragment.getUltimares();
+            idreact = resact.getId();
+        }
+        Log.d(TAG,"ultimo "+idreact+"--"+fragment.isEdicion);
+        //busco el anterior
+        Reactivo reactivo = dViewModel.buscarReactivoAnterior(idreact,fragment.isEdicion);
+
+        if(reactivo!=null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+// Definir una transacción
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+// Remplazar el contenido principal por el fragmento
+            if(reactivo.getId()==1)
+            {      DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
+                fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+            }else {
+                DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo, false);
+                fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+            }
+
+            //   fragmentTransaction.addToBackStack(null);
+// Cambiar
+            fragmentTransaction.commit();
+        }
+        else
+            super.onBackPressed();
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -501,12 +552,15 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 if( nviewModel.clienteSel==6) {
                     DetalleProductoElecFragment fragment3 = (DetalleProductoElecFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
                     numpreg = fragment3.getNumPregunta();
-                }
+                } else if(nviewModel.clienteSel==7) {
+                DetalleProductoJumFragment fragment2 = (DetalleProductoJumFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+                numpreg = fragment2.getNumPregunta();
+            }
                 if(nviewModel.clienteSel==4)
                     if(numpreg==2||numpreg==3||numpreg==4||numpreg==5){
                         noSalir=true;
                     }
-                if(nviewModel.clienteSel==5)
+                if(nviewModel.clienteSel==5||nviewModel.clienteSel==7)
                     if(numpreg==52||numpreg==53||numpreg==54||numpreg==55){
                         noSalir=true;
                     }

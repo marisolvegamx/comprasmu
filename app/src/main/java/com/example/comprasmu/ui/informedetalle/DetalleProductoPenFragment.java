@@ -116,7 +116,7 @@ public class DetalleProductoPenFragment extends Fragment {
     LinearLayout sv;
     boolean isEdicion;
     LoadingDialog loadingDialog ;
-    public int estatusPepsi, estatusPen,estatusElec;
+    public int estatusPepsi, estatusPen,estatusElec, estatusJumex;
     NuevoDetalleViewModel.ProductoSel prodSel;
     public static  int REQUEST_CODE_TAKE_PHOTO=5;
 
@@ -137,7 +137,7 @@ public class DetalleProductoPenFragment extends Fragment {
    protected boolean yaestoyProcesando=false;
     List<DescripcionGenerica> clientesAsig;
     CheckBox nopermiso;
-    private ComprasLog compraslog;
+    protected ComprasLog compraslog;
 
     public DetalleProductoPenFragment() {
 
@@ -1501,7 +1501,7 @@ public class DetalleProductoPenFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //    super.onActivityResult(requestCode, resultCode, data);
-               Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
+               Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto+"--"+resultCode);
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
             try {
                 //   super.onActivityResult(requestCode, resultCode, data);
@@ -1601,6 +1601,7 @@ public class DetalleProductoPenFragment extends Fragment {
             ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                 mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
+
                avanzarPregunta(58);
 
 

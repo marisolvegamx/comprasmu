@@ -142,7 +142,7 @@ public class DetalleProductoFragment extends Fragment {
     private String NOMBREPLANTASEL;
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
-    public int estatusPepsi, estatusPen,estatusElec;
+    public int estatusPepsi, estatusPen,estatusElec,estatusJum;
 
     public DetalleProductoFragment() {
 
@@ -217,6 +217,7 @@ public class DetalleProductoFragment extends Fragment {
             estatusPepsi=mViewModel.visita.getEstatusPepsi(); //para saber si puede comprar pepsi
             estatusPen=mViewModel.visita.getEstatusPen();
             estatusElec=mViewModel.visita.getEstatusElec();
+            estatusJum=mViewModel.visita.getEstatusJum();
             if(isEdicion) {
                 aceptar.setEnabled(true);
 
@@ -338,6 +339,22 @@ public class DetalleProductoFragment extends Fragment {
                         }
                         Constantes.VarDetalleProd.nvoatrc = resp == null ? "" : valor;
                         ((ContinuarInformeActivity) getActivity()).actualizarAtributo2();
+                    }
+                    else
+                        aceptar.setEnabled(false);
+                }
+                if (preguntaAct.getId() >= 90&&preguntaAct.getId()!=47) {
+                    InformeTemp resp=dViewModel.buscarxNombreCam("atributod",mViewModel.numMuestra);
+                    String valor="";
+                    if(resp!=null) {
+                        int opcion = Integer.parseInt(resp.getValor());
+                        //busco en el cat
+                        for (CatalogoDetalle cat : atributos) {
+                            if (cat.getCad_idopcion() == opcion)
+                                valor = cat.getCad_descripcionesp();
+                        }
+                        Constantes.VarDetalleProd.nvoatrd = resp == null ? "" : valor;
+                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo3();
                     }
                     else
                         aceptar.setEnabled(false);
@@ -565,6 +582,7 @@ public class DetalleProductoFragment extends Fragment {
         if(preguntaAct.getType().equals(CreadorFormulario.SELECTCAT)||preguntaAct.getType().equals(CreadorFormulario.SELECTDES)){
             switch (preguntaAct.getNombreCampo()){
                 case Contrato.TablaInformeDet.ATRIBUTOA:case Contrato.TablaInformeDet.ATRIBUTOB: case Contrato.TablaInformeDet.ATRIBUTOC:
+                case Contrato.TablaInformeDet.ATRIBUTOD:
                     getAtributos();
 
                      campo.selectcat=atributos;
@@ -733,6 +751,8 @@ public class DetalleProductoFragment extends Fragment {
                     continue;
                 if(estatusElec==0&&listaCompra.getClientesId()==6)
                     continue;
+                if(estatusJum==0&&listaCompra.getClientesId()==7)
+                    continue;
                 DescripcionGenerica item=new DescripcionGenerica();
                 Log.d(TAG,"-estoy aqui"+listaCompra.getClientesId());
                 if( clientesprev!=null)
@@ -845,6 +865,12 @@ public class DetalleProductoFragment extends Fragment {
             aceptar.setEnabled(true);
             return;
         }
+        if(clienteid==7&&estatusJum==0)//no puedo comprar electro
+        {
+            Toast.makeText(getActivity(),"No puede comprar producto de jumex en esta tienda",Toast.LENGTH_LONG).show();
+            aceptar.setEnabled(true);
+            return;
+        }
         mViewModel.clienteSel=clienteid;
         Constantes.ni_clientesel=nombreCliente;
         mViewModel.informe=new InformeCompra();
@@ -871,7 +897,8 @@ public class DetalleProductoFragment extends Fragment {
             irInfoPen();
         if(mViewModel.clienteSel==6)
             irInfoElect();
-
+        if(mViewModel.clienteSel==7)
+            irInfoJum();
 
     }
     public void siguiente(){
@@ -960,6 +987,14 @@ public class DetalleProductoFragment extends Fragment {
                 //guardo el atributo para mostrarlo despues
                 Constantes.VarDetalleProd.nvoatrc=valor;
                 ((ContinuarInformeActivity)getActivity()).actualizarAtributo2();
+
+            }else  if(preguntaAct.getId()==106){
+                CatalogoDetalle opcionsel = (CatalogoDetalle) spclientes.getSelectedItem();
+                String valor = opcionsel.getCad_descripcionesp() + "";
+
+                //guardo el atributo para mostrarlo despues
+                Constantes.VarDetalleProd.nvoatrd=valor;
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo3();
 
             }
 
@@ -1546,6 +1581,26 @@ public class DetalleProductoFragment extends Fragment {
             public void onChanged(Reactivo reactivo) {
 
                 DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment(reactivo,false);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+// Definir una transacción
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+// Remplazar el contenido principal por el fragmento
+                fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
+                fragmentTransaction.addToBackStack(null);
+// Cambiar
+                fragmentTransaction.commit();
+            }
+        });
+    }
+
+    public void irInfoJum(){
+        //busco el siguiente
+        LiveData<Reactivo> nvoReac = dViewModel.buscarReactivo(52);
+        nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+            @Override
+            public void onChanged(Reactivo reactivo) {
+
+                DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo,false);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

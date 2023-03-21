@@ -100,6 +100,17 @@ public class SustitucionViewModel extends AndroidViewModel {
     public LiveData<Boolean> getEmpty() {
         return empty;
     }
+    //valido que no haya comprado el mismo sabor empaque y tamanio para jumex
+    public boolean validarProdJum(String indice,int planta,Sustitucion productosel ){
+        InformeComDetRepositoryImpl icrepo=new InformeComDetRepositoryImpl(context);
 
+        List<InformeCompraDetalle> informeCompraDetalles=icrepo.getByProducto(indice,planta,productosel.getSu_producto(),productosel.getSu_tipoempaque(),productosel.getNomtamanio());
+
+        if(informeCompraDetalles!=null&&informeCompraDetalles.size()>0)
+            return true;
+        return false;
+
+
+    }
 
 }

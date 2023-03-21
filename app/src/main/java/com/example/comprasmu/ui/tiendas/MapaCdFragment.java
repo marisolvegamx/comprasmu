@@ -429,64 +429,46 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         public void dibujarTiendas(List<Tienda> listiendas){
             martiendas=new ArrayList<>();
             LatLng japon2 = null;
-            String color;
+            String color="1";
             mMap.clear();
             if(listiendas!=null)
             for(Tienda tienda: listiendas){
-                // Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
+                 Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
 
                 if(cliente==4&&tienda.getEstpep()>0) {
-                        color = tienda.getEstpep()+"";
-                        tienda.setColor(color);
-                       //  Log.d(TAG,"--"+cliente+" "+color+".."+tienda.getUne_descripcion());
-                        if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
-                            String[] aux = tienda.getUne_coordenadasxy().split(",");
-
-                            japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-                            Marker marker=mMap.addMarker(new MarkerOptions()
-                                    .position(japon2)
-                                    .title(tienda.getUne_descripcion())
-                                    .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color))));
-                            marker.setTag(tienda);
-                            martiendas.add(marker);
-
-
-                        }
-                    }else
+                    color = tienda.getEstpep() + "";
+                    tienda.setColor(color);
+                }else
                     if(cliente==5&&tienda.getEstpen()>0) {
 
-                        color = tienda.getEstpen()+"";
+                        color = tienda.getEstpen() + "";
                         tienda.setColor(color);
-                        // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
-                        if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
-                            String[] aux = tienda.getUne_coordenadasxy().split(",");
-
-                            japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-                            Marker marker=mMap.addMarker(new MarkerOptions()
-                                    .position(japon2)
-                                    .title(tienda.getUne_descripcion())
-                                    .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color))));
-                            marker.setTag(tienda);
-                            martiendas.add(marker);
-                        }
                     }
                     else
                     if(cliente==6&&tienda.getEstele()>0) {
                         color = tienda.getEstele()+"";
                         tienda.setColor(color);
                         // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
-                        if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
-                            String[] aux = tienda.getUne_coordenadasxy().split(",");
 
-                            japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-                            Marker marker=mMap.addMarker(new MarkerOptions()
-                                    .position(japon2)
-                                    .title(tienda.getUne_descripcion())
-                                    .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color))));
-                            marker.setTag(tienda);
-                            martiendas.add(marker);
-                        }
+                    } else if(cliente==7&&tienda.getEstjum()>0) {
+
+                        color = tienda.getEstjum() + "";
+                        tienda.setColor(color);
                     }
+                    // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
+                    if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
+                        String[] aux = tienda.getUne_coordenadasxy().split(",");
+
+                        japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+                        Marker marker=mMap.addMarker(new MarkerOptions()
+                                .position(japon2)
+                                .title(tienda.getUne_descripcion())
+                                .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color))));
+                        marker.setTag(tienda);
+                        martiendas.add(marker);
+
+                }
+
                 }
             if(japon2!=null)
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,10));
@@ -494,7 +476,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         public void buscarClientes(){
          //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
             if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
-                //TODO enviar a elegir cd de trabajo
+
                // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
                 irAcdSel();
                 return;
@@ -638,6 +620,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         bundle.putInt("estpep", tienda.getEstpep());
         bundle.putInt("estpen", tienda.getEstpen());
         bundle.putInt("estele", tienda.getEstele());
+        bundle.putInt("estjum", tienda.getEstjum());
         this.doubleBackToExitPressedOnce = false;
         NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo,bundle);
         //return false;

@@ -705,9 +705,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
            // resultIntent.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.informe.getId());
            if( mViewModel.getClienteSel()==4)
             getActivity().setResult(DetalleProductoFragment.NUEVO_RESULT_OK, resultIntent);
-            if( mViewModel.getClienteSel()==5)
-                getActivity().setResult(DetalleProductoPenFragment.NUEVO_RESULT_OK, resultIntent);
-            if( mViewModel.getClienteSel()==6)
+           else
                 getActivity().setResult(DetalleProductoPenFragment.NUEVO_RESULT_OK, resultIntent);
 
             //regreso al informe
@@ -743,7 +741,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 intento1.putExtra(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
                 //   bundle.putInt(DetalleProductoFragment.NUMMUESTRA,);
             }
-            if (clienteSel == 5 || clienteSel == 6) {
+           else{
 
                 intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_SUSTITUCION);
                 intento1.putExtra(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
@@ -780,7 +778,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 fragmentTransaction.addToBackStack(null);
 // Cambiar
                 fragmentTransaction.commit();
-            } else if (clienteSel == 5 || clienteSel == 6) {
+            } else {
 
                 Fragment fragment = SustitucionFragment.newInstance();
                 // Obtener el administrador de fragmentos a través de la actividad

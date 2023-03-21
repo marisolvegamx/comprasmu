@@ -69,7 +69,7 @@ import java.util.List;
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class},
 
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=16, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=17, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -107,7 +107,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
-                                    ,MIGRATION_15_16)
+                                    ,MIGRATION_15_16,MIGRATION_16_17)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -358,7 +358,14 @@ public abstract class ComprasDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE informe_etapa ADD COLUMN motivoCancel TEXT");
         }
     };
+    static final Migration MIGRATION_16_17 = new Migration(16,17) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "ALTER TABLE informe_detalle ADD COLUMN atributod INTEGER; " );
 
+        }
+    };
             private void cargandodatos(){
 
         runInTransaction(new Runnable() {
@@ -396,7 +403,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
     private void prepopulateder( ) {
         String cliente="PEPSI";
-        int cliid=4;
+        String cliid="4";
         Reactivo campo = new Reactivo();
         campo.setLabel(ctx.getString(R.string.planta));
         campo.setNombreCampo( "clientesId");
@@ -406,7 +413,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setId(1);
         campo.setTabla("I");
         campo.setCliente("TODOS");
-        campo.setClienteSel(0);
+        campo.setClienteSel("0");
         List<Reactivo> camposForm = new ArrayList<Reactivo>();
         camposForm.add(campo);
          campo = new Reactivo();
@@ -683,7 +690,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setTabla("ID");
         campo.setId(39);
       //  campo.setSigId(40);
-        campo.setSigId(41);
+        campo.setSigId(90);
         campo.setCatalogo(true);
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
@@ -697,10 +704,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setId(40);
         campo.setSigId(41);
         camposForm.add(campo);*/
-
-
-
-
         campo=new Reactivo();
         campo.setLabel("QR");
         campo.setTabla("ID");
@@ -794,6 +797,29 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setClienteSel(cliid);
         campo.setCliente(cliente);
         camposForm.add(campo);
+        campo = new Reactivo();
+        campo.setLabel( ctx.getString(R.string.danio3));
+        campo.setId(90);
+        campo.setSigId(106);
+        campo.setNombreCampo("danio4");
+        campo.setType( "preguntasino");
+        campo.setSigAlt(41);
+        campo.setTabla("ID");
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.atributod));
+        campo.setNombreCampo(Contrato.TablaInformeDet.ATRIBUTOD);
+        campo.setType("selectCat");
+        campo.setSigId(41);
+        campo.setCatalogo(true);
+        campo.setTabla("ID");
+        campo.setId(106);
+        //paso los atributos a catalogogen
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
 
         getReactivoDao().insertAll(camposForm);
 
@@ -803,7 +829,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
     private void prepopulatederpeni( ) {
         Reactivo campo = new Reactivo();
         String cliente="PEÑAFIEL";
-        int cliid=5;
+        String cliid="5,7";
 
       /*  campo.setLabel(ctx.getString(R.string.cliente));
         campo.setNombreCampo( "clientesId");
@@ -846,7 +872,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setSigId(20000);//abrir listacompra
         campo.setSigAlt(55);
         campo.setId(54);
-        campo.setCliente(cliente);    campo.setClienteSel(cliid);
+        campo.setCliente(cliente);    campo.setClienteSel("5");
         camposForm.add(campo);
 
         campo = new Reactivo();
@@ -857,17 +883,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setSigId(20000);//abrir listacompra
         campo.setSigAlt(55);
         campo.setId(67);
-        campo.setCliente(cliente);    campo.setClienteSel(cliid);
-        camposForm.add(campo);
-
-        campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.comentarios));
-        campo.setNombreCampo("comentarios");
-        campo.setType("textarea");
-        campo.setTabla("I");
-        campo.setId(57);
-        campo.setSigId(68);
-        campo.setCliente(cliente);    campo.setClienteSel(cliid);
+        campo.setCliente(cliente);    campo.setClienteSel("5");
         camposForm.add(campo);
         campo=new Reactivo();
         campo.setLabel(ctx.getString(R.string.ticket_compra));
@@ -887,6 +903,16 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setSigId(57);
         campo.setCliente(cliente);    campo.setClienteSel(cliid);
         camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.comentarios));
+        campo.setNombreCampo("comentarios");
+        campo.setType("textarea");
+        campo.setTabla("I");
+        campo.setId(57);
+        campo.setSigId(68);
+        campo.setCliente(cliente);    campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
         campo=new Reactivo();
         campo.setLabel(ctx.getString(R.string.siglas_planta));
         campo.setNombreCampo(Contrato.TablaInformeDet.SIGLAS);
@@ -939,7 +965,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setTabla("ID");
         campo.setId(62);
         // campo.setSigId(28);
-        campo.setSigId(63);
+        campo.setSigId(107);
         campo.setBotonMicro(true);
         campo.setCliente(cliente);    campo.setClienteSel(cliid);
 
@@ -1030,6 +1056,17 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
         camposForm.add(campo);
+        campo=new Reactivo();
+        campo.setLabel("QR");
+        campo.setTabla("ID");
+        campo.setNombreCampo(Contrato.TablaInformeDet.QR);
+        campo.setType("botonqr");
+        campo.setSigId(63);
+        // campo.setSigId(42);
+        campo.setId(107);
+        campo.setClienteSel(cliid);
+        campo.setCliente(cliente);
+        camposForm.add(campo);
         getReactivoDao().insertAll(camposForm);
 
 
@@ -1038,7 +1075,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
     private  void prepopulatederele( ) {
         Reactivo campo = new Reactivo();
         String cliente="ELECTROPURA";
-        int cliid=6;
+        String cliid="6";
 
       /*  campo.setLabel(ctx.getString(R.string.cliente));
         campo.setNombreCampo( "clientesId");
@@ -1163,9 +1200,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setTabla("ID");
         campo.setId(82);
         // campo.setSigId(28);
-        campo.setSigId(83);
+        campo.setSigId(108);
         campo.setBotonMicro(true);
-        campo.setCliente(cliente);    campo.setClienteSel(cliid);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
 
         camposForm.add(campo);
 
@@ -1176,7 +1214,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setTabla("ID");
         campo.setId(83);
         campo.setSigId(84);
-        campo.setCliente(cliente);    campo.setClienteSel(cliid);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
         camposForm.add(campo);
 
         campo=new Reactivo();
@@ -1206,7 +1245,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setType("agregarImagen");
         campo.setTabla("ID");
         campo.setId(86);
-        campo.setSigId(87);
+        campo.setSigId(108);
         campo.setCliente(cliente);    campo.setClienteSel(cliid);
         camposForm.add(campo);
 
@@ -1246,15 +1285,17 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setCliente(cliente);    campo.setClienteSel(cliid);
         camposForm.add(campo);
 
-      /*  campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.seguro_muestra));
-        campo.setNombreCampo("confirmaMuestra");
-        campo.setType("hidden");
-        campo.setTabla("");
-        campo.setId(48);
-
-        campo.setCliente("TODOS");
-        camposForm.add(campo);*/
+        campo=new Reactivo();
+        campo.setLabel("QR");
+        campo.setTabla("ID");
+        campo.setNombreCampo(Contrato.TablaInformeDet.QR);
+        campo.setType("botonqr");
+        campo.setSigId(83);
+        // campo.setSigId(42);
+        campo.setId(108);
+        campo.setClienteSel(cliid);
+        campo.setCliente(cliente);
+        camposForm.add(campo);
 
         getReactivoDao().insertAll(camposForm);
 
@@ -1381,7 +1422,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
     private  void prepopulatereaEmp( ) {
         Reactivo campo = new Reactivo();
         String cliente = "PEPSI";
-        int cliid = 4;
+        String cliid = "4";
 
 
         List<Reactivo> camposForm = new ArrayList<Reactivo>();

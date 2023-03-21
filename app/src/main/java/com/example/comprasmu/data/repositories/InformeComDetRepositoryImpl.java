@@ -51,6 +51,9 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     public List<InformeCompraDetalle> getByProductoAna(String indice, int planta,int producto, int analisis, int presentacion, String tamanio ) {
         return dao.getByProductoAna(indice, planta,producto,analisis,presentacion,tamanio);
     }
+    public List<InformeCompraDetalle> getByProducto(String indice, int planta,int producto, int presentacion, String tamanio ) {
+        return dao.getByProducto(indice, planta,producto,presentacion,tamanio);
+    }
     public List<InformeCompraDetalle> getByProductoAnaPen(String indice, int planta,int producto, int analisis, int presentacion, String tamanio, String siglas ) {
 
         return dao.getByProductoAnaSig(indice, planta,producto,analisis,presentacion,tamanio, siglas);
@@ -149,7 +152,7 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
         dao.actualizarEstatus(idinfo, estatus);
     }
     public LiveData<List<InformeCompraDetalle>> getCancelados(String indice) {
-        Log.d("wwwwwww",indice);
+
         return dao.getByEstatus2(indice,2);
     }
 
@@ -174,7 +177,11 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
         return dao.findByCompraEst( comprasId, comprasDetId);
     }
 
-    public void deleteByIndice(String indice) {
+    public int getTotalMuesxPlan(int plantaSel, String indiceactual) {
+        List<InformeCompraDetalle> muestras= dao.getInformesxPlanta(plantaSel,indiceactual);
+        if(muestras!=null)
+            return muestras.size();
+        return 0;
     }
 }
 

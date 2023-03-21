@@ -183,9 +183,10 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         }else
             inftemp=itemprepo.getUltimo(true);
         //busco el reactivo
-        if(inftemp!=null)
-        return reacRepo.findByNombre(inftemp.getNombre_campo(),inftemp.getClienteSel());
-        else
+        if(inftemp!=null) {
+
+                return reacRepo.findByNombre(inftemp.getNombre_campo(), inftemp.getClienteSel());
+        }else
             return null;
     }
     public InformeTemp buscarTempxId(int id){
@@ -195,7 +196,9 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
     }
     public Reactivo inftempToReac(InformeTemp inftemp){
-        return reacRepo.findByNombre(inftemp.getNombre_campo(),inftemp.getClienteSel());
+        int cli=inftemp.getClienteSel();
+
+        return reacRepo.findByNombre(inftemp.getNombre_campo(),cli);
 
     }
 
@@ -380,8 +383,14 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
             Class[] params = new Class[1];
             if(info.getNombre_campo().equals(""))
                 continue;
-            /*if(info.getNombre_campo().equals("siglas"))
-                continue;*/
+            if(info.getNombre_campo().equals("foto_codigo_produccion"))
+                continue;
+            if(info.getNombre_campo().equals("foto_atributoa"))
+                continue;
+            if(info.getNombre_campo().equals("foto_atributob"))
+                continue;
+            if(info.getNombre_campo().equals("foto_atributoc"))
+                continue;
             if(info.getNombre_campo().equals("caducidad")) {
 
                 params[0] = Date.class;
@@ -465,11 +474,11 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.icdNuevo.setCreatedAt(new Date());
        //para las fotos
 
-        this.energia = crearImagendeTmp( Contrato.TablaInformeDet.ENERGIA);
+     //   this.energia = crearImagendeTmp( Contrato.TablaInformeDet.ENERGIA);
 
         this.foto_codigo_produccion = crearImagendeTmp(Contrato.TablaInformeDet.FOTOCODIGOPRODUCCION);
         this.foto_num_tienda = crearImagendeTmp(Contrato.TablaInformeDet.FOTONUMTIENDA);
-        this.marca_traslape = crearImagendeTmp( Contrato.TablaInformeDet.MARCA_TRASLAPE);
+      //  this.marca_traslape = crearImagendeTmp( Contrato.TablaInformeDet.MARCA_TRASLAPE);
 
         this.foto_atributoa = crearImagendeTmp( Contrato.TablaInformeDet.FOTO_ATRIBUTOA);
         this.foto_atributob = crearImagendeTmp(Contrato.TablaInformeDet.FOTO_ATRIBUTOB);

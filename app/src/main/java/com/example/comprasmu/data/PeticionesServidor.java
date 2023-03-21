@@ -103,9 +103,9 @@ public class PeticionesServidor {
         });
     }
 
-    public void getSustitucion(TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo, DescargasIniAsyncTask.DescargaIniListener listener) {
+    public void getSustitucion(String indice,TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo, DescargasIniAsyncTask.DescargaIniListener listener) {
 
-        final Call<List<Sustitucion>> batch = ServiceGenerator.getApiService().getSustitucion(usuario);
+        final Call<List<Sustitucion>> batch = ServiceGenerator.getApiService().getSustitucion(usuario,indice);
         Log.d("PeticionesServidor","enviando sustitucion ");
 
         batch.enqueue(new Callback<List<Sustitucion>>() {

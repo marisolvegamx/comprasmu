@@ -114,6 +114,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             catalogos();
             buscarZonas();
             if(descargarListas) {
+
                 listacompras(); //aqui esta informes
             }else
                 procesos++;
@@ -163,7 +164,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             if(actualiza==1) {
 
                     ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
-                    ps.getSustitucion(tvRepo, sustRepo,listenprin);
+
 
 
                   /*  act.runOnUiThread(new Runnable() {
@@ -179,7 +180,6 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             if(!sdfdias.format(cats.getVersion()).equals(sdfdias.format(new Date()))){
 
                     ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
-                    ps.getSustitucion(tvRepo,sustRepo,listenprin);
 
 
             }else {
@@ -191,7 +191,6 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
 
                 ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
-                ps.getSustitucion(tvRepo, sustRepo,listenprin);
 
         }
 
@@ -216,6 +215,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
 
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        ps.getSustitucion(Constantes.INDICEACTUAL,tvRepo, sustRepo,listenprin);
         TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
         TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
         DescargasIniAsyncTask.DescargaIniListener listener=new DescargaIniListener();

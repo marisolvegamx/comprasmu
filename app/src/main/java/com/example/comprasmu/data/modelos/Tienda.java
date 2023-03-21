@@ -21,6 +21,7 @@ public class Tienda {
     private int estpen; //para saber si compre en peñafiel
     private int estpep;
     private int estele;
+    private int estjum;
 
     public int getUne_id() {
         return une_id;
@@ -166,5 +167,13 @@ public class Tienda {
 
     public void setEstele(int estele) {
         this.estele = estele;
+    }
+
+    public int getEstjum() {
+        return estjum;
+    }
+
+    public void setEstjum(int estjum) {
+        this.estjum = estjum;
     }
 }

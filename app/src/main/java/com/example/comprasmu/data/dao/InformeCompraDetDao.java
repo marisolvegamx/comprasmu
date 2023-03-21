@@ -165,7 +165,25 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " and informe_detalle.siglas=:siglas" +
             " order by caducidad desc" )
     public abstract List<InformeCompraDetalle> getByProductoAnaSig(String indice, int planta,int producto, int analisis, int empaque, String tamanio, String siglas);
+
     //planta es la de la lista de compra y las siglas son las que se capturan para peñafiel
+    @Query("SELECT informe_detalle.id,informe_detalle.informesId,informe_detalle.estatus," +
+            "informe_detalle.estatusSync,productoId,producto,presentacion,tamanioId," +
+            "empaque,empaquesId,codigo, caducidad,origen, costo,foto_codigo_produccion  ," +
+            "energia,producto_exhibido,foto_num_tienda,marca_traslape, atributoa," +
+            "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
+            "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
+            "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
+            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel  " +
+            "FROM informe_detalle " +
+            " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
+            " inner join visitas on visitas.id=informe_compras.visitasId" +
+            " where productoId=:producto and presentacion=:tamanio" +
+            " and empaquesId=:empaque  " +
+            " and visitas.indice=:indice and informe_compras.plantasId=:planta and informe_detalle.estatus=1" +
+            " group by caducidad order by caducidad desc" )
+    public abstract List<InformeCompraDetalle> getByProducto(String indice, int planta,int producto, int empaque, String tamanio);
+
     @Transaction
     public void insertaActcant(List<InformeCompraDetalle> detalles) {
        insertAll(detalles);
@@ -178,6 +196,11 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
 
     }
 
+
+    @Query("SELECT informe_detalle.* FROM informe_detalle inner join informe_compras on informesId=informe_compras.id" +
+            " inner join visitas on visitas.id=informe_compras.visitasId"+
+            " WHERE plantasId = :planta and informe_detalle.estatus<>2 and indice=:indice " )
+    public abstract List<InformeCompraDetalle>   getInformesxPlanta(int planta, String indice);
 
     public class InformeDetalleImagenes {
 

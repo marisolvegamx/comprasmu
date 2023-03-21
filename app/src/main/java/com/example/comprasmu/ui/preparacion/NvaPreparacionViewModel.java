@@ -7,11 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-
-import com.example.comprasmu.data.dao.ImagenDetalleDao;
-import com.example.comprasmu.data.modelos.Atributo;
-import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -19,16 +14,13 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
-import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
-import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
-import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -57,6 +49,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     private List<Reactivo> listaPreguntas;
     private final ImagenDetRepositoryImpl imagenDetRepository;
     ComprasLog compraslog;
+    InformeComDetRepositoryImpl compRepo;
 
     public NvaPreparacionViewModel(@NonNull Application application) {
         super(application);
@@ -67,6 +60,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         this.reacRepo=new ReactivoRepositoryImpl(application);
         this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
         compraslog=ComprasLog.getSingleton();
+        this.compRepo=new InformeComDetRepositoryImpl(application);
     }
 
     public int insertarInformeEtapa(String indice,String plantaNombre,int plantaId, String clienteNombre,int clienteId){
@@ -265,6 +259,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public LiveData<InformeEtapa> getInformeEdit(int id){
      return   infEtaRepository.getInformeEtapa(id);
     }
+
     public InformeEtapa getInformexId(int id){
         return   infEtaRepository.findsimple(id);
     }
@@ -463,4 +458,10 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
          this.numMuestras=infDetRepo.getTotMuesxCaja(cajaAct,informeEtiId);
 
     }
+
+    public int getTotalMuestras(int plantaSel) {
+       return compRepo.getTotalMuesxPlan(plantaSel,Constantes.INDICEACTUAL);
+    }
+
+
 }

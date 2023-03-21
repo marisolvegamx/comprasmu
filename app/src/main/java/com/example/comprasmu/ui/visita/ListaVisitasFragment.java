@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.R;
 
+import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
@@ -172,7 +173,14 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
 
     @Override
     public void onClickAgregar(int idvisita) {
-
+        //primero valido que ya tenga fotos de prodex
+        List<ProductoExhibido> productoExhibidos=mViewModel.buscarProdExhiPend(idvisita);
+        Log.d(TAG,"buscando prodexh"+productoExhibidos.size());
+        //por lo menos 1
+        if(productoExhibidos==null||productoExhibidos.size()==0) {
+            Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_LONG).show();
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putInt(ContinuarInformeActivity.INFORMESEL,idvisita);
 

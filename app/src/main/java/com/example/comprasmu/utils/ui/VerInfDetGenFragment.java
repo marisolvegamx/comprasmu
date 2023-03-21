@@ -135,7 +135,7 @@ public class VerInfDetGenFragment extends Fragment {
                 atributos = catalogoDetalles;
                 if(clienteSel==4)
                 crearFormulario(informe);
-                if(clienteSel==5||clienteSel==6)
+               else
                     crearFormularioPen(informe);
                 sv1.addView(cf.crearTabla());
                /// sv2.addView(cfcf22.crearTabla());

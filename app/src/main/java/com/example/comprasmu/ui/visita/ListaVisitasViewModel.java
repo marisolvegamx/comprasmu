@@ -180,6 +180,12 @@ public class ListaVisitasViewModel extends AndroidViewModel {
 
     }
 
+    public List<ProductoExhibido> buscarProdExhiPend(int visitaid){
+        List<ProductoExhibido> prods= prodeRepository.getAllByVisitaSimple(visitaid);
+
+       return prods;
+
+    }
 
     public LiveData<List<Visita>> getListas() {
         return listas;

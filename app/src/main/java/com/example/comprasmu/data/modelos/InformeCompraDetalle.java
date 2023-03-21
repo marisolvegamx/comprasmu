@@ -40,6 +40,7 @@ public class InformeCompraDetalle {
     private String atributob;
     private int foto_atributob;
     private String atributoc;
+    private String atributod;
     private int foto_atributoc;
     private int azucares;
     private String qr;
@@ -455,6 +456,14 @@ public class InformeCompraDetalle {
 
     public void setMotivoCancel(String motivoCancel) {
         this.motivoCancel = motivoCancel;
+    }
+
+    public String getAtributod() {
+        return atributod;
+    }
+
+    public void setAtributod(String atributod) {
+        this.atributod = atributod;
     }
 }
 

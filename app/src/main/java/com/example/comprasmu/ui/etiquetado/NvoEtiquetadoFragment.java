@@ -85,7 +85,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     private  InformeEtapaDet detalleEdit;
     LinearLayout sv1, sv6,sv3,sv4,sv5, svotra, svcoin;
     private static final String TAG = "NvoEtiquetadoFragment";
-    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5,aceptar6,nvacaja,selplanta,guardar;
+    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5,aceptar6,nvacaja,eliminarCaja,selplanta,guardar;
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
     EditText txtrutaim,txtcomentarios, txtqr;
@@ -115,6 +115,8 @@ public class NvoEtiquetadoFragment extends Fragment {
     Spinner spplanta,spcaja;
     RecyclerView listaqr;
     ComprasLog milog;
+    List<String> spinnerValues;
+    ArrayAdapter<String> adaptercaja;
     public NvoEtiquetadoFragment(int preguntaAct,boolean edicion, InformeEtapaDet informeEdit,int informeSel) {
         this.preguntaAct = preguntaAct;
         this.isEdicion=edicion;
@@ -148,6 +150,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         aceptar5 = root.findViewById(R.id.btnneac5);
         aceptar6 = root.findViewById(R.id.btnneacep6);
         nvacaja = root.findViewById(R.id.btnnecajamas);
+        eliminarCaja = root.findViewById(R.id.btnneelimcaj);
     //    selplanta = root.findViewById(R.id.btnneselplanta);
         guardar = root.findViewById(R.id.btnneguardar);
         btnrotar = root.findViewById(R.id.btnnerotar1);
@@ -157,9 +160,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
         milog=ComprasLog.getSingleton();
-        //todo borrar
-        totmuestras=2;
-        /////////////////
+
         sv1.setVisibility(View.GONE);
         sv6.setVisibility(View.GONE);
         sv3.setVisibility(View.GONE);
@@ -175,18 +176,18 @@ public class NvoEtiquetadoFragment extends Fragment {
         spplanta=root.findViewById(R.id.spneplanta);
         spcaja=root.findViewById(R.id.spnecaja);
         txtcomentarios=root.findViewById(R.id.txtnecomentarios);
-        txttotmues=root.findViewById(R.id.txtnetotmues);
+       // txttotmues=root.findViewById(R.id.txtnetotmues);
         contmuestra=1;
         contmuint=1;
         contcaja=1;
 
-        txtcajaact=root.findViewById(R.id.txtnenumcaja);
+      //  txtcajaact=root.findViewById(R.id.txtnenumcaja);
 
         txtqr=root.findViewById(R.id.txtneqr);
        // potra.setmLabel("¿INCLUIRAS OTRA MUESTRA EN ESTA CAJA?");
-        txttotmues.setText("TOTAL MUESTRAS: 2");
-        txttotmues.setVisibility(View.GONE);
-        txtcajaact.setVisibility(View.GONE);
+       // txttotmues.setText("TOTAL MUESTRAS: 2");
+      //  txttotmues.setVisibility(View.GONE);
+       // txtcajaact.setVisibility(View.GONE);
         aceptar1.setEnabled(false);
        // aceptar2.setEnabled(false);
         aceptar3.setEnabled(false);
@@ -199,12 +200,12 @@ public class NvoEtiquetadoFragment extends Fragment {
         txtqr.addTextChangedListener(new BotonTextWatcher(aceptar4));
 
      //   txtnumcajas.addTextChangedListener(new BotonTextWatcher(aceptar2));
-        List<String> spinnerValues = new ArrayList<>();
+        spinnerValues = new ArrayList<>();
         spinnerValues.add("1");
-        spinnerValues.add("2");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
-        spcaja.setAdapter(adapter);
+
+        adaptercaja = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
+        spcaja.setAdapter(adaptercaja);
         spplanta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -312,6 +313,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 plantaSel = listacomp.get(0).getPlantasId();
                 clienteId = listacomp.get(0).getClientesId();
                 clienteNombre = listacomp.get(0).getClienteNombre();
+                totmuestras=mViewModel.getTotalMuestras(plantaSel);
                 InformeEtapa informetemp = new InformeEtapa();
                 informetemp.setClienteNombre(clienteNombre);
                 informetemp.setClientesId(clienteId);
@@ -325,28 +327,43 @@ public class NvoEtiquetadoFragment extends Fragment {
 
             //busco el informe y el detalle
 
-            mViewModel.getInformeEdit(informeSel).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
-                @Override
-                public void onChanged(InformeEtapa informeEtapa) {
-                    infomeEdit = informeEtapa;
-                    preguntaAct=3;
-                    mViewModel.preguntaAct=3;
-                    cargarPlantas(listaPlantas,informeEtapa.getPlantasId()+"");
-                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informeEtapa);
-                    mViewModel.setIdNuevo(informeSel);
-                    mostrarCapMuestra();
+            infomeEdit = mViewModel.getInformexId(informeSel);
+            preguntaAct = 3;
+            mViewModel.preguntaAct = 3;
+            cargarPlantas(listaPlantas, infomeEdit.getPlantasId() + "");
+            ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(infomeEdit);
+            mViewModel.setIdNuevo(informeSel);
+            totmuestras = infomeEdit.getTotal_muestras();
+            //  totcajas=mViewModel.getu
+            mostrarCapMuestra();
 
-                }
-
-
-
-            });
 
         }
 
         aceptar1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                    DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
+
+                    //busco par de id, cliente
+                    String[] aux = opcionsel.getDescripcion().split(",");
+                    clienteId = Integer.parseInt(aux[0]);
+                    clienteNombre = aux[1];
+                    plantaSel = opcionsel.getId();
+                    nombrePlantaSel = opcionsel.getNombre();
+                    //busco el total de muestras
+                totmuestras=mViewModel.getTotalMuestras(plantaSel);
+                    InformeEtapa temp=new InformeEtapa();
+                    temp.setClienteNombre(clienteNombre);
+                    temp.setPlantaNombre(nombrePlantaSel);
+                    temp.setIndice(Constantes.INDICEACTUAL);
+                    temp.setTotal_muestras(totmuestras);
+                    ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(temp);
+
+
+
+
                 avanzar();
 
             }
@@ -383,6 +400,13 @@ public class NvoEtiquetadoFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 nvacaja();
+
+            }
+        });
+        eliminarCaja.setOnClickListener(new View.OnClickListener() { //coincide
+            @Override
+            public void onClick(View view) {
+                eliminarCaja();
 
             }
         });
@@ -452,7 +476,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 tomarFoto(REQUEST_CODE_TAKE_PHOTO);
             }
         });
-        txtcajaact.setText("CAJA "+contcaja);
+      //  txtcajaact.setText("CAJA "+contcaja);
         txtnumuestra.setText("MUESTRA "+contmuestra);
         Log.d(TAG,"ando aqi");
         mViewModel.preguntaAct=preguntaAct;
@@ -466,9 +490,41 @@ public class NvoEtiquetadoFragment extends Fragment {
 }*/
 public void nvacaja(){
         contcaja++;
-    preguntaAct=2;
-    txtcajaact.setText("CAJA "+contcaja);
+      spinnerValues.add(contcaja+"");
+        adaptercaja.notifyDataSetChanged();
+  //  preguntaAct=2;
+  //  txtcajaact.setText("CAJA "+contcaja);
     //avanzar();
+    }
+    public void eliminarCaja(){
+    Log.d(TAG,"cajas"+contcaja);
+        if(contcaja>1) {
+            //reviso que no haya muestras, primero qu reubique
+            List<InformeEtapaDet> det=mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(),3,contcaja);
+            if(det!=null&&det.size()>0){
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setTitle(R.string.atencion);
+                dialogo1.setMessage(R.string.esta_caja);
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        //lo mando a continuar
+                       dialogo1.cancel();
+                       return;
+
+                    }
+                });
+
+                dialogo1.show();
+
+            }
+            contcaja--;
+            spinnerValues.remove(spinnerValues.size()-1);
+            adaptercaja.notifyDataSetChanged();
+        }
+        //  preguntaAct=2;
+        //  txtcajaact.setText("CAJA "+contcaja);
+        //avanzar();
     }
 
     public void avanzar(){
@@ -476,17 +532,18 @@ public void nvacaja(){
 
         switch (preguntaAct){
             case 1: //sel planta
-                svotra.setVisibility(View.VISIBLE);
-                txtcajaact.setVisibility(View.VISIBLE);
+
+
+               // txtcajaact.setVisibility(View.VISIBLE);
                 txtnumuestra.setVisibility(View.VISIBLE);
                 sv1.setVisibility(View.GONE);
-                txttotmues.setVisibility(View.VISIBLE);
+               // txttotmues.setVisibility(View.VISIBLE);
                 sv3.setVisibility(View.VISIBLE);
                 preguntaAct=preguntaAct+1;
                 break;
             case 2: //foto
                 sv3.setVisibility(View.GONE);
-                svotra.setVisibility(View.GONE);
+
                 sv4.setVisibility(View.VISIBLE);
                 preguntaAct=preguntaAct+1;
                   break;
@@ -494,13 +551,12 @@ public void nvacaja(){
                 //sv3.setVisibility(View.GONE);
                 sv4.setVisibility(View.GONE);
 
-                if(contcaja>1)
-                {
-                    preguntaAct=4;
-                    //pido caja
-                    sv6.setVisibility(View.VISIBLE);
 
-                }else {
+                preguntaAct=4;
+                //pido caja
+                sv6.setVisibility(View.VISIBLE);
+
+              /*  }else {
 
                     guardarDet();
                     isEdicion = false;
@@ -518,13 +574,13 @@ public void nvacaja(){
                         sv5.setVisibility(View.VISIBLE);
                         break;
                     }
-                }
+                }*/
                 break;
             case 4: //numcaja
 
                 sv6.setVisibility(View.GONE);
                 guardarDet();
-
+                Log.d(TAG,contmuestra+"--"+totmuestras);
                 isEdicion = false;
                 if(contmuestra<=totmuestras) {
                     preguntaAct=2;
@@ -560,8 +616,8 @@ public void nvacaja(){
         mViewModel.setIddetalle(0);
         mViewModel.setNvoinforme(null);
         sv3.setVisibility(View.GONE);
-        txttotmues.setVisibility(View.GONE);
-        txtcajaact.setVisibility(View.GONE);
+       // txttotmues.setVisibility(View.GONE);
+        //txtcajaact.setVisibility(View.GONE);
         svotra.setVisibility(View.GONE);
         if (listacomp.size() > 1) {
             //tengo varias plantas
@@ -576,12 +632,12 @@ public void nvacaja(){
     }
     public void capturarMuestra(){
        // svotra.setVisibility(View.GONE);
-        txtcajaact.setText("CAJA "+contcaja);
+       // txtcajaact.setText("CAJA "+contcaja);
        // contmuestra++;
         //if(potra.getRespuesta()) {
         sv3.setVisibility(View.VISIBLE);
-        txtcajaact.setVisibility(View.VISIBLE);
-        svotra.setVisibility(View.VISIBLE);
+      //  txtcajaact.setVisibility(View.VISIBLE);
+
         preguntaAct = 2;
         mViewModel.preguntaAct=preguntaAct;
             //sv4.setVisibility(View.VISIBLE);
@@ -626,7 +682,7 @@ public void nvacaja(){
         sv1.setVisibility(View.GONE);
         sv6.setVisibility(View.GONE);
         sv3.setVisibility(View.VISIBLE);
-        txtcajaact.setVisibility(View.VISIBLE);
+      //  txtcajaact.setVisibility(View.VISIBLE);
         preguntaAct = 2;
         ImagenDetalle foto;
         mViewModel.preguntaAct=preguntaAct;
@@ -642,8 +698,10 @@ public void nvacaja(){
             txtqr.setText(detalleEdit.getQr());
             contmuestra = detalleEdit.getNum_muestra();
             contmuint=1;
-            contcaja=detalleEdit.getNum_caja();
-            txtcajaact.setText("CAJA "+contcaja);
+            //todo me falta saber el numero total de cajas
+        //    contcaja=detalleEdit.getNum_caja();
+
+          //  txtcajaact.setText("CAJA "+contcaja);
             totcajas=infomeEdit.getTotal_cajas();
         }
        else{
@@ -669,43 +727,34 @@ public void nvacaja(){
     public void atras(){
         switch (preguntaAct){
 
-            case 2:
-                if(mViewModel.variasPlantas)
-                { sv1.setVisibility(View.VISIBLE);}
 
-                sv3.setVisibility(View.GONE);
-                preguntaAct=preguntaAct-1;
-                mViewModel.preguntaAct=preguntaAct;
-                break;
-            case 3:
+            case 3: //qr
+             sv3.setVisibility(View.VISIBLE);
+
+            sv4.setVisibility(View.GONE);
+            preguntaAct=preguntaAct-1;
+            mViewModel.preguntaAct=preguntaAct;
                 break;
                 //  sv6.setVisibility(View.VISIBLE);
               //  sv3.setVisibility(View.GONE);
              //   txtcajaact.setVisibility(View.GONE);
 
-            case 4:
-                sv3.setVisibility(View.VISIBLE);
-                sv4.setVisibility(View.GONE);
+            case 4://caja
+                sv4.setVisibility(View.VISIBLE);
+                sv6.setVisibility(View.GONE);
                 preguntaAct=preguntaAct-1;
                 mViewModel.preguntaAct=preguntaAct;
                 break;
-            case 5:
+            case 5://coment
+                sv6.setVisibility(View.VISIBLE);
+                sv5.setVisibility(View.GONE);
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
                break;
              //   sv4.setVisibility(View.VISIBLE);
              //   svotra.setVisibility(View.GONE);
              //   break;
-            case 6:
-                svotra.setVisibility(View.VISIBLE);
-               // svcoin.setVisibility(View.GONE);
-                preguntaAct=preguntaAct-1;
-                mViewModel.preguntaAct=preguntaAct;
-                break;
-            case 7:
-                //svcoin.setVisibility(View.VISIBLE);
-                sv5.setVisibility(View.GONE);
-                preguntaAct=preguntaAct-1;
-                mViewModel.preguntaAct=preguntaAct;
-                break;
+
 
         }
         Log.d(TAG,"**"+preguntaAct);
@@ -739,22 +788,15 @@ public void nvacaja(){
         try {
             lastClickTime = 0;
             totcajas = 0;
-            if( mViewModel.variasPlantas) {
-                DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
 
-                //busco par de id, cliente
-                String[] aux = opcionsel.getDescripcion().split(",");
-                clienteId = Integer.parseInt(aux[0]);
-                clienteNombre = aux[1];
-                plantaSel = opcionsel.getId();
-                nombrePlantaSel = opcionsel.getNombre();
-            }
             //totcajas =Integer.parseInt(txtnumcajas.getText().toString());
 
-            if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null) {
+            if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null&&contmuestra==1) {
                 Log.d(TAG, "creando nvo inf");
                 //creo el informe
                  mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL,nombrePlantaSel,plantaSel,clienteNombre,clienteId,totcajas,totmuestras));
+                ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(mViewModel.getNvoinforme());
+
             }
         }catch (Exception ex){
             ex.printStackTrace();
@@ -762,9 +804,8 @@ public void nvacaja(){
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
         }
-        ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(mViewModel.getNvoinforme());
 
-        aceptar1.setEnabled(true);
+            aceptar1.setEnabled(true);
             avanzar();
         }
         public void guardarDet(){

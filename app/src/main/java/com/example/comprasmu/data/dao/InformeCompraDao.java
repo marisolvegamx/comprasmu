@@ -105,6 +105,7 @@ public interface InformeCompraDao {
     InformeWithDetalle getInformeWithDetalleByIdsimple(int id);
 
 
+
    /* @Query("SELECT indice, createdAt as fecha,clienteNombre, plantaNombre, " +
             "informe_compras.estatus as estatusinforme, informe_compras.id as idinforme  " +
             "FROM informe_compras, visitas " +

@@ -64,7 +64,7 @@ public interface APIService {
     @GET("catalogos")
     Call<CatalogosResponse> getCatalogosNuevoInforme(@Query("usuario") String usuario);
     @GET("sustitucion")
-    Call<List<Sustitucion>> getSustitucion(@Query("usuario") String usuario);
+    Call<List<Sustitucion>> getSustitucion(@Query("usuario") String usuario,@Query("indice") String indice);
 
     @GET("listacompras")
     Call<ListaCompraResponse> getListasCompra( @Query("indice") String indice, @Query("usuario") String usuario, @Query("version_lista") String version_lista, @Query("version_detalle") String version_detalle);

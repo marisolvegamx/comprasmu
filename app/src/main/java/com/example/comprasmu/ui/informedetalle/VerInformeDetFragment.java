@@ -145,7 +145,7 @@ public class VerInformeDetFragment extends Fragment {
                 atributos = catalogoDetalles;
                 if(clienteSel==4)
                 crearFormulario(informe);
-                if(clienteSel==5||clienteSel==6)
+               else
                     crearFormularioPen(informe);
                 sv1.addView(cf.crearTabla());
                /// sv2.addView(cfcf22.crearTabla());
@@ -293,9 +293,19 @@ public class VerInformeDetFragment extends Fragment {
             campo.nombre_campo = Contrato.TablaInformeDet.FOTO_ATRIBUTOC;
             campo.type = "imagenView";
             campo.value = fotos[6] != null ? directorio + fotos[6].getRuta() : "";
+*/
+            camposForm.add(campo);
 
-            camposForm.add(campo);*/
+        }
 
+        if(detalle.getAtributod()!=null&&!detalle.getAtributod().equals("")) {
+            campo = new CampoForm();
+            campo.label = getString(R.string.atributod);
+            campo.nombre_campo = Contrato.TablaInformeDet.ATRIBUTOD;
+            campo.type = "label";
+            campo.style=R.style.verinforme2;
+            campo.value = buscarAtr(detalle.getAtributod(), atributos);
+            camposForm.add(campo);
         }
         campo=new CampoForm();
         campo.label="QR";
@@ -430,7 +440,13 @@ public class VerInformeDetFragment extends Fragment {
         campo.value= detalle.getCosto();
 
         camposForm.add(campo);
+        campo=new CampoForm();
+        campo.label="QR";
+        campo.style=R.style.verinforme2;
+        campo.type="label";
+        campo.value=detalle.getQr();
 
+        camposForm.add(campo);
         /*campo=new CampoForm();
         campo.label=getString(R.string.foto_codigo_produccion);
         campo.type="imagenView";

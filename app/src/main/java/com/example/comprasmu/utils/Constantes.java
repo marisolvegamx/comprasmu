@@ -65,7 +65,7 @@ public class Constantes {
         public static   String nvoatra;
         public static  String nvoatrb;
         public static String nvoatrc;
-
+       public static String nvoatrd;
     }
     public static class VarListCompra{
         public static   int idListaSel;

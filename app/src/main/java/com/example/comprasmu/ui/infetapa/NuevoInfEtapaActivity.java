@@ -118,6 +118,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 }
             }
             if (etapa == 3) {
+                mBinding.row1.setVisibility(View.GONE);
                 if (det != null) {
                     //busco la pregunta actual en la decripcion
                     //char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
@@ -128,7 +129,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     //todavía no capturaba detalle
                 {  ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment(3,true,null,idinformeSel));
                 }
-                 }
+            }
             if (etapa == 4) {
                 if(plantaSel>1)//es una nueva caja
                 {
@@ -179,8 +180,11 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             }else
             if(etapa==1)
                 ft.add(R.id.continfeta_fragment, new NvaPreparacionFragment(1,false,null));
-            else if(etapa==3)
+            else if(etapa==3) {
+                mBinding.row1.setVisibility(View.GONE);
                 ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment());
+
+            }
             else if (etapa == 4) {
 
                 ft.add(R.id.continfeta_fragment, new NvoEmpaqueFragment(null,false));
@@ -204,7 +208,11 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     }
 
     public void actualizarBarra(InformeEtapa nvoInf) {
+        if(Constantes.ETAPAACTUAL==3)//para etiquetado pongo total de muestra
+            mBinding.txtnietotmues.setVisibility(View.VISIBLE);
+
         mBinding.setInforme(nvoInf);
+        mBinding.row1.setVisibility(View.VISIBLE);
         mBinding.row2.setVisibility(View.VISIBLE);
 
     }

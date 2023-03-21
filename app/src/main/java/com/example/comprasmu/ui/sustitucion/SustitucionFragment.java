@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.databinding.ListaGenericFragmentBinding;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoElecFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoJumFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listacompras.PlaceholderFragment;
@@ -149,7 +151,11 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         //cambio al fragmento de captura del detalle
         if (view.getId() == R.id.btnldagregar) {
            Log.d(TAG, "agregar muestra"+productoSel.getNomproducto());
-
+            //valido que no exista en la compra
+            if(mViewModel.validarProdJum(Constantes.INDICEACTUAL,plantaSel,productoSel)){
+                Toast.makeText(getActivity(), getString(R.string.err_mismo_prod), Toast.LENGTH_LONG).show();
+                return;
+            }
             NuevoDetalleViewModel nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
                 String clienteNombre=Constantes.ni_clientesel;//lo pongo hasta que se guarda el informe
             //para los bu
@@ -192,6 +198,9 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
             if(ldViewModel.getClienteSel()==6)
                 // resultIntent.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.informe.getId());
                 getActivity().setResult(DetalleProductoElecFragment.NUEVO_RESULT_OK, resultIntent);
+            if(ldViewModel.getClienteSel()==7)
+                // resultIntent.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.informe.getId());
+                getActivity().setResult(DetalleProductoJumFragment.NUEVO_RESULT_OK, resultIntent);
 
             //regreso al informe
             getActivity().finish();

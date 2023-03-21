@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 <data>
-    <import type="com.example.comprasmu.utils.ComprasUtils"></import>
+
+    <import type="com.example.comprasmu.utils.ComprasUtils" />
     <variable
         name="sdf"
         type="java.text.SimpleDateFormat" />
@@ -60,6 +61,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TableRow
+                android:id="@+id/row1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -96,13 +98,21 @@
 
                     android:layout_weight="1"
                     android:text='@{informe.indice!=null?ComprasUtils.indiceLetra(informe.indice):""}' />
-
+                <TextView
+                    android:id="@+id/txtnietotmues"
+                    style="@style/columna2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    android:text='@{informe.total_muestras>0?@string/total_mues+": "+informe.total_muestras:""}'
+                    />
                 <TextView
                     android:id="@+id/txtnieidinforme"
                     style="@style/columna2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
+                    android:visibility="gone"
                     android:layout_weight="1"
                     android:text='@{informe.consecutivo>0?@string/consecutivo+" "+informe.consecutivo:""}'
                     />

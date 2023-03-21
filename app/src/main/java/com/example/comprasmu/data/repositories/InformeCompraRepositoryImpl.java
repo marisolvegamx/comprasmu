@@ -7,6 +7,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.modelos.InformeCompra;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import java.util.ArrayList;
 import java.util.List;
@@ -223,6 +224,8 @@ public class InformeCompraRepositoryImpl   {
 
        return icDao.getInformesWithVisita(sqlquery);
     }
+
+
 
 
    /* public LiveData<List<InformeCompraDao.InformeCompravisita>> getInformesVisitas (String indice, String nombretienda, String ciudad, int planta, int cliente) {

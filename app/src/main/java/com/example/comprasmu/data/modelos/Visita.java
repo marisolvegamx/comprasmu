@@ -38,6 +38,7 @@ public class Visita {
     private int estatusPepsi; //para saber si puedo comprar pepsi 0 no 1 si
     private int estatusPen;
     private int estatusElec;
+    private int estatusJum;
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
     private Date createdAt;
@@ -244,5 +245,13 @@ public class Visita {
 
     public void setConsecutivocd(int consecutivocd) {
         this.consecutivocd = consecutivocd;
+    }
+
+    public int getEstatusJum() {
+        return estatusJum;
+    }
+
+    public void setEstatusJum(int estatusJum) {
+        this.estatusJum = estatusJum;
     }
 }

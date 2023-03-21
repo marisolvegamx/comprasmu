@@ -129,5 +129,6 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         dao.deleteAll();
     }
 
+
 }
 
