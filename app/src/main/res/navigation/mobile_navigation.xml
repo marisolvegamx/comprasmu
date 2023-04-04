@@ -416,12 +416,12 @@
 
     <fragment
         android:id="@+id/nav_resumenemp"
-        android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
+        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
         android:label="@string/menu_resumeninf" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
             app:argType="string"
-            android:defaultValue="action_selclitoinf1" />
+            android:defaultValue="e" />
         <argument
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
@@ -434,6 +434,15 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
 
 
+    <fragment
+        android:id="@+id/nav_etiq"
+        android:name="com.example.comprasmu.utils.ui.DescargarDocsFragment"
+        android:label="@string/desc_etiq" >
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="4" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_cerrarsesion"

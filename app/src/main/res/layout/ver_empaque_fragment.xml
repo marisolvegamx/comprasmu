@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
-
-xmlns:tools="http://schemas.android.com/tools">
-
+    xmlns:tools="http://schemas.android.com/tools">
+<data>
+    <variable
+        name="directorio"
+        type="String" />
+    <variable
+        name="consulta"
+        type="Boolean" />
+</data>
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.informe.VerInformeFragment">
-
-
+    tools:context=".ui.empaque.VerEmpaqueFragment">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -19,7 +22,6 @@ xmlns:tools="http://schemas.android.com/tools">
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -28,12 +30,10 @@ xmlns:tools="http://schemas.android.com/tools">
                     android:id="@+id/cardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="24dp"
                     app:cardCornerRadius="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +46,7 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:id="@+id/igdatosgen"
+                            android:id="@+id/eddatosgen"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
@@ -56,27 +56,30 @@ xmlns:tools="http://schemas.android.com/tools">
                             android:orientation="vertical">
 
 
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="8dp"
-                            android:orientation="vertical">
-
-                            <androidx.appcompat.widget.AppCompatButton
-                                android:id="@+id/btnverdet"
-                                style="@style/btnverde"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
                         </LinearLayout>
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/lleddet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cardView">
+
+                    <include
+                        android:id="@+id/edcontentmuestras"
+                        layout="@layout/lista_muestras"
+
+                        />
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

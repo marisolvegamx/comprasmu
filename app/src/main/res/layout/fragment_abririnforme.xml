@@ -467,6 +467,8 @@
                             android:layout_weight="1"
                             android:visibility="gone" />
 
+
+
                         <LinearLayout
                             android:id="@+id/aiex3group"
                             android:layout_width="match_parent"
@@ -500,6 +502,86 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/no_foto" />
+
+                        <com.example.comprasmu.utils.Preguntasino
+                            android:id="@+id/snmascli3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llfotoex4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/txtaiselcliente4"
+                            style="@style/formlabel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/seleccione_cliente"
+                            android:visibility="gone" />
+
+                        <Spinner
+                            android:id="@+id/spaiclientes4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <ImageButton
+                            android:id="@+id/btnaifotoexhibido4"
+                            style="@style/imbutton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_menu_camera" />
+
+
+                        <EditText
+                            android:id="@+id/txtaifotoex4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:visibility="gone" />
+
+                        <LinearLayout
+                            android:id="@+id/aiex4group"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivaifotoex4"
+                                android:layout_width="111dp"
+                                android:layout_height="95dp"
+                                android:tag="fotoex"
+                                android:visibility="gone"
+                                tools:src="@tools:sample/avatars" />
+
+                            <ImageButton
+                                android:id="@+id/btnairotarfe4"
+                                style="@style/imbutton"
+                                android:layout_width="60dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="60dp"
+                                android:layout_marginEnd="190dp"
+                                android:contentDescription="rotar"
+                                android:src="@drawable/ic_baseline_loop_24"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
+                        </LinearLayout>
+
+                        <CheckBox
+                            android:id="@+id/cbainpexhibidor4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/no_foto" />
+
 
                     </LinearLayout>
                 </LinearLayout>

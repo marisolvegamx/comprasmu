@@ -117,32 +117,34 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="53dp"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/li_btnedit"
-
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/blue_secondary"
                     android:drawableLeft="@drawable/ic_baseline_add_24"
+                    android:drawableTint="@color/white"
                     android:text="@string/producto_exhibido"
                     android:textColor="@android:color/white"
                     android:visibility="@{detalle.estatusSync==0&amp;&amp;detalle.estatus!=3?View.VISIBLE:View.GONE}" />
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatButton
+
                     android:id="@+id/li_btnborrar"
-                    style="@style/imbutton"
+                    style="@style/btnverde"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp"
                     android:layout_weight="1"
-                    android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}"
-                    app:srcCompat="@drawable/ic_baseline_white_close_24" />
+                    android:text="@string/eliminar"
+                    android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}" />
 
             </LinearLayout>
 

@@ -7,6 +7,7 @@
     <string name="empaque">EMPAQUE</string>
     <string name="analisis">ANÁLISIS</string>
     <string name="total">TOTAL</string>
+    <string name="total_mues">TOT. MUESTRAS</string>
     <string name="ciudad">CIUDAD</string>
     <string name="siglas">SIGLAS</string>
     <string name="fecha_caducidad">FECHA DE CADUCIDAD</string>
@@ -268,7 +269,9 @@
     <string name="acomodo_mues">ACOMODO DE MUESTRAS EMBOLSADAS DENTRO DE CAJA</string>
     <string name="relleno_esp">RELLENO DE ESPACIOS DENTRO DE CAJA</string>
     <string name="proteccion_fin">PROTECCIÓN FINAL ANTES DEL CIERRE</string>
-    <string name="caja_cer">CAJA CERRADA Y ETIQUETADA</string>
+    <string name="caja_cer">CAJA CERRADA</string>
+    <string name="etiqueta_ana">ETIQUETA ANÁLISIS - # MUESTRAS</string>
+    <string name="etiqueta_des">ETIQUETA DESTINATARIO</string>
     <string name="largo">LARGO</string>
     <string name="ancho">ANCHO</string>
     <string name="alto">ALTO</string>
@@ -300,6 +303,17 @@
     <string name="reubicarEtiq">REUBICAR MUESTRA</string>
     <string name="menu_reubiqetiq">Reubicar muestra</string>
     <string name="menu_eliminaretiq">"Eliminar caja "</string>
+    <string name="atributod">DAÑO D</string>
+    <string name="elim_caja">ELIMINAR CAJA</string>
+    <string name="selec_caja">SELECCIONE LA CAJA</string>
+    <string name="esta_caja">PARA ELIMINAR LA CAJA REUBIQUE LAS MUESTRAS</string>
+    <string name="err_mismo_prod">NO PUEDE VOLVER A COMPRAR ESE SABOR, VERIFIQUE</string>
+    <string name="lista_sust">LISTA DE SUSTITUCION</string>
+    <string name="eliminar">ELIMINAR</string>
+    <string name="muestra_reubicada">MUESTRA REUBICADA</string>
+    <string name="verifique_codigo">VERIFIQUE EL CODIGO</string>
+    <string name="menu_etiquetas">Etiquetas</string>
+    <string name="desc_etiq">DESCARGAR ETIQUETAS</string>
 
 
 </resources>
