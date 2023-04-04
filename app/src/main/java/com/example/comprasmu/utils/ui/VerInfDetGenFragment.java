@@ -59,8 +59,6 @@ public class VerInfDetGenFragment extends Fragment {
     LinearLayout sv2;
     LinearLayout sv1;
 
-
-
     public static VerInfDetGenFragment newInstance() {
         return new VerInfDetGenFragment();
     }
@@ -85,7 +83,6 @@ public class VerInfDetGenFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     //    mViewModel = new ViewModelProvider(this).get(VerInformeDetViewModel.class);
         dViewModel=new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
-
 
      //    niViewModel=new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 

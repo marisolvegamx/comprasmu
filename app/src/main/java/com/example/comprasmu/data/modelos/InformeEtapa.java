@@ -21,7 +21,7 @@ public class InformeEtapa {
 
     private int etapa;
     private int total_cajas;
-    private int total_muestras;//viene del servidor
+    private int total_muestras;
     private int estatus;
     private int estatusSync;
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")

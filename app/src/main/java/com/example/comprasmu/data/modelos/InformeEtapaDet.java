@@ -19,7 +19,7 @@ public class InformeEtapaDet {
     private int estatusSync;
     private String ruta_foto;
     private String qr;
-    private int num_muestra;
+    private int num_muestra; //para empaque es el total de muestras
     private int descripcionId;
     private String descripcion;
     private int num_caja;

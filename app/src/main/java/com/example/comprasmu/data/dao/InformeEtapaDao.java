@@ -22,6 +22,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("SELECT * FROM informe_etapa where etapa=:etapa")
     public abstract List<InformeEtapa> getInformesSimple(int etapa);
+    @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice")
+    public abstract List<InformeEtapa> getAllSimp(int etapa, String indice);
 
     @Transaction
     @RawQuery(observedEntities = InfEtapaWithDetalle.class)
@@ -54,6 +56,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and plantasId=:plantaid limit 1")
     public abstract InformeEtapa getInformexPlant(int etapa, String indice, int plantaid);
 
+    @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and clientesId=:clienteid")
+    public abstract List<InformeEtapa> getInformesxCli(int etapa, String indice, int clienteid);
 
 
     @Query("DELETE FROM informe_etapa where id=:id")
@@ -92,8 +96,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
 
 
-    @Query("select * from informe_etapa where indice=:indice and etapa=3 and estatusSync =2 group by plantasId")
-    public abstract   List<InformeEtapa> getPlantasconInf(String indice);
+    @Query("select * from informe_etapa where indice=:indice and etapa=3 and estatusSync =2 group by clientesId")
+    public abstract   List<InformeEtapa> getClientesconInf(String indice);
 
     @Query("delete  from informe_etapa where indice=:indice")
     public abstract void deleteByIndice( String indice);

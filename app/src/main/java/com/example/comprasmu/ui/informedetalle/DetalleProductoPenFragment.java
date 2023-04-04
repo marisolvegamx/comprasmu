@@ -119,7 +119,7 @@ public class DetalleProductoPenFragment extends Fragment {
     public int estatusPepsi, estatusPen,estatusElec, estatusJumex;
     NuevoDetalleViewModel.ProductoSel prodSel;
     public static  int REQUEST_CODE_TAKE_PHOTO=5;
-
+    protected static final int REQUEST_CODEQR = 341;
     protected int tipoTienda;
     public static final int NUEVO_RESULT_OK =103 ;
     public static final Integer RecordAudioRequestCode = 1;
@@ -507,7 +507,15 @@ public class DetalleProductoPenFragment extends Fragment {
            // btnrotar.setVisibility(View.VISIBLE);
 
         }
+        if(campo.type.equals("botonqr")) {
+            campo.funcionOnClick=new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    iniciarLecQR();
+                }
 
+            };
+        }
         if(Contrato.TablaInformeDet.causa_nocompra.equals(campo.nombre_campo)) {
             //busco en el catalogo
             this.getCausas();
@@ -1567,7 +1575,32 @@ public class DetalleProductoPenFragment extends Fragment {
 
         }
 
-        }   else
+        }  else if(requestCode == REQUEST_CODEQR) {
+
+
+            //  IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
+            IntentResult result =IntentIntegrator.parseActivityResult(resultCode, data);
+
+            Log.d(TAG,"res del qr "+result.getContents());
+            if(result != null) {
+
+                if(result.getContents() == null) {
+                    Toast.makeText(getActivity(), "Scan cancelled", Toast.LENGTH_LONG).show();
+                }
+                else
+                {   /* Update the textview with the scanned URL result */
+                    textoint.setText(result.getContents());
+                    //Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
+                }
+
+            }
+            else
+            {
+                super.onActivityResult(requestCode, resultCode, data);
+                Toast.makeText(getActivity(), "hubo un error",Toast.LENGTH_LONG ).show();
+
+            }
+        }  else
             {
                 Log.e(TAG,"Algo salió muy mal**");
             }
@@ -1643,14 +1676,14 @@ public class DetalleProductoPenFragment extends Fragment {
           mViewModel.guardarResp(mViewModel.getIdInformeNuevo(),0,dViewModel.productoSel.comprasIdbu+"","comprasIdbu","ID",mViewModel.consecutivo,false);
 
       }
-        //TODO validar siglas
+
    public void  buscarPlanta() {
        String siglas = textoint.getText().toString();
        textoint.setEnabled(false);
        if (!siglas.equals("")) {
            EnvioListener listener = new EnvioListener();
            //bloqueo la pnatalla y hago la peticion
-           dViewModel.buscarPlantaPen(siglas,listener );
+           dViewModel.buscarPlantaPen(siglas,mViewModel.clienteSel,listener );
            //actualizo siglas en prod sel
            dViewModel.productoSel.siglas=siglas;
        }else {
@@ -1871,7 +1904,13 @@ public class DetalleProductoPenFragment extends Fragment {
         }
     }
 
-
+    public void iniciarLecQR(){
+        IntentIntegrator integrator  =new  IntentIntegrator ( getActivity() ).forSupportFragment(this);
+        integrator.setRequestCode(REQUEST_CODEQR);
+        //  integrator.setOrientationLocked(false);
+        Log.d(TAG, "inciando scanner");
+        integrator.initiateScan();
+    }
     class BotonTextWatcher implements TextWatcher {
 
         boolean mEditing;

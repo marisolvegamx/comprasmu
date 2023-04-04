@@ -76,7 +76,7 @@ public interface APIService {
     Call<UltimoInfResponse> getUltimosIdsI( @Query("indice") String indice,@Query("planta") int plantasel, @Query("usuario") String usuario);
 
     @GET("plantapen")
-    Call<PlantaResponse> getPlantaPeniafiel( @Query("siglas") String indice, @Query("usuario") String usuario);
+    Call<PlantaResponse> getPlantaPeniafiel( @Query("siglas") String indice, @Query("usuario") String usuario,@Query("cli") int cliente);
 
     @POST("cancelarInforme/{id}")
     @Headers({

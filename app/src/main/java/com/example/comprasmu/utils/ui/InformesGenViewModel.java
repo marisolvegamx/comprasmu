@@ -5,16 +5,17 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.comprasmu.data.modelos.Correccion;
+import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
+import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 
 import java.util.List;
-
 
 public class InformesGenViewModel extends AndroidViewModel {
 
@@ -22,13 +23,14 @@ public class InformesGenViewModel extends AndroidViewModel {
     private final InfEtapaDetRepoImpl idrepository;
     private final CorreccionRepoImpl correpo;
     private final ImagenDetRepositoryImpl imagenDetRepository;
+    private final DetalleCajaRepoImpl detCajaRepo;
     public InformesGenViewModel(Application application) {
         super(application);
-
         ierepository=new InfEtapaRepositoryImpl(application);
         idrepository=new InfEtapaDetRepoImpl(application);
         correpo=new CorreccionRepoImpl(application);
         this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
+        this.detCajaRepo=new DetalleCajaRepoImpl(application);
     }
 
 
@@ -52,7 +54,10 @@ public class InformesGenViewModel extends AndroidViewModel {
         return idrepository.getAllxEtapa(id, etapa);
 
     }
+    public LiveData<List<InformeEtapaDet>> getfotosxetapaxcaj(int id, int etapa, int numcaja){
+        return idrepository.getByCajaEmp(id, etapa, numcaja);
 
+    }
     public ImagenDetalle getfotoxid(String id){
 
             int idim = Integer.parseInt(id);
@@ -60,7 +65,9 @@ public class InformesGenViewModel extends AndroidViewModel {
 
 
     }
-
+    public LiveData<List<DetalleCaja>> getDetalleCajaEmp(int infid){
+        return detCajaRepo.getDetalles(infid);
+    }
 
 
 }

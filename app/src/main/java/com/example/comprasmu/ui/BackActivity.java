@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.ui.empaque.VerEmpaqueFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.utils.ui.ListaInformesEtaFragment;
 import com.example.comprasmu.utils.ui.VerInformeGenFragment;
@@ -34,6 +35,8 @@ public class BackActivity extends AppCompatActivity {
     public static final String OP_SUSTITUCION="sustitucion";
 
     public static final String OP_INFORMECOR="informecor";
+    public static final String OP_VEREMPQ="verempq";
+
     public static final String TAG="BackActivity";
 
     public static final int REQUEST_CODE=1003;
@@ -160,7 +163,7 @@ public class BackActivity extends AppCompatActivity {
                     ft.add(R.id.back_fragment, detailFragment4);
                     break;
                 case OP_SUSTITUCION:
-                    myChildToolbar.setTitle(R.string.menu_ver_lista);
+                    myChildToolbar.setTitle(R.string.lista_sust);
                      bundle6=new Bundle();
                  //   bundle6.putInt(NuevoinformeFragment.INFORMESEL,datosRecuperados.getInt(NuevoinformeFragment.INFORMESEL));
 
@@ -197,6 +200,16 @@ public class BackActivity extends AppCompatActivity {
 
                     detailFragment7.setArguments(bundle6);
                     ft.add(R.id.back_fragment, detailFragment7);
+                    break;
+                case OP_VEREMPQ:
+
+                    myChildToolbar.setTitle(R.string.informe);
+                    VerEmpaqueFragment detailFragment8 = new VerEmpaqueFragment();
+                    bundle6.putInt(ListaInformesEtaFragment.INFORMESEL,datosRecuperados.getInt(ListaInformesEtaFragment.INFORMESEL));
+                    // bundle6.putInt(NuevoInfEtapaActivity.NUMFOTO,datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO));
+
+                    detailFragment8.setArguments(bundle6);
+                    ft.add(R.id.back_fragment, detailFragment8);
                     break;
                 default:
                     break;

@@ -170,10 +170,10 @@ public class PeticionesServidor {
 
     }
 
-    public  void getPlantaPeniafiel(String siglas, DetalleProductoPenFragment.EnvioListener listener) {
+    public  void getPlantaPeniafiel(String siglas,int cliente, DetalleProductoPenFragment.EnvioListener listener) {
         CatalogoDetalle resp=null;
         Log.d(TAG,"haciendo peticion"+siglas);
-        final Call<PlantaResponse> batch = ServiceGenerator.getApiService().getPlantaPeniafiel(siglas,usuario);
+        final Call<PlantaResponse> batch = ServiceGenerator.getApiService().getPlantaPeniafiel(siglas,usuario,cliente);
 
         batch.enqueue(new Callback<PlantaResponse>() {
             @Override

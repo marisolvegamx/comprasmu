@@ -5,8 +5,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -15,14 +13,12 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Environment;
 import android.os.SystemClock;
@@ -35,44 +31,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
-import com.example.comprasmu.SubirInformeTask;
-import com.example.comprasmu.data.dao.ImagenDetalleDao;
-import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
-import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Reactivo;
-import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaViewModel;
-import com.example.comprasmu.ui.informedetalle.ContinuarInformeActivity;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
-import com.example.comprasmu.utils.Event;
 import com.example.comprasmu.utils.Preguntasino;
 
 import java.io.File;
@@ -151,10 +137,10 @@ public class NvaPreparacionFragment extends Fragment {
             preguntaAct=0;
             preguntaSig=1;
             convertirLista(listacomp);
-            mViewModel.variasPlantas=true;
+            mViewModel.variasClientes =true;
         }else if(listacomp.size()>0)
         {
-            mViewModel.variasPlantas=false;
+            mViewModel.variasClientes =false;
                   //tengo el nombre de la planta y cliente
 
             nombrePlantaSel=listacomp.get(0).getPlantaNombre();
@@ -224,7 +210,7 @@ public class NvaPreparacionFragment extends Fragment {
             }else if(preguntaAct==0) {
 
                 convertirLista(listacomp);
-                mViewModel.variasPlantas=true;
+                mViewModel.variasClientes =true;
                 if(informesel>0)
                     mViewModel.setIdNuevo( informesel);
                 Log.e(TAG,"--"+mViewModel.getIdNuevo());

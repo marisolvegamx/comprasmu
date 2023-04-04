@@ -33,8 +33,9 @@ public class ServiceGenerator {
                         .addConverterFactory(GsonConverterFactory.create());*/
        if (Build.PRODUCT.contains ("sdk")){
 
-
+            //nam
             BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
+          // BASE_URL = "http://192.168.1.78/comprasv1/api/public/";
 
         }else
         {

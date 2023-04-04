@@ -28,6 +28,7 @@ import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.ui.RevisarFotoActivity;
+import com.example.comprasmu.ui.empaque.VerEmpaqueFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
@@ -102,7 +103,9 @@ public class GalFotosFragment extends Fragment {
                       startuiEta(idmuestra);
                   }
                   if(Constantes.ETAPAACTUAL==4){
-                      listafotos=igViewModel.getfotosxetapa(idmuestra,3);
+                      int infsel = params.getInt(VerEmpaqueFragment.ARG_INFSEL);
+
+                      listafotos=igViewModel.getfotosxetapaxcaj(infsel,Constantes.ETAPAACTUAL,idmuestra);
 
                       startuiEta(idmuestra);
                   }
@@ -192,7 +195,7 @@ public class GalFotosFragment extends Fragment {
                         Log.d(TAG,informeEtapaDets.size()+"--");
                     //paso todo a imagendet
                         fotos=new ArrayList<>();
-                        if(Constantes.ETAPAACTUAL==1||Constantes.ETAPAACTUAL==4)
+                        if(Constantes.ETAPAACTUAL==1)
                         for(InformeEtapaDet inf:informeEtapaDets){
                             //busco la imagen detalle
                             try {
@@ -203,7 +206,21 @@ public class GalFotosFragment extends Fragment {
                         }
 
 
-                        }
+                        }else
+                        if(Constantes.ETAPAACTUAL==4)
+                            for(InformeEtapaDet inf:informeEtapaDets){
+                                //busco la imagen detalle
+                                try {
+                                    ImagenDetalle id= igViewModel.getfotoxid(inf.getRuta_foto());
+                                    //id.setDescripcion(inf.getDescripcion());
+
+                                    fotos.add(id);
+                                }catch (NumberFormatException ex){
+                                    compraslog.grabarError(TAG+ " "+ex.getMessage());
+                                }
+
+
+                            }else
                         if(Constantes.ETAPAACTUAL==3)
                             for(InformeEtapaDet inf:informeEtapaDets){
                                 ImagenDetalle id= igViewModel.getfotoxid(inf.getRuta_foto());

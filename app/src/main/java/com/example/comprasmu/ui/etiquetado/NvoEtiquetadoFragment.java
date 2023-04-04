@@ -34,11 +34,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -57,7 +53,6 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
-import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
@@ -74,6 +69,7 @@ import com.google.zxing.integration.android.IntentResult;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -272,6 +268,9 @@ public class NvoEtiquetadoFragment extends Fragment {
         listacomp= lcViewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
         Log.d(TAG,"PLANTA"+listacomp.toString()+"ss"+mViewModel.getIdNuevo());
         preguntaAct=1;
+        //veo si ya tengo informes
+        Integer[] clientesprev=mViewModel.tieneInforme(3);
+
         if(mViewModel.getIdNuevo()==0) {
             //reviso si ya tengo uno abierto
             if(!isEdicion&&preguntaAct<1) {
@@ -299,16 +298,17 @@ public class NvoEtiquetadoFragment extends Fragment {
                 //tengo varias plantas
                 preguntaAct = 1;
 
-                convertirLista(listacomp);
+                convertirLista(listacomp,clientesprev);
                 cargarPlantas(listaPlantas, "");
-                mViewModel.variasPlantas = true;
+
+                mViewModel.variasClientes = true;
                 sv1.setVisibility(View.VISIBLE);
                 aceptar1.setEnabled(true);
             } else if (listacomp.size() > 0) {
                 preguntaAct = 2;
 
                 sv3.setVisibility(View.VISIBLE);
-                mViewModel.variasPlantas = false;
+                mViewModel.variasClientes = false;
                 nombrePlantaSel = listacomp.get(0).getPlantaNombre();
                 plantaSel = listacomp.get(0).getPlantasId();
                 clienteId = listacomp.get(0).getClientesId();
@@ -330,6 +330,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             infomeEdit = mViewModel.getInformexId(informeSel);
             preguntaAct = 3;
             mViewModel.preguntaAct = 3;
+          if(listaPlantas!=null&&listaPlantas.size()>0)
             cargarPlantas(listaPlantas, infomeEdit.getPlantasId() + "");
             ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(infomeEdit);
             mViewModel.setIdNuevo(informeSel);
@@ -344,28 +345,30 @@ public class NvoEtiquetadoFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                    DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
-
+                DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
+                if(opcionsel!=null) {
                     //busco par de id, cliente
-                    String[] aux = opcionsel.getDescripcion().split(",");
-                    clienteId = Integer.parseInt(aux[0]);
-                    clienteNombre = aux[1];
+                    //String[] aux = opcionsel.getDescripcion().split(",");
+                    try {
+                        clienteId = Integer.parseInt(opcionsel.getDescripcion());
+                    } catch (NumberFormatException ex) {
+                        Log.d(TAG, ex.getMessage());
+                    }
+                    clienteNombre = opcionsel.getDescripcion2();
                     plantaSel = opcionsel.getId();
-                    nombrePlantaSel = opcionsel.getNombre();
+                    nombrePlantaSel = opcionsel.getDescripcion3();
                     //busco el total de muestras
-                totmuestras=mViewModel.getTotalMuestras(plantaSel);
-                    InformeEtapa temp=new InformeEtapa();
+                    totmuestras = mViewModel.getTotalMuestras(plantaSel);
+                    InformeEtapa temp = new InformeEtapa();
                     temp.setClienteNombre(clienteNombre);
                     temp.setPlantaNombre(nombrePlantaSel);
                     temp.setIndice(Constantes.INDICEACTUAL);
                     temp.setTotal_muestras(totmuestras);
-                    ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(temp);
+                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(temp);
 
 
-
-
-                avanzar();
-
+                    avanzar();
+                }
             }
         });
      /*  aceptar2.setOnClickListener(new View.OnClickListener() {
@@ -517,10 +520,11 @@ public void nvacaja(){
 
                 dialogo1.show();
 
+            }else {
+                contcaja--;
+                spinnerValues.remove(spinnerValues.size() - 1);
+                adaptercaja.notifyDataSetChanged();
             }
-            contcaja--;
-            spinnerValues.remove(spinnerValues.size()-1);
-            adaptercaja.notifyDataSetChanged();
         }
         //  preguntaAct=2;
         //  txtcajaact.setText("CAJA "+contcaja);
@@ -726,14 +730,12 @@ public void nvacaja(){
 
     public void atras(){
         switch (preguntaAct){
-
-
             case 3: //qr
-             sv3.setVisibility(View.VISIBLE);
+                 sv3.setVisibility(View.VISIBLE);
 
-            sv4.setVisibility(View.GONE);
-            preguntaAct=preguntaAct-1;
-            mViewModel.preguntaAct=preguntaAct;
+                sv4.setVisibility(View.GONE);
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
                 break;
                 //  sv6.setVisibility(View.VISIBLE);
               //  sv3.setVisibility(View.GONE);
@@ -751,6 +753,12 @@ public void nvacaja(){
                 preguntaAct=preguntaAct-1;
                 mViewModel.preguntaAct=preguntaAct;
                break;
+            case 6://numcaja
+                sv6.setVisibility(View.GONE);
+                sv4.setVisibility(View.VISIBLE);
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
+                break;
              //   sv4.setVisibility(View.VISIBLE);
              //   svotra.setVisibility(View.GONE);
              //   break;
@@ -816,13 +824,16 @@ public void nvacaja(){
 
                 rutafoto=txtrutaim.getText().toString();
                 qr=txtqr.getText().toString();
-                if(isEdicion){
-                    mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,detalleEdit.getId(),contcaja,qr,contmuestra,Constantes.INDICEACTUAL);
+
+                String opcionsel = (String) spcaja.getSelectedItem();
+                int numcaja = Integer.parseInt(opcionsel);
+                if(isEdicion&&detalleEdit!=null){
+                    mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,detalleEdit.getId(),numcaja,qr,contmuestra,Constantes.INDICEACTUAL);
                     isEdicion=false;
                 }else
                 if(mViewModel.getIdNuevo()>0)
                     //guardo el detalle
-                     mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,contcaja,qr,contmuestra,Constantes.INDICEACTUAL);
+                     mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,numcaja,qr,contmuestra,Constantes.INDICEACTUAL);
                //limpio campos
                 txtrutaim.setText("");
                 fotomos.setImageBitmap(null);
@@ -1078,11 +1089,15 @@ public void nvacaja(){
         }
 
     }
-    private  void convertirLista(List<ListaCompra>lista){
+    private  void convertirLista(List<ListaCompra>lista, Integer[] clientesprev){
         listaPlantas=new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
-
-            listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+","+listaCompra.getClienteNombre()));
+            if( clientesprev!=null)
+                if(Arrays.asList(clientesprev).contains(listaCompra.getPlantasId()))
+                {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
+                    Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
+                    continue;}
+            listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+"",listaCompra.getClienteNombre(),listaCompra.getPlantaNombre()));
 
         }
 

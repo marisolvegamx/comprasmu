@@ -26,9 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -54,12 +52,10 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 
-import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
-import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
@@ -85,16 +81,13 @@ public class NvoEmpaqueFragment extends Fragment {
     List<CampoForm> camposForm;
 
     private Reactivo preguntaAct;
-    LinearLayout sv1,sv2,sv3,sv4,sv5, svotra, svcoin;
+    LinearLayout sv1,sv2,sv3,sv4;
     private static final String TAG = "NvoEmpaqueFragment";
-
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
-
     ImageView fotomos;
     EditText textoint;
     LinearLayout sv;
-
     Button aceptar;
     private ImageButton btnrotar;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
@@ -108,12 +101,14 @@ public class NvoEmpaqueFragment extends Fragment {
     private ListaDetalleViewModel lcViewModel;
 
     List<InformeEtapa> listainfetiq;
-    private  ArrayList<DescripcionGenerica> listaPlantas;
+    private  ArrayList<DescripcionGenerica> listaClientes;
+
     private boolean isEdicion;
     Spinner spplanta;
     InformeEtapaDet ultimares;
     DetalleCaja ultimarescaja;
     ComprasLog compraslog;
+
 
     public NvoEmpaqueFragment(Reactivo preguntaAct,boolean edicion) {
         this.preguntaAct = preguntaAct;
@@ -136,7 +131,6 @@ public class NvoEmpaqueFragment extends Fragment {
 
         try {
 
-
             mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
             lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
             //reviso si es edicion y ya tengo info en temp
@@ -151,15 +145,15 @@ public class NvoEmpaqueFragment extends Fragment {
                 mViewModel.preguntaAct=preguntaAct.getId();
                 //llegué por siguiente
                 if(mViewModel.getIdNuevo()>0) {
-                    plantaSel=mViewModel.getNvoinforme().getPlantasId();
+                 plantaSel=mViewModel.getNvoinforme().getPlantasId();
                     if (preguntaAct.getTabla().equals("ED")) { //veo si ya está
-                        mViewModel.getDetallexDescCaja(mViewModel.getIdNuevo(), preguntaAct.getNombreCampo(),mViewModel.cajaAct).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
+                        mViewModel.getDetallexDescCaja(mViewModel.getIdNuevo(), preguntaAct.getNombreCampo(),mViewModel.cajaAct.consCaja).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                             @Override
                             public void onChanged(InformeEtapaDet informeEtapaDet) {
                                 ultimares = informeEtapaDet;
                                 if(ultimares!=null)
-                                { mViewModel.cajaAct = ultimares.getNum_caja();
-
+                                { mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
+                                    mViewModel.numMuestras=ultimares.getNum_muestra();
                                 isEdicion=true;
                                 }
                                 crearFormulario();
@@ -171,26 +165,26 @@ public class NvoEmpaqueFragment extends Fragment {
                         });
                     }
                      if (preguntaAct.getTabla().equals("DC")) {//veo si ya está
-                         Log.d(TAG,"num caja"+mViewModel.cajaAct);
-                        ultimarescaja = mViewModel.getDetalleCajaxCaja(mViewModel.getIdNuevo(), mViewModel.cajaAct);
+                         Log.d(TAG,"num caja"+mViewModel.cajaAct.consCaja);
+                        ultimarescaja = mViewModel.getDetalleCajaxCaja(mViewModel.getIdNuevo(), mViewModel.cajaAct.consCaja);
                         if(ultimarescaja!=null) {
 
 
                             if(ultimarescaja.getLargo()!=null) {
                                 mViewModel.largoCaja = Float.parseFloat(ultimarescaja.getLargo());
-                                if(preguntaAct.getId()==96)
+                                if(preguntaAct.getId()==98)
                                     isEdicion = true;
                             }if(ultimarescaja.getAncho()!=null) {
                                 mViewModel.anchoCaja = Float.parseFloat(ultimarescaja.getAncho());
-                                if(preguntaAct.getId()==98)
+                                if(preguntaAct.getId()==100)
                                     isEdicion = true;
                             }if(ultimarescaja.getAlto()!=null) {
                                 mViewModel.altoCaja = Float.parseFloat(ultimarescaja.getAlto());
-                                if(preguntaAct.getId()==100)
+                                if(preguntaAct.getId()==102)
                                     isEdicion = true;
                             }if(ultimarescaja.getPeso()!=null) {
                                 mViewModel.pesoCaja = Float.parseFloat(ultimarescaja.getPeso());
-                                if(preguntaAct.getId()==102)
+                                if(preguntaAct.getId()==104)
                                     isEdicion = true;
                             }
                         }
@@ -215,7 +209,6 @@ public class NvoEmpaqueFragment extends Fragment {
                 if (datosRecuperados != null) {
                     informeSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
 
-
                 if (informeSel > 0) //vengo de continuar busco el informe o de nueva caja
                 {
                     if (isEdicion) {
@@ -225,20 +218,22 @@ public class NvoEmpaqueFragment extends Fragment {
                             public void onChanged(InformeEtapa informeEtapa) {
 
                                 mViewModel.setNvoinforme(informeEtapa);
-                                plantaSel=informeEtapa.getPlantasId();
+                                clienteId=informeEtapa.getClientesId();
                                 mViewModel.setIdNuevo(informeSel);
                                 int pregact = 0;
-                                mViewModel.buscarInformeEtiq(Constantes.INDICEACTUAL, informeEtapa.getPlantasId());
-                                ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informeEtapa);
+                                ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informeEtapa,informeEtapa.getTotal_muestras(), informeEtapa.getTotal_cajas());
                                 //busco si tengo detalle
                                 ultimares = mViewModel.getUltimoInformeDet(informeSel, 4);
-                                if (ultimares == null) {      //voy en la 91
+                                if (ultimares == null) {      //voy en la 92
                                     //no deberia estar aqui
                                     Log.e(TAG, "no deberia entrar aqui");
                                 } else {
-                                    mViewModel.cajaAct = ultimares.getNum_caja();
+                                    //busco la lista de cajas
+                                    mViewModel.listaCajasEtiqxCli(clienteId);
+                                    mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
+                                    mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
                                     //ya tengo dimensiones?
-                                    ultimarescaja = mViewModel.getUltimoxCaja(informeSel,mViewModel.cajaAct );
+                                    ultimarescaja = mViewModel.getUltimoxCaja(informeSel,mViewModel.cajaAct.consCaja  );
                                     Log.d(TAG, "lol"+ultimares.getNum_caja());
 
                                     if (ultimarescaja != null)//voy en dimensiones
@@ -254,15 +249,15 @@ public class NvoEmpaqueFragment extends Fragment {
                                             mViewModel.pesoCaja = Float.parseFloat(ultimarescaja.getPeso());
 
                                         if (mViewModel.largoCaja > 0)
-                                            pregact = 96;
-                                        if (mViewModel.anchoCaja > 0)
                                             pregact = 98;
-                                        if (mViewModel.altoCaja > 0)
+                                        if (mViewModel.anchoCaja > 0)
                                             pregact = 100;
-                                        if (mViewModel.pesoCaja > 0)
+                                        if (mViewModel.altoCaja > 0)
                                             pregact = 102;
+                                        if (mViewModel.pesoCaja > 0)
+                                            pregact = 104;
 
-                                        mViewModel.cajaAct = ultimarescaja.getNum_caja();
+                                        mViewModel.cajaAct.consCaja  = ultimarescaja.getNum_caja();
 
                                         if (pregact > 0) {
                                             mViewModel.buscarReactivo(pregact).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
@@ -296,39 +291,20 @@ public class NvoEmpaqueFragment extends Fragment {
                         });
                     }else
                     {
-                         mViewModel.variasPlantas = false;
+                         mViewModel.variasClientes = false;
 
-                           /* nombrePlantaSel = listainfetiq.get(0).getPlantaNombre();
-                            plantaSel = listainfetiq.get(0).getPlantasId();
-                            clienteId = listainfetiq.get(0).getClientesId();
-                            clienteNombre = listainfetiq.get(0).getClienteNombre();
-                            InformeEtapa informetemp = new InformeEtapa();
-                            informetemp.setClienteNombre(clienteNombre);
-                            informetemp.setClientesId(clienteId);
-                            informetemp.setPlantasId(plantaSel);
-                            informetemp.setPlantaNombre(nombrePlantaSel);
-                            informetemp.setIndice(Constantes.INDICEACTUAL);
-                            mViewModel.setNvoinforme(informetemp);*/
-                            //((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informetemp);
-                            //me voy a la sig
-                            mViewModel.buscarInformeEtiq(Constantes.INDICEACTUAL,plantaSel);
-                            /*if(mViewModel.getInformeEtiq()==null){
-                                //no tengo inf etiqueta de esta planta
-                                Toast.makeText(getContext(),"NO TIENE INFORME DE ETIQUETADO DE "+nombrePlantaSel,Toast.LENGTH_SHORT).show();
+                        mViewModel.buscarInformeEmp(Constantes.INDICEACTUAL);
 
-                                return root;
-                            }*/
-                           // mViewModel.cajaAct=1;
-                            mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                        mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
                                 @Override
                                 public void onChanged(Reactivo reactivo) {
                                     preguntaAct = reactivo;
                                     crearFormulario();
                                 }
-                            });
+                        });
                     }
                 }
-                } else { //es nuevo pregunta 91
+            } else { //es nuevo pregunta 92
   //reviso si ya tengo uno abierto
             InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,4);
 
@@ -350,52 +326,48 @@ public class NvoEmpaqueFragment extends Fragment {
             }
 
 
-                    //busco si tengo varias plantas
-                    listainfetiq = mViewModel.getPlantasconInf(Constantes.INDICEACTUAL);
-                    Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+            //busco si tengo varios clientes
+            listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL);
+            Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
 
-                    if (mViewModel.getIdNuevo() == 0)
-                        if (listainfetiq.size() > 1) {
-                            //tengo varias plantas
-                            // preguntaAct=1;
-                            convertirLista(listainfetiq);
+            if (mViewModel.getIdNuevo() == 0)
+                if (listainfetiq.size() > 1) {
+                    //tengo varias plantas
+                    // preguntaAct=1;
+                    convertirLista(listainfetiq);
 
-                            mViewModel.variasPlantas = true;
-                            buscarPreguntas();
-                            preguntaAct = mViewModel.getListaPreguntas().get(0);
+                    mViewModel.variasClientes = true;
+                    buscarPreguntas();
+                    preguntaAct = mViewModel.getListaPreguntas().get(0);
+                    crearFormulario();
+
+                } else if (listainfetiq.size() > 0) {
+
+                    mViewModel.variasClientes = false;
+                    clienteId = listainfetiq.get(0).getClientesId();
+                    clienteNombre = listainfetiq.get(0).getClienteNombre();
+                    InformeEtapa informetemp = new InformeEtapa();
+                    informetemp.setClienteNombre(clienteNombre);
+                    informetemp.setClientesId(clienteId);
+                    informetemp.setIndice(Constantes.INDICEACTUAL);
+                    mViewModel.setNvoinforme(informetemp);
+                    //busco total de muestras y cajas
+                    mViewModel.listaCajasEtiqxCli(clienteId);
+                    mViewModel.totCajasEmp=mViewModel.listaCajasCli.size();
+                    mViewModel.getTotMuesEtiqxCli(clienteId);
+                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
+                    mViewModel.cajaAct=mViewModel.listaCajasCli.get(0);
+
+
+                    mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                        @Override
+                        public void onChanged(Reactivo reactivo) {
+                            preguntaAct = reactivo;
                             crearFormulario();
+                        }
+                    });
 
-                        } else if (listainfetiq.size() > 0) {
 
-                            mViewModel.variasPlantas = false;
-                            nombrePlantaSel = listainfetiq.get(0).getPlantaNombre();
-                            plantaSel = listainfetiq.get(0).getPlantasId();
-                            clienteId = listainfetiq.get(0).getClientesId();
-                            clienteNombre = listainfetiq.get(0).getClienteNombre();
-                            InformeEtapa informetemp = new InformeEtapa();
-                            informetemp.setClienteNombre(clienteNombre);
-                            informetemp.setClientesId(clienteId);
-                            informetemp.setPlantasId(plantaSel);
-                            informetemp.setPlantaNombre(nombrePlantaSel);
-                            informetemp.setIndice(Constantes.INDICEACTUAL);
-                            mViewModel.setNvoinforme(informetemp);
-                            ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informetemp);
-                            //me voy a la sig
-                            mViewModel.buscarInformeEtiq(Constantes.INDICEACTUAL,plantaSel);
-                            if(mViewModel.getInformeEtiq()==null){
-                                //no tengo inf etiqueta de esta planta
-                                Toast.makeText(getContext(),"NO TIENE INFORME DE ETIQUETADO DE "+nombrePlantaSel,Toast.LENGTH_SHORT).show();
-
-                                return root;
-                            }
-                            mViewModel.cajaAct=1;
-                            mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-                                @Override
-                                public void onChanged(Reactivo reactivo) {
-                                    preguntaAct = reactivo;
-                                    crearFormulario();
-                                }
-                            });
 
 
                         }else{
@@ -408,14 +380,14 @@ public class NvoEmpaqueFragment extends Fragment {
 
 
                 aceptar.setEnabled(false);
-            if(isEdicion||preguntaAct!=null&&preguntaAct.getId()==104){
+            if(isEdicion||preguntaAct!=null&&preguntaAct.getId()==114){
                 aceptar.setEnabled(true);
             }
 
 
 
 
-                aceptar.setOnClickListener(new View.OnClickListener() {
+            aceptar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Log.d(TAG,"DICLICK");
@@ -452,16 +424,16 @@ public class NvoEmpaqueFragment extends Fragment {
         camposForm=new ArrayList<>();
         CampoForm campo=new CampoForm();
         Log.d(TAG, "pregunta "+preguntaAct.getId()+"--"+isEdicion);
-        if(preguntaAct.getId()>91&&preguntaAct.getId()<104) {
+        if(preguntaAct.getId()>91&&preguntaAct.getId()<114) {
             //busco total de muestras en la caja
-            if(mViewModel.numMuestras<1&&mViewModel.getInformeEtiq()!=null){
+          /*  if(mViewModel.numMuestras<1&&mViewModel.getInformeEtiq()!=null){
                 mViewModel.buscatTMuesxCaj(mViewModel.cajaAct, mViewModel.getInformeEtiq().getId());
-            }
-            campo.label = "CAJA NUMERO " + mViewModel.cajaAct;
+            }*/
+            campo.label = "CAJA NUMERO " + mViewModel.cajaAct.consCaja;
             campo.type = "label";
             camposForm.add(campo);
             campo = new CampoForm();
-            campo.label = "MUESTRAS EN CAJA " + mViewModel.numMuestras;
+            campo.label = "MUESTRAS EN CAJA " + mViewModel.cajaAct.numMuestras;
             campo.type = "label";
             camposForm.add(campo);
             campo = new CampoForm();
@@ -480,29 +452,29 @@ public class NvoEmpaqueFragment extends Fragment {
         if(isEdicion&&preguntaAct.getTabla().equals("DC"))
         {
             switch (preguntaAct.getId()) {
-                case 96:
+                case 98:
                     campo.value = mViewModel.largoCaja + "";
                     break;
-                case 98:
+                case 100:
                     campo.value = mViewModel.anchoCaja + "";
                     break;
-                case 100:
+                case 102:
                     campo.value = mViewModel.altoCaja + "";
                     break;
-                case 102:
+                case 104:
                     campo.value = mViewModel.pesoCaja + "";
                     break;
 
             }
         }
         campo.id=1001;
-        //para las plantas
+//para las plantas
         if(preguntaAct.getType().equals(CreadorFormulario.SELECTDES)){
             switch (preguntaAct.getNombreCampo()){
-                case "plantasId":
+                case "clientesId":
 
 
-                    campo.selectdes=listaPlantas;
+                    campo.selectdes= listaClientes;
                     break;
 
             }
@@ -566,7 +538,7 @@ public class NvoEmpaqueFragment extends Fragment {
         {
             textoint = root.findViewById(1001);
         }
-        if(textoint!=null&&preguntaAct.getId()!=104){ //los comentarios no son obligatorios
+        if(textoint!=null&&preguntaAct.getId()!=114){ //los comentarios no son obligatorios
             textoint.addTextChangedListener(new BotonTextWatcher());
 
         }
@@ -574,12 +546,12 @@ public class NvoEmpaqueFragment extends Fragment {
         if(isEdicion&&!textoint.getText().equals("")){
             aceptar.setEnabled(true);
         }
-         if(preguntaAct.getId()==104){ //los comentarios no son obligatorios
+         if(preguntaAct.getId()==114){ //los comentarios no son obligatorios
             //  textoint.addTextChangedListener(new MayusTextWatcher());
             textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
             aceptar.setEnabled(true);
         }
-        if (preguntaAct!=null&&preguntaAct.getId() == 104) {
+        if (preguntaAct!=null&&preguntaAct.getId() == 114) {
             //cambio el boton a finalizar y muestro alerta
             aceptar.setText(getString(R.string.enviar));
             aceptar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.botonvalido));
@@ -650,35 +622,36 @@ public class NvoEmpaqueFragment extends Fragment {
         if(resp)
         {
 
-            if(preguntaAct.getId()==91 ) { //planta
+
+            if(preguntaAct.getId()==91 ) { //cliente
                 DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
 
-                //busco par de id, cliente
-                String[] aux = opcionsel.getDescripcion().split(",");
-                clienteId = Integer.parseInt(aux[0]);
-                clienteNombre = aux[1];
-                plantaSel = opcionsel.getId();
-                nombrePlantaSel = opcionsel.getNombre();
+                clienteId = opcionsel.getId();
+                clienteNombre = opcionsel.getNombre();
                 InformeEtapa informetemp=new InformeEtapa();
                 informetemp.setClienteNombre(clienteNombre);
                 informetemp.setClientesId(clienteId);
-                informetemp.setPlantasId(plantaSel);
-                informetemp.setPlantaNombre(nombrePlantaSel);
                 informetemp.setIndice(Constantes.INDICEACTUAL);
                 mViewModel.setNvoinforme(informetemp);
-                ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(informetemp);
-                mViewModel.cajaAct=1;
+                Log.d(TAG,"clientesel"+clienteId);
+                //busco total de muestras y cajas
+                mViewModel.listaCajasEtiqxCli(clienteId);
+                mViewModel.getTotMuesEtiqxCli(clienteId);
+                mViewModel.totCajasEmp=mViewModel.listaCajasCli.size();
+                ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
+                mViewModel.cajaAct=mViewModel.listaCajasCli.get(0);
+
 
             }else
             if(preguntaAct.getId()==92 ) { //acomodo creo el informe y el detalle
-                String  valor = textoint.getText().toString();
+
                 this.guardarInf();
                 this.guardarDet();
                 //guardo el atributo para mostrarlo despues
                 //    ((NuevoInfEtapaActivity)getActivity()).actualizarCodProd(valor);
 
             }else
-            if(preguntaAct.getId()==104) //termine inf comentarios
+            if(preguntaAct.getId()==114) //termine inf comentarios
             {
                 if(yaestoyProcesando)
                     return;
@@ -709,7 +682,7 @@ public class NvoEmpaqueFragment extends Fragment {
                 }
 
             }else
-            if(preguntaAct.getId()==103)//terminé con preguntas de caja
+            if(preguntaAct.getId()==113)//terminé con preguntas de caja
             {
                 if(yaestoyProcesando)
                     return;
@@ -717,8 +690,8 @@ public class NvoEmpaqueFragment extends Fragment {
                 aceptar.setEnabled(false);
                 guardarDet();
                 //reviso si hay más cajas, si no fin
-                int sig=mViewModel.cajaAct+1;
-                mViewModel.cajaAct=sig;
+                int sig=mViewModel.cajaAct.consCaja;
+
                 //limpio variables
                 mViewModel.largoCaja=0;
                 mViewModel.altoCaja=0;
@@ -727,8 +700,7 @@ public class NvoEmpaqueFragment extends Fragment {
                 mViewModel.pesoCaja=0;
                 mViewModel.numMuestras=0;
 
-                Log.d(TAG,"cajas"+sig+"--"+mViewModel.getInformeEtiq().getTotal_cajas());
-                if(sig<=mViewModel.getInformeEtiq().getTotal_cajas()){
+                if(sig<mViewModel.getNvoinforme().getTotal_cajas()){
                     //empiezo en las preguntas con nueva caja
                     //empiezo de 0
                   /*  Bundle bundle = new Bundle();
@@ -742,6 +714,8 @@ public class NvoEmpaqueFragment extends Fragment {
                     intento1.putExtras(bundle);
                     startActivity(intento1);
                     requireActivity().finish();*/
+                    mViewModel.cajaAct=mViewModel.listaCajasCli.get(sig);
+
                     avanzarPregunta(92);
                     return;
 
@@ -857,23 +831,13 @@ public class NvoEmpaqueFragment extends Fragment {
         try {
             lastClickTime = 0;
 
-            /*if( mViewModel.variasPlantas) {
-                DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
-
-                //busco par de id, cliente
-                String aux[] = opcionsel.getDescripcion().split(",");
-                clienteId = Integer.parseInt(aux[0]);
-                clienteNombre = aux[1];
-                plantaSel = opcionsel.getId();
-                nombrePlantaSel = opcionsel.getNombre();
-            }*/
             //totcajas =Integer.parseInt(txtnumcajas.getText().toString());
             Log.d(TAG,"edicion"+isEdicion+"--"+mViewModel.getIdNuevo());
             if (preguntaAct.getId() == 92 && !isEdicion&&mViewModel.getNvoinforme()!=null) {
                 Log.d(TAG, "creando nvo inf");
                 //creo el informe
                 if(mViewModel.getIdNuevo()==0)
-                mViewModel.setIdNuevo(mViewModel.insertarInformeEtapae(Constantes.INDICEACTUAL,mViewModel.getNvoinforme().getPlantaNombre(),mViewModel.getNvoinforme().getPlantasId(),mViewModel.getNvoinforme().getClienteNombre(),mViewModel.getNvoinforme().getClientesId(),4));
+                mViewModel.setIdNuevo(mViewModel.insertarInformeEmp(Constantes.INDICEACTUAL,4,mViewModel.getNvoinforme().getClientesId(),mViewModel.getNvoinforme().getClienteNombre()));
             }
         }catch (Exception ex){
             ex.getStackTrace();
@@ -882,7 +846,7 @@ public class NvoEmpaqueFragment extends Fragment {
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
         }
-        ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(mViewModel.getNvoinforme());
+       // ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(mViewModel.getNvoinforme());
 
         aceptar.setEnabled(true);
       //  avanzarPregunta(preguntaAct);
@@ -899,24 +863,24 @@ public class NvoEmpaqueFragment extends Fragment {
             if(preguntaAct.getTabla().equals("ED")) {
                 if (isEdicion) {
                     //actualizo imagen detalle
-                    mViewModel.actualizarImagenDet(Integer.parseInt(ultimares.getRuta_foto()),"foto_empaque" + preguntaAct,textoint.getText().toString(),Constantes.INDICEACTUAL);
+                    mViewModel.actualizarImagenDet(Integer.parseInt(ultimares.getRuta_foto()),preguntaAct.getLabel(),textoint.getText().toString(),Constantes.INDICEACTUAL);
 
                   //  mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), 1, preguntaAct.getNombreCampo(), rutafoto, ultimares.getId(), mViewModel.cajaAct);
                     isEdicion = false;
                 } else if (mViewModel.getIdNuevo() > 0)
                     //guardo el detalle
-                    mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), 1, preguntaAct.getNombreCampo(), rutafoto, 0, mViewModel.cajaAct,Constantes.INDICEACTUAL);
-                    fotomos.setImageBitmap(null);
-                    fotomos.setVisibility(View.GONE);
-                    btnrotar.setVisibility(View.GONE);
+                    mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), 1, preguntaAct.getNombreCampo(), rutafoto, 0, mViewModel.cajaAct.consCaja,Constantes.INDICEACTUAL,mViewModel.cajaAct.numMuestras, preguntaAct.getLabel());
+                fotomos.setImageBitmap(null);
+                fotomos.setVisibility(View.GONE);
+                btnrotar.setVisibility(View.GONE);
             }else
             if(preguntaAct.getTabla().equals("DC")) {
 
                   if (mViewModel.getIdNuevo() > 0&&ultimarescaja==null)
                         //guardo el detalle
                     {
-                        Log.d(TAG,"guardando caja"+mViewModel.cajaAct);
-                        mViewModel.setIddetalle( mViewModel.insertarDetCaja(mViewModel.getIdNuevo(), 0, mViewModel.cajaAct));
+                        Log.d(TAG,"guardando caja"+mViewModel.cajaAct.consCaja);
+                        mViewModel.setIddetalle( mViewModel.insertarDetCaja(mViewModel.getIdNuevo(), 0, mViewModel.cajaAct.consCaja));
 
                     }
                 try {
@@ -924,30 +888,30 @@ public class NvoEmpaqueFragment extends Fragment {
                         mViewModel.setIddetalle(ultimarescaja.getId());
 
                         switch (preguntaAct.getId()) {
-                            case 96:
-                                mViewModel.largoCaja = Float.parseFloat(rutafoto);
-                                mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct, ultimarescaja.getAncho(), ultimarescaja.getAlto(), ultimarescaja.getPeso(), mViewModel.largoCaja + "");
-
-                                break;
                             case 98:
-                                mViewModel.anchoCaja = Float.parseFloat(rutafoto);
-                                mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct, mViewModel.anchoCaja + "", ultimarescaja.getAlto(), ultimarescaja.getPeso(), ultimarescaja.getLargo());
+                                mViewModel.largoCaja = Float.parseFloat(rutafoto);
+                                mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct.consCaja, ultimarescaja.getAncho(), ultimarescaja.getAlto(), ultimarescaja.getPeso(), mViewModel.largoCaja + "");
 
                                 break;
                             case 100:
-                                mViewModel.altoCaja = Float.parseFloat(rutafoto);
-                                mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct, ultimarescaja.getAncho(), mViewModel.altoCaja + "", ultimarescaja.getPeso(), ultimarescaja.getLargo());
+                                mViewModel.anchoCaja = Float.parseFloat(rutafoto);
+                                mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct.consCaja, mViewModel.anchoCaja + "", ultimarescaja.getAlto(), ultimarescaja.getPeso(), ultimarescaja.getLargo());
 
                                 break;
                             case 102:
+                                mViewModel.altoCaja = Float.parseFloat(rutafoto);
+                                mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct.consCaja, ultimarescaja.getAncho(), mViewModel.altoCaja + "", ultimarescaja.getPeso(), ultimarescaja.getLargo());
+
+                                break;
+                            case 104:
                                 mViewModel.pesoCaja = Float.parseFloat(rutafoto);
-                                mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct, ultimarescaja.getAncho(), ultimarescaja.getAlto(), mViewModel.pesoCaja + "", ultimarescaja.getLargo());
+                                mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct.consCaja, ultimarescaja.getAncho(), ultimarescaja.getAlto(), mViewModel.pesoCaja + "", ultimarescaja.getLargo());
 
                                 break;
                         }
                     }else{
                         mViewModel.largoCaja = Float.parseFloat(rutafoto);
-                        mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct, "", "", "", mViewModel.largoCaja + "");
+                        mViewModel.actDetCaja(mViewModel.getIdNuevo(), mViewModel.getIddetalle(), mViewModel.cajaAct.consCaja, "", "", "", mViewModel.largoCaja + "");
 
                     }
                 }catch(NumberFormatException ex){
@@ -955,9 +919,6 @@ public class NvoEmpaqueFragment extends Fragment {
                 }
                 if(isEdicion)
                     isEdicion=false;
-
-
-
 
             }
 
@@ -997,7 +958,6 @@ public class NvoEmpaqueFragment extends Fragment {
 
             }
 
-
         }   else
         {
             compraslog.grabarError(TAG+"Algo salió muy mal");
@@ -1007,12 +967,10 @@ public class NvoEmpaqueFragment extends Fragment {
 
     public void mostrarFoto( EditText textorut,ImageView xfotomos, ImageButton xbtnrotar){
 
-
             textorut.setText(nombre_foto);
             if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
             {
                 Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-
                 return;
             }else {
                 // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
@@ -1022,7 +980,6 @@ public class NvoEmpaqueFragment extends Fragment {
                 xfotomos.setImageBitmap(bitmap1);
                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                 xfotomos.setVisibility(View.VISIBLE);
-
                 xbtnrotar.setVisibility(View.VISIBLE);
                 xbtnrotar.setFocusableInTouchMode(true);
                 xbtnrotar.requestFocus();
@@ -1090,18 +1047,18 @@ public class NvoEmpaqueFragment extends Fragment {
 
     }
     private  void convertirLista(List<InformeEtapa>lista){
-        listaPlantas=new ArrayList<DescripcionGenerica>();
+        listaClientes =new ArrayList<DescripcionGenerica>();
         for (InformeEtapa listaCompra: lista ) {
 
-            listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+","+listaCompra.getClienteNombre()));
+            listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 
         }
 
     }
     public void avanzarPregunta(int sig){
         Log.d(TAG,"sig "+sig);
-        if(sig==92){
-            Log.e(TAG,plantaSel+"..");
+       /* if(sig==92){
+
             //ya tengo la planta busco el informe etiquetado
             mViewModel.buscarInformeEtiq(Constantes.INDICEACTUAL,plantaSel);
 
@@ -1112,7 +1069,7 @@ public class NvoEmpaqueFragment extends Fragment {
                 return ;
             }
 
-        }
+        }*/
         if(sig==0){
             //empiezo de 0
             Bundle bundle = new Bundle();
@@ -1191,6 +1148,7 @@ public class NvoEmpaqueFragment extends Fragment {
         aceptar=null;
         nombre_foto=null;
         archivofoto=null;
+
     }
 
 

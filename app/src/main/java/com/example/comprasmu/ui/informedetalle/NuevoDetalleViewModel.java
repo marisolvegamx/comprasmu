@@ -361,10 +361,10 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
         return false;
     }
-    public void buscarPlantaPen(String siglas, DetalleProductoPenFragment.EnvioListener listener ){
+    public void buscarPlantaPen(String siglas,int cliente, DetalleProductoPenFragment.EnvioListener listener ){
         try {
             PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
-             ps.getPlantaPeniafiel(siglas,listener);
+             ps.getPlantaPeniafiel(siglas,cliente,listener);
 
         }catch(Exception ex){
             Log.e(TAG,"Error al hacer peticion");

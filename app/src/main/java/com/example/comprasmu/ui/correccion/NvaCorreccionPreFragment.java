@@ -63,7 +63,7 @@ public class NvaCorreccionPreFragment extends Fragment {
     CreadorFormulario cf;
     List<CampoForm> camposForm;
     LinearLayout sv,sv2,sv3;
-    private static final String TAG = "NvaCorreccionFragment";
+    private static final String TAG = "NvaCorreccionPreFragment";
     Button aceptar;
     private long lastClickTime = 0;
     private final boolean yaestoyProcesando=false;
@@ -263,6 +263,7 @@ public class NvaCorreccionPreFragment extends Fragment {
             lastClickTime = 0;
            if(rutasnfotos.size()!=totalfotos){
                Toast.makeText(getContext(),"Debe ingresar "+totalfotos+" fotos",Toast.LENGTH_LONG).show();
+               aceptar.setEnabled(true);
                return;
 
            }

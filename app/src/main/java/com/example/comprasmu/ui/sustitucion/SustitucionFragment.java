@@ -56,6 +56,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
     private static final String TAG="SUSTITUCIONFRAGMENT";
     private String categoriaSel;
     private String siglas;
+    private int clienteSel,tamanio,empaque;
 
 
     public static SustitucionFragment newInstance() {
@@ -81,6 +82,11 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         if(bundle2!=null)
         {   categoriaSel=bundle2.getString(ARG_CATEGORIA);
             plantaSel = bundle2.getInt(ListaCompraFragment.ARG_PLANTASEL);
+            if(Constantes.VarListCompra.detallebuSel!=null)
+            {  tamanio= Constantes.VarListCompra.detallebuSel.getTamanioId();
+                empaque= Constantes.VarListCompra.detallebuSel.getEmpaquesId();}
+            clienteSel= bundle2.getInt(ListaCompraFragment.ARG_CLIENTESEL);
+
             nombrePlanta = bundle2.getString(ListaCompraFragment.ARG_NOMBREPLANTASEL);
             siglas = bundle2.getString(ARG_SIGLAS);
             ismuestra=bundle2.getString(ListaCompraFragment.ARG_MUESTRA);
@@ -111,7 +117,8 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         Constantes.VarListCompra.plantaSel=plantaSel;
         setupListAdapter();
         //Constantes.VarListCompra.detallebuSel.getAnalisisId()
-        mViewModel.cargarListas(categoriaSel);
+
+        mViewModel.cargarListas(categoriaSel,clienteSel,empaque,tamanio);
         mViewModel.getListas().observe(getViewLifecycleOwner(), myProducts -> {
             if (myProducts != null && myProducts.size() > 0) {
                 Log.d(Constantes.TAG, "en la consulta de sust=> " + myProducts.get(0).getId_sustitucion());

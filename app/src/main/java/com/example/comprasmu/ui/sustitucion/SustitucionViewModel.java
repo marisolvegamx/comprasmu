@@ -57,8 +57,12 @@ public class SustitucionViewModel extends AndroidViewModel {
     }
 
 
-    public void cargarListas(String categoria){
-        listaSustitucion =repository.getByFiltros(categoria,"","","");
+    public void cargarListas(String categoria,int cliente,int empaque, int tamanio){
+       if(cliente==7){
+           listaSustitucion =repository.getByFiltros(categoria,"",empaque,tamanio);
+
+       }else
+        listaSustitucion =repository.getByFiltros(categoria,"",0,0);
         size = Transformations.map(listaSustitucion,res->{ return listaSustitucion.getValue().size();});
         empty = Transformations.map(listaSustitucion, res->{return listaSustitucion.getValue().isEmpty();});
     }

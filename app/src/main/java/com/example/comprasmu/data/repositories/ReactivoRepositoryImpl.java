@@ -50,7 +50,7 @@ public  class ReactivoRepositoryImpl  extends BaseRepository<Reactivo> {
         return dao.findByNombre(nombre, cliente);
     }
     public List<Reactivo> getEmp(int cliente) {
-        Log.e("si es auqi","eee");
+
         return dao.getEmp(cliente);
     }
     @Override

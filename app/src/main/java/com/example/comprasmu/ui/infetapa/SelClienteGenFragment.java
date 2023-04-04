@@ -148,7 +148,7 @@ public class SelClienteGenFragment extends ListaSelecFragment {
         bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL,clienteSel );
       //  bundle.putString(BuscarInformeFragment.INDICE, Constantes.INDICEACTUAL);
 
-        if(tipoconsulta.equals("action_selclitoinf1")) {
+        if(tipoconsulta.equals("action_selclitoinf1")) { //informes etapas
             bundle.putInt(ContInfEtapaFragment.ETAPA, Constantes.ETAPAACTUAL);
             bundle.putString(ARG_TIPOCONS,"e" );
 

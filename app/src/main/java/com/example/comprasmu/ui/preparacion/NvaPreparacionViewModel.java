@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -19,8 +21,8 @@ import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
+import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+//para preparacion, etiquetado y empaque
 public class NvaPreparacionViewModel extends AndroidViewModel {
     private final InfEtapaRepositoryImpl infEtaRepository;
     private final InfEtapaDetRepoImpl infDetRepo;
@@ -39,18 +42,19 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     private final MutableLiveData<Event<Integer>> mSnackbarText = new MutableLiveData<>();
     final String TAG="NvaPrepVM";
     Application application;
-    public boolean variasPlantas;//indica si tengo varias plantas
+    public boolean variasClientes;//indica si tengo varias plantas
    public int preguntaAct;
     InformeEtapa informeEtiq;
     private final ReactivoRepositoryImpl reacRepo;
-    public int cajaAct; //para saber el numero de caja en que estoy
+    public EtiquetadoxCliente cajaAct; //para saber el numero de caja en que estoy
     public int numMuestras; //saber total muestras
     public float altoCaja, anchoCaja,largoCaja,pesoCaja; //para el detalle de la caja
     private List<Reactivo> listaPreguntas;
     private final ImagenDetRepositoryImpl imagenDetRepository;
     ComprasLog compraslog;
     InformeComDetRepositoryImpl compRepo;
-
+    public int totCajasEmp;
+    public List<EtiquetadoxCliente> listaCajasCli;
     public NvaPreparacionViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
@@ -61,6 +65,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
         compraslog=ComprasLog.getSingleton();
         this.compRepo=new InformeComDetRepositoryImpl(application);
+        this.cajaAct=new EtiquetadoxCliente();
     }
 
     public int insertarInformeEtapa(String indice,String plantaNombre,int plantaId, String clienteNombre,int clienteId){
@@ -90,6 +95,23 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         informe.setEstatusSync(0);
         informe.setEstatus(1);
         informe.setEtapa(etapa);
+        informe.setCreatedAt(new Date());
+        idNuevo=(int)infEtaRepository.insert(informe);
+        informe.setId(idNuevo);
+        this.nvoinforme=informe;
+        return idNuevo;
+
+    }
+    public int insertarInformeEmp(String indice,int etapa,int clienteId,String clienteNombre){
+        InformeEtapa informe=new InformeEtapa();
+        informe.setIndice(indice);
+        informe.setClientesId(clienteId);
+        informe.setClienteNombre(clienteNombre);
+        informe.setEstatusSync(0);
+        informe.setEstatus(1);
+        informe.setEtapa(etapa);
+        informe.setTotal_muestras(this.numMuestras);
+        informe.setTotal_cajas(this.totCajasEmp);
         informe.setCreatedAt(new Date());
         idNuevo=(int)infEtaRepository.insert(informe);
         informe.setId(idNuevo);
@@ -194,11 +216,11 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return iddetalle;
     }
 
-    public int insertarEmpDet(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja,String indice){
+    public int insertarEmpDet(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja,String indice, int totmuestras,String descfoto){
 
         ImagenDetalle foto=new ImagenDetalle();
         foto.setRuta( ruta);
-        foto.setDescripcion(descripcion);
+        foto.setDescripcion(descfoto);
         foto.setEstatus(1);
         foto.setEstatusSync(0);
         foto.setIndice(indice);
@@ -210,7 +232,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         detalle.setRuta_foto(nvoidimagem+"");
         detalle.setDescripcionId(descripcionid);
         detalle.setNum_caja(numcaja);
-
+        detalle.setNum_muestra(totmuestras);
 
         detalle.setEstatusSync(0);
         detalle.setEtapa(4);
@@ -315,14 +337,40 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
 
     }
+    public void listaCajasEtiqxCli(int cliente){
+        List<InformeEtapaDet> muestras= infDetRepo.listaCajasEtiqxCli( 3, cliente);
+        EtiquetadoxCliente resul=null;
+        int i=1;
+        listaCajasCli=new ArrayList<>();
+        for (InformeEtapaDet muestra:muestras) {
+            resul=new EtiquetadoxCliente();
+            resul.consCaja=i;
+            resul.numCaja=muestra.getNum_caja();
+            resul.numMuestras=muestra.getNum_muestra();
+            listaCajasCli.add(resul);
+            i++;
+        }
+
+
+    }
+    public int getTotCajasEtiq(){
+        return infDetRepo.totalCajasEtiq( 3);
+
+
+    }
+    public void getTotMuesEtiqxCli(int cliente){
+        this.numMuestras= infDetRepo.totalMuestrasEtiqxCli( 3,cliente);
+
+
+    }
     public InformeEtapaDet getUltimoInformeDetCaj(int id, int etapa, int caja){
         return infDetRepo.getUltimoCaja(id, etapa, caja);
 
 
     }
 
-    public List<InformeEtapa> getPlantasconInf(String indice){
-        return   infEtaRepository.getPlantasconInf(indice);
+    public List<InformeEtapa> getClientesconInf(String indice){
+        return   infEtaRepository.getClientesconInf(indice);
     }
     public DetalleCaja getUltimoDetalleCaja(int infid){
         return cajaRepo.getUltimo(infid);
@@ -374,11 +422,30 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return  listaProds;
     }
 
+    public InformeEtapaDet buscarDetxQr(String qr) {
+         return infDetRepo.getByQr(qr,3);
+
+    }
+    public List<InformeEtapa>  buscarInformesEtiq(String indice) {
+
+        List<InformeEtapa> informes= infEtaRepository.getAllSimple(3, indice);
+        return informes;
+    }
+
+    public List<InformeEtapa> buscarInformeEtiqxcli(String indice,  int cliente) {
+         return infEtaRepository.getInformesxCli(indice, 3,cliente);
+    }
     public void buscarInformeEtiq(String indice,  int planta) {
         if(informeEtiq==null)
             this.informeEtiq= infEtaRepository.getInformexPlan(indice, 3,planta);
     }
-
+    public void buscarInformeEmp(String indice) {
+        if(informeEtiq==null) {
+            List<InformeEtapa> infos = infEtaRepository.getAllSimple(4, indice);
+            if(infos!=null&&infos.size()>0)
+            this.informeEtiq =infos.get(0);
+        }
+    }
     public Reactivo inftempToReac(InformeTemp inftemp){
         return reacRepo.findByNombre(inftemp.getNombre_campo(),inftemp.getClienteSel());
 
@@ -462,6 +529,21 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public int getTotalMuestras(int plantaSel) {
        return compRepo.getTotalMuesxPlan(plantaSel,Constantes.INDICEACTUAL);
     }
+    public Integer[] tieneInforme(int etapa){
+        Integer[] clienteAnt=null;
+        List<InformeEtapa> informes=infEtaRepository.getAllSimple(etapa,Constantes.INDICEACTUAL);
+        if(informes!=null&&informes.size()>0) {
+            clienteAnt=new Integer[informes.size()];
+            for (int i = 0; i < informes.size(); i++)
+                clienteAnt[i] = informes.get(i).getPlantasId();
+        }
+
+        return clienteAnt;
+
+    }
 
 
+    public int getMuesxCaja(int cajaAct) {
+       return infDetRepo.getTotMuesxCaja(cajaAct);
+    }
 }

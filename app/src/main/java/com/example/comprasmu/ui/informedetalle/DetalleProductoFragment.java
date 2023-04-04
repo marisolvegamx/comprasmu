@@ -308,8 +308,7 @@ public class DetalleProductoFragment extends Fragment {
                         Constantes.VarDetalleProd.nvoatra = valor;
                         ((ContinuarInformeActivity) getActivity()).actualizarAtributo1();
                     }
-                    else
-                        aceptar.setEnabled(false);
+
                 }
                 if (preguntaAct.getId() >= 36&&preguntaAct.getId()!=47) {
                     InformeTemp resp=dViewModel.buscarxNombreCam("atributob",mViewModel.numMuestra);
@@ -324,8 +323,7 @@ public class DetalleProductoFragment extends Fragment {
                         Constantes.VarDetalleProd.nvoatrb = resp == null ? "" : valor;
                         ((ContinuarInformeActivity) getActivity()).actualizarAtributo2();
                     }
-                    else
-                        aceptar.setEnabled(false);
+
                 }
                 if (preguntaAct.getId() >= 39&&preguntaAct.getId()!=47) {
                     InformeTemp resp=dViewModel.buscarxNombreCam("atributoc",mViewModel.numMuestra);
@@ -340,8 +338,7 @@ public class DetalleProductoFragment extends Fragment {
                         Constantes.VarDetalleProd.nvoatrc = resp == null ? "" : valor;
                         ((ContinuarInformeActivity) getActivity()).actualizarAtributo2();
                     }
-                    else
-                        aceptar.setEnabled(false);
+
                 }
                 if (preguntaAct.getId() >= 90&&preguntaAct.getId()!=47) {
                     InformeTemp resp=dViewModel.buscarxNombreCam("atributod",mViewModel.numMuestra);
@@ -356,8 +353,7 @@ public class DetalleProductoFragment extends Fragment {
                         Constantes.VarDetalleProd.nvoatrd = resp == null ? "" : valor;
                         ((ContinuarInformeActivity) getActivity()).actualizarAtributo3();
                     }
-                    else
-                        aceptar.setEnabled(false);
+
                 }
                 //busco el total de prods en la lista
                 if(Constantes.NM_TOTALISTA==0) {
@@ -368,6 +364,7 @@ public class DetalleProductoFragment extends Fragment {
 
                     }
                 }
+
             }
             else {
                 aceptar.setEnabled(false);

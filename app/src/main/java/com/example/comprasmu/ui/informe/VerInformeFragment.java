@@ -103,10 +103,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
             //no debería estar aqui
             informeSel = datosRecuperados.getInt(NuevoinformeFragment.INFORMESEL);
             //busco el informe
-
             mViewModel.buscarInforme(informeSel);
-
-
 
        /*   mViewModel.informevisita.observe(getViewLifecycleOwner(), new Observer<InformeCompraDao.InformeCompravisita>() {
             @Override

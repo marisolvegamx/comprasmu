@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -127,8 +128,9 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         //aqui hago la consulta de los informes x etapa
         //y de los informes correccion
         if(tipocons.equals("e")){
+            ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Resumen informes");
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
-            if(etapa>1)
+            if(etapa==3)
             listainfs=mViewModel.cargarEtapa(etapa,indice,plantasel);
             else
                 listainfs=mViewModel.cargarEtapaAll(etapa,indice);
@@ -234,7 +236,10 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
       //  intento1.putExtra(NuevoInfEtapaActivity.NUMFOTO, numFoto);
         intento1.putExtra(ARG_TIPOCONS, tipocons);
         Constantes.ETAPAACTUAL=etapa;
-        intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);
+        if(etapa==4)
+            intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_VEREMPQ);
+        else
+            intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);
         startActivity(intento1);
 
     }

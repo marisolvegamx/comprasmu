@@ -30,6 +30,7 @@ import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
@@ -216,6 +217,16 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         mBinding.row2.setVisibility(View.VISIBLE);
 
     }
+    public void actualizarBarraEmp(InformeEtapa nvoInf,int mues, int cajas) {
+        mBinding.setInforme(nvoInf);
+        mBinding.row2.setVisibility(View.GONE);
+        mBinding.row1.setVisibility(View.GONE);
+
+        this.actualizarAtributo1(nvoInf.getClienteNombre());
+       this.actualizarAtributo2(ComprasUtils.indiceLetra(nvoInf.getIndice()));
+        this.actualizarAtributo3("TOT. MUESTRAS:"+mues);
+        this.actualizarAtributo4("TOT. CAJAS:"+cajas);
+    }
     public void actualizarBarraCor(SolicitudCor sol,int constienda) {
         //convierto la solicitud en informeEtapa
       InformeEtapa temp=new InformeEtapa();
@@ -335,15 +346,17 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             fragment.atras();
             return;
         }
-        if(etapa==4)//el regreso se maneja en el fragment
+        if(etapa==4)
         {
+            if(dViewModel.preguntaAct==92)
+                return;
             Log.d(TAG,"regresando de "+dViewModel.preguntaAct);
             //busco el siguiente
             Reactivo reactivo = dViewModel.buscarReactivoAnterior(dViewModel.preguntaAct);
             if(reactivo!=null)
             //busco el reactivo anterior
             {
-                if (dViewModel.preguntaAct > 1) {
+                if (dViewModel.preguntaAct > 91) {
                     NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment(reactivo, true);
                     FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
@@ -354,7 +367,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 // Cambiar
                     fragmentTransaction.commit();
                 }
-                if (dViewModel.preguntaAct == 1 && dViewModel.variasPlantas) {
+                if (dViewModel.preguntaAct == 92 && dViewModel.variasClientes) {
                     NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment(reactivo, true);
                     FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
@@ -399,7 +412,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 // Cambiar
                 fragmentTransaction.commit();
             }
-          if (infvm.cont == 1 && dViewModel.variasPlantas) {
+          if (infvm.cont == 1 && dViewModel.variasClientes) {
                 NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont - 1, true, null);
                 FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
@@ -429,7 +442,7 @@ public void cambiarTitulo(String titulo){
                 int numpreg=0;
                 //reviso que no sea de las que no debe salir
                 if(etapa==3)
-                if( dViewModel.preguntaAct==1||dViewModel.preguntaAct==3||dViewModel.preguntaAct==4) {
+                if(dViewModel.preguntaAct==3||dViewModel.preguntaAct==4) {
 
                         noSalir=true;
                     }

@@ -89,7 +89,7 @@ public class ReubicEtiqFragment extends Fragment {
     private static final int REQUEST_CODEQR = 345;
 
     ComprasLog milog;
-
+    int totcajas;
     public ReubicEtiqFragment() {
 
     }
@@ -125,8 +125,12 @@ public class ReubicEtiqFragment extends Fragment {
 
      //   txtnumcajas.addTextChangedListener(new BotonTextWatcher(aceptar2));
         spinnerValues = new ArrayList<>();
-        spinnerValues.add("1");
-        spinnerValues.add("2");
+        //busco el total de cajas
+         totcajas=mViewModel.getTotCajasEtiq();
+        for(int i=1;i<=totcajas;i++) {
+            spinnerValues.add(i+"");
+        }
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
         spcaja.setAdapter(adapter);
@@ -152,7 +156,7 @@ public class ReubicEtiqFragment extends Fragment {
 
             }
         });
-
+        guardar.setEnabled(false);
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,9 +170,8 @@ public class ReubicEtiqFragment extends Fragment {
 
                 lastClickTime = currentClickTime;
 
-                //Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
+                 cambiarMues();
 
-                salir();
 
 
             }
@@ -179,24 +182,32 @@ public class ReubicEtiqFragment extends Fragment {
     }
 
 public void nvacaja(){
-    spinnerValues.add("2");
+        totcajas++;
+    spinnerValues.add(totcajas+"");
 
     }
 
+    public void cambiarMues(){
+        if(txtqr.getText().toString().equals("")) {
 
-   /* public void buscarQrCap(int numCaja){
-       // listaqr.setAdapter(null);
-        List<InformeCompraDetalle> prods=mViewModel.buscarProdsxQr(mViewModel.getIdNuevo(),3,numCaja);
+            return;
 
-        DescripcionGenericaAdapter mListAdapter = new DescripcionGenericaAdapter();
+        }
+        InformeEtapaDet muestra=mViewModel.buscarDetxQr(txtqr.getText().toString());
+        String opcionsel = (String) spcaja.getSelectedItem();
+        int numcaja = Integer.parseInt(opcionsel);
+        if(muestra!=null){
+            muestra.setNum_caja(numcaja);
+            mViewModel.actualizarInfEtaDet(muestra);
+            Toast.makeText(getActivity(), getString(R.string.muestra_reubicada), Toast.LENGTH_SHORT).show();
+            salir();
+        }else{
+            Toast.makeText(getActivity(), getString(R.string.verifique_codigo), Toast.LENGTH_LONG).show();
 
-        listaqr.setLayoutManager(new LinearLayoutManager(getActivity()));
-        listaqr.setHasFixedSize(true);
-        mListAdapter.setmDescripcionGenericaList(deCompraADesc(prods));
-        listaqr.setAdapter(mListAdapter);
-        listaqr.setVisibility(View.VISIBLE);
+        }
 
-    }*/
+    }
+
 
 
     public void salir(){
@@ -217,6 +228,39 @@ public void nvacaja(){
         //  integrator.setOrientationLocked(false);
         Log.d(TAG, "inciando scanner");
         integrator.initiateScan();
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_CODEQR) {
+            IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
+              if (result != null) {
+
+                if (result.getContents() == null) {
+                    Toast.makeText(getActivity(), "Scan cancelled", Toast.LENGTH_LONG).show();
+                } else {   /* Update the textview with the scanned URL result */
+                    txtqr.setText(result.getContents());
+                  //  aceptar4.setEnabled(true);
+                    //  Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
+                }
+
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+                Toast.makeText(getActivity(), "hubo un error", Toast.LENGTH_LONG).show();
+
+            }
+        }
+    }
+
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mViewModel = null;
+        root=null;
+
     }
 
     class BotonTextWatcher implements TextWatcher {
@@ -245,17 +289,6 @@ public void nvacaja(){
 
 
     }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mViewModel = null;
-        root=null;
-
-    }
-
-
 
 
 }

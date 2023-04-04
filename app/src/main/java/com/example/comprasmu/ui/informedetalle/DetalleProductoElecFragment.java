@@ -45,6 +45,8 @@ import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.Preguntasino;
 import com.example.comprasmu.utils.ui.LoadingDialog;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
 import java.text.ParseException;
@@ -792,10 +794,30 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
             }
 
-        }   else
-        {
-            Log.e(TAG,"Algo salió muy mal**");
+        }  else if(requestCode == REQUEST_CODEQR) {
+
+
+            //  IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
+            IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
+
+
+
+                if(result.getContents() == null) {
+                    Toast.makeText(getActivity(), "Scan cancelled", Toast.LENGTH_LONG).show();
+                }
+                else
+                {   /* Update the textview with the scanned URL result */
+                    textoint.setText(result.getContents());
+                    //Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
+                }
+
+            }
+            else {
+            super.onActivityResult(requestCode, resultCode, data);
+            Toast.makeText(getActivity(), "hubo un error", Toast.LENGTH_LONG).show();
+
         }
+
     }
     public boolean buscarMuestraCodigoElec(Date caducidadnva){
         //busco en el mismo informe

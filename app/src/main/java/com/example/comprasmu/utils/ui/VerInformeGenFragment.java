@@ -109,7 +109,7 @@ public class VerInformeGenFragment extends Fragment {
                     correccion.correccion=vcorreccion;
                     correccion.solicitud=solicitudCor;
                     crearFormularioCor();
-                    mBinding.vidatosgen.addView(cf1.crearTabla());
+                    mBinding.igdatosgen.addView(cf1.crearTabla());
                     mBinding.btnverdet.setVisibility(View.GONE);
 
                 }
@@ -142,7 +142,7 @@ public class VerInformeGenFragment extends Fragment {
                 public void onChanged(InformeEtapa informeEtapax) {
                     informeEtapa=informeEtapax;
                     crearFormularioEta();
-                    mBinding.vidatosgen.addView(cf1.crearTabla());
+                    mBinding.igdatosgen.addView(cf1.crearTabla());
                     mBinding.btnverdet.setText(textoboton);
                     mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -339,7 +339,7 @@ public class VerInformeGenFragment extends Fragment {
 
 
         cf1 = new CreadorFormulario(camposTienda, getActivity());
-                mBinding.vidatosgen.addView(cf1.crearTabla());
+                mBinding.igdatosgen.addView(cf1.crearTabla());
                 mBinding.btnverdet.setVisibility(View.GONE);
             }
                 });
@@ -384,14 +384,14 @@ public class VerInformeGenFragment extends Fragment {
         campo.value = Constantes.vistasdf.format(informeEtapa.getCreatedAt());
 
         camposTienda.add(campo);
-        if (Constantes.ETAPAACTUAL==3) {
+      /*  if (Constantes.ETAPAACTUAL==3) {
             campo = new CampoForm();
             campo.style = R.style.verinforme2;
             campo.label = getString(R.string.num_cajas);
             campo.type = "label";
             campo.value = informeEtapa.getTotal_cajas()+"";
             camposTienda.add(campo);
-        }
+        }*/
 
         campo = new CampoForm();
         campo.style = R.style.verinforme2;

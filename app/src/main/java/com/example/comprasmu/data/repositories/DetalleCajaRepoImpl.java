@@ -1,18 +1,13 @@
 package com.example.comprasmu.data.repositories;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.DetalleCajaDao;
 import com.example.comprasmu.data.modelos.DetalleCaja;
-import com.example.comprasmu.data.modelos.InformeEtapaDet;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
@@ -53,7 +48,9 @@ public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
     public List<DetalleCaja> getAllsimplexInf(int infid) {
         return icDao.getdetallesSimple(infid);
     }
-
+    public LiveData<List<DetalleCaja>> getDetalles(int infid) {
+        return icDao.getDetalles(infid);
+    }
 
     @Override
     public long insert(DetalleCaja newDetalleCaja) {

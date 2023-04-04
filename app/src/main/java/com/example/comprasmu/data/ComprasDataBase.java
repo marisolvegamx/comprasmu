@@ -378,7 +378,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
                      //   prepopulatelc();
                     //    prepopulatedetc();
                         prepopulateder();
-
+                prepopulatederpeni();
+                prepopulatederele();
                        // catalogos();
 
                    // }
@@ -386,8 +387,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                 if (myProductsP == null||myProductsP.size()==0) {
                     //no tengo datos
 
-                    prepopulatederpeni();
-                    prepopulatederele();
+
 
                 }
                 Reactivo myProductsem=   dao.findsimple(91);
@@ -1245,7 +1245,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setType("agregarImagen");
         campo.setTabla("ID");
         campo.setId(86);
-        campo.setSigId(108);
+        campo.setSigId(87);
         campo.setCliente(cliente);    campo.setClienteSel(cliid);
         camposForm.add(campo);
 
@@ -1360,64 +1360,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         getCatalogoDao().insertAll(lista);*/
     }
 
-    public void cargarSolicitudes(){
-        List<SolicitudCor> lista=new ArrayList<>();
-        SolicitudCor solicitud=new SolicitudCor();
-        solicitud.setId(1);
-        solicitud.setClienteNombre("PEPSI");
-        solicitud.setClientesId(5);
-        solicitud.setIndice("6.2022");
-        solicitud.setPlantaNombre("IZTACALCO");
-        solicitud.setPlantasId(31);
-        solicitud.setEtapa(1);
-        solicitud.setInformesId(1);
-        solicitud.setEstatus(1);
-        solicitud.setNombreTienda("");
-        solicitud.setDescripcionFoto("ETIQUETAS");
-        solicitud.setNumFoto(1);
-        solicitud.setMotivo("Muy oscura");
-        solicitud.setTotal_fotos(1);
-        solicitud.setCreatedAt(new Date());
-        lista.add(solicitud);
 
-        solicitud=new SolicitudCor();
-        solicitud.setId(2);
-        solicitud.setClienteNombre("PEPSI");
-        solicitud.setClientesId(5);
-        solicitud.setPlantaNombre("IZTACALCO");
-        solicitud.setPlantasId(31);
-        solicitud.setIndice("6.2022");
-        solicitud.setEtapa(1);
-        solicitud.setInformesId(2);
-        solicitud.setEstatus(1);
-        solicitud.setNombreTienda("");
-        solicitud.setDescripcionFoto("360");
-        solicitud.setNumFoto(1);
-        solicitud.setMotivo("Muy oscura");
-        solicitud.setTotal_fotos(3);
-        solicitud.setCreatedAt(new Date());
-        lista.add(solicitud);
-     /*   solicitud=new SolicitudCor();
-        solicitud.setId(3);
-        solicitud.setClienteNombre("pepsi");
-        solicitud.setClientesId(4);
-        solicitud.setPlantaNombre("IZTACALCO");
-        solicitud.setPlantasId(63);
-        solicitud.setIndice("6.2022");
-        solicitud.setEtapa(3);
-        solicitud.setInformesId(46);
-        solicitud.setEstatus(1);
-        solicitud.setNombreTienda("SORIANA");
-        solicitud.setDescripcionFoto("foto_ticket");
-        solicitud.setDescMostrar("FOTO TICKET");
-        solicitud.setNumFoto(171);
-        solicitud.setMotivo("Muy oscura");
-        solicitud.setTotal_fotos(1);
-        solicitud.setCreatedAt(new Date());
-        lista.add(solicitud);*/
-
-        getSolicitudCorDao().insertAll(lista);
-    }
 
     private  void prepopulatereaEmp( ) {
         Reactivo campo = new Reactivo();
@@ -1427,10 +1370,11 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         List<Reactivo> camposForm = new ArrayList<Reactivo>();
 
+      // ya no será por planta será x cliente
         campo.setId(91);
         campo.setTabla("IE");
-        campo.setLabel(ctx.getString(R.string.planta));
-        campo.setNombreCampo("plantasId");
+        campo.setLabel(ctx.getString(R.string.cliente));
+        campo.setNombreCampo("clientesId");
         campo.setType("selectDes");
 
         campo.setSigId(92);
@@ -1439,7 +1383,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setClienteSel(cliid);
 
         camposForm.add(campo);
-
         campo = new Reactivo();
         campo.setLabel(ctx.getString(R.string.acomodo_mues));
         campo.setId(92);
@@ -1485,21 +1428,21 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.largo));
+        campo.setLabel(ctx.getString(R.string.etiqueta_ana));
         campo.setId(96);
-        campo.setTabla("DC");
-        campo.setNombreCampo("dimlargo");
-        campo.setType("inputtext");
+        campo.setTabla("ED");
+        campo.setNombreCampo("etiqueta_ana");
+        campo.setType("agregarImagen");
         campo.setSigId(97);
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.largo));
+        campo.setLabel(ctx.getString(R.string.etiqueta_des));
         campo.setId(97);
         campo.setTabla("ED");
-        campo.setNombreCampo("largo");
+        campo.setNombreCampo("etiqueta_des");
         campo.setType("agregarImagen");
         campo.setSigId(98);
         campo.setCliente(cliente);
@@ -1507,10 +1450,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.ancho));
+        campo.setLabel(ctx.getString(R.string.largo));
         campo.setId(98);
         campo.setTabla("DC");
-        campo.setNombreCampo("dimancho");
+        campo.setNombreCampo("dimlargo");
         campo.setType("inputtext");
         campo.setSigId(99);
         campo.setCliente(cliente);
@@ -1518,10 +1461,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.ancho));
+        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.largo));
         campo.setId(99);
         campo.setTabla("ED");
-        campo.setNombreCampo("ancho");
+        campo.setNombreCampo("largo");
         campo.setType("agregarImagen");
         campo.setSigId(100);
         campo.setCliente(cliente);
@@ -1529,10 +1472,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.alto));
+        campo.setLabel(ctx.getString(R.string.ancho));
         campo.setId(100);
         campo.setTabla("DC");
-        campo.setNombreCampo("dimalto");
+        campo.setNombreCampo("dimancho");
         campo.setType("inputtext");
         campo.setSigId(101);
         campo.setCliente(cliente);
@@ -1540,10 +1483,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.alto));
+        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.ancho));
         campo.setId(101);
         campo.setTabla("ED");
-        campo.setNombreCampo("alto");
+        campo.setNombreCampo("ancho");
         campo.setType("agregarImagen");
         campo.setSigId(102);
         campo.setCliente(cliente);
@@ -1551,10 +1494,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.peso));
+        campo.setLabel(ctx.getString(R.string.alto));
         campo.setId(102);
         campo.setTabla("DC");
-        campo.setNombreCampo("dimpeso");
+        campo.setNombreCampo("dimalto");
         campo.setType("inputtext");
         campo.setSigId(103);
         campo.setCliente(cliente);
@@ -1562,20 +1505,42 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.peso));
+        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.alto));
         campo.setId(103);
+        campo.setTabla("ED");
+        campo.setNombreCampo("alto");
+        campo.setType("agregarImagen");
+        campo.setSigId(104);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.peso));
+        campo.setId(104);
+        campo.setTabla("DC");
+        campo.setNombreCampo("dimpeso");
+        campo.setType("inputtext");
+        campo.setSigId(113);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto)+" "+ctx.getString(R.string.peso));
+        campo.setId(113);
         campo.setTabla("ED");
         campo.setNombreCampo("peso");
         campo.setType("agregarImagen");
-        campo.setSigId(91);
-        campo.setSigAlt(104);
+        campo.setSigId(92);
+        campo.setSigAlt(114);
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
         camposForm.add(campo);
 
         campo = new Reactivo();
         campo.setLabel(ctx.getString(R.string.comentarios));
-        campo.setId(104);
+        campo.setId(114);
         campo.setTabla("IE");
         campo.setNombreCampo("comentarios_emp");
         campo.setType("inputtext");

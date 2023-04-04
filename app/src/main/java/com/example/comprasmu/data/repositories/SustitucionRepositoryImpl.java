@@ -26,7 +26,7 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
         dao=comprasDataBase.getSustitucionDao();
     }
-    public LiveData<List<Sustitucion>> getByFiltros(String categoria, String productoNombre, String empaque,String tamanio ) {
+    public LiveData<List<Sustitucion>> getByFiltros(String categoria, String productoNombre, int empaque,int tamanio ) {
 
         String query="Select * from sustitucion where 1=1";
         ArrayList<String> filtros=new ArrayList<String>();
@@ -39,13 +39,13 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
             query = query + " and nomproducto=?";
             filtros.add(productoNombre);
         }
-        if(empaque!=null&&!empaque.equals("")) {
-            query = query + " and nomempaque=?";
-            filtros.add(empaque);
+        if(empaque>0) {
+            query = query + " and su_tipoempaque=?";
+            filtros.add(empaque+"");
         }
-        if(tamanio!=null&&!tamanio.equals("")) {
-            query = query + " and nomtamanio=?";
-            filtros.add(tamanio);
+        if(tamanio>0) {
+            query = query + " and su_tamanio=?";
+            filtros.add(tamanio+"");
         }
 
 

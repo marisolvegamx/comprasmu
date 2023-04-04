@@ -112,7 +112,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                 //primero reviso si ya tiene informe para no mostrar el finalizar
                 for(Visita visit:visitas){
                     visit=mViewModel.tieneInforme(visit,getViewLifecycleOwner());
-                    Log.d(TAG,"qqqqqqqqqq"+visit.getEstatus());
+                    Log.d(TAG,"qqqqqqqqqq"+visit.getCiudad());
                 }
                 mListAdapter.setVisitaList(visitas);
                 mListAdapter.notifyDataSetChanged();

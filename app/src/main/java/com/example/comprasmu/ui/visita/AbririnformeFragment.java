@@ -143,6 +143,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public static int REQUEST_CODE_PROD1 = 2;
     public static int REQUEST_CODE_PROD2 = 3;
     public static int REQUEST_CODE_PROD3 = 4;
+    public static int REQUEST_CODE_PROD4 = 5;
     private static final String TAG = "AbrirInformeFragment";
 
     private CreadorFormulario cf3;
@@ -156,7 +157,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     ImageView fotofac;
     ImageView fotoex1;
     ImageView fotoex2;
-    ImageView fotoex3;
+    ImageView fotoex3,fotoex4;
     private TextView mensajedir;
     LocationManager mlocManager;
     String provedorgps;
@@ -166,26 +167,27 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     EditText txtcomplemento; // para complemento direccion
     private Spinner spinn;
     private Spinner spinn2;
-    private Spinner spinn3;
+    private Spinner spinn3,spinn4;
     private ListaDetalleViewModel lViewModel;
     private EditText txtfotofachada;
     private EditText txtfotoex1;
     private EditText txtfotoex2;
-    private EditText txtfotoex3;
+    private EditText txtfotoex3,txtfotoex4;
     CheckBox cbfotofac;
-    CheckBox cbfotoex,cbfotoex2,cbfotoex3;
+    CheckBox cbfotoex,cbfotoex2,cbfotoex3,cbfotoex4;
     LinearLayout aifotofacgroup;
     LinearLayout aiex1group;
     LinearLayout aiex2group;
-    LinearLayout aiex3group;
+    LinearLayout aiex3group,aiex4group;
     ImageButton btnrotar1;
     ImageButton btnrotar2;
-    ImageButton btnrotar3;
+    ImageButton btnrotar3,btnrotar4;
     Preguntasino snmascli1;
-    Preguntasino snmascli2;
+    Preguntasino snmascli2,snmascli3;
     public List<DescripcionGenerica> clientesAsignados;
     public List<DescripcionGenerica> clientesAsignados2;
     public List<DescripcionGenerica> clientesAsignados3;
+    public List<DescripcionGenerica> clientesAsignados4;
     List<ProductoExhibidoDao.ProductoExhibidoFoto> fotosExh;
     private boolean isEdicion;
     private int globrequestcode;
@@ -223,11 +225,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         fotoex1 = root.findViewById(R.id.ivaifotoex1);
         fotoex2 = root.findViewById(R.id.ivaifotoex2);
         fotoex3 = root.findViewById(R.id.ivaifotoex3);
+        fotoex4 = root.findViewById(R.id.ivaifotoex4);
         rotar.setVisibility(View.GONE);
         txtfotofachada = root.findViewById(R.id.txtaifotofachada);
         txtfotoex1 = root.findViewById(R.id.txtaifotoex1);
         txtfotoex2 = root.findViewById(R.id.txtaifotoex2);
         txtfotoex3 = root.findViewById(R.id.txtaifotoex3);
+        txtfotoex4 = root.findViewById(R.id.txtaifotoex4);
         rotar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -297,6 +301,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 tomarFoto(txtfotoex3, fotoex3, REQUEST_CODE_PROD3);
             }
         });
+        ImageButton fotoexhibido4 = root.findViewById(R.id.btnaifotoexhibido4);
+
+        fotoexhibido4.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                tomarFoto(txtfotoex4, fotoex4, REQUEST_CODE_PROD4);
+            }
+        });
 
        /* ubicar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -343,6 +354,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 rotar(view, txtfotoex3, fotoex3);
             }
         });
+        btnrotar4 = root.findViewById(R.id.btnairotarfe4);
+        btnrotar4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotar(view, txtfotoex4, fotoex4);
+            }
+        });
         //llenar lista de clientes
 
         //input3.addTextChangedListener(new MayusTextWatcher());
@@ -350,10 +368,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         cbfotoex = root.findViewById(R.id.cbainpexhibidor);
         cbfotoex2 = root.findViewById(R.id.cbainpexhibidor2);
         cbfotoex3 = root.findViewById(R.id.cbainpexhibidor3);
+        cbfotoex4 = root.findViewById(R.id.cbainpexhibidor4);
         aifotofacgroup=root.findViewById(R.id.aifotofacgroup);
         aiex1group=root.findViewById(R.id.aiex1group);
         aiex2group=root.findViewById(R.id.aiex2group);
         aiex3group=root.findViewById(R.id.aiex3group);
+        aiex4group=root.findViewById(R.id.aiex4group);
         cbfotofac.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -401,6 +421,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             @Override
             public void onClick(View view) {
                 preguntarBorrarFoto(view,txtfotoex3,fotoex3,btnrotar3,aiex3group);
+            }
+        });
+        cbfotoex4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                preguntarBorrarFoto(view,txtfotoex4,fotoex4,btnrotar4,aiex4group);
             }
         });
         mensajedir = root.findViewById(R.id.txtaimensajeubicacion);
@@ -491,6 +517,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         spinn = root.findViewById(R.id.spaiclientes1);
         spinn2 = root.findViewById(R.id.spaiclientes2);
         spinn3 = root.findViewById(R.id.spaiclientes3);
+        spinn4 = root.findViewById(R.id.spaiclientes4);
         estatusPepsi = estatusPen=estatusElec=estatusJum=1;
 
         if (getArguments() != null) {
@@ -644,8 +671,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             //las fotos exhib
             // for(ProductoExhibidoDao.ProductoExhibidoFoto fotoe:fotosExh) {
             if (fotosExh != null && fotosExh.size() > 0) {
-                Log.d(TAG, "fotos exh----" + fotosExh.size());
-                Log.d(TAG, "fotos exh ruta" + fotosExh.get(0).ruta);
+              //  Log.d(TAG, "fotos exh----" + fotosExh.size());
+             //   Log.d(TAG, "fotos exh ruta" + fotosExh.get(0).ruta);
                 if(fotosExh.get(0).imagenId==0){
                     cbfotoex.setChecked(true);
                 }else
@@ -666,7 +693,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
 
                 }
+                if (totClientes > 3) {
+                    clientesAsignados4.remove(pos);
+                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn4, clientesAsignados4);
 
+                }
 
             } else {
                 cbfotoex.setChecked(true);
@@ -686,6 +717,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                         CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
                     }
+                    if (totClientes > 3) {
+                        clientesAsignados4.remove(pos);
+                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn4, clientesAsignados4);
+
+                    }
                 }
             }
             if (fotosExh != null && fotosExh.size() > 2) {
@@ -696,6 +732,20 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 int pos = buscarEnClientes(fotosExh.get(2).clienteId, clientesAsignados3);
                 if (pos > -1)
                     spinn3.setSelection(pos, true);
+                if (totClientes > 3) {
+                    clientesAsignados4.remove(pos);
+                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn4, clientesAsignados4);
+
+                }
+            }
+            if (fotosExh != null && fotosExh.size() > 3) {
+                if(fotosExh.get(3).imagenId==0){
+                    cbfotoex4.setChecked(true);
+                }else
+                    cargarFotos(fotosExh.get(3).ruta, txtfotoex4, btnrotar4, fotoex4);
+                int pos = buscarEnClientes(fotosExh.get(3).clienteId, clientesAsignados4);
+                if (pos > -1)
+                    spinn4.setSelection(pos, true);
 
             }
             //}
@@ -717,7 +767,25 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
         return -1;
     }
-
+    public List<DescripcionGenerica>  buscarEnClientesAtr( List<DescripcionGenerica> listaclientes) {
+      //busco la seleccion anterior
+        DescripcionGenerica cliente = (DescripcionGenerica) spinn.getSelectedItem();
+       int seleccion=cliente.getId();
+       int pos=buscarEnClientes(seleccion,listaclientes);
+       if(pos>-1)
+        listaclientes.remove(pos);
+       cliente = (DescripcionGenerica) spinn2.getSelectedItem();
+       seleccion=cliente.getId();
+       pos=buscarEnClientes(seleccion,listaclientes);
+        if(pos>-1)
+            listaclientes.remove(pos);
+         cliente = (DescripcionGenerica) spinn3.getSelectedItem();
+         seleccion=cliente.getId();
+         pos=buscarEnClientes(seleccion,listaclientes);
+        if(pos>-1)
+            listaclientes.remove(pos);
+      return listaclientes;
+    }
     public void cargarFotos(String s, EditText txtruta, ImageButton boton, ImageView iv) {
         txtruta.setText(s);
           Log.d(TAG,"ruta "+s);
@@ -847,6 +915,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if (totClientes > 2) {
             clientesAsignados3 = ComprasUtils.convertirListaaClientes(data);
             CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
+
+        }
+        if (totClientes > 3) {
+            clientesAsignados4 = ComprasUtils.convertirListaaClientes(data);
+            CreadorFormulario.cargarSpinnerDescr(getContext(), spinn4, clientesAsignados4);
 
         }
         CreadorFormulario.cargarSpinnerDescr(getContext(), spinn, clientesAsignados);
@@ -1006,71 +1079,69 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Local.desactivar();
 
 
-         mViewModel=null;
+        mViewModel=null;
         feviewModel=null;
 
-         cf2=null;
-       camposForm=null;
+        cf2=null;
+        camposForm=null;
         camposTienda=null;
-     fusedLocationClient=null; //cliente servicio de ubicación
-         locationRequest=null;
-   country=null;
-         guardar=null;
-         rotar=null;
-         root=null;
+        fusedLocationClient=null; //cliente servicio de ubicación
+        locationRequest=null;
+        country=null;
+        guardar=null;
+        rotar=null;
+        root=null;
 
-         tienda=null;
+        tienda=null;
 
-         txtubicacion=null;
-         txtaiultubic=null;
+        txtubicacion=null;
+        txtaiultubic=null;
 
         cf1=null;
+        cf3=null;
 
+        totClientes = 0;
+        recycler=null;
+        visitaEdi=null;
+        fotosExhibido=null;//para ir guardando las fotos de producto exhibido
+        efotoFachada=null;
+        mListAdapter=null;
+        fotofac=null;
+        fotoex1=null;
+        fotoex2=null;
+        fotoex3=null;
+        mensajedir=null;
+        mlocManager=null;
+        provedorgps=null;
 
-          cf3=null;
-
-    totClientes = 0;
-       recycler=null;
-         visitaEdi=null;
-      fotosExhibido=null;//para ir guardando las fotos de producto exhibido
-      efotoFachada=null;
-       mListAdapter=null;
-         fotofac=null;
-         fotoex1=null;
-         fotoex2=null;
-         fotoex3=null;
-       mensajedir=null;
-         mlocManager=null;
-         provedorgps=null;
-
-         ultimaLoc=null;
-         rutaArchivo=null;
-         txtcomplemento=null; // para complemento direccion
-     spinn=null;
+        ultimaLoc=null;
+        rutaArchivo=null;
+        txtcomplemento=null; // para complemento direccion
+        spinn=null;
         spinn2=null;
         spinn3=null;
         lViewModel=null;
-       txtfotofachada=null;
-         txtfotoex1=null;
-       txtfotoex2=null;
-      txtfotoex3=null;
-         cbfotofac=null;
-         cbfotoex=null;
-         cbfotoex2=null;
-         cbfotoex3=null;
-         aifotofacgroup=null;
-         aiex1group=null;
-         aiex2group=null;
-         aiex3group=null;
-         btnrotar1=null;
-         btnrotar2=null;
-         btnrotar3=null;
-         snmascli1=null;
-         snmascli2=null;
-      clientesAsignados=null;
+        txtfotofachada=null;
+        txtfotoex1=null;
+        txtfotoex2=null;
+        txtfotoex3=null;
+        cbfotofac=null;
+        cbfotoex=null;
+        cbfotoex2=null;
+        cbfotoex3=null;
+        aifotofacgroup=null;
+        aiex1group=null;
+        aiex2group=null;
+        aiex3group=null;
+        btnrotar1=null;
+        btnrotar2=null;
+        btnrotar3=null;
+        snmascli1=null;
+        snmascli2=null;
+        clientesAsignados=null;
         clientesAsignados2=null;
-       clientesAsignados3=null;
-       fotosExh=null;
+        clientesAsignados3=null;
+        fotosExh=null;
 
 
     }
@@ -1214,6 +1285,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         LinearLayout ll2 = root.findViewById(R.id.llfotoex2);
         LinearLayout ll3 = root.findViewById(R.id.llfotoex3);
+        LinearLayout ll4 = root.findViewById(R.id.llfotoex4);
         if (fotosExh != null && fotosExh.size() > 1) {
             campo.value = "true";
             mostrarOcultarlayout(View.VISIBLE, ll2);
@@ -1288,6 +1360,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             snmascli1.setId((campo.id));
 
             snmascli2 = root.findViewById(R.id.snmascli2);
+            snmascli3 = root.findViewById(R.id.snmascli3);
             snmascli2.setVisible(View.GONE);
             if (totClientes > 2) {
                 snmascli2.setVisible(View.VISIBLE);
@@ -1331,7 +1404,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     @Override
                     public void onClick(View view) {
                         //muestro sig boton
-                        spinn2.setEnabled(true);
+                        spinn3.setEnabled(true);
                         loopViews(ll3);
                         mostrarOcultarlayout(View.GONE, ll3);
 
@@ -1343,6 +1416,57 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 snmascli2.setId(1011);
             }
 
+            if (totClientes > 3) {
+                snmascli3.setVisible(View.VISIBLE);
+
+                snmascli3.setmLabel(campo.label);
+                snmascli3.setStyleLabel(R.style.formlabel);
+                if (campo.style > 0) {
+                    snmascli3.setStyleLabel(campo.style);
+                }
+                if (fotosExh != null && fotosExh.size() > 3) {
+                    campo.value = "true";
+                    mostrarOcultarlayout(View.VISIBLE, ll4);
+                } else
+                    campo.value = "false";
+                if (campo.value != null && campo.value.equals("true")) {
+                    snmascli3.setSi(true);
+
+                }
+                snmascli3.onclicksi(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //muestro sig boton
+
+                        mostrarOcultarlayout(View.VISIBLE, ll4);
+                        DescripcionGenerica cliente = (DescripcionGenerica) spinn3.getSelectedItem();
+                         spinn3.setEnabled(false);
+
+
+                        clientesAsignados4=buscarEnClientesAtr(clientesAsignados4);
+
+
+
+                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn4, clientesAsignados4);
+
+
+                    }
+                });
+                snmascli3.onclickno(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //muestro sig boton
+                        spinn4.setEnabled(true);
+                        loopViews(ll4);
+                        mostrarOcultarlayout(View.GONE, ll4);
+
+                    }
+                });
+
+
+                // }
+                snmascli3.setId(1011);
+            }
         }
 
         cf1 = new CreadorFormulario(camposTienda, getActivity());
@@ -1549,6 +1673,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     return false;
                 }
             }
+            if(spinn4!=null) {
+                DescripcionGenerica cliente4 = (DescripcionGenerica) spinn4.getSelectedItem();
+                if (cliente4!=null&&cliente4.getId() == 4) {
+                    Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
 
 
         }
@@ -1679,6 +1810,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                        else   if (snmascli2 != null && snmascli2.getRespuesta()) {
                            guardarsinFotoEx( nuevoId, spinn3);
                        }
+                   if (snmascli3 != null && snmascli3.getRespuesta()&&!cbfotoex4.isChecked()) {
+                       guardarFotoEx(txtfotoex4.getText().toString(), nuevoId, spinn4);
+                   } else   if (snmascli3 != null && snmascli3.getRespuesta()) {
+                           guardarsinFotoEx( nuevoId, spinn4);
+                       }
 
 
 
@@ -1694,7 +1830,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         return true;
     }
     public void guardarFotoEx(String ruta1,int visitasId,Spinner spinnx){
-
+        if(ruta1.equals(""))
+            return;
         DescripcionGenerica cliente=(DescripcionGenerica)spinnx.getSelectedItem();
 
         //    Log.d(TAG, "guardarfoto cliente" + cliente.getId());
@@ -1841,6 +1978,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
                 return ;
             }
+
+            if(snmascli3!=null&&snmascli3.getRespuesta())//veo que tenga foto etc
+                if(txtfotoex4.getText().toString().equals("")&&!cbfotoex4.isChecked()){
+                    Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+                    return ;
+                }
         //actualizo campos
         if(nuevaTienda){
              input1 = root.findViewById(1001); //nombre de la tienda
@@ -1931,7 +2074,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 guardarFotoEx(txtfotoex3.getText().toString(), nuevoId, spinn3);
         else if (snmascli2 != null && snmascli2.getRespuesta())
             guardarsinFotoEx( nuevoId, spinn3);
-
+            if (snmascli3 != null && snmascli3.getRespuesta()&&!cbfotoex4.isChecked())
+                guardarFotoEx(txtfotoex4.getText().toString(), nuevoId, spinn4);
+            else if (snmascli3 != null && snmascli3.getRespuesta())
+                guardarsinFotoEx( nuevoId, spinn4);
         guardado=true;
         NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
         }catch(Exception ex){
@@ -2164,9 +2310,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
-         if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode==REQUEST_CODE_PROD1||requestCode == REQUEST_CODE_PROD2||requestCode==REQUEST_CODE_PROD3) && resultCode == RESULT_OK) {
+         if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode==REQUEST_CODE_PROD1||requestCode == REQUEST_CODE_PROD2||requestCode==REQUEST_CODE_PROD3||requestCode==REQUEST_CODE_PROD4) && resultCode == RESULT_OK) {
           //  super.onActivityResult(requestCode, resultCode, data);
-            Log.d(TAG,"vars*"+requestCode +"=="+ resultCode+" =="+ RESULT_OK);
 
              String state = Environment.getExternalStorageState();
              String baseDir;
@@ -2187,9 +2332,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                  if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
                          //es la de fachada
                          //envio a la actividad dos para ver la foto
-                   /* Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
-                    intento1.putExtra("ei.archivo", nombre_foto);
-                    intento1.putExtra("ei.opcionfoto", "nose");*/
+
                      Log.d(TAG,"*****"+file.exists()+"--"+file.getAbsolutePath());
                   //  startActivity(intento1);*/
                          yaTengoFoto = false;
@@ -2200,10 +2343,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                         ComprasUtils cu = new ComprasUtils();
                      Bitmap bitmap1= cu.comprimirImagen(file.getAbsolutePath());
 
-                     //    Bitmap bitmap1 =  ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(),100,100);
-                   //  Bitmap bitmap1 = (Bitmap) data.getExtras().get("data");
-                     Log.d(TAG,"*****"+bitmap1.getHeight());
-                         fotofac.setImageBitmap(bitmap1);
+                           fotofac.setImageBitmap(bitmap1);
                      fotofac.setVisibility(View.VISIBLE);
                          rotar.setVisibility(View.VISIBLE);
                          //  agregarImagen();
@@ -2247,6 +2387,16 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                          btnrotar3.setVisibility(View.VISIBLE);
                          //   agregarImagen();
                      }
+                     if (requestCode == REQUEST_CODE_PROD4) {
+                         txtfotoex4.setText(nombre_foto);
+                         // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                         ComprasUtils cu = new ComprasUtils();
+                         Bitmap bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+
+                         fotoex4.setImageBitmap(bitmap1);
+                         btnrotar4.setVisibility(View.VISIBLE);
+                         //   agregarImagen();
+                     }
 
 
                  }
@@ -2268,46 +2418,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
     }
 
-  /*  public void agregarImagen() {
-
-        //reviso si hay datos
-        try {
-
-
-           ActivityManager.MemoryInfo memoryInfo = getAvailableMemory(getActivity());
-
-            if (!memoryInfo.lowMemory) {
-                Bitmap bitmapOrg = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-
-                //comprimir imagen
-                File file = new File(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                OutputStream os = null;
-                try {
-                    os = new FileOutputStream(file);
-                } catch (FileNotFoundException e) {
-                    Log.d("RevisarFotoActivity", e.getMessage());
-                    Toast.makeText(getContext(),"No se encontró el archivo" , Toast.LENGTH_SHORT).show();
-
-                }
-                bitmapOrg.compress(Bitmap.CompressFormat.JPEG, 45, os);
-
-
-
-
-            }
-            else
-            {
-                Toast.makeText(getContext(), "Memoria insuficiente, no se guardó el reporte", Toast.LENGTH_SHORT).show();
-
-            }
-
-        } catch (Exception ex) {
-            Log.d(TAG,ex.getMessage());
-            Toast.makeText(getActivity(), "Algo salió mal", Toast.LENGTH_SHORT).show();
-        }
-
-
-    }*/
     public void rotar(View view,EditText nombrefoto, ImageView foto) {
         String nombreArch="";
         if (AbririnformeFragment.getAvailableMemory(getActivity()).lowMemory) {

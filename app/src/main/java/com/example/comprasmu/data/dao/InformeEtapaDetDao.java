@@ -50,6 +50,9 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja order by num_muestra")
     public abstract List<InformeEtapaDet> getByCaja( int id,int etapa, int numcaja);
 
+    @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja order by id")
+    public abstract LiveData<List<InformeEtapaDet>> getByCajaEmp( int id,int etapa, int numcaja);
+
     @Query("SELECT imagen_detalle.* FROM informe_etapa_det inner join imagen_detalle on informe_etapa_det.ruta_foto=imagen_detalle.id where informeEtapaId=:informe and etapa=:etapa ")
     public  abstract LiveData<List<ImagenDetalle>> getImagenxInf(int informe, int etapa);
 
@@ -64,6 +67,23 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
 
     @Query("SELECT count(*) FROM informe_etapa_det where informeEtapaId=:idinf and num_caja=:numcaja and etapa=3")
     public abstract int totalMuesxCaja( int  numcaja, int idinf);
+
+    @Query("SELECT count(*) FROM informe_etapa_det where  num_caja=:numcaja and etapa=3")
+    public abstract int totalMuesxCaja( int  numcaja);
+
+    @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
+            " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and clientesId=:cliente group by num_caja")
+    public abstract List<InformeEtapaDet> totalCajasEtiqxCli(int etapa, int cliente);
+
+    @Query("SELECT max(num_caja) FROM informe_etapa_det where   etapa=:i ")
+    public abstract int totalCajasEtiq(int i);
+
+    @Query("SELECT count(*) FROM informe_etapa_det  inner join informe_etapa on informe_etapa.id=informeEtapaId  where   informe_etapa.etapa=:i and clientesId=:cliente")
+    public abstract int totalMuestrasEtiqxCli(int i, int cliente);
+
+    @Query("SELECT * FROM informe_etapa_det where etapa=:etapa and qr=:qr ")
+    public abstract InformeEtapaDet getByQr( String qr, int etapa);
+
 
     @Query("update informe_etapa_det set estatusSync=:estatus WHERE informeEtapaId=:idinforme")
     public abstract void actEstatusSyncLis(int idinforme, int estatus);

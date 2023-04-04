@@ -759,7 +759,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             // Definir una transacción
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             Bundle bundle = new Bundle();
-         //   Log.d(TAG, "ppppppp" + clienteSel);
+            bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL, clienteSel);
+
+            //   Log.d(TAG, "ppppppp" + clienteSel);
             if (clienteSel == 4) {
                 Fragment fragment = new ListaCompraFragment(plantaSel, nombrePlanta, this.nombreCliente);
 // Obtener el administrador de fragmentos a través de la actividad
@@ -768,8 +770,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 bundle.putString(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
                 //   bundle.putInt(DetalleProductoFragment.NUMMUESTRA,);
                 bundle.putString(ListaCompraFragment.ARG_MUESTRA, "true");
-                bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL, clienteSel);
-                bundle.putBoolean(ISBACKUP, true);
+                 bundle.putBoolean(ISBACKUP, true);
                 fragment.setArguments(bundle);
 
                 fragmentTransaction.replace(R.id.back_fragment, fragment);
