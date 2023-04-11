@@ -5,6 +5,7 @@ public class EtapaResponse {
     int etapaact;
     String indiceact;
     int etapafin;
+    int tiporec;
 
     public int getEtapaact() {
         return etapaact;
@@ -28,5 +29,13 @@ public class EtapaResponse {
 
     public void setEtapafin(int etapafin) {
         this.etapafin = etapafin;
+    }
+
+    public int getTiporec() {
+        return tiporec;
+    }
+
+    public void setTiporec(int tiporec) {
+        this.tiporec = tiporec;
     }
 }
