@@ -54,6 +54,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     private int etapapref;
     private String indicepref;
     private int etapafinpref;
+    private int tiporec;
     private boolean puedodescargar;
     private ComprasLog complog;
 
@@ -183,30 +184,32 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         ps.getEtapaAct(listener);
 
     }
-    public void validarBorrar(String indicenvo, int etapanva,int etapafin){
+    public void validarBorrar(String indicenvo, int etapanva,int etapafin, int tiporec){
       Log.d(TAG,"en valdar borrar"+indicepref);
        if(indicepref!=null&&!indicepref.equals("")) {
            if (!indicenvo.equals(indicepref)) {
                //cambie de indice
                //veo si es la ultima etapa y puedo borrar
+               //todo revisar la etapaactual de todas las plantas y si todas == a etapa fin
                if (etapanva == etapafinpref) {
                    //voy a borrar datos
                    //por si no quiere borrar
                    Constantes.INDICEACTUAL = indicepref;
                    Constantes.ETAPAMENU =etapapref ;
-                   irABorrar(); //todo necesito ir a una actividad donde pregunte al usuario
+                   irABorrar(); // necesito ir a una actividad donde pregunte al usuario
                } else {
                    //todo avisar al usuario que hubo un error no descargar
                    puedodescargar = true;
                    Constantes.INDICEACTUAL = indicepref;
-                   Constantes.ETAPAMENU = etapanva;
+                  // Constantes.ETAPAMENU = etapanva;
+                   //envio etapa act y etapaini
                    descargasIniciales(indicenvo, etapanva, etapafin);
 
                }
            } else {
                //actualizo en prefs asigno constantes y sigo
                puedodescargar = true;
-               guardarEtapaPref(etapanva, indicenvo, etapafin);
+               guardarEtapaPref(etapanva, indicenvo, etapafin,tiporec);
                Constantes.INDICEACTUAL = indicenvo;
                Constantes.ETAPAMENU = etapanva;
                descargasIniciales(indicenvo, etapanva, etapafin);
@@ -216,7 +219,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         else{
             Log.d(TAG,etapanva+"--"+ indicenvo+"--"+ etapafin);
            puedodescargar = true;
-           guardarEtapaPref(etapanva, indicenvo, etapafin);
+           guardarEtapaPref(etapanva, indicenvo, etapafin,tiporec);
            Constantes.INDICEACTUAL = indicenvo;
            Constantes.ETAPAMENU = etapanva;
            descargasIniciales(indicenvo, etapanva, etapafin);
@@ -227,11 +230,12 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         etapapref= prefe.getInt("etapaact", 0);
         indicepref= prefe.getString("indiceact", "");
         etapafinpref= prefe.getInt("etapafin", 0);
+        tiporec= prefe.getInt("tiporec", 0);
     }
-    public void guardarEtapaPref(int etapa, String indice, int etapafin){
+    public void guardarEtapaPref(int etapa, String indice, int etapafin, int tiporec){
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=prefe.edit();
-
+        editor.putInt("tiporec",tiporec );
         editor.putInt("etapaact",etapa );
         editor.putString("indiceact", indice);
         editor.putInt("etapafin", etapafin);
@@ -266,15 +270,17 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
             }else{
                 //cambie de indice, tengo que borrar
+                //todo revisar la etapaactual de todas las plantas y si todas == a etapa fin
+
                 if(etapanva==etapafin){
                     //voy a borrar datos
                     irABorrar(); //todo necesito ir a una actividad donde pregunte al usuario
                     return;
                 }else
                 {
-                    //todo avisar al usuario que hubo un error no descargar
+                 //sigo con el mismo indice y lista
                     puedodescargar=true;
-                    //todo aviso al usuario que hubo un error fin
+
 
                 }
             }
@@ -416,17 +422,17 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
             if (response != null) {
                 Log.e(TAG,response.getIndiceact()+"--"+response.getEtapaact()+"--"+response.getEtapafin());
-                if (response.getEtapaact() > 0) {
+               // if (response.getEtapaact() > 0) {
                     //validar si cambio de indice y borro
-                    validarBorrar(response.getIndiceact(), response.getEtapaact(), response.getEtapafin());
-                } else {
+                    validarBorrar(response.getIndiceact(), response.getEtapaact(), response.getEtapafin(),response.getTiporec());
+               // } else {
                     // es 1a vez descargo pero la validación se hace en el menu
-                    puedodescargar = true;
-                    Constantes.INDICEACTUAL = response.getIndiceact();
-                    Constantes.ETAPAMENU = 0;
-                    descargasIniciales(response.getIndiceact(), 0, response.getEtapafin());
+               //     puedodescargar = true;
+                 //   Constantes.INDICEACTUAL = response.getIndiceact();
+                 //   Constantes.ETAPAMENU = 0;
+                 //   descargasIniciales(response.getIndiceact(), 0, response.getEtapafin());
 
-                }
+              //  }
 
             }
             else
