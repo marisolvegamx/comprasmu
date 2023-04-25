@@ -184,24 +184,25 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         ps.getEtapaAct(listener);
 
     }
+    //cuando todas las listas están en 1 porque voy a iniciar traigo etapanva y hay que borrar
     public void validarBorrar(String indicenvo, int etapanva,int etapafin, int tiporec){
       Log.d(TAG,"en valdar borrar"+indicepref);
        if(indicepref!=null&&!indicepref.equals("")) {
            if (!indicenvo.equals(indicepref)) {
                //cambie de indice
                //veo si es la ultima etapa y puedo borrar
-               //todo revisar la etapaactual de todas las plantas y si todas == a etapa fin
-               if (etapanva == etapafinpref) {
+
+               if (etapanva>0&&etapanva == etapafinpref) {
                    //voy a borrar datos
                    //por si no quiere borrar
                    Constantes.INDICEACTUAL = indicepref;
                    Constantes.ETAPAMENU =etapapref ;
                    irABorrar(); // necesito ir a una actividad donde pregunte al usuario
                } else {
-                   //todo avisar al usuario que hubo un error no descargar
+                   //descargar y sigo en el mismo indice
                    puedodescargar = true;
                    Constantes.INDICEACTUAL = indicepref;
-                  // Constantes.ETAPAMENU = etapanva;
+                   Constantes.ETAPAMENU = etapanva;
                    //envio etapa act y etapaini
                    descargasIniciales(indicenvo, etapanva, etapafin);
 
@@ -257,7 +258,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     public void descargasIniciales(String indicenvo, int etapanva, int etapafin){
         //pueda descargar
         //saber si voy a borrar
-        Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL+"--"+Constantes.ETAPAMENU);
+        Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
         ListaCompraDao dao= ComprasDataBase.getInstance(getApplicationContext()).getListaCompraDao();
 
@@ -270,9 +271,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
             }else{
                 //cambie de indice, tengo que borrar
-                //todo revisar la etapaactual de todas las plantas y si todas == a etapa fin
-
-                if(etapanva==etapafin){
+                if(etapanva>0&&etapanva==etapafin){
                     //voy a borrar datos
                     irABorrar(); //todo necesito ir a una actividad donde pregunte al usuario
                     return;
@@ -285,7 +284,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
                 }
             }
         }
-        Log.d(TAG, "indice " + Constantes.INDICEACTUAL+"--"+Constantes.ETAPAMENU);
+        Log.d(TAG, "indice " + Constantes.INDICEACTUAL);
 
         //Inicio un servicio que se encargue de descargar
         //catalogos listas de compra y respaldos de informes informes etapas y correcciones
@@ -383,9 +382,9 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  // This will show notification on top when downloading the file.
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);  // This will show notification on top when downloading the file.
         request.setTitle("Downloading a file"); // Title for notification.
-        request.setVisibleInDownloadsUi(true);
+       // request.setVisibleInDownloadsUi(true);
 
         request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
         archact=((DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
@@ -395,21 +394,9 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
     @Override
     public void notificarSinConexion() {
-        //pasaría a otra actividad
-      /*  progreso.dismiss();
-        TextView sincon=findViewById(R.id.destxtsincon);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                sincon.setVisibility(View.VISIBLE);
-            }
-        });*/
+
         success();
 
-       // Intent intento=new Intent(this, HomeActivity.class);
-
-      //  startActivity(intento);
-       // finish();
     }
     public class EtapaListener {
 

@@ -132,6 +132,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
 
     }
     public void cargarClientes(){
+        if(Constantes.CIUDADTRABAJO!=null)
         if( Constantes.clientesAsignados==null||Constantes.clientesAsignados.size()<1)
         mViewModel.cargarClientes( Constantes.CIUDADTRABAJO).observe(this, data -> {
           //  Log.d(TAG,"regresó de la consulta "+ data.size());
@@ -139,6 +140,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
 
 
         });
+        if(Constantes.CIUDADTRABAJO!=null)
         if( Constantes.plantasAsignadas==null)
         mViewModel.cargarPestañas(Constantes.CIUDADTRABAJO,0).observe(this, data -> {
            // Log.d(TAG,"regresó de la consulta "+ data.size());

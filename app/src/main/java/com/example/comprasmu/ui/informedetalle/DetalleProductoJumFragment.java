@@ -765,6 +765,7 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
         //solo valido formato de fecha
         ValidadorDatos valdat=new ValidadorDatos();
         try {
+            sdfcodigo.setLenient(false);
             fechacad=sdfcodigo.parse(textoint.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
@@ -849,11 +850,13 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
 
                 mViewModel.consecutivo = consecutivo;
                 Constantes.DP_CONSECUTIVO = consecutivo;
+            }
+            mViewModel.informe.setConsecutivo(mViewModel.consecutivo);
 
                 Log.d(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
                 ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
-            }    //actualizo barra
+               //actualizo barra
             ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
             mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);

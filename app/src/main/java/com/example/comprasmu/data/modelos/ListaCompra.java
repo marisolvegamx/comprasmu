@@ -21,7 +21,7 @@ public class ListaCompra {
     private String indice;
     private int estatus;
     private String lis_nota;
-
+    private int lis_etapaactual;
 
     public int getId() {
         return id;
@@ -117,5 +117,13 @@ public class ListaCompra {
 
     public void setLis_nota(String lis_nota) {
         this.lis_nota = lis_nota;
+    }
+
+    public int getLis_etapaactual() {
+        return lis_etapaactual;
+    }
+
+    public void setLis_etapaactual(int lis_etapaactual) {
+        this.lis_etapaactual = lis_etapaactual;
     }
 }

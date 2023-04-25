@@ -1,8 +1,10 @@
 package com.example.comprasmu.ui.home;
 
 
+import android.content.Context;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -25,6 +27,7 @@ public class HomeActivity extends AppCompatActivity {
     Button prep;
     Button comp,etiq,emp;
     private boolean isEdit;
+    private int tiporec;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
 
         final TextView textView = findViewById(R.id.text_home);
         Constantes.ETAPAACTUAL=0;
+        getTipoRec();
         Log.d("HomeActivity","entreeeee"+Constantes.ETAPAMENU);
         textusuario= findViewById(R.id.txthmusuario);
         prep= findViewById(R.id.btnhmprep);
@@ -65,35 +69,45 @@ public class HomeActivity extends AppCompatActivity {
                 ira(4);
             }
         });
-        if(Constantes.ETAPAMENU==0){
-            //no puede empezar
-            mensaje.setText("No puede empezar");
-            mensaje.setVisibility(View.VISIBLE);
-            emp.setVisibility(View.GONE);
-            comp.setVisibility(View.GONE);
-            prep.setVisibility(View.GONE);
-            etiq.setVisibility(View.GONE);
-            Button btnsalir=findViewById(R.id.btnhsalir);
-            btnsalir.setVisibility(View.VISIBLE);
-            btnsalir.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    salir();
-                }
-            });
 
-        }else
-            switch (Constantes.ETAPAMENU){
-                case 1:  prep.setVisibility(View.VISIBLE);
-                    break;
-                case 2:  comp.setVisibility(View.VISIBLE);
-                    break;
-                case 3:  etiq.setVisibility(View.VISIBLE);
-                    break;
-                case 4:  emp.setVisibility(View.VISIBLE);
-                    break;
+            //veo que tipo de recolector es
+            if(tiporec==1) { //es forenaeo
+                if(Constantes.ETAPAMENU==0){
+                //no puede empezar
+                mensaje.setText("No puede empezar");
+                mensaje.setVisibility(View.VISIBLE);
+                emp.setVisibility(View.GONE);
+                comp.setVisibility(View.GONE);
+                prep.setVisibility(View.GONE);
+                etiq.setVisibility(View.GONE);
+                Button btnsalir = findViewById(R.id.btnhsalir);
+                btnsalir.setVisibility(View.VISIBLE);
+                btnsalir.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        salir();
+                    }
+                });
+            }else{
+                switch (Constantes.ETAPAMENU){
+                    case 1:  prep.setVisibility(View.VISIBLE);
+                        break;
+                    case 2:  comp.setVisibility(View.VISIBLE);
+                        break;
+                    case 3:  etiq.setVisibility(View.VISIBLE);
+                        break;
+                    case 4:  emp.setVisibility(View.VISIBLE);
+                        break;
+                }
             }
-        //textusuario.on
+
+        }else // es local ve todos los botones
+            {
+                prep.setVisibility(View.VISIBLE);
+                comp.setVisibility(View.VISIBLE);
+                etiq.setVisibility(View.VISIBLE);
+                emp.setVisibility(View.VISIBLE);
+            }
 
     }
 
@@ -113,5 +127,9 @@ public class HomeActivity extends AppCompatActivity {
         finish();
     }
 
+    public void getTipoRec(){
+        SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
 
+        tiporec= prefe.getInt("tiporec", 0);
+    }
 }

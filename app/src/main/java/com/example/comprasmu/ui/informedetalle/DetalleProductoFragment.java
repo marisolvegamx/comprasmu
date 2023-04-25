@@ -680,7 +680,7 @@ public class DetalleProductoFragment extends Fragment {
             //ahora son plantas
         //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
       //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-        List<ListaCompra> listacomp= lcviewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
+        List<ListaCompra> listacomp= lcviewModel.cargarPestañasxEtaSimp(Constantes.CIUDADTRABAJO);
         clientesAsignados = convertirListaaPlantas(listacomp, clientesprev);
         Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsignados.size());
         if(campo!=null)
@@ -1459,6 +1459,7 @@ public class DetalleProductoFragment extends Fragment {
             return valdat.resp;
         }
         try {
+            sdfcodigo.setLenient(false);
             fechacad=sdfcodigo.parse(textoint.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
@@ -1895,6 +1896,8 @@ public class DetalleProductoFragment extends Fragment {
                     }else {
 
 
+                        mViewModel.informe.setConsecutivo(mViewModel.consecutivo);
+                        ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
                         //actualizo barra
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 

@@ -547,7 +547,7 @@ public class DetalleProductoPenFragment extends Fragment {
         {
             //  Constantes.ni_clientesel=opcionsel.getNombre();
             //int consecutivo=mViewModel.getConsecutivo(valor);
-
+            Log.d(TAG,"viendo el cons"+ultimares.getConsecutivo());
             mViewModel.informe=new InformeCompra();
             // nviewModel.informe.setClienteNombre(opcionsel.getNombre());
             //  nviewModel.informe.setClientesId(ultimares.getValor());
@@ -635,7 +635,7 @@ public class DetalleProductoPenFragment extends Fragment {
         //ahora son plantas
         //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
         //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-        List<ListaCompra> listacomp= lcviewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
+        List<ListaCompra> listacomp= lcviewModel.cargarPestañasxEtaSimp(Constantes.CIUDADTRABAJO);
         clientesAsig = convertirListaaPlantas(listacomp, clientesprev);
         Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsig.size());
 
@@ -1290,6 +1290,7 @@ public class DetalleProductoPenFragment extends Fragment {
     //
         ValidadorDatos valdat=new ValidadorDatos();
         try {
+            sdfcodigo.setLenient(false);
             fechacad=sdfcodigo.parse(textoint.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
@@ -1616,21 +1617,23 @@ public class DetalleProductoPenFragment extends Fragment {
             dViewModel.productoSel = Constantes.productoSel;
             //guardo el total de la lista
             //generar consecutivo tienda
-            Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
+            Log.d(TAG, ">>>> "+  mViewModel.consecutivo);
             if(mViewModel.consecutivo==0) {
                 int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
                 //  Log.d(TAG, "*genere cons=" + consecutivo);
                 Log.d(TAG, "genere cons=" + consecutivo);
 
+
                 mViewModel.informe.setConsecutivo(consecutivo);
 
                 mViewModel.consecutivo = consecutivo;
                 Constantes.DP_CONSECUTIVO = consecutivo;
-
+            }
+            mViewModel.informe.setConsecutivo(mViewModel.consecutivo);
                 Log.d(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
                 ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
-            }    //actualizo barra
+               //actualizo barra
             ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                 mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
@@ -1959,7 +1962,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
 
                } else {
-                   Toast.makeText(getContext(), "Las siglas no corresponden a una planta", Toast.LENGTH_LONG).show();
+                   Toast.makeText(getActivity(), "Las siglas no corresponden a una planta", Toast.LENGTH_LONG).show();
                     validar.setEnabled(true);
                     textoint.setEnabled(true);
                }

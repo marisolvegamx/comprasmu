@@ -496,14 +496,14 @@ public class NvaPreparacionFragment extends Fragment {
     public void guardarCliente(){
         lastClickTime=0;
         DescripcionGenerica opcionsel = (DescripcionGenerica) spclientes.getSelectedItem();
-
-        //busco par de id, cliente
-        String[] aux =opcionsel.getDescripcion().split(",");
-        clienteId=Integer.parseInt(aux[0]);
-        clienteNombre=aux[1];
-        plantaSel=opcionsel.getId();
-        nombrePlantaSel=opcionsel.getDescripcion2();
-
+        if(opcionsel!=null) {
+            //busco par de id, cliente
+            String[] aux = opcionsel.getDescripcion().split(",");
+            clienteId = Integer.parseInt(aux[0]);
+            clienteNombre = aux[1];
+            plantaSel = opcionsel.getId();
+            nombrePlantaSel = opcionsel.getDescripcion2();
+        }
 
        //creo el informe
         if ( !isEdicion&&mViewModel.getNvoinforme()==null) {

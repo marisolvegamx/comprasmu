@@ -297,6 +297,7 @@ public class GalFotosFragment extends Fragment {
                         //convierto el prod exhibido a imagen detalle
                 for (ProductoExhibidoDao.ProductoExhibidoFoto pf : productoExhibidoFotos) {
                             ImagenDetalle id = new ImagenDetalle();
+                            Log.d(TAG,"foto ex"+pf.ruta);
                             id.setRuta(pf.ruta);
                             id.setDescripcion("EXHIBIDOR " + pf.nombreCliente);
                             id.setId(pf.imagenId);

@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.remote;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 
@@ -28,6 +29,19 @@ public class SubirFoto {
     private final ArrayList<SubirFotoService.SubirFotoListener> observadores = new ArrayList<SubirFotoService.SubirFotoListener>();
     ImagenDetRepositoryImpl idrepo;
     private final String TAG="SubirFoto";
+
+    public SubirFoto() {
+        if (Build.PRODUCT.contains ("sdk")){
+
+            //nam
+            URL_SUBIRPICTURE = "http://192.168.1.84/comprasv1/api/public/subirfoto";
+            //BASE_URL = "http://192.168.1.75/comprasv1/api/public/subirfoto";
+
+        }else
+        {
+            URL_SUBIRPICTURE = "https://muesmerc.mx/comprasv1/api/public/subirfoto";
+        }
+    }
 
     public void agregarObservador(SubirFotoService.SubirFotoListener o)
     {

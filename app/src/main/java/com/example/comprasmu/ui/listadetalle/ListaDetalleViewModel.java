@@ -117,7 +117,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
+    public  List<ListaCompra>  cargarPestañasxEtaSimp(String ciudadSel){
+        Log.d(TAG,"etapa act"+Constantes.ETAPAACTUAL);
+        return repository.getAllByIndiceCiudadEtaSimpl(Constantes.INDICEACTUAL,ciudadSel, Constantes.ETAPAACTUAL+"");
 
+
+    }
     public  List<ListaCompra>  cargarPlantas(String ciudadSel,int clienteSel){
 
             return repository.getAllByIndiceCiudadClienteSim(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
@@ -133,6 +138,13 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public  List<ListaCompra>  cargarClientesSimpl(String ciudadSel){
 
         return repository.getClientesByIndiceCiudadSimpl(Constantes.INDICEACTUAL,ciudadSel);
+
+
+    }
+
+    public  List<ListaCompra>  cargarClientesSimplxet(String ciudadSel){
+        Log.d(TAG,"xxxx"+Constantes.ETAPAACTUAL);
+        return repository.getClientesByIndiceCiudadSimplxet(Constantes.INDICEACTUAL,ciudadSel,Constantes.ETAPAACTUAL);
 
 
     }
@@ -415,6 +427,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 //busco los nuevos codigos
                 List<InformeCompraDetalle> informeCompraDetalles=icrepo.getByProductoAna(Constantes.INDICEACTUAL,plantasel,detalle.getProductosId(),detalle.getAnalisisId(),detalle.getEmpaquesId(),detalle.getTamanio());
                 for(InformeCompraDetalle info:informeCompraDetalles){
+
                     nvoCodigos=nvoCodigos+ sdfcodigo.format(info.getCaducidad())+";";
                 }
             }
@@ -461,7 +474,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     }else //ya están ordenados los no permitidos
         resultado=noPermitidos.replace(";","\n");
 
-        return  resultado;
+    return  resultado;
 
     }
 

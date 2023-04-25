@@ -97,12 +97,18 @@ public class ComprasUtils {
 
             int width = bitmapOrg.getWidth();
             int height = bitmapOrg.getHeight();
+            int tam=bitmapOrg.getByteCount();
+            int quality=45;
+            if(tam>500000){
+                quality=35;
+            }
 
 
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, width, height, true);
 
             //comprimir imagen
             File file = new File(nombre_foto);
+
             OutputStream os = null;
             try {
                 os = new FileOutputStream(file);
@@ -111,7 +117,9 @@ public class ComprasUtils {
                 // Toast.makeText(, "Error al guardar la foto", Toast.LENGTH_SHORT).show();
                 return null;
             }
-            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 45, os);
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, quality, os);
+            os.flush();;
+            os.close();
             return scaledBitmap;
         }catch(Exception ex){
             ex.printStackTrace();

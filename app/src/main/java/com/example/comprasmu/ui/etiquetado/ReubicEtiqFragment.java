@@ -195,6 +195,8 @@ public void nvacaja(){
         }
         InformeEtapaDet muestra=mViewModel.buscarDetxQr(txtqr.getText().toString());
         String opcionsel = (String) spcaja.getSelectedItem();
+        if(opcionsel==null)
+            return;
         int numcaja = Integer.parseInt(opcionsel);
         if(muestra!=null){
             muestra.setNum_caja(numcaja);

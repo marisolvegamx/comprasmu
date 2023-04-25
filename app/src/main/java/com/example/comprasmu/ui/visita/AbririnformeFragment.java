@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Environment;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
@@ -128,6 +129,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     ImageButton rotar;
     View root;
     boolean nuevaTienda;
+    private long lastClickTime = 0;
     Tienda tienda;
     int nuevoId;
     private boolean yaTengoFoto;
@@ -249,7 +251,15 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         ImageButton fotoexhibido = root.findViewById(R.id.btnaifotoexhibido);
         guardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //    v.setEnabled(false);
+                    v.setEnabled(false);
+                long currentClickTime= SystemClock.elapsedRealtime();
+                // preventing double, using threshold of 1000 ms
+                if (currentClickTime - lastClickTime < 5500){
+                    //  Log.d(TAG,"doble click :("+lastClickTime);
+                    return;
+                }
+
+                lastClickTime = currentClickTime;
                 //      validator.validate();
                 if (mViewModel.mIsNew)
                     sologuardar();
@@ -846,7 +856,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //   if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
 
         List<ListaCompra> data=null;
-        data = lViewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
+        data = lViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
         List<ListaCompra> nvadata=new ArrayList<>();
         if (estatusPepsi == 0) {
 
@@ -1362,6 +1372,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             snmascli2 = root.findViewById(R.id.snmascli2);
             snmascli3 = root.findViewById(R.id.snmascli3);
             snmascli2.setVisible(View.GONE);
+            snmascli3.setVisible(View.GONE);
             if (totClientes > 2) {
                 snmascli2.setVisible(View.VISIBLE);
 
@@ -1418,7 +1429,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             if (totClientes > 3) {
                 snmascli3.setVisible(View.VISIBLE);
-
+                Log.d(TAG,"eeee"+campo.label);
                 snmascli3.setmLabel(campo.label);
                 snmascli3.setStyleLabel(R.style.formlabel);
                 if (campo.style > 0) {
@@ -1452,6 +1463,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                     }
                 });
+                snmascli3.setmLabel("¿FOTO DE EXHIBIDOR DE OTRO CLIENTE?");
                 snmascli3.onclickno(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -1639,15 +1651,18 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             input1 = root.findViewById(1001);
             if(input1.getText().toString().equals("")) {
                 Toast.makeText(getActivity(), getString(R.string.error_nombre_tienda), Toast.LENGTH_SHORT).show();
+                guardar.setEnabled(true);
                 return false;
             }
         }
         if (txtaiultubic.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
+            guardar.setEnabled(true);
             return false;
         }
         if (fotofachada.getText().toString().equals("")&&!cbfotofac.isChecked()) {
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
+            guardar.setEnabled(true);
             return false;
         }
         //Log.d(TAG,"xxxxxx"+txtfotoex1.getText().toString());
@@ -1657,12 +1672,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Log.d(TAG,"valor combolist"+cliente.getId());
             if(cliente.getId()==4){
                 Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                guardar.setEnabled(true);
                 return false ;
             }
             if(spinn2!=null) {
                 DescripcionGenerica cliente2 = (DescripcionGenerica) spinn2.getSelectedItem();
                 if (cliente2!=null&&cliente2.getId() == 4) {
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
                     return false;
                 }
             }
@@ -1670,6 +1687,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 DescripcionGenerica cliente3 = (DescripcionGenerica) spinn3.getSelectedItem();
                 if (cliente3!=null&&cliente3.getId() == 4) {
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
                     return false;
                 }
             }
@@ -1677,6 +1695,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 DescripcionGenerica cliente4 = (DescripcionGenerica) spinn4.getSelectedItem();
                 if (cliente4!=null&&cliente4.getId() == 4) {
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
                     return false;
                 }
             }
@@ -1857,6 +1876,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
     }
     public void sologuardar(){
+        lastClickTime=0;
         if(guardar()) {
 
             if(Local!=null)
@@ -1921,6 +1941,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         return 0; //no estuvo lol
     }
     public void actualizar(){
+        lastClickTime=0;
         EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
         EditText input1;
         try{
@@ -1928,16 +1949,19 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
              input1 = root.findViewById(1001);
              if(input1.getText().toString().equals("")) {
                  Toast.makeText(getActivity(), getString(R.string.error_nombre_tienda), Toast.LENGTH_SHORT).show();
+                 guardar.setEnabled(true);
                  return;
              }
         }
         if (txtaiultubic.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
+            guardar.setEnabled(true);
             return;
         }
         if (fotofachada.getText().toString().equals("")&&!cbfotofac.isChecked()) {
 
             Toast.makeText(getActivity(), "Falta foto de fachada", Toast.LENGTH_SHORT).show();
+            guardar.setEnabled(true);
             return ;
         }
         if(estatusPepsi==0)//no puedo comprar pepsi{
@@ -1945,12 +1969,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             DescripcionGenerica cliente=(DescripcionGenerica)spinn.getSelectedItem();
             if(cliente.getId()==4){
                 Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                guardar.setEnabled(true);
                 return ;
             }
             if(spinn2!=null) {
                 DescripcionGenerica cliente2 = (DescripcionGenerica) spinn2.getSelectedItem();
                 if (cliente2!=null&&cliente2.getId() == 4) {
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
                     return;
                 }
             }
@@ -1958,6 +1984,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 DescripcionGenerica cliente3 = (DescripcionGenerica) spinn3.getSelectedItem();
                 if (cliente3!=null&&cliente3.getId() == 4) {
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
                     return;
                 }
             }
@@ -1967,21 +1994,25 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if(txtfotoex1.getText().toString().equals("")&&!cbfotoex.isChecked()){
 
             Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+            guardar.setEnabled(true);
             return ;
         }if(snmascli1.getRespuesta())//veo que tenga foto etc
             if(txtfotoex2.getText().toString().equals("")&&!cbfotoex2.isChecked()){
                 Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+                guardar.setEnabled(true);
                 return ;
             }
         if(snmascli2!=null&&snmascli2.getRespuesta())//veo que tenga foto etc
             if(txtfotoex3.getText().toString().equals("")&&!cbfotoex3.isChecked()){
                 Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+                guardar.setEnabled(true);
                 return ;
             }
 
             if(snmascli3!=null&&snmascli3.getRespuesta())//veo que tenga foto etc
                 if(txtfotoex4.getText().toString().equals("")&&!cbfotoex4.isChecked()){
                     Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
                     return ;
                 }
         //actualizo campos
@@ -2084,7 +2115,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             ex.printStackTrace();
             //  Log.e(TAG,ex.getMessage());
             Toast.makeText(getActivity(), "Hubo un error al guardar intente de nuevo", Toast.LENGTH_LONG).show();
-
+            guardar.setEnabled(true);
         }
     }
 
@@ -2340,18 +2371,19 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                          txtfotofachada.setText(nombre_foto);
                       //   txtfotofachada.setVisibility(View.VISIBLE);
                   //       Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                        ComprasUtils cu = new ComprasUtils();
+                     ComprasUtils cu = new ComprasUtils();
                      Bitmap bitmap1= cu.comprimirImagen(file.getAbsolutePath());
+                     bitmap1= ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(), 100, 100);
 
-                           fotofac.setImageBitmap(bitmap1);
+                     fotofac.setImageBitmap(bitmap1);
                      fotofac.setVisibility(View.VISIBLE);
-                         rotar.setVisibility(View.VISIBLE);
+                     rotar.setVisibility(View.VISIBLE);
                          //  agregarImagen();
-                         aifotofacgroup.setVisibility(View.VISIBLE);
-                         guardarUbicacion();
-                         yaTengoFoto = true;
-                          nombre_foto=null;
-                          file=null;
+                     aifotofacgroup.setVisibility(View.VISIBLE);
+                     guardarUbicacion();
+                     yaTengoFoto = true;
+                     nombre_foto=null;
+                     file=null;
                          //
                      }
                      if (requestCode == REQUEST_CODE_PROD1) {

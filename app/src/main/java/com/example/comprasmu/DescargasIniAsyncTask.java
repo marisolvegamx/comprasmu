@@ -506,9 +506,6 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         }else
             listener.finalizar();
 
-
-
-
     }
     public int getTotVisitas(){
         visRepo=new VisitaRepositoryImpl(act);

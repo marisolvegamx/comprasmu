@@ -284,7 +284,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         //las de producto ex
         if(visita.getEstatusSync()==0) {
-            List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimplePend(visita.getId());
+            List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimplePend(visita.getId(),0);
 
             fotosinfo.addAll(productoExhibidos);
         }
@@ -323,7 +323,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         //las de producto ex
 
-        List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimplePend(visita.getId());
+        List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimple(visita.getId());
             fotosinfo.addAll(productoExhibidos);
 
 

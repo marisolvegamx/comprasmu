@@ -684,6 +684,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             }
             else
                  nuevoInf.setProductoSel(productoSel,mViewModel.nombrePlantaSel,mViewModel.getPlantaSel(), mViewModel.getClienteSel(),nombreCliente,etsiglas.getText().toString(),null);
+            Log.d(TAG,"NO PERM"+productoSel.getCodigosNoPermitidos());
+            Log.d(TAG,"nvo cods"+productoSel.getNvoCodigo());
+
             Constantes.productoSel=nuevoInf.productoSel;
 
     /*        Fragment fragment = new DetalleProductoFragment1();

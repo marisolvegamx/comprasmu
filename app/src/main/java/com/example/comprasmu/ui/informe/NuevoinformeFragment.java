@@ -11,8 +11,7 @@ import com.example.comprasmu.services.SubirFotoService;
 
 
 /*****
- * solo necesito que llegue la visita seleccionada
- * ya no se usa 1-jun
+ *
  */
 public class NuevoinformeFragment {
 

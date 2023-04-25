@@ -265,7 +265,7 @@ public class NvoEtiquetadoFragment extends Fragment {
 
         }
         //busco si tengo varias plantas
-        listacomp= lcViewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
+        listacomp= lcViewModel.cargarPestañasxEtaSimp(Constantes.CIUDADTRABAJO);
         Log.d(TAG,"PLANTA"+listacomp.toString()+"ss"+mViewModel.getIdNuevo());
         preguntaAct=1;
         //veo si ya tengo informes

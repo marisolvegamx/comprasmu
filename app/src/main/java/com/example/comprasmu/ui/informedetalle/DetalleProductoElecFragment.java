@@ -771,15 +771,15 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                         //  Log.d(TAG, "*genere cons=" + consecutivo);
                         Log.d(TAG, "genere cons=" + consecutivo);
 
-                        mViewModel.informe.setConsecutivo(consecutivo);
-
                         mViewModel.consecutivo = consecutivo;
                         Constantes.DP_CONSECUTIVO = consecutivo;
 
-                        Log.d(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
-                        ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
+                    }
+                    mViewModel.informe.setConsecutivo(mViewModel.consecutivo);
+                    Log.d(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
+                    ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
-                    }    //actualizo barra
+                   //actualizo barra
                     ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                     mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
@@ -829,7 +829,9 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         //
         ValidadorDatos valdat=new ValidadorDatos();
         try {
+            sdfcodigo.setLenient(false);
             fechacad=sdfcodigo.parse(textoint.getText().toString());
+            Log.d(TAG,"validando fecha "+textoint.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
             Toast.makeText(getActivity(), getString( R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
