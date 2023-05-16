@@ -96,16 +96,16 @@ public class SelClienteFragment extends ListaSelecFragment {
                 setLista(listaClientesEnv);
                 // siguiente(0);
                 //  Log.d(TAG,"------- "+lista.size());
-                if(lista.size()>1) {
 
-                    setupListAdapter();
-                }else if(lista.size()>0)
-                {
-                    //voy directo a la lista
-                    siguiente(0);
-                }
-                else
-                    Log.d(TAG,"algo salió mal con la consulta de listas");
+                    if (lista.size() > 1) {
+
+                        setupListAdapter();
+                    } else if (lista.size() > 0) {
+                        //voy directo a la lista
+                        siguiente(0);
+                    } else
+                        Log.d(TAG, "algo salió mal con la consulta de listas");
+
             }
         };
 

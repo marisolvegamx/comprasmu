@@ -1,6 +1,5 @@
 package com.example.comprasmu.ui.home;
 
-
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -29,6 +28,7 @@ import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.login.LoginActivity;
@@ -295,7 +295,8 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
          ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
          SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep,puedodescargar);
+        SiglaRepositoryImpl sigRepo=new SiglaRepositoryImpl(getApplicationContext());
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep,sigRepo,puedodescargar);
 
         task.execute("cat","");
 
@@ -356,9 +357,11 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         if (infoResp!=null&&infoResp.getInformeEtapaDet() != null && infoResp.getInformeEtapaDet().size() > 0) {
 
             for(InformeEtapaDet img:infoResp.getInformeEtapaDet()){
-                startDownload(DOWNLOAD_PATH+"/"+ Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto(), DESTINATION_PATH);
                 Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto());
-            }
+
+
+                startDownload(DOWNLOAD_PATH+"/"+ Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto(), DESTINATION_PATH);
+                     }
             // cerrarAlerta(true);
 
 

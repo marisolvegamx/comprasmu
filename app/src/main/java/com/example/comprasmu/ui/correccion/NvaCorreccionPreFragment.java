@@ -236,6 +236,13 @@ public class NvaCorreccionPreFragment extends Fragment {
                 }
             };
             campo.tomarFoto = true;
+
+            camposForm2.add(campo);
+            //nombre de la nueva foto
+            campo=new CampoForm();
+            campo.label="";
+            campo.id=700+i;
+            campo.type="hidden";
             camposForm2.add(campo);
             //donde voy a ver la foto
             campo=new CampoForm();
@@ -261,17 +268,25 @@ public class NvaCorreccionPreFragment extends Fragment {
     public void guardar(){
         try {
             lastClickTime = 0;
-           if(rutasnfotos.size()!=totalfotos){
+            Log.d(TAG,"arregloe"+rutasnfotos.size());
+
+          /*  if(rutasnfotos.size()!=totalfotos){
                Toast.makeText(getContext(),"Debe ingresar "+totalfotos+" fotos",Toast.LENGTH_LONG).show();
                aceptar.setEnabled(true);
                return;
 
-           }
+           }*/
            nuevasCor=new ArrayList<>();
            int numfoto=0;
             for (int i=0;i<totalfotos;i++) {
-                String valor = rutasnfotos.get(i);
+                EditText textorut=root.findViewById(300+i);
+                String valor = textorut.getText().toString();
                 valor = valor.toUpperCase();
+                if(valor.equals("")){
+                    Toast.makeText(getContext(),"Debe ingresar "+totalfotos+" fotos",Toast.LENGTH_LONG).show();
+                    aceptar.setEnabled(true);
+                    return;
+                }
                 EditText txtnumfoto=root.findViewById(600+i);
                 try {
                     numfoto = Integer.parseInt(txtnumfoto.getText().toString());
@@ -411,7 +426,7 @@ public class NvaCorreccionPreFragment extends Fragment {
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
             //   super.onActivityResult(requestCode, resultCode, data);
 
-            Log.d(TAG,"vars"+requestCode +"--"+ grupo);
+            Log.d(TAG,"vars"+requestCode +"--"+ rutasnfotos.size());
             if (archivofoto!=null&&archivofoto.exists()) {
                rutasnfotos.add(nombre_foto);
                mostrarFoto(grupo);
@@ -432,6 +447,7 @@ public class NvaCorreccionPreFragment extends Fragment {
     }
 
     public void mostrarFoto(int grupo){
+    //    EditText textorut=root.findViewById(300+grupo);
         EditText textorut=root.findViewById(300+grupo);
         ImageView xfotomos=root.findViewById(400+grupo);
         BotonRotar xbtnrotar=root.findViewById(500+400+grupo);

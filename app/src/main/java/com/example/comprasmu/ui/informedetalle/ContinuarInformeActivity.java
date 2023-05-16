@@ -70,11 +70,12 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
         dViewModel = new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
-        if (savedInstanceState != null) {    // Restore value of members from saved state
+     /*   if (savedInstanceState != null) {    // Restore value of members from saved state
             //  idinformeSel = savedInstanceState.getInt("visitasel");
             //  if(idinformeSel>0) { //se salio y lo devuelvo al inicio
             this.finish();
             Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
+           Log.e(TAG,"Regresando a navigation desde continuarinforme");
             intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"continuarinf");
 
             startActivity(intento1);
@@ -82,7 +83,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             //mando al inicio
             //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
             //  }
-        }
+        }*/
         // if(Constantes.NM_TOTALISTA>=16)
         loadData(savedInstanceState);
         //reviso si es edicion y ya tengo info en temp
@@ -107,15 +108,40 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 //si es la misma
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                if(nviewModel.clienteSel==4||nviewModel.clienteSel==0)
-                    ft.add(R.id.continf_fragment, new DetalleProductoFragment(preguntaAct,true));
-                if(nviewModel.clienteSel==5)
-                     ft.add(R.id.continf_fragment, new DetalleProductoPenFragment(preguntaAct,true));
-                if(nviewModel.clienteSel==6)
-                     ft.add(R.id.continf_fragment, new DetalleProductoElecFragment(preguntaAct,true));
-                 if(nviewModel.clienteSel==7)
-                     ft.add(R.id.continf_fragment, new DetalleProductoJumFragment(preguntaAct,true));
+                if(nviewModel.clienteSel==4||nviewModel.clienteSel==0) {
+                    Bundle args = new Bundle();
+                    args.putInt(DetalleProductoFragment.ARG_PREGACT,preguntaAct.getId() );
+                    args.putBoolean(DetalleProductoFragment.ARG_ESEDI,true);
+                    DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                    nvofrag.setArguments(args);
 
+                    ft.add(R.id.continf_fragment,nvofrag);
+                }
+                if(nviewModel.clienteSel==5) {
+                    Bundle args = new Bundle();
+                    args.putInt(DetalleProductoPenFragment.ARG_PREGACTP,preguntaAct.getId() );
+                    args.putBoolean(DetalleProductoPenFragment.ARG_ESEDIP,true);
+                    DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment();
+                    nvofrag.setArguments(args);
+                    ft.add(R.id.continf_fragment, nvofrag);
+                }
+
+                if(nviewModel.clienteSel==6) {
+                    Bundle args = new Bundle();
+                    args.putInt(DetalleProductoElecFragment.ARG_PREGACTE,preguntaAct.getId() );
+                    args.putBoolean(DetalleProductoElecFragment.ARG_ESEDIE,true);
+                    DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment();
+                    nvofrag.setArguments(args);
+                    ft.add(R.id.continf_fragment, nvofrag);
+                }
+                    if(nviewModel.clienteSel==7) {
+                        Bundle args = new Bundle();
+                        args.putInt(DetalleProductoJumFragment.ARG_PREGACTJ,preguntaAct.getId() );
+                        args.putBoolean(DetalleProductoJumFragment.ARG_ESEDIJ,true);
+                        DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment();
+                        nvofrag.setArguments(args);
+                        ft.add(R.id.continf_fragment, nvofrag);
+                    }
                  ft.commit();
 
             }else{
@@ -125,8 +151,15 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                      @Override
                      public void onChanged(List<Reactivo> reactivos) {
                          Log.d(TAG, "reactivo:" + reactivos.get(0).getLabel());
+                         Bundle args = new Bundle();
+                         args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivos.get(0).getId() );
+                         args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
+                         DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                         nvofrag.setArguments(args);
                          FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                         ft.add(R.id.continf_fragment, new DetalleProductoFragment(reactivos.get(0),false));
+                        // ft.add(R.id.continf_fragment, new DetalleProductoFragment(reactivos.get(0),false));
+                         ft.add(R.id.continf_fragment, nvofrag);
+
                          ft.commit();
                      }
                  });
@@ -141,8 +174,15 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 @Override
                 public void onChanged(List<Reactivo> reactivos) {
                     Log.d(TAG, "reactivo:" + reactivos.get(0).getLabel());
+                    Bundle args = new Bundle();
+                    args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivos.get(0).getId() );
+                    args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
+                    DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                    nvofrag.setArguments(args);
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.add(R.id.continf_fragment, new DetalleProductoFragment(reactivos.get(0),false));
+                  //  ft.add(R.id.continf_fragment, new DetalleProductoFragment(reactivos.get(0),false));
+                    ft.add(R.id.continf_fragment, nvofrag);
+
                     ft.commit();
                 }
             });
@@ -229,13 +269,13 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
          idinformeSel = datosRecuperados.getInt(INFORMESEL); //es la visita id
         else { //lo recupero
             if (savedInstanceState != null) {    // Restore value of members from saved state
-              //  idinformeSel = savedInstanceState.getInt("visitasel");
-              //  if(idinformeSel>0) { //se salio y lo devuelvo al inicio
+                idinformeSel = savedInstanceState.getInt("visitasel");
+                if(idinformeSel==0) { //se salio y lo devuelvo al inicio
                     Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
                     startActivity(intento1);
                     //mando al inicio
                   //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
-              //  }
+                }
             }
 
         }
@@ -281,7 +321,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     boolean salir;
     @Override
     public void onBackPressed() {
-        Log.e(TAG,"aprete atras"+dViewModel.reactivoAct);
+        Log.e(TAG,"aprete atras"+dViewModel.reactivoAct+"--"+nviewModel.clienteSel);
         int numpreg =0;
         if(dViewModel.reactivoAct==1) {
           //  Integer[] clientesprev = dViewModel.tieneInforme(nviewModel.visita);
@@ -404,7 +444,12 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         //busco el siguiente
         Reactivo reactivo = dViewModel.buscarReactivoAnterior(idreact,fragment.isEdicion);
         if(reactivo!=null) {
-            DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
+            Bundle args = new Bundle();
+            args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivo.getId() );
+            args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
+            DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+            nvofrag.setArguments(args);
+            //DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
             FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -440,10 +485,21 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
             if(reactivo.getId()==1)
-            {      DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
+            {
+                Bundle args = new Bundle();
+                args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivo.getId() );
+                args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
+                DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                nvofrag.setArguments(args);
+               // DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
                 }else {
-                DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo, false);
+                Bundle args = new Bundle();
+                args.putInt(DetalleProductoPenFragment.ARG_PREGACTP,reactivo.getId() );
+                args.putBoolean(DetalleProductoPenFragment.ARG_ESEDIP,false);
+                DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment();
+                nvofrag.setArguments(args);
+               // DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo, false);
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
             }
 
@@ -475,10 +531,21 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
             if(reactivo.getId()==1)
-            {      DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
+            {
+                Bundle args = new Bundle();
+                args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivo.getId() );
+                args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
+                DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                nvofrag.setArguments(args);
+               // DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
             }else {
-                DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment(reactivo, false);
+                Bundle args = new Bundle();
+                args.putInt(DetalleProductoElecFragment.ARG_PREGACTE,reactivo.getId() );
+                args.putBoolean(DetalleProductoElecFragment.ARG_ESEDIE,false);
+                DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment();
+                nvofrag.setArguments(args);
+               // DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment(reactivo, false);
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
             }
 
@@ -511,10 +578,21 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 // Remplazar el contenido principal por el fragmento
             if(reactivo.getId()==1)
-            {      DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
+            {
+                Bundle args = new Bundle();
+                args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivo.getId() );
+                args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
+                DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                nvofrag.setArguments(args);
+                //DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
             }else {
-                DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo, false);
+                Bundle args = new Bundle();
+                args.putInt(DetalleProductoJumFragment.ARG_PREGACTJ,reactivo.getId() );
+                args.putBoolean(DetalleProductoJumFragment.ARG_ESEDIJ,false);
+                DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment();
+                nvofrag.setArguments(args);
+               // DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo, false);
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
             }
 
@@ -557,15 +635,15 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 numpreg = fragment2.getNumPregunta();
             }
                 if(nviewModel.clienteSel==4)
-                    if(numpreg==2||numpreg==3||numpreg==4||numpreg==5){
+                    if(numpreg==3||numpreg==4||numpreg==5){
                         noSalir=true;
                     }
                 if(nviewModel.clienteSel==5||nviewModel.clienteSel==7)
-                    if(numpreg==52||numpreg==53||numpreg==54||numpreg==55){
+                    if(numpreg==53||numpreg==54||numpreg==55){
                         noSalir=true;
                     }
                 if(nviewModel.clienteSel==6)
-                    if(numpreg==72||numpreg==73||numpreg==74||numpreg==75){
+                    if(numpreg==73||numpreg==74||numpreg==75){
                         noSalir=true;
                     }
 

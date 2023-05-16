@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ListaCompra;
 
+import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
@@ -118,8 +119,14 @@ public class TabsFragment extends Fragment {
        // getFragmentManager()
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(   getChildFragmentManager(),clientes, mViewModel);
         for(int pos=0;pos<clientesplan.length;pos++) {
-            Fragment fragment = new ListaCompraFragment(Integer.parseInt(clientesplan[pos][0]), clientesplan[pos][1],clientesplan[pos][2]);
+            Bundle bundle = new Bundle();
+            bundle.putInt(ListaCompraFragment.ARG_PLANTASEL,Integer.parseInt(clientesplan[pos][0]));
+            bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, clientesplan[pos][1]);
 
+            bundle.putString(ListaCompraFragment.ARG_CLIENTENOMBRE,clientesplan[pos][2] );
+
+            ListaCompraFragment fragment = new ListaCompraFragment();
+            fragment.setArguments(bundle);
             sectionsPagerAdapter.addFragment(fragment, clientesplan[pos][2]+" "+clientesplan[pos][1]);
         }
         viewPager.setAdapter(sectionsPagerAdapter);

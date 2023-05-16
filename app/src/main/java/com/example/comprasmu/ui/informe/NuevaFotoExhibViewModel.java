@@ -127,7 +127,7 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
                 if(productoExhibido!=null)
                      imagenDetalle=imagenDetRepository.findsimple(productoExhibido.imagenId);
                 if(imagenDetalle!=null)
-                imagenDetRepository.delete(imagenDetalle);
+                    imagenDetRepository.delete(imagenDetalle);
 
 
                 //la elimino de foto exhibicion

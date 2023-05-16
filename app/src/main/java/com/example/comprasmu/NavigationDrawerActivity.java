@@ -34,7 +34,6 @@ import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
 
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
@@ -43,11 +42,8 @@ import com.example.comprasmu.data.remote.MuestraCancelada;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.SolCorreResponse;
 
-import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
-import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
-import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
@@ -55,6 +51,7 @@ import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
 
+import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
@@ -132,10 +129,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     int desclis; int descinf; int descfoto;
     LiveData<List<InformeCompraDetalle>> totCancel;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        definirTrabajo();
         setContentView(R.layout.activity_navigation_darawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -144,7 +142,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         //busco el mes actual y le agrego 1
          mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
         scViewModel = new ViewModelProvider(this).get(ListaSolsViewModel.class);
-        definirTrabajo();
+
+
      /*   fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -158,7 +157,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         Bundle extras = getIntent().getExtras(); // Aquí es null
         String inicio="";
+        if(Constantes.ETAPAACTUAL==0){
+            //mando al menu inicial
+            Intent homeIntent=new Intent(this, HomeActivity.class);
 
+            startActivity(homeIntent);
+            finish();
+        }
         if(extras!=null) {
              inicio = extras.getString(NAVINICIAL);
              if(Constantes.ETAPAACTUAL==0)
@@ -192,6 +197,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             header.setBackgroundResource(R.drawable.side_nav_bareti);
             TextView mNameTextView = header.findViewById(R.id.txthmmodulo);
             mNameTextView.setText(R.string.etiquetado);
+
+
+
         }
         if(Constantes.ETAPAACTUAL==4) {
             navigationView.getMenu().clear();
@@ -577,6 +585,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
 
 
+
+
     public class SubirFotoProgressReceiver extends BroadcastReceiver {
 
         @Override
@@ -639,7 +649,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 @Override
                 public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
                     if(informeCompraDetalles!=null)
-                    txtcancel.setText(informeCompraDetalles.size() + "");
+                        txtcancel.setText(informeCompraDetalles.size() + "");
                 }
             });
 

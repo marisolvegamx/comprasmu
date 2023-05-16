@@ -92,6 +92,15 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
+    public  LiveData<List<ListaCompra>>  cargarPestañasEta(String ciudadSel,int clienteSel){
+        if(clienteSel>0){
+            //ya elegi cliente vengo de muestra
+            return repository.getAllByIndiceCiudadCliente(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
+        }else
+            return repository.getAllByIndiceCiudadEta(Constantes.INDICEACTUAL,ciudadSel,Constantes.ETAPAACTUAL+"");
+
+
+    }
     public  LiveData<List<ListaCompra>>  getCiudades(){
 
             return repository.getAllCdByIndice(Constantes.INDICEACTUAL);
@@ -111,13 +120,13 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
 
-    public  List<ListaCompra>  cargarPestañasSimp(String ciudadSel){
+    public  List<ListaCompra>  cargarPestanasSimp(String ciudadSel){
 
             return repository.getAllByIndiceCiudadSimpl(Constantes.INDICEACTUAL,ciudadSel);
 
 
     }
-    public  List<ListaCompra>  cargarPestañasxEtaSimp(String ciudadSel){
+    public  List<ListaCompra>  cargarPestanasxEtaSimp(String ciudadSel){
         Log.d(TAG,"etapa act"+Constantes.ETAPAACTUAL);
         return repository.getAllByIndiceCiudadEtaSimpl(Constantes.INDICEACTUAL,ciudadSel, Constantes.ETAPAACTUAL+"");
 

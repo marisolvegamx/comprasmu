@@ -14,6 +14,7 @@ import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
@@ -34,6 +35,7 @@ import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
+import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
@@ -55,7 +57,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     SimpleDateFormat sdfdias;
     ListaCompraDetRepositoryImpl lcdrepo;
     ListaCompraRepositoryImpl lcrepo;
-
+    SiglaRepositoryImpl sigRepo;
     VisitaRepositoryImpl visRepo;
     InformeComDetRepositoryImpl infdrepo;
     ImagenDetRepositoryImpl imagenDetRepo;
@@ -78,7 +80,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     private boolean descargarListas;
     public DescargasIniAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
-                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener miproglis, SustitucionRepositoryImpl sustRepo,GeocercaRepositoryImpl georep,boolean descargarListas) {
+                                 AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener miproglis, SustitucionRepositoryImpl sustRepo,GeocercaRepositoryImpl georep,SiglaRepositoryImpl sigRepo,boolean descargarListas) {
 
         this.cdrepo=cdrepo;
         this.atRepo=atRepo;
@@ -87,6 +89,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         this.lcrepo=lcrepo;
         this.sustRepo=sustRepo;
         this.act=act;
+        this.sigRepo=sigRepo;
         sdfdias=new SimpleDateFormat("dd-MM-yyyy");
        // this.proglist=proglist;
         this.georep=georep;
@@ -113,6 +116,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
             catalogos();
             buscarZonas();
+
             if(descargarListas) {
 
                 listacompras(); //aqui esta informes
@@ -164,7 +168,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             if(actualiza==1) {
 
                     ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
-
+                    ps.getSiglas(sigRepo,tvRepo);
 
 
                   /*  act.runOnUiThread(new Runnable() {
@@ -180,7 +184,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             if(!sdfdias.format(cats.getVersion()).equals(sdfdias.format(new Date()))){
 
                     ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
-
+                    ps.getSiglas(sigRepo,tvRepo);
 
             }else {
                 listenprin.finalizar();
@@ -191,7 +195,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
 
                 ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
-
+                ps.getSiglas(sigRepo,tvRepo);
         }
 
     }
@@ -415,7 +419,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 if(compraResp!=null) {
                     if (compraResp.getInserts() != null) {
                         if (compraResp.getInserts().getListaCompra() != null) {
-                            // Log.d("Descargaini","resp2>>"+compraResp.getInserts().getListaCompra());
+                             Log.d("Descargaini","resp2>>"+compraResp.getInserts().getListaCompra());
 
                             lcrepo.insertAll(compraResp.getInserts().getListaCompra()); //inserto blblbl
                         }
@@ -437,7 +441,19 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
 
                             }
+                            //reviso los que se eliminaron
+                            if(compraResp.getInserts().getListaCompraDetalle()!=null&&compraResp.getInserts().getListaCompraDetalle().size()>0) {
+                            //  Log.d(TAG,"buscando elim");
+                                List<ListaCompraDetalle> liscompapp = lcdrepo.getAllSimpl();
+                                for (ListaCompraDetalle compra : liscompapp
+                                ) {
+                                    //veo si está en el json si no es que se elimina, solo checo que no
+                                    //tenga informe
+                                    buscarListaDet(compra, compraResp.getInserts().getListaCompraDetalle());
+                                }
+                            }
                         }
+
                         // lcdrepo.insertAll(compraResp.getInserts().getListaCompraDetalle());
                     }
                     //los updates
@@ -460,6 +476,14 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                                 lcdrepo.insert(detalle);
 
                             }
+                            //reviso los que se eliminaron
+                            /*List<ListaCompraDetalle> liscompapp=lcdrepo.getAllSimpl();
+                            for (ListaCompraDetalle compra:liscompapp
+                            ) {
+                                //veo si está en el json si no es que se elimina, solo checo que no
+                                //tenga informe
+                                buscarListaDet(compra,compraResp.getInserts().getListaCompraDetalle());
+                            }*/
                             // lcdrepo.updateAll(compraResp.getUpdates().getListaCompraDetalle());
                         }
                     }
@@ -493,6 +517,8 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
 
         }
+
+
     public void informes(){
           DescargaRespListener listener=new DescargaRespListener();
         int ban=0;
@@ -741,5 +767,26 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
           }
             finalizar();
         }
+    }
+
+
+
+    public void buscarListaDet(ListaCompraDetalle compra, List<ListaCompraDetalle> json){
+        for (ListaCompraDetalle jcompra: json) {
+            if(jcompra.getId()==compra.getId()&&compra.getListaId()==jcompra.getListaId()){
+               // Log.d(TAG,compra.getProductoNombre()+"--"+jcompra.getProductoNombre()+".."+compra.getListaId()+"--"+ compra.getId());
+
+                return;
+            }
+        }
+
+        //si llego aqui, no lo encontré por lo que se eliminó
+        //busco que no tenga informe
+        infdrepo=new InformeComDetRepositoryImpl(act);
+        List<InformeCompraDetalle> prods=infdrepo.findByCompra(compra.getListaId(), compra.getId());
+        Log.d(TAG,"prbabbl elimine "+compra.getProductoNombre()+"--"+compra.getListaId()+"--"+ compra.getId());
+        if(prods==null||prods.size()<1)
+            lcdrepo.delete(compra);
+
     }
 }

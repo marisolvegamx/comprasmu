@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Environment;
+import android.os.Parcelable;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -37,6 +38,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,7 +106,6 @@ import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.ACTIVITY_SERVICE;
-
 
 public class AbririnformeFragment extends Fragment implements Validator.ValidationListener, FotoExhibicionAdapter.AdapterCallback {
 
@@ -194,7 +195,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     private boolean isEdicion;
     private int globrequestcode;
     double ultlongitud, ultlatitud;
-
+    ScrollView svprincipal;
+    ComprasLog milog;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -213,8 +215,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         TextView indice = root.findViewById(R.id.txtaiindice);
         indice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
-        ComprasLog log=ComprasLog.getSingleton();
-        log.crearLog(getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
+        milog=ComprasLog.getSingleton();
+        milog.crearLog(getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
         //camposFotosProd();
         //  LinearLayout sv2 = root.findViewById(R.id.content_main2);
         //  sv2.addView(cf3.crearFormulario());
@@ -234,6 +236,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         txtfotoex2 = root.findViewById(R.id.txtaifotoex2);
         txtfotoex3 = root.findViewById(R.id.txtaifotoex3);
         txtfotoex4 = root.findViewById(R.id.txtaifotoex4);
+        svprincipal=root.findViewById(R.id.svaiprincipal);
         rotar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -477,6 +480,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             NavHostFragment.findNavController(this).navigate(R.id.action_nuevotociudad);
 
         }
+
+       // locationStart();
         Bundle datosRecuperados = getArguments();
         if (datosRecuperados != null && getArguments().getInt(EXTRAPREINFORME_ID) > 0) {
             // No hay datos, manejar excepción
@@ -681,8 +686,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             //las fotos exhib
             // for(ProductoExhibidoDao.ProductoExhibidoFoto fotoe:fotosExh) {
             if (fotosExh != null && fotosExh.size() > 0) {
-              //  Log.d(TAG, "fotos exh----" + fotosExh.size());
-             //   Log.d(TAG, "fotos exh ruta" + fotosExh.get(0).ruta);
+                Log.d(TAG, "fotos exh----" + fotosExh.size());
+                Log.d(TAG, "fotos exh ruta" + fotosExh.get(0).ruta);
                 if(fotosExh.get(0).imagenId==0){
                     cbfotoex.setChecked(true);
                 }else
@@ -709,8 +714,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                 }
 
-            } else {
-                cbfotoex.setChecked(true);
             }
             if (fotosExh != null && fotosExh.size() > 1) {
 //            mostrarOcultarlayout("true",ll);
@@ -1624,11 +1627,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
            // ultimaLoc=mlocManager.getLastKnownLocation(provedorgps);
             txtaiultubic.setText(txtubicacion.getText().toString());
-        if (Build.PRODUCT.contains ("sdk")) {
-
-
-        } else
-            {   buscarDireccion();}
+         buscarDireccion();
       //  }
     }
     public boolean guardar(){
@@ -1762,8 +1761,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 punto = buscarZona(txtaiultubic.getText().toString());
             }catch (Exception ex){
                 ex.printStackTrace();
-                ComprasLog flog=ComprasLog.getSingleton();
-                flog.grabarError(ex.getMessage());
+
+                milog.grabarError(ex.getMessage());
 
             }
             Log.d(TAG,"encontré la zona "+punto);
@@ -1918,8 +1917,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if(zonas!=null)
         for(Geocerca geo:zonas){
             Log.d(TAG,"probando "+geo.getGeo_region());
-            ComprasLog log= ComprasLog.getSingleton();
-            log.grabarError("probando geocercas buscar zona"+geo.getGeo_region());
+
+            milog.grabarError("probando geocercas buscar zona"+geo.getGeo_region());
             String[] aux =geo.getGeo_p1().split(",");
              p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
             String[] aux2 =geo.getGeo_p2().split(",");
@@ -2146,7 +2145,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         public void onLocationChanged(Location loc) {
             // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
             // debido a la deteccion de un cambio de ubicacion
-            if(getActivity()!=null) {
+            if(getActivity()!=null&&txtubicacion!=null) {
 
                 //Local.desactivar();
                 mostrarPosicion(loc);
@@ -2205,7 +2204,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 ultimaLoc.setLatitude(ultlatitud);
             }
             mensajedir.setText("Ubicación registrada");
-            if (ComprasUtils.isOnlineNet()) {
+            if (Build.PRODUCT.contains ("sdk")) {
+
+
+            } else
+
+                if (ComprasUtils.isOnlineNet()) {
                 Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
                 List<Address> list = new ArrayList<>();
                 if (geocoder != null&&ultimaLoc!=null)
@@ -2309,6 +2313,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
 
             }
+           // Parcelable state = svprincipal.onSaveInstanceState();
             Uri photoURI = FileProvider.getUriForFile(activity,
                     "com.example.comprasmu.fileprovider",
                     foto);
@@ -2439,8 +2444,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             else{
                  Toast.makeText(getContext(),"No se encontró la ruta del archivo intente de nuevo" , Toast.LENGTH_LONG).show();
 
-
-                 Log.d(TAG,"Algo salió mal???");
+                milog.grabarError(TAG+"Algo salió mal???"+baseDir+"--"+nombre_foto);
+                 Log.d(TAG,"Algo salió mal???"+baseDir+"--"+nombre_foto);
             }
 
 

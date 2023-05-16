@@ -506,7 +506,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         public void buscarPlantas(String ciudadNombre,int clienteSel){
             //para buscar las plantas
 
-            LiveData<List<ListaCompra>> listacomp = lcviewModel.cargarPestañas(ciudadNombre, clienteSel);
+            LiveData<List<ListaCompra>> listacomp = lcviewModel.cargarPestañasEta(ciudadNombre, clienteSel);
 
             // Create the observer which updates the UI.
             final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {

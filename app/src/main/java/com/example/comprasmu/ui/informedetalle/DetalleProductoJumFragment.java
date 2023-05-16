@@ -84,14 +84,12 @@ import java.util.List;
 
 public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
     protected static final String TAG="DETALLEPRODUCTOJUMFRAG";
+    public final static String ARG_PREGACTJ="comprasmu.ni_pregactj";
+    public final static String ARG_ESEDIJ="comprasmu.ni_esedij";
     public DetalleProductoJumFragment() {
 
     }
-    public DetalleProductoJumFragment(Reactivo preguntaAct, boolean edicion) {
-        this.preguntaAct = preguntaAct;
-        this.isEdicion=edicion;
-        yaestoyProcesando=false;
-    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -106,12 +104,22 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
             /**llegan los datos del producto el cliente y la planta seleccionada
              * desde la lista de compra
              */
-        try {
-            Log.d(TAG,"creando fragment "+preguntaAct.getId());
+
+
 
             sv = root.findViewById(R.id.content_generic);
             aceptar = root.findViewById(R.id.btngaceptar);
             validar=root.findViewById(R.id.btngvalidar);
+            int num_pregact=0;
+            if (getArguments() != null) {
+                num_pregact = getArguments().getInt(ARG_PREGACTJ);
+                this.isEdicion = getArguments().getBoolean(ARG_ESEDIJ);
+            }
+
+            try {
+
+                //busco preguntaAct
+                preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
                 //   mViewModel.cargarCatsContinuar();
                 //si es la misma
                 //reviso si es edicion o es nueva
@@ -878,8 +886,12 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
             public void onChanged(Reactivo reactivo) {
                 if(sig==1) //pregunta de cliente o confirmacion vuelvo al detalleproducto1
                 {
-
-                    DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
+                    Bundle args = new Bundle();
+                    args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivo.getId() );
+                    args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
+                    DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                    nvofrag.setArguments(args);
+                    //DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -889,7 +901,12 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                     // Cambiar
                     fragmentTransaction.commit();
                 }else {
-                    DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo, false);
+                    Bundle args = new Bundle();
+                    args.putInt(ARG_PREGACTJ,reactivo.getId() );
+                    args.putBoolean(ARG_ESEDIJ,false);
+                    DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment();
+                    nvofrag.setArguments(args);
+                    //DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo, false);
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

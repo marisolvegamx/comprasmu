@@ -25,6 +25,7 @@ import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.utils.Constantes;
@@ -61,9 +62,10 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getContext());
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getContext());
+        SiglaRepositoryImpl sigRepo=new SiglaRepositoryImpl(getContext());
 
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep,true);
-        textView.setText("Por favor mantengase en la aplicación hasta que termine la descarga");
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep,sigRepo,true);
+        textView.setText("Por favor permanezca en la aplicación hasta que termine la descarga");
         textView.setVisibility(View.VISIBLE);
         pb.setVisibility(View.VISIBLE);
 

@@ -265,7 +265,7 @@ public class NvoEtiquetadoFragment extends Fragment {
 
         }
         //busco si tengo varias plantas
-        listacomp= lcViewModel.cargarPestañasxEtaSimp(Constantes.CIUDADTRABAJO);
+        listacomp= lcViewModel.cargarPestanasxEtaSimp(Constantes.CIUDADTRABAJO);
         Log.d(TAG,"PLANTA"+listacomp.toString()+"ss"+mViewModel.getIdNuevo());
         preguntaAct=1;
         //veo si ya tengo informes
@@ -330,11 +330,11 @@ public class NvoEtiquetadoFragment extends Fragment {
             infomeEdit = mViewModel.getInformexId(informeSel);
             preguntaAct = 3;
             mViewModel.preguntaAct = 3;
-          if(listaPlantas!=null&&listaPlantas.size()>0)
-            cargarPlantas(listaPlantas, infomeEdit.getPlantasId() + "");
+            if(listaPlantas!=null&&listaPlantas.size()>0)
+                cargarPlantas(listaPlantas, infomeEdit.getPlantasId() + "");
             ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(infomeEdit);
             mViewModel.setIdNuevo(informeSel);
-            totmuestras = infomeEdit.getTotal_muestras();
+             totmuestras = infomeEdit.getTotal_muestras();
             //  totcajas=mViewModel.getu
             mostrarCapMuestra();
 
@@ -491,9 +491,9 @@ public class NvoEtiquetadoFragment extends Fragment {
     startActivity(intento1);
     getActivity().finish();
 }*/
-public void nvacaja(){
+    public void nvacaja(){
         contcaja++;
-      spinnerValues.add(contcaja+"");
+        spinnerValues.add(contcaja+"");
         adaptercaja.notifyDataSetChanged();
   //  preguntaAct=2;
   //  txtcajaact.setText("CAJA "+contcaja);
@@ -702,11 +702,24 @@ public void nvacaja(){
             txtqr.setText(detalleEdit.getQr());
             contmuestra = detalleEdit.getNum_muestra();
             contmuint=1;
-            //todo me falta saber el numero total de cajas
+            //alta saber el numero total de cajas
         //    contcaja=detalleEdit.getNum_caja();
 
           //  txtcajaact.setText("CAJA "+contcaja);
-            totcajas=infomeEdit.getTotal_cajas();
+            totcajas=mViewModel.getTotCajasEtiq();
+            spinnerValues = new ArrayList<>();
+            contcaja=totcajas;
+            for(int i=1;i<=totcajas;i++) {
+                spinnerValues.add(i+"");
+            }
+
+
+            adaptercaja = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
+            spcaja.setAdapter(adaptercaja);
+
+            spcaja.setSelection(totcajas-1);
+
+           // totcajas=infomeEdit.getTotal_cajas();
         }
        else{
             //busco en la bd para regresar a la primer muestra
@@ -886,7 +899,7 @@ public void nvacaja(){
 
         try{
             mViewModel.actualizarComentEtiq(mViewModel.getIdNuevo(),comentarios);
-            mViewModel.actualizarMuestras(mViewModel.getIdNuevo(), contmuestra-1);
+          //  mViewModel.actualizarMuestras(mViewModel.getIdNuevo(), contmuestra-1);
         }catch(Exception ex){
             ex.printStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());

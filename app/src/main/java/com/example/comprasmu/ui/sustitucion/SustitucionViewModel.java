@@ -57,8 +57,11 @@ public class SustitucionViewModel extends AndroidViewModel {
     }
 
 
-    public void cargarListas(String categoria,int cliente,int empaque, int tamanio){
+    public void cargarListas(String categoria,int cliente,int empaque, int tamanio, int numTienda){
        if(cliente==7){
+           if(numTienda>=5)
+               listaSustitucion =repository.getByFiltrosFrut(categoria,"FRUTZZO",empaque,tamanio);
+            else
            listaSustitucion =repository.getByFiltros(categoria,"",empaque,tamanio);
 
        }else
@@ -66,6 +69,12 @@ public class SustitucionViewModel extends AndroidViewModel {
         size = Transformations.map(listaSustitucion,res->{ return listaSustitucion.getValue().size();});
         empty = Transformations.map(listaSustitucion, res->{return listaSustitucion.getValue().isEmpty();});
     }
+
+    public void cargarFrutzo(int cliente){
+        //LiveData<List<Sustitucion>> listaSustitucion2 =repository.getByFiltros(categoria,"",empaque,tamanio);
+        //debo agregarselo a la listasustitucion
+        }
+
 
     public String ordenarCodigosNoPermitidos( Sustitucion detalle) {
         SimpleDateFormat sdfcodigo= new SimpleDateFormat("dd-MM-yy");

@@ -25,8 +25,10 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeTemp;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
@@ -37,6 +39,7 @@ import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
 
+import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -88,6 +91,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     final String TAG="NvoDetVM";
     Application application;
     public int reactivoAct;
+   // public SiglaRepositoryImpl sigRepo;
     public NuevoDetalleViewModel(@NonNull Application application) {
         super(application);
 
@@ -361,10 +365,23 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
         return false;
     }
-    public void buscarPlantaPen(String siglas,int cliente, DetalleProductoPenFragment.EnvioListener listener ){
+   /* public void buscarPlantaPen(String siglas,int cliente, DetalleProductoPenFragment.EnvioListener listener ){
         try {
             PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
              ps.getPlantaPeniafiel(siglas,cliente,listener);
+
+        }catch(Exception ex){
+            Log.e(TAG,"Error al hacer peticion");
+        }
+
+    }*/
+
+    public void buscarPlantaPen2(String siglas,int cliente, DetalleProductoPenFragment.EnvioListener listener ){
+        try {
+            SiglaRepositoryImpl sigRepo=new SiglaRepositoryImpl(this.application);
+            Sigla siglaResp=sigRepo.getByClienteSig(siglas,cliente);
+            listener.guardarRespuestaInf(siglaResp);
+            //ps.getPlantaPeniafiel(siglas,cliente,listener);
 
         }catch(Exception ex){
             Log.e(TAG,"Error al hacer peticion");

@@ -1,34 +1,23 @@
 package com.example.comprasmu.ui.listadetalle;
 
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.comprasmu.R;
-
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
@@ -47,15 +36,12 @@ import com.example.comprasmu.ui.listacompras.SelClienteFragment;
 import com.example.comprasmu.ui.sustitucion.SustitucionFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.ui.ListaSelecViewModel;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class ListaCompraFragment extends Fragment implements ListaCompraDetalleAdapter.AdapterCallback {
-
 
     public static final String ISBACKUP = "comprasmu.isbackup";
     private  int plantaSel;
@@ -109,13 +95,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
     }
 
-    public  ListaCompraFragment(int planta,String onombrePlanta, String nomcliente) {
-      //  ListaCompraFragment fragment = new ListaCompraFragment();
-        plantaSel=planta;
-        nombrePlanta=onombrePlanta;
-        this.nombreCliente=nomcliente;
 
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -133,7 +113,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             plantaSel = bundle.getInt(ARG_PLANTASEL) ;
             nombrePlanta = bundle.getString(ARG_NOMBREPLANTASEL);
             tipoconsulta=bundle.getString(SelClienteFragment.ARG_TIPOCONS);
-//            this.nombreCliente = bundle.getString(ARG_CLIENTENOMBRE);
+            this.nombreCliente = bundle.getString(ARG_CLIENTENOMBRE);
 
             mViewModel.setClienteSel(bundle.getInt(ARG_CLIENTESEL));
             clienteSel=bundle.getInt(ARG_CLIENTESEL);//ya llega como la clave
@@ -766,11 +746,14 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
             //   Log.d(TAG, "ppppppp" + clienteSel);
             if (clienteSel == 4) {
-                Fragment fragment = new ListaCompraFragment(plantaSel, nombrePlanta, this.nombreCliente);
+
+
+                Fragment fragment = new ListaCompraFragment();
 // Obtener el administrador de fragmentos a través de la actividad
                 bundle.putInt(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
                 bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
                 bundle.putString(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
+                bundle.putString(ARG_CLIENTENOMBRE,this.nombreCliente);
                 //   bundle.putInt(DetalleProductoFragment.NUMMUESTRA,);
                 bundle.putString(ListaCompraFragment.ARG_MUESTRA, "true");
                  bundle.putBoolean(ISBACKUP, true);
@@ -816,6 +799,73 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         return compra;
     }
 
+    @Override
+    public void verBackupPen(ListaDetalleBu productoSel, int numtienda) {
+        //paso los params que necesito
+        //  Log.d(TAG," ++plantas"+plantaSel+"--"+nombrePlanta);
+        mViewModel.setIdListaSel(lista.getId());
+        mViewModel.listaSelec = lista;
+        //es el detalle original
+        mViewModel.setDetallebuSel(productoSel);
+        Constantes.VarListCompra.detallebuSel=productoSel;
+        if(!ismuestra) { //solo de consulta
+            Constantes.VarListCompra.detallebuSel=productoSel;
+            Constantes.VarListCompra.idListaSel=lista.getId();
+            Constantes.VarListCompra.listaSelec=lista;
+
+            Intent intento1 = new Intent(getActivity(), BackActivity.class);
+            intento1.putExtra("ciudadSel", mViewModel.ciudadSel);
+            intento1.putExtra("ciudadNombre", mViewModel.nombreCiudadSel);
+            intento1.putExtra(ISBACKUP, true);
+            intento1.putExtra(ARG_CLIENTESEL, mViewModel.getClienteSel());
+            //   intento1.putExtra(NuevoinformeFragment.NUMMUESTRA,nummuestra );
+            intento1.putExtra(SustitucionFragment.ARG_CONSTIENDA, numtienda);
+
+            intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_SUSTITUCION);
+            intento1.putExtra(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
+            intento1.putExtra(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
+            intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
+            intento1.putExtra(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
+            Constantes.ni_clientesel = nombreCliente;
+
+            startActivity(intento1);
+
+
+        }else{
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            // Definir una transacción
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            Bundle bundle = new Bundle();
+            bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL, clienteSel);
+
+            //   Log.d(TAG, "ppppppp" + clienteSel);
+
+                Fragment fragment = SustitucionFragment.newInstance();
+                // Obtener el administrador de fragmentos a través de la actividad
+                bundle.putBoolean(ISBACKUP, true);
+                bundle.putString(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
+            bundle.putString(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
+            bundle.putInt(SustitucionFragment.ARG_CONSTIENDA, numtienda);
+
+            bundle.putInt(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
+                bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
+                bundle.putString(ListaCompraFragment.ARG_MUESTRA, "true");
+
+                bundle.putString(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
+                fragment.setArguments(bundle);
+
+                Constantes.ni_clientesel = nombreCliente;
+                //    Log.d(TAG, "di clic en bu " + nombreCliente);
+
+                fragmentTransaction.replace(R.id.back_fragment, fragment);
+
+                fragmentTransaction.addToBackStack(null);
+// Cambiar
+                fragmentTransaction.commit();
+
+        }
+    }
 
 
 }

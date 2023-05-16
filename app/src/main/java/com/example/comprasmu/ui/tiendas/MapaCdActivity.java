@@ -372,29 +372,25 @@ public class MapaCdActivity extends FragmentActivity implements OnMapReadyCallba
     public void buscarPlantas(String ciudadNombre,int clienteSel){
         //para buscar las plantas
 
-        LiveData<List<ListaCompra>> listacomp = lcviewModel.cargarPestañas(ciudadNombre, clienteSel);
+        List<ListaCompra> listacomp = lcviewModel.cargarPestanasxEtaSimp(ciudadNombre);
 
-        // Create the observer which updates the UI.
-        final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
-            @Override
-            public void onChanged(@Nullable List<ListaCompra> lista) {
 
-                convertirLista(lista);
+
+                convertirLista(listacomp);
                // setLista(listaClientesEnv);
                 // siguiente(0);
                 //  Log.d(TAG,"------- "+lista.size());
-                if(lista.size()>0) {
+                if(listacomp.size()>0) {
                     //cargo el spinner
                     CreadorFormulario.cargarSpinnerDescr(MapaCdActivity.this,spplantas,listaPlantasEnv);
                 }
                 else
                     Log.d(TAG,"algo salió mal con la consulta de listas");
-            }
-        };
+
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
-        listacomp.observe(this,nameObserver);
+      //  listacomp.observe(this,nameObserver);
 
     }
 

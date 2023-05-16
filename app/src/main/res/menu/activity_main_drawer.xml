@@ -50,7 +50,11 @@
             android:title="@string/menu_cancel"
             app:actionViewClass="android.widget.TextView" />
 
-
+        <item
+            android:id="@+id/nav_menuini"
+            android:icon="?attr/actionModeCloseDrawable"
+            android:title="@string/menu_inicial"
+         />
         <item
             android:id="@+id/nav_cerrarsesion"
             android:icon="@android:drawable/ic_menu_close_clear_cancel"

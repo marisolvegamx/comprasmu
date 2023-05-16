@@ -443,7 +443,12 @@
             app:argType="integer"
             android:defaultValue="4" />
     </fragment>
-
+    <activity
+        android:id="@+id/nav_menuini"
+        android:name="com.example.comprasmu.ui.home.PruebasActivity"
+        android:label="@string/menu_inicial"
+        >
+    </activity>
     <fragment
         android:id="@+id/nav_cerrarsesion"
         android:name="com.example.comprasmu.ui.home.CerrarSesionFragment"

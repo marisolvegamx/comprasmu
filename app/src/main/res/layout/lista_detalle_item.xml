@@ -49,7 +49,7 @@
             android:id="@+id/ldcardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor='@{isBu?@color/white:(detalle.comprados==detalle.cantidad?@color/green_pas:(detalle.comprados==0?@color/white:@color/yellow_pas))}'
+            app:cardBackgroundColor='@{isBu?@color/white:(detalle.comprados==detalle.cantidad?@color/green_pas:(detalle.infcd!=null&amp;&amp;(detalle.infcd.size()+detalle.comprados==detalle.cantidad)?@color/green_pas:(detalle.comprados==0&amp;&amp;detalle.infcd==null?@color/white:@color/yellow_pas)))}'
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp"
             app:cardUseCompatPadding="true"

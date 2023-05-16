@@ -134,6 +134,8 @@ public class DetalleProductoFragment extends Fragment {
   //  private static final String cameraPerm = Manifest.permission.CAMERA;
     public final static String ARG_NUEVOINFORME="comprasmu.ni_idinforme";
     public static String NUMMUESTRA="comprasmu.ni.nummuestra";
+    public final static String ARG_PREGACT="comprasmu.ni_pregact";
+    public final static String ARG_ESEDI="comprasmu.ni_esedi";
     private ImageButton btnrotar;
     InformeTemp  ultimares;
     Button aceptar;
@@ -147,10 +149,7 @@ public class DetalleProductoFragment extends Fragment {
     public DetalleProductoFragment() {
 
     }
-    public DetalleProductoFragment(Reactivo preguntaAct,boolean edicion) {
-        this.preguntaAct = preguntaAct;
-        this.isEdicion=edicion;
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -173,7 +172,16 @@ public class DetalleProductoFragment extends Fragment {
          * desde la lista de compra
          */
         compraslog=ComprasLog.getSingleton();
+        int num_pregact=0;
+        if (getArguments() != null) {
+            num_pregact = getArguments().getInt(ARG_PREGACT);
+            this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
+        }
+
         try {
+
+            //busco preguntaAct
+            preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
             if(preguntaAct==null){
                 return root;
             }
@@ -680,7 +688,7 @@ public class DetalleProductoFragment extends Fragment {
             //ahora son plantas
         //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
       //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-        List<ListaCompra> listacomp= lcviewModel.cargarPestañasxEtaSimp(Constantes.CIUDADTRABAJO);
+        List<ListaCompra> listacomp= lcviewModel.cargarPestanasxEtaSimp(Constantes.CIUDADTRABAJO);
         clientesAsignados = convertirListaaPlantas(listacomp, clientesprev);
         Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsignados.size());
         if(campo!=null)
@@ -1409,7 +1417,7 @@ public class DetalleProductoFragment extends Fragment {
         InformeEnvio envio=new InformeEnvio();
         Log.d(TAG,"estatus informe"+mViewModel.visita.getEstatus());
         if(mViewModel.visita.getEstatusSync()==0)
-        envio.setVisita(mViewModel.visita);
+            envio.setVisita(mViewModel.visita);
         envio.setInformeCompra(mViewModel.informe);
         mViewModel.cargarMuestras(mViewModel.informe.getId());
         //busco el prod exhibido
@@ -1454,7 +1462,7 @@ public class DetalleProductoFragment extends Fragment {
         if (dViewModel.productoSel.clienteNombre.toUpperCase().trim().equals("PEPSI")) {
             valdat.validarFechaPep(textoint.getText().toString(),tipoTienda);
             if(valdat.mensaje>0)
-            Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
+                 Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
 
             return valdat.resp;
         }
@@ -1537,8 +1545,11 @@ public class DetalleProductoFragment extends Fragment {
         //busco el siguiente
         Reactivo nvoReac = dViewModel.buscarReactivoSimpl(sig);
         Log.e(TAG, "4-------------cons" + Constantes.DP_CONSECUTIVO);
-
-        DetalleProductoFragment nvofrag = new DetalleProductoFragment(nvoReac,false);
+        Bundle args = new Bundle();
+        args.putInt(ARG_PREGACT,sig );
+        args.putBoolean(ARG_ESEDI,false);
+        DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+        nvofrag.setArguments(args);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1557,8 +1568,12 @@ public class DetalleProductoFragment extends Fragment {
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
             public void onChanged(Reactivo reactivo) {
-
-                DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo,false);
+                Bundle args = new Bundle();
+                args.putInt(DetalleProductoPenFragment.ARG_PREGACTP,reactivo.getId() );
+                args.putBoolean(DetalleProductoPenFragment.ARG_ESEDIP,false);
+                DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment();
+                nvofrag.setArguments(args);
+               // DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo,false);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1577,8 +1592,12 @@ public class DetalleProductoFragment extends Fragment {
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
             public void onChanged(Reactivo reactivo) {
-
-                DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment(reactivo,false);
+                Bundle args = new Bundle();
+                args.putInt(DetalleProductoElecFragment.ARG_PREGACTE,reactivo.getId() );
+                args.putBoolean(DetalleProductoElecFragment.ARG_ESEDIE,false);
+                DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment();
+                nvofrag.setArguments(args);
+               // DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment(reactivo,false);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1597,8 +1616,12 @@ public class DetalleProductoFragment extends Fragment {
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
             public void onChanged(Reactivo reactivo) {
-
-                DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo,false);
+                Bundle args = new Bundle();
+                args.putInt(DetalleProductoJumFragment.ARG_PREGACTJ,reactivo.getId() );
+                args.putBoolean(DetalleProductoJumFragment.ARG_ESEDIJ,false);
+                DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment();
+                nvofrag.setArguments(args);
+                //DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo,false);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

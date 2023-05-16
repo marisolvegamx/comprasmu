@@ -354,7 +354,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
     }
     public int getTotCajasEtiq(){
-        return infDetRepo.totalCajasEtiq( 3);
+        int val= infDetRepo.totalCajasEtiq( 3);
+        Log.d(TAG,"cajas "+val);
+        return val;
 
 
     }

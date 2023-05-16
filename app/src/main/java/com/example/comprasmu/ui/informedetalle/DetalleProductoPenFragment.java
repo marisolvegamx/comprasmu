@@ -56,6 +56,7 @@ import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.UltimoInfResponse;
 import com.example.comprasmu.data.remote.UltimosIdsResponse;
@@ -126,6 +127,8 @@ public class DetalleProductoPenFragment extends Fragment {
     //protected static final String cameraPerm = Manifest.permission.CAMERA;
     public final static String ARG_NUEVOINFORME="comprasmu.ni_idinforme";
     public static final String NUMMUESTRA="comprasmu.ni.nummuestra";
+    public final static String ARG_PREGACTP="comprasmu.ni_pregactp";
+    public final static String ARG_ESEDIP="comprasmu.ni_esedip";
     protected ImageButton btnrotar;
     InformeTemp  ultimares;
     Button aceptar;
@@ -142,10 +145,7 @@ public class DetalleProductoPenFragment extends Fragment {
     public DetalleProductoPenFragment() {
 
     }
-    public DetalleProductoPenFragment(Reactivo preguntaAct, boolean edicion) {
-        this.preguntaAct = preguntaAct;
-        this.isEdicion=edicion;
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -169,7 +169,6 @@ public class DetalleProductoPenFragment extends Fragment {
          * desde la lista de compra
          */
         try {
-            Log.d(TAG,"creando fragment "+preguntaAct.getId());
 
             sv = root.findViewById(R.id.content_generic);
             aceptar = root.findViewById(R.id.btngaceptar);
@@ -177,6 +176,14 @@ public class DetalleProductoPenFragment extends Fragment {
          //   mViewModel.cargarCatsContinuar();
             //si es la misma
             //reviso si es edicion o es nueva
+            int num_pregact=0;
+            if (getArguments() != null) {
+                num_pregact = getArguments().getInt(ARG_PREGACTP);
+                this.isEdicion = getArguments().getBoolean(ARG_ESEDIP);
+            }
+            preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
+            Log.d(TAG,"creando fragment "+preguntaAct.getId());
+
             if(preguntaAct.getTabla().equals("I"))
                 mViewModel.numMuestra=0;
             if(this.preguntaAct!=null)
@@ -635,7 +642,7 @@ public class DetalleProductoPenFragment extends Fragment {
         //ahora son plantas
         //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
         //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-        List<ListaCompra> listacomp= lcviewModel.cargarPestañasxEtaSimp(Constantes.CIUDADTRABAJO);
+        List<ListaCompra> listacomp= lcviewModel.cargarPestanasxEtaSimp(Constantes.CIUDADTRABAJO);
         clientesAsig = convertirListaaPlantas(listacomp, clientesprev);
         Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsig.size());
 
@@ -742,7 +749,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
         List<CatalogoDetalle> catalogoDetalles=dViewModel.tomadoDe;
         tomadoDe = catalogoDetalles;
-                Log.d(TAG,"ya tengo los catalogos"+catalogoDetalles.size());
+        Log.d(TAG,"ya tengo los catalogos"+catalogoDetalles.size());
 
     }
 
@@ -1362,8 +1369,12 @@ public class DetalleProductoPenFragment extends Fragment {
             public void onChanged(Reactivo reactivo) {
                  if(sig==1) //pregunta de cliente o confirmacion vuelvo al detalleproducto1
                     {
-
-                        DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
+                        Bundle args = new Bundle();
+                        args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivo.getId() );
+                        args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
+                        DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                        nvofrag.setArguments(args);
+                        //DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             // Definir una transacción
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1373,7 +1384,12 @@ public class DetalleProductoPenFragment extends Fragment {
             // Cambiar
                         fragmentTransaction.commit();
                     }else {
-                     DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo, false);
+                     Bundle args = new Bundle();
+                     args.putInt(ARG_PREGACTP,reactivo.getId() );
+                     args.putBoolean(ARG_ESEDIP,false);
+                     DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment();
+                     nvofrag.setArguments(args);
+                     //DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo, false);
                      FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
                      FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1686,7 +1702,7 @@ public class DetalleProductoPenFragment extends Fragment {
        if (!siglas.equals("")) {
            EnvioListener listener = new EnvioListener();
            //bloqueo la pnatalla y hago la peticion
-           dViewModel.buscarPlantaPen(siglas,mViewModel.clienteSel,listener );
+           dViewModel.buscarPlantaPen2(siglas,mViewModel.clienteSel,listener );
            //actualizo siglas en prod sel
            dViewModel.productoSel.siglas=siglas;
        }else {
@@ -1772,9 +1788,11 @@ public class DetalleProductoPenFragment extends Fragment {
         //NavHostFragment.findNavController(this).navigate(R.id.action_lista compra);
         String opcion = "";
         Intent intento1 = new Intent(getActivity(), BackActivity.class);
+        Log.d(TAG,"todavia no se que hacer");
+
 
         //busco la planta
-        if(nummuestra<2) {
+      /*  if(nummuestra<2) {
             List<ListaCompra> listapl = lcviewModel.cargarPlantas(mViewModel.visita.getCiudad(), mViewModel.clienteSel);
              Log.d(TAG,"todavia no se que hacer"+listapl.size()+"viewmodel cliente"+mViewModel.clienteSel);
 
@@ -1791,7 +1809,7 @@ public class DetalleProductoPenFragment extends Fragment {
                 opcion = BackActivity.OP_LISTACOMPRA;
 
             }
-        }else{
+        }else{*/
             //ya tengo la planta
             InformeTemp inf= dViewModel.buscarxNombreCam("plantasId");
             if(inf!=null) {
@@ -1806,7 +1824,7 @@ public class DetalleProductoPenFragment extends Fragment {
             }
 
             opcion = BackActivity.OP_LISTACOMPRA;
-        }
+      //  }
 
         //ya existe el informe
         intento1.putExtra(DetalleProductoPenFragment.ARG_NUEVOINFORME, mViewModel.getIdInformeNuevo());
@@ -1944,7 +1962,7 @@ public class DetalleProductoPenFragment extends Fragment {
            }
 
 
-           public void guardarRespuestaInf(CatalogoDetalle planta) {
+         /*  public void guardarRespuestaInf(CatalogoDetalle planta) {
                if (planta != null) {
                    //muestro la planta y muestro el boton de seguir y desbloqueo
                    TextView txtplanta=root.findViewById(R.id.txtfgplanta);
@@ -1965,6 +1983,31 @@ public class DetalleProductoPenFragment extends Fragment {
                    Toast.makeText(getActivity(), "Las siglas no corresponden a una planta", Toast.LENGTH_LONG).show();
                     validar.setEnabled(true);
                     textoint.setEnabled(true);
+               }
+
+           }*/
+
+           public void guardarRespuestaInf(Sigla planta) {
+               if (planta != null) {
+                   //muestro la planta y muestro el boton de seguir y desbloqueo
+                   TextView txtplanta=root.findViewById(R.id.txtfgplanta);
+                   txtplanta.setText(planta.getPlanta());
+                   txtplanta.setVisibility(View.VISIBLE);
+                   aceptar.setVisibility(View.VISIBLE);
+                   validar.setVisibility(View.GONE);
+                   // dViewModel.productoSel.plantaSel=planta.getCad_idopcion();
+                   //  dViewModel.productoSel.plantaNombre=planta.getCad_descripcionesp();
+                   //  siguiente();
+                   // Toast.makeText(getContext(), "Las siglas no corresponden a lguna planta", Toast.LENGTH_LONG).show();
+                   //actualizo barra
+                   ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
+
+
+
+               } else {
+                   Toast.makeText(getActivity(), "Las siglas no corresponden a una planta", Toast.LENGTH_LONG).show();
+                   validar.setEnabled(true);
+                   textoint.setEnabled(true);
                }
 
            }

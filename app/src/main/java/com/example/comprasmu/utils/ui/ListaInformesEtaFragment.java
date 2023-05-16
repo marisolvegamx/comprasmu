@@ -128,7 +128,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         //aqui hago la consulta de los informes x etapa
         //y de los informes correccion
         if(tipocons.equals("e")){
-            ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Resumen informes");
+          //  ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Resumen informes");
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             if(etapa==3)
             listainfs=mViewModel.cargarEtapa(etapa,indice,plantasel);

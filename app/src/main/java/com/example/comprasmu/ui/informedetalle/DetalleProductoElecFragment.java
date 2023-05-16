@@ -57,14 +57,12 @@ import static android.app.Activity.RESULT_OK;
 
 public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
     protected static final String TAG="DETALLEPRODUCTOELECFRAG";
+    public final static String ARG_PREGACTE="comprasmu.ni_pregacte";
+    public final static String ARG_ESEDIE="comprasmu.ni_esedie";
     public DetalleProductoElecFragment() {
 
     }
-    public DetalleProductoElecFragment(Reactivo preguntaAct, boolean edicion) {
-        this.preguntaAct = preguntaAct;
-        this.isEdicion=edicion;
-        yaestoyProcesando=false;
-    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -79,10 +77,17 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
          * desde la lista de compra
          */
         try {
-            Log.d(TAG,"creando fragment "+preguntaAct.getId());
-            dViewModel.reactivoAct=preguntaAct.getId();
+
             sv = root.findViewById(R.id.content_generic);
             aceptar = root.findViewById(R.id.btngaceptar);
+            int num_pregact=0;
+            if (getArguments() != null) {
+                num_pregact = getArguments().getInt(ARG_PREGACTE);
+                this.isEdicion = getArguments().getBoolean(ARG_ESEDIE);
+            }
+            preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
+            Log.d(TAG,"creando fragment "+preguntaAct.getId());
+            dViewModel.reactivoAct=preguntaAct.getId();
             //   mViewModel.cargarCatsContinuar();
             //si es la misma
             //reviso si es edicion o es nueva
@@ -368,7 +373,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
             dViewModel.fromTemp(); //guardo datos del producto selec
             if(dViewModel.productoSel!=null)
-            ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
+                ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
         }
         if (preguntaAct.getId() >= 80&&preguntaAct.getId() !=89&&preguntaAct.getId()!=77) {//si compro prod
             InformeTemp resp=dViewModel.buscarxNombreCam("codigo",mViewModel.numMuestra);
@@ -678,8 +683,12 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             public void onChanged(Reactivo reactivo) {
                 if(sig==1) //pregunta de cliente o confirmacion vuelvo al detalleproducto1
                 {
-
-                    DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
+                    Bundle args = new Bundle();
+                    args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivo.getId() );
+                    args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
+                    DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                    nvofrag.setArguments(args);
+                 //   DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -689,14 +698,18 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 // Cambiar
                     fragmentTransaction.commit();
                 }else {
-                    DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment(reactivo, false);
+                    Bundle args = new Bundle();
+                    args.putInt(ARG_PREGACTE,reactivo.getId() );
+                    args.putBoolean(ARG_ESEDIE,false);
+                    DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment();
+                    nvofrag.setArguments(args);
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
+                    // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
+                    // Remplazar el contenido principal por el fragmento
                     fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
                   //  fragmentTransaction.addToBackStack(null);
-// Cambiar
+                    // Cambiar
                     fragmentTransaction.commit();
                 }
             }

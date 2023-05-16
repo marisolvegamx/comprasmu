@@ -39,6 +39,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
     public static final String ISBACKUP = "comprasmu.sustitucion.isbackup";
     public static final String ARG_CATEGORIA = "comprasmu.sustitucion.categoria";
+    public static final String ARG_CONSTIENDA = "comprasmu.sustitucion.constienda";
 
 
     private SustitucionViewModel mViewModel;
@@ -57,7 +58,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
     private String categoriaSel;
     private String siglas;
     private int clienteSel,tamanio,empaque;
-
+  private int numTienda;
 
     public static SustitucionFragment newInstance() {
         //  ListaCompraFragment fragment = new ListaCompraFragment();
@@ -117,8 +118,11 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         Constantes.VarListCompra.plantaSel=plantaSel;
         setupListAdapter();
         //Constantes.VarListCompra.detallebuSel.getAnalisisId()
-
-        mViewModel.cargarListas(categoriaSel,clienteSel,empaque,tamanio);
+        Bundle bundle2 =getArguments();
+        if(bundle2!=null) {
+            numTienda = bundle2.getInt(ARG_CONSTIENDA);
+        }
+        mViewModel.cargarListas(categoriaSel,clienteSel,empaque,tamanio,numTienda);
         mViewModel.getListas().observe(getViewLifecycleOwner(), myProducts -> {
             if (myProducts != null && myProducts.size() > 0) {
                 Log.d(Constantes.TAG, "en la consulta de sust=> " + myProducts.get(0).getId_sustitucion());
@@ -158,11 +162,12 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         //cambio al fragmento de captura del detalle
         if (view.getId() == R.id.btnldagregar) {
            Log.d(TAG, "agregar muestra"+productoSel.getNomproducto());
-            //valido que no exista en la compra
-            if(mViewModel.validarProdJum(Constantes.INDICEACTUAL,plantaSel,productoSel)){
-                Toast.makeText(getActivity(), getString(R.string.err_mismo_prod), Toast.LENGTH_LONG).show();
-                return;
-            }
+           if(productoSel.getClientesId()==7) { //valido que no exista en la compra
+               if (mViewModel.validarProdJum(Constantes.INDICEACTUAL, plantaSel, productoSel)) {
+                   Toast.makeText(getActivity(), getString(R.string.err_mismo_prod), Toast.LENGTH_LONG).show();
+                   return;
+               }
+           }
             NuevoDetalleViewModel nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
                 String clienteNombre=Constantes.ni_clientesel;//lo pongo hasta que se guarda el informe
             //para los bu

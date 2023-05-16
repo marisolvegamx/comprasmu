@@ -129,7 +129,7 @@ public class NvaPreparacionFragment extends Fragment {
 
         complog=ComprasLog.getSingleton();
         //busco si tengo varias plantas
-        listacomp= lcViewModel.cargarPestañasSimp(Constantes.CIUDADTRABAJO);
+        listacomp= lcViewModel.cargarPestanasSimp(Constantes.CIUDADTRABAJO);
 
         if(!isEdicion&&mViewModel.getIdNuevo()==0)
         if(listacomp.size()>1) {

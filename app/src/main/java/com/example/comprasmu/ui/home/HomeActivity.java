@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.ui.login.LoginActivity;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 /****ahora si es la pagina de inicio******/
 public class HomeActivity extends AppCompatActivity {
@@ -28,11 +30,14 @@ public class HomeActivity extends AppCompatActivity {
     Button comp,etiq,emp;
     private boolean isEdit;
     private int tiporec;
+    ComprasLog milog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_home);
+        milog=ComprasLog.getSingleton();
+        milog.crearLog(this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
 
         final TextView textView = findViewById(R.id.text_home);
         Constantes.ETAPAACTUAL=0;
@@ -60,7 +65,7 @@ public class HomeActivity extends AppCompatActivity {
         etiq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ira(3);
+                iraEtiq();
             }
         });
         emp.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +103,7 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case 4:  emp.setVisibility(View.VISIBLE);
                         break;
+
                 }
             }
 
@@ -126,6 +132,14 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intento);
         finish();
     }
+    public void iraEtiq(){
+
+        Intent intento=new Intent(this, DescInfSupActivity.class);
+
+        startActivity(intento);
+        finish();
+    }
+
 
     public void getTipoRec(){
         SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);

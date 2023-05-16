@@ -71,7 +71,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                         R.layout.lista_detalle_item, parent, false);
         this.parent=parent;
 
-        return new ListaCompraDetalleViewHolder(binding,this.ismuestra,callback);
+        return new ListaCompraDetalleViewHolder(binding,this.ismuestra,callback,this.numtienda);
     }
 
     @Override
@@ -162,16 +162,18 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
 
     static class ListaCompraDetalleViewHolder extends RecyclerView.ViewHolder  {
         final ListaDetalleItemBinding binding;
+        int numtienda;
         boolean isNueva;
        // final PruebarecyclerBinding binding;
 
         static ViewGroup.LayoutParams   altoini;
 
-       public ListaCompraDetalleViewHolder(ListaDetalleItemBinding binding,boolean isNueva,AdapterCallback callback) {
+       public ListaCompraDetalleViewHolder(ListaDetalleItemBinding binding,boolean isNueva,AdapterCallback callback, int numtienda) {
 
       //  public ListaCompraDetalleViewHolder(PruebarecyclerBinding binding,AdapterCallback callback) {
             super(binding.getRoot());
             this.binding = binding;
+            this.numtienda=numtienda;
             binding.btnldagregar.setVisibility(View.GONE);
            Log.d(TAG,"qqqqqqqqqqqqq"+isNueva);
            if(isNueva)
@@ -308,7 +310,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                public void onClick(View view) {
                    if (view.getId()==R.id.btnldbackuppen) {
 //Log.d(TAG, "hice clikkkkkkkkk");
-                       callback.verBackup(binding.getDetalle());
+                       callback.verBackupPen(binding.getDetalle(),numtienda);
 
                    }
                }
@@ -331,6 +333,8 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
         void agregarMuestra(View view,ListaCompraDetalle productoSel);
         void verBackup(ListaCompraDetalle productoSel);
         List<InformeCompraDetalle> getBackup(ListaCompraDetalle productoSel);
+
+        void verBackupPen(ListaDetalleBu detalle, int numtienda);
     }
 
 }
