@@ -1,7 +1,5 @@
 package com.example.comprasmu.data;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
 
@@ -9,21 +7,20 @@ import androidx.annotation.Nullable;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.comprasmu.DescRespInformes;
 import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.SimpleTask;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Correccion;
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCancelar;
-import com.example.comprasmu.data.modelos.LoggedInUser;
+import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.remote.CatalogosResponse;
 import com.example.comprasmu.data.remote.EtapaResponse;
-import com.example.comprasmu.data.remote.GenericResponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 
 import com.example.comprasmu.data.remote.PlantaResponse;
@@ -32,27 +29,22 @@ import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.SolCorreResponse;
-import com.example.comprasmu.data.remote.TiendasResponse;
 import com.example.comprasmu.data.remote.UltimoInfResponse;
 import com.example.comprasmu.data.remote.UltimosIdsResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 
-import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.login.LoginActivity;
-import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import java.util.Date;
 import java.util.List;
@@ -102,6 +94,33 @@ public class PeticionesServidor {
             }
         });
     }
+
+    public void getSiglas(SiglaRepositoryImpl siglaRepo, TablaVersionesRepImpl trepo) {
+
+        final Call<List<Sigla>> batch = ServiceGenerator.getApiService().getSiglas(usuario);
+
+        batch.enqueue(new Callback<List<Sigla>>() {
+            @Override
+            public void onResponse(@Nullable Call<List<Sigla>> call, @Nullable Response<List<Sigla>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Sigla> respuestaCats = response.body();
+                    insertarSiglas(respuestaCats,siglaRepo,trepo);
+
+                }else
+                    Log.e("PeticionesServidor", "algo salio mal en peticion catalogo");
+
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<List<Sigla>> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio catalogo"+t.getMessage());
+                    //listener.finalizar();
+                }
+            }
+        });
+    }
+
 
     public void getSustitucion(String indice,TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo, DescargasIniAsyncTask.DescargaIniListener listener) {
 
@@ -162,7 +181,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<UltimoInfResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(Constantes.TAG, "ultinf"+t.getMessage());
 
                 }
             }
@@ -184,9 +203,9 @@ public class PeticionesServidor {
                     Log.d(TAG,"PlantaPeniafiel resp="+response.body().getData());
                     //guardo en propertis
                    // resp=response.body().getData();
-                    if(respuesta.getStatus().equals("ok"))
-                    listener.guardarRespuestaInf(response.body().getData());
-                    else
+                    if(respuesta.getStatus().equals("ok")) {
+                        // listener.guardarRespuestaInf(response.body().getData());
+                    }else
                         listener.guardarRespuestaInf(null);
                     // lista.setValue(respuestaTiendas);
 
@@ -205,7 +224,7 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<PlantaResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
-                    listener.guardarRespuestaInf(resp);
+                 //   listener.guardarRespuestaInf(resp);
 
                 }
             }
@@ -387,6 +406,44 @@ public class PeticionesServidor {
         });
     }
 
+    public void pedirRespaldoSup(String indice, DescRespInformes.DescargaRespListener listener){
+
+        Log.d("PeticionesServidor","pedir respaldosup "+usuario);
+
+        final Call<RespInformesResponse> batch = ServiceGenerator.getApiService().getRespaldoInf(indice,usuario,"");
+
+        batch.enqueue(new Callback<RespInformesResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<RespInformesResponse> call, @Nullable Response<RespInformesResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    RespInformesResponse compraResp = response.body();
+                    //reviso si está actualizado
+                    if(compraResp!=null) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","respsup>>"+compraResp.getVisita());
+
+                        listener.actualizarInformes(compraResp);
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista vacia");
+                        listener.actualizarInformes(null);
+                    }
+
+                }else  listener.actualizarInformes(null);
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<RespInformesResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+                    listener.actualizarInformes(null);
+                }
+            }
+        });
+    }
+
     public void pedirRespaldo2(String indice, DescargasIniAsyncTask.DescargaRespListener listener){
 
         Log.d("PeticionesServidor","haciendo petición pedir respaldo2 "+usuario);
@@ -426,6 +483,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
                 if (t != null) {
+
                     Log.e(Constantes.TAG, t.getMessage());
                     listener.actualizarInfEtapa(null);
                 }
@@ -584,7 +642,8 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e("Peticiones servidor", t.getMessage());
+                    t.printStackTrace();
+                    Log.e("Peticiones servidor","autent"+ t.getMessage());
                     listener.incorrecto(t.getMessage());
                 }
             }
@@ -620,6 +679,25 @@ public class PeticionesServidor {
         trepo.insertUpdate(tv2);
         tv=tv2=null;
         listener.finalizar();
+
+    }
+
+    public void insertarSiglas(List<Sigla> respuesta, SiglaRepositoryImpl siglaRepo, TablaVersionesRepImpl trepo){
+
+     siglaRepo.deleteAll();
+
+        siglaRepo.insertAll(respuesta);
+
+
+        //actualizo tabla versiones para hacerlo 1 vez al dia
+        TablaVersiones tv=new TablaVersiones();
+        tv.setNombreTabla("siglas");
+        tv.setTipo("C");
+        tv.setVersion(new Date());
+        trepo.insertUpdate(tv);
+
+        tv=null;
+      //  listener.finalizar();
 
     }
 

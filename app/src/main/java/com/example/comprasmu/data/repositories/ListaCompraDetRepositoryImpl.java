@@ -457,6 +457,9 @@ public class ListaCompraDetRepositoryImpl {
       return dao.findAll();
     }
 
+    public List<ListaCompraDetalle> getAllSimpl() {
+        return dao.findAllSimpl();
+    }
 
 
 

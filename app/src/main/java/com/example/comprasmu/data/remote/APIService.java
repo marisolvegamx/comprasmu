@@ -6,6 +6,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
+import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.Tienda;
 
@@ -139,5 +140,7 @@ public interface APIService {
     @GET("etapa")
     Call<EtapaResponse> getEtapaAct( @Query("cvereco") String usuario);
 
+    @GET("siglas")
+    Call<List<Sigla>> getSiglas(@Query("usuario") String usuario);
 
 }

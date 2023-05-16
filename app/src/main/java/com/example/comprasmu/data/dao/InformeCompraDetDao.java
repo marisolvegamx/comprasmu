@@ -9,6 +9,7 @@ import androidx.room.Transaction;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 
 
@@ -53,7 +54,10 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
     public abstract InformeCompraDetalle findsimple( int id);
 
     @Query("SELECT * FROM informe_detalle where comprasId=:idcompra and comprasDetId=:iddet")
-    public abstract InformeCompraDetalle findByCompra( int idcompra, int iddet);
+    public abstract List<InformeCompraDetalle> findByCompra( int idcompra, int iddet);
+
+    @Query("SELECT * FROM informe_detalle where comprasId=:idcompra")
+    public abstract List<InformeCompraDetalle> findByCompra(int idcompra);
 
     //que no esté cancelada
     @Query("SELECT * FROM informe_detalle where comprasId=:idcompra and comprasDetId=:iddet and (estatus=2 or estatus=5)")

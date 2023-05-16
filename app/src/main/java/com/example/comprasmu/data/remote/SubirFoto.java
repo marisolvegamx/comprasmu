@@ -20,9 +20,6 @@ import net.gotev.uploadservice.ServerResponse;
 import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadStatusDelegate;
 
-
-
-
 public class SubirFoto {
     MultipartUploadRequest upload;
     String URL_SUBIRPICTURE="https://muesmerc.mx/comprasv1/api/public/subirfoto";
@@ -41,6 +38,7 @@ public class SubirFoto {
         {
             URL_SUBIRPICTURE = "https://muesmerc.mx/comprasv1/api/public/subirfoto";
         }
+
     }
 
     public void agregarObservador(SubirFotoService.SubirFotoListener o)

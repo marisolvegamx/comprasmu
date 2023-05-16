@@ -26,23 +26,9 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Comprasmu">
-        <activity
-            android:name=".ReubicEtiqActivity"
-            android:exported="false"
-            android:label="@string/title_activity_reubic_etiq"
-            android:theme="@style/Theme.Comprasmu.NoActionBar">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".ui.mantenimiento.BorrarActivity"
-            android:label="@string/title_activity_borrar"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.mantenimiento.LeerLogActivity"
-            android:label="@string/title_activity_leer_log" />
+
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -53,10 +39,11 @@
 
         <activity
             android:name=".ui.login.LoginActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                android:screenOrientation="portrait"
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -82,6 +69,20 @@
         <service android:name=".services.SubirPendService" />
         <service android:name=".services.SubirLogService" />
 
+        <activity
+            android:name=".ui.home.DescInfSupActivity"
+            android:exported="false"
+            android:label="@string/title_activity_descinfsup"
+            android:theme="@style/Theme.Comprasmu.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".ui.mantenimiento.BorrarActivity"
+            android:label="@string/title_activity_borrar"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.mantenimiento.LeerLogActivity"
+            android:label="@string/title_activity_leer_log" />
         <activity
             android:name=".ui.BackActivity"
             android:configChanges="orientation"

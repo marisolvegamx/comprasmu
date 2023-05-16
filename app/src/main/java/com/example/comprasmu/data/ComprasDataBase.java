@@ -1,6 +1,7 @@
 package com.example.comprasmu.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Database;
@@ -25,6 +26,7 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.dao.ListaCompraDetalleDao;
 import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.dao.ReactivoDao;
+import com.example.comprasmu.data.dao.SiglaDao;
 import com.example.comprasmu.data.dao.SolicitudCorDao;
 import com.example.comprasmu.data.dao.SustitucionDao;
 import com.example.comprasmu.data.dao.TablaVersionesDao;
@@ -45,16 +47,17 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
+import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 
 @Database(entities={ImagenDetalle.class,
         InformeCompra.class,
@@ -67,9 +70,9 @@ import java.util.List;
         ProductoExhibido.class, Sustitucion.class,
         CatalogoDetalle.class, Atributo.class, Geocerca.class,
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
-        SolicitudCor.class, Correccion.class},
+        SolicitudCor.class, Correccion.class, Sigla.class},
 
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=17, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=18, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -93,7 +96,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
     public abstract SolicitudCorDao getSolicitudCorDao();
     public abstract CorreccionDao getCorreccionDao();
     public abstract DetalleCajaDao getDetalleCajaDao();
-
+    public abstract SiglaDao getSiglaDao();
     public static ComprasDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
             ctx=context;
@@ -107,7 +110,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
-                                    ,MIGRATION_15_16,MIGRATION_16_17)
+                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -363,6 +366,19 @@ public abstract class ComprasDataBase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL(
                     "ALTER TABLE informe_detalle ADD COLUMN atributod INTEGER; " );
+
+        }
+    };
+    static final Migration MIGRATION_17_18 = new Migration(17,18) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+
+            database.execSQL("create  TABLE IF NOT EXISTS siglas ( id integer not null, " +
+                    "    siglas TEXT," +
+                    " planta TEXT," +
+                    "    plantasId INTEGER not null," +
+                    "   clientesId INTEGER not null," +
+                    " PRIMARY KEY(id )) ");
 
         }
     };
@@ -1558,6 +1574,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         }
     };
 */
+
 
 }
 

@@ -179,6 +179,8 @@ public class BackActivity extends AppCompatActivity {
                     bundle6.putString(SustitucionFragment.ARG_CATEGORIA, datosRecuperados.getString(SustitucionFragment.ARG_CATEGORIA));
                     bundle6.putString(SustitucionFragment.ARG_SIGLAS, datosRecuperados.getString(SustitucionFragment.ARG_SIGLAS));
                     bundle6.putBoolean(ListaCompraFragment.ISBACKUP,datosRecuperados.getBoolean(ListaCompraFragment.ISBACKUP) );
+                    bundle6.putInt(SustitucionFragment.ARG_CONSTIENDA, datosRecuperados.getInt(SustitucionFragment.ARG_CONSTIENDA));
+
                     //intento1.putExtra(DetalleProductoFragment.NUMMUESTRA,nummuestra );
                  //   bundle6.putInt(DetalleProductoFragment.NUMMUESTRA,datosRecuperados.getInt(DetalleProductoFragment.NUMMUESTRA));
 

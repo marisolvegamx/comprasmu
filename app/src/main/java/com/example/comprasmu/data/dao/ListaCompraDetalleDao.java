@@ -20,6 +20,9 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
     @Query("SELECT * FROM lista_compras_detalle")
     public abstract LiveData<List<ListaCompraDetalle>> findAll();
 
+    @Query("SELECT * FROM lista_compras_detalle")
+    public abstract List<ListaCompraDetalle> findAllSimpl();
+
     @Query("SELECT * FROM lista_compras_detalle where id=:id and listaId=:listaid")
     public abstract LiveData<ListaCompraDetalle> find( int listaid, int id);
     @Query("SELECT * FROM lista_compras_detalle where id=:id and listaId=:listaid")

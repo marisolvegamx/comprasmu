@@ -80,8 +80,12 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     }
 
 
-    public InformeCompraDetalle findByCompra(int idcompra, int iddet) {
+    public List<InformeCompraDetalle> findByCompra(int idcompra, int iddet) {
         return dao.findByCompra(idcompra,iddet);
+    }
+
+    public List<InformeCompraDetalle> findByCompra(int idcompra) {
+        return dao.findByCompra(idcompra);
     }
     public InformeCompraDetalle findByInformeFoto(int informeid, int fotoatra) {
         return dao.findByInformeAtra(informeid,fotoatra);

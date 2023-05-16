@@ -106,6 +106,7 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
         icDao.actualizarMuestrasEtiq(id, totmuestras);
     }
+
     public void actualizarEstatusSync(int id, int estatus) {
 
         icDao.actualizarEstatusSync(id, estatus);
