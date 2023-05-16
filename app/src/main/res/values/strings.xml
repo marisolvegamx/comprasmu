@@ -314,6 +314,8 @@
     <string name="verifique_codigo">VERIFIQUE EL CODIGO</string>
     <string name="menu_etiquetas">Etiquetas</string>
     <string name="desc_etiq">DESCARGAR ETIQUETAS</string>
+    <string name="menu_inicial">Menu inicial</string>
+    <string name="title_activity_descinfsup">Actualizar datos</string>
 
 
 </resources>
