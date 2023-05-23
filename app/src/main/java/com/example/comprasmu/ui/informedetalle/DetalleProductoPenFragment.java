@@ -407,7 +407,7 @@ public class DetalleProductoPenFragment extends Fragment {
                         guardarCliente();
                     }else
 
-                    siguiente();
+                        siguiente();
 
                 }
             });
@@ -1329,7 +1329,7 @@ public class DetalleProductoPenFragment extends Fragment {
       //  }
       //  return false;
     }
-
+    //compraro con codigos no permitidos de lista de compra y rangos
     public boolean validarCodigoprod(){
          try {
             fechacad=sdfcodigo.parse(textoint.getText().toString());
