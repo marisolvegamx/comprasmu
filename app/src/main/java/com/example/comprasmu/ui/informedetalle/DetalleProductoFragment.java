@@ -174,8 +174,10 @@ public class DetalleProductoFragment extends Fragment {
         compraslog=ComprasLog.getSingleton();
         int num_pregact=0;
         if (getArguments() != null) {
+
             num_pregact = getArguments().getInt(ARG_PREGACT);
             this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
+            Log.d("que onda",num_pregact+"--");
         }
 
         try {
@@ -185,7 +187,7 @@ public class DetalleProductoFragment extends Fragment {
             if(preguntaAct==null){
                 return root;
             }
-            Log.d(TAG,"creando fragment "+preguntaAct.getNombreCampo());
+            Log.d(TAG,"creando fragment "+num_pregact+"--"+preguntaAct.getNombreCampo());
             dViewModel.reactivoAct=preguntaAct.getId();
             sv = root.findViewById(R.id.content_generic);
             aceptar = root.findViewById(R.id.btngaceptar);
@@ -2258,7 +2260,7 @@ public class DetalleProductoFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState!=null)
-        nombre_foto= savedInstanceState.getParcelable("picUri");
+        nombre_foto= savedInstanceState.getString("picUri");
     }
     private void preguntarBorrarFoto(View cb,EditText txtruta,ImageView foto,ImageButton btnrotar,LinearLayout group) {
         if(((CheckBox)cb).isChecked()) {
@@ -2299,6 +2301,7 @@ public class DetalleProductoFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mViewModel = null;
+
         lcviewModel = null;
         dViewModel=null;
         cf=null;
