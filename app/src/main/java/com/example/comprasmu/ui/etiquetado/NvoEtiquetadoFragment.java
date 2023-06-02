@@ -81,7 +81,9 @@ public class NvoEtiquetadoFragment extends Fragment {
     private  InformeEtapaDet detalleEdit;
     LinearLayout sv1, sv6,sv3,sv4,sv5, svotra, svcoin;
     private static final String TAG = "NvoEtiquetadoFragment";
-    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5,aceptar6,nvacaja,eliminarCaja,selplanta,guardar;
+    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5,aceptar6,nvacaja;
+    //eliminarCaja
+    Button selplanta,guardar;
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
     EditText txtrutaim,txtcomentarios, txtqr;
@@ -105,7 +107,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     List<ListaCompra> listacomp;
     private static final int REQUEST_CODEQR = 345;
     int contcaja, contmuestra, contmuint;
-    int totcajas=0,totmuestras;
+    int totmuestras;
     private  ArrayList<DescripcionGenerica> listaPlantas;
     private boolean isEdicion;
     Spinner spplanta,spcaja;
@@ -113,12 +115,12 @@ public class NvoEtiquetadoFragment extends Fragment {
     ComprasLog milog;
     List<String> spinnerValues;
     ArrayAdapter<String> adaptercaja;
-    public NvoEtiquetadoFragment(int preguntaAct,boolean edicion, InformeEtapaDet informeEdit,int informeSel) {
-        this.preguntaAct = preguntaAct;
-        this.isEdicion=edicion;
-        this.detalleEdit=informeEdit;
-        this.informeSel=informeSel;
-    }
+    private TextView txttotcaj;
+    public final static String ARG_PREGACT="comprasmu.ne_pregactp";
+    public final static String ARG_ESEDI="comprasmu.ne_esedip";
+    public final static String ARG_INFORMEDET="comprasmu.ne_infdet";
+    public final static String ARG_INFORMESEL="comprasmu.neinfsel";
+
     public NvoEtiquetadoFragment() {
 
     }
@@ -137,6 +139,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         sv3 = root.findViewById(R.id.llnepreg3);
         sv4 = root.findViewById(R.id.llrepre4);
         sv5 = root.findViewById(R.id.llnepre5);
+        txttotcaj = root.findViewById(R.id.txtnetotcaj);
         svotra = root.findViewById(R.id.llnebotones);
       //  svcoin = root.findViewById(R.id.llnecoincide);
         aceptar1 = root.findViewById(R.id.btnneac1);
@@ -146,7 +149,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         aceptar5 = root.findViewById(R.id.btnneac5);
         aceptar6 = root.findViewById(R.id.btnneacep6);
         nvacaja = root.findViewById(R.id.btnnecajamas);
-        eliminarCaja = root.findViewById(R.id.btnneelimcaj);
+       // eliminarCaja = root.findViewById(R.id.btnneelimcaj);
     //    selplanta = root.findViewById(R.id.btnneselplanta);
         guardar = root.findViewById(R.id.btnneguardar);
         btnrotar = root.findViewById(R.id.btnnerotar1);
@@ -173,6 +176,21 @@ public class NvoEtiquetadoFragment extends Fragment {
         spcaja=root.findViewById(R.id.spnecaja);
         txtcomentarios=root.findViewById(R.id.txtnecomentarios);
        // txttotmues=root.findViewById(R.id.txtnetotmues);
+        if (getArguments() != null) {
+            Log.d(TAG,"aqui");
+            this.preguntaAct = getArguments().getInt(ARG_PREGACT);
+            this.informeSel=getArguments().getInt(ARG_INFORMESEL);
+           // mViewModel.setIdNuevo(this.informeSel);
+          //BUSCAR DETALLE EDIT SI ES DIFERENTE DE NULL
+            int detid=getArguments().getInt(ARG_INFORMEDET);
+            InformeEtapaDet det = mViewModel.getDetalleEta(detid);
+            if(det!=null)
+                this.detalleEdit=det;
+
+
+
+            this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
+        }
         contmuestra=1;
         contmuint=1;
         contcaja=1;
@@ -196,12 +214,11 @@ public class NvoEtiquetadoFragment extends Fragment {
         txtqr.addTextChangedListener(new BotonTextWatcher(aceptar4));
 
      //   txtnumcajas.addTextChangedListener(new BotonTextWatcher(aceptar2));
-        spinnerValues = new ArrayList<>();
-        spinnerValues.add("1");
+
 
 
         adaptercaja = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
-        spcaja.setAdapter(adaptercaja);
+
         spplanta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -234,8 +251,11 @@ public class NvoEtiquetadoFragment extends Fragment {
 
         });
         aceptar1.setEnabled(false);
+        if(preguntaAct==0)
+            preguntaAct=1;
         mViewModel.preguntaAct=preguntaAct;
         if(!isEdicion&&preguntaAct<2&&mViewModel.getIdNuevo()==0) {
+            //es nuevo
             //reviso si ya tengo uno abierto
             InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,3);
 
@@ -257,17 +277,10 @@ public class NvoEtiquetadoFragment extends Fragment {
             }
         }
         milog.grabarError(TAG+" o x aca");
-        //buscar la solicitud
-        Bundle datosRecuperados = getArguments();
-
-        if(datosRecuperados!=null) {
-            informeSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
-
-        }
-        //busco si tengo varias plantas
+       //busco si tengo varias plantas
         listacomp= lcViewModel.cargarPestanasxEtaSimp(Constantes.CIUDADTRABAJO);
-        Log.d(TAG,"PLANTA"+listacomp.toString()+"ss"+mViewModel.getIdNuevo());
-        preguntaAct=1;
+        Log.d(TAG,"PLANTA"+preguntaAct+"ss"+mViewModel.getIdNuevo());
+
         //veo si ya tengo informes
         Integer[] clientesprev=mViewModel.tieneInforme(3);
 
@@ -340,7 +353,20 @@ public class NvoEtiquetadoFragment extends Fragment {
 
 
         }
+        contcaja=mViewModel.getTotCajasEtiq();
+        if(contcaja==0)
+            contcaja=1;
+        spinnerValues = new ArrayList<>();
+        Log.d(TAG,"numcajas "+contcaja);
+        for(int i=1;i<=contcaja;i++) {
+            spinnerValues.add(i+"");
+        }
 
+
+        adaptercaja = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
+        spcaja.setAdapter(adaptercaja);
+        if(detalleEdit!=null)
+            spcaja.setSelection(detalleEdit.getNum_caja()-1);
         aceptar1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -406,13 +432,13 @@ public class NvoEtiquetadoFragment extends Fragment {
 
             }
         });
-        eliminarCaja.setOnClickListener(new View.OnClickListener() { //coincide
+       /* eliminarCaja.setOnClickListener(new View.OnClickListener() { //coincide
             @Override
             public void onClick(View view) {
                 eliminarCaja();
 
             }
-        });
+        });*/
       /*  selplanta.setOnClickListener(new View.OnClickListener() { //coincide
             @Override
             public void onClick(View view) {
@@ -595,6 +621,8 @@ public class NvoEtiquetadoFragment extends Fragment {
 
                 {
                     preguntaAct=5;
+                    //lleno el total de cajas
+                    txttotcaj.setText("TOTAL CAJAS:"+contcaja);
                     //me voy a comentarios
                     sv5.setVisibility(View.VISIBLE);
                     break;
@@ -706,18 +734,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         //    contcaja=detalleEdit.getNum_caja();
 
           //  txtcajaact.setText("CAJA "+contcaja);
-            totcajas=mViewModel.getTotCajasEtiq();
-            spinnerValues = new ArrayList<>();
-            contcaja=totcajas;
-            for(int i=1;i<=totcajas;i++) {
-                spinnerValues.add(i+"");
-            }
 
-
-            adaptercaja = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
-            spcaja.setAdapter(adaptercaja);
-
-            spcaja.setSelection(totcajas-1);
 
            // totcajas=infomeEdit.getTotal_cajas();
         }
@@ -734,6 +751,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 contmuestra = informeEtapaDet.get(0).getNum_muestra();
                 contmuint=contmuestra;
             }
+            spinnerValues = new ArrayList<>();
 
         }
         Log.e(TAG,"--"+contmuestra);
@@ -808,14 +826,14 @@ public class NvoEtiquetadoFragment extends Fragment {
     public void guardarInf(){
         try {
             lastClickTime = 0;
-            totcajas = 0;
+          //  totcajas = 0;
 
             //totcajas =Integer.parseInt(txtnumcajas.getText().toString());
 
             if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null&&contmuestra==1) {
                 Log.d(TAG, "creando nvo inf");
                 //creo el informe
-                 mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL,nombrePlantaSel,plantaSel,clienteNombre,clienteId,totcajas,totmuestras));
+                 mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL,nombrePlantaSel,plantaSel,clienteNombre,clienteId,0,totmuestras));
                 ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(mViewModel.getNvoinforme());
 
             }
@@ -874,7 +892,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     public void finalizarInf() {
         try {
             mViewModel.finalizarInf();
-            InformeEtapaEnv envio=this.preparaInforme();
+            InformeEtapaEnv envio=mViewModel.preparaInformeEtiq(mViewModel.getIdNuevo());
             SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
             miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
@@ -1067,19 +1085,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     }
 
 
-    public InformeEtapaEnv preparaInforme(){
-        InformeEtapaEnv envio=new InformeEtapaEnv();
 
-        envio.setInformeEtapa(mViewModel.getInformexId(mViewModel.getIdNuevo()));
-
-        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
-        envio.setIndice(Constantes.INDICEACTUAL);
-        envio.setInformeEtapaDet(mViewModel.cargarInformeDet(mViewModel.getIdNuevo()));
-        List<ImagenDetalle> imagenes=mViewModel.buscarImagenes(envio.getInformeEtapaDet());
-
-        envio.setImagenDetalles(imagenes);
-        return envio;
-    }
 
     public static void subirFotos(Activity activity, InformeEtapaEnv informe){
         //las imagenes

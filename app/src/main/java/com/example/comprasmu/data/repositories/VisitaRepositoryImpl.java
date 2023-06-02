@@ -161,7 +161,7 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
     {
         //busco el consecutivo x ciudad
         if(object.getConsecutivocd()==0) {
-            int consecutivocd = icDao.getUltimoConsCd(object.getIndice(), object.getCiudadId());
+            int consecutivocd = icDao.getUltimoConsCd(object.getIndice(), object.getCiudad());
             consecutivocd = consecutivocd + 1;
             object.setConsecutivocd(consecutivocd);
         }

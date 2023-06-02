@@ -5,120 +5,122 @@
     android:layout_marginBottom="10dp">
 
     <ScrollView
+        android:id="@+id/llgscroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:isScrollContainer="true"
-        android:orientation="vertical"
-        android:overScrollMode="ifContentScrolls"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
         <LinearLayout
-            android:id="@+id/content_generic"
-            style="@style/formlabel"
+            android:id="@+id/llgmain"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:isScrollContainer="true"
+            android:orientation="vertical"
+            android:overScrollMode="ifContentScrolls"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <LinearLayout
+                android:id="@+id/content_generic"
+                style="@style/formlabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical">
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llgbotones"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/btnmicsiglas"
+                    style="@style/imbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_baseline_mic_24" />
+
+                <ImageView
+                    android:id="@+id/ivgfoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone"
+                    tools:srcCompat="@tools:sample/avatars"
+                    tools:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/btngrotar"
+                    style="@style/imbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    app:srcCompat="@android:drawable/stat_notify_sync"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/txtfgplanta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <CheckBox
+                    android:id="@+id/ckgnoperm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_emiten_tik"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <Button
+                    android:id="@+id/btngvalidar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="@color/blue_secondary"
+                    android:text="@string/validar"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <Button
+                    android:id="@+id/btngaceptar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:includeFontPadding="false"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:text="@string/aceptar"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            </LinearLayout>
 
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/btnmicsiglas"
-                style="@style/imbutton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_baseline_mic_24" />
-
-            <ImageView
-                android:id="@+id/ivgfoto"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:scaleType="fitCenter"
-                android:visibility="gone"
-                android:adjustViewBounds="true"
-                tools:srcCompat="@tools:sample/avatars"
-                tools:visibility="visible" />
-
-            <ImageButton
-                android:id="@+id/btngrotar"
-                style="@style/imbutton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:visibility="gone"
-                app:srcCompat="@android:drawable/stat_notify_sync"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/txtfgplanta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <CheckBox
-                android:id="@+id/ckgnoperm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/no_emiten_tik"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <Button
-                android:id="@+id/btngvalidar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:backgroundTint="@color/blue_secondary"
-                android:text="@string/validar"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <Button
-                android:id="@+id/btngaceptar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:includeFontPadding="false"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:text="@string/aceptar"
-                android:textAlignment="center" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-
-    </LinearLayout>
 
     </ScrollView>
 

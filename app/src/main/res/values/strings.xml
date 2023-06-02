@@ -316,6 +316,7 @@
     <string name="desc_etiq">DESCARGAR ETIQUETAS</string>
     <string name="menu_inicial">Menu inicial</string>
     <string name="title_activity_descinfsup">Actualizar datos</string>
+    <string name="esuncod_nop">¿ESTE CODIGO YA EXISTE, LO ACEPTA?</string>
 
 
 </resources>

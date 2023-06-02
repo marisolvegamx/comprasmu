@@ -443,7 +443,21 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                    resp=validarCodigoprod();
                     break;*/
             case Contrato.TablaInformeDet.CADUCIDAD:
-                resp=validarFecha();
+                int respf=validarCodigoProd();
+                if(respf==1)
+                    resp=false; //camino que tenia
+                if(respf==2){
+                    //nuevo mensaje de pregunta
+                    guardarResp();
+                    avanzarPregunta(preguntaAct.getSigAlt());
+                    return;
+                }
+                if(respf==3) { //todo bien
+                    guardarResp();
+                    avanzarPregunta(preguntaAct.getSigId());
+                    return;
+
+                }
 
                 break;
             case "clientesId":
@@ -466,7 +480,7 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
 
             if(preguntaAct.getType().equals(CreadorFormulario.PREGUNTASINO)){
                 //reviso la opcion seleccionada de compro prod para otros clientes
-                if(!pregunta.getRespuesta()&&preguntaAct.getId()!=68) //se selecciono no
+                if(!pregunta.getRespuesta()&&preguntaAct.getId()!=68&&preguntaAct.getId()!=115) //se selecciono no
                 {
                     //voy al altsig
                     guardarResp();
@@ -477,7 +491,24 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
 
                 }
             }
+            if(preguntaAct.getType().equals(CreadorFormulario.PREGUNTASINO)){
+                //reviso la opcion seleccionada de compro prod para otros clientes
+                if(preguntaAct.getId()==115) //validacion de fecha
+                {
+                    if(pregunta.getRespuesta()) {
 
+
+                        avanzarPregunta(preguntaAct.getSigId());
+                        return;
+                    }else { //es no
+                        //borro xq ya guardé
+                        //talvez no necesite borrar xq sobreescribo
+                        avanzarPregunta(preguntaAct.getSigAlt()); //vuevo a pregunta fecha
+                        return;
+                    }
+
+                }
+            }
             if(preguntaAct.getSigId()==20000) //voy a lista de compra
             {
                 guardarResp();
@@ -772,6 +803,7 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
 
         //solo valido formato de fecha
         ValidadorDatos valdat=new ValidadorDatos();
+        Date fechacad;
         try {
             sdfcodigo.setLenient(false);
             fechacad=sdfcodigo.parse(textoint.getText().toString());
@@ -789,7 +821,44 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
 
     }
 
+    // devuelve 1 cuando muestro solo un toat y sigo en la misma pantalla
+    //devuelve 2 cuando falla los no permi o los repetidos
+    public int validarCodigoProd(){
 
+        Date fechacad;
+        try {
+            sdfcodigo.setLenient(false);
+            fechacad = sdfcodigo.parse(textoint.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(), getString(R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
+
+
+            return 1;
+        }
+
+        if(dViewModel.productoSel.clienteSel==7) {
+            ValidadorDatos valdat = new ValidadorDatos();
+            String codigonoper = dViewModel.productoSel.codigosnop;
+            if (!fechacad.equals("") && codigonoper.length() > 1) {
+                if (!valdat.validarCodigoPepRango(textoint.getText().toString(), codigonoper)) {
+
+                    Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
+
+                    return 1;
+                }
+            }
+
+            if (!valdat.validarCodigonoPermPen(textoint.getText().toString(), codigonoper))
+                return 2;
+
+            if (dViewModel.productoSel.tipoMuestra != 3 || mViewModel.numMuestra > 1) //solo si no es bu
+                if (this.buscarMuestraCodigoPeniafiel(fechacad))
+                    return 2;
+        }
+
+        return 3; //todo bien
+    }
 
     public void verListaCompra(int nummuestra){
         /* b2undle.putString("plantaNombre", listaSeleccionable.get(i).getNombre());*/

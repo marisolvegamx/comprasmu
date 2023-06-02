@@ -29,6 +29,7 @@ import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.ActivityContinuarInformeBinding;
 import com.example.comprasmu.ui.BackActivity;
+import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.utils.Constantes;
 
@@ -43,6 +44,9 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     Visita visitaCont;
     private static final boolean hayDatos = false;
     public final static String INFORMESEL = "comprasmu.ni_informesel";
+    public static final String KEY_ETAPAACT = "comprasmu.ni_etapact";
+    public static final String KEY_USUARIO = "comprasmu.ni_usuario";
+    public static final String KEY_INDICEACT = "comprasmu.ni_indcieact";
     private static final String TAG = "ContInformeAct";
     private DetalleProductoFragment fragementAct;
     Reactivo preguntaAct;
@@ -85,6 +89,8 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             //  }
         }*/
         // if(Constantes.NM_TOTALISTA>=16)
+
+
         loadData(savedInstanceState);
         //reviso si es edicion y ya tengo info en temp
         ultimares=dViewModel.getUltimoTemp();
@@ -98,7 +104,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             Log.d(TAG,"++"+ultimares.getNombre_campo());
             preguntaAct=dViewModel.inftempToReac(ultimares);
 
-            Log.d(TAG, "reactivo:" +preguntaAct.getId()+"--"+ultimares.getNombre_campo());
+            Log.d(TAG, "1.reactivo:" +preguntaAct.getId()+"--"+ultimares.getNombre_campo());
 
             nviewModel.numMuestra=ultimares.getNumMuestra();
             nviewModel.setIdInformeNuevo(ultimares.getInformesId());
@@ -109,6 +115,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 if(nviewModel.clienteSel==4||nviewModel.clienteSel==0) {
+                    Log.d(TAG,"aqui");
                     Bundle args = new Bundle();
                     args.putInt(DetalleProductoFragment.ARG_PREGACT,preguntaAct.getId() );
                     args.putBoolean(DetalleProductoFragment.ARG_ESEDI,true);
@@ -173,7 +180,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             dViewModel.getReactivos().observe(this, new Observer<List<Reactivo>>() {
                 @Override
                 public void onChanged(List<Reactivo> reactivos) {
-                    Log.d(TAG, "reactivo:" + reactivos.get(0).getLabel());
+                    Log.d(TAG, "2reactivo:" + reactivos.get(0).getLabel());
                     Bundle args = new Bundle();
                     args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivos.get(0).getId() );
                     args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
@@ -265,17 +272,23 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     public void loadData(Bundle savedInstanceState) {
         Bundle datosRecuperados = getIntent().getExtras();
 
-        if(datosRecuperados!=null)
-         idinformeSel = datosRecuperados.getInt(INFORMESEL); //es la visita id
-        else { //lo recupero
+        if(datosRecuperados!=null) {
+            idinformeSel = datosRecuperados.getInt(INFORMESEL); //es la visita id
+            Log.d(TAG,"si entro aq "+idinformeSel);
+        }else { //lo recupero
+            Log.d(TAG,"si entro aqui2");
             if (savedInstanceState != null) {    // Restore value of members from saved state
-                idinformeSel = savedInstanceState.getInt("visitasel");
-                if(idinformeSel==0) { //se salio y lo devuelvo al inicio
+                Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
+                Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
+               Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
+                // idinformeSel = savedInstanceState.getInt("visitasel");
+                //if(idinformeSel==0) { //se salio y lo devuelvo al inicio
                     Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
                     startActivity(intento1);
+                    finish();
                     //mando al inicio
                   //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
-                }
+                    return;
             }
 
         }
@@ -431,36 +444,12 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     }
 
     public void regresarPep(){
-        InformeTemp resact=null;
-        int idreact=0;
 
+        //se maneja en el fragment
         DetalleProductoFragment fragment = (DetalleProductoFragment) getSupportFragmentManager().findFragmentById(R.id.continf_fragment);
+       fragment.atras();
+        return;
 
-        if (fragment.isEdicion) {
-            resact = fragment.getUltimares();
-            idreact = resact.getId();
-        }
-
-        //busco el siguiente
-        Reactivo reactivo = dViewModel.buscarReactivoAnterior(idreact,fragment.isEdicion);
-        if(reactivo!=null) {
-            Bundle args = new Bundle();
-            args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivo.getId() );
-            args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
-            DetalleProductoFragment nvofrag = new DetalleProductoFragment();
-            nvofrag.setArguments(args);
-            //DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo, false);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-// Definir una transacción
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
-            fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-           // fragmentTransaction.addToBackStack(null);
-// Cambiar
-            fragmentTransaction.commit();
-        }
-        else
-            super.onBackPressed();
 
     }
     public void regresarPen(){
@@ -699,11 +688,16 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current game state
-        savedInstanceState.putInt("visitasel",idinformeSel );
+
+
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt(KEY_ETAPAACT,Constantes.ETAPAACTUAL );
+        savedInstanceState.putString(KEY_USUARIO, Constantes.CLAVEUSUARIO );
+        savedInstanceState.putString(KEY_INDICEACT, Constantes.INDICEACTUAL );
+
+        savedInstanceState.putInt("visitasel",idinformeSel );
     }
 
   /*  @Override

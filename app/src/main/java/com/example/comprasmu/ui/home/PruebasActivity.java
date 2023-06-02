@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+/***procesos iniciales y descarga de info***/
 public class PruebasActivity  extends AppCompatActivity  implements    DescargasIniAsyncTask.ProgresoListener  {
 
    ProgressDialog progreso;
@@ -84,6 +85,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         if(!isOnlineNet()) { //no hay conexion trabajo conl lo que hay
             getEtapaPref();
             if(!indicepref.equals("")&&etapafinpref>0){
+                Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
                 Constantes.INDICEACTUAL = indicepref;
                 Constantes.ETAPAMENU = etapapref;
                 descargasIniciales(indicepref, etapapref, etapafinpref);
@@ -114,6 +116,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         //pasaría a otra actividad
         progreso.dismiss();
         Constantes.ACTUALIZADO=true;
+        Log.d(TAG,"enviando al home");
         //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Intent intento=new Intent(this, HomeActivity.class);
         intento.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -232,6 +235,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         indicepref= prefe.getString("indiceact", "");
         etapafinpref= prefe.getInt("etapafin", 0);
         tiporec= prefe.getInt("tiporec", 0);
+        Log.d(TAG, "******* indice " + indicepref);
     }
     public void guardarEtapaPref(int etapa, String indice, int etapafin, int tiporec){
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
@@ -333,6 +337,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         }
         imagenesEtapa(maininfoetaResp);
         imagenesCor(mainRespcor);
+        Log.d(TAG,"**enviando al home");
         success();
     }
 

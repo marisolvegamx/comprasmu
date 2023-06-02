@@ -39,7 +39,7 @@ import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 
-public class ListaInformesFragment extends Fragment implements InformeCompraAdapter.AdapterCallback {
+public class    ListaInformesFragment extends Fragment implements InformeCompraAdapter.AdapterCallback {
     private ListaInformesViewModel mViewModel;
 
 

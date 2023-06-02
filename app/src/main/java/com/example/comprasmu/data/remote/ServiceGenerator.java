@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.remote;
 
 import android.os.Build;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,7 +32,9 @@ public class ServiceGenerator {
                 new Retrofit.Builder()
                         .baseUrl(BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create());*/
-       if (Build.PRODUCT.contains ("sdk")){
+
+       // Log.e("mi disp ",Build.PRODUCT);
+        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")){//pruebas y el lenovo
             //nam
            BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
         //   BASE_URL = "http://192.168.1.78/comprasv1/api/public/";

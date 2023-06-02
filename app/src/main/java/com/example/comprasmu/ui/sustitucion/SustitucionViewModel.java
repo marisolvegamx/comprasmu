@@ -59,10 +59,10 @@ public class SustitucionViewModel extends AndroidViewModel {
 
     public void cargarListas(String categoria,int cliente,int empaque, int tamanio, int numTienda){
        if(cliente==7){
-           if(numTienda>=5)
+          // if(numTienda>=5)
                listaSustitucion =repository.getByFiltrosFrut(categoria,"FRUTZZO",empaque,tamanio);
-            else
-           listaSustitucion =repository.getByFiltros(categoria,"",empaque,tamanio);
+           // else
+             //   listaSustitucion =repository.getByFiltros(categoria,"",empaque,tamanio);
 
        }else
         listaSustitucion =repository.getByFiltros(categoria,"",0,0);

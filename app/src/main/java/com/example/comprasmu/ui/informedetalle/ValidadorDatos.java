@@ -110,14 +110,10 @@ public class ValidadorDatos {
     }
 
     //devuelve false si existe el codigo
-    public boolean validarCodigoprodPen(String codigo,String codigonoper){
+    public boolean validarCodigonoPermPen(String codigo,String codigonoper){
         //  codigo=codigo.replace("-","");
         Log.d("ValidadorDatos", "mensaje"+codigonoper);
         if(!codigo.equals("")&&codigonoper.length()>1){
-            if(!validarCodigoPepRango(codigo,codigonoper)){
-                mensaje=R.string.error_codigo_per;
-                return false;
-            }
 
             //comparo con los no permitidos
             String[] arrecodigos =codigonoper.split(";");

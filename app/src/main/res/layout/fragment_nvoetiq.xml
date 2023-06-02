@@ -173,6 +173,13 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/txtnetotcaj"
+                    style="@style/formlabelmen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="total cajas" />
+
+                <TextView
                     android:id="@+id/textView24"
                     style="@style/formlabel2"
                     android:layout_width="match_parent"
@@ -217,38 +224,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <Button
-                    android:id="@+id/btnneacep6"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/guardar" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/btnnecajamas"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1"
-                        android:text="@string/agregar_caja"
-                        android:textSize="12sp"
-                        android:visibility="visible" />
-
-                    <Button
-                        android:id="@+id/btnneelimcaj"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/elim_caja"
-                        android:textSize="12sp" />
-
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnnecajamas"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/agregar_caja"
+                    android:textSize="12sp"
+                    android:visibility="visible" />
+
+                <Button
+                    android:id="@+id/btnneacep6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/guardar" />
 
             </LinearLayout>
 

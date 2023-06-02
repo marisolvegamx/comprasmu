@@ -201,6 +201,11 @@ public void nvacaja(){
         if(muestra!=null){
             muestra.setNum_caja(numcaja);
             mViewModel.actualizarInfEtaDet(muestra);
+            //reenvio al serv
+            InformeEtapaEnv envio= preparaInforme(muestra.getInformeEtapaId(),muestra);
+            SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
+            miTareaAsincrona.execute();
+            //subirFotos(getActivity(),envio);
             Toast.makeText(getActivity(), getString(R.string.muestra_reubicada), Toast.LENGTH_SHORT).show();
             salir();
         }else{
@@ -211,7 +216,19 @@ public void nvacaja(){
     }
 
 
+    public InformeEtapaEnv preparaInforme(int idnvo,InformeEtapaDet muestra){
+        InformeEtapaEnv envio=new InformeEtapaEnv();
 
+        envio.setInformeEtapa(mViewModel.getInformexId(idnvo));
+
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(Constantes.INDICEACTUAL);
+        List<InformeEtapaDet> lista=new ArrayList<>();
+        lista.add(muestra);
+        envio.setInformeEtapaDet(lista);
+
+        return envio;
+    }
     public void salir(){
         //mViewModel.eliminarTblTemp();
         //me voy a la lista de informes
@@ -223,7 +240,27 @@ public void nvacaja(){
 
 
     }
+    public static void subirFotos(Activity activity, InformeEtapaEnv informe){
+        //las imagenes
+        for(ImagenDetalle imagen:informe.getImagenDetalles()){
+            //
+            //subo cada una
+            Intent msgIntent = new Intent(activity, SubirFotoService.class);
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
+            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+            // Constantes.INDICEACTUAL
+            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
 
+            msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
+
+            //cambio su estatus a subiendo
+            imagen.setEstatusSync(1);
+            activity.startService(msgIntent);
+
+        }
+
+    }
     public void iniciarLecQR(){
         IntentIntegrator integrator  =new  IntentIntegrator ( getActivity() ).forSupportFragment(ReubicEtiqFragment.this);
         integrator.setRequestCode(REQUEST_CODEQR);

@@ -133,7 +133,7 @@ public class HomeActivity extends AppCompatActivity {
         finish();
     }
     public void iraEtiq(){
-
+        Constantes.ETAPAACTUAL=3;
         Intent intento=new Intent(this, DescInfSupActivity.class);
 
         startActivity(intento);

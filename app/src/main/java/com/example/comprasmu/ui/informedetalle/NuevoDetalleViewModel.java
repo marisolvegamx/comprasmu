@@ -31,6 +31,7 @@ import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.Visita;
+import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;

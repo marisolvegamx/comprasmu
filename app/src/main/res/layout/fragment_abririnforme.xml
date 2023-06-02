@@ -44,10 +44,11 @@
 
         <LinearLayout
 
+            android:id="@+id/llaimain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
 
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="vertical">
 
@@ -92,6 +93,7 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/llai2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="16dp"
@@ -263,6 +265,7 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/llai3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="16dp"
@@ -342,7 +345,8 @@
                     <com.example.comprasmu.utils.Preguntasino
                         android:id="@+id/snaimascli1"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp">
 
                     </com.example.comprasmu.utils.Preguntasino>
 
@@ -350,6 +354,7 @@
                         android:id="@+id/llfotoex2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="15dp"
                         android:orientation="vertical"
                         android:visibility="gone"
                         tools:visibility="visible">
@@ -423,7 +428,8 @@
                         <com.example.comprasmu.utils.Preguntasino
                             android:id="@+id/snmascli2"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10dp">
 
                         </com.example.comprasmu.utils.Preguntasino>
 
@@ -433,6 +439,7 @@
                         android:id="@+id/llfotoex3"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="15dp"
                         android:orientation="vertical"
                         android:visibility="gone"
                         tools:visibility="visible">
@@ -506,7 +513,8 @@
                         <com.example.comprasmu.utils.Preguntasino
                             android:id="@+id/snmascli3"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10dp" />
 
                     </LinearLayout>
 
@@ -514,6 +522,7 @@
                         android:id="@+id/llfotoex4"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="15dp"
                         android:orientation="vertical"
                         android:visibility="gone">
 

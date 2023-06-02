@@ -7,11 +7,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.ui.empaque.VerEmpaqueFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
+import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaInformesEtaFragment;
 import com.example.comprasmu.utils.ui.VerInformeGenFragment;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibFragment;
@@ -41,6 +44,9 @@ public class BackActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE=1003;
     public static final String OP_PRODUCTOEX="productoex";
+    public static final String KEY_ETAPAACT = "comprasmu.b_etapact";
+    public static final String KEY_USUARIO = "comprasmu.b_usuario";
+    private static final String KEY_INDICEACT = "comprasmu.b_indiceact";
     Toolbar myChildToolbar;
     private static final int INTERVALO = 3000; //3 segundos para salir
     private long tiempoPrimerClick;
@@ -54,7 +60,19 @@ public class BackActivity extends AppCompatActivity {
         myChildToolbar =
                 findViewById(R.id.my_child_toolbar2);
 
+        if (savedInstanceState != null) {    // Restore value of members from saved state
+            Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
+            Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
+            // idinformeSel = savedInstanceState.getInt("visitasel");
+            //if(idinformeSel==0) { //se salio y lo devuelvo al inicio
+            Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
 
+            Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
+            startActivity(intento1);
+                //mando al inicio
+                //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
+
+        }
 // add
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -272,6 +290,18 @@ public class BackActivity extends AppCompatActivity {
 
         }
         super.onBackPressed();
+    }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt(KEY_ETAPAACT, Constantes.ETAPAACTUAL );
+        savedInstanceState.putString(KEY_USUARIO, Constantes.CLAVEUSUARIO );
+        savedInstanceState.putString(KEY_INDICEACT, Constantes.INDICEACTUAL );
+
     }
     // Create an anonymous implementation of OnClickListener
 

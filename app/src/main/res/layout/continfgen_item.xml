@@ -27,6 +27,7 @@
         app:cardUseCompatPadding="true">
 
         <LinearLayout
+            android:id="@+id/llcimain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -56,8 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:text='@{detalle.clienteNombre}'
-                />
+                android:text='@{detalle.clienteNombre}' />
 
             <TextView
                 android:id="@+id/txtcigplanta"
@@ -67,6 +67,7 @@
                 android:layout_marginTop="14dp"
                 android:text="@{detalle.plantaNombre}"
                 android:visibility="@{detalle.etapa==4?View.GONE:View.VISIBLE}" />
+
             <TextView
                 android:id="@+id/txtcigfecha"
                 style="@style/textolista2"

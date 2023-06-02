@@ -26,7 +26,7 @@ public class DescRespInformes {
 
     SimpleDateFormat sdfdias;
     TablaVersionesRepImpl tvRepo;
-    String TAG="DescRespInfAsyncTask";
+    String TAG="DescRespInformes";
 
 
 
@@ -48,7 +48,7 @@ public class DescRespInformes {
 
     public void getInformes(){
 
-        Log.d("DescargasIniAsyncTask", "descargando respaldo inf");
+        Log.d(TAG, "descargando respaldo inf");
         infrepo = new InformeCompraRepositoryImpl(act);
         infdrepo = new InformeComDetRepositoryImpl(act);
 

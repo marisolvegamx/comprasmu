@@ -31,7 +31,7 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
 
     SimpleDateFormat sdfdias;
     TablaVersionesRepImpl tvRepo;
-    String TAG="DescRespInfAsyncTask";
+    String TAG="DescInfSupActivity";
     ProgressDialog progreso;
 
     private ComprasLog complog;
@@ -42,7 +42,7 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pruebas);
         //  if(NavigationDrawerActivity.isOnlineNet()) {
-        Log.d("DescargasIniAsyncTask","iniciando descarga");
+        Log.d(TAG,"iniciando descarga");
         complog= ComprasLog.getSingleton();
         complog.crearLog(this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
 

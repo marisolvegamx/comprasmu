@@ -75,6 +75,12 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
             " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and clientesId=:cliente group by num_caja")
     public abstract List<InformeEtapaDet> totalCajasEtiqxCli(int etapa, int cliente);
 
+
+    @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
+            " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det " +
+            " inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and informe_etapa.indice=:indice  group by num_caja order by num_caja")
+    public abstract List<InformeEtapaDet> resumenEtiq(int etapa,String indice);
+
     @Query("SELECT max(num_caja) FROM informe_etapa_det where   etapa=:i ")
     public abstract int totalCajasEtiq(int i);
 

@@ -536,6 +536,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public  void limpiarVarInforme(){
         this.informe=null;
         this.nvoid=null;
+        this.consecutivo=0;
+
     }
     MutableLiveData<Integer> nvoid;
 

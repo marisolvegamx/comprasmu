@@ -399,14 +399,14 @@ public abstract class ComprasDataBase extends RoomDatabase {
                        // catalogos();
 
                    // }
-                List<Reactivo> myProductsP=   dao.findByCliente(5);
+                List<Reactivo> myProductsP=dao.findByCliente(5);
                 if (myProductsP == null||myProductsP.size()==0) {
                     //no tengo datos
 
 
 
                 }
-                Reactivo myProductsem=   dao.findsimple(91);
+                Reactivo myProductsem=dao.findsimple(91);
                 if (myProductsem == null) {
                     prepopulatereaEmp();
                 }
@@ -948,6 +948,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setTabla("ID");
         campo.setId(59);
         campo.setSigId(60);
+        campo.setSigAlt(115);
         campo.setBotonMicro(true);
         campo.setCliente(cliente);    campo.setClienteSel(cliid);
 
@@ -1037,6 +1038,19 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
         camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.esuncod_nop));
+        campo.setNombreCampo("esuncodnop");
+        campo.setType("preguntasino");
+        campo.setTabla("");
+        campo.setId(115);
+        campo.setSigId(60);
+        campo.setSigAlt(59);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
 
      /*   campo=new Reactivo();
         campo.setLabel(ctx.getString(R.string.etiqueta_evaluacion));
@@ -1183,6 +1197,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setTabla("ID");
         campo.setId(79);
         campo.setSigId(80);
+        campo.setSigAlt(116);
+
         campo.setBotonMicro(true);
         campo.setCliente(cliente);    campo.setClienteSel(cliid);
 
@@ -1313,6 +1329,17 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setCliente(cliente);
         camposForm.add(campo);
 
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.esuncod_nop));
+        campo.setNombreCampo("esuncodnop");
+        campo.setType("preguntasino");
+        campo.setTabla("");
+        campo.setId(116);
+        campo.setSigId(80);
+        campo.setSigAlt(79);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+
         getReactivoDao().insertAll(camposForm);
 
 
@@ -1386,8 +1413,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         List<Reactivo> camposForm = new ArrayList<Reactivo>();
 
-      // ya no será por planta será x cliente
-        campo.setId(91);
+      // ya no será por planta será nix cliente
+        /*campo.setId(91);
         campo.setTabla("IE");
         campo.setLabel(ctx.getString(R.string.cliente));
         campo.setNombreCampo("clientesId");
@@ -1398,7 +1425,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
 
-        camposForm.add(campo);
+        camposForm.add(campo);*/
         campo = new Reactivo();
         campo.setLabel(ctx.getString(R.string.acomodo_mues));
         campo.setId(92);

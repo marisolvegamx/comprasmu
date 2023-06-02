@@ -16,6 +16,7 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
@@ -54,7 +55,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     ComprasLog compraslog;
     InformeComDetRepositoryImpl compRepo;
     public int totCajasEmp;
-    public List<EtiquetadoxCliente> listaCajasCli;
+    public List<EtiquetadoxCliente> resumenEtiq; //es uno x indice
     public NvaPreparacionViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
@@ -295,6 +296,11 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
         return infDetRepo.getByDescripcion("foto_preparacion"+preguntaAct,idinf);
     }
+
+    public InformeEtapaDet getDetalleEta(int iddet){
+
+        return infDetRepo.findsimple(iddet);
+    }
     public LiveData<InformeEtapaDet> getDetallexDesc(int idinf, String descripcion){
 
         return infDetRepo.getByDescripcion(descripcion,idinf);
@@ -337,7 +343,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
 
     }
-    public void listaCajasEtiqxCli(int cliente){
+   /* public void listaCajasEtiqxCli(int cliente){
         List<InformeEtapaDet> muestras= infDetRepo.listaCajasEtiqxCli( 3, cliente);
         EtiquetadoxCliente resul=null;
         int i=1;
@@ -349,6 +355,27 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
             resul.numMuestras=muestra.getNum_muestra();
             listaCajasCli.add(resul);
             i++;
+        }
+
+
+    }*/
+
+    public void getCajasEtiq(){
+        List<InformeEtapaDet> muestras= infDetRepo.getResumenEtiq(3,Constantes.INDICEACTUAL);
+        EtiquetadoxCliente resul=null;
+        int i=1;
+        Log.d(TAG,"tot cajas"+muestras.size());
+        resumenEtiq=new ArrayList<>();
+        this.numMuestras=0;
+        for(InformeEtapaDet muestra:muestras) {
+            EtiquetadoxCliente caja=new EtiquetadoxCliente();
+            caja.consCaja=i;
+            caja.numCaja=muestra.getNum_caja();
+            caja.numMuestras=muestra.getNum_muestra();
+            resumenEtiq.add(caja);
+            i++;
+            //para obtener el total de muestras
+            this.numMuestras+=muestra.getNum_muestra();
         }
 
 
@@ -365,6 +392,12 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
 
     }
+    public int getTotMuesxCaja(int numcaj){
+        return infDetRepo.getTotMuesxCaja( numcaj);
+
+
+    }
+
     public InformeEtapaDet getUltimoInformeDetCaj(int id, int etapa, int caja){
         return infDetRepo.getUltimoCaja(id, etapa, caja);
 
@@ -397,7 +430,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public LiveData<Reactivo> buscarReactivo(int id){
         return reacRepo.find(id);
     }
-
+    public Reactivo buscarReactivoSim(int id){
+        return reacRepo.findsimple(id);
+    }
     public Reactivo buscarReactivoxDesc(String campo, int cliente){
         return reacRepo.findByNombre(campo, cliente);
     }
@@ -543,9 +578,19 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return clienteAnt;
 
     }
+    public InformeEtapaEnv preparaInformeEtiq(int idnvo){
+        InformeEtapaEnv envio=new InformeEtapaEnv();
 
+        envio.setInformeEtapa(getInformexId(idnvo));
 
-    public int getMuesxCaja(int cajaAct) {
-       return infDetRepo.getTotMuesxCaja(cajaAct);
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(Constantes.INDICEACTUAL);
+        envio.setInformeEtapaDet(this.cargarInformeDet(idnvo));
+        List<ImagenDetalle> imagenes=this.buscarImagenes(envio.getInformeEtapaDet());
+
+        envio.setImagenDetalles(imagenes);
+        return envio;
     }
+
+
 }

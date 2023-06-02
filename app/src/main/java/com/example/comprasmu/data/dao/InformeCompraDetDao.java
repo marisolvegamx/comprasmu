@@ -148,7 +148,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " inner join visitas on visitas.id=informe_compras.visitasId" +
             " where productoId=:producto and presentacion=:tamanio" +
             " and empaquesId=:empaque and tipoAnalisis=:analisis " +
-            " and visitas.indice=:indice and informe_compras.plantasId=:planta and informe_detalle.estatus=1" +
+            " and visitas.indice=:indice and informe_compras.plantasId=:planta and informe_detalle.estatus<>2" +
             " group by caducidad order by caducidad desc" )
     public abstract List<InformeCompraDetalle> getByProductoAna(String indice, int planta,int producto, int analisis, int empaque, String tamanio);
 
@@ -166,7 +166,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " where productoId=:producto and presentacion=:tamanio" +
             " and empaquesId=:empaque and tipoAnalisis=:analisis " +
             " and visitas.indice=:indice and informe_compras.plantasId=:planta" +
-            " and informe_detalle.siglas=:siglas and informe_detalle.estatus=1" +
+            " and informe_detalle.siglas=:siglas and informe_detalle.estatus<>2" +
             " order by caducidad desc" )
     public abstract List<InformeCompraDetalle> getByProductoAnaSig(String indice, int planta,int producto, int analisis, int empaque, String tamanio, String siglas);
 
@@ -184,7 +184,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " inner join visitas on visitas.id=informe_compras.visitasId" +
             " where productoId=:producto and presentacion=:tamanio" +
             " and empaquesId=:empaque  " +
-            " and visitas.indice=:indice and informe_compras.plantasId=:planta and informe_detalle.estatus=1" +
+            " and visitas.indice=:indice and informe_compras.plantasId=:planta and informe_detalle.estatus<>2" +
             " group by caducidad order by caducidad desc" )
     public abstract List<InformeCompraDetalle> getByProducto(String indice, int planta,int producto, int empaque, String tamanio);
 

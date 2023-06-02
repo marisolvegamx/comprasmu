@@ -58,6 +58,7 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 
+import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 
@@ -100,8 +101,9 @@ public class NvoEmpaqueFragment extends Fragment {
     private int clienteId;
     private ListaDetalleViewModel lcViewModel;
 
-    List<InformeEtapa> listainfetiq;
-    private  ArrayList<DescripcionGenerica> listaClientes;
+
+    public final static String ARG_PREGACT="comprasmu.nem_pregact";
+    public final static String ARG_ESEDI="comprasmu.nem_esedi";
 
     private boolean isEdicion;
     Spinner spplanta;
@@ -110,11 +112,7 @@ public class NvoEmpaqueFragment extends Fragment {
     ComprasLog compraslog;
 
 
-    public NvoEmpaqueFragment(Reactivo preguntaAct,boolean edicion) {
-        this.preguntaAct = preguntaAct;
-        this.isEdicion=edicion;
 
-    }
     public NvoEmpaqueFragment() {
 
     }
@@ -137,9 +135,20 @@ public class NvoEmpaqueFragment extends Fragment {
 
             sv = root.findViewById(R.id.content_generic);
             aceptar = root.findViewById(R.id.btngaceptar);
-            Log.d(TAG, "iniciando"+isEdicion);
+
             compraslog=ComprasLog.getSingleton();
-            if(preguntaAct!=null)
+            Bundle datosRecuperados = getArguments();
+
+            if (datosRecuperados != null) {
+                int numpreg = datosRecuperados.getInt(ARG_PREGACT);
+                isEdicion=datosRecuperados.getBoolean(ARG_ESEDI);
+                Log.d(TAG, "iniciando"+isEdicion+"--"+numpreg);
+                if(numpreg>0)
+                    preguntaAct= mViewModel.buscarReactivoSim(numpreg);
+
+            }
+
+             if(preguntaAct!=null)
             {
                 Log.d(TAG, "pregact"+preguntaAct.getLabel()+"--"+mViewModel.getIdNuevo());
                 mViewModel.preguntaAct=preguntaAct.getId();
@@ -153,9 +162,13 @@ public class NvoEmpaqueFragment extends Fragment {
                                 ultimares = informeEtapaDet;
                                 if(ultimares!=null)
                                 { mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
+                                    mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
+                                    mViewModel.cajaAct.numCaja=ultimares.getNum_caja();
+
                                     mViewModel.numMuestras=ultimares.getNum_muestra();
                                 isEdicion=true;
                                 }
+                                Log.d(TAG,"DONE 1");
                                 crearFormulario();
 
 
@@ -188,15 +201,18 @@ public class NvoEmpaqueFragment extends Fragment {
                                     isEdicion = true;
                             }
                         }
+                         Log.d(TAG,"DONE 9");
                          crearFormulario();
 
                     }
                     if (preguntaAct.getTabla().equals("IE")) {
                         //son comentarios
+                        Log.d(TAG,"DONE 10");
                         crearFormulario();
                     }
                 }else {
                    //no he guardado el informe
+                    Log.d(TAG,"DONE 11");
                     crearFormulario();
 
                 }
@@ -204,7 +220,7 @@ public class NvoEmpaqueFragment extends Fragment {
             }else
             {
 
-                Bundle datosRecuperados = getArguments();
+
 
                 if (datosRecuperados != null) {
                     informeSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
@@ -218,7 +234,7 @@ public class NvoEmpaqueFragment extends Fragment {
                             public void onChanged(InformeEtapa informeEtapa) {
 
                                 mViewModel.setNvoinforme(informeEtapa);
-                                clienteId=informeEtapa.getClientesId();
+                              //  clienteId=informeEtapa.getClientesId();
                                 mViewModel.setIdNuevo(informeSel);
                                 int pregact = 0;
                                 ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informeEtapa,informeEtapa.getTotal_muestras(), informeEtapa.getTotal_cajas());
@@ -229,9 +245,10 @@ public class NvoEmpaqueFragment extends Fragment {
                                     Log.e(TAG, "no deberia entrar aqui");
                                 } else {
                                     //busco la lista de cajas
-                                    mViewModel.listaCajasEtiqxCli(clienteId);
+                                    mViewModel.getCajasEtiq();
                                     mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
                                     mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
+                                    mViewModel.cajaAct.numCaja=ultimares.getNum_caja();
                                     //ya tengo dimensiones?
                                     ultimarescaja = mViewModel.getUltimoxCaja(informeSel,mViewModel.cajaAct.consCaja  );
                                     Log.d(TAG, "lol"+ultimares.getNum_caja());
@@ -257,8 +274,9 @@ public class NvoEmpaqueFragment extends Fragment {
                                         if (mViewModel.pesoCaja > 0)
                                             pregact = 104;
 
-                                        mViewModel.cajaAct.consCaja  = ultimarescaja.getNum_caja();
+                                      //  mViewModel.cajaAct.consCaja  = ultimarescaja.getNum_caja();
 
+                                      //  mViewModel.cajaAct.numMuestras=ultimares.getNum_muestra();
                                         if (pregact > 0) {
                                             mViewModel.buscarReactivo(pregact).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
                                                 @Override
@@ -266,6 +284,7 @@ public class NvoEmpaqueFragment extends Fragment {
                                                     preguntaAct = reactivo;
                                                     mViewModel.preguntaAct = preguntaAct.getId();
                                                     isEdicion = true;
+                                                    Log.d(TAG,"DONE 5");
                                                     crearFormulario();
                                                 }
                                             });
@@ -274,6 +293,7 @@ public class NvoEmpaqueFragment extends Fragment {
                                             preguntaAct = mViewModel.buscarReactivoxDesc(ultimares.getDescripcion(), 4);
                                             mViewModel.preguntaAct = preguntaAct.getId();
                                             isEdicion = true;
+                                            Log.d(TAG,"DONE 4");
                                             crearFormulario();
 
                                         }
@@ -283,6 +303,7 @@ public class NvoEmpaqueFragment extends Fragment {
                                         preguntaAct = mViewModel.buscarReactivoxDesc(ultimares.getDescripcion(), 4);
                                         mViewModel.preguntaAct = preguntaAct.getId();
                                         isEdicion = true;
+                                        Log.d(TAG,"DONE 3");
                                         crearFormulario();
                                     }
 
@@ -291,13 +312,14 @@ public class NvoEmpaqueFragment extends Fragment {
                         });
                     }else
                     {
-                         mViewModel.variasClientes = false;
+                       //  mViewModel.variasClientes = false;
 
                         mViewModel.buscarInformeEmp(Constantes.INDICEACTUAL);
 
                         mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
                                 @Override
                                 public void onChanged(Reactivo reactivo) {
+                                    Log.d(TAG,"DONE 2");
                                     preguntaAct = reactivo;
                                     crearFormulario();
                                 }
@@ -326,42 +348,30 @@ public class NvoEmpaqueFragment extends Fragment {
             }
 
 
-            //busco si tengo varios clientes
-            listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL);
-            Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+                    InformeEtapa informetemp=new InformeEtapa();
 
-            if (mViewModel.getIdNuevo() == 0)
-                if (listainfetiq.size() > 1) {
-                    //tengo varias plantas
-                    // preguntaAct=1;
-                    convertirLista(listainfetiq);
-
-                    mViewModel.variasClientes = true;
-                    buscarPreguntas();
-                    preguntaAct = mViewModel.getListaPreguntas().get(0);
-                    crearFormulario();
-
-                } else if (listainfetiq.size() > 0) {
-
-                    mViewModel.variasClientes = false;
-                    clienteId = listainfetiq.get(0).getClientesId();
-                    clienteNombre = listainfetiq.get(0).getClienteNombre();
-                    InformeEtapa informetemp = new InformeEtapa();
-                    informetemp.setClienteNombre(clienteNombre);
-                    informetemp.setClientesId(clienteId);
                     informetemp.setIndice(Constantes.INDICEACTUAL);
                     mViewModel.setNvoinforme(informetemp);
+                   // Log.d(TAG,"clientesel"+clienteId);
                     //busco total de muestras y cajas
-                    mViewModel.listaCajasEtiqxCli(clienteId);
-                    mViewModel.totCajasEmp=mViewModel.listaCajasCli.size();
-                    mViewModel.getTotMuesEtiqxCli(clienteId);
+                    mViewModel.getCajasEtiq();
+                    mViewModel.totCajasEmp=mViewModel.resumenEtiq.size();
+
                     ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
-                    mViewModel.cajaAct=mViewModel.listaCajasCli.get(0);
+                    mViewModel.cajaAct=mViewModel.resumenEtiq.get(0);
+
+
+                    ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
+                  //  mViewModel.cajaAct=mViewModel.listaCajasCli.get(0);
+           // Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+
+            if (mViewModel.getIdNuevo() == 0)
 
 
                     mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
                         @Override
                         public void onChanged(Reactivo reactivo) {
+                            Log.d(TAG,"DONE 1");
                             preguntaAct = reactivo;
                             crearFormulario();
                         }
@@ -370,7 +380,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
 
 
-                        }else{
+                        if(mViewModel.cajaAct.numCaja==0){
                             Toast.makeText(getContext(),"NO TIENE INFORMES DE ETIQUETADO ",Toast.LENGTH_LONG).show();
 
                            getActivity().finish();
@@ -469,17 +479,7 @@ public class NvoEmpaqueFragment extends Fragment {
         }
         campo.id=1001;
 //para las plantas
-        if(preguntaAct.getType().equals(CreadorFormulario.SELECTDES)){
-            switch (preguntaAct.getNombreCampo()){
-                case "clientesId":
 
-
-                    campo.selectdes= listaClientes;
-                    break;
-
-            }
-
-        }
         if(campo.type.equals("agregarImagen")) {
 
             campo.funcionOnClick = new View.OnClickListener() {
@@ -623,26 +623,7 @@ public class NvoEmpaqueFragment extends Fragment {
         {
 
 
-            if(preguntaAct.getId()==91 ) { //cliente
-                DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
 
-                clienteId = opcionsel.getId();
-                clienteNombre = opcionsel.getNombre();
-                InformeEtapa informetemp=new InformeEtapa();
-                informetemp.setClienteNombre(clienteNombre);
-                informetemp.setClientesId(clienteId);
-                informetemp.setIndice(Constantes.INDICEACTUAL);
-                mViewModel.setNvoinforme(informetemp);
-                Log.d(TAG,"clientesel"+clienteId);
-                //busco total de muestras y cajas
-                mViewModel.listaCajasEtiqxCli(clienteId);
-                mViewModel.getTotMuesEtiqxCli(clienteId);
-                mViewModel.totCajasEmp=mViewModel.listaCajasCli.size();
-                ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
-                mViewModel.cajaAct=mViewModel.listaCajasCli.get(0);
-
-
-            }else
             if(preguntaAct.getId()==92 ) { //acomodo creo el informe y el detalle
 
                 this.guardarInf();
@@ -690,7 +671,7 @@ public class NvoEmpaqueFragment extends Fragment {
                 aceptar.setEnabled(false);
                 guardarDet();
                 //reviso si hay más cajas, si no fin
-                int sig=mViewModel.cajaAct.consCaja;
+                int sig=mViewModel.cajaAct.consCaja+1;
 
                 //limpio variables
                 mViewModel.largoCaja=0;
@@ -699,8 +680,8 @@ public class NvoEmpaqueFragment extends Fragment {
 
                 mViewModel.pesoCaja=0;
                 mViewModel.numMuestras=0;
-
-                if(sig<mViewModel.getNvoinforme().getTotal_cajas()){
+                mViewModel.cajaAct=null;
+                if(sig<=mViewModel.getNvoinforme().getTotal_cajas()){
                     //empiezo en las preguntas con nueva caja
                     //empiezo de 0
                   /*  Bundle bundle = new Bundle();
@@ -714,7 +695,7 @@ public class NvoEmpaqueFragment extends Fragment {
                     intento1.putExtras(bundle);
                     startActivity(intento1);
                     requireActivity().finish();*/
-                    mViewModel.cajaAct=mViewModel.listaCajasCli.get(sig);
+                    mViewModel.cajaAct=mViewModel.resumenEtiq.get(sig-1);
 
                     avanzarPregunta(92);
                     return;
@@ -1046,15 +1027,7 @@ public class NvoEmpaqueFragment extends Fragment {
         mViewModel.buscarReactivos();
 
     }
-    private  void convertirLista(List<InformeEtapa>lista){
-        listaClientes =new ArrayList<DescripcionGenerica>();
-        for (InformeEtapa listaCompra: lista ) {
 
-            listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
-
-        }
-
-    }
     public void avanzarPregunta(int sig){
         Log.d(TAG,"sig "+sig);
        /* if(sig==92){
@@ -1093,8 +1066,12 @@ public class NvoEmpaqueFragment extends Fragment {
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
             public void onChanged(Reactivo reactivo) {
-                Log.d(TAG,"sigu "+reactivo.getId()+"--"+reactivo.getNombreCampo());
-                NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment(reactivo,false);
+                Log.d(TAG,"sigu "+sig+"--"+reactivo.getNombreCampo());
+                Bundle args = new Bundle();
+                args.putInt(ARG_PREGACT,sig );
+                args.putBoolean(ARG_ESEDI,false);
+                NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment();
+                nvofrag.setArguments(args);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

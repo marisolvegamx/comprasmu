@@ -123,18 +123,19 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             }else
                 procesos++;
             if(Constantes.INDICEACTUAL!=""){
-        DescargaRespListener listdesc=new DescargaRespListener();
+        DescargaIniListener listdesc=new DescargaIniListener();
+        DescargaRespListener listresp=new DescargaRespListener();
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         if(actualiza==0) {
             if (getTotInfEtapas() == 0) {
 
 
-                ps.pedirRespaldo2(Constantes.INDICEACTUAL, listdesc);
+                ps.pedirRespaldo2(Constantes.INDICEACTUAL, listresp);
             } else {
                 listdesc.finalizar();
             }
             if (getTotCorre() == 0) {
-                ps.pedirRespaldoCor(Constantes.INDICEACTUAL, listdesc);
+                ps.pedirRespaldoCor(Constantes.INDICEACTUAL, listresp);
             } else {
                 listdesc.finalizar();
             }
@@ -378,14 +379,18 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                   //  proglist.cerrarAlerta();
         }
        public void finalizar(){
-            Log.d(TAG,"procesos "+procesos);
+            Log.d(TAG,"DescargaIniListener procesos "+procesos);
            procesos++;
-           if(actualiza==0&&procesos>5){
+           if(actualiza==0&&procesos==5){
 
                miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
+
+               //para que no vuelva a entrar
+
             } else if(actualiza==1&&procesos>3){
 
                miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
+
            }
 
 
@@ -520,7 +525,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
 
     public void informes(){
-          DescargaRespListener listener=new DescargaRespListener();
+          DescargaIniListener listener=new DescargaIniListener();
         int ban=0;
         if(getTotVisitas()==0) {
             //    DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespAsyncTask.DescargaRespListener();
@@ -591,12 +596,14 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     }
 
     public class DescargaRespListener {
+
         public DescargaRespListener() {
+
             //if(proglist!=null&&actualiza==1)
             //  proglist.cerrarAlerta();
         }
-        public void finalizar(){
-            Log.d(TAG,"procesos "+procesos);
+       /* public void finalizar(){
+            Log.d(TAG,"DescargaRespListener procesos "+procesos);
             procesos++;
             if(actualiza==0&&procesos>5){
                 miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
@@ -605,7 +612,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             }
             Log.d(TAG,"llorar");
 
-        }
+        }*/
 
 
 
@@ -718,7 +725,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     }
             }
 
-            finalizar();
+            listenprin.finalizar();
         }
 
         public void actualizarInfEtapa(RespInfEtapaResponse response){
@@ -741,7 +748,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     cajrepo.insertAll(response.getDetalleCaja());
                 }
             }
-            finalizar();
+            listenprin.finalizar();
 
         }
 
@@ -765,7 +772,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
 
           }
-            finalizar();
+            listenprin.finalizar();
         }
     }
 

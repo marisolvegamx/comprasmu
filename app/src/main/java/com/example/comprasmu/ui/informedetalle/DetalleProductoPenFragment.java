@@ -819,9 +819,22 @@ public class DetalleProductoPenFragment extends Fragment {
                    resp=validarCodigoprod();
                     break;*/
            case Contrato.TablaInformeDet.CADUCIDAD:
-                    resp=validarFecha();
-                    if(resp)
-                        resp=validarCodigoprod();
+                   int respf=validarCodigoProd();
+                   if(respf==1)
+                       resp=false; //camino que tenia
+                    if(respf==2){
+                        //nuevo mensaje de pregunta
+                        guardarResp();
+                        avanzarPregunta(preguntaAct.getSigAlt());
+                        return;
+                    }
+                    if(respf==3) { //todo bien
+                        guardarResp();
+                        avanzarPregunta(preguntaAct.getSigId());
+                        return;
+
+                    }
+
                 break;
             case "clientesId":
 
@@ -843,7 +856,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
             if(preguntaAct.getType().equals(CreadorFormulario.PREGUNTASINO)){
                 //reviso la opcion seleccionada de compro prod para otros clientes
-                if(!pregunta.getRespuesta()&&preguntaAct.getId()!=68) //se selecciono no
+                if(!pregunta.getRespuesta()&&preguntaAct.getId()!=68&&preguntaAct.getId()!=115) //se selecciono no
                 {
                     //voy al altsig
                     guardarResp();
@@ -854,6 +867,25 @@ public class DetalleProductoPenFragment extends Fragment {
 
                 }
             }
+            if(preguntaAct.getType().equals(CreadorFormulario.PREGUNTASINO)){
+                //reviso la opcion seleccionada de compro prod para otros clientes
+                if(preguntaAct.getId()==115) //validacion de fecha
+                {
+                    if(pregunta.getRespuesta()) {
+
+
+                        avanzarPregunta(preguntaAct.getSigId());
+                        return;
+                    }else { //es no
+                        //borro xq ya guardé
+                        //talve no necesite borrar xq sobreescribo
+                        avanzarPregunta(preguntaAct.getSigAlt()); //vuevo a pregunta fecha
+                        return;
+                    }
+
+                }
+            }
+
 
             if(preguntaAct.getSigId()==20000) //voy a lista de compra
             {
@@ -1292,59 +1324,60 @@ public class DetalleProductoPenFragment extends Fragment {
         }
 
     }
-    public boolean validarFecha(){
-        //
-    //
-        ValidadorDatos valdat=new ValidadorDatos();
-        try {
-            sdfcodigo.setLenient(false);
-            fechacad=sdfcodigo.parse(textoint.getText().toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), getString( R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
 
+
+    public boolean validarFechaCad(Date fechacad) {
+
+
+        // if (dViewModel.productoSel.clienteNombre.trim().equals("PEÑAFIEL")) {
+        Date hoy = new Date();
+
+        if (fechacad.getTime() <= hoy.getTime()) { //ya caducó fechacad>=hoy
+            Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca), Toast.LENGTH_LONG).show();
 
             return false;
         }
-       // if (dViewModel.productoSel.clienteNombre.trim().equals("PEÑAFIEL")) {
-            Date hoy=new Date();
-
-            if (fechacad.getTime()<=hoy.getTime()) { //ya caducó fechacad>=hoy
-                Toast.makeText(getActivity(), getString(R.string.error_fecha_caduca), Toast.LENGTH_LONG).show();
-
-                return false;
-            }else
-            //busco que no haya otra muestra con la misma fecha en el muestreo
-            //ni en el mismo informe
-                if(dViewModel.productoSel.tipoMuestra!=3||mViewModel.numMuestra>1) //solo si no es bu
-            if(this.buscarMuestraCodigoPeniafiel(fechacad)) {
-                Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
-
-                return false;
-            }
-            return true;
-
-        //}else{
-       //     Log.d(TAG,"como que no es peñafiel");
-      //  }
-      //  return false;
+        return true;
     }
-    //compraro con codigos no permitidos de lista de compra y rangos
-    public boolean validarCodigoprod(){
-         try {
-            fechacad=sdfcodigo.parse(textoint.getText().toString());
+    // devuelve 1 cuando muestro solo un toat y sigo en la misma pantalla
+    //devuelve 2 cuando falla los no permi o los repetidos
+    public int validarCodigoProd(){
+
+        Date fechacad;
+        try {
+            sdfcodigo.setLenient(false);
+            fechacad = sdfcodigo.parse(textoint.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
+            Toast.makeText(getActivity(), getString(R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
+
+
+            return 1;
         }
+        //valido fecha cad
+        if(!validarFechaCad(fechacad)){  //compraro con   rangos
+            return 1;}
         if(dViewModel.productoSel.clienteSel==5||dViewModel.productoSel.clienteSel==6) {
             ValidadorDatos valdat = new ValidadorDatos();
-            if (!valdat.validarCodigoprodPen(textoint.getText().toString(), dViewModel.productoSel.codigosnop)) {
-                if(valdat.mensaje>0)
-                    Toast.makeText(getActivity(), getString(valdat.mensaje), Toast.LENGTH_LONG).show();
-                return false;
+            String codigonoper = dViewModel.productoSel.codigosnop;
+            if (!fechacad.equals("") && codigonoper.length() > 1) {
+                if (!valdat.validarCodigoPepRango(textoint.getText().toString(), codigonoper)) {
+
+                    Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
+
+                    return 1;
+                }
             }
+
+            if (!valdat.validarCodigonoPermPen(textoint.getText().toString(), codigonoper))
+                return 2;
+
+            if (dViewModel.productoSel.tipoMuestra != 3 || mViewModel.numMuestra > 1) //solo si no es bu
+                if (this.buscarMuestraCodigoPeniafiel(fechacad))
+                    return 2;
         }
-        return true;
+
+        return 3; //todo bien
     }
 
     public MutableLiveData<Integer> guardarInforme(){
@@ -1710,8 +1743,7 @@ public class DetalleProductoPenFragment extends Fragment {
            validar.setEnabled(true);
        }
    }
-        Date fechacad = null;
-       boolean res;
+
         //validar siglas
    //true= ya existe un codigo igual
 
@@ -2013,6 +2045,9 @@ public class DetalleProductoPenFragment extends Fragment {
            }
 
        }
-
+       public class RespValFecha{
+        public boolean validacion;
+        public int sig;
+    }
 
 }

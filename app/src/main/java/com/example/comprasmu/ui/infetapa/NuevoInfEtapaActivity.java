@@ -28,6 +28,7 @@ import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
 import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -44,6 +45,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     public final static String NUMFOTO = "comprasmu.nie_numfoto";
     public final static String CORRECCION = "comprasmu.nie_correc"; //para saber que es correccion
     private static final String TAG = "NvoInfEtapaAct";
+
     boolean noSalir;
     boolean isEdicion;
     int idinformeSel;
@@ -92,7 +94,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         {
             //busco el ultimo detalle
             InformeEtapaDet det = infvm.getDetalleEtEdit(idinformeSel, etapa);
-
+            Log.d(TAG,"ahi esta el det "+det.getInformeEtapaId());
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             if (etapa == 1) {
@@ -120,41 +122,40 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             }
             if (etapa == 3) {
                 mBinding.row1.setVisibility(View.GONE);
+                Bundle args = new Bundle();
+                args.putInt(NvoEtiquetadoFragment.ARG_PREGACT,3 );
+                args.putBoolean(NvoEtiquetadoFragment.ARG_ESEDI,true);
+
+                args.putInt(NvoEtiquetadoFragment.ARG_INFORMESEL,idinformeSel);
+                NvoEtiquetadoFragment nvofrag = new NvoEtiquetadoFragment();
+                nvofrag.setArguments(args);
                 if (det != null) {
                     //busco la pregunta actual en la decripcion
                     //char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
                     //Log.d(TAG, "preg=" + preg);
-                    ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment(3,true,det,idinformeSel));
+                    args.putInt(NvoEtiquetadoFragment.ARG_INFORMEDET,det.getId() );
+
+                    ft.add(R.id.continfeta_fragment, nvofrag);
 
                 }else
                     //todavía no capturaba detalle
-                {  ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment(3,true,null,idinformeSel));
+                {  ft.add(R.id.continfeta_fragment,nvofrag);
                 }
             }
             if (etapa == 4) {
-                if(plantaSel>1)//es una nueva caja
-                {
-                    isEdicion=false;
-                    Bundle bundle=new Bundle();
 
-                    bundle.putInt(NuevoInfEtapaActivity.INFORMESEL, idinformeSel);
-                    bundle.putInt(NuevoInfEtapaActivity.PLANTASEL,plantaSel);
-                    //busco la pregunta actual en la decripcion
-                    //char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
-                    //Log.d(TAG, "preg=" + preg);
-                    NvoEmpaqueFragment empf=new NvoEmpaqueFragment(null,false);
-                    empf.setArguments(bundle);
-                    ft.add(R.id.continfeta_fragment,empf);
-                }else
                 if (det != null) {
                     Bundle bundle=new Bundle();
 
                     bundle.putInt(NuevoInfEtapaActivity.INFORMESEL, idinformeSel);
-                    bundle.putInt(NuevoInfEtapaActivity.PLANTASEL,plantaSel);
+
+                   // bundle.putInt(NvoEmpaqueFragment.ARG_PREGACT,0);
+                    bundle.putBoolean(NvoEmpaqueFragment.ARG_ESEDI,true);
+
                     //busco la pregunta actual en la decripcion
                     //char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
                     //Log.d(TAG, "preg=" + preg);
-                    NvoEmpaqueFragment empf=new NvoEmpaqueFragment(null,true);
+                    NvoEmpaqueFragment empf=new NvoEmpaqueFragment();
                     empf.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment,empf);
 
@@ -188,7 +189,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             }
             else if (etapa == 4) {
 
-                ft.add(R.id.continfeta_fragment, new NvoEmpaqueFragment(null,false));
+                ft.add(R.id.continfeta_fragment, new NvoEmpaqueFragment());
 
 
             }
@@ -357,7 +358,13 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             //busco el reactivo anterior
             {
                 if (dViewModel.preguntaAct > 91) {
-                    NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment(reactivo, true);
+                    Bundle bundle=new Bundle();
+
+
+                    bundle.putInt(NvoEmpaqueFragment.ARG_PREGACT,reactivo.getId());
+                    bundle.putBoolean(NvoEmpaqueFragment.ARG_ESEDI,true);
+                    NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment();
+                    nvofrag.setArguments(bundle);
                     FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -368,7 +375,14 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     fragmentTransaction.commit();
                 }
                 if (dViewModel.preguntaAct == 92 && dViewModel.variasClientes) {
-                    NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment(reactivo, true);
+                    Bundle bundle=new Bundle();
+
+
+                    bundle.putInt(NvoEmpaqueFragment.ARG_PREGACT,reactivo.getId());
+                    bundle.putBoolean(NvoEmpaqueFragment.ARG_ESEDI,true);
+                    NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment();
+                    nvofrag.setArguments(bundle);
+
                     FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

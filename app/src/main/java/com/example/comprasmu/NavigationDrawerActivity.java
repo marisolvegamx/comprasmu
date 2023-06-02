@@ -340,7 +340,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
     //saber si tiene mas de una ciudad para mostrar seleccionar ciudad
     public void revisarCiudades(){
-
+        Log.d(TAG,"ciudades");
             mViewModel.getCiudades().observe(this, data -> {
               //   Log.d(TAG,"....regresó de la consulta "+ data.size());
                 if(data.size()>1)

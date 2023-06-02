@@ -99,7 +99,7 @@ public class ComprasUtils {
             int height = bitmapOrg.getHeight();
             int tam=bitmapOrg.getByteCount();
             int quality=45;
-            if(tam>500000){
+            if(tam>300000){
                 quality=35;
             }
 

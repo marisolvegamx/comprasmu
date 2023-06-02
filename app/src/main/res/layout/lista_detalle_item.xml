@@ -40,6 +40,7 @@
 
 
     <LinearLayout
+        android:id="@+id/llldmain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -72,6 +73,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/llldprod"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -125,12 +127,14 @@
                     android:visibility="gone" />
 
                 <LinearLayout
+                    android:id="@+id/llldbotones"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/llldanalisis"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -198,6 +202,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/llldbu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"

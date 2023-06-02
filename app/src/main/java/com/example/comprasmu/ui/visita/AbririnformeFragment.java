@@ -114,6 +114,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public static final String CODEREQ = "comprasmu.abririnf.codereq";
     private static final String BLATITUD ="comprasmu.abririnf.latitud";
     private static final String BLONGITUD ="comprasmu.abririnf.logitud";
+    public static final String KEY_ETAPAACT = "comprasmu.ni_etapact";
+    public static final String KEY_USUARIO = "comprasmu.ni_usuario";
+    public static final String KEY_INDICEACT = "comprasmu.ni_indcieact";
+    private static final String KEY_CDTRAB ="comprasmu.ni_cdtrab";
     // protected Validator validator;
     protected boolean guardado;
 
@@ -213,7 +217,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         root = inflater.inflate(R.layout.fragment_abririnforme, container, false);
 
-        TextView indice = root.findViewById(R.id.txtaiindice);
+            TextView indice = root.findViewById(R.id.txtaiindice);
         indice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
         milog=ComprasLog.getSingleton();
         milog.crearLog(getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
@@ -249,6 +253,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             globrequestcode=savedInstanceState.getInt(CODEREQ);
             ultlatitud=savedInstanceState.getDouble(BLATITUD);
             ultlongitud=savedInstanceState.getDouble(BLONGITUD);
+           Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
+           Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
+           Constantes.INDICEACTUAL = savedInstanceState.getString(KEY_INDICEACT);
+            Constantes.CIUDADTRABAJO = savedInstanceState.getString(KEY_CDTRAB);
+
         }
         // continuar=(Button)root.findViewById(R.id.aibtnguardarcont);
         ImageButton fotoexhibido = root.findViewById(R.id.btnaifotoexhibido);
@@ -292,7 +301,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 if (txtubicacion.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
 
-                 //  locationStart();
+                   locationStart();
                     return;
                 }
 
@@ -695,25 +704,26 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 //  Log.d(TAG,);
 //                 Log.d(TAG,"a ver"+fotosExh.get(0).clienteId+"-"+Constantes.clientesAsignados.indexOf(fotosExh.get(0).clienteId));
                 int pos = buscarEnClientes(fotosExh.get(0).clienteId, clientesAsignados);
-                spinn.setSelection(pos, true);
-                //quito la opción en los otros
-                if (totClientes > 1) {
-                    clientesAsignados2.remove(pos);
-                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
+                if(pos>0) {
+                    spinn.setSelection(pos, true);
+                    //quito la opción en los otros
+                    if (totClientes > 1) {
+                        clientesAsignados2.remove(pos);
+                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
 
+                    }
+
+                    if (totClientes > 2) {
+                        clientesAsignados3.remove(pos);
+                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
+
+                    }
+                    if (totClientes > 3) {
+                        clientesAsignados4.remove(pos);
+                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn4, clientesAsignados4);
+
+                    }
                 }
-
-                if (totClientes > 2) {
-                    clientesAsignados3.remove(pos);
-                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
-
-                }
-                if (totClientes > 3) {
-                    clientesAsignados4.remove(pos);
-                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn4, clientesAsignados4);
-
-                }
-
             }
             if (fotosExh != null && fotosExh.size() > 1) {
 //            mostrarOcultarlayout("true",ll);
@@ -773,6 +783,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     }
 
     public int buscarEnClientes(int seleccion, List<DescripcionGenerica> listaclientes) {
+      if(listaclientes!=null)
         for (int i = 0; i < listaclientes.size(); i++) {
             Log.d(TAG, "clientesas " + listaclientes.get(i).getId() + "--" + seleccion);
             if (listaclientes.get(i).getId() == seleccion)
@@ -1585,11 +1596,17 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         savedInstanceState.putString(TXTUBICACION, ubicacion.getText().toString());
        */ // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt(KEY_ETAPAACT,Constantes.ETAPAACTUAL );
+        savedInstanceState.putString(KEY_USUARIO, Constantes.CLAVEUSUARIO );
+        savedInstanceState.putString(KEY_INDICEACT, Constantes.INDICEACTUAL );
+        savedInstanceState.putString(KEY_CDTRAB,  Constantes.CIUDADTRABAJO );
+
         savedInstanceState.putString(IMG_PATH, nombre_foto);
         savedInstanceState.putInt(CODEREQ,globrequestcode );
         if(ultimaLoc!=null)
         { savedInstanceState.putDouble(BLATITUD,ultimaLoc.getLatitude() );
         savedInstanceState.putDouble(BLONGITUD,ultimaLoc.getLongitude() );}
+
     }
 
 

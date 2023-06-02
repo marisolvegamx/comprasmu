@@ -156,8 +156,13 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
        return dao.totalCajasEtiqxCli(i,cliente);
 
     }
+    public List<InformeEtapaDet> getResumenEtiq(int i, String indice) {
+        return dao.resumenEtiq(i,indice);
+
+    }
     public int totalMuestrasEtiqxCli(int i, int cliente) {
         return dao.totalMuestrasEtiqxCli(i, cliente);
     }
+
 }
 
