@@ -61,8 +61,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
 
         // get fragment manager
 
-        myChildToolbar =
-                findViewById(R.id.toolbarinf);
+        myChildToolbar =findViewById(R.id.toolbarinf);
         setSupportActionBar(myChildToolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
@@ -70,8 +69,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 // add
-        nviewModel =
-                new ViewModelProvider(this).get(NuevoinformeViewModel.class);
+        nviewModel =new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
         dViewModel = new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
      /*   if (savedInstanceState != null) {    // Restore value of members from saved state
@@ -89,110 +87,123 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             //  }
         }*/
         // if(Constantes.NM_TOTALISTA>=16)
+        if (savedInstanceState != null) {    // Restore value of members from saved state
+            Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
+            Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
+            Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
+            // idinformeSel = savedInstanceState.getInt("visitasel");
+            //if(idinformeSel==0) { //se salio y lo devuelvo al inicio
+            Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
+            startActivity(intento1);
+            finish();
+            //mando al inicio
+            //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
+            return;
+        }else {
 
+            loadData(savedInstanceState);
+            //reviso si es edicion y ya tengo info en temp
+            ultimares = dViewModel.getUltimoTemp();
 
-        loadData(savedInstanceState);
-        //reviso si es edicion y ya tengo info en temp
-        ultimares=dViewModel.getUltimoTemp();
-
-        if(ultimares!=null) //es edicion
-        {
-            if(ultimares.getNombre_campo().equals("ticket_noemiten")){
-                //me muevo a la anterior
-                ultimares=dViewModel.buscarTempxId(ultimares.getId()-1);
-            }
-            Log.d(TAG,"++"+ultimares.getNombre_campo());
-            preguntaAct=dViewModel.inftempToReac(ultimares);
-
-            Log.d(TAG, "1.reactivo:" +preguntaAct.getId()+"--"+ultimares.getNombre_campo());
-
-            nviewModel.numMuestra=ultimares.getNumMuestra();
-            nviewModel.setIdInformeNuevo(ultimares.getInformesId());
-            nviewModel.consecutivo=ultimares.getConsecutivo();
-            nviewModel.clienteSel=ultimares.getClienteSel();
-             if(preguntaAct.getTabla().equals(ultimares.getTabla())){
-                //si es la misma
-
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                if(nviewModel.clienteSel==4||nviewModel.clienteSel==0) {
-                    Log.d(TAG,"aqui");
-                    Bundle args = new Bundle();
-                    args.putInt(DetalleProductoFragment.ARG_PREGACT,preguntaAct.getId() );
-                    args.putBoolean(DetalleProductoFragment.ARG_ESEDI,true);
-                    DetalleProductoFragment nvofrag = new DetalleProductoFragment();
-                    nvofrag.setArguments(args);
-
-                    ft.add(R.id.continf_fragment,nvofrag);
+            if (ultimares != null) //es edicion
+            {
+                if (ultimares.getNombre_campo().equals("ticket_noemiten")) {
+                    //me muevo a la anterior
+                    ultimares = dViewModel.buscarTempxId(ultimares.getId() - 1);
                 }
-                if(nviewModel.clienteSel==5) {
-                    Bundle args = new Bundle();
-                    args.putInt(DetalleProductoPenFragment.ARG_PREGACTP,preguntaAct.getId() );
-                    args.putBoolean(DetalleProductoPenFragment.ARG_ESEDIP,true);
-                    DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment();
-                    nvofrag.setArguments(args);
-                    ft.add(R.id.continf_fragment, nvofrag);
-                }
+                Log.d(TAG, "++" + ultimares.getNombre_campo());
+                preguntaAct = dViewModel.inftempToReac(ultimares);
 
-                if(nviewModel.clienteSel==6) {
-                    Bundle args = new Bundle();
-                    args.putInt(DetalleProductoElecFragment.ARG_PREGACTE,preguntaAct.getId() );
-                    args.putBoolean(DetalleProductoElecFragment.ARG_ESEDIE,true);
-                    DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment();
-                    nvofrag.setArguments(args);
-                    ft.add(R.id.continf_fragment, nvofrag);
-                }
-                    if(nviewModel.clienteSel==7) {
+                Log.d(TAG, "1.reactivo:" + preguntaAct.getId() + "--" + ultimares.getNombre_campo());
+
+                nviewModel.numMuestra = ultimares.getNumMuestra();
+                nviewModel.setIdInformeNuevo(ultimares.getInformesId());
+                nviewModel.consecutivo = ultimares.getConsecutivo();
+                nviewModel.clienteSel = ultimares.getClienteSel();
+                if (preguntaAct.getTabla().equals(ultimares.getTabla())) {
+                    //si es la misma
+
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    if (nviewModel.clienteSel == 4 || nviewModel.clienteSel == 0) {
+                        Log.d(TAG, "aqui");
                         Bundle args = new Bundle();
-                        args.putInt(DetalleProductoJumFragment.ARG_PREGACTJ,preguntaAct.getId() );
-                        args.putBoolean(DetalleProductoJumFragment.ARG_ESEDIJ,true);
+                        args.putInt(DetalleProductoFragment.ARG_PREGACT, preguntaAct.getId());
+                        args.putBoolean(DetalleProductoFragment.ARG_ESEDI, true);
+                        DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                        nvofrag.setArguments(args);
+
+                        ft.add(R.id.continf_fragment, nvofrag);
+                    }
+                    if (nviewModel.clienteSel == 5) {
+                        Bundle args = new Bundle();
+                        args.putInt(DetalleProductoPenFragment.ARG_PREGACTP, preguntaAct.getId());
+                        args.putBoolean(DetalleProductoPenFragment.ARG_ESEDIP, true);
+                        DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment();
+                        nvofrag.setArguments(args);
+                        ft.add(R.id.continf_fragment, nvofrag);
+                    }
+
+                    if (nviewModel.clienteSel == 6) {
+                        Bundle args = new Bundle();
+                        args.putInt(DetalleProductoElecFragment.ARG_PREGACTE, preguntaAct.getId());
+                        args.putBoolean(DetalleProductoElecFragment.ARG_ESEDIE, true);
+                        DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment();
+                        nvofrag.setArguments(args);
+                        ft.add(R.id.continf_fragment, nvofrag);
+                    }
+                    if (nviewModel.clienteSel == 7) {
+                        Bundle args = new Bundle();
+                        args.putInt(DetalleProductoJumFragment.ARG_PREGACTJ, preguntaAct.getId());
+                        args.putBoolean(DetalleProductoJumFragment.ARG_ESEDIJ, true);
                         DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment();
                         nvofrag.setArguments(args);
                         ft.add(R.id.continf_fragment, nvofrag);
                     }
-                 ft.commit();
-
-            }else{
-                 buscarPreguntas();
-
-                 dViewModel.getReactivos().observe(this, new Observer<List<Reactivo>>() {
-                     @Override
-                     public void onChanged(List<Reactivo> reactivos) {
-                         Log.d(TAG, "reactivo:" + reactivos.get(0).getLabel());
-                         Bundle args = new Bundle();
-                         args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivos.get(0).getId() );
-                         args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
-                         DetalleProductoFragment nvofrag = new DetalleProductoFragment();
-                         nvofrag.setArguments(args);
-                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        // ft.add(R.id.continf_fragment, new DetalleProductoFragment(reactivos.get(0),false));
-                         ft.add(R.id.continf_fragment, nvofrag);
-
-                         ft.commit();
-                     }
-                 });
-            }
-        }else {
-            //e uno nuevo
-            buscarPreguntas();
-            nviewModel.numMuestra=0;
-           // nviewModel.setIdInformeNuevo(ultimares.getInformesId());
-          //  nviewModel.consecutivo=ultimares.getConsecutivo();
-            dViewModel.getReactivos().observe(this, new Observer<List<Reactivo>>() {
-                @Override
-                public void onChanged(List<Reactivo> reactivos) {
-                    Log.d(TAG, "2reactivo:" + reactivos.get(0).getLabel());
-                    Bundle args = new Bundle();
-                    args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivos.get(0).getId() );
-                    args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
-                    DetalleProductoFragment nvofrag = new DetalleProductoFragment();
-                    nvofrag.setArguments(args);
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                  //  ft.add(R.id.continf_fragment, new DetalleProductoFragment(reactivos.get(0),false));
-                    ft.add(R.id.continf_fragment, nvofrag);
-
                     ft.commit();
+
+                } else {
+                    buscarPreguntas();
+
+                    dViewModel.getReactivos().observe(this, new Observer<List<Reactivo>>() {
+                        @Override
+                        public void onChanged(List<Reactivo> reactivos) {
+                            Log.d(TAG, "reactivo:" + reactivos.get(0).getLabel());
+                            Bundle args = new Bundle();
+                            args.putInt(DetalleProductoFragment.ARG_PREGACT, reactivos.get(0).getId());
+                            args.putBoolean(DetalleProductoFragment.ARG_ESEDI, false);
+                            DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                            nvofrag.setArguments(args);
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            // ft.add(R.id.continf_fragment, new DetalleProductoFragment(reactivos.get(0),false));
+                            ft.add(R.id.continf_fragment, nvofrag);
+
+                            ft.commit();
+                        }
+                    });
                 }
-            });
+            } else {
+                //e uno nuevo
+                buscarPreguntas();
+                nviewModel.numMuestra = 0;
+                // nviewModel.setIdInformeNuevo(ultimares.getInformesId());
+                //  nviewModel.consecutivo=ultimares.getConsecutivo();
+                dViewModel.getReactivos().observe(this, new Observer<List<Reactivo>>() {
+                    @Override
+                    public void onChanged(List<Reactivo> reactivos) {
+                        Log.d(TAG, "2reactivo:" + reactivos.get(0).getLabel());
+                        Bundle args = new Bundle();
+                        args.putInt(DetalleProductoFragment.ARG_PREGACT, reactivos.get(0).getId());
+                        args.putBoolean(DetalleProductoFragment.ARG_ESEDI, false);
+                        DetalleProductoFragment nvofrag = new DetalleProductoFragment();
+                        nvofrag.setArguments(args);
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        //  ft.add(R.id.continf_fragment, new DetalleProductoFragment(reactivos.get(0),false));
+                        ft.add(R.id.continf_fragment, nvofrag);
+
+                        ft.commit();
+                    }
+                });
+            }
         }
     }
 
@@ -275,7 +286,8 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         if(datosRecuperados!=null) {
             idinformeSel = datosRecuperados.getInt(INFORMESEL); //es la visita id
             Log.d(TAG,"si entro aq "+idinformeSel);
-        }else { //lo recupero
+        }
+        /*else { //lo recupero
             Log.d(TAG,"si entro aqui2");
             if (savedInstanceState != null) {    // Restore value of members from saved state
                 Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
@@ -283,7 +295,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
                 // idinformeSel = savedInstanceState.getInt("visitasel");
                 //if(idinformeSel==0) { //se salio y lo devuelvo al inicio
-                    Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
+              /*      Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
                     startActivity(intento1);
                     finish();
                     //mando al inicio
@@ -291,7 +303,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                     return;
             }
 
-        }
+        }*/
 
         mBinding.setSdf(Constantes.sdfsolofecha);
         //Log.d(TAG, "informe creado=" + idinformeSel);

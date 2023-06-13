@@ -193,6 +193,7 @@ public class DetalleProductoFragment extends Fragment {
 
     public void crearPregunta(){
         int num_pregact=0;
+        Log.d(TAG,"creando preg"+mViewModel.numMuestra);
         if(preguntaAct==null)
 
         if (getArguments() != null) {
@@ -1178,6 +1179,9 @@ public class DetalleProductoFragment extends Fragment {
         plantaSel=0;
         NOMBREPLANTASEL=null;
         Constantes.DP_CONSECUTIVO=0;
+
+        nombre_foto=null;
+        archivofoto=null;
     }
 
 
@@ -1243,10 +1247,11 @@ public class DetalleProductoFragment extends Fragment {
                         Log.d(TAG, "se creo el informe" + idnvo);
                         mViewModel.informe.setId(idnvo);
                         mViewModel.setIdInformeNuevo(idnvo);
+                        int numues=mViewModel.numMuestra;
                         // mViewModel.informe.setSinproducto();
                         if(!mViewModel.informe.isSinproducto()) {
                             //si tengo detalle
-                            Log.d(TAG,"guardando  muestras "+mViewModel.numMuestra);
+                            Log.d(TAG,"guardando  muestras "+mViewModel.numMuestra+"--"+Constantes.NM_TOTALISTA);
 
                             //    List<Integer> muestras= dViewModel.muestrasTotales();
                             //  for(int x:muestras) {
@@ -1275,9 +1280,9 @@ public class DetalleProductoFragment extends Fragment {
                                 return;
                             }
                             yaestoyProcesando=false;
-                            if(Constantes.NM_TOTALISTA>=16&&mViewModel.numMuestra==3||Constantes.NM_TOTALISTA<16&&mViewModel.numMuestra==2) //ya terminé
+                            if(Constantes.NM_TOTALISTA>=16&&numues==3||Constantes.NM_TOTALISTA<16&&numues==2) //ya terminé
                             {
-                                Log.d(TAG,"terminé debo guardar y salir");
+                                Log.d(TAG,"terminé debo guardar y salir"+Constantes.NM_TOTALISTA+"--"+numues);
                                 //   limpiarTablTemp();
 
                                 avanzarPregunta(5);
@@ -1285,6 +1290,8 @@ public class DetalleProductoFragment extends Fragment {
                             }else
                             {
                                 Log.d(TAG,"ya me voy");
+                                mViewModel.numMuestra++;
+                                Log.d(TAG, "sume muestra"+mViewModel.numMuestra);
 
                                 avanzarPregunta(sig);
                             }
@@ -1295,11 +1302,13 @@ public class DetalleProductoFragment extends Fragment {
                             //guardo el numinforme para cuando se creen los coment
                             mViewModel.guardarResp( mViewModel.getIdInformeNuevo() ,0, mViewModel.getIdInformeNuevo()+"" ,"informeid","I",mViewModel.consecutivo,false);
                             yaestoyProcesando=false;
+                            mViewModel.numMuestra++;
+                            Log.d(TAG, "sume muestra"+mViewModel.numMuestra);
+
                             avanzarPregunta(sig);
                         }
 
-                        mViewModel.numMuestra++;
-                        //  idInformeNuevo.removeObservers(DetalleProductoFragment.this);
+                         //  idInformeNuevo.removeObservers(DetalleProductoFragment.this);
 
                     }
 
@@ -1312,6 +1321,7 @@ public class DetalleProductoFragment extends Fragment {
 
                 //    List<Integer> muestras= dViewModel.muestrasTotales();
                 //  for(int x:muestras) {
+                int numues=mViewModel.numMuestra;
                 int nuevoid = dViewModel.insertarMuestra(mViewModel.getIdInformeNuevo(), mViewModel.numMuestra);
                 //guardo la muestra
                 if (nuevoid > 0) {
@@ -1326,18 +1336,21 @@ public class DetalleProductoFragment extends Fragment {
                     dViewModel.setIddetalleNuevo(0);
                     dViewModel.limpiarVarsMuestra();
                     yaestoyProcesando=false;
-                    if(Constantes.NM_TOTALISTA>=16&&mViewModel.numMuestra==3||Constantes.NM_TOTALISTA<16&&mViewModel.numMuestra==2) //ya terminé
+                    if(Constantes.NM_TOTALISTA>=16&&numues==4||Constantes.NM_TOTALISTA<16&&numues==2) //ya terminé
                     {
-                        Log.d(TAG,"terminé debo guardar y salir");
+                        Log.d(TAG,"terminé debo guardar y salir"+Constantes.NM_TOTALISTA+"--"+numues);
                         //   limpiarTablTemp();
                         avanzarPregunta(5);
                         //preguntar si hay otro cliente, para agregar otro o cerrar
                     }else
                     {
+                        mViewModel.numMuestra++;
+                        Log.d(TAG, "sume muestra"+mViewModel.numMuestra);
+
                         avanzarPregunta(sig);
                     }
                 }
-                mViewModel.numMuestra++;
+               // mViewModel.numMuestra++;
                 //  }
             }else {
                 dViewModel.setIddetalleNuevo(0);
@@ -1345,8 +1358,9 @@ public class DetalleProductoFragment extends Fragment {
                 //guardo el numinforme para cuando se creen los coment
                 mViewModel.guardarResp( mViewModel.getIdInformeNuevo() ,0, mViewModel.getIdInformeNuevo()+"" ,"informeid","I",mViewModel.consecutivo,false);
                 yaestoyProcesando=false;
-                avanzarPregunta(sig);
                 mViewModel.numMuestra++;
+                avanzarPregunta(sig);
+
             }
 
             //else
@@ -1497,7 +1511,7 @@ public class DetalleProductoFragment extends Fragment {
         }
         //busco el siguiente
         Reactivo nvoReac = dViewModel.buscarReactivoSimpl(sig);
-        Log.e(TAG, "4-------------cons" + Constantes.DP_CONSECUTIVO);
+        Log.e(TAG, "4-------------cons" + Constantes.DP_CONSECUTIVO+"--"+mViewModel.numMuestra);
         preguntaview=null;
         //creo uno nuevo
         preguntaview=new DetalleInfView(getContext());
@@ -1848,7 +1862,7 @@ public class DetalleProductoFragment extends Fragment {
                         int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
                         //  Log.d(TAG, "*genere cons=" + consecutivo);
                         Log.d(TAG, "genere cons=" + consecutivo);
-
+                        Log.d(TAG, "numuest list" + mViewModel.numMuestra);
                         mViewModel.informe.setConsecutivo(consecutivo);
 
                         mViewModel.consecutivo = consecutivo;

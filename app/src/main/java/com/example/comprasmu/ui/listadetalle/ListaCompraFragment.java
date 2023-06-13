@@ -586,9 +586,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     }
     private void setupListAdapter() {
 
-        //consecutivoTienda=Constantes.DP_CONSECUTIVO;
 
-        Constantes.DP_CONSECUTIVO=consecutivoTienda;
+
+        Constantes.LC_CONSECUTIVO=consecutivoTienda;
 
         mListAdapter = new ListaCompraDetalleAdapter(mViewModel,this);
         //mBinding.detalleList.setAdapter(mListAdapter);

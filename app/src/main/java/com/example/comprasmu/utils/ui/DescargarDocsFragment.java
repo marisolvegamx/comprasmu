@@ -1,5 +1,7 @@
 package com.example.comprasmu.utils.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.comprasmu.R;
 
@@ -25,7 +28,7 @@ public class DescargarDocsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    Button btndesc;
     public DescargarDocsFragment() {
         // Required empty public constructor
     }
@@ -55,12 +58,28 @@ public class DescargarDocsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_descargar_docs, container, false);
+
+        View root= inflater.inflate(R.layout.fragment_descargar_docs, container, false);
+        btndesc = (Button) root.findViewById(R.id.btndddescargar);
+        btndesc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                descargarPDF();
+            }
+        });
+        return root;
+    }
+
+
+    public void descargarPDF(){
+        String MY_URL = "http://192.168.1.84/comprasv1/api/public/etenv?cvereco=4&indice=3.2023";
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(MY_URL)));
     }
 }

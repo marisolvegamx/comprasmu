@@ -57,6 +57,7 @@ public class Constantes {
     public static String ni_plantanombre;
     public static int NM_TOTALISTA;
     public static int DP_CONSECUTIVO;
+    public static int LC_CONSECUTIVO;
     public static int DP_TIPOTIENDA;
     public static NuevoDetalleViewModel.ProductoSel productoSel;
     public static HashMap <Integer,String>TIPOTIENDA;

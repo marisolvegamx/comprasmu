@@ -98,13 +98,31 @@ public class ComprasUtils {
             int width = bitmapOrg.getWidth();
             int height = bitmapOrg.getHeight();
             int tam=bitmapOrg.getByteCount();
-            int quality=45;
-            if(tam>300000){
-                quality=35;
+            int quality=50;
+            //Parámetros optimización, resolución máxima permitida
+            int max_ancho = 1200;
+            int max_alto = 900;
+
+
+            double x_ratio = (double)max_ancho/(double)width;
+            double y_ratio = (double)max_alto/(double)height;
+            int ancho_final, alto_final;
+
+            if( (width <= max_ancho) && (height <= max_alto) ){
+                ancho_final = width;
+                alto_final = height;
+            }
+            else if ((x_ratio * height) < max_alto){
+                alto_final = (int)(x_ratio * height);
+                ancho_final = max_ancho;
+            }
+            else{
+                ancho_final = (int)(y_ratio * width);
+                alto_final = max_alto;
             }
 
 
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, width, height, true);
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, ancho_final, alto_final, false);
 
             //comprimir imagen
             File file = new File(nombre_foto);
@@ -131,11 +149,17 @@ public class ComprasUtils {
     }
 
     public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+            BitmapFactory.Options options, int reqWidth, int reqHeight,int tam) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
+
+        int pot=3;
+        if(tam>200000000)
+        {
+            pot=4;
+        }
 
         if (height > reqHeight || width > reqWidth) {
 
@@ -146,7 +170,7 @@ public class ComprasUtils {
             // height and width larger than the requested height and width.
             while ((halfHeight / inSampleSize) > reqHeight
                     && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
+                inSampleSize *= pot;
             }
         }
      //  Log.d("imagenes","reducim tam orig "+height+"x"+width+" factor "+inSampleSize);
@@ -168,10 +192,10 @@ public class ComprasUtils {
         options.inJustDecodeBounds = true;
        // BitmapFactory.decodeResource(res, resId, options);
 
-        BitmapFactory.decodeFile(nombre_foto,options);
+        Bitmap orig=BitmapFactory.decodeFile(nombre_foto,options);
 
         // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, orig.getByteCount());
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
