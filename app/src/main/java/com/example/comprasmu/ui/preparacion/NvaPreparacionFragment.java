@@ -39,6 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
@@ -101,16 +102,18 @@ public class NvaPreparacionFragment extends Fragment {
     InformeEtapaDet detalleEdit;
     private NuevoInfEtapaViewModel infvm;
     int informesel;
-
+    public final static String ARG_PREGACT="comprasmu.np_pregactp";
+    public final static String ARG_ESEDI="comprasmu.np_esedip";
+    public final static String ARG_INFORMEDET="comprasmu.np_infdet";
     ComprasLog complog;
     public static NvaPreparacionFragment newInstance() {
         return new NvaPreparacionFragment();
     }
-    public NvaPreparacionFragment(int preguntaAct,boolean edicion, InformeEtapaDet informeEdit) {
+    /*public NvaPreparacionFragment(int preguntaAct,boolean edicion, InformeEtapaDet informeEdit) {
         this.preguntaAct = preguntaAct;
         this.isEdicion=edicion;
         this.detalleEdit=informeEdit;
-    }
+    }*/
     public NvaPreparacionFragment() {
 
     }
@@ -128,6 +131,17 @@ public class NvaPreparacionFragment extends Fragment {
                 new ViewModelProvider(requireActivity()).get(NuevoInfEtapaViewModel.class);
 
         complog=ComprasLog.getSingleton();
+        if (getArguments() != null) {
+
+            this.preguntaAct = getArguments().getInt(ARG_PREGACT);
+            this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
+            // mViewModel.setIdNuevo(this.informeSel);
+            //BUSCAR DETALLE EDIT SI ES DIFERENTE DE NULL
+            int detid = getArguments().getInt(ARG_INFORMEDET);
+            InformeEtapaDet det = mViewModel.getDetalleEta(detid);
+            if(det!=null)
+                this.detalleEdit=det;
+        }
         //busco si tengo varias plantas
         listacomp= lcViewModel.cargarPestanasSimp(Constantes.CIUDADTRABAJO);
 
@@ -690,7 +704,12 @@ public class NvaPreparacionFragment extends Fragment {
                        ComprasUtils cu = new ComprasUtils();
                         cu.comprimirImagen(archivofoto.getAbsolutePath());
                         Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
-                        fotomos.setImageBitmap(bitmap1);
+                        Glide.with(getContext())
+                                .load(archivofoto.getAbsolutePath())
+                                //  .placeholder(R.drawable.ic_cloud_off_red)
+
+                                .into(fotomos);
+                       // fotomos.setImageBitmap(bitmap1);
                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                         fotomos.setVisibility(View.VISIBLE);
 
@@ -888,8 +907,13 @@ public class NvaPreparacionFragment extends Fragment {
         //pregunto si habrá más clientes
         if(sig==1){
             preguntaSig = sig;
+            Bundle bundle=new Bundle();
+            bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,preguntaSig);
+            bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,false);
+            NvaPreparacionFragment nvofrag=    new NvaPreparacionFragment();
+            nvofrag.setArguments(bundle);
 
-            NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(preguntaSig, false,null);
+           // NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(preguntaSig, false,null);
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -903,8 +927,12 @@ public class NvaPreparacionFragment extends Fragment {
 
             //siguiente queda igual
             preguntaSig = sig;
-
-            NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(preguntaSig, false,null);
+            Bundle bundle=new Bundle();
+            bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,preguntaSig);
+            bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,false);
+            NvaPreparacionFragment nvofrag=    new NvaPreparacionFragment();
+            nvofrag.setArguments(bundle);
+           // NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(preguntaSig, false,null);
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -916,7 +944,12 @@ public class NvaPreparacionFragment extends Fragment {
 
 
         }else { //son los comentarios
-            NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(sig, false,null);
+            Bundle bundle=new Bundle();
+            bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,sig);
+            bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,false);
+            NvaPreparacionFragment nvofrag=    new NvaPreparacionFragment();
+            nvofrag.setArguments(bundle);
+            //NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(sig, false,null);
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

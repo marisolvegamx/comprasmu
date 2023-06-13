@@ -475,6 +475,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         }
         public void buscarClientes(){
          //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
+            Constantes.CIUDADTRABAJO=null;
             if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
 
                // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
@@ -565,7 +566,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
     }*/
         public void irAcdSel(){
-            NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartocdtrab);
+            NavHostFragment navHostFragment =
+                    (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            NavController navController = navHostFragment.getNavController();
+            if(navController!=null)
+                navController.navigate(R.id.action_buscartocdtrab);
 
         }
         private  void convertirLista(List<ListaCompra>lista){

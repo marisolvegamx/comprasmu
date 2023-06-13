@@ -342,7 +342,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         temporal.setInformesId(informeid);
         temporal.setIddetalle(informedet);
         if(!nombrecampo.equals("clientesId"))
-        temporal.setClienteSel(clienteSel);
+            temporal.setClienteSel(clienteSel);
         try {
             Log.d(TAG,"buscando a "+nombrecampo);
             //reviso si ya existe

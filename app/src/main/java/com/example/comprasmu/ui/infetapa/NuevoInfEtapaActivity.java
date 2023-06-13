@@ -94,7 +94,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         {
             //busco el ultimo detalle
             InformeEtapaDet det = infvm.getDetalleEtEdit(idinformeSel, etapa);
-            Log.d(TAG,"ahi esta el det "+det.getInformeEtapaId());
+        //    Log.d(TAG,"ahi esta el det "+det.getInformeEtapaId());
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             if (etapa == 1) {
@@ -106,15 +106,21 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 if (det != null) {
 
 
-                //busco la pregunta actual en la decripcion
-                char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
-                Log.d(TAG, "preg=" + preg);
-                NvaPreparacionFragment frag=    new NvaPreparacionFragment(Character.getNumericValue(preg), true, det);
-                 frag.setArguments(bundle);
-                ft.add(R.id.continfeta_fragment,frag );
+                    //busco la pregunta actual en la decripcion
+                    char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
+                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,Character.getNumericValue(preg));
+                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
+                    bundle.putInt(NvaPreparacionFragment.ARG_INFORMEDET,det.getId() );
+
+                    NvaPreparacionFragment frag=    new NvaPreparacionFragment();
+                     frag.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment,frag );
 
                  }else{
-                 NvaPreparacionFragment frag=new NvaPreparacionFragment(0,true,det);
+                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,0);
+                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
+                 //   bundle.putInt(NvaPreparacionFragment.ARG_INFORMEDET,det.getId() );
+                 NvaPreparacionFragment frag=new NvaPreparacionFragment();
                  frag.setArguments(bundle);
                  ft.add(R.id.continfeta_fragment,frag );
 
@@ -180,9 +186,17 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 }
 
             }else
-            if(etapa==1)
-                ft.add(R.id.continfeta_fragment, new NvaPreparacionFragment(1,false,null));
-            else if(etapa==3) {
+            if(etapa==1) {
+
+                bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,1);
+                bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,false);
+
+
+                NvaPreparacionFragment frag=    new NvaPreparacionFragment();
+                frag.setArguments(bundle);
+                //ft.add(R.id.continfeta_fragment, new NvaPreparacionFragment(1, false, null));
+                ft.add(R.id.continfeta_fragment,frag);
+            }else if(etapa==3) {
                 mBinding.row1.setVisibility(View.GONE);
                 ft.add(R.id.continfeta_fragment, new NvoEtiquetadoFragment());
 
@@ -409,13 +423,25 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             }
             if (infvm.cont > 1) {
                 NvaPreparacionFragment nvofrag;
+                Bundle bundle=new Bundle();
                 if(infvm.cont>100){
-                    nvofrag= new NvaPreparacionFragment(infvm.cont - 101, true, null);
+                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,infvm.cont - 101);
+                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
+                    nvofrag=    new NvaPreparacionFragment();
+                    nvofrag.setArguments(bundle);
+
+                    //nvofrag= new NvaPreparacionFragment(infvm.cont - 101, true, null);
 
                 }
 
-                else
-                    nvofrag=new NvaPreparacionFragment(infvm.cont +100, true, null);
+                else {
+                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,infvm.cont +100);
+                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
+                    nvofrag=    new NvaPreparacionFragment();
+                    nvofrag.setArguments(bundle);
+                   // nvofrag = new NvaPreparacionFragment(infvm.cont + 100, true, null);
+
+                }
 
                 FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
@@ -427,7 +453,12 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 fragmentTransaction.commit();
             }
           if (infvm.cont == 1 && dViewModel.variasClientes) {
-                NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont - 1, true, null);
+              Bundle bundle=new Bundle();
+              bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,infvm.cont - 1);
+              bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
+              NvaPreparacionFragment nvofrag=    new NvaPreparacionFragment();
+              nvofrag.setArguments(bundle);
+                //NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont - 1, true, null);
                 FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
