@@ -73,7 +73,7 @@ public class SubirPendService extends IntentService
 
 
                     //notificar();
-                    enviarReporte(objObservador);
+                  //  enviarReporte(objObservador);
                     // enviarOtra();
                 }catch (Exception ex){
 
