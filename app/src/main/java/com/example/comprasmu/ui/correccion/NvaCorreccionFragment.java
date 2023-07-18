@@ -119,20 +119,21 @@ public class NvaCorreccionFragment extends Fragment {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
-                Log.e(TAG,"estatus "+solicitud.getInformesId());
+                Log.e(TAG,"estatus "+solicitud.getInformesId()+numfoto);
                 //busco el consecutivo de la tienda
                 int constienda=0;
                 if(solicitudCor.getInformesId()>0) {
                     InformeCompra informe = solViewModel.getInformeSol(solicitudCor.getInformesId());
-                    Log.d(TAG,"inf "+informe.getConsecutivo());
-                    if(informe!=null)
-                        constienda=informe.getConsecutivo();
+
+                    if(informe!=null) {
+                        constienda = informe.getConsecutivo();
+                    }
                 }
                     ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud, constienda);
                 crearFormulario();
 
                 //BUSCO LA FOTO ORIGINAL
-                //n donde la busco
+                //en donde la busco
                 switch (solicitud.getEtapa()){
                     case 1:
                         solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
@@ -140,7 +141,7 @@ public class NvaCorreccionFragment extends Fragment {
                             public void onChanged(InformeEtapaDet informeEtapaDet) {
                                 rutafotoo=informeEtapaDet.getRuta_foto();
 
-                                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 150, 150);
+                                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
 
                                 fotoori1.setImageBitmap(bitmap1);
 
@@ -151,16 +152,35 @@ public class NvaCorreccionFragment extends Fragment {
                         });
                         break;
 
-                        case 3:case 4:case 5:case 6:
+                        case 3:
+                            solViewModel.buscarFotoEta(solicitud.getNumFoto(),solicitudCor.getInformesId(),3).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
+                                @Override
+                                public void onChanged(InformeEtapaDet informeEtapaDet) {
+                                    Log.d(TAG,"buscando"+informeEtapaDet.getId());
+                                    if(informeEtapaDet!=null) {
+                                        rutafotoo = informeEtapaDet.getRuta_foto();
+
+                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+
+                                        fotoori1.setImageBitmap(bitmap1);
+                                    }
+                                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                                    //fotoori1.setVisibility(View.VISIBLE);
+
+                                }
+                            });
+                            break;
+                            case 4:case 5:case 6:
                         solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                             @Override
                             public void onChanged(InformeEtapaDet informeEtapaDet) {
-                                rutafotoo=informeEtapaDet.getRuta_foto();
+                                if(informeEtapaDet!=null) {
+                                    rutafotoo = informeEtapaDet.getRuta_foto();
 
-                                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 150, 150);
+                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
 
-                                fotoori1.setImageBitmap(bitmap1);
-
+                                    fotoori1.setImageBitmap(bitmap1);
+                                }
                                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                                 //fotoori1.setVisibility(View.VISIBLE);
 
@@ -185,7 +205,7 @@ public class NvaCorreccionFragment extends Fragment {
                                     if(imagenDetalle!=null) {
                                         rutafotoo2 = imagenDetalle.getRuta();
 
-                                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 150, 150);
+                                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 80, 80);
                                             if(bitmap1!=null)
                                             fotoori2.setImageBitmap(bitmap1);
 
@@ -202,7 +222,7 @@ public class NvaCorreccionFragment extends Fragment {
                                     if(imagenDetalle!=null) {
                                         rutafotoo3 = imagenDetalle.getRuta();
 
-                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 150, 150);
+                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 80, 80);
                                         if(bitmap1!=null)
                                         fotoori3.setImageBitmap(bitmap1);
                                         root.findViewById(R.id.gpofotoo3).setVisibility(View.VISIBLE);
@@ -240,8 +260,8 @@ public class NvaCorreccionFragment extends Fragment {
                             public void onChanged(ImagenDetalle imagenDetalle) {
                                 if(imagenDetalle!=null) {
                                     rutafotoo = imagenDetalle.getRuta();
-
-                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 150, 150);
+                                    Log.d(TAG,"buscando "+rutafotoo);
+                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
                                     if(bitmap1!=null)
                                     fotoori1.setImageBitmap(bitmap1);
                                 }
@@ -480,7 +500,7 @@ public class NvaCorreccionFragment extends Fragment {
     public void verImagen(String nombrearch){
         //  ImageView imagen=(ImageView)v;
         // imagen.get
-        Log.e(TAG,nombrearch);
+        Log.e(TAG,"arch"+nombrearch);
         Intent iverim=new Intent(getActivity(), RevisarFotoActivity.class);
         iverim.putExtra(RevisarFotoActivity.IMG_PATH1,nombrearch);
         startActivity(iverim);
@@ -587,7 +607,7 @@ public class NvaCorreccionFragment extends Fragment {
                 // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 ComprasUtils cu = new ComprasUtils();
                 cu.comprimirImagen(archivofoto.getAbsolutePath());
-                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
+                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 80, 80);
                 xfotomos.setImageBitmap(bitmap1);
                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                 xfotomos.setVisibility(View.VISIBLE);

@@ -74,7 +74,7 @@ public class ReubicEtiqFragment extends Fragment {
     private  InformeEtapaDet detalleEdit;
 
     private static final String TAG = "ReubicEtiqFragment";
-    Button cancelar,nvacaja,guardar;
+    Button buscar,nvacaja,guardar;
     private long lastClickTime = 0;
 
     EditText  txtqr;
@@ -85,7 +85,7 @@ public class ReubicEtiqFragment extends Fragment {
     private NvaPreparacionViewModel mViewModel;
     List<String> spinnerValues;
     private ListaDetalleViewModel lcViewModel;
-
+    private LinearLayout p4, p5, lbotones;
     private static final int REQUEST_CODEQR = 345;
 
     ComprasLog milog;
@@ -115,10 +115,14 @@ public class ReubicEtiqFragment extends Fragment {
         spcaja=root.findViewById(R.id.sprecaja);
         nvacaja = root.findViewById(R.id.btnrecajamas);
         txtqr=root.findViewById(R.id.txtreqr);
+        buscar=root.findViewById(R.id.btnrebuscar);
+        p4=root.findViewById(R.id.llrepre4);
+        p5=root.findViewById(R.id.llrepre5);
+        lbotones=root.findViewById(R.id.llrebotones);
        // potra.setmLabel("¿INCLUIRAS OTRA MUESTRA EN ESTA CAJA?");
 
 //        ((NuevoInfEtapaActivity)getActivity()).cambiarTitulo("REUBICAR MUESTRA");
-
+       // mostrarp4();
         txtqr.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 
         txtqr.addTextChangedListener(new BotonTextWatcher(guardar));
@@ -126,11 +130,36 @@ public class ReubicEtiqFragment extends Fragment {
      //   txtnumcajas.addTextChangedListener(new BotonTextWatcher(aceptar2));
         spinnerValues = new ArrayList<>();
         //busco el total de cajas
-         totcajas=mViewModel.getTotCajasEtiq();
+        totcajas=mViewModel.getTotCajasEtiq(Constantes.CIUDADTRABAJO);
         for(int i=1;i<=totcajas;i++) {
             spinnerValues.add(i+"");
         }
+        //todo buscar 1ro qr y luego la caja
+       /* if(totcajas==0) {
+            totcajas = 1;
+            spinnerValues.add(1+"");
+        }
+        else { //ya tengo cajas  busco la ultima de esa cd
+            List<InformeEtapaDet> listacajas=mViewModel.listaCajasEtiqxCd(Constantes.CIUDADTRABAJO,1);
+            if(listacajas!=null) {
+                totcajas = listacajas.size();
+                if (totcajas > 0) { //las numeracion que ya tengo
+                    for (InformeEtapaDet det : listacajas
+                    ) {
+                        spinnerValues.add(det.getNum_caja() + "");
+                    }
+                }else { //cambié de cd
 
+                    totcajas = totcajas + 1; //para saber la sig caja
+                    spinnerValues.add(totcajas + "");
+                }
+            }else { //cambié de cd
+
+                totcajas = totcajas + 1; //para saber la sig caja
+                spinnerValues.add(totcajas + "");
+            }
+
+        }*/
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
         spcaja.setAdapter(adapter);
@@ -139,6 +168,14 @@ public class ReubicEtiqFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 iniciarLecQR();
+            }
+
+        });
+
+        buscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //buscarQr();
             }
 
         });
@@ -186,7 +223,16 @@ public void nvacaja(){
     spinnerValues.add(totcajas+"");
 
     }
-
+    public void mostrarp4(){
+        p4.setVisibility(View.VISIBLE);
+        p5.setVisibility(View.GONE);
+        lbotones.setVisibility(View.GONE);
+    }
+    public void mostrarp5(){
+        p4.setVisibility(View.GONE);
+        p5.setVisibility(View.VISIBLE);
+        lbotones.setVisibility(View.VISIBLE);
+    }
     public void cambiarMues(){
         if(txtqr.getText().toString().equals("")) {
 

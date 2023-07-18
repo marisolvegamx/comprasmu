@@ -184,10 +184,10 @@ public class ListaInformesViewModel extends AndroidViewModel {
         return detrepository.getCancelados(indiceSel);
 
     }
-
+    //por ahora aplica preparacion y etiq donde se cancela todo el info
     public LiveData<List<InformeEtapa>> cargarCanceladosEta(String indiceSel,int etapa ){
 
-        return inferepo.getInformesxEstatus(indiceSel,etapa,2);
+        return inferepo.getInformesxEstatus(indiceSel,etapa,0);
 
     }
 

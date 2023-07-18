@@ -42,6 +42,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
 
@@ -110,7 +111,7 @@ public class NvoEmpaqueFragment extends Fragment {
     InformeEtapaDet ultimares;
     DetalleCaja ultimarescaja;
     ComprasLog compraslog;
-
+    String ciudadInf;
 
 
     public NvoEmpaqueFragment() {
@@ -152,6 +153,7 @@ public class NvoEmpaqueFragment extends Fragment {
             {
                 Log.d(TAG, "pregact"+preguntaAct.getLabel()+"--"+mViewModel.getIdNuevo());
                 mViewModel.preguntaAct=preguntaAct.getId();
+                ciudadInf=Constantes.CIUDADTRABAJO;
                 //llegué por siguiente
                 if(mViewModel.getIdNuevo()>0) {
                  plantaSel=mViewModel.getNvoinforme().getPlantasId();
@@ -161,7 +163,8 @@ public class NvoEmpaqueFragment extends Fragment {
                             public void onChanged(InformeEtapaDet informeEtapaDet) {
                                 ultimares = informeEtapaDet;
                                 if(ultimares!=null)
-                                { mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
+                                {mViewModel.cajaAct=new EtiquetadoxCliente();
+                                    mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
                                     mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
                                     mViewModel.cajaAct.numCaja=ultimares.getNum_caja();
 
@@ -221,7 +224,7 @@ public class NvoEmpaqueFragment extends Fragment {
             {
 
 
-
+                ciudadInf=Constantes.CIUDADTRABAJO;
                 if (datosRecuperados != null) {
                     informeSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
 
@@ -818,7 +821,7 @@ public class NvoEmpaqueFragment extends Fragment {
                 Log.d(TAG, "creando nvo inf");
                 //creo el informe
                 if(mViewModel.getIdNuevo()==0)
-                mViewModel.setIdNuevo(mViewModel.insertarInformeEmp(Constantes.INDICEACTUAL,4,mViewModel.getNvoinforme().getClientesId(),mViewModel.getNvoinforme().getClienteNombre()));
+                mViewModel.setIdNuevo(mViewModel.insertarInformeEmp(Constantes.INDICEACTUAL,4,mViewModel.getNvoinforme().getClientesId(),mViewModel.getNvoinforme().getClienteNombre(), ciudadInf));
             }
         }catch (Exception ex){
             ex.getStackTrace();

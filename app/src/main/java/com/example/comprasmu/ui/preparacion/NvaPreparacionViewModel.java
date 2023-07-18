@@ -68,7 +68,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         this.compRepo=new InformeComDetRepositoryImpl(application);
         this.cajaAct=new EtiquetadoxCliente();
     }
-
+    //es para la preparacion
     public int insertarInformeEtapa(String indice,String plantaNombre,int plantaId, String clienteNombre,int clienteId){
         InformeEtapa informe=new InformeEtapa();
         informe.setIndice(indice);
@@ -103,7 +103,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return idNuevo;
 
     }
-    public int insertarInformeEmp(String indice,int etapa,int clienteId,String clienteNombre){
+    public int insertarInformeEmp(String indice,int etapa,int clienteId,String clienteNombre,String ciudadNombre){
         InformeEtapa informe=new InformeEtapa();
         informe.setIndice(indice);
         informe.setClientesId(clienteId);
@@ -114,6 +114,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         informe.setTotal_muestras(this.numMuestras);
         informe.setTotal_cajas(this.totCajasEmp);
         informe.setCreatedAt(new Date());
+        informe.setCiudadNombre(ciudadNombre);
         idNuevo=(int)infEtaRepository.insert(informe);
         informe.setId(idNuevo);
         this.nvoinforme=informe;
@@ -173,7 +174,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
 
 
-    public int insertarEtiq(String indice,String plantaNombre,int plantaId, String clienteNombre,int clienteId,int num_cajas, int tot_muestras){
+    public int insertarEtiq(String indice,String plantaNombre,int plantaId, String clienteNombre,int clienteId,int num_cajas, int tot_muestras,String ciudadNombre){
         InformeEtapa informe=new InformeEtapa();
         informe.setIndice(indice);
         informe.setPlantaNombre(plantaNombre);
@@ -186,6 +187,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         informe.setTotal_cajas(num_cajas);
         informe.setTotal_muestras(tot_muestras);
         informe.setCreatedAt(new Date());
+        informe.setCiudadNombre(ciudadNombre);
         idNuevo=(int)infEtaRepository.insert(informe);
         informe.setId(idNuevo);
         this.nvoinforme=informe;
@@ -380,15 +382,23 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
 
     }
-    public int getTotCajasEtiq(){
-        int val= infDetRepo.totalCajasEtiq( 3);
+    public int getTotCajasEtiq(String ciudad){
+        int val= infDetRepo.totalCajasEtiq( ciudad);
         Log.d(TAG,"cajas "+val);
         return val;
 
 
     }
-    public void getTotMuesEtiqxCli(int cliente){
-        this.numMuestras= infDetRepo.totalMuestrasEtiqxCli( 3,cliente);
+
+    public int getTotCajasEtiqxCd(String cd, int cliente){
+        int val= infDetRepo.totalCajasEtiqxCd( 3,cd,cliente);
+        Log.d(TAG,"cajas "+val);
+        return val;
+
+
+    }
+    public  List<InformeEtapaDet> listaCajasEtiqxCd(String ciudad, int cliente){
+        return infDetRepo.listaCajasEtiqxCd( 3,ciudad,cliente);
 
 
     }
@@ -549,8 +559,12 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return  imagenes;
     }
 
-    public InformeEtapa getInformexPlantaEta(int plantasId, int etapa, String indice) {
-        return infEtaRepository.getInformexPlan(indice,etapa,plantasId);
+    public InformeEtapa getInformexPlantaEta(int plantasId, int etapa, String indice,int estatus) {
+        return infEtaRepository.getInformexPlantEst(indice,etapa,plantasId,0);
+    }
+
+    public InformeEtapa getInformexPlantaEtaEst(int plantasId, int etapa, String indice,int estatus) {
+        return infEtaRepository.getInformexPlantEst2(indice,etapa,plantasId,estatus);
     }
     public ImagenDetalle getFoto(int idfoto) {
 
@@ -566,13 +580,19 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public int getTotalMuestras(int plantaSel) {
        return compRepo.getTotalMuesxPlan(plantaSel,Constantes.INDICEACTUAL);
     }
+    //devuelvo lista de plantas con informe
     public Integer[] tieneInforme(int etapa){
         Integer[] clienteAnt=null;
         List<InformeEtapa> informes=infEtaRepository.getAllSimple(etapa,Constantes.INDICEACTUAL);
         if(informes!=null&&informes.size()>0) {
             clienteAnt=new Integer[informes.size()];
-            for (int i = 0; i < informes.size(); i++)
+            for (int i = 0; i < informes.size(); i++) //y no estan cancelado
+            {
+              //  Log.d(TAG,"zzz"+informes.get(i).getEstatus());
+                if(informes.get(i).getEstatus()>0)
                 clienteAnt[i] = informes.get(i).getPlantasId();
+
+            }
         }
 
         return clienteAnt;
@@ -592,5 +612,26 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return envio;
     }
 
+        public void corregirEtiquetado(InformeEtapaDet muestra,int numcaja){
+
+            if(muestra!=null) {
+                muestra.setNum_caja(numcaja);
+                actualizarInfEtaDet(muestra);
+            }
+        }
+
+    public InformeEtapaEnv preparaInformeEtiqCor(int idnvo,InformeEtapaDet detalle){
+        InformeEtapaEnv envio=new InformeEtapaEnv();
+
+        envio.setInformeEtapa(getInformexId(idnvo));
+
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(Constantes.INDICEACTUAL);
+        List<InformeEtapaDet> temp=new ArrayList<>();
+        temp.add(detalle);
+        envio.setInformeEtapaDet(temp);
+
+        return envio;
+    }
 
 }

@@ -63,7 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,GoogleMap.OnInfoWindowCloseListener,GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
     public static final String EXTRA_LATITUD = "extra_latitud";
     public static final String EXTRA_LONGITUD ="extra_longitud" ;
@@ -475,7 +474,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         }
         public void buscarClientes(){
          //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
-            Constantes.CIUDADTRABAJO=null;
+           // Constantes.CIUDADTRABAJO=null;
             if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
 
                // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";

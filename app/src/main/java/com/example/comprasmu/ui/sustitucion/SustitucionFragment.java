@@ -122,7 +122,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         if(bundle2!=null) {
             numTienda = bundle2.getInt(ARG_CONSTIENDA);
         }
-        mViewModel.cargarListas(categoriaSel,clienteSel,empaque,tamanio,numTienda);
+        mViewModel.cargarListas(plantaSel,categoriaSel,clienteSel,empaque,tamanio,numTienda);
         mViewModel.getListas().observe(getViewLifecycleOwner(), myProducts -> {
             if (myProducts != null && myProducts.size() > 0) {
                 Log.d(Constantes.TAG, "en la consulta de sust=> " + myProducts.get(0).getId_sustitucion());

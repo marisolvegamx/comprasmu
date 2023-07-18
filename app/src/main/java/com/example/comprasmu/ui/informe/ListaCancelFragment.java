@@ -147,7 +147,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
     private void setupListAdapter() {
         mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.detalleList.setHasFixedSize(true);
-        if(Constantes.ETAPAACTUAL==1){
+        if(Constantes.ETAPAACTUAL==1||Constantes.ETAPAACTUAL==3){
             mEtaAdapter = new CancelEtaAdapter();
             mBinding.detalleList.setAdapter(mEtaAdapter);
             cargarListaEtapa();

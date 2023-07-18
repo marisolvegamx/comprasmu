@@ -1,6 +1,5 @@
 package com.example.comprasmu.ui.home;
 
-
 import android.content.Context;
 import android.content.Intent;
 
@@ -31,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     private boolean isEdit;
     private int tiporec;
     ComprasLog milog;
+    int mivar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_home);
         milog=ComprasLog.getSingleton();
         milog.crearLog(this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
-
+    mivar=5;
         final TextView textView = findViewById(R.id.text_home);
         Constantes.ETAPAACTUAL=0;
         getTipoRec();
@@ -133,9 +133,9 @@ public class HomeActivity extends AppCompatActivity {
         finish();
     }
     public void iraEtiq(){
+        Log.d("HomeActivity","mivar "+mivar);
         Constantes.ETAPAACTUAL=3;
         Intent intento=new Intent(this, DescInfSupActivity.class);
-
         startActivity(intento);
         finish();
     }

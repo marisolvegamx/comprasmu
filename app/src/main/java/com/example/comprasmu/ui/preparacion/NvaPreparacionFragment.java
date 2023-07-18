@@ -144,35 +144,33 @@ public class NvaPreparacionFragment extends Fragment {
         }
         //busco si tengo varias plantas
         listacomp= lcViewModel.cargarPestanasSimp(Constantes.CIUDADTRABAJO);
+        if(listacomp!=null) {
+            if (!isEdicion && mViewModel.getIdNuevo() == 0)
+                if (listacomp.size() > 1) {
+                    //tengo varias plantas
+                    preguntaAct = 0;
+                    preguntaSig = 1;
+                    convertirLista(listacomp);
+                    mViewModel.variasClientes = true;
+                } else if (listacomp.size() > 0) {
+                    mViewModel.variasClientes = false;
+                    //tengo el nombre de la planta y cliente
 
-        if(!isEdicion&&mViewModel.getIdNuevo()==0)
-        if(listacomp.size()>1) {
-            //tengo varias plantas
-            preguntaAct=0;
-            preguntaSig=1;
-            convertirLista(listacomp);
-            mViewModel.variasClientes =true;
-        }else if(listacomp.size()>0)
-        {
-            mViewModel.variasClientes =false;
-                  //tengo el nombre de la planta y cliente
+                    nombrePlantaSel = listacomp.get(0).getPlantaNombre();
+                    plantaSel = listacomp.get(0).getPlantasId();
+                    clienteId = listacomp.get(0).getClientesId();
+                    clienteNombre = listacomp.get(0).getClienteNombre();
+                    InformeEtapa informetemp = new InformeEtapa();
+                    informetemp.setClienteNombre(clienteNombre);
+                    informetemp.setClientesId(clienteId);
+                    informetemp.setPlantasId(plantaSel);
+                    informetemp.setPlantaNombre(nombrePlantaSel);
+                    informetemp.setIndice(Constantes.INDICEACTUAL);
+                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informetemp);
+                } else
+                    Log.e(TAG, "algo salió mal con la consulta de listas");
 
-            nombrePlantaSel=listacomp.get(0).getPlantaNombre();
-            plantaSel=listacomp.get(0).getPlantasId();
-            clienteId=listacomp.get(0).getClientesId();
-            clienteNombre=listacomp.get(0).getClienteNombre();
-            InformeEtapa informetemp=new InformeEtapa();
-            informetemp.setClienteNombre(clienteNombre);
-            informetemp.setClientesId(clienteId);
-            informetemp.setPlantasId(plantaSel);
-            informetemp.setPlantaNombre(nombrePlantaSel);
-            informetemp.setIndice(Constantes.INDICEACTUAL);
-            ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(informetemp);
         }
-        else
-            Log.e(TAG,"algo salió mal con la consulta de listas");
-
-
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
         if(!isEdicion&&preguntaAct<2&&mViewModel.getIdNuevo()==0) {
@@ -204,7 +202,7 @@ public class NvaPreparacionFragment extends Fragment {
                 informesel= datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
             }
 
-            if(preguntaAct==6){
+            if(preguntaAct==6){ //comentarios
                 if(detalleEdit!=null){
                     //busco aqui el idinforme
                     mViewModel.setIdNuevo(detalleEdit.getInformeEtapaId());
@@ -215,14 +213,18 @@ public class NvaPreparacionFragment extends Fragment {
                 mViewModel.getInformeEdit(mViewModel.getIdNuevo()).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
                     @Override
                     public void onChanged(InformeEtapa informeEtapa) {
-                        ultimares=informeEtapa.getComentarios();
-                        informeEdit=informeEtapa;
+                        if(informeEtapa!=null)
+                        { ultimares=informeEtapa.getComentarios();
+                        informeEdit=informeEtapa;}
                         crearFormulario();
                     }
                 });
 
-            }else if(preguntaAct==0) {
-
+            }else if(preguntaAct==0) { //lista plantas
+                if(listacomp==null){
+                    Toast.makeText(getActivity(), "No hay mas plantas", Toast.LENGTH_SHORT).show();
+                    return root;
+                }
                 convertirLista(listacomp);
                 mViewModel.variasClientes =true;
                 if(informesel>0)
@@ -232,8 +234,10 @@ public class NvaPreparacionFragment extends Fragment {
                 mViewModel.getInformeEdit(mViewModel.getIdNuevo()).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
                     @Override
                     public void onChanged(InformeEtapa informeEtapa) {
-                        ultimares=informeEtapa.getPlantasId()+"";
-                        informeEdit=informeEtapa;
+                        if(informeEtapa!=null) {
+                            ultimares = informeEtapa.getPlantasId() + "";
+                        }
+                            informeEdit = informeEtapa;
                         mViewModel.setNvoinforme(informeEdit);
                         crearFormulario();
                         spclientes = root.findViewById(1001);
@@ -276,6 +280,7 @@ public class NvaPreparacionFragment extends Fragment {
                     @Override
                     public void onChanged(InformeEtapaDet informeEtapaDet) {
                         Log.d(TAG,"edicion detalledit"+informeEtapaDet.getRuta_foto());
+                       if(informeEtapaDet!=null)
                         ultimares=informeEtapaDet.getRuta_foto();
                         detalleEdit = informeEtapaDet;
                         crearFormulario();
@@ -435,7 +440,12 @@ public class NvaPreparacionFragment extends Fragment {
             if(isEdicion&&ultimares!=null&&!ultimares.equals("")){
                 //busco la ruta en imagenes fotos
                 Log.d(TAG,"buscando foto "+ultimares);
-                ImagenDetalle foto=mViewModel.getFoto(Integer.parseInt(ultimares));
+                ImagenDetalle foto=null;
+                try {
+                     foto = mViewModel.getFoto(Integer.parseInt(ultimares));
+                }catch (NumberFormatException ex){
+                    complog.grabarError(ex.getMessage());
+                }
                 // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 //ComprasUtils cu=new ComprasUtils();
                 // bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
@@ -604,11 +614,22 @@ public class NvaPreparacionFragment extends Fragment {
     //finalizar informe
     public void finalizar() {
         try {
+
             mViewModel.finalizarInf();
+
             InformeEtapaEnv informe=this.preparaInforme();
-            SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(informe,getActivity());
+            if(informe.getInformeEtapa().getEstatus()==2)//ya está finalizado
+            { SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(informe,getActivity());
             miTareaAsincrona.execute();
-            subirFotos(getActivity(),informe);
+            subirFotos(getActivity(),informe);}
+            //necesito ver que sea una correccion
+            //busco informe de la misma planta cancelado
+            InformeEtapa inf=mViewModel.getInformexPlantaEtaEst(informe.getInformeEtapa().getPlantasId(),1,Constantes.INDICEACTUAL,0);
+            if(inf!=null){
+                //actualizo a 4 //corregido
+                inf.setEstatus(4);
+                mViewModel.actualizarInfEtapa(inf);
+            }
         }catch(Exception ex){
             ex.getStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
@@ -688,43 +709,50 @@ public class NvaPreparacionFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
+       // archivofoto=null;
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
             //   super.onActivityResult(requestCode, resultCode, data);
 
-            if (archivofoto!=null&&archivofoto.exists()) {
-                if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
+            if (!nombre_foto.equals("")&&archivofoto!=null&&archivofoto.exists()) {
+
                     textoint.setText(nombre_foto);
                     if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
                     {
                         Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-
+                        aceptar.setEnabled(false);
                         return;
                     }else {
                         // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                       ComprasUtils cu = new ComprasUtils();
-                        cu.comprimirImagen(archivofoto.getAbsolutePath());
-                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
-                        Glide.with(getContext())
-                                .load(archivofoto.getAbsolutePath())
-                                //  .placeholder(R.drawable.ic_cloud_off_red)
+                     try {
+                         ComprasUtils cu = new ComprasUtils();
+                         cu.comprimirImagen(archivofoto.getAbsolutePath());
+                         Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
+                         Glide.with(getContext())
+                                 .load(archivofoto.getAbsolutePath())
+                                 //  .placeholder(R.drawable.ic_cloud_off_red)
 
-                                .into(fotomos);
-                       // fotomos.setImageBitmap(bitmap1);
-                        // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                        fotomos.setVisibility(View.VISIBLE);
+                                 .into(fotomos);
+                         // fotomos.setImageBitmap(bitmap1);
+                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                         fotomos.setVisibility(View.VISIBLE);
 
-                        btnrotar.setVisibility(View.VISIBLE);
-                        btnrotar.setFocusableInTouchMode(true);
-                        btnrotar.requestFocus();
-                        nombre_foto=null;
-                        archivofoto=null;
+                         btnrotar.setVisibility(View.VISIBLE);
+                         btnrotar.setFocusableInTouchMode(true);
+                         btnrotar.requestFocus();
+                         nombre_foto = null;
+                         archivofoto = null;
+                     }catch(Exception ex){
+                         //algo salió mal intente de nuevo
+                        errorFoto();
+                     }
                     }
 
-                }
+
 
 
             }
             else{
+                errorFoto();
                 Log.e(TAG,"Algo salió mal???");
             }
 
@@ -732,6 +760,7 @@ public class NvaPreparacionFragment extends Fragment {
        }
           else
         {
+            errorFoto();
             Log.e(TAG,"Algo salió muy mal**");
         }
     }
@@ -746,7 +775,11 @@ public class NvaPreparacionFragment extends Fragment {
 
 
     }
+public void errorFoto(){
+    Toast.makeText(getActivity(), "Intente tomar la foto de nuevo", Toast.LENGTH_LONG).show();
 
+    aceptar.setEnabled(false);
+}
     public void guardarFoto(int sig){
         try {
 
@@ -1002,11 +1035,12 @@ public class NvaPreparacionFragment extends Fragment {
     private  void convertirLista(List<ListaCompra>lista){
         listaPlantas=new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
-            //reviso si ya tengo informe
-            InformeEtapa inf=mViewModel.getInformexPlantaEta(listaCompra.getPlantasId(),1,Constantes.INDICEACTUAL);
+            //reviso si ya tengo informe no cancelado
+            InformeEtapa inf=mViewModel.getInformexPlantaEta(listaCompra.getPlantasId(),1,Constantes.INDICEACTUAL,0);
           /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
           listaCompra.getPlantaNombre();*/
-           if(inf!=null)
+            //puede ser el que tengo
+           if(inf!=null&&inf.getId()!= informesel)
                continue;
             listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+","+listaCompra.getClienteNombre(),listaCompra.getPlantaNombre()));
 

@@ -24,6 +24,7 @@ import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.databinding.ActivityNuevoInfetapaBinding;
+import com.example.comprasmu.ui.correccion.NvaCorreccionEtiqFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
 import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
@@ -78,7 +79,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             //  if(idinformeSel>0) { //se salio y lo devuelvo al inicio
             this.finish();
             Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
-            intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"continuarinf");
+           // intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"continuarinf");
 
             startActivity(intento1);
             //mando al inicio
@@ -108,7 +109,8 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
                     //busco la pregunta actual en la decripcion
                     char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
-                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,Character.getNumericValue(preg));
+                   int x= Character.getNumericValue(preg);
+                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,x);
                     bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
                     bundle.putInt(NvaPreparacionFragment.ARG_INFORMEDET,det.getId() );
 
@@ -176,6 +178,10 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 bundle.putInt(NuevoInfEtapaActivity.NUMFOTO, numfoto);
                 if(etapa==1) {
                     NvaCorreccionPreFragment frag = new NvaCorreccionPreFragment();
+                    frag.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment, frag);
+                }else  if(etapa==3) {
+                    NvaCorreccionEtiqFragment frag = new NvaCorreccionEtiqFragment();
                     frag.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment, frag);
                 }else

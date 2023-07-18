@@ -72,7 +72,23 @@ public class NvaCorreViewModel extends AndroidViewModel {
         return correccion;
 
     }
+    public int insertarCorreccionEtiq(int solicitudid,String indice,int numFoto,String ruta1, String ruta2,String ruta3, String dato1){
+        Correccion correccion=new Correccion();
+        correccion.setSolicitudId(solicitudid);
+        correccion.setRuta_foto1(ruta1);
 
+        correccion.setEstatusSync(0);
+        correccion.setEstatus(1);
+        correccion.setIndice(indice);
+        correccion.setNumfoto(numFoto);
+        correccion.setDato1(dato1);
+        correccion.setCreatedAt(new Date());
+        idNuevo=(int)correpository.insert(correccion);
+        correccion.setId(idNuevo);
+        this.nvocorreccion =correccion;
+        return idNuevo;
+
+    }
     public CorreccionEnvio prepararEnvio(Correccion nvacorreccion){
         CorreccionEnvio envio=new CorreccionEnvio();
 

@@ -178,7 +178,7 @@ public class PostInformeViewModel {
     public void actualizarEstatusFoto(ImagenDetalle imagen){
            imagenRepo.actualizarEstatusSync(imagen.getId(),Constantes.ENVIADO);
     }
-    /**para envio***/
+    /**para envio de pendientes***/
     public TodoEnvio prepararInformesPen(){
 
         TodoEnvio envio=new TodoEnvio();
@@ -187,36 +187,40 @@ public class PostInformeViewModel {
         List<InformeCompraDetalle> informeCompraDetallesenv=new ArrayList<>();
         List<ImagenDetalle> imagenDetallesenv=new ArrayList<>();
         List<ProductoExhibido> productosExenv=new ArrayList<>();
-        List<VisitaWithInformes> visitas= visitaRepo.getVisitaWithInformesByIndice(Constantes.INDICEACTUAL);
-        for(VisitaWithInformes visitapend:visitas) {
-            if (visitapend.visita.getEstatusSync() == 0&&visitapend.visita.getEstatus()==2)//finalizado
-                visitaenv.add(visitapend.visita);
-            Log.d(TAG,"buscando prodexh"+visitapend.visita.getId());
-            List<ProductoExhibido> productoExhibidos=prodeRepo.getAllsimple(visitapend.visita.getId());
-
-            for(ProductoExhibido produc:productoExhibidos){
-                if(produc.getEstatusSync()==0)
-                    productosExenv.add(produc);
-            }
-            for (InformeCompra informe:visitapend.informes){
-                if(informe.getEstatusSync()==0) {
-                    informeCompraenv.add(informe);
-                    //busco los detalles
-                    List<InformeCompraDetalle> detalles = infoDetRepo.getAllSencillo(informe.getId());
-                    informeCompraDetallesenv.addAll(detalles);
-                    //   envio.setImagenDetalles(buscarImagenes(visita, informe, detalles));
-                }
-            }
-        }
-
+        List<VisitaWithInformes> visitas= visitaRepo.getVisitaWithInformesByIndicePend(Constantes.INDICEACTUAL);
         Calendar calhoy = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
         calhoy.setTime(new Date());
         calhoy.set(Calendar.HOUR_OF_DAY, -2);
         calhoy.set(Calendar.MINUTE, 0);
         calhoy.set(Calendar.SECOND, 0);
         calhoy.set(Calendar.MILLISECOND, 0);
+        for(VisitaWithInformes visitapend:visitas) {
+            if (visitapend.visita.getEstatusSync() == 0 && visitapend.visita.getEstatus() == 2)//finalizado
+            {
+                visitaenv.add(visitapend.visita);
+                Log.d(TAG, "buscando prodexh" + visitapend.visita.getId());
+                List<ProductoExhibido> productoExhibidos = prodeRepo.getAllsimple(visitapend.visita.getId());
 
-        imagenDetallesenv=imagenRepo.getImagenPendSyncsimple2(calhoy.getTime().getTime());
+                for (ProductoExhibido produc : productoExhibidos) {
+                    if (produc.getEstatusSync() == 0)
+                        productosExenv.add(produc);
+                }
+            }
+            for (InformeCompra informe : visitapend.informes) {
+                if (informe.getEstatusSync() == 0 && informe.getEstatus() == 2) {//finalizados y sin enviar
+                    informeCompraenv.add(informe);
+                    //busco los detalles
+                    List<InformeCompraDetalle> detalles = infoDetRepo.getAllSencillo(informe.getId());
+                    informeCompraDetallesenv.addAll(detalles);
+                    //   envio.setImagenDetalles(buscarImagenes(visita, informe, detalles));
+                    imagenDetallesenv = imagenRepo.getImagenPendSyncsimple2(calhoy.getTime().getTime());
+
+                }
+            }
+
+
+           }
+
         if(imagenDetallesenv.size()>0)
             envio.setImagenDetalles(imagenDetallesenv);
         if(informeCompraenv.size()>0)

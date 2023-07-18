@@ -58,6 +58,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     private int tiporec;
     private boolean puedodescargar;
     private ComprasLog complog;
+    private int descim1, descim2,descim3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,15 +188,16 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         ps.getEtapaAct(listener);
 
     }
-    //cuando todas las listas están en 1 porque voy a iniciar traigo etapanva y hay que borrar
+    //para recolectores foraneos cuando todas las listas están en 1 porque voy a iniciar traigo etapanva y hay que borrar
+    //para los locales la etapa se cambia en la tabla del recolector cuando se supervise su ultima etapa
     public void validarBorrar(String indicenvo, int etapanva,int etapafin, int tiporec){
       Log.d(TAG,"en valdar borrar"+indicepref);
        if(indicepref!=null&&!indicepref.equals("")) {
            if (!indicenvo.equals(indicepref)) {
                //cambie de indice
-               //veo si es la ultima etapa y puedo borrar
+               //veo si es la primera etapa y puedo borrar
 
-               if (etapanva>0&&etapanva == etapafinpref) {
+               if (etapanva>0&&etapanva == etapafin) { //talvez esta haya que actualizarla del servidor
                    //voy a borrar datos
                    //por si no quiere borrar
                    Constantes.INDICEACTUAL = indicepref;
@@ -331,11 +333,14 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     @Override
     public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
         if (maininfoResp!=null&&maininfoResp.getImagenDetalles() != null && maininfoResp.getImagenDetalles().size() > 0) {
-
+            Log.d(TAG," **descargando imagenes " );
+            if(descim1==0)
             descargarImagenes(maininfoResp.getImagenDetalles());
-
+            descim1=1;
         }
-        imagenesEtapa(maininfoetaResp);
+//        Log.d(TAG," **descargando imagenes etapa "+maininfoResp.getImagenDetalles().size());
+
+       // imagenesEtapa(maininfoetaResp); ya vienen con los informes /**pero que pasara cunado solo necesite preparacion
         imagenesCor(mainRespcor);
         Log.d(TAG,"**enviando al home");
         success();
@@ -346,6 +351,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
     public void imagenesCor(List<Correccion> infoResp) {
         if (infoResp!=null&& infoResp.size() > 0) {
+            if(descim3==0)
             for(Correccion img:infoResp){
                 startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto1(), DESTINATION_PATH);
                 startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto2(), DESTINATION_PATH);
@@ -353,20 +359,23 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
                 // Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto1());
             }
             // cerrarAlerta(true);
-
+            descim3=1;
 
         }
     }
 
     public void imagenesEtapa(RespInfEtapaResponse infoResp) {
         if (infoResp!=null&&infoResp.getInformeEtapaDet() != null && infoResp.getInformeEtapaDet().size() > 0) {
-
+            if(descim2==0)
             for(InformeEtapaDet img:infoResp.getInformeEtapaDet()){
-                Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto());
+                //busco la ruta
+               // ImagenDetalle imagen=
+                Log.d(TAG," **descargando etap "+DOWNLOAD_PATH+"/"+img.getRuta_foto());
 
 
                 startDownload(DOWNLOAD_PATH+"/"+ Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto(), DESTINATION_PATH);
                      }
+            descim2=1;
             // cerrarAlerta(true);
 
 
@@ -416,7 +425,8 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         public void validarEtapa(EtapaResponse response) {
 
             if (response != null) {
-                Log.e(TAG,response.getIndiceact()+"--"+response.getEtapaact()+"--"+response.getEtapafin());
+                //etapafin realmente es la incial
+                Log.e(TAG,"devuelve del serv"+response.getIndiceact()+"--"+response.getEtapaact()+"--"+response.getEtapafin());
                // if (response.getEtapaact() > 0) {
                     //validar si cambio de indice y borro
                     validarBorrar(response.getIndiceact(), response.getEtapaact(), response.getEtapafin(),response.getTiporec());

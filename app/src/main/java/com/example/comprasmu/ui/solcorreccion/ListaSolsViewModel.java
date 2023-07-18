@@ -83,8 +83,13 @@ public class ListaSolsViewModel extends AndroidViewModel {
         return infcrepo.getCancelados(indiceSel);
 
     }
+    //por ahora aplica preparacion y etiq donde se cancela todo el info
+    public LiveData<List<InformeEtapa>> getTotalCancelEta(String indiceSel, int etapa ){
+        return infetarepo.getInformesxEstatus(indiceSel,etapa,0);
+
+    }
     public void actualizarEstSolicitud(int id,int numfoto, int estatus){
-        Log.d(TAG,"actalizando"+id+"--"+estatus);
+        Log.d(TAG,"actalizando"+id+"--"+numfoto);
       repository.actualizarEstatus(id,numfoto,estatus);
 
     }
@@ -163,18 +168,18 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
 
     }
-
+    //el estatus viene como 2 pero en la app 0 es cancelado y 2 es finalizado
     public void procesarCanceladasEta(MuestraCancelada cancelada){
-         InformeEtapa det=infetarepo.findsimple(cancelada.getInd_id());
+         InformeEtapa det=infetarepo.findsimple(cancelada.getInf_id());
 
         if(det!=null) {
-
+            Log.e(TAG,"cancele");
             det.setMotivoCancel(cancelada.getVas_observaciones());
             det.setFechaCancel(cancelada.getVas_fecha());
-            det.setEstatus(2);
+            det.setEstatus(0);
 
             infetarepo.insert(det);
-            infetarepo.actualizarEstatus(det.getId(), 2);
+            infetarepo.actualizarEstatus(det.getId(), 0);
 
 
 
