@@ -2,7 +2,6 @@
 package com.example.comprasmu;
 
 import android.Manifest;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,70 +9,50 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-
 import android.graphics.Color;
 import android.graphics.Typeface;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-
 import android.view.Gravity;
 import android.view.MenuItem;
-
 import android.view.Menu;
-
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.comprasmu.data.PeticionesServidor;
-
-
 import com.example.comprasmu.data.modelos.Contrato;
-
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.MuestraCancelada;
-
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.SolCorreResponse;
-
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
-
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
-
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
-
 import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
-
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
-
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasLog;
-
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.workmanager.SyncWork;
-
 import com.google.android.material.navigation.NavigationView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
-
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
-
 import androidx.lifecycle.LiveData;
 
 import androidx.lifecycle.Observer;
@@ -128,7 +107,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     boolean notificar=false;
     int desclis; int descinf; int descfoto;
     LiveData<List<InformeCompraDetalle>> totCancel;
-
+    LiveData<List<InformeEtapa>> totCanceleta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -285,9 +264,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             graph.setStartDestination(R.id.nav_home);
         }
         navController.setGraph(graph);
-        if(Constantes.ETAPAACTUAL==1)
-            gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+        if(Constantes.ETAPAACTUAL==1) {
+            gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
+            txtcancel = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_precancel));
+        }
         if(Constantes.ETAPAACTUAL==2) {
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_listasolcor));
@@ -298,6 +280,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             pedirInformes(0);
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
+            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_canceleti));
         }
         if(Constantes.ETAPAACTUAL==4)
             gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
@@ -340,6 +324,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
     //saber si tiene mas de una ciudad para mostrar seleccionar ciudad
     public void revisarCiudades(){
+        if(Constantes.ETAPAACTUAL==4)
+            return; //ya no importa la ciudad
         Log.d(TAG,"ciudades");
             mViewModel.getCiudades().observe(this, data -> {
               //   Log.d(TAG,"....regresó de la consulta "+ data.size());
@@ -621,8 +607,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
     private void contarCanceladas(){
+        //depende la etapa
+        if(Constantes.ETAPAACTUAL==2)
         totCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
-        Log.d(TAG,"wwww"+totCorrecciones+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+        else
+        {
+            totCanceleta=scViewModel.getTotalCancelEta(Constantes.INDICEACTUAL,Constantes.ETAPAACTUAL);
+            Log.d(TAG,"wwww"+totCanceleta+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+
+        }
 
     }
     private void initializeCountDrawer(){
@@ -641,10 +634,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         });
 
         if(txtcancel!=null) {
+            txtcancel.setText("x");
             txtcancel.setGravity(Gravity.CENTER_VERTICAL);
             txtcancel.setTypeface(null, Typeface.BOLD);
             txtcancel.setTextColor(Color.RED);
             //  gallery.setTextSize(15);
+            if(Constantes.ETAPAACTUAL==2)
             totCancel.observe(this, new Observer<List<InformeCompraDetalle>>() {
                 @Override
                 public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
@@ -652,7 +647,16 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                         txtcancel.setText(informeCompraDetalles.size() + "");
                 }
             });
+            else
+                totCanceleta.observe(this, new Observer<List<InformeEtapa>>() {
+                    @Override
+                    public void onChanged(List<InformeEtapa> informeCompraDetalles) {
+                        Log.d(TAG,"wwww"+informeCompraDetalles.size()+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
+                        if(informeCompraDetalles!=null)
+                            txtcancel.setText(informeCompraDetalles.size() + "");
+                    }
+                });
 
         }
 
@@ -687,7 +691,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
         Constantes.CLAVEUSUARIO=prefe.getString("claveusuario","");
 */
-
+   //     Constantes.INDICEACTUAL="7.2023";
         Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
 
@@ -702,18 +706,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         solRepo = new SolicitudCorRepoImpl(this);
         PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
         TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLSOLCORRECCIONES, Constantes.INDICEACTUAL);
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String version;
         if (comp != null && comp.getVersion() != null) {
             version = sdf.format(comp.getVersion());
-            //
-
         } else //es la 1a vez
         {
             version = "1999-09-09"; //una fecha muy antigua
-
-
         }
         if (actualiza == 1) {
             version = "1999-09-09"; //una fecha muy antigua
@@ -773,13 +772,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
             //primero los inserts
             if (corrResp != null) {
+                Log.d(TAG,"dddddd"+etapa);
                 if (corrResp != null && corrResp.getInserts() != null) {
-                    for (SolicitudCor sol : corrResp.getInserts()
-                    ) {
+                    for (SolicitudCor sol : corrResp.getInserts()) {
                         //veo si ya existe
                         SolicitudCor solt = solRepo.findsimple(sol.getId(), sol.getNumFoto());
                         if (solt != null) {
-                            if (solt.getEstatus() < 4) {
+                            if (solt.getEstatus() !=4||solt.getEstatus()!=5) {
                                 //actualizo
                                 solRepo.actualizarEst(sol.getMotivo(), sol.getContador(), sol.getCreatedAt(), sol.getEstatus(), sol.getId(), sol.getNumFoto());
                             } else if (sol.getContador() > 1)
@@ -812,7 +811,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 tinfo.setTipo("I");
 
                 tvRepo.insertUpdate(tinfo);
-//            Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
+            Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
                 //veo las muestras canceladas
                 if (corrResp.getCanceladas() != null)
                     if (etapa == 2)//solo para compra
@@ -825,8 +824,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     else
                         for (MuestraCancelada cancel :
                                 corrResp.getCanceladas()) {
+                            Log.d(TAG,"dddddd"+cancel.getInf_id());
                             //busco el informedetalle y actualizo el estatus
-                            scViewModel.procesarCanceladasEta(cancel);
+                            scViewModel.procesarCanceladasEta(cancel); //canceladas será 0
 
                         }
 

@@ -128,7 +128,32 @@ public class VerInformeGenFragment extends Fragment {
                         correccion.correccion = vcorreccion;
                         correccion.solicitud = solicitudCor;
                         crearFormCorVarFotos();
+                      //  mBinding.igdatosgen.addView(cf1.crearTabla());
 
+                        // mBinding.btnverdet.setText(textoboton);
+                        mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                verFotos();
+                            }
+                        });
+                    }
+                });
+
+            }else  if (Constantes.ETAPAACTUAL == 3) {
+                corViewModel.getCorreccion(informeSel).observe(getViewLifecycleOwner(), new Observer<Correccion>() {
+                    @Override
+                    public void onChanged(Correccion vcorreccion) {
+                         //busco la solicitud
+                        SolicitudCor solicitudCor = corViewModel.getSolicitud(vcorreccion.getSolicitudId(), vcorreccion.getNumfoto());
+                        correccion = new SolicitudWithCor();
+                        correccion.correccion = vcorreccion;
+                        correccion.solicitud = solicitudCor;
+                        Log.d(TAG,"---"+correccion.correccion.getSolicitudId()+"--"+correccion.solicitud.getId()+"--"+correccion.correccion.getNumfoto()+"--"+correccion.solicitud.getNumFoto());
+
+                        crearFormularioCor();
+                        mBinding.igdatosgen.addView(cf1.crearTabla());
+                         mBinding.btnverdet.setVisibility(View.GONE);
 
                     }
                 });

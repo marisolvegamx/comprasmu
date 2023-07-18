@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
-import com.example.comprasmu.data.remote.InformeEtapaEnv;
+
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
 
 public class SubirCorreccionTask extends AsyncTask<String, Float, Integer> {
