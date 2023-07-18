@@ -44,7 +44,6 @@
                     style="@style/formlabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
                     android:orientation="vertical">
 
 
@@ -70,7 +69,21 @@
                     android:id="@+id/cpcontent_generic2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"></LinearLayout>
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtcpsoldato1"
+                    style="@style/formlabel2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+
+                <Spinner
+                    android:id="@+id/spcpdato1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/btncpaceptar"

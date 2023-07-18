@@ -11,9 +11,9 @@
 
             android:title="@string/menu_descargar" />
         <item
-            android:id="@+id/nav_ciudad_trabajo"
-            android:icon="@android:drawable/ic_menu_compass"
-            android:title="@string/menu_ciudad_trabajo" />
+            android:id="@+id/nav_etiq"
+            android:icon="@drawable/ic_baseline_label_24"
+            android:title="@string/menu_etiquetas" />
 
         <item
             android:id="@+id/nav_sel_planta"
@@ -43,10 +43,7 @@
             android:id="@+id/nav_rescorreccion2"
             android:icon="@drawable/ic_baseline_check_24"
             android:title="@string/menu_rescorreccion" />
-        <item
-            android:id="@+id/nav_etiq"
-            android:icon="@drawable/ic_baseline_label_24"
-            android:title="@string/menu_etiquetas" />
+
         <item
             android:id="@+id/nav_menuini"
             android:icon="?attr/actionModeCloseDrawable"

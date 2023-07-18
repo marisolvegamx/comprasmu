@@ -86,7 +86,7 @@
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginTop="460dp"
-        android:backgroundTint="#03A9F4"
+        android:backgroundTint="#FFEB3B"
         android:text="@string/empaque"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
