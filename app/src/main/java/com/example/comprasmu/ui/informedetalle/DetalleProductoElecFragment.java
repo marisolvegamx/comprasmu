@@ -695,7 +695,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
     public void avanzarPregunta(int sig){
         LiveData<Reactivo> nvoReac = dViewModel.buscarReactivo(sig);
-
+        Log.d(TAG,"xxxxx "+sig);
         //busco el siguiente
         if(sig==1){
             //empiezo de 0
@@ -711,7 +711,9 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
             public void onChanged(Reactivo reactivo) {
-                if(sig==1) //pregunta de cliente o confirmacion vuelvo al detalleproducto1
+
+                if(reactivo!=null)
+                {if(sig==1) //pregunta de cliente o confirmacion vuelvo al detalleproducto1
                 {
                     Bundle args = new Bundle();
                     args.putInt(DetalleProductoFragment.ARG_PREGACT,reactivo.getId() );
@@ -741,7 +743,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                   //  fragmentTransaction.addToBackStack(null);
                     // Cambiar
                     fragmentTransaction.commit();
-                }
+                }}
             }
         });
     }

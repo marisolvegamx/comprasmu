@@ -24,6 +24,8 @@ public class InformeEtapa {
     private int total_muestras;
     private int estatus;
     private int estatusSync;
+    private Integer ciudadesId;//es la ciudad de trabajo
+    private String ciudadNombre;//es la ciudad de trabajo
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
     private Date createdAt;
@@ -130,6 +132,8 @@ public class InformeEtapa {
         return estatusSync;
     }
 
+
+
     public void setEstatusSync(int estatusSync) {
         this.estatusSync = estatusSync;
     }
@@ -154,7 +158,24 @@ public class InformeEtapa {
         return motivoCancel;
     }
 
+
     public void setMotivoCancel(String motivoCancel) {
         this.motivoCancel = motivoCancel;
+    }
+
+    public Integer getCiudadesId() {
+        return ciudadesId;
+    }
+
+    public void setCiudadesId(Integer ciudadesId) {
+        this.ciudadesId = ciudadesId;
+    }
+
+    public String getCiudadNombre() {
+        return ciudadNombre;
+    }
+
+    public void setCiudadNombre(String ciudadNombre) {
+        this.ciudadNombre = ciudadNombre;
     }
 }

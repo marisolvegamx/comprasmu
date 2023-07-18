@@ -156,10 +156,10 @@ public class ComprasUtils {
         int inSampleSize = 1;
 
         int pot=3;
-        if(tam>200000000)
+     /*   if(tam>200000000)
         {
             pot=4;
-        }
+        }*/
 
         if (height > reqHeight || width > reqWidth) {
 
@@ -192,10 +192,16 @@ public class ComprasUtils {
         options.inJustDecodeBounds = true;
        // BitmapFactory.decodeResource(res, resId, options);
 
-        Bitmap orig=BitmapFactory.decodeFile(nombre_foto,options);
+      /*  Bitmap orig=BitmapFactory.decodeFile(nombre_foto,options);
+        if(orig==null) {
+          ComprasLog milog=ComprasLog.getSingleton();
+          milog.grabarError("No encontre la foto "+nombre_foto);
+          Log.d("ComprasUtils","falta foto"+nombre_foto);
+            return null;
 
+        }*/
         // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, orig.getByteCount());
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, 0);
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;

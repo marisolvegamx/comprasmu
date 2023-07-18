@@ -141,11 +141,11 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         dao.deleteAll();
     }
 
-    public int totalCajasEtiq(int i) {
-        return dao.totalCajasEtiq(i);
+    public int totalCajasEtiq(String ciudad) {
+        return dao.totalCajasEtiq(3, ciudad);
     }
-    public int totalCajasEtiqxCli(int i, int cliente) {
-        List<InformeEtapaDet> det= dao.totalCajasEtiqxCli(i,cliente);
+    public int totalCajasEtiqxCd(int i, String ciudad, int cliente) {
+        List<InformeEtapaDet> det= dao.totalCajasEtiqxCd(i,ciudad,cliente);
         if(det!=null){
             return det.size();
         }
@@ -154,6 +154,10 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
 
     public List<InformeEtapaDet> listaCajasEtiqxCli(int i, int cliente) {
        return dao.totalCajasEtiqxCli(i,cliente);
+
+    }
+    public List<InformeEtapaDet> listaCajasEtiqxCd(int i, String cd, int cliente) {
+        return dao.totalCajasEtiqxCd(i,cd, cliente);
 
     }
     public List<InformeEtapaDet> getResumenEtiq(int i, String indice) {

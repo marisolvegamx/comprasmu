@@ -103,6 +103,16 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
                 new Object[]{indice,idCiudad, etapa});
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
+//que no esten canceladas
+    public List<ListaCompra> getAllByIndiceCiudadEtaSimpl2(String indice,String idCiudad,String etapa) {
+
+        String query="Select * from lista_compras where indice=?" +
+                "and ciudadNombre like ? and lis_etapaactual=? group by plantasId";
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,
+                new Object[]{indice,idCiudad, etapa});
+        return dao.getListaCompraByFiltrosSimple( sqlquery);
+    }
     public LiveData<List<ListaCompra>> getAllByIndiceCiudadEta(String indice,String idCiudad,String etapa) {
 
         String query="Select * from lista_compras where indice=?" +

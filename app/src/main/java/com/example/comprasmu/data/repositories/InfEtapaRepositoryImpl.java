@@ -8,6 +8,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.InformeEtapaDao;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 
@@ -149,6 +150,17 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     }
     public InformeEtapa getInformexPlan(String indice,int etapa, int planta) {
         return icDao.getInformexPlant(etapa,indice, planta);
+
+
+    }
+//no cancelados
+    public InformeEtapa getInformexPlantEst(String indice,int etapa, int planta, int estatus) {
+        return icDao.getInformexPlantEst(etapa,indice, planta,estatus);
+
+
+    }
+    public InformeEtapa getInformexPlantEst2(String indice,int etapa, int planta, int estatus) {
+        return icDao.getInformexPlantEst2(etapa,indice, planta,estatus);
 
 
     }

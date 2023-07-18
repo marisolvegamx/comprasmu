@@ -381,7 +381,8 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
        public void finalizar(){
             Log.d(TAG,"DescargaIniListener procesos "+procesos);
            procesos++;
-           if(actualiza==0&&procesos==5){
+           if(actualiza==0&&procesos>=5){ //llama 2 veces al home etra 2 vece
+               //todo revisar
 
                miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
 
@@ -424,7 +425,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 if(compraResp!=null) {
                     if (compraResp.getInserts() != null) {
                         if (compraResp.getInserts().getListaCompra() != null) {
-                             Log.d("Descargaini","resp2>>"+compraResp.getInserts().getListaCompra());
+                             Log.d("Descargaini","listacomp<"+compraResp.getInserts().getListaCompra());
 
                             lcrepo.insertAll(compraResp.getInserts().getListaCompra()); //inserto blblbl
                         }
@@ -529,7 +530,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         int ban=0;
         if(getTotVisitas()==0) {
             //    DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespAsyncTask.DescargaRespListener();
-
+            Log.d(TAG,"pidiendo repaldo");
             //  DescargaRespAsyncTask task = new DescargaRespAsyncTask( act, actualiza,proglist);
             getRespaldo();
 

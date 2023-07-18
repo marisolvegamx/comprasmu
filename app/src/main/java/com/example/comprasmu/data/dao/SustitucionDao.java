@@ -17,6 +17,8 @@ public abstract class SustitucionDao extends  BaseDao<Sustitucion> {
     @RawQuery(observedEntities = Sustitucion.class)
     public abstract LiveData<List<Sustitucion>> getByFiltros(SupportSQLiteQuery query);
 
+    @RawQuery(observedEntities = Sustitucion.class)
+    public abstract List<Sustitucion> getByFiltrosSimp(SupportSQLiteQuery query);
 
 
     @Query("SELECT * FROM sustitucion")

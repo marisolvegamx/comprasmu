@@ -52,8 +52,13 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
     public abstract List<VisitaWithInformes> getVisitasWithInformesByIndice(String indice);
 
     @Transaction
+    @Query("SELECT * FROM visitas WHERE indice=:indice and estatusSync=0")
+    public abstract List<VisitaWithInformes> getVisitasWithInformesByIndicePend(String indice);
+
+    @Transaction
     @Query("SELECT * FROM visitas WHERE id=:id")
     public abstract LiveData<VisitaWithInformes> getVisitaWithInformesById(int id);
+
     @Query("update visitas set estatusSync=:estatus WHERE id=:id")
     public abstract void actualizarEstatusSync(int id, int estatus);
 

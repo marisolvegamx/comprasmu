@@ -203,7 +203,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
 
     @Query("SELECT informe_detalle.* FROM informe_detalle inner join informe_compras on informesId=informe_compras.id" +
             " inner join visitas on visitas.id=informe_compras.visitasId"+
-            " WHERE plantasId = :planta and informe_detalle.estatus<>2 and indice=:indice " )
+            " WHERE plantasId = :planta and (informe_detalle.estatus=1 or informe_detalle.estatus=3 ) and indice=:indice " )
     public abstract List<InformeCompraDetalle>   getInformesxPlanta(int planta, String indice);
 
     public class InformeDetalleImagenes {

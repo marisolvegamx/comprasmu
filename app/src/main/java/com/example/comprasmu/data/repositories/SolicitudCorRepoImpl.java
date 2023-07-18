@@ -79,7 +79,7 @@ public class SolicitudCorRepoImpl  {
 
 
     public void actualizarEstatus(int id,int numfoto, int estatus) {
-        Log.d("---","actalizando"+id+"--"+estatus);
+        Log.d("SolicitudCorRepo","actalizando"+id+"--"+numfoto+"--"+estatus);
          icDao.actualizarEstatus(id,numfoto, estatus);
     }
 

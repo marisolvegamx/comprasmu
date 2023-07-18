@@ -71,8 +71,7 @@ import java.util.List;
         CatalogoDetalle.class, Atributo.class, Geocerca.class,
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class},
-
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=18, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=20, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -110,7 +109,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
-                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18)
+                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -382,7 +381,28 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         }
     };
-            private void cargandodatos(){
+
+    static final Migration MIGRATION_18_19 = new Migration(18,19) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+
+            database.execSQL("ALTER TABLE informe_etapa ADD COLUMN ciudadesId INTEGER");
+            //  database.execSQL(" UPDATE informe_det SET fechaCancel = CURRENT_TIMESTAMP");
+            database.execSQL("ALTER TABLE informe_etapa ADD COLUMN ciudadNombre TEXT");
+        }
+    };
+
+    static final Migration MIGRATION_19_20 = new Migration(19,20) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+
+            database.execSQL("ALTER TABLE correccion ADD COLUMN dato1 TEXT");
+              database.execSQL(" ALTER TABLE correccion ADD COLUMN dato2 TEXT");
+            database.execSQL("ALTER TABLE correccion ADD COLUMN dato3 TEXT");
+        }
+    };
+
+    private void cargandodatos(){
 
         runInTransaction(new Runnable() {
             @Override
@@ -1339,7 +1359,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setSigAlt(79);
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
-
+        camposForm.add(campo);
         getReactivoDao().insertAll(camposForm);
 
 
@@ -1414,7 +1434,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
         List<Reactivo> camposForm = new ArrayList<Reactivo>();
 
       // ya no será por planta será nix cliente
-        /*campo.setId(91);
+        campo = new Reactivo();
+        campo.setId(91);
         campo.setTabla("IE");
         campo.setLabel(ctx.getString(R.string.cliente));
         campo.setNombreCampo("clientesId");
@@ -1425,7 +1446,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
 
-        camposForm.add(campo);*/
+        camposForm.add(campo);
         campo = new Reactivo();
         campo.setLabel(ctx.getString(R.string.acomodo_mues));
         campo.setId(92);
@@ -1493,7 +1514,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.largo));
+        campo.setLabel(ctx.getString(R.string.largo)+" (CM)");
         campo.setId(98);
         campo.setTabla("DC");
         campo.setNombreCampo("dimlargo");
@@ -1515,7 +1536,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.ancho));
+        campo.setLabel(ctx.getString(R.string.ancho)+" (CM)");
         campo.setId(100);
         campo.setTabla("DC");
         campo.setNombreCampo("dimancho");
@@ -1537,7 +1558,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.alto));
+        campo.setLabel(ctx.getString(R.string.alto)+" (CM)");
         campo.setId(102);
         campo.setTabla("DC");
         campo.setNombreCampo("dimalto");
@@ -1559,7 +1580,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         camposForm.add(campo);
 
         campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.peso));
+        campo.setLabel(ctx.getString(R.string.peso)+" (KG)");
         campo.setId(104);
         campo.setTabla("DC");
         campo.setNombreCampo("dimpeso");

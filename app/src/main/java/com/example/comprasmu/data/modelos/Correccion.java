@@ -27,6 +27,9 @@ public class Correccion {
      private String indice;
     @ColumnInfo(defaultValue = "0")
     private int numfoto;
+    private String dato1; //para datos extras en la correccion
+    private String dato2;
+    private String dato3;
     public int getId() {
         return id;
     }
@@ -105,5 +108,29 @@ public class Correccion {
 
     public void setNumfoto(int numfoto) {
         this.numfoto = numfoto;
+    }
+
+    public String getDato1() {
+        return dato1;
+    }
+
+    public void setDato1(String dato1) {
+        this.dato1 = dato1;
+    }
+
+    public String getDato2() {
+        return dato2;
+    }
+
+    public void setDato2(String dato2) {
+        this.dato2 = dato2;
+    }
+
+    public String getDato3() {
+        return dato3;
+    }
+
+    public void setDato3(String dato3) {
+        this.dato3 = dato3;
     }
 }
