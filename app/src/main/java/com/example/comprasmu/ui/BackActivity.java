@@ -61,11 +61,12 @@ public class BackActivity extends AppCompatActivity {
                 findViewById(R.id.my_child_toolbar2);
 
         if (savedInstanceState != null) {    // Restore value of members from saved state
-            Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
-            Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
+          // Constantes.definirTrabajo(this);
+          //  Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
+          //  Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
             // idinformeSel = savedInstanceState.getInt("visitasel");
             //if(idinformeSel==0) { //se salio y lo devuelvo al inicio
-            Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
+          //  Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
 
             Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
             startActivity(intento1);

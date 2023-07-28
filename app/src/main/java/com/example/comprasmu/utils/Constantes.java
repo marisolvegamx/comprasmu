@@ -1,5 +1,9 @@
 package com.example.comprasmu.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
@@ -77,4 +81,11 @@ public class Constantes {
 
     }
     public static int ETAPAACTUAL;
+
+    public static void definirTrabajo(Activity act) {
+        SharedPreferences prefe = act.getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        Constantes.CIUDADTRABAJO = prefe.getString("ciudadtrabajo", "");
+        Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
+
+    }
 }

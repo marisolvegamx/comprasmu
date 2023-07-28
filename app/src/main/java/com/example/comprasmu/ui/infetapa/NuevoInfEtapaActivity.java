@@ -87,7 +87,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             //  }
         }
         // if(Constantes.NM_TOTALISTA>=16)
-        loadData(savedInstanceState);
+        loadData();
 
         Log.d(TAG,"WWWWWW"+isEdicion+"++"+idinformeSel+"--"+etapa);
 
@@ -298,7 +298,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
 
 
-    public void loadData(Bundle savedInstanceState) {
+    public void loadData() {
         Bundle datosRecuperados = getIntent().getExtras();
 
         if(datosRecuperados!=null) {
@@ -314,18 +314,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             }
 
         }
-        else { //lo recupero
-            if (savedInstanceState != null) {    // Restore value of members from saved state
-                //  idinformeSel = savedInstanceState.getInt("visitasel");
-              //se salio y lo devuelvo al inicio
-                Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
-                startActivity(intento1);
-                //mando al inicio
-                //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
-                //  }
-            }
 
-        }
 
         mBinding.setSdf(Constantes.sdfsolofecha);
 

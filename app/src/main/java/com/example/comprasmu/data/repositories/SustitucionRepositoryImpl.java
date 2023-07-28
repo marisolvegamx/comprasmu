@@ -59,40 +59,24 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         return dao.getByFiltros(sqlquery);
     }
 
-    public LiveData<List<Sustitucion>> getByFiltrosFrut(String categoria, String productoNombre, int empaque,int tamanio ) {
+    public List<Sustitucion> getByFiltrosFrut(String categoria, String productoNombre) {
 
-        String query="Select * from sustitucion where 1=1";
-        ArrayList<String> filtros=new ArrayList<String>();
+        String query="Select * from sustitucion where  categoriasId=1";
 
-        if(categoria!=null&&!categoria.equals("")) {
-            query =query+ " and nomcategoria=?";
-            filtros.add(categoria);
-        }
 
-        if(empaque>0) {
-            query = query + " and su_tipoempaque=?";
-            filtros.add(empaque+"");
-        }
-        if(tamanio>0) {
-            query = query + " and su_tamanio=?";
-            filtros.add(tamanio+"");
-        }
 
-         query=query+" union Select * from sustitucion where  nomcategoria=?";
         query = query + " and nomproducto like '%"+productoNombre+"%' ";
-        filtros.add(categoria);
+
           //  filtros.add(productoNombre);
 
-
-
         // Object[] params=filtros.toArray();
-        Log.d("query",filtros.toArray()+"");
+
 
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
-                query,filtros.toArray()
+                query
         );
 
-        return dao.getByFiltros(sqlquery);
+        return dao.getByFiltrosSimp(sqlquery);
     }
 
 
@@ -114,16 +98,6 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
             query = query + " and su_tamanio=?";
             filtros.add(tamanio+"");
         }
-
-        query=query+" union Select * from sustitucion where  nomcategoria=?";
-        query = query + " and nomproducto like '%"+productoNombre+"%' ";
-        filtros.add(categoria);
-        //  filtros.add(productoNombre);
-
-
-
-        // Object[] params=filtros.toArray();
-        Log.d("query",filtros.toArray()+"");
 
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()

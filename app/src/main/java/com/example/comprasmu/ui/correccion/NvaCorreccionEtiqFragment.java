@@ -88,7 +88,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
     ListaSolsViewModel solViewModel;
     private NvaPreparacionViewModel preViewModel;
     SolicitudCor solicitud;
-    TextView txtmotivo,txtsoldato1;
+    TextView txtmotivo,txtsoldato1,txtnumcaja;
     int numfoto;
     InformeEtapaDet detEdit; //detalle que se editará solo en num de caja la foto será en la supervision de la correccion
     InformeEtapa infcor;
@@ -107,7 +107,11 @@ public class NvaCorreccionEtiqFragment extends Fragment {
         aceptar = root.findViewById(R.id.btncpaceptar);
         txtmotivo=root.findViewById(R.id.txtcpmotivo);
         txtsoldato1=root.findViewById(R.id.txtcpsoldato1);
+        txtnumcaja=(TextView) root.findViewById(R.id.txtcpcajita);
+
         spdato1 =root.findViewById(R.id.spcpdato1);
+        LinearLayout lcajas=root.findViewById(R.id.llcpcajasetiq);
+        lcajas.setVisibility(View.VISIBLE);
      //   fotoori1=root.findViewById(R.id.ivcporiginal);
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaCorreViewModel.class);
         solViewModel = new ViewModelProvider(requireActivity()).get(ListaSolsViewModel.class);
@@ -139,6 +143,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
                         case 3:
                            infcor= preViewModel.getInformexId(solicitudCor.getInformesId());
+                            Log.d(TAG,"ciud"+infcor.getCiudadNombre());
                             solViewModel.buscarFotoEta(solicitud.getNumFoto(),solicitudCor.getInformesId(),3).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                                 @Override
                                 public void onChanged(InformeEtapaDet informeEtapaDet) {
@@ -146,6 +151,9 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
                                     detEdit=informeEtapaDet;
                                     if(informeEtapaDet!=null) {
+
+                                      //  txtnumcaja.setText("hola");
+                                        txtnumcaja.setText(informeEtapaDet.getNum_caja()+""); //caja en la que esta la muestra
                                         solViewModel.buscarImagenCom(Integer.parseInt(informeEtapaDet.getRuta_foto())).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
                                             @Override
                                             public void onChanged(ImagenDetalle imagenDetalle) {
@@ -155,6 +163,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
                                                // fotoori1.setImageBitmap(bitmap1);
                                                 crearFormulario(imagenDetalle);
+
                                             }
                                         });
 
@@ -208,25 +217,14 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
             }
         });
-        ArrayList<String> spinnerValues = new ArrayList<>();
-        //busco el total de cajas
-        int totcajas=0;
-        if(infcor!=null)
-         totcajas=preViewModel.getTotCajasEtiq(infcor.getCiudadNombre());
-        for(int i=1;i<=totcajas;i++) {
-            spinnerValues.add(i+"");
-        }
 
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
-        spdato1.setAdapter(adapter);
 
         return root;
     }
 
 
     public void crearFormulario(ImagenDetalle imagenOrig){
-        txtsoldato1.setText("NUM. CAJA DONDE ESTA LA MUESTRA");
+        txtsoldato1.setText("REUBICACION MUESTRA CAJA NUM.");
         camposForm=new ArrayList<>();
         CampoForm   campo=new CampoForm();
         //fotos originales
@@ -316,6 +314,24 @@ public class NvaCorreccionEtiqFragment extends Fragment {
                 verImagen(rutafotoo);
             }
         });*/
+
+        ArrayList<String> spinnerValues = new ArrayList<>();
+        //busco el total de cajas
+        int totcajas=0;
+        if(infcor!=null) {
+            Log.d(TAG,infcor.getCiudadNombre());
+            totcajas = preViewModel.getTotCajasEtiq(infcor.getCiudadNombre());
+
+        }
+       // spinnerValues.add(0);
+        spinnerValues.add(getString(R.string.seleccione_opcion));
+        for(int i=1;i<=totcajas;i++) {
+            spinnerValues.add(i+"");
+        }
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
+        spdato1.setAdapter(adapter);
     }
     public void guardar(){
         try {
@@ -333,7 +349,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
             if (spdato1 != null) {
                 valor2 =  (String) spdato1.getSelectedItem();
-
+                if(!valor2.equals("0"))
                 try {
                     nucaja = Integer.parseInt(valor2);
                 }catch (NumberFormatException ex){
@@ -346,7 +362,8 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             mViewModel.setIdNuevo(mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, "", "",valor2));
             actualizarSolicitud();
             //actualizar el detalle el numero de caja buscarlo promero
-            preViewModel.corregirEtiquetado(detEdit,nucaja);
+            if(nucaja>0)
+                preViewModel.corregirEtiquetado(detEdit,nucaja);
             //reenvio inf con su detalle
 
             InformeEtapaEnv envio=preViewModel.preparaInformeEtiqCor(solicitud.getInformesId(),detEdit);

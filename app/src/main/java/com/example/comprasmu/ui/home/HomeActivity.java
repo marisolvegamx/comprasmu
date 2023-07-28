@@ -20,7 +20,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.ui.login.LoginActivity;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
-/****ahora si es la pagina de inicio******/
+/****ahora si es la pagina de inicio con botones para seleccionar la etapa******/
 public class HomeActivity extends AppCompatActivity {
 
 

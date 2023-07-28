@@ -59,9 +59,9 @@ public class SustitucionViewModel extends AndroidViewModel {
 
     public void cargarListas(int plantasel,String categoria,int cliente,int empaque, int tamanio, int numTienda){
        if(cliente==7){
-        cargarListasJum(plantasel,categoria,empaque,tamanio);
+           cargarListasJum(plantasel,categoria,empaque,tamanio);
        }else
-        listaSustitucion =repository.getByFiltros(categoria,"",0,0);
+           listaSustitucion =repository.getByFiltros(categoria,"",0,0);
         size = Transformations.map(listaSustitucion,res->{ return listaSustitucion.getValue().size();});
         empty = Transformations.map(listaSustitucion, res->{return listaSustitucion.getValue().isEmpty();});
     }
@@ -78,6 +78,9 @@ public class SustitucionViewModel extends AndroidViewModel {
                 array.add(producto);
 
         }
+        //agrego los frutzo porque esto si se pueden volver a comprar
+        List<Sustitucion> listafrut=repository.getByFiltrosFrut(categoria,"FRUTZZO");
+        array.addAll(listafrut);
         listaTemp.setValue(array);
         listaSustitucion=listaTemp;
         // else

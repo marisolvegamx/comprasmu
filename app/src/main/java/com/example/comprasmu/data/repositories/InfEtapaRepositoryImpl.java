@@ -169,8 +169,8 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
 
     }
-    public List<InformeEtapa> getClientesconInf(String indice) {
-        return icDao.getClientesconInf(indice);
+    public List<InformeEtapa> getClientesconInf(String indice,String ciudad) {
+        return icDao.getClientesconInf(indice, ciudad);
     }
 
 

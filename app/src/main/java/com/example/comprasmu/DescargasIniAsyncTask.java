@@ -67,7 +67,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     boolean notificar=false;
     Activity act;
     int actualiza;
-    int procesos=0;
+    int procesos=0; //son 7 peticiones
     DescargaIniListener listenprin;
    // DescargaRespAsyncTask.ProgresoRespListener proglist;
     final String TAG="DescargasIniAsyncTask";
@@ -100,9 +100,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... indice) {
+    //son 7 peticiones al servidor desde pruebasct siempre son las 7 menos si no puede descargar listas
 
       //  if(NavigationDrawerActivity.isOnlineNet()) {
-            Log.d("DescargasIniAsyncTask","iniciando descarga");
+            Log.d("DescargasIniAsyncTask","iniciando descarga"+descargarListas);
             if (indice[1].equals("act")) //vengo del fragment de actualizar lista
                 actualiza=1;
            // if (indice[0].equals("cat")) //descargo cats tmb
@@ -119,9 +120,9 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
             if(descargarListas) {
 
-                listacompras(); //aqui esta informes
+                listacompras(); //aqui esta informes y sust
             }else
-                procesos++;
+                procesos=procesos+3;
             if(Constantes.INDICEACTUAL!=""){
         DescargaIniListener listdesc=new DescargaIniListener();
         DescargaRespListener listresp=new DescargaRespListener();
@@ -139,6 +140,9 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             } else {
                 listdesc.finalizar();
             }
+        }else {
+            procesos = procesos + 2;
+            Log.d(TAG,"no hagos resp 2 ni cor"+procesos);
         }
         }else
             procesos=procesos+2;
@@ -247,9 +251,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                         ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
 
 
-                }else
-
-                 informes();
+                }else {
+                     procesos=procesos+1;
+                     informes();
+                 }
             }
 
 
@@ -381,18 +386,19 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
        public void finalizar(){
             Log.d(TAG,"DescargaIniListener procesos "+procesos);
            procesos++;
-           if(actualiza==0&&procesos>=5){ //llama 2 veces al home etra 2 vece
+           if(procesos==7){ //llama 2 veces al home etra 2 vece
                //todo revisar
 
                miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
 
                //para que no vuelva a entrar
 
-            } else if(actualiza==1&&procesos>3){
+            }
+           //else if(actualiza==1&&procesos>3){
 
-               miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
+          //     miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
 
-           }
+         //  }
 
 
        }
@@ -400,25 +406,25 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
        public void insertarZonas(List<Geocerca> zonas){
            Log.d(TAG,"fin zonas ");
-                        if (zonas != null && zonas.size() > 0) {
+            if (zonas != null && zonas.size() > 0) {
 
-                            //insertar
+                //insertar
 
-                            for(Geocerca geo:zonas) {
-                                georep.insert(geo);
-                            }
-                            //actualizo tabla versiones
-                            TablaVersiones tv=new TablaVersiones();
-                            tv.setNombreTabla("geocercas");
-                            tv.setTipo("C");
-                            tv.setVersion(new Date());
-                            tvRepo.insertUpdate(tv);
+                for(Geocerca geo:zonas) {
+                    georep.insert(geo);
+                }
+                //actualizo tabla versiones
+                TablaVersiones tv=new TablaVersiones();
+                tv.setNombreTabla("geocercas");
+                tv.setTipo("C");
+                tv.setVersion(new Date());
+                tvRepo.insertUpdate(tv);
 
-                            tv=null;
-                        }
-
-                    finalizar();
+                tv=null;
             }
+
+        finalizar();
+        }
             public void actualizar(ListaCompraResponse compraResp) {
                 //primero los inserts
 
@@ -512,12 +518,15 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     tvRepo.insertUpdate(tinfod);
 
                 }
-                if(actualiza==0)
-                 informes(); //solo en la descarga incial
+                if(actualiza==0) {
+                    procesos++;
+                    informes(); //solo en la descarga incial
 
-                else
-
+                } else {
+                    Log.d(TAG,"no hago inf"+procesos);
+                    procesos=procesos+2;
                     finalizar();
+                }
             }
 
 

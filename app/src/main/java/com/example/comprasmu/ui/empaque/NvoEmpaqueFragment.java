@@ -59,7 +59,6 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 
@@ -101,8 +100,9 @@ public class NvoEmpaqueFragment extends Fragment {
     private String clienteNombre;
     private int clienteId;
     private ListaDetalleViewModel lcViewModel;
+    List<InformeEtapa> listainfetiq;
 
-
+    private  ArrayList<DescripcionGenerica> listaClientes; //otra vez lista clientes
     public final static String ARG_PREGACT="comprasmu.nem_pregact";
     public final static String ARG_ESEDI="comprasmu.nem_esedi";
 
@@ -222,7 +222,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
             }else
             {
-
+                //es nuevo nuevito
 
                 ciudadInf=Constantes.CIUDADTRABAJO;
                 if (datosRecuperados != null) {
@@ -329,7 +329,7 @@ public class NvoEmpaqueFragment extends Fragment {
                         });
                     }
                 }
-            } else { //es nuevo pregunta 92
+            } else { //es nuevo pregunta 91
   //reviso si ya tengo uno abierto
             InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,4);
 
@@ -349,9 +349,59 @@ public class NvoEmpaqueFragment extends Fragment {
 
                 dialogo1.show();
             }
+                    //busco si tengo varios clientes x ciudad //todo
+                    listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+                    Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+
+                    if (listainfetiq.size() > 1) {
+                            //tengo varias clientes
+                            // preguntaAct=1;
+                            convertirLista(listainfetiq);
+
+                            mViewModel.variasClientes = true;
+                            buscarPreguntas();
+                            preguntaAct = mViewModel.getListaPreguntas().get(0);
+                            crearFormulario();
+
+                        } else if (listainfetiq.size() > 0) {
+
+                            mViewModel.variasClientes = false;
+                            clienteId = listainfetiq.get(0).getClientesId();
+                            clienteNombre = listainfetiq.get(0).getClienteNombre();
+                            InformeEtapa informetemp = new InformeEtapa();
+                            informetemp.setClienteNombre(clienteNombre);
+                            informetemp.setClientesId(clienteId);
+                            informetemp.setIndice(Constantes.INDICEACTUAL);
+                            mViewModel.setNvoinforme(informetemp);
+                            //busco total de muestras y cajas
+                        mViewModel.getCajasEtiqCdCli(ciudadInf,clienteId);
+                        mViewModel.totCajasEmp=mViewModel.resumenEtiq.size();
+
+                        mViewModel.cajaAct=mViewModel.resumenEtiq.get(0);
+                        ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
 
 
-                    InformeEtapa informetemp=new InformeEtapa();
+
+                        mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                                @Override
+                                public void onChanged(Reactivo reactivo) {
+                                    preguntaAct = reactivo;
+                                    crearFormulario();
+                                }
+                            });
+
+
+
+
+                        }else{
+                            Toast.makeText(getContext(),"NO TIENE INFORMES DE ETIQUETADO ",Toast.LENGTH_LONG).show();
+
+                            getActivity().finish();
+                        }
+
+
+//////////////////////////
+                  /*  InformeEtapa informetemp=new InformeEtapa();
 
                     informetemp.setIndice(Constantes.INDICEACTUAL);
                     mViewModel.setNvoinforme(informetemp);
@@ -364,30 +414,30 @@ public class NvoEmpaqueFragment extends Fragment {
                     mViewModel.cajaAct=mViewModel.resumenEtiq.get(0);
 
 
-                    ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
+                    ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);*/
                   //  mViewModel.cajaAct=mViewModel.listaCajasCli.get(0);
            // Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
 
-            if (mViewModel.getIdNuevo() == 0)
-
-
-                    mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-                        @Override
-                        public void onChanged(Reactivo reactivo) {
-                            Log.d(TAG,"DONE 1");
-                            preguntaAct = reactivo;
-                            crearFormulario();
-                        }
-                    });
-
-
-
-
-                        if(mViewModel.cajaAct.numCaja==0){
-                            Toast.makeText(getContext(),"NO TIENE INFORMES DE ETIQUETADO ",Toast.LENGTH_LONG).show();
-
-                           getActivity().finish();
-                        }
+//            if (mViewModel.getIdNuevo() == 0)
+//
+//
+//                    mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+//                        @Override
+//                        public void onChanged(Reactivo reactivo) {
+//                            Log.d(TAG,"DONE 1");
+//                            preguntaAct = reactivo;
+//                            crearFormulario();
+//                        }
+//                    });
+//
+//
+//
+//
+//                        if(mViewModel.cajaAct.numCaja==0){
+//                            Toast.makeText(getContext(),"NO TIENE INFORMES DE ETIQUETADO ",Toast.LENGTH_LONG).show();
+//
+//                           getActivity().finish();
+//                        }
                 }
             }
 
@@ -482,7 +532,17 @@ public class NvoEmpaqueFragment extends Fragment {
         }
         campo.id=1001;
 //para las plantas
+        if(preguntaAct.getType().equals(CreadorFormulario.SELECTDES)){
+            switch (preguntaAct.getNombreCampo()){
+                case "clientesId":
 
+
+                    campo.selectdes= listaClientes;
+                    break;
+
+            }
+
+        }
         if(campo.type.equals("agregarImagen")) {
 
             campo.funcionOnClick = new View.OnClickListener() {
@@ -624,7 +684,29 @@ public class NvoEmpaqueFragment extends Fragment {
 
         if(resp)
         {
+            if(preguntaAct.getId()==91 ) { //cliente
+                DescripcionGenerica opcionsel = (DescripcionGenerica) spplanta.getSelectedItem();
 
+                clienteId = opcionsel.getId();
+                clienteNombre = opcionsel.getNombre();
+                InformeEtapa informetemp=new InformeEtapa();
+                informetemp.setClienteNombre(clienteNombre);
+                informetemp.setClientesId(clienteId);
+                informetemp.setIndice(Constantes.INDICEACTUAL);
+                mViewModel.setNvoinforme(informetemp);
+                Log.d(TAG,"clientesel"+clienteId);
+                //busco total de muestras y cajas
+
+                mViewModel.getCajasEtiqCdCli(Constantes.CIUDADTRABAJO,clienteId);
+              if(mViewModel.resumenEtiq!=null) {
+                  mViewModel.totCajasEmp = mViewModel.resumenEtiq.size();
+
+                  mViewModel.cajaAct = mViewModel.resumenEtiq.get(0);
+                  ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informetemp, mViewModel.numMuestras, mViewModel.totCajasEmp);
+              }
+
+
+            }else
 
 
             if(preguntaAct.getId()==92 ) { //acomodo creo el informe y el detalle
@@ -1114,6 +1196,15 @@ public class NvoEmpaqueFragment extends Fragment {
         return preguntaAct.getId();
     }
 
+    private  void convertirLista(List<InformeEtapa>lista){
+            listaClientes =new ArrayList<DescripcionGenerica>();
+            for (InformeEtapa listaCompra: lista ) {
+
+                listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
+
+            }
+
+        }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

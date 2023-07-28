@@ -88,9 +88,10 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         }*/
         // if(Constantes.NM_TOTALISTA>=16)
         if (savedInstanceState != null) {    // Restore value of members from saved state
-            Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
-            Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
-            Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
+           // Constantes.definirTrabajo(this);
+         //   Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
+          //  Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
+          //  Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
             // idinformeSel = savedInstanceState.getInt("visitasel");
             //if(idinformeSel==0) { //se salio y lo devuelvo al inicio
             Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
@@ -101,7 +102,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             return;
         }else {
 
-            loadData(savedInstanceState);
+            loadData();
             //reviso si es edicion y ya tengo info en temp
             ultimares = dViewModel.getUltimoTemp();
 
@@ -280,7 +281,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
 
     }
 
-    public void loadData(Bundle savedInstanceState) {
+    public void loadData() {
         Bundle datosRecuperados = getIntent().getExtras();
 
         if(datosRecuperados!=null) {

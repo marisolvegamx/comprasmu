@@ -82,7 +82,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-/*esta es la clase principal***/
+/*esta es la clase principal con el menu***/
 public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String ETAPA = "comprasmu.ndetapa";
@@ -113,14 +113,19 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         definirTrabajo();
+
         setContentView(R.layout.activity_navigation_darawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (savedInstanceState != null) {    // Restore value of members from saved state
+          buscarEtapa();
+        }
       //  FloatingActionButton fab = findViewById(R.id.fab);
         //busco el mes actual y le agrego 1
          mViewModel=new ViewModelProvider(this).get(ListaDetalleViewModel.class);
         scViewModel = new ViewModelProvider(this).get(ListaSolsViewModel.class);
+
 
 
      /*   fab.setOnClickListener(new View.OnClickListener() {
@@ -324,7 +329,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
     //saber si tiene mas de una ciudad para mostrar seleccionar ciudad
     public void revisarCiudades(){
-        if(Constantes.ETAPAACTUAL==4)
+        if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3)
             return; //ya no importa la ciudad
         Log.d(TAG,"ciudades");
             mViewModel.getCiudades().observe(this, data -> {
@@ -685,22 +690,28 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         Constantes.CIUDADTRABAJO = prefe.getString("ciudadtrabajo", "");
         Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
         Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
+        Constantes.INDICEACTUAL=prefe.getString("indiceact", "");
+
+
         //  prefe.getString("ciudadtrabajo","");
-    /*    Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");
-        Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
-        Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
-        Constantes.CLAVEUSUARIO=prefe.getString("claveusuario","");
-*/
-   //     Constantes.INDICEACTUAL="7.2023";
-        Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
+    /*    Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");*/
 
-
-        //Constantes.IDCIUDADTRABAJO=1;
-        // Constantes.IDPAISTRABAJO = 1;
-        //  Constantes.CLAVEUSUARIO="marisol";
-        //inicio catalogo clientes y plantas
     }
 
+    private void buscarEtapa() {
+        SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+           Constantes.ETAPAACTUAL = prefe.getInt("etapaactual", 0); //no es la misma que estapaact que viene del servidor
+
+    }
+    public void guardarEtapaPref(int etapa){
+        SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=prefe.edit();
+
+        editor.putInt("etapaactual",etapa );
+
+        editor.commit();
+
+    }
     public void pedirCorrecciones(int actualiza, int etapa) {
         tvRepo = new TablaVersionesRepImpl(this);
         solRepo = new SolicitudCorRepoImpl(this);
@@ -878,6 +889,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         // unregisterReceiver(onDownloadComplete);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
 
+
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    //guardo la etapa seleccionada
+        guardarEtapaPref(Constantes.ETAPAACTUAL);
+
+
+    }
 
 }

@@ -23,6 +23,7 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
 
+/***actualizo los informes de compras que se modificaron desde el sistema web*/
 public class DescInfSupActivity extends AppCompatActivity implements DescRespInformes.ProgresoRespListener {
 
     InformeComDetRepositoryImpl infdrepo;
