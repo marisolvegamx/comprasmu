@@ -72,7 +72,7 @@ import com.example.comprasmu.utils.Preguntasino;
 import com.example.comprasmu.utils.RPResultListener;
 import com.example.comprasmu.utils.RuntimePermissionUtil;
 import com.example.comprasmu.utils.ui.LoadingDialog;
-
+import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

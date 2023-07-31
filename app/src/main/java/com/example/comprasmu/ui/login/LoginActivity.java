@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -115,7 +116,11 @@ public class LoginActivity extends AppCompatActivity
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
+                if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
+                //entro rapido
+                   new LoginListener().iniciar();
+                }
+                    loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
 

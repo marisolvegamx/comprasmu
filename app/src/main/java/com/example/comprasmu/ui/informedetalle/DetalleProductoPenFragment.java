@@ -76,10 +76,11 @@ import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.Preguntasino;
 import com.example.comprasmu.utils.RPResultListener;
 import com.example.comprasmu.utils.RuntimePermissionUtil;
+import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import com.example.comprasmu.utils.ui.LoadingDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
+import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1498,7 +1499,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
     public void tomarFoto(){
         Activity activity=this.getActivity();
-        Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
         String dateString = format.format(new Date());
@@ -1536,7 +1537,7 @@ public class DetalleProductoPenFragment extends Fragment {
              Uri photoURI = FileProvider.getUriForFile(activity,
                      "com.example.comprasmu.fileprovider",
                      archivofoto);
-             intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+             intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
              //intento1.putExtra("origen", origen);
              if (fotomos != null) {
 

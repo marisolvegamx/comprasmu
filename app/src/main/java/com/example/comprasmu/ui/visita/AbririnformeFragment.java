@@ -6,7 +6,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
+import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -2280,7 +2280,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     }
 
    /* public void irAProductoEx(){
-        Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
         String dateString = format.format(new Date());
@@ -2298,7 +2298,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         Uri photoURI = FileProvider.getUriForFile(getActivity(),
                 "com.example.comprasmu.fileprovider",
                 foto);
-        intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+        intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
         startActivityForResult(intento1, REQUEST_CODE_PROD);
     }*/
 
@@ -2313,7 +2313,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         globrequestcode=REQUEST_CODE;
         File foto=null;
         Activity activity=this.getActivity();
-        Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
         try{
             try{
 
@@ -2334,7 +2334,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Uri photoURI = FileProvider.getUriForFile(activity,
                     "com.example.comprasmu.fileprovider",
                     foto);
-            intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+            intento1.putExtra(MediaStore.EXTRA_OUTPUT, foto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
             //intento1.putExtra("origen", origen);
             intento1.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if(destino!=null) {

@@ -67,7 +67,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import static android.app.Activity.RESULT_OK;
 
 public class NvaPreparacionFragment extends Fragment {
@@ -663,7 +663,7 @@ public class NvaPreparacionFragment extends Fragment {
             return;
         }else {
             Activity activity = this.getActivity();
-            Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
             String dateString = format.format(new Date());
@@ -695,7 +695,7 @@ public class NvaPreparacionFragment extends Fragment {
             Uri photoURI = FileProvider.getUriForFile(activity,
                     "com.example.comprasmu.fileprovider",
                     archivofoto);
-            intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+            intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
             //intento1.putExtra("origen", origen);
             if (fotomos != null) {
 
@@ -708,7 +708,7 @@ public class NvaPreparacionFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
+        Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto+"--"+resultCode);
        // archivofoto=null;
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
             //   super.onActivityResult(requestCode, resultCode, data);

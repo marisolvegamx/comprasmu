@@ -52,6 +52,7 @@ import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
+import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -443,7 +444,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             return;
         }else {
             Activity activity = this.getActivity();
-            Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
             String dateString = format.format(new Date());
@@ -475,7 +476,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             Uri photoURI = FileProvider.getUriForFile(activity,
                     "com.example.comprasmu.fileprovider",
                     archivofoto);
-            intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+            intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
             //grupo=vgrupo;
 
 

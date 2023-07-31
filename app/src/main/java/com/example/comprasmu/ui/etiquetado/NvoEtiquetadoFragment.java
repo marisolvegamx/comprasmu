@@ -72,7 +72,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
+import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import static android.app.Activity.RESULT_OK;
 
 
@@ -990,7 +990,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             return;
         }else {
             Activity activity = this.getActivity();
-            Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
             String dateString = format.format(new Date());
@@ -1022,7 +1022,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             Uri photoURI = FileProvider.getUriForFile(activity,
                     "com.example.comprasmu.fileprovider",
                     archivofoto);
-            intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+            intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
 
             if (fotomos != null) {
 

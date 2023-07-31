@@ -1,11 +1,14 @@
 package com.example.comprasmu.utils.ui;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,7 +74,7 @@ public class DescargarDocsFragment extends Fragment {
         btndesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                descargarPDF();
+                descargarPDF2();
             }
         });
         return root;
@@ -79,7 +82,26 @@ public class DescargarDocsFragment extends Fragment {
 
 
     public void descargarPDF(){
-        String MY_URL = "http://192.168.1.84/comprasv1/api/public/etenv?cvereco=4&indice=3.2023";
+        String MY_URL = "http://192.168.1.84/comprasv1/api/public/etenv?cvereco=4&indice=7.2023";
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(MY_URL)));
+    }
+
+    public void descargarPDF2(){
+        long archact;
+        String MY_URL = "http://192.168.1.84/comprasv1/api/public/etenv?cvereco=4&indice=7.2023";
+
+        Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
+        // registrer receiver in order to verify when download is complete
+        //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);  // This will show notification on top when downloading the file.
+        request.setTitle("Downloading a file"); // Title for notification.
+        // request.setVisibleInDownloadsUi(true);
+
+        request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
+        archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
+       // return 0;
     }
 }

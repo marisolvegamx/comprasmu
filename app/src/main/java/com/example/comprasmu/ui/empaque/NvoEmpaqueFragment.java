@@ -1,12 +1,9 @@
 package com.example.comprasmu.ui.empaque;
 
-
 import android.app.Activity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,10 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -41,39 +35,32 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
-
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.DetalleCaja;
-
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
-
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
-
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
-
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
+import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import java.util.List;
-
 import static android.app.Activity.RESULT_OK;
 
 
@@ -851,7 +838,7 @@ public class NvoEmpaqueFragment extends Fragment {
             return;
         }else {
             Activity activity = this.getActivity();
-            Intent intento1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
             String dateString = format.format(new Date());
@@ -883,7 +870,7 @@ public class NvoEmpaqueFragment extends Fragment {
             Uri photoURI = FileProvider.getUriForFile(activity,
                     "com.example.comprasmu.fileprovider",
                     archivofoto);
-            intento1.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); //se pasa a la otra activity la referencia al archivo
+            intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
 
             if (fotomos != null) {
 
