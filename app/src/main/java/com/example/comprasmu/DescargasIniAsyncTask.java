@@ -193,7 +193,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
             }else {
                 listenprin.finalizar();
-                listenprin.finalizar();
+                //listenprin.finalizar();
             }
 
         }else {   //primera vez
