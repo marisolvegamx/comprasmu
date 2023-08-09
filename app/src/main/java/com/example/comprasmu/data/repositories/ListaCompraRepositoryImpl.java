@@ -41,6 +41,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         }
         return INSTANCE;
     }
+
     public LiveData<List<ListaCompra>> getAllByIndice(String indice) {
         return dao.findAllByIndice(indice);
     }

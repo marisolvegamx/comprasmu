@@ -313,7 +313,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     }
 
     public List<InformeEtapaDet> getDetEtaxCaja(int idinf, int etapa,int numcaja){
-       Log.d(TAG,"buscando a "+idinf+"--"+numcaja);
+      // Log.d(TAG,"buscando a "+idinf+"--"+numcaja);
          return infDetRepo.getByCaja(idinf, etapa, numcaja);
     }
     public void borrarDetEtaxCaja(int idinf, int etapa,int numcaja){
@@ -610,7 +610,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
             for (int i = 0; i < informes.size(); i++) //y no estan cancelado
             {
               //  Log.d(TAG,"zzz"+informes.get(i).getEstatus());
-                if(informes.get(i).getEstatus()>0)
+                if(informes.get(i).getEstatus()>0) //no cancelados
                 clienteAnt[i] = informes.get(i).getPlantasId();
 
             }

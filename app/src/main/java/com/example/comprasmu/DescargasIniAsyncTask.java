@@ -193,7 +193,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
             }else {
                 listenprin.finalizar();
-                listenprin.finalizar();
+                //listenprin.finalizar();
             }
 
         }else {   //primera vez
@@ -387,7 +387,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             Log.d(TAG,"DescargaIniListener procesos "+procesos);
            procesos++;
            if(procesos==7){ //llama 2 veces al home etra 2 vece
-               //todo revisar
+
 
                miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
 

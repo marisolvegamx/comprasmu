@@ -163,13 +163,16 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         if (view.getId() == R.id.btnldagregar) {
            Log.d(TAG, "agregar muestra"+productoSel.getNomproducto());
            if(productoSel.getClientesId()==7) { //valido que no exista en la compra
+              if(!productoSel.getNomproducto().equals("")&&productoSel.getNomproducto().contains("FRUTZZO")){
+                  //PUEDO COMPRAR
+              }else
                if (mViewModel.validarProdJum(Constantes.INDICEACTUAL, plantaSel, productoSel)) {
                    Toast.makeText(getActivity(), getString(R.string.err_mismo_prod), Toast.LENGTH_LONG).show();
                    return;
                }
            }
             NuevoDetalleViewModel nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
-                String clienteNombre=Constantes.ni_clientesel;//lo pongo hasta que se guarda el informe
+            String clienteNombre=Constantes.ni_clientesel;//lo pongo hasta que se guarda el informe
             //para los bu
             //productoSel.setTipoMuestra(2);
             //productoSel.setNombreTipoMuestra("BACKUP");

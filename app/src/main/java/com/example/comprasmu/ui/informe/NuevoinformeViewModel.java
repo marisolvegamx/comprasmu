@@ -688,7 +688,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public void actualizarInforme() throws Exception { //inserta el informe desde temporal
         //conservo el id
         InformeCompra compra2=tempToIC();
-        Log.d(TAG,"dddddddddddddddddddd ya existe el informe"+compra2.getId());
+        //Log.d(TAG,"dddddddddddddddddddd ya existe el informe"+compra2.getId());
         if(compra2.getId()==0)
         {
             //algo salio mal

@@ -483,7 +483,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             }
             List<ListaCompra> data=lcviewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
 
-            Log.d(TAG, "regresó de la consulta de clientes " + data.size());
+            Log.d(TAG, "regresó de la consulta de clientes " + data.size()+"--"+Constantes.CIUDADTRABAJO);
            clientesAsignados = convertirListaaClientes(data);
            // CreadorFormulario.cargarSpinnerDescr(getContext(),spclientes,clientesAsignados);
         }

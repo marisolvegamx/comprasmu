@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.databinding.ActivityMicamaraBinding;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -246,9 +247,13 @@ public class MiCamaraActivity extends AppCompatActivity {
                        //     public void run() {
                              //   Toast.makeText(MainActivity.this, "Image Saved successfully", Toast.LENGTH_SHORT).show();
                         Log.d(TAG,"la imagen se tomo correctamente "+file.getName());
-                     //veo la imagen
+                        //veo la imagen
                         try {
-                            getRotacion(archivo_foto);
+                            // este no getRotacion(archivo_foto);
+                            if(ComprasUtils.debeRotar(MiCamaraActivity.this)){
+                                getRotacionConf(archivo_foto); //o sea no funcionará getrotacion2
+                            }else
+                                getRotacion2(archivo_foto);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -376,36 +381,85 @@ public class MiCamaraActivity extends AppCompatActivity {
         return 0;
     }
 
+
     private void getRotacion2(String photoPath) throws IOException {
         ExifInterface ei = null;
 
-            ei = new ExifInterface(photoPath);
+        ei = new ExifInterface(photoPath);
 
         int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                 ExifInterface.ORIENTATION_UNDEFINED);
         System.out.println(">>>"+orientation);
-        Bitmap rotatedBitmap = null;
+
+        int rotate=0;
         switch (orientation) {
 
             case ExifInterface.ORIENTATION_ROTATE_90: //6
-                System.out.println("90");
+                rotate=90;
+
                 break;
 
             case ExifInterface.ORIENTATION_ROTATE_180: //3
-               // rotatedBitmap = rotateImage(bitmap, 180);
-                System.out.println("180");
+                // rotatedBitmap = rotateImage(bitmap, 180);
+                rotate=180;
                 break;
 
             case ExifInterface.ORIENTATION_ROTATE_270: //8
                 //rotatedBitmap = rotateImage(bitmap, 270);
-                System.out.println("270");
+                rotate=270;
                 break;
 
 
             default:
                 System.out.println("sepa");
+                rotate=0;
+        }
+        if(rotate!=0){
+            rotateImage(photoPath, rotate);
         }
     }
+    //para el caso de que no funcione rotar 2
+    private void getRotacionConf(String photoPath) throws IOException {
+        ExifInterface ei = null;
+
+        ei = new ExifInterface(photoPath);
+
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED);
+        System.out.println(">>>"+orientation);
+
+
+
+        System.out.println(">>>"+orientation);
+
+        int rotate=0;
+        switch (orientation) {
+
+            case ExifInterface.ORIENTATION_ROTATE_90: //6
+                rotate=0;
+
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_180: //3
+                // rotatedBitmap = rotateImage(bitmap, 180);
+                rotate=270;
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_270: //8
+                //rotatedBitmap = rotateImage(bitmap, 270);
+                rotate=180;
+                break;
+
+
+            default:
+                System.out.println("sepa"); //para normal y undefined
+                rotate=90;
+        }
+        if(rotate!=0){
+            rotateImage(photoPath, rotate);
+        }
+    }
+
 
    /* @Override
     private void onError(ImageCaptureException exc) {

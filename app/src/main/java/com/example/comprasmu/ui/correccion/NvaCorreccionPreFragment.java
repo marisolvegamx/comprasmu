@@ -115,7 +115,7 @@ public class NvaCorreccionPreFragment extends Fragment {
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
                 Log.e(TAG,"estatus "+solicitud.getEstatus());
-                ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud,0);
+                ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCorEta(solicitud,0);
 
                 //BUSCO LAS FOTOS ORIGINAL
 

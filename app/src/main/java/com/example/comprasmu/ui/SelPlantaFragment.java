@@ -91,7 +91,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
         };
        // Log.d(TAG,);
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-       if(Constantes.IDCIUDADTRABAJO==0){
+       if(Constantes.CIUDADTRABAJO.equals("")){
            //lo mando a definir ciudad de trabajo
 
            NavHostFragment.findNavController(this).navigate(R.id.action_selplantocd,bundle);
@@ -180,7 +180,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
         for (ListaCompra listaCompra: lista ) {
           /*String tupla=Integer.toString(listaCompra.getCiudadesId())+";"+
           listaCompra.getPlantaNombre();*/
-            if(listaCompra.getCiudadesId()==Constantes.IDCIUDADTRABAJO)
+            if(listaCompra.getCiudadNombre().equals(Constantes.CIUDADTRABAJO))
             { listaCiudadesEnv.add(new DescripcionGenerica(listaCompra.getCiudadesId(), listaCompra.getCiudadNombre()));
                 break;
             }

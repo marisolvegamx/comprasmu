@@ -65,6 +65,7 @@ public class Constantes {
     public static int DP_TIPOTIENDA;
     public static NuevoDetalleViewModel.ProductoSel productoSel;
     public static HashMap <Integer,String>TIPOTIENDA;
+    public static String CONFROTAR="rotar"; //0 no roto 1 roto
    public static class VarDetalleProd{
        public static   String tomadode;
         public static   String nvoatra;

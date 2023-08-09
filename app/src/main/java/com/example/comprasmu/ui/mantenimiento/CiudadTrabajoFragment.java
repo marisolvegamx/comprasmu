@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +22,6 @@ import android.widget.Toast;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.ui.SelPlantaFragment;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 
@@ -59,7 +56,7 @@ public class CiudadTrabajoFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(CiudadTrabajoViewModel.class);
 
         spciudades=view.findViewById(R.id.spciudadtrabajo);
-        Button guardar=view.findViewById(R.id.btnctguardar);
+        Button guardar=view.findViewById(R.id.btncdguardar);
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

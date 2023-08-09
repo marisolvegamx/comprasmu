@@ -1356,7 +1356,7 @@ public class DetalleProductoPenFragment extends Fragment {
             return 1;
         }
         //valido fecha cad
-        if(!validarFechaCad(fechacad)){  //compraro con   rangos
+        if(!validarFechaCad(fechacad)){
             return 1;}
         if(dViewModel.productoSel.clienteSel==5||dViewModel.productoSel.clienteSel==6) {
             ValidadorDatos valdat = new ValidadorDatos();

@@ -248,6 +248,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         this.actualizarAtributo3("TOT. MUESTRAS:"+mues);
         this.actualizarAtributo4("TOT. CAJAS:"+cajas);
     }
+    //para acomodar barra de titulos de correcciones compras
     public void actualizarBarraCor(SolicitudCor sol,int constienda) {
         //convierto la solicitud en informeEtapa
       InformeEtapa temp=new InformeEtapa();
@@ -262,6 +263,33 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         actualizarAtributo2(sdf.format(sol.getCreatedAt()));
       //actualizarAtributo3(sol.getContador()+"");
   //    actualizarAtributo3(sol.getMotivo());
+
+    }
+    //para acomodar barra de titulos de correcciones de otra etapas menos compras
+    public void actualizarBarraCorEta(SolicitudCor sol, int numcaja) {
+        //convierto la solicitud en informeEtapa
+        InformeEtapa temp=new InformeEtapa();
+        temp.setIndice(sol.getIndice());
+        temp.setPlantaNombre(sol.getPlantaNombre());
+        temp.setClienteNombre(sol.getClienteNombre());
+      //  temp.setConsecutivo(constienda);
+        actualizarBarra(temp);
+        //oculto fila 2 y 3
+        mBinding.row3.setVisibility(View.GONE);
+        mBinding.row2.setVisibility(View.GONE);
+
+        if(sol.getEtapa()==3) {
+            mBinding.txtnieatr5.setText("CAJA NUM. " + numcaja);
+            mBinding.row5.setVisibility(View.VISIBLE);
+            mBinding.txtnieatr5.setVisibility(View.VISIBLE);
+        }
+      //  actualizarAtributo1(sol.getNombreTienda());
+        SimpleDateFormat sdf=Constantes.sdfsolofecha;
+        if(sol.getCreatedAt()!=null)
+           // actualizarAtributo2(sdf.format(sol.getCreatedAt()));
+        actualizarAtributo4(sdf.format(sol.getCreatedAt()));
+        if(sol.getIndice()!=null)
+            actualizarAtributo3(ComprasUtils.indiceLetra(sol.getIndice()));
 
     }
 
@@ -349,6 +377,10 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     }
     @Override
     public void onBackPressed() {
+        if(isCor) {
+            super.onBackPressed();
+        }else
+
 
         if(etapa==3)//el regreso se maneja en el fragment
         {

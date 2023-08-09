@@ -108,7 +108,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
         aceptar = root.findViewById(R.id.btncpaceptar);
         txtmotivo=root.findViewById(R.id.txtcpmotivo);
         txtsoldato1=root.findViewById(R.id.txtcpsoldato1);
-        txtnumcaja=(TextView) root.findViewById(R.id.txtcpcajita);
+      //  txtnumcaja=(TextView) root.findViewById(R.id.txtcpcajita);
 
         spdato1 =root.findViewById(R.id.spcpdato1);
         LinearLayout lcajas=root.findViewById(R.id.llcpcajasetiq);
@@ -132,12 +132,10 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
-                Log.e(TAG,"estatus "+solicitud.getInformesId()+numfoto);
+                Log.e(TAG,"estatus "+solicitud.getInformesId()+numfoto+"--"+solicitud.getEtapa());
                 //busco el consecutivo de la tienda
                 int constienda=0;
-                ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud,0);
-
-                txtmotivo.setText(solicitud.getMotivo());
+                 txtmotivo.setText(solicitud.getMotivo());
                 //BUSCO LA FOTO ORIGINAL
                 //en donde la busco
                 switch (solicitud.getEtapa()){
@@ -148,13 +146,15 @@ public class NvaCorreccionEtiqFragment extends Fragment {
                             solViewModel.buscarFotoEta(solicitud.getNumFoto(),solicitudCor.getInformesId(),3).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                                 @Override
                                 public void onChanged(InformeEtapaDet informeEtapaDet) {
-                                    Log.d(TAG,"buscando"+informeEtapaDet.getId());
 
                                     detEdit=informeEtapaDet;
                                     if(informeEtapaDet!=null) {
+                                        Log.d(TAG,"buscando"+informeEtapaDet.getId());
 
                                       //  txtnumcaja.setText("hola");
-                                        txtnumcaja.setText(informeEtapaDet.getNum_caja()+""); //caja en la que esta la muestra
+                                      //  txtnumcaja.setText(informeEtapaDet.getNum_caja()+""); //caja en la que esta la muestra
+                                        ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCorEta(solicitud,informeEtapaDet.getNum_caja());
+
                                         solViewModel.buscarImagenCom(Integer.parseInt(informeEtapaDet.getRuta_foto())).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
                                             @Override
                                             public void onChanged(ImagenDetalle imagenDetalle) {
@@ -177,13 +177,15 @@ public class NvaCorreccionEtiqFragment extends Fragment {
                             });
                             break;
                             case 4:case 5:case 6:
+                        ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCorEta(solicitud,0);
+
                         solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                             @Override
                             public void onChanged(InformeEtapaDet informeEtapaDet) {
                                 if(informeEtapaDet!=null) {
                                     rutafotoo = informeEtapaDet.getRuta_foto();
 
-                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+                                    //Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
 
                                     //fotoori1.setImageBitmap(bitmap1);
                                 }
@@ -320,7 +322,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
         //busco el total de cajas
         int totcajas=0;
         if(infcor!=null) {
-            Log.d(TAG,infcor.getCiudadNombre());
+         //   Log.d(TAG,infcor.getCiudadNombre());
             totcajas = preViewModel.getTotCajasEtiq(infcor.getCiudadNombre());
 
         }

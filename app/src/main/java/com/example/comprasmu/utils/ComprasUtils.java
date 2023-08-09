@@ -21,9 +21,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.Configuracion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 
 import java.io.File;
@@ -37,6 +40,7 @@ import java.util.List;
 import static android.content.Context.ACTIVITY_SERVICE;
 
 public class ComprasUtils {
+
     Bitmap rotatedBitmap;
 
     public static Boolean isOnlineNet() {
@@ -100,8 +104,10 @@ public class ComprasUtils {
             int tam=bitmapOrg.getByteCount();
             int quality=50;
             //Parámetros optimización, resolución máxima permitida
-            int max_ancho = 600;
-            int max_alto = 800;
+          //  int max_ancho = 600;
+          //  int max_alto = 800;
+            int max_ancho = 1200;
+            int max_alto = 900;
 
 
             double x_ratio = (double)max_ancho/(double)width;
@@ -457,6 +463,25 @@ public class ComprasUtils {
 
         return memoryInfo;
     }
+    //funcion para consultar en las configuraciones si se rota
+    public static boolean debeRotar( Context application){
+        ConfiguracionRepositoryImpl confRepo=new ConfiguracionRepositoryImpl(application);
+        int rotar=0;
+        //busco en la bd 1 roto 0 no
+      Configuracion conf=confRepo.findsimple(Constantes.CONFROTAR);
+      if(conf!=null) {
+          try {
+              rotar = Integer.parseInt(conf.getValor());
+          }catch (NumberFormatException ex){
+              ex.printStackTrace();
+          }
+      }
+        if(rotar==1){
+            return true;
+        }
+        return false;
+    }
+
 
 
 }

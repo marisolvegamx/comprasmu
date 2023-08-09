@@ -1747,7 +1747,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                 mViewModel.visita.setTipoId(idtipo+1);
                 if(mensajedir!=null)
-                mViewModel.visita.setDireccion(mensajedir.getText().toString());
+                    mViewModel.visita.setDireccion(mensajedir.getText().toString());
 
                // mViewModel.visita.setCadenaComercial(input6.getText().toString());
 
@@ -1756,7 +1756,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             {//ya existe
 
                 EditText input5 = root.findViewById(1005);
-                 input1 = root.findViewById(1001);
+                input1 = root.findViewById(1001);
                 EditText input2 = root.findViewById(1002);
                 mViewModel.visita.setEstatusPepsi(estatusPepsi);
                 mViewModel.visita.setEstatusPen(estatusPen);

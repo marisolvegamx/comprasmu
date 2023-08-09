@@ -13,6 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.dao.AtributoDao;
 import com.example.comprasmu.data.dao.CatalogoDetalleDao;
+import com.example.comprasmu.data.dao.ConfiguracionDao;
 import com.example.comprasmu.data.dao.CorreccionDao;
 import com.example.comprasmu.data.dao.DetalleCajaDao;
 import com.example.comprasmu.data.dao.GeocercaDao;
@@ -33,6 +34,7 @@ import com.example.comprasmu.data.dao.TablaVersionesDao;
 import com.example.comprasmu.data.dao.VisitaDao;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.Configuracion;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DetalleCaja;
@@ -70,8 +72,9 @@ import java.util.List;
         ProductoExhibido.class, Sustitucion.class,
         CatalogoDetalle.class, Atributo.class, Geocerca.class,
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
-        SolicitudCor.class, Correccion.class, Sigla.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=20, exportSchema = false)
+        SolicitudCor.class, Correccion.class, Sigla.class,
+        Configuracion.class},
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=21, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -96,6 +99,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
     public abstract CorreccionDao getCorreccionDao();
     public abstract DetalleCajaDao getDetalleCajaDao();
     public abstract SiglaDao getSiglaDao();
+    public abstract ConfiguracionDao getConfiguracionDao();
     public static ComprasDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
             ctx=context;
@@ -109,7 +113,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
-                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20)
+                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -399,6 +403,17 @@ public abstract class ComprasDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE correccion ADD COLUMN dato1 TEXT");
               database.execSQL(" ALTER TABLE correccion ADD COLUMN dato2 TEXT");
             database.execSQL("ALTER TABLE correccion ADD COLUMN dato3 TEXT");
+        }
+    };
+
+    static final Migration MIGRATION_20_21 = new Migration(20,21) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `configuracion` (`id` INTEGER NOT NULL," +
+                    " clave TEXT , "
+                    + "valor TEXT, "+
+                    " PRIMARY KEY(`id`));");
+
         }
     };
 

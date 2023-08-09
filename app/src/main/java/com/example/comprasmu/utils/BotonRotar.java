@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import com.example.comprasmu.R;
 
 /**
- * TODO: document your custom view class.
+ *  document your custom view class.
  */
 public class BotonRotar extends LinearLayout {
     ImageView boton;

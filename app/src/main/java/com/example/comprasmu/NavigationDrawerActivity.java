@@ -39,8 +39,10 @@ import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.ui.mantenimiento.ConfiguracionCamFragment;
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
+import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
@@ -53,6 +55,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 
 import androidx.lifecycle.Observer;
@@ -63,6 +66,7 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
 import androidx.navigation.Navigation;
 
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -329,17 +333,25 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
     //saber si tiene mas de una ciudad para mostrar seleccionar ciudad
     public void revisarCiudades(){
-        if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3)
-            return; //ya no importa la ciudad
+
         Log.d(TAG,"ciudades");
+
             mViewModel.getCiudades().observe(this, data -> {
               //   Log.d(TAG,"....regresó de la consulta "+ data.size());
                 if(data.size()>1)
                 Constantes.varciudades=true;
                 else if(data.size()>0) {
-                    Constantes.CIUDADTRABAJO=data.get(0).getCiudadNombre();
-                    Constantes.IDCIUDADTRABAJO=data.get(0).getCiudadesId();
+                    if (Constantes.CIUDADTRABAJO.equals("")){
+                        Constantes.CIUDADTRABAJO = data.get(0).getCiudadNombre();
+
+                    Constantes.IDCIUDADTRABAJO = data.get(0).getCiudadesId();
+                    //guardo en pref
+
+                    guardarCiudadPref(Constantes.CIUDADTRABAJO);
+                }
                     Constantes.varciudades = false;
+                    if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3)
+                        return; //ya no importa la ciudad
                     NavigationView navigationView =  findViewById(R.id.nav_view);
                     navigationView.getMenu().findItem(R.id.nav_ciudad_trabajo).setVisible(false);
 
@@ -371,10 +383,26 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         switch (item.getItemId()) {
             case R.id.action_settings:
-                //  Log.d(TAG,"hice click en"+item.getItemId());
-          //      pruebadescarga();
-              //  startService(DownloadSongService.getDownloadService(this, IMAGE_DOWNLOAD_PATH, DirectoryHelper.ROOT_DIRECTORY_NAME.concat("/")));
 
+                //  Log.d(TAG,"hice click en"+item.getItemId());
+            //    pruebadescarga();
+              //  startService(DownloadSongService.getDownloadService(this, IMAGE_DOWNLOAD_PATH, DirectoryHelper.ROOT_DIRECTORY_NAME.concat("/")));
+               // NavHostFragment.findNavController(this).navigate(R.id.nav_nuevoinforme);
+               // Navigation.findNavController( R.id.nav_host_fragment).navigate(action);
+                // NavHostFragment.findNavController(this,R.id.nav_configurar);
+
+               // NavHostFragment.findNavController(ConfiguracionCamFragment.this);
+                NavController navController;
+
+                navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+                navController.navigate(R.id.nav_configurar);
+                /*
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ConfiguracionCamFragment fragconfig=new ConfiguracionCamFragment();
+               // ft.add(R.id.nav_host_fragment, fragconfig);
+                ft.replace(R.id.nav_host_fragment, fragconfig);
+                ft.commit();
                 return true;
             case R.id.action_mapa:
                   Log.d(TAG,"hice click en"+item.getItemId());
@@ -708,6 +736,18 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         SharedPreferences.Editor editor=prefe.edit();
 
         editor.putInt("etapaactual",etapa );
+
+        editor.commit();
+
+    }
+
+    public void guardarCiudadPref(String cd){
+        SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=prefe.edit();
+
+        editor.putString("ciudadtrabajo",cd );
+        editor.putInt("idciudadtrabajo",Constantes.IDCIUDADTRABAJO );//no es del catalogo ciudades es de plantas
+
 
         editor.commit();
 

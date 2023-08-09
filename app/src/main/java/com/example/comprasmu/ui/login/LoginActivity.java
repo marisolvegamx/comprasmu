@@ -116,11 +116,11 @@ public class LoginActivity extends AppCompatActivity
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
+                if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("nada")) {//pruebas y el lenovo
                 //entro rapido
-                   new LoginListener().iniciar();
+                //  new LoginListener().iniciar();
                 }
-                    loadingProgressBar.setVisibility(View.VISIBLE);
+                loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
 
@@ -369,13 +369,13 @@ public class LoginActivity extends AppCompatActivity
         desclis=es;
     }*/
 
-    private void descargarImagenes(List<ImagenDetalle> imagenes){
+   /* private void descargarImagenes(List<ImagenDetalle> imagenes){
         for(ImagenDetalle img:imagenes){
             startDownload(DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta(), DESTINATION_PATH);
             Log.d("LOginAct"," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
         }
        // cerrarAlerta(true);
-    }
+    }*/
     private long startDownload(String downloadPath, String destinationPath) {
         Uri uri = Uri.parse(downloadPath); // Path where you want to download file.
         // registrer receiver in order to verify when download is complete

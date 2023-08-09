@@ -504,7 +504,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         });
       //  txtcajaact.setText("CAJA "+contcaja);
         txtnumuestra.setText("MUESTRA "+contmuestra);
-        Log.d(TAG,"ando aqi");
+    //    Log.d(TAG,"ando aqi");
         mViewModel.preguntaAct=preguntaAct;
         return root;
     }
@@ -941,7 +941,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
-        //todo limpio variables de sesion
+        // limpio variables de sesion
 
         mViewModel.setIdNuevo(0);
         mViewModel.setIddetalle(0);
