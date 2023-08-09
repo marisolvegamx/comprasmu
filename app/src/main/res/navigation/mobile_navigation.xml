@@ -15,15 +15,10 @@
 
     <fragment
         android:id="@+id/nav_configurar"
-        android:name="com.example.comprasmu.ui.home.HomeActivity"
+        android:name="com.example.comprasmu.ui.mantenimiento.ConfiguracionCamFragment"
         android:label="@string/menu_configuracion"
-        tools:layout="@layout/fragment_home" >
-        <action android:id="@+id/action_conftohome"
-            app:destination="@id/nav_descargar"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        tools:layout="@layout/configuracion_cam_fragment" >
+
     </fragment>
     <fragment
         android:id="@+id/nav_ciudad_trabajo"

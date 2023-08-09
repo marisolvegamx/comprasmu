@@ -318,6 +318,7 @@
     <string name="title_activity_descinfsup">Actualizar datos</string>
     <string name="esuncod_nop">¿ESTE CODIGO YA EXISTE, LO ACEPTA?</string>
     <string name="cajact">MUESTRA CAJA NUM.</string>
+    <string name="rotar_foto">ROTAR FOTOS</string>
 
 
 </resources>

@@ -16,5 +16,6 @@
         android:id="@+id/cerrarsesion"
         android:orderInCategory="100"
         android:title="@string/cerrar_sesion"
+        android:visibility="gone"
         app:showAsAction="never" />
 </menu>
