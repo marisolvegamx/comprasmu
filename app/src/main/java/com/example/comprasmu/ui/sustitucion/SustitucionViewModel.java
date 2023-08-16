@@ -3,12 +3,14 @@ package com.example.comprasmu.ui.sustitucion;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.dao.SustitucionDao;
@@ -57,27 +59,39 @@ public class SustitucionViewModel extends AndroidViewModel {
     }
 
 
-    public void cargarListas(int plantasel,String categoria,int cliente,int empaque, int tamanio, int numTienda){
+    public void cargarListas(int plantasel,int categoria,int cliente,int empaque, int tamanio, int numTienda){
        if(cliente==7){
            cargarListasJum(plantasel,categoria,empaque,tamanio);
        }else
-           listaSustitucion =repository.getByFiltros(categoria,"",0,0);
+           listaSustitucion =repository.getByFiltros(categoria,"",0,0, cliente);
         size = Transformations.map(listaSustitucion,res->{ return listaSustitucion.getValue().size();});
         empty = Transformations.map(listaSustitucion, res->{return listaSustitucion.getValue().isEmpty();});
     }
 
-    public void cargarListasJum(int plantaSel,String categoria,int empaque, int tamanio){
+    public void cargarListasJum(int plantaSel,int categoria,int empaque, int tamanio){
+       /* if(productoSel.getClientesId()==7) { //valido que no exista en la compra
+            if(!productoSel.getNomproducto().equals("")&&productoSel.getNomproducto().contains("FRUTZZO")){
+                //PUEDO COMPRAR
+            }else
+            if (mViewModel.validarProdJum(Constantes.INDICEACTUAL, plantaSel, productoSel)) {
+                Toast.makeText(getActivity(), getString(R.string.err_mismo_prod), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }*/
+
          //ver que no se haya comprado
         // if(numTienda>=5)
         MutableLiveData listaTemp=new MutableLiveData();
         List<Sustitucion> array=new ArrayList<>();
-       List<Sustitucion> listaProds =repository.getByFiltrosJumSim(categoria,"FRUTZZO",empaque ,tamanio);
+       List<Sustitucion> listaProds =repository.getByFiltrosJumSim(categoria,"FRUTZZO",empaque ,tamanio,clienteSel);
+        Log.d(TAG,"encontre "+listaProds.size());
         for (Sustitucion producto:
              listaProds) {
             if(!validarProdJum(Constantes.INDICEACTUAL, plantaSel, producto))
                 array.add(producto);
 
         }
+        Log.d(TAG,"quedaron"+array.size());
         //agrego los frutzo porque esto si se pueden volver a comprar
         List<Sustitucion> listafrut=repository.getByFiltrosFrut(categoria,"FRUTZZO");
         array.addAll(listafrut);

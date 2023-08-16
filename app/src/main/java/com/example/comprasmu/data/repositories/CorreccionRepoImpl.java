@@ -154,4 +154,7 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
     public void deleteByIndice(String indice) {
         icDao.deleteByIndice(indice);
     }
+    public LiveData<List<Correccion>> getByIndice(String indice){
+        return icDao.getByIndice(indice);
+    }
 }

@@ -26,14 +26,14 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
         dao=comprasDataBase.getSustitucionDao();
     }
-    public LiveData<List<Sustitucion>> getByFiltros(String categoria, String productoNombre, int empaque,int tamanio ) {
+    public LiveData<List<Sustitucion>> getByFiltros(int categoria, String productoNombre, int empaque,int tamanio, int clienteId ) {
 
         String query="Select * from sustitucion where 1=1";
         ArrayList<String> filtros=new ArrayList<String>();
 
-        if(categoria!=null&&!categoria.equals("")) {
-            query =query+ " and nomcategoria=?";
-            filtros.add(categoria);
+        if(categoria>0) {
+            query =query+ " and categoriasId=?";
+            filtros.add(categoria+"");
         }
         if(productoNombre!=null&&!productoNombre.equals("")) {
             query = query + " and nomproducto=?";
@@ -47,10 +47,13 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
             query = query + " and su_tamanio=?";
             filtros.add(tamanio+"");
         }
-
+        if(clienteId>0) {
+            query = query + " and clientesId=?";
+            filtros.add(clienteId+"");
+        }
 
        // Object[] params=filtros.toArray();
-        Log.d("query",filtros.toArray()+"");
+        Log.d("query",query+" "+filtros.toString()+"");
 
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
@@ -59,7 +62,7 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         return dao.getByFiltros(sqlquery);
     }
 
-    public List<Sustitucion> getByFiltrosFrut(String categoria, String productoNombre) {
+    public List<Sustitucion> getByFiltrosFrut(int categoria, String productoNombre) {
 
         String query="Select * from sustitucion where  categoriasId=1";
 
@@ -80,14 +83,14 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
     }
 
 
-    public List<Sustitucion> getByFiltrosJumSim(String categoria, String productoNombre, int empaque,int tamanio ) {
+    public List<Sustitucion> getByFiltrosJumSim(int categoria, String productoNombre, int empaque,int tamanio,int clienteId ) {
 
         String query="Select * from sustitucion where 1=1";
         ArrayList<String> filtros=new ArrayList<String>();
 
-        if(categoria!=null&&!categoria.equals("")) {
-            query =query+ " and nomcategoria=?";
-            filtros.add(categoria);
+        if(categoria>0) {
+            query =query+ " and categoriasId=?";
+            filtros.add(categoria+"");
         }
 
         if(empaque>0) {
@@ -98,11 +101,14 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
             query = query + " and su_tamanio=?";
             filtros.add(tamanio+"");
         }
-
+        if(clienteId>0) {
+            query = query + " and clientesId=?";
+            filtros.add(clienteId+"");
+        }
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
         );
-
+        Log.d("SUsTREPOIMP",query);
         return dao.getByFiltrosSimp(sqlquery);
     }
 

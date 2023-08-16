@@ -51,20 +51,22 @@ public class BorrarDatosFragment extends Fragment {
          txtipo=root.findViewById(R.id.eitxttipo);
         //llenar los indices
 
-        String []indices= Constantes.listaindices;
+        String []indices= {"AGOSTO 2023"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, indices);
         spindice.setAdapter(adapter);
-        Button btnborrar=root.findViewById(R.id.btnrfrotar);
+        Button btnborrar=root.findViewById(R.id.btndbborrar);
         aviso=root.findViewById(R.id.txtbdlisto);
         btnborrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //borrarxindice();
-                borrarautomatico();
+               preguntar();
             }
         });
         return root;
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -79,6 +81,26 @@ public class BorrarDatosFragment extends Fragment {
         }
     }
 
+    public void preguntar(){
+        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+        dialogo1.setTitle(R.string.importante);
+        dialogo1.setMessage(R.string.pregunta_eliminar_informes);
+        dialogo1.setCancelable(false);
+        dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                borrarautomatico("8.2023");
+
+
+            }
+        });
+        dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                dialogo1.cancel();
+            }
+        });
+        dialogo1.show();
+
+    }
     public void borrarxindice(){
       String indice=  spindice.getSelectedItem().toString();
       String tipo=txtipo.getText().toString();
@@ -119,9 +141,9 @@ public class BorrarDatosFragment extends Fragment {
     }
 
 
-    public void borrarautomatico(){
+    public void borrarautomatico(String indice_anterior){
 
-     String indice_anterior=Constantes.INDICEACTUAL;
+
         EliminadorIndice ei=new EliminadorIndice(getActivity(),indice_anterior);
         ei.eliminarVisitas();
         aviso.setVisibility(View.VISIBLE);
@@ -129,8 +151,11 @@ public class BorrarDatosFragment extends Fragment {
         // mViewModel.borrarInformes(indice_anterior);
          mViewModel.borrarListasCompra(indice_anterior);
        // Log.d("Comprasmu.BorrarDatosFragment","Se eliminaron las listas");
+        mViewModel.borrarInformesetapa(indice_anterior);
+        ei.eliminarCorrecciones();
+        ei.eliminarSolicitudes();
+        ei.borrarImagenes();
 
-       mViewModel.borrarInformesetapa(indice_anterior);
 
 
     }

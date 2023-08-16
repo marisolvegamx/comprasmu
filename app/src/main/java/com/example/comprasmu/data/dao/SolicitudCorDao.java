@@ -6,6 +6,8 @@ import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
+
+import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 
 import java.util.Date;
@@ -67,6 +69,11 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
 
     @Query("update solicitud_cor set motivo=:motivo, contador=:contador, createdAt=:fecha WHERE id=:idsol and numfoto=:numfoto")
     public abstract void actualizar(String motivo, int contador, Date fecha,  int idsol, int numfoto);
+
     @Query("delete from solicitud_cor where indice=:indice ")
     public abstract  void deleteByIndice(String indice);
+
+    @Query("select * from solicitud_cor where indice=:indice ")
+    public abstract  LiveData<List<SolicitudCor>> getByIndice(String indice);
+
 }

@@ -15,10 +15,12 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
+import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
@@ -47,7 +49,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     ListaCompraDetRepositoryImpl lcdrepo;
     ProductoExhibidoRepositoryImpl prorepo;
     VisitaRepositoryImpl visitarepo;
-
+    DetalleCajaRepoImpl dcRepo;
     Context context;
     ComprasLog complog;
     public BorrarDatosViewModel(Application application) {
@@ -116,10 +118,33 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     public void borrarInformesetapa(String indice){
         ieRepo=new InfEtapaRepositoryImpl(context);
         iedRepo=new InfEtapaDetRepoImpl(context);
-        complog.grabarError("borrando informes etapas");
-        ieRepo.deleteByIndice(indice);
-        iedRepo.deleteAll();
+        dcRepo=new DetalleCajaRepoImpl(context);
 
+        complog.grabarError("borrando informes etapas"+indice);
+        //busco el detalle
+        List<InformeEtapa> infos=ieRepo.getDao().findAllByIndice(indice);
+        for(InformeEtapa informe:infos) {
+            borrarInfEtapaDetalle(informe);
+            dcRepo.deleteByInforme(informe.getId());
+        }
+
+    }
+
+
+    //borra los detalles de compra
+    public void borrarInfEtapaDetalle(InformeEtapa inf){
+
+        //busco los detalles
+        List<InformeEtapaDet> det=iedRepo.getAllSencillo(inf.getId());
+        if(det!=null)
+            for (InformeEtapaDet infd : det) {
+                complog.grabarError("borrando informe etapa det"+infd.getId());
+                //borro los detalles
+                iedRepo.delete(infd);
+
+            }
+        //ahora si borro el informe
+        ieRepo.delete(inf);
     }
 
 

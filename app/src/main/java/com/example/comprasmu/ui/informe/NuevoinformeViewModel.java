@@ -38,6 +38,7 @@ import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 
+import com.example.comprasmu.ui.informedetalle.ValidadorDatos;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -89,7 +90,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public int prefinf;
     public int prefimagen;
     public int prefcons;
-
+    Application application;
 
     public NuevoinformeViewModel(@NonNull Application application) {
         super(application);
@@ -99,7 +100,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         this.visitaRepository=new VisitaRepositoryImpl(application);
         prodRepo=new ProductoExhibidoRepositoryImpl(application);
-
+        this.application=application;
         listaClientes = new MutableLiveData<>();
         tiposTienda = new MutableLiveData<>();
         informe     =new InformeCompra();
@@ -700,8 +701,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         //recupero los comentarios
 
         informe.setComentarios(compra2.getComentarios());
-        if(ticket_compra!=null) //si hubo producto
-        //validaciones
+        if(ticket_compra!=null) //si hubo producto//validaciones
         {
 
                 int idt = (int) imagenDetRepository.insertImg(ticket_compra);
@@ -787,6 +787,11 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         this.ticket_compra = ticket_compra;
     }
 
+    public boolean validarQr(LifecycleOwner lo, String qr, int cliente){
+        ValidadorDatos valdat = new ValidadorDatos();
+        return valdat.validarQr(lo,qr,cliente,this.application);
+
+    }
 
     public int getIdInformeNuevo() {
         return idInformeNuevo;

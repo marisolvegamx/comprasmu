@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -49,7 +50,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
    ProgressDialog progreso;
     String TAG="PruebasActivity";
 
-    private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
+    private static  String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
     SimpleDateFormat sdfparaindice=new SimpleDateFormat("M-yyyy");
     private int etapapref;
@@ -79,7 +80,13 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         progreso.show();
 
        // mTextView = findViewById(R.id.txtlllog);
+        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
+            //entro rapido
 
+            DOWNLOAD_PATH = "http://192.168.1.84/comprasv1/fotografias";
+
+
+        }
 
         //se definirá en el servidor
         definirTienda();
@@ -135,7 +142,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
 
         Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
-
+        //sacarlas del catalogo detalle ya lo tengo
         Constantes.TIPOTIENDA=new HashMap<>();
 
         Constantes.TIPOTIENDA.put(1,getString(R.string.grande));
@@ -204,6 +211,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
                    Constantes.ETAPAMENU =etapapref ;
                    irABorrar(); // necesito ir a una actividad donde pregunte al usuario
                } else {
+                   Log.d(TAG,"****entre aqui");
                    //descargar y sigo en el mismo indice
                    puedodescargar = true;
                    Constantes.INDICEACTUAL = indicepref;
@@ -335,7 +343,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         if (maininfoResp!=null&&maininfoResp.getImagenDetalles() != null && maininfoResp.getImagenDetalles().size() > 0) {
             Log.d(TAG," **descargando imagenes " );
             if(descim1==0)
-            descargarImagenes(maininfoResp.getImagenDetalles());
+                descargarImagenes(maininfoResp.getImagenDetalles());
             descim1=1;
         }
 //        Log.d(TAG," **descargando imagenes etapa "+maininfoResp.getImagenDetalles().size());
@@ -374,7 +382,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
 
                 startDownload(DOWNLOAD_PATH+"/"+ Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto(), DESTINATION_PATH);
-                     }
+            }
             descim2=1;
             // cerrarAlerta(true);
 

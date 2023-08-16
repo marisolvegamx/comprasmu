@@ -93,6 +93,10 @@ public class SolicitudCorRepoImpl  {
         return icDao.getxEstatusSync(indice, 0);
     }
 
+    public LiveData<List<SolicitudCor>> getSolicitudesByIndice(String indice) {
+
+        return icDao.getByIndice(indice);
+    }
     public void deleteSolicitudCor(int id,int numfoto) {
        icDao.deleteSolicitud( id,numfoto);
     }

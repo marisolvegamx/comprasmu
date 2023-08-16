@@ -110,6 +110,10 @@ public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
        icDao.deleteDetalle( id);
     }
 
+    public void deleteByInforme(int idInforme) {
+        icDao.deleteByInforme(idInforme);
+    }
+
 
 
 }

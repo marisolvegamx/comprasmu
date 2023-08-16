@@ -82,6 +82,7 @@ import java.text.SimpleDateFormat;
 
 import java.util.Date;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -97,7 +98,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     VisitaRepositoryImpl visRepo;
     InformeComDetRepositoryImpl infdrepo;
     InformeCompraRepositoryImpl infrepo;
-    private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
+   // private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private ListaSolsViewModel scViewModel;
@@ -380,7 +381,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        NavController navController;
         switch (item.getItemId()) {
             case R.id.action_settings:
 
@@ -392,20 +393,16 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 // NavHostFragment.findNavController(this,R.id.nav_configurar);
 
                // NavHostFragment.findNavController(ConfiguracionCamFragment.this);
-                NavController navController;
+
 
                 navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
                 navController.navigate(R.id.nav_configurar);
-                /*
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ConfiguracionCamFragment fragconfig=new ConfiguracionCamFragment();
-               // ft.add(R.id.nav_host_fragment, fragconfig);
-                ft.replace(R.id.nav_host_fragment, fragconfig);
-                ft.commit();
                 return true;
+
+
             case R.id.action_mapa:
-                  Log.d(TAG,"hice click en"+item.getItemId());
+                 // Log.d(TAG,"hice click en"+item.getItemId());
               //  Intent homeIntent=new Intent(this, MapaCdActivity.class);
               //  Intent homeIntent=new Intent(this, FirstMapActivity.class);
 
@@ -441,9 +438,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
               //  Log.d(TAG,"hice click en"+item.getItemId());
                    subirImagenes();
                 return true;*/
-            case R.id.cerrarsesion:
+            case R.id.cerrarsesion: //realmente es borrar datos
                 //  Log.d(TAG,"hice click en"+item.getItemId());
-                borrarUsuario();
+               // borrarUsuario();
+
+
+                navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+                navController.navigate(R.id.nav_borrarind);
+                //break;
                 return true;
 
             default:
@@ -719,7 +722,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
         Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
         Constantes.INDICEACTUAL=prefe.getString("indiceact", "");
+        Constantes.TIPOTIENDA=new HashMap<>();
 
+        Constantes.TIPOTIENDA.put(1,getString(R.string.grande));
+        Constantes.TIPOTIENDA.put(2,getString(R.string.mediana));
+        Constantes.TIPOTIENDA.put(3,getString(R.string.chica));
+        Constantes.TIPOTIENDA.put(4,getString(R.string.otras));
 
         //  prefe.getString("ciudadtrabajo","");
     /*    Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");*/

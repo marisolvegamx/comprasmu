@@ -61,4 +61,7 @@ public abstract class CorreccionDao extends  BaseDao<Correccion>{
 
     @Query("delete from correccion where indice=:indice ")
     public abstract  void deleteByIndice(String indice);
+
+    @Query("select * from correccion where indice=:indice ")
+    public abstract  LiveData<List<Correccion>> getByIndice(String indice);
 }

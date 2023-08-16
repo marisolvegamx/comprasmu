@@ -35,7 +35,8 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
     @Query("delete from informe_detalle where informesId=:informe and estatusSync=2")
     public  abstract  void deleteByInforme(int informe);
 
-
+    @Query("SELECT * FROM informe_detalle inner join informe_compras on informesId=informe_compras.id where qr=:qr and informe_detalle.estatus>0 and informe_compras.clientesId=:cliente ")
+    public abstract InformeCompraDetalle getByqr( String qr, int cliente); //no está cancelada
 
     @Query("update  informe_detalle set estatus=2, estatusSync=0 where informesId=:informe")
     public  abstract void cancelAll(int informe);

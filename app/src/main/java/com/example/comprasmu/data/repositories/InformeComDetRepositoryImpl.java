@@ -124,6 +124,12 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
         return dao.getInfCompraDetByFiltros(sqlquery);
     }
 
+
+    public InformeCompraDetalle getByqr(String qr, int cliente) {
+        return dao.getByqr(qr, cliente);
+    }
+
+
     @Override
     public long insert(InformeCompraDetalle object) {
         return dao.insert(object);

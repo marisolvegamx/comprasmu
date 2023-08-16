@@ -1,5 +1,7 @@
 package com.example.comprasmu.utils.micamara;
 
+import static androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -153,6 +155,7 @@ public class MiCamaraActivity extends AppCompatActivity {
         final ImageCapture imageCapture = builder
                 .setTargetRotation(this.getWindowManager().getDefaultDisplay().getRotation())
              //   .setTargetResolution(new Size(800, 600))
+             //   .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .build();
      /*   ViewPort viewPort = new ViewPort.Builder(
                 new Rational(800, 600),

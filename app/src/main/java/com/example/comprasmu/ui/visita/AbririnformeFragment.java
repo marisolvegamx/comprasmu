@@ -302,7 +302,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
 
                    locationStart();
-                    return;
+                   return;
                 }
 
                 tomarFoto(txtfotofachada, fotofac, REQUEST_CODE_TAKE_PHOTO);

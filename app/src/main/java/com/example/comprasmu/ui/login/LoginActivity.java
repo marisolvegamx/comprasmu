@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity
      EditText usernameEditText;
      EditText passwordEditText;
      ProgressBar loadingProgressBar;
-    private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
+    //private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
     ImagenDetRepositoryImpl imagenDetRepo;
     int desclis; int descinf; int descfoto;
@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("nada")) {//pruebas y el lenovo
+                if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
                 //entro rapido
                 //  new LoginListener().iniciar();
                 }
@@ -125,16 +125,16 @@ public class LoginActivity extends AppCompatActivity
                         passwordEditText.getText().toString());
 
                 LoginFormState loginFormState=loginViewModel.getLoginFormState();
-                        if (loginFormState == null) {
-                            return;
-                        }
-                        loginButton.setEnabled(loginFormState.isDataValid());
-                        if (loginFormState.getUsernameError() != null) {
-                            usernameEditText.setError(getString(loginFormState.getUsernameError()));
-                        }
-                        if (loginFormState.getPasswordError() != null) {
-                            passwordEditText.setError(getString(loginFormState.getPasswordError()));
-                        }
+                if (loginFormState == null) {
+                    return;
+                }
+                loginButton.setEnabled(loginFormState.isDataValid());
+                if (loginFormState.getUsernameError() != null) {
+                    usernameEditText.setError(getString(loginFormState.getUsernameError()));
+                }
+                if (loginFormState.getPasswordError() != null) {
+                    passwordEditText.setError(getString(loginFormState.getPasswordError()));
+                }
                 if(loginFormState.isDataValid())
                     comprobacion();
 

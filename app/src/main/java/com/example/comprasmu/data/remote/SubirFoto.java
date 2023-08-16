@@ -28,11 +28,11 @@ public class SubirFoto {
     private final String TAG="SubirFoto";
 
     public SubirFoto() {
-        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("nada")){
+        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")){
 
             //nam
-            //URL_SUBIRPICTURE = "http://192.168.1.84/comprasv1/api/public/subirfoto";
-            URL_SUBIRPICTURE = "http://192.168.1.67/comprasv1/api/public/subirfoto";
+            URL_SUBIRPICTURE = "http://192.168.1.84/comprasv1/api/public/subirfoto";
+           // URL_SUBIRPICTURE = "http://192.168.1.67/comprasv1/api/public/subirfoto";
 
         }else
         {

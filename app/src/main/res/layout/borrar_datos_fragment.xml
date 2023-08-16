@@ -27,7 +27,7 @@
             android:layout_marginTop="52dp" />
 
         <Button
-            android:id="@+id/btnrfrotar"
+            android:id="@+id/btndbborrar"
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

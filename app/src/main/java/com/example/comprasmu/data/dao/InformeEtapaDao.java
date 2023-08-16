@@ -10,6 +10,8 @@ import androidx.room.Transaction;
 import androidx.sqlite.db.SupportSQLiteQuery;
 import com.example.comprasmu.data.modelos.InfEtapaWithDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.Visita;
+
 import java.util.List;
 
 @Dao
@@ -107,4 +109,7 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("delete  from informe_etapa where indice=:indice")
     public abstract void deleteByIndice( String indice);
+
+    @Query("SELECT * FROM informe_etapa where indice=:indice")
+    public  abstract List<InformeEtapa> findAllByIndice(String indice);
 }

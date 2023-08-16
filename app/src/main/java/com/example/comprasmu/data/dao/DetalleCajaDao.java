@@ -56,5 +56,8 @@ public abstract class DetalleCajaDao extends  BaseDao<DetalleCaja>{
     @Query("SELECT * FROM detalle_caja WHERE estatusSync =:estatus ")
     public abstract   List<DetalleCaja> getxEstatusSync(int estatus);
 
+    @Query("delete from detalle_caja where informeEtapaId=:informe")
+    public  abstract  void deleteByInforme(int informe);
+
 
 }

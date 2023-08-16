@@ -728,6 +728,8 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
                 intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_SUSTITUCION);
                 intento1.putExtra(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
+                Log.d(TAG,"XXX"+productoSel.getCategoriaid());
+                intento1.putExtra(SustitucionFragment.ARG_CATEGORIAID, productoSel.getCategoriaid());
                 intento1.putExtra(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
                 intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
                 intento1.putExtra(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
@@ -774,6 +776,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 bundle.putInt(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
                 bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
                 bundle.putString(ListaCompraFragment.ARG_MUESTRA, "true");
+                bundle.putInt(SustitucionFragment.ARG_CATEGORIAID, productoSel.getCategoriaid());
 
                 bundle.putString(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
                 fragment.setArguments(bundle);
@@ -820,6 +823,8 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             intento1.putExtra(ARG_CLIENTESEL, mViewModel.getClienteSel());
             //   intento1.putExtra(NuevoinformeFragment.NUMMUESTRA,nummuestra );
             intento1.putExtra(SustitucionFragment.ARG_CONSTIENDA, numtienda);
+            Log.d(TAG,"cat"+productoSel.getCategoriaid());
+            intento1.putExtra(SustitucionFragment.ARG_CATEGORIAID, productoSel.getCategoriaid());
 
             intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_SUSTITUCION);
             intento1.putExtra(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
@@ -847,6 +852,8 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 bundle.putString(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
             bundle.putString(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
             bundle.putInt(SustitucionFragment.ARG_CONSTIENDA, numtienda);
+            Log.d(TAG,"XXX"+productoSel.getCategoriaid());
+            bundle.putInt(SustitucionFragment.ARG_CATEGORIAID, productoSel.getCategoriaid());
 
             bundle.putInt(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
                 bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);

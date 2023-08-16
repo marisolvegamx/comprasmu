@@ -19,7 +19,6 @@ public abstract class ReactivoDao extends  BaseDao<Reactivo> {
         @RawQuery(observedEntities = Reactivo.class)
         public abstract LiveData<List<Reactivo>> getReactivoByFiltros(SupportSQLiteQuery query);
 
-
         @Query("SELECT * FROM reactivos")
         public  abstract LiveData<List<Reactivo>> findAll();
 

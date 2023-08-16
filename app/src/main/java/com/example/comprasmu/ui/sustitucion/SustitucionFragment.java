@@ -40,6 +40,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
     public static final String ISBACKUP = "comprasmu.sustitucion.isbackup";
     public static final String ARG_CATEGORIA = "comprasmu.sustitucion.categoria";
     public static final String ARG_CONSTIENDA = "comprasmu.sustitucion.constienda";
+    public static final String ARG_CATEGORIAID = "comprasmu.sustitucion.categoriaid";
 
 
     private SustitucionViewModel mViewModel;
@@ -55,7 +56,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
     public static final String ARG_SIGLAS = "comprasmu.sustsiglas";
 
     private static final String TAG="SUSTITUCIONFRAGMENT";
-    private String categoriaSel;
+    private int categoriaSel;
     private String siglas;
     private int clienteSel,tamanio,empaque;
   private int numTienda;
@@ -81,7 +82,9 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         super.onCreate(savedInstanceState);
         Bundle bundle2 =getArguments();
         if(bundle2!=null)
-        {   categoriaSel=bundle2.getString(ARG_CATEGORIA);
+        {
+            categoriaSel=bundle2.getInt(ARG_CATEGORIAID);
+            Log.d(TAG,"ZZZ"+bundle2.getString(ARG_CATEGORIA));
             plantaSel = bundle2.getInt(ListaCompraFragment.ARG_PLANTASEL);
             if(Constantes.VarListCompra.detallebuSel!=null)
             {  tamanio= Constantes.VarListCompra.detallebuSel.getTamanioId();
@@ -113,7 +116,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Log.d(TAG,"planta sel"+plantaSel);
-        Log.d(TAG,"cat"+categoriaSel);
+        Log.d(TAG,"cat"+categoriaSel+"--cli"+clienteSel);
         mBinding.setLifecycleOwner(this);
         Constantes.VarListCompra.plantaSel=plantaSel;
         setupListAdapter();
@@ -142,7 +145,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         ldViewModel = null;
         nombrePlanta = null;
         ismuestra = null;
-        categoriaSel = null;
+        categoriaSel = 0;
         siglas = null;
 
         super.onDestroyView();

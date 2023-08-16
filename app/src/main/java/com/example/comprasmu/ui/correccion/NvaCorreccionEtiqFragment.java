@@ -227,7 +227,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
 
     public void crearFormulario(ImagenDetalle imagenOrig){
-        txtsoldato1.setText("REUBICACION MUESTRA CAJA NUM.");
+        txtsoldato1.setText("LA MUESTRA QUEDO FINALMENTE EN LA CAJA NUM.");
         camposForm=new ArrayList<>();
         CampoForm   campo=new CampoForm();
         //fotos originales

@@ -319,6 +319,7 @@
     <string name="esuncod_nop">¿ESTE CODIGO YA EXISTE, LO ACEPTA?</string>
     <string name="cajact">MUESTRA CAJA NUM.</string>
     <string name="rotar_foto">ROTAR FOTOS</string>
+    <string name="borrar_datos">Borrar datos antiguos</string>
 
 
 </resources>

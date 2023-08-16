@@ -1,9 +1,19 @@
 package com.example.comprasmu.ui.informedetalle;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.InformeCompra;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -195,6 +205,22 @@ public class ValidadorDatos {
         }
 
         return date1.before(date2);
+    }
+
+    //devuelve true si ya existe
+    //false si no existe
+    public boolean validarQr(LifecycleOwner lo, String qr,int cliente, Context context){
+
+        InformeComDetRepositoryImpl  infcomrepo=new InformeComDetRepositoryImpl(context);
+        InformeCompraDetalle comp=infcomrepo.getByqr(qr, cliente);
+        Log.d("ValidadorDatos","validarqr"+comp);
+        if(comp!=null&&comp.getId()>0){
+
+                    //ya existe el qr
+            return true;
+        }
+        else
+            return false;
     }
 
 }
