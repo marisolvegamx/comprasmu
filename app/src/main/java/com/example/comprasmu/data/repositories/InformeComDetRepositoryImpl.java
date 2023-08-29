@@ -125,8 +125,8 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     }
 
 
-    public InformeCompraDetalle getByqr(String qr, int cliente) {
-        return dao.getByqr(qr, cliente);
+    public InformeCompraDetalle getByqr(String qr) {
+        return dao.getByqr(qr);
     }
 
 
