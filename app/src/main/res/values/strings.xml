@@ -252,6 +252,7 @@
     <string name="menu_ver_listasolcor">SOLICITUDES CORRECCION</string>
     <string name="menu_ver_lissolcor">Correcciones</string>
     <string name="menu_rescorreccion">Resumen correcciones</string>
+    <string name="correcciones">CORRECCIONES</string>
     <string name="descripcion">DESCRIPCION</string>
     <string name="menu_nvopreparacion">Nuevo Inf Prep</string>
     <string name="req_foto">¿REQUIERES OTRA FOTO?</string>

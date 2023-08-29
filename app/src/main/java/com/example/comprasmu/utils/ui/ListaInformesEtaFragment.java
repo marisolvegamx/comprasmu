@@ -128,7 +128,9 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         //aqui hago la consulta de los informes x etapa
         //y de los informes correccion
         if(tipocons.equals("e")){
-          //  ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Resumen informes");
+            // getActivity().getActionBar().setTitle("RESUMEN INFORMES");
+
+             ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("RESUMEN INFORMES");
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             if(etapa==3)
             listainfs=mViewModel.cargarEtapa(etapa,indice,plantasel);
@@ -146,6 +148,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             });
         }
         if(tipocons.equals("rescor")||tipocons.equals("action_selclitocor2")){ //CORRECCIONES
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.correcciones);
+
             etapa=Constantes.ETAPAACTUAL;
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             LiveData<List<SolicitudWithCor>> listacor=null;
@@ -313,19 +317,18 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         envio.setIndice(Constantes.INDICEACTUAL);
         envio.setInformeEtapaDet(npViewModel.cargarInformeDet(informeid));
         //busco las imagenes
-        if(envio.getInformeEtapa().getEtapa()==1) //por ahora solo tengo prep
-        {
+
             List<ImagenDetalle> imagenes=npViewModel.buscarImagenes(envio.getInformeEtapaDet());
 
             envio.setImagenDetalles(imagenes);
-        }
+
 
         return envio;
     }
 
     public static void subirFotos(Activity activity, InformeEtapaEnv informe){
         //las imagenes
-        if(informe.getInformeEtapa().getEtapa()==1){
+        if(informe.getInformeEtapa().getEtapa()==1||informe.getInformeEtapa().getEtapa()==3){
             //busco la imagenes
             for(ImagenDetalle imagen:informe.getImagenDetalles()){
                 //

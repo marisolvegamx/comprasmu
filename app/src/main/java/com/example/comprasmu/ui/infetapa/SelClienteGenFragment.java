@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -92,9 +93,17 @@ public class SelClienteGenFragment extends ListaSelecFragment {
                     if(tipoconsulta.equals("c")) { //solicitudes
                         //voy a buscar la solicitudes pendientes
                         convertirListaCor(lista);
-
+                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_ver_listasolcor);
                     }else
+                    if(tipoconsulta.equals("rescor")) { //solicitudes
+                        //voy a buscar la solicitudes pendientes
+                        convertirListaCor(lista);
+                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("RESUMEN CORRECCIONES");
+                    }else {
                         convertirLista(lista);
+                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("RESUMEN INFORMES");
+
+                    }
                     setLista(listaClientesEnv);
                     setupListAdapter();
 
@@ -106,10 +115,16 @@ public class SelClienteGenFragment extends ListaSelecFragment {
                 {
                     if(tipoconsulta.equals("c")) { //solicitudes
                         //voy a buscar la solicitudes pendientes
+                      //  ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_ver_listasolcor);
+
                         convertirListaCor(lista);
 
-                    }else
+                    }else {
+                       // ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("RESUMEN INFORMES");
+
                         convertirLista(lista);
+
+                    }
                     setLista(listaClientesEnv);
                     //voy directo a la lista
                     siguiente(0);

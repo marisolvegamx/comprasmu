@@ -212,7 +212,7 @@ public class ValidadorDatos {
     public boolean validarQr(LifecycleOwner lo, String qr,int cliente, Context context){
 
         InformeComDetRepositoryImpl  infcomrepo=new InformeComDetRepositoryImpl(context);
-        InformeCompraDetalle comp=infcomrepo.getByqr(qr, cliente);
+        InformeCompraDetalle comp=infcomrepo.getByqr(qr);
         Log.d("ValidadorDatos","validarqr"+comp);
         if(comp!=null&&comp.getId()>0){
 

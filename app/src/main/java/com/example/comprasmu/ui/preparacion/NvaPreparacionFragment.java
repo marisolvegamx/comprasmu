@@ -1037,8 +1037,8 @@ public void errorFoto(){
         for (ListaCompra listaCompra: lista ) {
             //reviso si ya tengo informe no cancelado
             InformeEtapa inf=mViewModel.getInformexPlantaEta(listaCompra.getPlantasId(),1,Constantes.INDICEACTUAL,0);
-          /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
-          listaCompra.getPlantaNombre();*/
+            /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
+            listaCompra.getPlantaNombre();*/
             //puede ser el que tengo
            if(inf!=null&&inf.getId()!= informesel)
                continue;

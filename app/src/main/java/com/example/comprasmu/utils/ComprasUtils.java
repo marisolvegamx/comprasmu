@@ -98,16 +98,18 @@ public class ComprasUtils {
     public Bitmap comprimirImagen(String nombre_foto){
         try {
             Bitmap bitmapOrg = BitmapFactory.decodeFile(nombre_foto);
-
+            //return bitmapOrg;
             int width = bitmapOrg.getWidth();
             int height = bitmapOrg.getHeight();
             int tam=bitmapOrg.getByteCount();
-            int quality=50;
+            int quality=100;
             //Parámetros optimización, resolución máxima permitida
-          //  int max_ancho = 600;
-          //  int max_alto = 800;
-            int max_ancho = 1200;
-            int max_alto = 900;
+            int max_ancho = 1500;
+            int max_alto = 2000;
+          //  int max_ancho = 1125; resoluciones probadas
+         //   int max_alto = 1500;
+          //  int max_ancho =900;
+          //  int max_alto =  1200;
 
 
             double x_ratio = (double)max_ancho/(double)width;
@@ -145,6 +147,7 @@ public class ComprasUtils {
             os.flush();;
             os.close();
             return scaledBitmap;
+
         }catch(Exception ex){
             ex.printStackTrace();
             Log.d("Compras","algo salió mal al comprimir la imagen");

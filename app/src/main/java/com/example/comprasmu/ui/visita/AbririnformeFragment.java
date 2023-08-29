@@ -2317,9 +2317,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         try{
             try{
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-            String dateString = format.format(new Date());
+                String dateString = format.format(new Date());
 
 
                 nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
@@ -2388,14 +2388,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                      Log.d(TAG,"*****"+file.exists()+"--"+file.getAbsolutePath());
                   //  startActivity(intento1);*/
-                         yaTengoFoto = false;
+                     yaTengoFoto = false;
                        //  probarUbicacion();
-                         txtfotofachada.setText(nombre_foto);
+                     txtfotofachada.setText(nombre_foto);
                       //   txtfotofachada.setVisibility(View.VISIBLE);
                   //       Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                      ComprasUtils cu = new ComprasUtils();
                      Bitmap bitmap1= cu.comprimirImagen(file.getAbsolutePath());
-                     bitmap1= ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(), 100, 100);
+                       bitmap1= ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(), 100, 100);
 
                      fotofac.setImageBitmap(bitmap1);
                      fotofac.setVisibility(View.VISIBLE);

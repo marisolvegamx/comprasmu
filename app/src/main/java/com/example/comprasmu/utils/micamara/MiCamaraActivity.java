@@ -20,7 +20,7 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.camera.extensions.HdrImageCaptureExtender;
+//import androidx.camera.extensions.HdrImageCaptureExtender;
 import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +44,7 @@ import android.widget.Toast;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.databinding.ActivityMicamaraBinding;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.ByteArrayOutputStream;
@@ -77,6 +78,7 @@ public class MiCamaraActivity extends AppCompatActivity {
     public static int REQUEST_CODE_TAKE_PHOTO=300;
     private String archivo_foto;
     int resultact =1;
+    ComprasLog milog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,9 +88,17 @@ public class MiCamaraActivity extends AppCompatActivity {
         captureImage = findViewById(R.id.image_capture_button);
         btnflash = findViewById(R.id.flash_button);
         Bundle extras = getIntent().getExtras(); // Aquí es null
+        milog=ComprasLog.getSingleton();
+
         if(extras!=null) {
             //llega el absolute path del archivo
             archivo_foto = extras.getString(MediaStore.EXTRA_OUTPUT);
+        }
+        if(ComprasUtils.getAvailableMemory(this).lowMemory)
+        {
+            Toast.makeText(this, "No hay memoria suficiente para esta acción", Toast.LENGTH_SHORT).show();
+
+            return;
         }
         ImageButton btncancelar=findViewById(R.id.btnmccancelar);
         if(allPermissionsGranted()){
@@ -128,35 +138,35 @@ public class MiCamaraActivity extends AppCompatActivity {
 
     void bindPreview(@NonNull ProcessCameraProvider cameraProvider, boolean enableTorch) {
 
+        try {
+            Preview preview = new Preview.Builder()
+                    //  .setTargetResolution(new Size(800, 600))
+                    .build();
 
-        Preview preview = new Preview.Builder()
-             //  .setTargetResolution(new Size(800, 600))
-                .build();
 
+            cameraSelector = new CameraSelector.Builder()
+                    .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                    .build();
 
-        cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                .build();
+            ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
+                    .build();
 
-        ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
-                .build();
+            ImageCapture.Builder builder = new ImageCapture.Builder();
 
-        ImageCapture.Builder builder = new ImageCapture.Builder();
+            //Vendor-Extensions (The CameraX extensions dependency in build.gradle)
+           // HdrImageCaptureExtender hdrImageCaptureExtender = HdrImageCaptureExtender.create(builder);
 
-        //Vendor-Extensions (The CameraX extensions dependency in build.gradle)
-        HdrImageCaptureExtender hdrImageCaptureExtender = HdrImageCaptureExtender.create(builder);
+            // Query if extension is available (optional).
+        //    if (hdrImageCaptureExtender.isExtensionAvailable(cameraSelector)) {
+                // Enable the extension if available.
+        //        hdrImageCaptureExtender.enableExtension(cameraSelector);
+         //   }
 
-        // Query if extension is available (optional).
-        if (hdrImageCaptureExtender.isExtensionAvailable(cameraSelector)) {
-            // Enable the extension if available.
-            hdrImageCaptureExtender.enableExtension(cameraSelector);
-        }
-
-        final ImageCapture imageCapture = builder
-                .setTargetRotation(this.getWindowManager().getDefaultDisplay().getRotation())
-             //   .setTargetResolution(new Size(800, 600))
-             //   .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
-                .build();
+            final ImageCapture imageCapture = builder
+                    .setTargetRotation(this.getWindowManager().getDefaultDisplay().getRotation())
+                    //   .setTargetResolution(new Size(800, 600))
+                    .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .build();
      /*   ViewPort viewPort = new ViewPort.Builder(
                 new Rational(800, 600),
                 getDisplay().getRotation()).build();
@@ -166,138 +176,143 @@ public class MiCamaraActivity extends AppCompatActivity {
                 .addUseCase(imageCapture)
                 .setViewPort(viewPort)
                 .build();*/
-        preview.setSurfaceProvider(mPreviewView.createSurfaceProvider());
-         camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis, imageCapture);
-        camera.getCameraControl().enableTorch(enableTorch);
-        CameraControl cameraControl = camera.getCameraControl();
-        ScaleGestureDetector.OnScaleGestureListener listener = new ScaleGestureDetector.SimpleOnScaleGestureListener(){
-            @Override
-            public boolean onScale(ScaleGestureDetector detector) {
+            preview.setSurfaceProvider(mPreviewView.createSurfaceProvider());
+            cameraProvider.unbindAll();
+            camera = cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageAnalysis, imageCapture);
+            camera.getCameraControl().enableTorch(enableTorch);
+            CameraControl cameraControl = camera.getCameraControl();
+            ScaleGestureDetector.OnScaleGestureListener listener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                @Override
+                public boolean onScale(ScaleGestureDetector detector) {
 
-                // Get the camera's current zoom ratio
-                //float currentZoomRatio = camera.getCameraInfo().getZoomState().getValue().getZoomRatio() ?: 0F;
-                float currentZoomRatio = camera.getCameraInfo().getZoomState().getValue().getZoomRatio();
+                    // Get the camera's current zoom ratio
+                    //float currentZoomRatio = camera.getCameraInfo().getZoomState().getValue().getZoomRatio() ?: 0F;
+                    float currentZoomRatio = camera.getCameraInfo().getZoomState().getValue().getZoomRatio();
 
-                // Get the pinch gesture's scaling factor
-                float delta = detector.getScaleFactor();
+                    // Get the pinch gesture's scaling factor
+                    float delta = detector.getScaleFactor();
 
-                // Update the camera's zoom ratio. This is an asynchronous operation that returns
-                // a ListenableFuture, allowing you to listen to when the operation completes.
-                cameraControl.setZoomRatio(currentZoomRatio * delta);
+                    // Update the camera's zoom ratio. This is an asynchronous operation that returns
+                    // a ListenableFuture, allowing you to listen to when the operation completes.
+                    cameraControl.setZoomRatio(currentZoomRatio * delta);
 
-                // Return true, as the event was handled
-                return true;
-            }
-        };
-        ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(this, listener);
-        mPreviewView.setOnTouchListener((view, event)  -> {
-            scaleGestureDetector.onTouchEvent(event);
-
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
+                    // Return true, as the event was handled
                     return true;
-                case MotionEvent.ACTION_UP:
-                    MeteringPoint point = mPreviewView.createMeteringPointFactory(cameraSelector).createPoint(event.getX(), event.getY());
-                    FocusMeteringAction action = new FocusMeteringAction.Builder(point).build();
-
-                    camera.getCameraControl().startFocusAndMetering(action);
-
-                    // HOW TO SHOW RECTANGLE SIGHT HERE? Thanx!
-
-                    return true;
-                default:
-                    return false;
-            }
-        });
-
-        // Must unbind the use-cases before rebinding them
-        //cameraProvider.unbindAll();
-
-       OrientationEventListener orientationEventListener = new OrientationEventListener((Context)this) {
-            @Override
-            public void onOrientationChanged(int orientation) {
-                int rotation;
-
-                // Monitors orientation values to determine the target rotation value
-                if (orientation >= 45 && orientation < 135) {
-                    rotation = Surface.ROTATION_270;
-                } else if (orientation >= 135 && orientation < 225) {
-                    rotation = Surface.ROTATION_180;
-                } else if (orientation >= 225 && orientation < 315) {
-                    rotation = Surface.ROTATION_90;
-                } else {
-                    rotation = Surface.ROTATION_0;
                 }
-             //   System.out.println("giro"+rotation);
-                imageCapture.setTargetRotation(rotation);
-            }
-        };
+            };
+            ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(this, listener);
+            mPreviewView.setOnTouchListener((view, event) -> {
+                scaleGestureDetector.onTouchEvent(event);
 
-        orientationEventListener.enable();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        MeteringPoint point = mPreviewView.createMeteringPointFactory(cameraSelector).createPoint(event.getX(), event.getY());
+                        FocusMeteringAction action = new FocusMeteringAction.Builder(point).build();
 
-        captureImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                        camera.getCameraControl().startFocusAndMetering(action);
 
-                File file = new File(archivo_foto);
-              //  archivo_foto=file.getName();
-                ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(file).build();
-                imageCapture.takePicture(outputFileOptions, executor, new ImageCapture.OnImageSavedCallback () {
-                    @Override
-                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                     //   new Handler().post(new Runnable() {
-                       //     @Override
-                       //     public void run() {
-                             //   Toast.makeText(MainActivity.this, "Image Saved successfully", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG,"la imagen se tomo correctamente "+file.getName());
-                        //veo la imagen
-                        try {
-                            // este no getRotacion(archivo_foto);
-                            if(ComprasUtils.debeRotar(MiCamaraActivity.this)){
-                                getRotacionConf(archivo_foto); //o sea no funcionará getrotacion2
-                            }else
-                                getRotacion2(archivo_foto);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        vistaPrevia();
-                        //    }
-                  //      });
-                        //veo la rotacion
+                        // HOW TO SHOW RECTANGLE SIGHT HERE? Thanx!
+
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+
+            // Must unbind the use-cases before rebinding them
+            //cameraProvider.unbindAll();
+
+            OrientationEventListener orientationEventListener = new OrientationEventListener((Context) this) {
+                @Override
+                public void onOrientationChanged(int orientation) {
+                    int rotation;
+
+                    // Monitors orientation values to determine the target rotation value
+                    if (orientation >= 45 && orientation < 135) {
+                        rotation = Surface.ROTATION_270;
+                    } else if (orientation >= 135 && orientation < 225) {
+                        rotation = Surface.ROTATION_180;
+                    } else if (orientation >= 225 && orientation < 315) {
+                        rotation = Surface.ROTATION_90;
+                    } else {
+                        rotation = Surface.ROTATION_0;
+                    }
+                    //   System.out.println("giro"+rotation);
+                    imageCapture.setTargetRotation(rotation);
+                }
+            };
+
+            orientationEventListener.enable();
+
+            captureImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    File file = new File(archivo_foto);
+                    //  archivo_foto=file.getName();
+                    ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(file).build();
+                    imageCapture.takePicture(outputFileOptions, executor, new ImageCapture.OnImageSavedCallback() {
+                        @Override
+                        public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                            //   new Handler().post(new Runnable() {
+                            //     @Override
+                            //     public void run() {
+                            //   Toast.makeText(MainActivity.this, "Image Saved successfully", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "la imagen se tomo correctamente " + file.getName());
+                            //veo la imagen
+                            try {
+                                // este no getRotacion(archivo_foto);
+                                if (ComprasUtils.debeRotar(MiCamaraActivity.this)) {
+                                    getRotacionConf(archivo_foto); //o sea no funcionará getrotacion2
+                                } else
+                                    getRotacion2(archivo_foto);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            vistaPrevia();
+                            //    }
+                            //      });
+                            //veo la rotacion
 
                             //if(girarFoto()){
-                           //     rotateImage(file.getPath(),90);
-                          //  }
+                            //     rotateImage(file.getPath(),90);
+                            //  }
 
-                    }
-                    @Override
-                    public void onError(@NonNull ImageCaptureException error) {
-                        error.printStackTrace();
-                    }
-                });
-            }
-        });
-        btnflash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                        }
 
-                if (camera.getCameraInfo().hasFlashUnit()) {
-                    cameraControl.enableTorch(camera.getCameraInfo().getTorchState().getValue() == TorchState.OFF);
+                        @Override
+                        public void onError(@NonNull ImageCaptureException error) {
+                            error.printStackTrace();
+                        }
+                    });
                 }
-            }
-        });
-        camera.getCameraInfo().getTorchState().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) { //para cambiar imagen del boton
-                if (integer == TorchState.OFF) {
-                    btnflash.setImageResource(R.drawable.flash_on);
-                } else {
-                    btnflash.setImageResource(R.drawable.flash_off);
-                }
-            }
-            }
-        );
+            });
+            btnflash.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
+                    if (camera.getCameraInfo().hasFlashUnit()) {
+                        cameraControl.enableTorch(camera.getCameraInfo().getTorchState().getValue() == TorchState.OFF);
+                    }
+                }
+            });
+            camera.getCameraInfo().getTorchState().observe(this, new Observer<Integer>() {
+                        @Override
+                        public void onChanged(Integer integer) { //para cambiar imagen del boton
+                            if (integer == TorchState.OFF) {
+                                btnflash.setImageResource(R.drawable.flash_on);
+                            } else {
+                                btnflash.setImageResource(R.drawable.flash_off);
+                            }
+                        }
+                    }
+            );
+        }catch(Exception ex){
+            ex.printStackTrace();
+           milog.grabarError(TAG+" "+ex.getMessage());
+        }
 
     }
 
@@ -332,7 +347,7 @@ public class MiCamaraActivity extends AppCompatActivity {
             if(allPermissionsGranted()){
                 startCamera(false);
             } else{
-                Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Es necesario que de todos los permisos para el funcionamiento de la aplicación.", Toast.LENGTH_SHORT).show();
                 this.finish();
             }
         }
@@ -422,6 +437,7 @@ public class MiCamaraActivity extends AppCompatActivity {
         }
     }
     //para el caso de que no funcione rotar 2
+    //lo hago en base a la configuración
     private void getRotacionConf(String photoPath) throws IOException {
         ExifInterface ei = null;
 

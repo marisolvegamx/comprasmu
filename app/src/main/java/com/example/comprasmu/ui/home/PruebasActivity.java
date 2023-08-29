@@ -81,10 +81,8 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
        // mTextView = findViewById(R.id.txtlllog);
         if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
-            //entro rapido
 
             DOWNLOAD_PATH = "http://192.168.1.84/comprasv1/fotografias";
-
 
         }
 
