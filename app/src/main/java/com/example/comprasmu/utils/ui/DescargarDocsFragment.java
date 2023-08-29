@@ -82,7 +82,8 @@ public class DescargarDocsFragment extends Fragment {
 
 
     public void descargarPDF(){
-        String MY_URL = "http://192.168.1.84/comprasv1/api/public/etenv?cvereco=4&indice=7.2023";
+       // http://localhost/comprasv1/
+        String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&idmes=8.2023&idrec=41&idplan=31&numcaja=1";
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(MY_URL)));
     }
 
