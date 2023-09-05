@@ -2098,6 +2098,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         visitaEdi.setUpdatedAt(new Date());
         visitaEdi.setGeolocalizacion(txtaiultubic.getText().toString());
+        Log.d(TAG,"editando"+visitaEdi.getCiudad()+"--"+visitaEdi.getCiudadId());
         mViewModel.visita=visitaEdi;
         mViewModel.actualizarVisita();
         //borro las fotos y vuelvo a insertar

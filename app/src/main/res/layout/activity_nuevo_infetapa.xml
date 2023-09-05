@@ -47,8 +47,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarinf">
 
+        app:layout_constraintTop_toBottomOf="@+id/toolbarinf">
 
         <TableLayout
             android:id="@+id/tblnititulos"
@@ -58,28 +58,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
+            android:stretchColumns="*"
             app:layout_constraintTop_toTopOf="parent">
 
             <TableRow
                 android:id="@+id/row1"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/txtniecliente"
                     style="@style/columna1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+
                     android:text='@{informe.clienteNombre}' />
 
                 <TextView
                     android:id="@+id/txtnieplanta"
                     style="@style/columna2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-
+                    android:autoSizeTextType="uniform"
                     android:text='@{informe.plantaNombre}'
                     android:visibility="visible" />
 
@@ -94,27 +97,29 @@
                 <TextView
                     android:id="@+id/txtnieindice"
                     style="@style/columna1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
+                    android:autoSizeTextType="uniform"
                     android:layout_weight="1"
                     android:text='@{informe.indice!=null?ComprasUtils.indiceLetra(informe.indice):""}' />
                 <TextView
                     android:id="@+id/txtnietotmues"
                     style="@style/columna2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
                     android:text='@{informe.total_muestras>0?@string/total_mues+": "+informe.total_muestras:""}'
                     />
                 <TextView
                     android:id="@+id/txtnieidinforme"
                     style="@style/columna2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
                     android:text='@{informe.consecutivo>0?@string/consecutivo+" "+informe.consecutivo:""}'
                     />
             </TableRow>
@@ -129,18 +134,18 @@
                 <TextView
                     android:id="@+id/txtnieatr1"
                     style="@style/columna1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
+                    android:autoSizeTextType="uniform"
                     android:layout_weight="1"
                     />
 
                 <TextView
                     android:id="@+id/txtnieatr2"
                     style="@style/columna2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
+                    android:autoSizeTextType="uniform"
                     android:layout_weight="1"
                     />
 
@@ -148,7 +153,7 @@
 
             <TableRow
                 android:id="@+id/row4"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="@color/white"
                 android:visibility="gone"
@@ -158,21 +163,19 @@
                 <TextView
                     android:id="@+id/txtnieatr3"
                     style="@style/columna1"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
-
-                    android:layout_marginEnd="16dp"
-
+                    android:autoSizeTextType="uniform"
                     android:layout_weight="1"
+                    android:layout_marginEnd="16dp"
                     android:visibility="visible"
                     tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/txtnieatr4"
                     style="@style/columna2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
 
                     android:layout_weight="1"
                     android:visibility="visible"
@@ -190,22 +193,20 @@
                 <TextView
                     android:id="@+id/txtnieatr5"
                     style="@style/columna1"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
-
-                    android:layout_marginEnd="16dp"
-
+                    android:autoSizeTextType="uniform"
                     android:layout_weight="1"
+                    android:layout_marginEnd="16dp"
                     android:visibility="visible"
                     tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/txtnieatr6"
                     style="@style/columna2"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-
+                    android:autoSizeTextType="uniform"
                     android:layout_weight="1"
                     android:visibility="visible"
                     tools:visibility="visible" />
@@ -220,7 +221,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbarinf" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbarinf"
+            tools:layout="@layout/fragment_correccion" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

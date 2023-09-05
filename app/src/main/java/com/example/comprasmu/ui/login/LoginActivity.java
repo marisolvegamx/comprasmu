@@ -116,9 +116,8 @@ public class LoginActivity extends AppCompatActivity
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
-                //entro rapido
-                //  new LoginListener().iniciar();
+                if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo//entro rapido
+             //     new LoginListener().iniciar();
                 }
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
@@ -172,31 +171,43 @@ public class LoginActivity extends AppCompatActivity
         LoggedInUser luser=tengoUsuario();
         //siempre checa el internet
         //luser=null;
-        if(luser==null){ //primera vez
          //   Log.i("LoginActivity","primera vez");
-            if(ComprasUtils.isOnlineNet())
-            loginViewModel.login(usernameEditText.getText().toString(),
-                    passwordEditText.getText().toString(),new LoginListener());
-           //     new LoginListener().correcto();
-            else
-                {
-                    loadingProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), "Sin conexión a internet, verifique", Toast.LENGTH_LONG).show();
-
+        if(ComprasUtils.isOnlineNet()) {
+            if(luser!=null) {
+                //veo que sea el mismo correo
+                if(!luser.getUserId().equals(usernameEditText.getText().toString())){
+                    new LoginListener().incorrecto("Usuario o contraseña incorrectos");
                 }
+
+            }
+                loginViewModel.login(usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString(), new LoginListener());
+                //     new LoginListener().correcto();
         }else
-        //loginlocal
         {
-        //new LoginListener().correcto();
-            loginViewModel.loginLocal(luser,usernameEditText.getText().toString(),
-                   passwordEditText.getText().toString(),new LoginListener());
+
+            if(luser==null) { //primera vez
+                loadingProgressBar.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), "Sin conexión a internet, verifique", Toast.LENGTH_LONG).show();
+            }
+            else
+                //loginlocal
+            {
+                //new LoginListener().correcto();
+                loginViewModel.loginLocal(luser,usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString(),new LoginListener());
+            }
+
         }
+
+
     }
     public LoggedInUser tengoUsuario()
     {
         SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         String user= prefe.getString("usuario", "");
         String pass= prefe.getString("password", "");
+      //  Log.e("LoginAct",user);
         if(user.equals("")&&pass.equals("")){
             return null; //no los tengo guardados
         }

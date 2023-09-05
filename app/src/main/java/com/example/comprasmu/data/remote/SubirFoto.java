@@ -31,8 +31,8 @@ public class SubirFoto {
         if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")){
 
             //nam
-           // URL_SUBIRPICTURE = "http://192.168.1.84/comprasv1/api/public/subirfoto";
-            URL_SUBIRPICTURE = "http://192.168.1.67/comprasv1/api/public/subirfoto";
+            URL_SUBIRPICTURE = "http://192.168.1.84/comprasv1/api/public/subirfoto";
+          //  URL_SUBIRPICTURE = "http://192.168.1.67/comprasv1/api/public/subirfoto";
 
         }else
         {

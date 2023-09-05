@@ -104,8 +104,8 @@ public class ComprasUtils {
             int tam=bitmapOrg.getByteCount();
             int quality=100;
             //Parámetros optimización, resolución máxima permitida
-            int max_ancho = 1500;
-            int max_alto = 2000;
+            int max_ancho = 2625;
+            int max_alto = 3500;
           //  int max_ancho = 1125; resoluciones probadas
          //   int max_alto = 1500;
           //  int max_ancho =900;

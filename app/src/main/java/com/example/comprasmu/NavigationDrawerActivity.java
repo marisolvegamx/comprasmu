@@ -287,7 +287,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     findItem(R.id.nav_cancel));
         }
         if(Constantes.ETAPAACTUAL==3) {
-            pedirInformes(0);
+            //Ya lo hago desde el menu
+           // pedirInformes(0);
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
             txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
@@ -792,7 +793,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     });*/
 
     }
-
+    ///se usaba para etiquetado actualiza visitas e informes ahora quedó en el home
     public void pedirInformes(int actualiza) {
         tvRepo=new TablaVersionesRepImpl(this);
         visRepo=new VisitaRepositoryImpl(this);

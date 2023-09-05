@@ -37,7 +37,7 @@ public class ServiceGenerator {
         if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")){//pruebas y el lenovo
             //nam
            BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
-          // BASE_URL = "http://192.168.1.67/comprasv1/api/public/";
+         //  BASE_URL = "http://192.168.1.67/comprasv1/api/public/";
 
        }else
         {
