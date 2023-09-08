@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity
         SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         String user= prefe.getString("usuario", "");
         String pass= prefe.getString("password", "");
-      //  Log.e("LoginAct",user);
+        Log.e("LoginAct",user);
         if(user.equals("")&&pass.equals("")){
             return null; //no los tengo guardados
         }

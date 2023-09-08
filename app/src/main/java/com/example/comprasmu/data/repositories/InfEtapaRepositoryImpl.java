@@ -146,6 +146,12 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
 
     }
+
+   /* public LiveData<List<InformeEtapa>> getInformesxEstatusxCd(String indice,int etapa, int estatus) {
+        return icDao.getInformesxEstatus(indice,etapa,estatus);
+
+
+    }*/
     public LiveData<List<InformeEtapa>> getInformesPend(String indice,int etapa) {
        return icDao.getInformePend(indice,etapa);
 

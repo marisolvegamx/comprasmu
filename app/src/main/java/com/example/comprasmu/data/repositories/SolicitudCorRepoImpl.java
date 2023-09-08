@@ -49,6 +49,10 @@ public class SolicitudCorRepoImpl  {
         return icDao.getTotSolsxPlanta(etapa, indice, estatus, plantaid);
     }
 
+    public LiveData<Integer> totalSolsxPlantaxCd(int etapa, String indice, int estatus, String cd) {
+        return icDao.getTotSolsxCd(etapa, indice, estatus, cd);
+    }
+
 
     public LiveData<SolicitudCor> find(int id,int numfoto) {
         return icDao.find(id,numfoto);

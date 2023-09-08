@@ -336,20 +336,35 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     //saber si tiene mas de una ciudad para mostrar seleccionar ciudad
     public void revisarCiudades(){
 
-        Log.d(TAG,"ciudades");
+        Log.d(TAG,"ciudades"+Constantes.CIUDADTRABAJO);
 
             mViewModel.getCiudades().observe(this, data -> {
-              //   Log.d(TAG,"....regresó de la consulta "+ data.size());
+                if(data!=null)
+                    Log.d(TAG,"....regresó de la consulta "+ data.size());
                 if(data.size()>1)
-                Constantes.varciudades=true;
+                    Constantes.varciudades = true;
+
+
                 else if(data.size()>0) {
+                    Log.d(TAG,"ciudades"+data.get(0).getCiudadNombre());
+                    //para corregir erro de borrado
+                    if(!Constantes.CIUDADTRABAJO.equals("")) //no está vacia y no es la que tengo
+                    {
+                        if(!Constantes.CIUDADTRABAJO.equals(data.get(0).getCiudadNombre())) {
+                            Constantes.CIUDADTRABAJO = "";
+                            Constantes.IDCIUDADTRABAJO = 0;
+                            guardarCiudadPref("");
+                        }
+                    }
                     if (Constantes.CIUDADTRABAJO.equals("")){
+
                         Constantes.CIUDADTRABAJO = data.get(0).getCiudadNombre();
+                        Log.d(TAG,"ciudades"+Constantes.CIUDADTRABAJO);
 
-                    Constantes.IDCIUDADTRABAJO = data.get(0).getCiudadesId();
-                    //guardo en pref
+                        Constantes.IDCIUDADTRABAJO = data.get(0).getCiudadesId();
+                         //guardo en pref
 
-                    guardarCiudadPref(Constantes.CIUDADTRABAJO);
+                         guardarCiudadPref(Constantes.CIUDADTRABAJO);
                 }
                     Constantes.varciudades = false;
                     if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3)
@@ -639,8 +654,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     };*/
 
     private void contarCorrecc(){
-        totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
-        Log.d(TAG,"wwww"+totCorrecciones+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+       // totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
+        totCorrecciones=scViewModel.getTotalSolsxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);
+
+        Log.d(TAG,"contarCorrecc"+totCorrecciones.getValue()+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
     }
     private void contarCanceladas(){
@@ -650,7 +667,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         else
         {
             totCanceleta=scViewModel.getTotalCancelEta(Constantes.INDICEACTUAL,Constantes.ETAPAACTUAL);
-            Log.d(TAG,"wwww"+totCanceleta+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+            Log.d(TAG,"contarCanceladas"+totCanceleta+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
         }
 
@@ -709,7 +726,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                Log.e(TAG,"aprete atras***");
                 ((AbririnformeFragment)fragment).saliendoSinguardar();
             }else
-            super.onBackPressed();
+                 super.onBackPressed();
 
         }catch(Exception ex){
             super.onBackPressed();
@@ -792,6 +809,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                         }
                     });*/
 
+    }
+    public void reInflateMenu(){
+      //  NavigationView navigationView = findViewById(R.id.nav_view);
+
+      //  navigationView.getMenu().clear();
+
+     //   navigationView.inflateMenu(R.menu.activity_main_drawerprep);
+        initializeCountDrawer();
     }
     ///se usaba para etiquetado actualiza visitas e informes ahora quedó en el home
     public void pedirInformes(int actualiza) {

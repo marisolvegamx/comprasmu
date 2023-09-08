@@ -177,7 +177,7 @@
                     style="@style/formlabelmen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="total cajas" />
+                    android:text="TOTAL CAJAS" />
 
                 <TextView
                     android:id="@+id/textView24"
@@ -249,6 +249,68 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/llnepregcaja"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtnedescfoto"
+                    style="@style/formlabel2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/txtnefotocaj"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="Name"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/btnnefotocaj"
+                    style="@style/imbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/ic_menu_camera" />
+
+                <ImageView
+                    android:id="@+id/ivnefotocaj"
+                    android:layout_width="match_parent"
+                    android:layout_height="97dp"
+
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    tools:srcCompat="@tools:sample/avatars"
+                    tools:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/btnnerotar2"
+                    style="@style/imbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/dark_grey"
+                    android:contentDescription="rotar"
+                    android:src="@drawable/ic_baseline_loop_24"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <Button
+                    android:id="@+id/btnneacfotocaj"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_weight="1"
+                    android:text="@string/aceptar" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -273,6 +335,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:text="@string/reubicar" />-->
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

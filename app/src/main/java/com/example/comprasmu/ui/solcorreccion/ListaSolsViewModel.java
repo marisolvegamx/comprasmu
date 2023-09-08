@@ -65,6 +65,12 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
         return repository.totalSols(etapa,indiceSel, estatus);
     }
+
+    public LiveData<Integer> getTotalSolsxCd(int etapa, String indiceSel, int estatus, String ciudad){
+      //  Log.d(TAG,"wwww"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+
+        return repository.totalSolsxPlantaxCd(etapa,indiceSel, estatus,ciudad);
+    }
     public int  getTotalSolsxplanta(int etapa,String indiceSel,int estatus, int planta){
 
         return repository.totalSolsxPlanta(etapa,indiceSel, estatus, planta);
@@ -88,6 +94,13 @@ public class ListaSolsViewModel extends AndroidViewModel {
         return infetarepo.getInformesxEstatus(indiceSel,etapa,0);
 
     }
+
+    //por ahora aplica preparacion y etiq donde se cancela todo el info
+   /* public LiveData<List<InformeEtapa>> getTotalCancelEtaxCd(String indiceSel, int etapa ,String cd){
+        return infetarepo.getInformesxEstatus(indiceSel,etapa,0);
+
+    }*/
+
     public void actualizarEstSolicitud(int id,int numfoto, int estatus){
         Log.d(TAG,"actalizando"+id+"--"+numfoto);
       repository.actualizarEstatus(id,numfoto,estatus);

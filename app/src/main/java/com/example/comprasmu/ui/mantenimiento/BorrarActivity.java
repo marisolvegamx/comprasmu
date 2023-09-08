@@ -86,6 +86,12 @@ public class BorrarActivity extends AppCompatActivity {
         ei.eliminarCorrecciones();
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
+        //inicializo constantes
+        Constantes.CIUDADTRABAJO ="" ;
+        Constantes.IDCIUDADTRABAJO=0;
+       // Constantes.varciudades=null;
+        guardarCiudadPref();
+
     }
     public void inicializarEtapaPref(){
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
@@ -94,6 +100,18 @@ public class BorrarActivity extends AppCompatActivity {
         editor.putInt("etapaact",0 );
         editor.putString("indiceact", "");
         editor.putInt("etapafin", 0);
+        editor.commit();
+
+    }
+
+    public void guardarCiudadPref(){
+        SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=prefe.edit();
+
+        editor.putString("ciudadtrabajo","" );
+        editor.putInt("idciudadtrabajo",0 );//no es del catalogo ciudades es de plantas
+
+
         editor.commit();
 
     }

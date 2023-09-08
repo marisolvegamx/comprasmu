@@ -67,7 +67,9 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     boolean notificar=false;
     Activity act;
     int actualiza;
-    int procesos=0; //son 7 peticiones
+    int procesos=0;
+    int procesos_lev=0; //para saber cuantos si se corrieron
+
     DescargaIniListener listenprin;
    // DescargaRespAsyncTask.ProgresoRespListener proglist;
     final String TAG="DescargasIniAsyncTask";
@@ -115,37 +117,32 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             return null;
         }
 
-            catalogos();
-            buscarZonas();
+        catalogos();
+        buscarZonas();
 
-            if(descargarListas) {
+        if(descargarListas) {
 
                 listacompras(); //aqui esta informes y sust
-            }else
-                procesos=procesos+3;
-            if(Constantes.INDICEACTUAL!=""){
-        DescargaIniListener listdesc=new DescargaIniListener();
-        DescargaRespListener listresp=new DescargaRespListener();
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-        if(actualiza==0) {
-            if (getTotInfEtapas() == 0) {
-
-
-                ps.pedirRespaldo2(Constantes.INDICEACTUAL, listresp);
-            } else {
-                listdesc.finalizar();
-            }
-            if (getTotCorre() == 0) {
-                ps.pedirRespaldoCor(Constantes.INDICEACTUAL, listresp);
-            } else {
-                listdesc.finalizar();
-            }
-        }else {
-            procesos = procesos + 2;
-            Log.d(TAG,"no hagos resp 2 ni cor"+procesos);
         }
-        }else
-            procesos=procesos+2;
+        if(Constantes.INDICEACTUAL!=""){
+            DescargaIniListener listdesc=new DescargaIniListener();
+            DescargaRespListener listresp=new DescargaRespListener();
+            PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+            if(actualiza==0) {
+                if (getTotInfEtapas() == 0) {
+
+                    procesos_lev++;
+                    ps.pedirRespaldo2(Constantes.INDICEACTUAL, listresp);
+                }
+                if (getTotCorre() == 0) {
+                    procesos_lev++;
+                    ps.pedirRespaldoCor(Constantes.INDICEACTUAL, listresp);
+                }
+            }else {
+
+                Log.d(TAG,"no hagos resp 2 ni cor"+procesos);
+            }
+        }
 
       /*  }else
               {
@@ -171,7 +168,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             //si hoy ya se actualizó no actualizo
            //no actualice
             if(actualiza==1) {
-
+                    procesos_lev++;
                     ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
                     ps.getSiglas(sigRepo,tvRepo);
 
@@ -187,18 +184,15 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     });*/
             }else
             if(!sdfdias.format(cats.getVersion()).equals(sdfdias.format(new Date()))){
-
+                procesos_lev++;
                     ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
                     ps.getSiglas(sigRepo,tvRepo);
 
-            }else {
-                listenprin.finalizar();
-                //listenprin.finalizar();
             }
 
         }else {   //primera vez
 
-
+                procesos_lev++;
                 ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
                 ps.getSiglas(sigRepo,tvRepo);
         }
@@ -222,7 +216,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
     private void listacompras(){
         Log.d("DescargasIniAsyncTask", "descargando listas");
 
-
+        procesos_lev++; //para verificar que ya terminó
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         ps.getSustitucion(Constantes.INDICEACTUAL,tvRepo, sustRepo,listenprin);
         TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
@@ -233,7 +227,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         if(comp!=null){
             if(actualiza==1) {
                 //siempre actualizo
-
+                    procesos_lev++;
                     ps.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
 
                   /*  act.runOnUiThread(new Runnable() {
@@ -247,12 +241,12 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     });*/
             }else {
                  if (!sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))) {
-
+                        procesos_lev++;
                         ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
 
 
                 }else {
-                     procesos=procesos+1;
+
                      informes();
                  }
             }
@@ -260,7 +254,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
         }else {   //primera vez
             Log.d("DescargasIniAsyncTask", "primera vez");
-
+            procesos_lev++;
             ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
 
         }
@@ -297,8 +291,6 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     pedirZonas(petmap);
 
 
-            }else{
-                listenprin.finalizar();
             }
 
         }else {   //primera vez
@@ -311,6 +303,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
     }
     public void pedirZonas(PeticionMapaCd petmap) {
+        procesos_lev++;
         DescargaIniListener listener=new DescargaIniListener();
         petmap.getZonas("", Constantes.INDICEACTUAL,listener); //se agregarian filtros despues
         // Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
@@ -361,7 +354,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         DescargaRespListener listener=new DescargaRespListener();
         ps.pedirRespaldo(Constantes.INDICEACTUAL,listener);
-
+        procesos_lev++;
     }
 
 
@@ -384,9 +377,9 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                   //  proglist.cerrarAlerta();
         }
        public void finalizar(){
-            Log.d(TAG,"DescargaIniListener procesos "+procesos);
+            Log.d(TAG,"DescargaIniListener procesos "+procesos+"--"+procesos_lev);
            procesos++;
-           if(procesos==7){ //llama 2 veces al home etra 2 vece
+           if(procesos==procesos_lev){ //llama 2 veces al home etra 2 vece
 
 
                miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
@@ -519,14 +512,14 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
                 }
                 if(actualiza==0) {
-                    procesos++;
+                    Log.d(TAG,"hago inf"+procesos);
                     informes(); //solo en la descarga incial
 
-                } else {
-                    Log.d(TAG,"no hago inf"+procesos);
-                    procesos=procesos+2;
-                    finalizar();
                 }
+
+
+                    finalizar();
+
             }
 
 
@@ -544,8 +537,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
             getRespaldo();
 
             //   task.execute("", "act"); //para saber que estoy actualizando
-        }else
-            listener.finalizar();
+        }
 
     }
     public int getTotVisitas(){

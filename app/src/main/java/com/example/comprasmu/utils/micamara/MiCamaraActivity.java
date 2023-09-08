@@ -5,6 +5,7 @@ import static androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraControl;
 import androidx.camera.core.CameraSelector;
@@ -140,6 +141,7 @@ public class MiCamaraActivity extends AppCompatActivity {
 
         try {
             Preview preview = new Preview.Builder()
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                     //  .setTargetResolution(new Size(800, 600))
                     .build();
 
@@ -165,6 +167,7 @@ public class MiCamaraActivity extends AppCompatActivity {
             final ImageCapture imageCapture = builder
                     .setTargetRotation(this.getWindowManager().getDefaultDisplay().getRotation())
                     //   .setTargetResolution(new Size(800, 600))
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                     .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .build();
      /*   ViewPort viewPort = new ViewPort.Builder(

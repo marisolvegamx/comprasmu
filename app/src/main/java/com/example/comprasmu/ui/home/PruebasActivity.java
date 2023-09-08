@@ -80,7 +80,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         progreso.show();
 
        // mTextView = findViewById(R.id.txtlllog);
-        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
+        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")||Build.PRODUCT.contains ("angelica_global")) {//pruebas y el lenovo
 
             DOWNLOAD_PATH = "http://192.168.1.84/comprasv1/fotografias";
 

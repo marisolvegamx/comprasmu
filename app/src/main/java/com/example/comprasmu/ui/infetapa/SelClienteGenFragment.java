@@ -21,13 +21,9 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.ui.BackActivity;
-import com.example.comprasmu.ui.informe.BuscarInformeFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
-import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 
@@ -84,9 +80,6 @@ public class SelClienteGenFragment extends ListaSelecFragment {
         final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
             public void onChanged(@Nullable List<ListaCompra> lista) {
-
-
-
                 // siguiente(0);
                   Log.d(TAG,"------- "+lista.size());
                 if(lista.size()>1) {
@@ -116,7 +109,6 @@ public class SelClienteGenFragment extends ListaSelecFragment {
                     if(tipoconsulta.equals("c")) { //solicitudes
                         //voy a buscar la solicitudes pendientes
                       //  ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_ver_listasolcor);
-
                         convertirListaCor(lista);
 
                     }else {

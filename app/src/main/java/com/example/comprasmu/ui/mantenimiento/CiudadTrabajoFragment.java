@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
@@ -129,8 +130,10 @@ public class CiudadTrabajoFragment extends Fragment {
             Toast.makeText(getActivity(),"Algo salió mal con el catálogo, actualice las lista de compra", Toast.LENGTH_LONG).show();
 
         //  Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
-       //voy al home
-           NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
+       //redibujo el menu por las correcciones y cancelaciones que son x ciudad de trabajo
+        ((NavigationDrawerActivity)getActivity()).reInflateMenu();
+        //voy al home
+        NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
 
     }
     public void recuperar(View v) {
