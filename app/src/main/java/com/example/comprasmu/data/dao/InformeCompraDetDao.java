@@ -201,16 +201,19 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
 
     }
 
-
     @Query("SELECT informe_detalle.* FROM informe_detalle inner join informe_compras on informesId=informe_compras.id" +
             " inner join visitas on visitas.id=informe_compras.visitasId"+
             " WHERE plantasId = :planta and (informe_detalle.estatus=1 or informe_detalle.estatus=3 ) and indice=:indice " )
     public abstract List<InformeCompraDetalle>   getInformesxPlanta(int planta, String indice);
+    @Query("SELECT informe_detalle.* FROM informe_detalle inner join informe_compras on informesId=informe_compras.id" +
+            " inner join visitas on visitas.id=informe_compras.visitasId"+
+            " inner join lista_compras on informe_compras.plantasId=lista_compras.plantasId "+
+            " WHERE lista_compras.ciudadNombre = :cd and informe_compras.clientesId=:cliente and (informe_detalle.estatus=1 or informe_detalle.estatus=3 ) and visitas.indice=:indice " )
+    public abstract List<InformeCompraDetalle>   getInformesxCliCd(String cd,int cliente, String indice);
 
     public class InformeDetalleImagenes {
 
         public int id;
-
         public int foto_codigo_produccion;
         public int energia;
         public int producto_exhibido;
@@ -218,12 +221,9 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
         public int marca_traslape;
 
         public int foto_atributoa;
-
         public int foto_atributob;
-
         public int foto_atributoc;
         public int etiqueta_evaluacion;
-
 
     }
 }

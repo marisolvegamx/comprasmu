@@ -174,11 +174,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
 
 
-    public int insertarEtiq(String indice,String plantaNombre,int plantaId, String clienteNombre,int clienteId,int num_cajas, int tot_muestras,String ciudadNombre){
+    public int insertarEtiq(String indice, String clienteNombre,int clienteId,int num_cajas, int tot_muestras,String ciudadNombre){
         InformeEtapa informe=new InformeEtapa();
         informe.setIndice(indice);
-        informe.setPlantaNombre(plantaNombre);
-        informe.setPlantasId(plantaId);
         informe.setClientesId(clienteId);
         informe.setClienteNombre(clienteNombre);
         informe.setEstatusSync(0);
@@ -215,6 +213,38 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         detalle.setEtapa(3);
         if(iddet>0)
             detalle.setId(iddet);
+        iddetalle=(int)infDetRepo.insert(detalle);
+        return iddetalle;
+    }
+
+    public int actualizarEtiqDet(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja,String qr,int num_muestra,String idfoto,String indice){
+        //busco la imagen detalle
+        int numfoto=0;
+        try {
+             numfoto =Integer.parseInt(idfoto);
+        }catch (NumberFormatException ex){
+            Log.d(TAG,"actualizarEtiqDet NumberFormatException");
+        }
+        ImagenDetalle  foto=getFoto(numfoto);
+        foto.setRuta( ruta);
+        foto.setDescripcion(descripcion);
+        foto.setEstatus(1);
+        foto.setEstatusSync(0);
+        foto.setIndice(indice);
+        foto.setCreatedAt(new Date());
+        int nvoidimagem =(int)imagenDetRepository.insertImg(foto);
+        InformeEtapaDet detalle=new InformeEtapaDet();
+        detalle.setDescripcion(descripcion);
+        detalle.setInformeEtapaId(idinf);
+        detalle.setRuta_foto(nvoidimagem+"");
+        detalle.setDescripcionId(descripcionid);
+        detalle.setNum_caja(numcaja);
+        detalle.setQr(qr);
+        detalle.setNum_muestra(num_muestra);
+        detalle.setEstatusSync(0);
+        detalle.setEtapa(3);
+
+        detalle.setId(iddet);
         iddetalle=(int)infDetRepo.insert(detalle);
         return iddetalle;
     }
@@ -598,8 +628,8 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
     }
 
-    public int getTotalMuestras(int plantaSel) {
-       return compRepo.getTotalMuesxPlan(plantaSel,Constantes.INDICEACTUAL);
+    public int getTotalMuestrasxCliXcd(int clienteSel,String cd) {
+       return compRepo.getTotalMuesxCliCd(clienteSel,Constantes.INDICEACTUAL,cd);
     }
     //devuelvo lista de plantas con informe
     public Integer[] tieneInforme(int etapa){
@@ -610,8 +640,8 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
             for (int i = 0; i < informes.size(); i++) //y no estan cancelado
             {
               //  Log.d(TAG,"zzz"+informes.get(i).getEstatus());
-                if(informes.get(i).getEstatus()>0) //no cancelados
-                clienteAnt[i] = informes.get(i).getPlantasId();
+                if(informes.get(i).getEstatus()>0&&informes.get(i).getCiudadNombre()!=null&&informes.get(i).getCiudadNombre().equals(Constantes.CIUDADTRABAJO)) //no cancelados y de la cd
+                    clienteAnt[i] = informes.get(i).getClientesId();
 
             }
         }

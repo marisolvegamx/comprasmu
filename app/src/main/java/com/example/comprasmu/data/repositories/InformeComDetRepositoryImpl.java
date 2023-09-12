@@ -193,5 +193,12 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
             return muestras.size();
         return 0;
     }
+
+    public int getTotalMuesxCliCd(int clienteSel, String indiceactual, String cd) {
+        List<InformeCompraDetalle> muestras= dao.getInformesxCliCd(cd,clienteSel,indiceactual);
+        if(muestras!=null)
+            return muestras.size();
+        return 0;
+    }
 }
 

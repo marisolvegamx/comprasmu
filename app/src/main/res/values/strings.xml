@@ -321,6 +321,7 @@
     <string name="cajact">MUESTRA CAJA NUM.</string>
     <string name="rotar_foto">ROTAR FOTOS</string>
     <string name="borrar_datos">Borrar datos antiguos</string>
+    <string name="ya_existe_qr">LA MUESTRA YA FUE CAPTURADA, VERIFIQUE</string>
 
 
 </resources>

@@ -61,6 +61,7 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     public LiveData<InformeEtapaDet> getByDescripcionCaja(String descripcion, int idinf, int caja) {
         return dao.getByDescripcionCaja(idinf,descripcion, caja);
     }
+
     public InformeEtapaDet getByQr( String qr, int etapa) {
         return dao.getByQr( qr, etapa);
     }
