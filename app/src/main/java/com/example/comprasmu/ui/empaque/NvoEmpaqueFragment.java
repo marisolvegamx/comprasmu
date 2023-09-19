@@ -1063,7 +1063,7 @@ public class NvoEmpaqueFragment extends Fragment {
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         Log.d(TAG, mViewModel.getIdNuevo()+"");
-        envio.setInformeEtapaDet(mViewModel.cargarInformeDet(mViewModel.getIdNuevo()));
+        envio.setInformeEtapaDet(mViewModel.getInformeDet(mViewModel.getIdNuevo()));
         envio.setDetalleCaja(mViewModel.cargarDetCajas(mViewModel.getIdNuevo()));
         List<ImagenDetalle> imagenes=mViewModel.buscarImagenes(envio.getInformeEtapaDet());
 

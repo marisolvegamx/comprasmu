@@ -27,8 +27,12 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
 
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:informe")
     public  abstract List<InformeEtapaDet> getAllSencillo(int informe);
+
     @Query("DELETE FROM informe_etapa_det where informeEtapaId=:informe and estatusSync=0")
     public  abstract void deleteByInforme(int informe);
+
+  @Query("SELECT count(num_caja) FROM informe_etapa_det where informeEtapaId=:informe and descripcionId=12")
+  public  abstract int getTotalCajsxInf(int informe);
 
   @Query("update informe_etapa_det set estatusSync=:estatus WHERE id=:id")
     public abstract void actualizarEstatusSync(int id, int estatus);
@@ -37,6 +41,10 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     public abstract LiveData<InformeEtapaDet> find( int id);
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa order by id desc")
     public abstract List<InformeEtapaDet> getUltimo( int id,int etapa);
+
+    @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:inf and etapa=:etapa and descripcionId=11  order by id desc")
+    public abstract List<InformeEtapaDet> getUltimaMuestra( int inf, int etapa);
+
 
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:caja order by id desc")
     public abstract List<InformeEtapaDet> getUltimoCaja( int id,int etapa, int caja);
@@ -47,7 +55,10 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and descripcion=:descripcion and num_caja=:caja")
     public abstract LiveData<InformeEtapaDet> getByDescripcionCaja( int id,String descripcion, int caja);
 
-    @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja  order by num_muestra")
+  @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and descripcionId=:descripcion and num_caja=:caja")
+  public abstract InformeEtapaDet getByDescripCajaSim( int id,int descripcion, int caja);
+
+  @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja  order by num_muestra")
     public abstract List<InformeEtapaDet> getByCaja( int id,int etapa, int numcaja);
 
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja order by id")
@@ -76,12 +87,16 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     public abstract List<InformeEtapaDet> totalCajasEtiqxCli(int etapa, int cliente);
 
 
-    @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
+  @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
             " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and clientesId=:cliente and estatus>0 group by num_caja order by num_caja")
-    public abstract List<InformeEtapaDet> totalCajasEtiqxCd(int etapa, String ciudad, int cliente);
+    public abstract List<InformeEtapaDet> getDetEtiqxCdCli(int etapa, String ciudad, int cliente);
+
+  @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
+          " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and estatus>0 group by num_caja order by num_caja")
+  public abstract List<InformeEtapaDet> getDetEtiqxCd(int etapa, String ciudad);
 
 
-    @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
+  @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
             " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det " +
             " inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and informe_etapa.indice=:indice  group by num_caja order by num_caja")
     public abstract List<InformeEtapaDet> resumenEtiq(int etapa,String indice);
@@ -95,6 +110,8 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where etapa=:etapa and qr=:qr ")
     public abstract InformeEtapaDet getByQr( String qr, int etapa);
 
+    @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:informe and descripcionId>11 order by num_caja, descripcionId")
+    public  abstract List<InformeEtapaDet> getInfDetCalCaja(int informe);
 
     @Query("update informe_etapa_det set estatusSync=:estatus WHERE informeEtapaId=:idinforme")
     public abstract void actEstatusSyncLis(int idinforme, int estatus);

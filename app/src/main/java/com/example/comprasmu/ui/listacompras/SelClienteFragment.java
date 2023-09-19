@@ -39,7 +39,7 @@ import java.util.List;
 
 import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
-/*** para buscar las listas por planta no x cliente***/
+/*** para buscar las listas por planta no x cliente se usa en lista de compra y resumen infrmes***/
 
 public class SelClienteFragment extends ListaSelecFragment {
     private LiveData<List<ListaCompra>> listaclientes;

@@ -538,6 +538,8 @@ public class CreadorFormulario {
             return mySpinner;
 
     }
+
+
     public Spinner selectCat() {
 
         Spinner mySpinner = new Spinner(context);

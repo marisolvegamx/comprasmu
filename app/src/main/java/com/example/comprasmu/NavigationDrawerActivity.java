@@ -290,7 +290,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             //Ya lo hago desde el menu
            // pedirInformes(0);
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcor2));
+                    findItem(R.id.nav_solcoretiq));
             txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_canceleti));
         }
@@ -655,7 +655,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     private void contarCorrecc(){
        // totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
-        totCorrecciones=scViewModel.getTotalSolsxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);
+        if(Constantes.ETAPAACTUAL==3){
+            //busco x ciudad
+            totCorrecciones=scViewModel.getTotSolsEtiqxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);
+
+        }else
+            totCorrecciones=scViewModel.getTotalSolsxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);
 
         Log.d(TAG,"contarCorrecc"+totCorrecciones.getValue()+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 

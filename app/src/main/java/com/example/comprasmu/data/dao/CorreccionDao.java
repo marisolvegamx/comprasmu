@@ -18,10 +18,10 @@ import java.util.List;
 public abstract class CorreccionDao extends  BaseDao<Correccion>{
 
     @Query("SELECT * FROM correccion where   solicitudId=:solicitudId and indice=:indice ")
-    public abstract LiveData<List<Correccion>> tgetCorrecciones( int solicitudId, String indice);
+    public abstract LiveData<List<Correccion>> getCorrecciones( int solicitudId, String indice);
 
-    @Query("SELECT * FROM correccion where  solicitudId=:solicitudId")
-    public abstract List<Correccion> getCorreccionesSimple(int solicitudId);
+    @Query("SELECT * FROM correccion where  solicitudId=:solicitudId and numfoto=:numfoto and indice=:indice")
+    public abstract List<Correccion> getCorreccxsolSimple(int solicitudId,int numfoto, String indice);
 
     @Query("SELECT * FROM correccion WHERE id = :uuid")
     public abstract LiveData<Correccion>  getCorreccion(int uuid);

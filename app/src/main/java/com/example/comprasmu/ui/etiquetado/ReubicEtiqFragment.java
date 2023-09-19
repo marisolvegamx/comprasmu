@@ -1,18 +1,10 @@
 package com.example.comprasmu.ui.etiquetado;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -20,52 +12,35 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
-import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
-import com.example.comprasmu.ui.RevisarFotoActivity;
-import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.ComprasLog;
-import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.Preguntasino;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -90,6 +65,9 @@ public class ReubicEtiqFragment extends Fragment {
 
     ComprasLog milog;
     int totcajas;
+    private InformeEtapaDet muestraEdit;
+    private int ultimacaja;
+    ArrayAdapter<String> adaptercaja;
     public ReubicEtiqFragment() {
 
     }
@@ -119,22 +97,18 @@ public class ReubicEtiqFragment extends Fragment {
         p4=root.findViewById(R.id.llrepre4);
         p5=root.findViewById(R.id.llrepre5);
         lbotones=root.findViewById(R.id.llrebotones);
+
        // potra.setmLabel("¿INCLUIRAS OTRA MUESTRA EN ESTA CAJA?");
 
 //        ((NuevoInfEtapaActivity)getActivity()).cambiarTitulo("REUBICAR MUESTRA");
-       // mostrarp4();
+        mostrarp4();
         txtqr.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 
         txtqr.addTextChangedListener(new BotonTextWatcher(guardar));
 
      //   txtnumcajas.addTextChangedListener(new BotonTextWatcher(aceptar2));
         spinnerValues = new ArrayList<>();
-        //busco el total de cajas
-        totcajas=mViewModel.getTotCajasEtiq(Constantes.CIUDADTRABAJO);
-        for(int i=1;i<=totcajas;i++) {
-            spinnerValues.add(i+"");
-        }
-        //todo buscar 1ro qr y luego la caja
+
        /* if(totcajas==0) {
             totcajas = 1;
             spinnerValues.add(1+"");
@@ -160,9 +134,7 @@ public class ReubicEtiqFragment extends Fragment {
             }
 
         }*/
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
-        spcaja.setAdapter(adapter);
+     //  spcaja.setEnabled(false);
 
         btnqr.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +147,7 @@ public class ReubicEtiqFragment extends Fragment {
         buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //buscarQr();
+                buscarQr();
             }
 
         });
@@ -219,45 +191,77 @@ public class ReubicEtiqFragment extends Fragment {
     }
 
 public void nvacaja(){
-        totcajas++;
-    spinnerValues.add(totcajas+"");
-
+        ultimacaja++;
+    spinnerValues.add(ultimacaja+"");
+    adaptercaja.notifyDataSetChanged();
     }
     public void mostrarp4(){
         p4.setVisibility(View.VISIBLE);
         p5.setVisibility(View.GONE);
+        buscar.setEnabled(true);
         lbotones.setVisibility(View.GONE);
     }
     public void mostrarp5(){
         p4.setVisibility(View.GONE);
         p5.setVisibility(View.VISIBLE);
+
         lbotones.setVisibility(View.VISIBLE);
     }
-    public void cambiarMues(){
+    public void buscarQr(){
         if(txtqr.getText().toString().equals("")) {
 
             return;
 
         }
-        InformeEtapaDet muestra=mViewModel.buscarDetxQr(txtqr.getText().toString());
+        muestraEdit =mViewModel.buscarDetxQr(txtqr.getText().toString());
+        if(muestraEdit ==null) { //busco el total de cajas
+
+            Toast.makeText(getActivity(), getString(R.string.verifique_codigo), Toast.LENGTH_LONG).show();
+
+            return;
+        }
+
+           InformeEtapa informeSel=mViewModel.getInformexId(muestraEdit.getInformeEtapaId());
+           if(informeSel==null) {
+
+               Toast.makeText(getActivity(), getString(R.string.verifique_codigo), Toast.LENGTH_LONG).show();
+
+               return;
+           }
+
+               int clienteSel = informeSel.getClientesId();
+               List<InformeEtapaDet> listacaj=mViewModel.listaCajasEtiqxCdCli(Constantes.CIUDADTRABAJO, clienteSel);
+               if(listacaj!=null) {
+                   for (int i = 0; i < listacaj.size(); i++) {
+                       spinnerValues.add(listacaj.get(i).getNum_caja() + "");
+                       ultimacaja=listacaj.get(i).getNum_caja();
+                   }
+                   totcajas = listacaj.size();
+               }
+               //todo buscar 1ro qr y luego la caja
+              adaptercaja = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
+               spcaja.setAdapter(adaptercaja);
+               mostrarp5();
+
+
+    }
+    public void cambiarMues(){
+
         String opcionsel = (String) spcaja.getSelectedItem();
         if(opcionsel==null)
             return;
         int numcaja = Integer.parseInt(opcionsel);
-        if(muestra!=null){
-            muestra.setNum_caja(numcaja);
-            mViewModel.actualizarInfEtaDet(muestra);
+
+            muestraEdit.setNum_caja(numcaja);
+            mViewModel.actualizarInfEtaDet(muestraEdit);
             //reenvio al serv
-            InformeEtapaEnv envio= preparaInforme(muestra.getInformeEtapaId(),muestra);
+            InformeEtapaEnv envio= preparaInforme(muestraEdit.getInformeEtapaId(), muestraEdit);
             SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
             miTareaAsincrona.execute();
             //subirFotos(getActivity(),envio);
             Toast.makeText(getActivity(), getString(R.string.muestra_reubicada), Toast.LENGTH_SHORT).show();
             salir();
-        }else{
-            Toast.makeText(getActivity(), getString(R.string.verifique_codigo), Toast.LENGTH_LONG).show();
 
-        }
 
     }
 

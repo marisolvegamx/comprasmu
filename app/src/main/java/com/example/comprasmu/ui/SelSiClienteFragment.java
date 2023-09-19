@@ -1,21 +1,17 @@
 package com.example.comprasmu.ui;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
@@ -24,19 +20,16 @@ import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.ui.listacompras.SelClienteFragment;
-import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
-import com.example.comprasmu.utils.ComprasUtils;
-import com.example.comprasmu.utils.ui.ListaSelecFragment;
 import com.example.comprasmu.utils.Constantes;
-import com.google.android.material.navigation.NavigationView;
+import com.example.comprasmu.utils.ui.ListaSelecFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/*** para buscar las listas por ciudades***/
+/*** para buscar las listas por cliente***/
 
-public class SelPlantaFragment extends ListaSelecFragment {
+public class SelSiClienteFragment extends ListaSelecFragment {
     private LiveData<List<ListaCompra>> listaCiudades;
     private  ArrayList<DescripcionGenerica> listaCiudadesEnv;
     ListaCompraRepositoryImpl lcrepo;

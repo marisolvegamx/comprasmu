@@ -114,6 +114,14 @@ public class NvaCorreViewModel extends AndroidViewModel {
     public LiveData<List<Correccion>> getCorreccionesxsol(int idsol,String indice){
         return correpository.getxsol(idsol,indice);
     }
+
+    public Correccion getUltCorrecionxSolSimple(int idsol,int numfoto,String indice){
+       List<Correccion> lista=correpository.getCorrecxSolSim(idsol,numfoto,indice);
+       if(lista!=null&&lista.size()>0)
+           if( lista.get(lista.size()-1).getEstatus()==3) //devuelvo el ultimo pend
+                return lista.get(lista.size()-1);
+        return null;
+    }
     public LiveData<List<SolicitudWithCor>> getCorreccionesxEtaPlan(int etapa, String indice, int plantaSel){
         return correpository.getAllxEtaPlan(plantaSel,indice,etapa);
     }

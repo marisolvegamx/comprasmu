@@ -5,11 +5,8 @@ import android.content.Context;
 import androidx.lifecycle.LiveData;
 
 import com.example.comprasmu.data.ComprasDataBase;
-import com.example.comprasmu.data.dao.InformeCompraDetDao;
 import com.example.comprasmu.data.dao.InformeEtapaDetDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 
 import java.util.List;
@@ -38,6 +35,13 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         return dao.getAllSencillo(idInforme);
     }
 
+    public List<InformeEtapaDet> getInfDetCalCaja(int idInforme) {
+        return dao.getInfDetCalCaja(idInforme);
+    }
+    public int getTotcajasxInf(int idInforme) {
+        return dao.getTotalCajsxInf(idInforme);
+    }
+
     @Override
     public LiveData<List<InformeEtapaDet>> getAll() {
         return null;
@@ -56,10 +60,12 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     public LiveData<InformeEtapaDet> getByDescripcion(String descripcion, int idinf) {
         return dao.getByDescripcion(idinf,descripcion);
     }
-
-
     public LiveData<InformeEtapaDet> getByDescripcionCaja(String descripcion, int idinf, int caja) {
         return dao.getByDescripcionCaja(idinf,descripcion, caja);
+    }
+
+    public InformeEtapaDet getByDescripCajaSim( int idinf, int descripcion,int caja) {
+        return dao.getByDescripCajaSim(idinf,descripcion, caja);
     }
 
     public InformeEtapaDet getByQr( String qr, int etapa) {
@@ -119,6 +125,13 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         }
         return null;
     }
+    public InformeEtapaDet getUltimaMuestra(int idinf, int etapa) {
+        List<InformeEtapaDet> lista=dao.getUltimaMuestra(idinf,etapa);
+        if(lista!=null&&lista.size()>0){
+            return lista.get(0);
+        }
+        return null;
+    }
     public InformeEtapaDet getUltimoCaja(int idinf, int etapa, int caja) {
         List<InformeEtapaDet> lista=dao.getUltimoCaja(idinf,etapa,caja);
         if(lista!=null&&lista.size()>0){
@@ -145,10 +158,18 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     public int totalCajasEtiq(String ciudad) {
         return dao.totalCajasEtiq(3, ciudad);
     }
-    public int totalCajasEtiqxCd(int i, String ciudad, int cliente) {
-        List<InformeEtapaDet> det= dao.totalCajasEtiqxCd(i,ciudad,cliente);
+    public int totalCajasEtiqxCli(int i, String ciudad, int cliente) {
+        List<InformeEtapaDet> det= dao.getDetEtiqxCdCli(i,ciudad,cliente);
         if(det!=null){
             return det.size();
+        }
+        return 0;
+    }
+
+    public int getMinCajaxCli(int i, String ciudad, int cliente) {
+        List<InformeEtapaDet> det= dao.getDetEtiqxCdCli(i,ciudad,cliente);
+        if(det!=null&&det.size()>0){
+            return det.get(0).getNum_caja();
         }
         return 0;
     }
@@ -157,8 +178,12 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
        return dao.totalCajasEtiqxCli(i,cliente);
 
     }
-    public List<InformeEtapaDet> listaCajasEtiqxCd(int i, String cd, int cliente) {
-        return dao.totalCajasEtiqxCd(i,cd, cliente);
+    public List<InformeEtapaDet> listaCajasEtiqxCd(int i, String cd) {
+        return dao.getDetEtiqxCd(i,cd);
+
+    }
+    public List<InformeEtapaDet> listaCajasEtiqxCdCli(int i, String cd, int cliente) {
+        return dao.getDetEtiqxCdCli(i,cd, cliente);
 
     }
     public List<InformeEtapaDet> getResumenEtiq(int i, String indice) {

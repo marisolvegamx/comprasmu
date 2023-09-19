@@ -89,6 +89,9 @@ public class ComprasLog {
 
 
     }
+    public void grabarError(String tag, String metodo, String mensaje){
+        this.grabarError(tag+"."+metodo+" "+mensaje);
+    }
 
     public String leerArch() {
         String todo = "";

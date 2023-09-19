@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
@@ -24,6 +25,8 @@ import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.databinding.ActivityNuevoInfetapaBinding;
+import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
+import com.example.comprasmu.ui.correccion.NvaCorrecCalCajaFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionEtiqFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
@@ -32,6 +35,7 @@ import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 
@@ -181,9 +185,21 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     frag.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment, frag);
                 }else  if(etapa==3) {
-                    NvaCorreccionEtiqFragment frag = new NvaCorreccionEtiqFragment();
-                    frag.setArguments(bundle);
-                    ft.add(R.id.continfeta_fragment, frag);
+                    //veo la descripcion de la solicitud para enviar otro fragment
+                    NvaCorreViewModel correViewModel=new ViewModelProvider(this).get(NvaCorreViewModel.class);
+
+                    SolicitudCor sol=correViewModel.getSolicitud (idinformeSel,numfoto);
+                    if(sol!=null&&sol.getDescripcionId()>11) //es de caja
+                    {
+                        NvaCorrecCalCajaFragment frag = new NvaCorrecCalCajaFragment();
+                        frag.setArguments(bundle);
+                        ft.add(R.id.continfeta_fragment, frag);
+                    }
+                    else {
+                        NvaCorreccionEtiqFragment frag = new NvaCorreccionEtiqFragment();
+                        frag.setArguments(bundle);
+                        ft.add(R.id.continfeta_fragment, frag);
+                    }
                 }else
                 {
                     NvaCorreccionFragment frag = new NvaCorreccionFragment();
@@ -278,7 +294,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         mBinding.row3.setVisibility(View.GONE);
         mBinding.row2.setVisibility(View.GONE);
 
-        if(sol.getEtapa()==3) {
+        if(sol.getEtapa()==3&&numcaja>0) {
             mBinding.txtnieatr5.setText("CAJA NUM. " + numcaja);
             mBinding.row5.setVisibility(View.VISIBLE);
             mBinding.txtnieatr5.setVisibility(View.VISIBLE);

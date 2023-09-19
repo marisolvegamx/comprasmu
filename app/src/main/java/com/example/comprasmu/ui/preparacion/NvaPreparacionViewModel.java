@@ -23,7 +23,6 @@ import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
-import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -341,6 +340,12 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
         return infDetRepo.getByDescripcionCaja(descripcion,idinf, caja);
     }
+    public InformeEtapaDet getByDescripCajaSim(int idinf, int descripcion, int caja){
+
+        return infDetRepo.getByDescripCajaSim(idinf,descripcion, caja);
+    }
+
+
 
     public List<InformeEtapaDet> getDetEtaxCaja(int idinf, int etapa,int numcaja){
       // Log.d(TAG,"buscando a "+idinf+"--"+numcaja);
@@ -366,13 +371,25 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         infEtaRepository.insert(informe);
     }
 
-    public List<InformeEtapaDet> cargarInformeDet(int id){
+    public List<InformeEtapaDet> getInformeDet(int id){
        return infDetRepo.getAllSencillo(id);
+    }
+    public List<InformeEtapaDet> getInfDetCalCaja(int id){
+        return infDetRepo.getInfDetCalCaja(id);
+    }
+
+    public int getTotCajasxInf(int id){
+        return infDetRepo.getTotcajasxInf(id);
     }
 
     public InformeEtapaDet getUltimoInformeDet(int id, int etapa){
         return infDetRepo.getUltimo(id, etapa);
 
+
+    }
+
+    public InformeEtapaDet getUltimaMuestra(int id){
+        return infDetRepo.getUltimaMuestra(id, 3);
 
     }
    /* public void listaCajasEtiqxCliCd(int cliente){
@@ -412,9 +429,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
 
     }
-
+        //se usa en empaque para traer solo las del cliente
     public void getCajasEtiqCdCli(String ciudad, int cliente){
-        List<InformeEtapaDet> muestras= infDetRepo.listaCajasEtiqxCd( 3,ciudad,cliente);
+        List<InformeEtapaDet> muestras= infDetRepo.listaCajasEtiqxCdCli( 3,ciudad,cliente);
         EtiquetadoxCliente resul=null;
         int i=1;
         Log.d(TAG,"tot cajas"+muestras.size());
@@ -433,26 +450,34 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
 
     }
-    public int getTotCajasEtiq(String ciudad){
-        int val= infDetRepo.totalCajasEtiq( ciudad);
-        Log.d(TAG,"cajas "+val);
+    public int getTotCajasEtiqxCli(String ciudad, int cliente){
+        int val= infDetRepo.totalCajasEtiqxCli(3, ciudad,cliente);
+        Log.d(TAG,"getTotCajasEtiqxCli "+val);
         return val;
 
 
     }
 
-    public int getTotCajasEtiqxCd(String cd, int cliente){
-        int val= infDetRepo.totalCajasEtiqxCd( 3,cd,cliente);
+    public int getMinCajaxCli(String ciudad, int cliente){
+        int val= infDetRepo.getMinCajaxCli(3, ciudad,cliente);
+        Log.d(TAG,"getMinCajaxCli "+val);
+        return val;
+
+
+    }
+
+    public int getTotCajasEtiqxCd(String cd){
+        int val= infDetRepo.totalCajasEtiq( cd);
         Log.d(TAG,"cajas "+val);
         return val;
 
 
     }
-    public  List<InformeEtapaDet> listaCajasEtiqxCd(String ciudad, int cliente){
-        return infDetRepo.listaCajasEtiqxCd( 3,ciudad,cliente);
-
-
+    public  List<InformeEtapaDet> listaCajasEtiqxCdCli(String ciudad,int cliente){
+        return infDetRepo.listaCajasEtiqxCdCli( 3,ciudad,cliente);
     }
+
+
     public int getTotMuesxCaja(int numcaj){
         return infDetRepo.getTotMuesxCaja( numcaj);
 
@@ -537,6 +562,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         if(informeEtiq==null)
             this.informeEtiq= infEtaRepository.getInformexPlan(indice, 3,planta);
     }
+
     public void buscarInformeEmp(String indice) {
         if(informeEtiq==null) {
             List<InformeEtapa> infos = infEtaRepository.getAllSimple(4, indice);
@@ -631,6 +657,8 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public int getTotalMuestrasxCliXcd(int clienteSel,String cd) {
        return compRepo.getTotalMuesxCliCd(clienteSel,Constantes.INDICEACTUAL,cd);
     }
+
+
     //devuelvo lista de plantas con informe
     public Integer[] tieneInforme(int etapa){
         Integer[] clienteAnt=null;
@@ -656,7 +684,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
-        envio.setInformeEtapaDet(this.cargarInformeDet(idnvo));
+        envio.setInformeEtapaDet(this.getInformeDet(idnvo));
         List<ImagenDetalle> imagenes=this.buscarImagenes(envio.getInformeEtapaDet());
 
         envio.setImagenDetalles(imagenes);

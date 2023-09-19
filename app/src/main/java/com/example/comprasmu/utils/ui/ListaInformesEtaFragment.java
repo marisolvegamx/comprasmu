@@ -25,24 +25,19 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEtaTask;
-import com.example.comprasmu.SubirInformeTask;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudWithCor;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
-import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
-import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
-import com.example.comprasmu.ui.informe.NuevoinformeFragment;
-import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.Constantes;
@@ -133,7 +128,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
              ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("RESUMEN INFORMES");
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             if(etapa==3)
-            listainfs=mViewModel.cargarEtapa(etapa,indice,plantasel);
+            listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             else
                 listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
@@ -315,7 +310,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         envio.setInformeEtapa(npViewModel.getInformexId(informeid));
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
-        envio.setInformeEtapaDet(npViewModel.cargarInformeDet(informeid));
+        envio.setInformeEtapaDet(npViewModel.getInformeDet(informeid));
         //busco las imagenes
 
             List<ImagenDetalle> imagenes=npViewModel.buscarImagenes(envio.getInformeEtapaDet());

@@ -285,7 +285,7 @@ public class PostInformeViewModel {
     }
 
     public  void sendInformeEta(InformeEtapaEnv informeEtapa) {
-     //   Log.d("sendInformeEta", informeEtapa.toJson(informeEtapa));
+        Log.d("sendInformeEta", informeEtapa.toJson(informeEtapa));
          ServiceGenerator.getApiService().saveInformeEtapa(informeEtapa).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -295,7 +295,7 @@ public class PostInformeViewModel {
                 if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
 
                     mensaje=response.body().getData();
-                    Log.d("sendInformeEta", "jjjjjjjjj"+mensaje);
+                    Log.d("sendInformeEta", ""+mensaje);
                     //actualizo el estatus
                     iniciarBD();
                     actEstatusInfEtapa(informeEtapa);

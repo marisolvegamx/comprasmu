@@ -34,9 +34,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -61,7 +61,6 @@ import com.example.comprasmu.ui.infetapa.NuevoInfEtapaViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 
-import com.example.comprasmu.ui.tiendas.DescripcionGenericaAdapter;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -79,6 +78,10 @@ import java.util.List;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import static android.app.Activity.RESULT_OK;
 
+
+//las cajas se numeran x ciudad
+//ciudad x cajas 1,2,3 no importa el cliente
+//ciudad y 1,2,3 no importa el cliente
 public class NvoEtiquetadoFragment extends Fragment {
 
     private InformeEtapaDet detalleEdit;
@@ -110,8 +113,9 @@ public class NvoEtiquetadoFragment extends Fragment {
     private ListaDetalleViewModel lcViewModel;
     List<ListaCompra> listacomp;
     private static final int REQUEST_CODEQR = 345;
-    int contcaja, contmuestra, contmuint, contcajaf;
-    int totmuestras;
+    int cajaini; //se usa para las cajas de la muestra
+    int contmuestra, contmuint, contcajaf;
+    int totmuestras, totcajas; //cajaact
     private ArrayList<DescripcionGenerica> listaClientes;
     private boolean isEdicion;
     Spinner spcliente, spcaja;
@@ -127,6 +131,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     public String ciudadInf;
     public String[] descripfoto = {"FOTO CALIDAD DE CAJA CARA A", "FOTO CALIDAD DE CAJA CARA B", "FOTO ACOMODO DE MUESTRAS DENTRO DE CAJA"};
     public int[] descripcionid = {12, 13, 14};
+    private int cajainif;
 
     public NvoEtiquetadoFragment() {
 
@@ -174,7 +179,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
         milog = ComprasLog.getSingleton();
-
+        contcajaf=1;
         sv1.setVisibility(View.GONE);
         sv6.setVisibility(View.GONE);
         sv3.setVisibility(View.GONE);
@@ -211,8 +216,8 @@ public class NvoEtiquetadoFragment extends Fragment {
         }
         contmuestra = 1;
         contmuint = 1;
-        contcaja = 1;
-
+        cajaini = 1;
+        totcajas=0;
         //  txtcajaact=root.findViewById(R.id.txtnenumcaja);
 
         txtqr = root.findViewById(R.id.txtneqr);
@@ -363,18 +368,23 @@ public class NvoEtiquetadoFragment extends Fragment {
             ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(infomeEdit);
             mViewModel.setIdNuevo(informeSel);
             totmuestras = infomeEdit.getTotal_muestras();
+            clienteSel = infomeEdit.getClientesId();
             //  totcajas=mViewModel.getu
             //veo si es de muestra o de cja
             if (detalleEdit != null && detalleEdit.getDescripcionId() > 11) {
-                mostrarCapCaja();
+                editarCapCaja();
             } else
                 mostrarCapMuestra();
-            clienteSel = infomeEdit.getClientesId();
+
 
         }
         if (preguntaAct > 1) //ya tengo planta y cliente
         {
             cargarListaCajas();
+        }
+        if(preguntaAct>11)//busco el total de cajas
+        {
+         //   totcajas =mViewModel.getTotCajasEtiqxCd(Constantes.CIUDADTRABAJO);
         }
         if (detalleEdit != null) {
 
@@ -550,38 +560,43 @@ public class NvoEtiquetadoFragment extends Fragment {
 
     //el total de cajas si es x ciudad
     public void cargarListaCajas() {
-        contcaja = mViewModel.getTotCajasEtiq(ciudadInf);
+        int totxciu = mViewModel.getTotCajasEtiqxCd(ciudadInf);
         spinnerValues = new ArrayList<>();
 
-        if (contcaja == 0) {
-            contcaja = 1;
+        if (totxciu == 0) {
+
+            cajaini =1;
             spinnerValues.add(1 + "");
-        } else { //ya tengo cajas pero no es dicion busco de esa cd
-            List<InformeEtapaDet> listacajas = mViewModel.listaCajasEtiqxCd(ciudadInf, clienteSel);
+        } else { //ya tengo cajas pero no es dicion busco de ese cliente
+            List<InformeEtapaDet> listacajas = mViewModel.listaCajasEtiqxCdCli(ciudadInf,clienteSel);
             if (listacajas != null) {
 
-                contcaja = listacajas.size();
-                Log.d(TAG, clienteSel + "numcajas ll" + contcaja);
-                if (contcaja > 0) { //las numeracion que ya tengo
+
+                Log.d(TAG, clienteSel + "numcajas ll" + listacajas.size());
+                if (listacajas.size() > 0) { //las numeracion que ya tengo
+                    totcajas=listacajas.size();
+                    cajaini =listacajas.get(0).getNum_caja() ;
                     for (InformeEtapaDet det : listacajas
                     ) {
                         spinnerValues.add(det.getNum_caja() + "");
-                        contcaja = det.getNum_caja();
+                     //   cajaini = det.getNum_caja();
                     }
-                } else { //cambié de cd
+                } else { //cambié de cliente
 
-                    contcaja = contcaja + 1; //para saber la sig caja
-                    spinnerValues.add(contcaja + "");
+                    cajaini = totxciu + 1; //para saber la sig caja
+                    spinnerValues.add(cajaini + "");
+                    totcajas=0;
                 }
-            } else { //cambié de cd
+            } else { //cambié de cliente
 
-                contcaja = contcaja + 1; //para saber la sig caja
-                spinnerValues.add(contcaja + "");
+                cajaini = totxciu + 1; //para saber la sig caja
+                spinnerValues.add(cajaini + "");
+                totcajas=0;
             }
 
         }
 
-        Log.d(TAG, "numcajas " + contcaja);
+        Log.d(TAG, "caja ini " + cajaini);
       /*  for(int i=1;i<=contcaja;i++) {
             spinnerValues.add(i+"");
         }*/
@@ -592,8 +607,8 @@ public class NvoEtiquetadoFragment extends Fragment {
     }
 
     public void nvacaja() {
-        contcaja++;
-        spinnerValues.add(contcaja + "");
+        cajaini++;
+        spinnerValues.add(cajaini + "");
         adaptercaja.notifyDataSetChanged();
         //  preguntaAct=2;
         //  txtcajaact.setText("CAJA "+contcaja);
@@ -601,10 +616,10 @@ public class NvoEtiquetadoFragment extends Fragment {
     }
 
     public void eliminarCaja() {
-        Log.d(TAG, "cajas" + contcaja);
-        if (contcaja > 1) {
+        Log.d(TAG, "cajas" + cajaini);
+        if (cajaini > 1) {
             //reviso que no haya muestras, primero qu reubique
-            List<InformeEtapaDet> det = mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(), 3, contcaja);
+            List<InformeEtapaDet> det = mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(), 3, cajaini);
             if (det != null && det.size() > 0) {
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                 dialogo1.setTitle(R.string.atencion);
@@ -622,7 +637,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 dialogo1.show();
 
             } else {
-                contcaja--;
+                cajaini--;
                 spinnerValues.remove(spinnerValues.size() - 1);
                 adaptercaja.notifyDataSetChanged();
             }
@@ -634,6 +649,8 @@ public class NvoEtiquetadoFragment extends Fragment {
 
     public void avanzar() {
         Log.d(TAG, "--" + preguntaAct);
+        Log.d(TAG, "ananza"+ contcajaf+" <="+ totcajas);
+
 
         switch (preguntaAct) {
             case 1: //sel cliente
@@ -697,10 +714,14 @@ public class NvoEtiquetadoFragment extends Fragment {
                 } else {
                     preguntaAct = 5;
                     //lleno el total de cajas
-                    txttotcaj.setText("TOTAL CAJAS:" + contcaja);
+                    txttotcaj.setText("TOTAL CAJAS:" + totcajas);
                     //me voy a fotos de caja
                     svpregcaja.setVisibility(View.VISIBLE);
-                    contcajaf = 1;
+                    contcajaf = 1; //para el for de cuantas veces pedir fotos
+                    //busco la caja en la que empiezo
+                     cajainif = mViewModel.getMinCajaxCli(ciudadInf, clienteSel);
+                    //busco total de cajas final
+                    totcajas = mViewModel.getTotCajasEtiqxCli(ciudadInf,clienteSel);
                     capturarFotoCaja();
                     break;
                 }
@@ -721,14 +742,16 @@ public class NvoEtiquetadoFragment extends Fragment {
 
 
                 //si es la ultima foto de la caja y hay más cajas avanzo
-                if (contcajaf <= contcaja) {
+                if (contcajaf < totcajas) {
                     preguntaAct = 5;
                     contcajaf++;
-                    txtcajafoto.setText("CAJA "+contcajaf);
+                    cajainif++;
+
                     capturarFotoCaja();
                 } else //no hay más cajas me voy a comentarios
                 {
                     svpregcaja.setVisibility(View.GONE);
+                    txttotcaj.setText("TOTAL CAJAS:" + totcajas);
                     sv5.setVisibility(View.VISIBLE);
                     preguntaAct = preguntaAct + 1;
                 }
@@ -754,13 +777,15 @@ public class NvoEtiquetadoFragment extends Fragment {
     }
 
     public void capturarFotoCaja() {
-        //todo ver si ya existe esta foto
-        mViewModel.preguntaAct = preguntaAct;
+        // ver si ya existe esta foto
+        Log.d(TAG,"capturarFoto"+(preguntaAct - 5));
+        mostrarCapturaCajaxDesc(descripfoto[preguntaAct - 5]);
+      //  mViewModel.preguntaAct = preguntaAct;
         //busco descripcion
         txtdescfotocaj.setText(descripfoto[preguntaAct - 5]);
         txtdescidfoto.setText(descripcionid[preguntaAct - 5] + "");
-        txtcajafoto.setText("CAJA " + contcajaf);//la caja actual
-        txtcajaact.setText(contcajaf + "");
+        txtcajafoto.setText("CAJA " + cajainif);//la caja actual
+        txtcajaact.setText(cajainif + "");
         txtrutacaja.setText("");
         fotomoscaj.setImageBitmap(null);
 
@@ -784,7 +809,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     public boolean validarQr(String qr) {
         // listaqr.setAdapter(null);
         InformeEtapaDet prods = mViewModel.buscarDetxQr(qr);
-        if(prods!=null&&prods.getId()==detalleEdit.getId()&&isEdicion){
+        if(prods!=null&&detalleEdit!=null&&prods.getId()==detalleEdit.getId()&&isEdicion){
             //es el mismo
         }else
         if (prods != null) {
@@ -818,7 +843,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         preguntaAct = 2;
         ImagenDetalle foto;
         mViewModel.preguntaAct = preguntaAct;
-        if (isEdicion && detalleEdit != null) {
+        if (detalleEdit != null) {
             //busco en la bd para regresar a la primer muestra
             foto = mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));
             txtrutaim.setText(foto.getRuta());
@@ -839,7 +864,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             // totcajas=infomeEdit.getTotal_cajas();
         } else {
             //busco en la bd para regresar a la primer muestra
-            List<InformeEtapaDet> informeEtapaDet = mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(), 3, contcaja);
+            List<InformeEtapaDet> informeEtapaDet = mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(), 3, cajaini);
             Log.e(TAG, "total" + informeEtapaDet.size());
             if (informeEtapaDet != null && informeEtapaDet.size() > 0) {
                 //   detalleEdit = informeEtapaDet.get(0);
@@ -858,18 +883,20 @@ public class NvoEtiquetadoFragment extends Fragment {
         txtnumuestra.setText("MUESTRA " + contmuestra);
     }
 
-    public void mostrarCapCaja() {
+    public void editarCapCaja() {
         sv1.setVisibility(View.GONE);
         sv6.setVisibility(View.GONE);
         sv3.setVisibility(View.GONE);
 
         svpregcaja.setVisibility(View.VISIBLE);
+        int primerCaja = mViewModel.getMinCajaxCli(ciudadInf, clienteSel);
+        Log.d(TAG,"primer caja"+primerCaja);
         //veo en que pregunta voy de acuerdo a la descripcion
 
 
         ImagenDetalle foto;
         mViewModel.preguntaAct = preguntaAct;
-        if (isEdicion) {
+
             //busco en la bd para regresar a la primer muestra
             foto = mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));
             txtrutacaja.setText(foto.getRuta());
@@ -882,32 +909,18 @@ public class NvoEtiquetadoFragment extends Fragment {
             //veo en que pregunta voy de acuerdo a la descripcion
 
             preguntaAct = detalleEdit.getDescripcionId()-7;
-            contcajaf = detalleEdit.getNum_caja();
+            cajainif = detalleEdit.getNum_caja();
             txtdescfotocaj.setText(descripfoto[preguntaAct - 5]);
             txtdescidfoto.setText(descripcionid[preguntaAct - 5] + "");
-            txtcajafoto.setText("CAJA " + contcajaf);//la caja actual
-            txtcajaact.setText(contcajaf + "");
+            txtcajafoto.setText("CAJA " + cajainif);//la caja actual
+            txtcajaact.setText(cajainif + "");
             //  txtcajaact.setText("CAJA "+contcaja);
-
+            //para saber el contador
+        contcajaf=cajainif-primerCaja+1;
 
             // totcajas=infomeEdit.getTotal_cajas();
-        } else {
-            //busco en la bd para regresar a la primer muestra
-            List<InformeEtapaDet> informeEtapaDet = mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(), 3, contcaja);
-            Log.e(TAG, "total" + informeEtapaDet.size());
-            if (informeEtapaDet != null && informeEtapaDet.size() > 0) {
-                //   detalleEdit = informeEtapaDet.get(0);
-                // txtrutaim.setText(detalleEdit.getRuta_foto());
-                //  Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(detalleEdit.getRuta_foto(),80,80);
-                //  fotomos.setImageBitmap(bitmap1);
-                // txtqr.setText(detalleEdit.getQr());
-                contmuestra = informeEtapaDet.get(0).getNum_muestra();
-                contmuint = contmuestra;
-            }
-            spinnerValues = new ArrayList<>();
 
-        }
-        Log.e(TAG, "--" + contmuestra);
+        Log.e(TAG, "--" + contcajaf);
         //actualizo vista
         txtnumuestra.setText("MUESTRA " + contmuestra);
     }
@@ -915,7 +928,8 @@ public class NvoEtiquetadoFragment extends Fragment {
     public void mostrarCapturaCajaxDesc(String numdescr) {
         Log.d(TAG,"-----"+numdescr);
         //busco la foto anterior
-         mViewModel.getDetallexDescCaja(informeSel,numdescr,contcajaf).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
+        LiveData<InformeEtapaDet> lddetalle= mViewModel.getDetallexDescCaja(informeSel,numdescr,cajainif);
+        lddetalle.observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
              @Override
              public void onChanged(InformeEtapaDet informeEtapaDet) {
                  if(informeEtapaDet!=null) {
@@ -933,9 +947,44 @@ public class NvoEtiquetadoFragment extends Fragment {
                      btnrotar2.setVisibility(View.VISIBLE);
                      btnneacfotocaj.setEnabled(true);
                  }
+                 txtcajafoto.setText("CAJA " + cajainif);//la caja actual
+                 txtcajaact.setText(cajainif + "");
+                 lddetalle.removeObservers(getViewLifecycleOwner());
              }
          });
 
+
+    }
+
+    public void editarMuestra() {
+
+        ImagenDetalle foto;
+        detalleEdit=mViewModel.getUltimaMuestra(informeSel);
+        if (detalleEdit != null) {
+            //busco en la bd para regresar a la primer muestra
+            foto = mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));
+            txtrutaim.setText(foto.getRuta());
+            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 80, 80);
+            fotomos.setImageBitmap(bitmap1);
+            fotomos.setVisibility(View.VISIBLE);
+            btnrotar.setVisibility(View.VISIBLE);
+
+            txtqr.setText(detalleEdit.getQr());
+            contmuestra = detalleEdit.getNum_muestra();
+
+            txtnumuestra.setText("MUESTRA " + contmuestra);
+            //alta saber el numero total de cajas
+            //    contcaja=detalleEdit.getNum_caja();
+
+            //  txtcajaact.setText("CAJA "+contcaja);
+
+
+            // totcajas=infomeEdit.getTotal_cajas();
+            aceptar3.setEnabled(true);
+            aceptar4.setEnabled(true);
+            aceptar5.setEnabled(true);
+            aceptar6.setEnabled(true);
+        }
 
     }
     public void atras(){
@@ -963,12 +1012,15 @@ public class NvoEtiquetadoFragment extends Fragment {
                 if(contcajaf>1){
                     preguntaAct=7;
                     mViewModel.preguntaAct=preguntaAct;
+                    contcajaf--;
+                    cajainif--;
                     mostrarCapturaCajaxDesc(descripfoto[2]);
                 }else {
                     svpregcaja.setVisibility(View.GONE);
                     sv6.setVisibility(View.VISIBLE);
                     preguntaAct = preguntaAct - 1;
                     mViewModel.preguntaAct = preguntaAct;
+                    editarMuestra();
                 }
                 break;
 
@@ -1359,7 +1411,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         for (ListaCompra listaCompra: lista ) {
             Log.d(TAG,listaCompra.getPlantaNombre());
             if( clientesprev!=null)
-                if(Arrays.asList(clientesprev).contains(listaCompra.getPlantasId()))
+                if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
                 {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
                     Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
                     continue;}

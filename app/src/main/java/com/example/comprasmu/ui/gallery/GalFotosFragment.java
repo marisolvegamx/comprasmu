@@ -84,7 +84,7 @@ public class GalFotosFragment extends Fragment {
 
         // Inflate the layout for this fragment
         Bundle params = getArguments();
-        Log.d(TAG,params.toString()+"--"+Constantes.ETAPAACTUAL);
+        Log.d(TAG,"--"+Constantes.ETAPAACTUAL);
         if(params!=null) {
               tipoinf= params.getString(VerInformeGenFragment.ARG_TIPOINF);
             int idmuestra = params.getInt(VerInformeFragment.ARG_IDMUESTRA);
@@ -226,7 +226,12 @@ public class GalFotosFragment extends Fragment {
                                 ImagenDetalle id= igViewModel.getfotoxid(inf.getRuta_foto());
 
                                 //  id.setDescripcion(inf.getDescripcion());
-                                id.setDescripcion(inf.getQr()+"\r\nCAJA:"+inf.getNum_caja());
+                                if(inf.getDescripcionId()==11) //son de etiqueta
+                                     id.setDescripcion(inf.getQr()+"\r\nCAJA:"+inf.getNum_caja());
+                               else
+                                   //son de muestra
+                                    id.setDescripcion(inf.getDescripcion()+"\r\nCAJA:"+inf.getNum_caja());
+
                                 fotos.add(id);
                             }
                       //  ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext());

@@ -317,7 +317,7 @@ public class NvaCorreccionPreFragment extends Fragment {
         aceptar.setEnabled(true);
     }
 
-    //cambiar estatus sol
+
     public void enviarSolicitud() {
         try {
 

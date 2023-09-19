@@ -323,7 +323,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
         int totcajas=0;
         if(infcor!=null) {
          //   Log.d(TAG,infcor.getCiudadNombre());
-            totcajas = preViewModel.getTotCajasEtiq(infcor.getCiudadNombre());
+            totcajas = preViewModel.getTotCajasEtiqxCd(infcor.getCiudadNombre());
 
         }
        // spinnerValues.add(0);
@@ -586,6 +586,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
 
     }
+
 
     @Override
     public void onDestroyView() {

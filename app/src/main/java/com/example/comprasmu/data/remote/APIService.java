@@ -112,6 +112,13 @@ public interface APIService {
             "Content-Type: application/json"
     })
     Call<PostResponse> saveInformeEtapa(@Body InformeEtapaEnv item);
+
+    @POST("infetapa/edit")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> editInformeEtapa(@Body InformeEtapaEnv item);
     @POST("informeseta/create")
     @Headers({
             "Accept: application/json",

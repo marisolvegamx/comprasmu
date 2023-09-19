@@ -95,8 +95,8 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
         Log.d("CorreccionRepoImpl",query);
         return icDao.getCorreSolByFiltro( sqlquery);
     }
-    public List<Correccion> getAllsimple(int etapa) {
-        return icDao.getCorreccionesSimple(etapa);
+    public List<Correccion> getCorrecxSolSim(int solid, int numfoto,String indice) {
+        return icDao.getCorreccxsolSimple(solid,numfoto, indice);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
 
 
     public LiveData<List<Correccion>> getxsol(int idsol, String indice) {
-        return icDao.tgetCorrecciones(idsol, indice );
+        return icDao.getCorrecciones(idsol, indice );
     }
 
     @Override

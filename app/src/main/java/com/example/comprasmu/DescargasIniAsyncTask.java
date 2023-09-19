@@ -532,7 +532,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
         int ban=0;
         if(getTotVisitas()==0) {
             //    DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespAsyncTask.DescargaRespListener();
-            Log.d(TAG,"pidiendo repaldo");
+            Log.d(TAG,"pidiendo respaldo");
             //  DescargaRespAsyncTask task = new DescargaRespAsyncTask( act, actualiza,proglist);
             getRespaldo();
 

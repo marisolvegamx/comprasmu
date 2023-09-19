@@ -645,7 +645,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                             //  consecutivo.removeObservers(DetalleProductoFragment.this);
 
 
-                        }else {
+                        }else { //el consecutivo es 0
                             mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",0,false);
                             mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",0,false);
                             mViewModel.guardarResp(0,0,mViewModel.informe.getClienteNombre(),"clienteNombre","I",0,false);

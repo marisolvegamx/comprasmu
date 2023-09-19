@@ -53,6 +53,10 @@ public class SolicitudCorRepoImpl  {
         return icDao.getTotSolsxCd(etapa, indice, estatus, cd);
     }
 
+    public LiveData<Integer> getTotSolsEtiqxCd(int etapa, String indice, int estatus, String cd) {
+        return icDao.getTotSolsEtiqxCd(etapa, indice, estatus, cd);
+    }
+
 
     public LiveData<SolicitudCor> find(int id,int numfoto) {
         return icDao.find(id,numfoto);

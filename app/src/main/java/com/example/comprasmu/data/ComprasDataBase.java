@@ -445,7 +445,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                 if (myProductsem == null) {
                     prepopulatereaEmp();
                 }
-
+                prepopulateCorEtiq();
             }
         });
     }
@@ -1439,7 +1439,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
     }
 
 
-
     private  void prepopulatereaEmp( ) {
         Reactivo campo = new Reactivo();
         String cliente = "PEPSI";
@@ -1630,14 +1629,85 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         getReactivoDao().insertAll(camposForm);
     }
-  /*  static final Migration MIGRATION_1_2 = new Migration(1, 2) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("alter table imagocts add column created_at timestamp");
-        }
-    };
-*/
 
+    private  void prepopulateCorEtiq( ) {
+        Reactivo campo = new Reactivo();
+        String cliente = "PEPSI";
+        String cliid = "4";
+        List<Reactivo> camposForm = new ArrayList<Reactivo>();
+        // ya no será por planta será nix cliente
+        campo = new Reactivo();
+        campo.setId(120);
+        campo.setTabla("C");
+        campo.setLabel(ctx.getString(R.string.al_cambiarcaja));
+        campo.setNombreCampo("reubica");
+        campo.setType("preguntasino");
+        campo.setSigAlt(123); //voy a fotos de caja
+        campo.setSigId(121);
+
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+
+        camposForm.add(campo);
+        campo = new Reactivo();
+        campo.setLabel("QR");
+        campo.setId(121);
+        campo.setTabla("C");
+        campo.setNombreCampo("qr");
+        campo.setType("botonqr");
+        campo.setSigId(122);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.reubicasteotra));
+        campo.setId(122);
+        campo.setTabla("C");
+        campo.setNombreCampo("otramues");
+        campo.setType("preguntasino");
+        campo.setSigId(121); //pido fotos de caja
+        campo.setSigAlt(123); //si contesta si voy a qr
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.caraa));
+        campo.setId(123);
+        campo.setTabla("C");
+        campo.setNombreCampo("caraa");
+        campo.setType("agregarImagen");
+        campo.setSigId(124);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.carab));
+        campo.setId(124);
+        campo.setTabla("C");
+        campo.setNombreCampo("carab");
+        campo.setType("agregarImagen");
+        campo.setSigId(125);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo = new Reactivo();
+        campo.setLabel(ctx.getString(R.string.acomodo_mues));
+        campo.setId(125);
+        campo.setTabla("C");
+        campo.setNombreCampo("etiqueta_ana");
+        campo.setType("agregarImagen");
+        campo.setSigId(123);
+        campo.setSigAlt(1000);//termina
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        getReactivoDao().insertAll(camposForm);
+    }
 
 }
 

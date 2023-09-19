@@ -873,7 +873,7 @@ public void errorFoto(){
         envio.setInformeEtapa(mViewModel.getInformexId(mViewModel.getIdNuevo()));
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
-        envio.setInformeEtapaDet(mViewModel.cargarInformeDet(mViewModel.getIdNuevo()));
+        envio.setInformeEtapaDet(mViewModel.getInformeDet(mViewModel.getIdNuevo()));
         //busco las imagenes
         if(envio.getInformeEtapa().getEtapa()==1) //por ahora solo tengo prep
         {

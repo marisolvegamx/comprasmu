@@ -58,6 +58,7 @@ public class DetalleInfView extends LinearLayout {
     OnClickListener frotar;
     Bitmap bitmap1;
     Button validar;
+    int idCampo;
 
     private HashMap<Integer, String> causas;
     private OnClickListener finiciarLecQR;
@@ -89,7 +90,7 @@ public class DetalleInfView extends LinearLayout {
         sv = this.findViewById(R.id.vcontent_generic);
         aceptar = this.findViewById(R.id.vbtngaceptar);
         nopermiso = this.findViewById(R.id.vckgnoperm);
-        validar = this.findViewById(R.id.btngvalidar);
+        validar = this.findViewById(R.id.vbtngvalidar);
         this.setOrientation(VERTICAL);
 
     }
@@ -105,6 +106,9 @@ public class DetalleInfView extends LinearLayout {
         if (isEdicion)
             campo.value = ultimares.getValor();
         campo.id = 1001;
+        if(this.idCampo>0){
+            campo.id=this.idCampo;
+        }
         //para los catalogos
         if (preguntaAct.getType().equals(CreadorFormulario.SELECTCAT)){
             campo.selectcat = atributos;
@@ -113,6 +117,12 @@ public class DetalleInfView extends LinearLayout {
 
             if(campo!=null)
                 campo.selectdes= clientesAsignados;
+
+        }
+        if(preguntaAct.getType().equals(CreadorFormulario.PSELECT)) {
+
+            if(campo!=null)
+                campo.select=causas ;
 
         }
 
@@ -172,14 +182,20 @@ public class DetalleInfView extends LinearLayout {
         cf = new CreadorFormulario(camposForm, getContext());
         //aqui está el error
         sv.addView(cf.crearFormulario());
+        if (campo.type.equals(CreadorFormulario.PSELECT)) {
+
+            spclientes = this.findViewById( campo.id);
+
+        }else
         if (preguntaAct.getType().equals(CreadorFormulario.SELECTCAT) || preguntaAct.getType().equals(CreadorFormulario.SELECTDES) || preguntaAct.getType().equals(CreadorFormulario.PSELECT)) {
-            spclientes = this.findViewById(1001);
+
+            spclientes = this.findViewById( campo.id);
         } else if (preguntaAct.getType().equals(CreadorFormulario.PREGUNTASINO)) {
-            preguntasino = this.findViewById(1001);
+            preguntasino = this.findViewById( campo.id);
         } else if (preguntaAct.getType().equals(CreadorFormulario.RADIOBUTTON)) {
-            respgen = this.findViewById(1001);
+            respgen = this.findViewById( campo.id);
         } else {
-            textoint = this.findViewById(1001);
+            textoint = this.findViewById( campo.id);
         }
 
     }
@@ -421,6 +437,14 @@ public class DetalleInfView extends LinearLayout {
     }
     public void setPregSINoOnChange(RadioGroup.OnCheckedChangeListener listener){
         preguntasino.setOnCheckedChangeListener(listener);
+    }
+
+    public int getIdCampo() {
+        return idCampo;
+    }
+
+    public void setIdCampo(int idCampo) {
+        this.idCampo = idCampo;
     }
 
     class BotonTextWatcher implements TextWatcher {
