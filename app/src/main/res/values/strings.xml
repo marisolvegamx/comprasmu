@@ -322,6 +322,11 @@
     <string name="rotar_foto">ROTAR FOTOS</string>
     <string name="borrar_datos">Borrar datos antiguos</string>
     <string name="ya_existe_qr">LA MUESTRA YA FUE CAPTURADA, VERIFIQUE</string>
+    <string name="al_cambiarcaja">AL CAMBIAR CAJA O REEMBOLSAR ¿REUBICASTE MUESTRAS?</string>
+    <string name="reubicasteotra">¿REUBICASTE OTRA MUESTRA?</string>
+    <string name="caraa">FOTO CALIDAD DE CAJA CARA A</string>
+    <string name="carab">FOTO CALIDAD DE CAJA CARA B</string>
+    <string name="solicitudcor">SOLICITUDES CORRECCION</string>
 
 
 </resources>

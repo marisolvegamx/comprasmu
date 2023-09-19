@@ -250,6 +250,8 @@
         android:defaultValue="rescor" />
 
     </fragment>
+
+
     <fragment
         android:id="@+id/nav_listaprep"
         android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
@@ -369,24 +371,37 @@
     </fragment>
 
 
+
     <fragment
         android:id="@+id/nav_resumenetiq"
-        android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
+        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
         android:label="@string/menu_resumeninf" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
             app:argType="string"
-            android:defaultValue="action_selclitoinf1" />
+            android:defaultValue="e" />
         <argument
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
             android:defaultValue="3" />
-        <action android:id="@+id/action_selclitoinf1"
-            app:destination="@id/nav_listacor2"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
+       </fragment>
+
+    <fragment
+        android:id="@+id/nav_solcoretiq"
+        android:name="com.example.comprasmu.ui.solcorreccion.ListaSolCorreFragment"
+        android:label="@string/solicitudcor" >
+
+    </fragment>
+    <fragment
+        android:id="@+id/nav_rescorretiq"
+        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:label="@string/menu_rescorreccion" >
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="rescor" />
+    </fragment>
+
     <!---opciones empaque-->
     <activity
         android:id="@+id/nav_nvoemp"
