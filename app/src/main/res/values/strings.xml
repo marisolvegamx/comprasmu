@@ -327,6 +327,8 @@
     <string name="caraa">FOTO CALIDAD DE CAJA CARA A</string>
     <string name="carab">FOTO CALIDAD DE CAJA CARA B</string>
     <string name="solicitudcor">SOLICITUDES CORRECCION</string>
+    <string name="informe_reubicar">PARA REUBICAR NECESITAS CREAR UN NUEVO INFORME</string>
+    <string name="el_numcaja">EL NUMERO DE CAJA DEBE SER CONSECUTIVO FAVOR DE REUBICAR</string>
 
 
 </resources>
