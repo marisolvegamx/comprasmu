@@ -325,6 +325,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         //las de producto ex
 
         List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimple(visita.getId());
+          Log.d(TAG,"enviando prod "+productoExhibidos.get(0).getRuta());
             fotosinfo.addAll(productoExhibidos);
 
 

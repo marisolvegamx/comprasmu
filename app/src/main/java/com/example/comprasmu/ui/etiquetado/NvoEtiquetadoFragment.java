@@ -79,7 +79,7 @@ import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import static android.app.Activity.RESULT_OK;
 
 
-//las cajas se numeran x ciudad
+//las cajas se numeran x ciudad cliente
 //ciudad x cajas 1,2,3 no importa el cliente
 //ciudad y 1,2,3 no importa el cliente
 public class NvoEtiquetadoFragment extends Fragment {
@@ -349,11 +349,11 @@ public class NvoEtiquetadoFragment extends Fragment {
                 clienteNombreSel = listacomp.get(0).getClienteNombre();
                 totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, Constantes.CIUDADTRABAJO);
                 InformeEtapa informetemp = new InformeEtapa();
-                informetemp.setClienteNombre(clienteNombreSel);
+                informetemp.setClienteNombre( clienteNombreSel);
                 informetemp.setClientesId(clienteSel);
                 informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
                 informetemp.setIndice(Constantes.INDICEACTUAL);
-                ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(informetemp);
+                ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(informetemp);
             }
         }
         if (isEdicion) { //busco el informe
@@ -365,7 +365,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             mViewModel.preguntaAct = 3;
             if (listaClientes != null && listaClientes.size() > 0)
                 cargarPlantas(listaClientes, infomeEdit.getClientesId() + "");
-            ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(infomeEdit);
+            ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(infomeEdit);
             mViewModel.setIdNuevo(informeSel);
             totmuestras = infomeEdit.getTotal_muestras();
             clienteSel = infomeEdit.getClientesId();
@@ -409,7 +409,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                     temp.setCiudadNombre(Constantes.CIUDADTRABAJO);
                     temp.setIndice(Constantes.INDICEACTUAL);
                     temp.setTotal_muestras(totmuestras);
-                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarra(temp);
+                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(temp);
                     avanzar();
                 }
             }
@@ -558,9 +558,9 @@ public class NvoEtiquetadoFragment extends Fragment {
     getActivity().finish();
 }*/
 
-    //el total de cajas si es x ciudad
+    //el total de cajas si es x ciudad cliente
     public void cargarListaCajas() {
-        int totxciu = mViewModel.getTotCajasEtiqxCd(ciudadInf);
+        int totxciu = mViewModel.getTotCajasEtiqxCli(ciudadInf,clienteSel);
         spinnerValues = new ArrayList<>();
 
         if (totxciu == 0) {
@@ -610,6 +610,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         cajaini++;
         spinnerValues.add(cajaini + "");
         adaptercaja.notifyDataSetChanged();
+        spcaja.performClick();
         //  preguntaAct=2;
         //  txtcajaact.setText("CAJA "+contcaja);
         //avanzar();
@@ -713,6 +714,10 @@ public class NvoEtiquetadoFragment extends Fragment {
 
                 } else {
                     preguntaAct = 5;
+                    if(!validasSecuenciaCaj()){
+                        svotra.setVisibility(View.VISIBLE);
+                        return;
+                    }
                     //lleno el total de cajas
                     txttotcaj.setText("TOTAL CAJAS:" + totcajas);
                     //me voy a fotos de caja
@@ -720,6 +725,8 @@ public class NvoEtiquetadoFragment extends Fragment {
                     contcajaf = 1; //para el for de cuantas veces pedir fotos
                     //busco la caja en la que empiezo
                      cajainif = mViewModel.getMinCajaxCli(ciudadInf, clienteSel);
+                  //todo aqui validacion consecutivos
+
                     //busco total de cajas final
                     totcajas = mViewModel.getTotCajasEtiqxCli(ciudadInf,clienteSel);
                     capturarFotoCaja();
@@ -819,6 +826,18 @@ public class NvoEtiquetadoFragment extends Fragment {
         return true;
     }
 
+    public boolean validasSecuenciaCaj(){
+        List<InformeEtapaDet> cajas=mViewModel.listaCajasEtiqxCdCli(ciudadInf,clienteSel);
+        int i=1;
+        for (InformeEtapaDet caja:cajas) {
+            if(caja.getNum_caja()==i)
+                i++;
+            else
+                return false;
+
+        }
+        return true;
+    }
     public List<DescripcionGenerica> deCompraADesc(List<InformeCompraDetalle> prods) {
         DescripcionGenerica desc;
         List<DescripcionGenerica> prodsdes = new ArrayList<>();
@@ -1082,7 +1101,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 Log.d(TAG, "creando nvo inf");
                 //creo el informe
                 mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL, clienteNombreSel,clienteSel,0,totmuestras,ciudadInf));
-                ((NuevoInfEtapaActivity)getActivity()).actualizarBarra(mViewModel.getNvoinforme());
+              //  ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEtiq(mViewModel.getNvoinforme());
 
             }
         }catch (Exception ex){

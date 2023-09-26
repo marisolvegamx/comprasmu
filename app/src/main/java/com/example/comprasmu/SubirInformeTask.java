@@ -8,12 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ProgressBar;
-
-import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.remote.InformeEnvio;
-
-import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
 

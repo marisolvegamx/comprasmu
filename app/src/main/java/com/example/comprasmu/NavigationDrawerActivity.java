@@ -38,6 +38,7 @@ import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.home.HomeActivity;
+import com.example.comprasmu.ui.home.MasPruebasActivity;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.mantenimiento.ConfiguracionCamFragment;
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
@@ -311,17 +312,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                  .setRequiresBatteryNotLow(true)
                 .build();
-        PeriodicWorkRequest simpleRequest =
+       /* PeriodicWorkRequest simpleRequest =
                 new PeriodicWorkRequest.Builder(SyncWork.class, 30, TimeUnit.MINUTES)
                         .setConstraints(constraints)
                         .addTag("comprassync_worker")
-                        .build();
-        WorkManager
+                        .build();*/
+      /*  WorkManager
                 .getInstance(this)
                 .enqueueUniquePeriodicWork(
                 "comprassync_worker",
                 ExistingPeriodicWorkPolicy.KEEP,
-                simpleRequest);
+                simpleRequest);*/
        // flog.grabarError("archivo creado");
        /* ServicioCompras sbt = new ServicioCompras();
 
@@ -455,14 +456,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                    subirImagenes();
                 return true;*/
             case R.id.cerrarsesion: //realmente es borrar datos
-                //  Log.d(TAG,"hice click en"+item.getItemId());
-               // borrarUsuario();
+
+             //   Intent pruebai =new Intent(this, MasPruebasActivity.class);
+           //     startActivity(pruebai);
 
 
-                navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+               /* navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
-                navController.navigate(R.id.nav_borrarind);
-                //break;
+                navController.navigate(R.id.nav_borrarind);*/
+
                 return true;
 
             default:

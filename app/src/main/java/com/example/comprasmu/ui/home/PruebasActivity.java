@@ -80,9 +80,10 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         progreso.show();
 
        // mTextView = findViewById(R.id.txtlllog);
-        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")||Build.PRODUCT.contains ("angelica_global")) {//pruebas y el lenovo
+        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
 
-            DOWNLOAD_PATH = "http://192.168.1.84/comprasv1/fotografias";
+           DOWNLOAD_PATH = "http://192.168.1.84/comprasv1/fotografias";
+           // DOWNLOAD_PATH = "http://192.168.1.66/comprasv1/fotografias";
 
         }
 
@@ -405,7 +406,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);  // This will show notification on top when downloading the file.
+      //  request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);  // This will show notification on top when downloading the file.
         request.setTitle("Downloading a file"); // Title for notification.
        // request.setVisibleInDownloadsUi(true);
 

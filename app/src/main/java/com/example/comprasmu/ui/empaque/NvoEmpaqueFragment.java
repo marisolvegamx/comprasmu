@@ -82,8 +82,7 @@ public class NvoEmpaqueFragment extends Fragment {
     private View root;
     private NvaPreparacionViewModel mViewModel;
     private int  informeSel;
-    private int plantaSel;
-    private String nombrePlantaSel;
+
     private String clienteNombre;
     private int clienteId;
     private ListaDetalleViewModel lcViewModel;
@@ -143,7 +142,7 @@ public class NvoEmpaqueFragment extends Fragment {
                 ciudadInf=Constantes.CIUDADTRABAJO;
                 //llegué por siguiente
                 if(mViewModel.getIdNuevo()>0) {
-                 plantaSel=mViewModel.getNvoinforme().getPlantasId();
+                 clienteId=mViewModel.getNvoinforme().getClientesId();
                     if (preguntaAct.getTabla().equals("ED")) { //veo si ya está
                         mViewModel.getDetallexDescCaja(mViewModel.getIdNuevo(), preguntaAct.getNombreCampo(),mViewModel.cajaAct.consCaja).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                             @Override
@@ -230,12 +229,12 @@ public class NvoEmpaqueFragment extends Fragment {
                                 ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informeEtapa,informeEtapa.getTotal_muestras(), informeEtapa.getTotal_cajas());
                                 //busco si tengo detalle
                                 ultimares = mViewModel.getUltimoInformeDet(informeSel, 4);
-                                if (ultimares == null) {      //voy en la 92
+                                if (ultimares == null) {      //voy en la 93
                                     //no deberia estar aqui
                                     Log.e(TAG, "no deberia entrar aqui");
                                 } else {
                                     //busco la lista de cajas
-                                    mViewModel.getCajasEtiq();
+                                    mViewModel.getCajasEtiq(clienteId,Constantes.CIUDADTRABAJO);
                                     mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
                                     mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
                                     mViewModel.cajaAct.numCaja=ultimares.getNum_caja();
@@ -306,7 +305,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
                         mViewModel.buscarInformeEmp(Constantes.INDICEACTUAL);
 
-                        mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                        mViewModel.buscarReactivo(93).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
                                 @Override
                                 public void onChanged(Reactivo reactivo) {
                                     Log.d(TAG,"DONE 2");
@@ -336,7 +335,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
                 dialogo1.show();
             }
-                    //busco si tengo varios clientes x ciudad //todo
+                    //busco si tengo varios clientes x ciudad
                     listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
                     Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
 
@@ -369,7 +368,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
 
 
-                        mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                        mViewModel.buscarReactivo(93).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
                                 @Override
                                 public void onChanged(Reactivo reactivo) {
                                     preguntaAct = reactivo;
@@ -696,7 +695,7 @@ public class NvoEmpaqueFragment extends Fragment {
             }else
 
 
-            if(preguntaAct.getId()==92 ) { //acomodo creo el informe y el detalle
+            if(preguntaAct.getId()==93 ) { //acomodo creo el informe y el detalle
 
                 this.guardarInf();
                 this.guardarDet();
@@ -769,7 +768,7 @@ public class NvoEmpaqueFragment extends Fragment {
                     requireActivity().finish();*/
                     mViewModel.cajaAct=mViewModel.resumenEtiq.get(sig-1);
 
-                    avanzarPregunta(92);
+                    avanzarPregunta(93);
                     return;
 
                 }
@@ -886,7 +885,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
             //totcajas =Integer.parseInt(txtnumcajas.getText().toString());
             Log.d(TAG,"edicion"+isEdicion+"--"+mViewModel.getIdNuevo());
-            if (preguntaAct.getId() == 92 && !isEdicion&&mViewModel.getNvoinforme()!=null) {
+            if (preguntaAct.getId() == 93 && !isEdicion&&mViewModel.getNvoinforme()!=null) {
                 Log.d(TAG, "creando nvo inf");
                 //creo el informe
                 if(mViewModel.getIdNuevo()==0)

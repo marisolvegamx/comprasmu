@@ -106,7 +106,7 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
 
 
-    @Query("select * from informe_etapa where indice=:indice and etapa=3 and estatusSync =2 and ciudadNombre=:ciudad group by clientesId")
+    @Query("select * from informe_etapa where indice=:indice and etapa=3 and estatusSync =2 and ciudadNombre=:ciudad and estatus>0 group by clientesId")
     public abstract   List<InformeEtapa> getClientesconInf(String indice,String ciudad);
 
     @Query("delete  from informe_etapa where indice=:indice")

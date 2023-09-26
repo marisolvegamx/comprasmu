@@ -2,6 +2,7 @@ package com.example.comprasmu.ui.etiquetado;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -18,12 +19,17 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
@@ -36,6 +42,7 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.ComprasLog;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -68,6 +75,9 @@ public class ReubicEtiqFragment extends Fragment {
     private InformeEtapaDet muestraEdit;
     private int ultimacaja;
     ArrayAdapter<String> adaptercaja;
+    InformeEtapa informeEtapaAct;
+    private TextView txtciudad, txtcliente, txtindice, txttotmuestras;
+
     public ReubicEtiqFragment() {
 
     }
@@ -93,10 +103,18 @@ public class ReubicEtiqFragment extends Fragment {
         spcaja=root.findViewById(R.id.sprecaja);
         nvacaja = root.findViewById(R.id.btnrecajamas);
         txtqr=root.findViewById(R.id.txtreqr);
+        txtciudad=root.findViewById(R.id.txtnieciudad);
+        txtcliente=root.findViewById(R.id.txtniecliente2);
+        txtindice=root.findViewById(R.id.txtnieindice);
+        txttotmuestras=root.findViewById(R.id.txtnietotmues);
         buscar=root.findViewById(R.id.btnrebuscar);
         p4=root.findViewById(R.id.llrepre4);
         p5=root.findViewById(R.id.llrepre5);
         lbotones=root.findViewById(R.id.llrebotones);
+        //reviso si ya tengo uno abierto
+
+
+        //puedo reubicar
 
        // potra.setmLabel("¿INCLUIRAS OTRA MUESTRA EN ESTA CAJA?");
 
@@ -190,10 +208,39 @@ public class ReubicEtiqFragment extends Fragment {
         return root;
     }
 
-public void nvacaja(){
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        //solo se reubica antes de enviar y el informe que está activo
+        informeEtapaAct = mViewModel.getInformePend(Constantes.INDICEACTUAL, 3);
+
+        if (informeEtapaAct == null) {
+            Fragment me=this;
+            AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+            dialogo1.setTitle(R.string.atencion);
+            dialogo1.setMessage(R.string.informe_reubicar);
+            dialogo1.setCancelable(false);
+            dialogo1.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogo1, int id) {
+                    //lo mando a continuar
+                    NavHostFragment.findNavController(me).navigate(R.id.nav_home);
+
+                }
+            });
+
+            dialogo1.show();
+
+        } else {
+            txtciudad.setText(Constantes.CIUDADTRABAJO);
+            txtcliente.setText(informeEtapaAct.getClienteNombre());
+            txtindice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
+        }
+    }
+
+    public void nvacaja(){
         ultimacaja++;
-    spinnerValues.add(ultimacaja+"");
-    adaptercaja.notifyDataSetChanged();
+        spinnerValues.add(ultimacaja+"");
+        adaptercaja.notifyDataSetChanged();
     }
     public void mostrarp4(){
         p4.setVisibility(View.VISIBLE);
@@ -221,15 +268,15 @@ public void nvacaja(){
             return;
         }
 
-           InformeEtapa informeSel=mViewModel.getInformexId(muestraEdit.getInformeEtapaId());
+         /*  InformeEtapa informeSel=mViewModel.getInformexId(muestraEdit.getInformeEtapaId());
            if(informeSel==null) {
 
                Toast.makeText(getActivity(), getString(R.string.verifique_codigo), Toast.LENGTH_LONG).show();
 
                return;
-           }
+           }*/
 
-               int clienteSel = informeSel.getClientesId();
+               int clienteSel = informeEtapaAct.getClientesId();
                List<InformeEtapaDet> listacaj=mViewModel.listaCajasEtiqxCdCli(Constantes.CIUDADTRABAJO, clienteSel);
                if(listacaj!=null) {
                    for (int i = 0; i < listacaj.size(); i++) {

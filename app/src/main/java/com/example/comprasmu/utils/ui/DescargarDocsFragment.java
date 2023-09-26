@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.utils.Constantes;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,13 +84,14 @@ public class DescargarDocsFragment extends Fragment {
 
     public void descargarPDF(){
        // http://localhost/comprasv1/
-        String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&idmes=8.2023&idrec=41&idplan=31&numcaja=1";
+        String MY_URL = "http://192.168.1.84/comprasv1/comprasv1/imprimirReporte.php?admin=impetiq&idmes=8.2023&idrec=42&idplan=29&numcaja=1";
+
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(MY_URL)));
     }
 
     public void descargarPDF2(){
         long archact;
-        String MY_URL = "http://192.168.1.84/comprasv1/api/public/etenv?cvereco=4&indice=7.2023";
+        String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&idmes="+ Constantes.INDICEACTUAL+"&idrec="+Constantes.CLAVEUSUARIO+"&idplan=29&numcaja=1";
 
         Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
         // registrer receiver in order to verify when download is complete
@@ -101,7 +103,7 @@ public class DescargarDocsFragment extends Fragment {
         request.setTitle("Downloading a file"); // Title for notification.
         // request.setVisibleInDownloadsUi(true);
 
-        request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
+        request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, "etiquetas.pdf");  // Storage directory path
         archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
        // return 0;
     }

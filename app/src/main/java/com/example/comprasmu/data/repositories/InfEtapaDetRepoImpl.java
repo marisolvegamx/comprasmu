@@ -186,8 +186,13 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         return dao.getDetEtiqxCdCli(i,cd, cliente);
 
     }
-    public List<InformeEtapaDet> getResumenEtiq(int i, String indice) {
-        return dao.resumenEtiq(i,indice);
+
+    public List<InformeEtapaDet> listaCajasEtiqxCdCli2(int i, String cd, int cliente) {
+        return dao.getDetEtiqxCdCli2(i,cd, cliente);
+
+    }
+    public List<InformeEtapaDet> getResumenEtiq(int i, String indice, int cliente, String ciudad) {
+        return dao.resumenEtiq(i,indice,cliente,ciudad);
 
     }
     public int totalMuestrasEtiqxCli(int i, int cliente) {

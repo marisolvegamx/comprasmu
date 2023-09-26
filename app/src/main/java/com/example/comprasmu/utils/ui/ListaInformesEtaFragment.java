@@ -243,9 +243,6 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     }
 
-
-
-
     @Override
     public void onClickSubir(int informe, String tipo) {
         if(NavigationDrawerActivity.isOnlineNet()) {
@@ -259,6 +256,23 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
              //   NuevoinformeFragment.subirFotos(getActivity(), informeenv);
             }else
             if(tipo.equals("action_selclitocor2")){//correccion
+                //busco la correccion x el id
+                Correccion corrsel=corViewModel.getCorreccionesxid(informe,Constantes.INDICEACTUAL,Constantes.ETAPAACTUAL);
+                CorreccionEnvio envio=corViewModel.prepararEnvio(corrsel);
+                SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
+                miTareaAsincrona.execute();
+
+                subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto1());
+
+
+                if(envio.getCorreccion().getRuta_foto2()!=null&&envio.getCorreccion().getRuta_foto2().length()>1)
+                    subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto2());
+                if(envio.getCorreccion().getRuta_foto3()!=null&&envio.getCorreccion().getRuta_foto3().length()>1)
+                    subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto3());
+
+
+            }else
+            if(tipo.equals("rescor")){//correccion
                 //busco la correccion x el id
                 Correccion corrsel=corViewModel.getCorreccionesxid(informe,Constantes.INDICEACTUAL,Constantes.ETAPAACTUAL);
                 CorreccionEnvio envio=corViewModel.prepararEnvio(corrsel);

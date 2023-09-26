@@ -254,6 +254,18 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         mBinding.row2.setVisibility(View.VISIBLE);
 
     }
+
+    public void actualizarBarraEtiq(InformeEtapa nvoInf) {
+        mBinding.txtnietotmues.setVisibility(View.VISIBLE);
+
+        mBinding.setInforme(nvoInf);
+        mBinding.row1.setVisibility(View.GONE);
+        mBinding.rowetiq.setVisibility(View.VISIBLE);
+        mBinding.row2.setVisibility(View.VISIBLE);
+
+    }
+
+
     public void actualizarBarraEmp(InformeEtapa nvoInf,int mues, int cajas) {
         mBinding.setInforme(nvoInf);
         mBinding.row2.setVisibility(View.GONE);

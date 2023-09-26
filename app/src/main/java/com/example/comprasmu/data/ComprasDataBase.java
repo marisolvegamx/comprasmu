@@ -442,9 +442,9 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
                 }
                 Reactivo myProductsem=dao.findsimple(91);
-                if (myProductsem == null) {
+                //if (myProductsem == null) {
                     prepopulatereaEmp();
-                }
+               // }
                 prepopulateCorEtiq();
             }
         });
@@ -1455,12 +1455,14 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setNombreCampo("clientesId");
         campo.setType("selectDes");
 
-        campo.setSigId(92);
+        campo.setSigId(93);
 
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
 
         camposForm.add(campo);
+
+        /* se pasó a etiquetado
         campo = new Reactivo();
         campo.setLabel(ctx.getString(R.string.acomodo_mues));
         campo.setId(92);
@@ -1470,7 +1472,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setSigId(93);
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
-        camposForm.add(campo);
+        camposForm.add(campo);*/
 
         campo = new Reactivo();
         campo.setLabel(ctx.getString(R.string.relleno_esp));

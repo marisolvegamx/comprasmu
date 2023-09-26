@@ -92,14 +92,18 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     public abstract List<InformeEtapaDet> getDetEtiqxCdCli(int etapa, String ciudad, int cliente);
 
   @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
+          " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and clientesId=:cliente and estatus>0 and descripcionId=11 group by num_caja order by num_caja")
+  public abstract List<InformeEtapaDet> getDetEtiqxCdCli2(int etapa, String ciudad, int cliente);
+
+  @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
           " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and estatus>0 group by num_caja order by num_caja")
   public abstract List<InformeEtapaDet> getDetEtiqxCd(int etapa, String ciudad);
 
 
   @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
             " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det " +
-            " inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and informe_etapa.indice=:indice  group by num_caja order by num_caja")
-    public abstract List<InformeEtapaDet> resumenEtiq(int etapa,String indice);
+            " inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and informe_etapa.indice=:indice and ciudadNombre=:ciudad and clientesId=:cliente group by num_caja order by num_caja")
+    public abstract List<InformeEtapaDet> resumenEtiq(int etapa,String indice,int cliente,String ciudad);
 
     @Query("SELECT max(num_caja) FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and informe_etapa.estatus>0")
     public abstract int totalCajasEtiq(int etapa,String ciudad);

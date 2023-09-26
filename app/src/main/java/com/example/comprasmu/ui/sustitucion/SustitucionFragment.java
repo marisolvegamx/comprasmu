@@ -59,7 +59,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
     private int categoriaSel;
     private String siglas;
     private int clienteSel,tamanio,empaque;
-  private int numTienda;
+    private int numTienda;
 
     public static SustitucionFragment newInstance() {
         //  ListaCompraFragment fragment = new ListaCompraFragment();
@@ -87,8 +87,10 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
             Log.d(TAG,"ZZZ"+bundle2.getString(ARG_CATEGORIA));
             plantaSel = bundle2.getInt(ListaCompraFragment.ARG_PLANTASEL);
             if(Constantes.VarListCompra.detallebuSel!=null)
-            {  tamanio= Constantes.VarListCompra.detallebuSel.getTamanioId();
-                empaque= Constantes.VarListCompra.detallebuSel.getEmpaquesId();}
+            {
+                tamanio= Constantes.VarListCompra.detallebuSel.getTamanioId();
+                empaque= Constantes.VarListCompra.detallebuSel.getEmpaquesId();
+            }
             clienteSel= bundle2.getInt(ListaCompraFragment.ARG_CLIENTESEL);
 
             nombrePlanta = bundle2.getString(ListaCompraFragment.ARG_NOMBREPLANTASEL);
