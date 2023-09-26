@@ -9,6 +9,80 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TableLayout
+            android:id="@+id/tblnititulos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_grey"
+            android:stretchColumns="*"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TableRow
+                android:id="@+id/rowetiq"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/txtnieciudad"
+                    style="@style/columna1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+
+                    />
+
+                <TextView
+                    android:id="@+id/txtniecliente2"
+                    style="@style/columna2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+
+                    android:visibility="visible" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/row2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/txtnieindice"
+                    style="@style/columna1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform" />
+
+                <TextView
+                    android:id="@+id/txtnietotmues"
+                    style="@style/columna2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/txtnieidinforme"
+                    style="@style/columna2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:visibility="gone" />
+            </TableRow>
+
+        </TableLayout>
+
         <LinearLayout
             android:id="@+id/linearLayout10"
             android:layout_width="match_parent"
@@ -18,7 +92,7 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/tblnititulos">
 
 
             <LinearLayout
@@ -107,8 +181,6 @@
                         android:text="@string/guardar" />
                 </LinearLayout>
             </LinearLayout>
-
-
 
 
         </LinearLayout>

@@ -89,6 +89,33 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/rowetiq"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtnieciudad"
+                    style="@style/columna1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+
+                    android:text='@{informe.ciudadNombre}' />
+
+                <TextView
+                    android:id="@+id/txtniecliente2"
+                    style="@style/columna2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:text='@{informe.clienteNombre}'
+                    android:visibility="visible" />
+
+            </TableRow>
+            <TableRow
                 android:id="@+id/row2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

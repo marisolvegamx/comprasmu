@@ -11,6 +11,10 @@
 
             android:title="@string/menu_descargar" />
         <item
+            android:id="@+id/nav_ciudad_trabajo"
+            android:icon="@android:drawable/ic_menu_compass"
+            android:title="@string/menu_ciudad_trabajo" />
+        <item
             android:id="@+id/nav_etiq"
             android:icon="@drawable/ic_baseline_label_24"
             android:title="@string/menu_etiquetas" />
