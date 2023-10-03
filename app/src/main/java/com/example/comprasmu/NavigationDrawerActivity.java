@@ -457,8 +457,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 return true;*/
             case R.id.cerrarsesion: //realmente es borrar datos
 
-             //   Intent pruebai =new Intent(this, MasPruebasActivity.class);
-           //     startActivity(pruebai);
+               Intent pruebai =new Intent(this, MasPruebasActivity.class);
+                startActivity(pruebai);
 
 
                /* navController = Navigation.findNavController(this, R.id.nav_host_fragment);

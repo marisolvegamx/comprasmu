@@ -92,7 +92,13 @@
                     android:text="@string/validar"
                     android:visibility="gone"
                     tools:visibility="visible" />
-
+                <Button
+                    android:id="@+id/vbtngfuncsecund"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="AGREGAR CAJA"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
                 <Button
                     android:id="@+id/vbtngaceptar"
                     android:layout_width="match_parent"

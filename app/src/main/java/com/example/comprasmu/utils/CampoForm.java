@@ -2,6 +2,7 @@ package com.example.comprasmu.utils;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +33,7 @@ public class CampoForm {
     public RecyclerView.Adapter adapter;
     public List<CampoForm> listadatos;
     public int style;
-
+    public ArrayAdapter<String> adaptersel;
     public CampoForm() {
     }
 

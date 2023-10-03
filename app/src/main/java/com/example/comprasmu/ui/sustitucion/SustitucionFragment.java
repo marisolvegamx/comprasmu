@@ -84,7 +84,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         if(bundle2!=null)
         {
             categoriaSel=bundle2.getInt(ARG_CATEGORIAID);
-            Log.d(TAG,"ZZZ"+bundle2.getString(ARG_CATEGORIA));
+          //  Log.d(TAG,"ZZZ"+bundle2.getString(ARG_CATEGORIA));
             plantaSel = bundle2.getInt(ListaCompraFragment.ARG_PLANTASEL);
             if(Constantes.VarListCompra.detallebuSel!=null)
             {

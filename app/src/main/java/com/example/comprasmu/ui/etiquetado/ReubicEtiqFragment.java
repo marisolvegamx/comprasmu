@@ -298,7 +298,12 @@ public class ReubicEtiqFragment extends Fragment {
         if(opcionsel==null)
             return;
         int numcaja = Integer.parseInt(opcionsel);
+        if(validarUltMuesCaja()){
+            //no son consecutivas
+            Toast.makeText(getContext(),R.string.el_numcaja,Toast.LENGTH_SHORT).show();
 
+            return;
+        }
             muestraEdit.setNum_caja(numcaja);
             mViewModel.actualizarInfEtaDet(muestraEdit);
             //reenvio al serv
@@ -388,8 +393,17 @@ public class ReubicEtiqFragment extends Fragment {
             }
         }
     }
+    //devuelve verdadero si es la ultima muestra
+    public boolean validarUltMuesCaja(){
+        int cajaorig= muestraEdit.getNum_caja();
+        mViewModel.buscatTMuesxCaj(cajaorig, informeEtapaAct.getId());
+        if(mViewModel.numMuestras<2&&cajaorig<ultimacaja){
+            Toast.makeText(getActivity(), "No es posible quitar la caja número "+cajaorig, Toast.LENGTH_LONG).show();
 
-
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void onDestroyView() {

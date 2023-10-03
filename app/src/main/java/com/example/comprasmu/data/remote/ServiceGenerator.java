@@ -42,6 +42,7 @@ public class ServiceGenerator {
        }else
         {
             BASE_URL = "https://muesmerc.mx/comprasv1/api/public/";
+          //  BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
         }
 
 

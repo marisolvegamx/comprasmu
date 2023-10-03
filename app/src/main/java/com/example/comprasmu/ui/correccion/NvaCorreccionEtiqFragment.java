@@ -69,7 +69,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
     LinearLayout sv,sv2,sv3;
     private static final String TAG = "NvaCorreccionEtiqFragment";
     Button aceptar;
-
+    ArrayList<String> spinnerValues;
     private long lastClickTime = 0;
     private final boolean yaestoyProcesando=false;
 
@@ -91,8 +91,12 @@ public class NvaCorreccionEtiqFragment extends Fragment {
     SolicitudCor solicitud;
     TextView txtmotivo,txtsoldato1,txtnumcaja;
     int numfoto;
+    ArrayAdapter<String> adapterCajas;
+    int ultimacaja;
     InformeEtapaDet detEdit; //detalle que se editará solo en num de caja la foto será en la supervision de la correccion
     InformeEtapa infcor;
+
+
     public static NvaCorreccionEtiqFragment newInstance() {
         return new NvaCorreccionEtiqFragment();
     }
@@ -106,6 +110,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
         sv = root.findViewById(R.id.cpcontent_generic);
         sv2 = root.findViewById(R.id.cpcontent_generic2);
         aceptar = root.findViewById(R.id.btncpaceptar);
+
         txtmotivo=root.findViewById(R.id.txtcpmotivo);
         txtsoldato1=root.findViewById(R.id.txtcpsoldato1);
       //  txtnumcaja=(TextView) root.findViewById(R.id.txtcpcajita);
@@ -113,6 +118,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
         spdato1 =root.findViewById(R.id.spcpdato1);
         LinearLayout lcajas=root.findViewById(R.id.llcpcajasetiq);
         lcajas.setVisibility(View.VISIBLE);
+
      //   fotoori1=root.findViewById(R.id.ivcporiginal);
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaCorreViewModel.class);
         solViewModel = new ViewModelProvider(requireActivity()).get(ListaSolsViewModel.class);
@@ -228,6 +234,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
     public void crearFormulario(ImagenDetalle imagenOrig){
         txtsoldato1.setText("LA MUESTRA QUEDO FINALMENTE EN LA CAJA NUM.");
+
         camposForm=new ArrayList<>();
         CampoForm   campo=new CampoForm();
         //fotos originales
@@ -318,7 +325,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             }
         });*/
 
-        ArrayList<String> spinnerValues = new ArrayList<>();
+        spinnerValues = new ArrayList<>();
         //busco el total de cajas
         int totcajas=0;
         if(infcor!=null) {
@@ -330,11 +337,11 @@ public class NvaCorreccionEtiqFragment extends Fragment {
         spinnerValues.add(getString(R.string.seleccione_opcion));
         for(int i=1;i<=totcajas;i++) {
             spinnerValues.add(i+"");
+            ultimacaja=i;
         }
 
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
-        spdato1.setAdapter(adapter);
+        adapterCajas = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
+        spdato1.setAdapter(adapterCajas);
     }
     public void guardar(){
         try {
@@ -587,7 +594,11 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
     }
 
-
+  /*  public void nvacaja(){
+        ultimacaja++;
+        spinnerValues.add(ultimacaja+"");
+        adaptercaja.notifyDataSetChanged();
+    }*/
     @Override
     public void onDestroyView() {
         super.onDestroyView();

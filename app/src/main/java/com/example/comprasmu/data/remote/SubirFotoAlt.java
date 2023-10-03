@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
+import com.example.comprasmu.services.SubirFotoServiceAlt;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -21,9 +22,9 @@ import java.util.List;
 public class SubirFotoAlt {
 
     String URL_SUBIRPICTURE="https://muesmerc.mx/comprasv1/api/public/subirfoto";
-    private final ArrayList<SubirFotoService.SubirFotoListener> observadores = new ArrayList<SubirFotoService.SubirFotoListener>();
+    private final ArrayList<SubirFotoServiceAlt.SubirFotoListenerAlt> observadores = new ArrayList<SubirFotoServiceAlt.SubirFotoListenerAlt>();
     ImagenDetRepositoryImpl idrepo;
-    private final String TAG="SubirFoto";
+    private final String TAG="SubirFotoAlt";
     List<ImagenDetalle> imagenlist;
     int index;
     public SubirFotoAlt() {
@@ -43,7 +44,7 @@ public class SubirFotoAlt {
 
     }
 
-    public void agregarObservador(SubirFotoService.SubirFotoListener o)
+    public void agregarObservador(SubirFotoServiceAlt.SubirFotoListenerAlt o)
     {
         observadores.add(o);
 
@@ -51,37 +52,28 @@ public class SubirFotoAlt {
     public void notificarObservadores()
     {
         // Enviar la notificación a cada observador a través de su propio método
-        for (SubirFotoService.SubirFotoListener obj : observadores) {
+        for (SubirFotoServiceAlt.SubirFotoListenerAlt obj : observadores) {
             obj.onSuccess();
         }
     }
-    public void notificarObservadoresIm(ImagenDetalle imagen)
-    {
-        // Enviar la notificación a cada observador a través de su propio método
-        for (SubirFotoService.SubirFotoListener obj : observadores) {
-            obj.onSuccess2(imagen);
-        }
-    }
+
     public void notificarAvance(int progress)
     {
         // Enviar la notificación a cada observador a través de su propio método
-        for (SubirFotoService.SubirFotoListener obj : observadores) {
+        for (SubirFotoServiceAlt.SubirFotoListenerAlt obj : observadores) {
             obj.onProgress(progress);
         }
     }
 
 
 
-    public void subirFoto(String idusuario, String dir, List<ImagenDetalle> imagenlist, String indice, Context context, ImagenDetRepositoryImpl idrepo) throws Exception {
+    public void subirFoto(String idusuario, String dir, ImagenDetalle imagen, String indice, Context context, ImagenDetRepositoryImpl idrepo) throws Exception {
 
 
 
         try {
-            this.index=0;
             this.idrepo=idrepo;
-            this.imagenlist=imagenlist;
-            if(imagenlist!=null&&imagenlist.size()>0)
-                this.subirFotosi(idusuario,dir, imagenlist.get(this.index),indice,context,idrepo );
+                this.subirFotosi(idusuario,dir, imagen,indice,context,idrepo );
         } catch (Exception e) {
             throw e;
         }

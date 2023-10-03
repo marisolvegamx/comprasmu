@@ -62,6 +62,7 @@ public class DetalleInfView extends LinearLayout {
 
     private HashMap<Integer, String> causas;
     private OnClickListener finiciarLecQR;
+    private Button btnfuncsecund;
 
     public DetalleInfView(Context context) {
         super(context);
@@ -91,6 +92,7 @@ public class DetalleInfView extends LinearLayout {
         aceptar = this.findViewById(R.id.vbtngaceptar);
         nopermiso = this.findViewById(R.id.vckgnoperm);
         validar = this.findViewById(R.id.vbtngvalidar);
+        btnfuncsecund = this.findViewById(R.id.vbtngfuncsecund);
         this.setOrientation(VERTICAL);
 
     }
@@ -220,6 +222,10 @@ public class DetalleInfView extends LinearLayout {
         this.bitmap1 = bitmap;
     }
 
+    public void setonclickFuncSec(OnClickListener clicksi) {
+        btnfuncsecund.setOnClickListener(clicksi);
+    }
+
     public Reactivo getPreguntaAct() {
         return preguntaAct;
     }
@@ -311,6 +317,12 @@ public class DetalleInfView extends LinearLayout {
     public void verBtnRotar(){
         btnrotar.setVisibility(View.VISIBLE);
         btnrotar.setFocusableInTouchMode(true);
+
+    }
+
+    public void verBtnSecundario(int vision){
+        btnfuncsecund.setVisibility(vision);
+        //btnrotar.setFocusableInTouchMode(true);
 
     }
 

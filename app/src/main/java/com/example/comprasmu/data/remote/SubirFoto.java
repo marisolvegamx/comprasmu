@@ -140,10 +140,6 @@ public class SubirFoto {
                     .addParameter ("idlocalim", imagen.getId() + "")
                     .addParameter ("idusuario", idusuario)
                     .addParameter("indice",indice)
-                   // .addParameter("indice", imagen.getIndice());
-                  //  .addParameter("recolector", recolector)
-                  //  .addParameter("planta", planta)
-
                     .setUtf8Charset();
             upload.setDelegate(new UploadStatusDelegate(){
 
@@ -218,7 +214,7 @@ public class SubirFoto {
 
                 @Override
                 public void onProgress(UploadInfo uploadInfo) {
-                    Log.d("SubirFoto","Subiendo foto....."+uploadFileArrayList);
+                   // Log.d("SubirFoto","Subiendo foto....."+uploadFileArrayList);
                     notificarAvance(uploadInfo.getProgressPercent());
                 }
 
@@ -230,14 +226,14 @@ public class SubirFoto {
                 @Override
                 public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
                     Log.d("ejemploimagen","Respuesta->"+serverResponse.getHttpCode());
-                    Log.d("ejemploimagen","Respuesta->"+serverResponse.getBodyAsString());
+                  //  Log.d("ejemploimagen","Respuesta->"+serverResponse.getBodyAsString());
                     if(serverResponse.getHttpCode()==200) {
                         notificarObservadoresIm(imagen);
                     }else { //hubo un error
                       notificarObservadoresIm(null);
                         Log.d("SubirFoto","Hubo un error al subir imagen "+serverResponse.getBodyAsString());
                     }
-                    Log.d("SubirFoto", "terminó de subir");
+                   // Log.d("SubirFoto", "terminó de subir");
 
 
 

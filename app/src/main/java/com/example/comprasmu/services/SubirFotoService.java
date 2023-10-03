@@ -19,15 +19,18 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.SubirFoto;
+import com.example.comprasmu.data.remote.SubirFotoAlt;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -39,15 +42,16 @@ public class SubirFotoService extends IntentService
     InfEtapaDetRepoImpl etapadetRepo;
     CorreccionRepoImpl correccionRepo;
 
-    String userId, indiceimagen;
+    String userId, indiceimagen, cadenarutas;
     ImagenDetalle imagenSubir;
     PostInformeViewModel pvm;
     private String tipo; //para saber que tabla actualizare
-
+    ComprasLog milog;
 
     public static final String ACTION_UPLOAD_IMG = "com.example.comprasmu.intentservice.action.PROGRESO";
     public static final String ACTION_UPLOAD_ETA = "comprasmu.intentservice.action.etapa";
     public static final String ACTION_UPLOAD_COR = "comprasmu.intentservice.action.correccion";
+    public static final String ACTION_UPLOAD_LISTA = "com.example.comprasmu.intentservice.action.lista";
 
     public static final String EXTRA_IMG_PATH = "com.example.comprasmu.intentservice.extra.EXTRA_IMG_PATH";
     public static final String EXTRA_IMAGE_ID = "com.example.comprasmu.intentservice.extra.EXTRA_IMAGE_ID";
@@ -62,6 +66,7 @@ public class SubirFotoService extends IntentService
     @Override
     protected void onHandleIntent(Intent intent)
     {
+        milog=ComprasLog.getSingleton();
       //  Log.d(TAG,"action");
         if (intent != null)
         {
@@ -76,6 +81,14 @@ public class SubirFotoService extends IntentService
                 imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
                 indiceimagen=intent.getStringExtra(EXTRA_INDICE);
                 handleUploadImg();
+            }else if (ACTION_UPLOAD_LISTA.equals(action)) //para informe compra foto en fila
+            {
+                //  Log.d(TAG,"action"+action);
+              //  imagenSubir=new ImagenDetalle();
+                cadenarutas=intent.getStringExtra(EXTRA_IMG_PATH);
+          //      imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
+                indiceimagen=intent.getStringExtra(EXTRA_INDICE);
+                handleUploadImgFila();
             }else
 
             {
@@ -140,6 +153,55 @@ public class SubirFotoService extends IntentService
             // pvm.actualizarEstatusFoto(imagenSubir);
             // Thread.sleep(10000);
             // enviarOtra();
+        }catch (Exception ex){
+
+            Log.e(TAG,"error"+ex.getMessage());
+            ex.printStackTrace();
+        }
+
+
+    }
+    //para subirlas en fila
+    private void handleUploadImgFila()
+    {
+
+        // Instanciar y registrar un Observador
+        SubirFotoListener objObservador  = new SubirFotoListener();
+
+        try {
+            Log.d(TAG,"cadena "+cadenarutas);
+            if(this.cadenarutas.length()>0) { //o sea trae algo
+
+                String cadenarutas = this.cadenarutas;
+                String partes[] = cadenarutas.split("¬");
+                List<ImagenDetalle> listaimagenes = new ArrayList<ImagenDetalle>();
+
+
+                for (int i = 0; i < partes.length; i++) {
+                    if(partes[i].length()>0) {
+                        ImagenDetalle imagen = new ImagenDetalle();
+                        imagen.setId(1);
+                        imagen.setIndice(indiceimagen);
+                        imagen.setRuta(partes[i]);
+                        listaimagenes.add(imagen);
+                    }
+                }
+
+                // notificar();
+                SubirFotoAlt sf = new SubirFotoAlt();
+              //  sf.agregarObservador(objObservador);
+                //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String dir = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
+
+                   ImagenDetRepositoryImpl idrepo = new ImagenDetRepositoryImpl(this);
+                  // sf.subirFoto(Constantes.CLAVEUSUARIO, dir, listaimagenes, indiceimagen, this, idrepo);
+
+
+                // pvm.actualizarEstatusFoto(imagenSubir);
+                // Thread.sleep(10000);
+                // enviarOtra();
+            }
         }catch (Exception ex){
 
             Log.e(TAG,"error"+ex.getMessage());

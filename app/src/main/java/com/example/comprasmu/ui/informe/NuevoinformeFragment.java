@@ -50,6 +50,29 @@ public class NuevoinformeFragment {
 
     }
 
+    public static void subirFotosFila(Activity activity, InformeEnvio informe){
+        //las imagenes
+        String cadenarutas="";
+        for(ImagenDetalle imagen:informe.getImagenDetalles()) {
+            cadenarutas=cadenarutas+"¬"+imagen.getRuta();
+        }
+            //subo cada una
+            Intent msgIntent = new Intent(activity, SubirFotoService.class);
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, 100);
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,cadenarutas);
+            // Log.d(TAG,"error "+informe.get)
+            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+            msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_LISTA);
 
+            // Constantes.INDICEACTUAL
+            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+            activity.startService(msgIntent);
+            //cambio su estatus a subiendo
+
+
+
+
+
+    }
 
 }

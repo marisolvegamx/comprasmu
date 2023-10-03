@@ -526,7 +526,7 @@ public class CreadorFormulario {
         }*/
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_spinner_dropdown_item,spinnerArray);
-
+        this.infocampo.adaptersel=adapter;
         mySpinner.setAdapter(adapter);
 
         if(infocampo.value!=null&&infocampo.value.length()>0){

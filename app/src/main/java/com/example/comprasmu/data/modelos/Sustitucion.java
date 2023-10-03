@@ -28,6 +28,8 @@ public class Sustitucion {
     private String nomempaque;
     private int categoriasId;
     private String nomcategoria;
+    @ColumnInfo(name="plantasId", defaultValue = "0")
+    private int plantasId;
 
 
     public int getId_sustitucion() {
@@ -110,6 +112,12 @@ public class Sustitucion {
         this.clientesId = clientesId;
     }
 
+    public int getPlantasId() {
+        return plantasId;
+    }
 
+    public void setPlantasId(int plantasId) {
+        this.plantasId = plantasId;
+    }
 }
 

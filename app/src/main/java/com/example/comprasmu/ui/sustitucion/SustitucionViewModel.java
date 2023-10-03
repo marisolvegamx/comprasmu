@@ -83,7 +83,7 @@ public class SustitucionViewModel extends AndroidViewModel {
         // if(numTienda>=5)
         MutableLiveData listaTemp=new MutableLiveData();
         List<Sustitucion> array=new ArrayList<>();
-       List<Sustitucion> listaProds =repository.getByFiltrosJumSim(categoria,"FRUTZZO",empaque ,tamanio,clienteSel);
+       List<Sustitucion> listaProds =repository.getByFiltrosJumSim(categoria,"FRUTZZO",empaque ,tamanio,clienteSel, plantaSel);
         Log.d(TAG,"encontre "+listaProds.size());
         for (Sustitucion producto:
              listaProds) {

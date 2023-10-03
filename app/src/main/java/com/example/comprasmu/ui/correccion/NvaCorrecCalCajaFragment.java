@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -57,6 +58,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -285,8 +287,10 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                     }
                 });
             }
+            txtcajaact.setVisibility(View.GONE);
             if(preguntaAct.getId()>122){
                 txtcajaact.setText("CAJA "+cajaAct);
+                txtcajaact.setVisibility(View.VISIBLE);
             }
         } catch(Exception ex)
 
@@ -356,7 +360,12 @@ public class NvaCorrecCalCajaFragment extends Fragment {
           //       cargarListaCajas();
                  //preguntaview.setCausas(cajasValues);
 
-       }
+
+
+
+       }else{
+            preguntaview.verBtnSecundario(View.GONE);
+        }
         preguntaview.crearFormulario();
 
         svprin.addView(preguntaview);
@@ -368,7 +377,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
 
     }
-  public void mostrarPreg2(int opcion){
+    public void mostrarPreg2(int opcion){
         sv2.setVisibility(opcion);
   }
     public void guardarCorr(){
@@ -470,7 +479,13 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         preguntaview2.aceptarSetEnabled(true);
         sv2.addView(preguntaview2);
         sv2.setVisibility(View.GONE);
-
+        preguntaview2.verBtnSecundario(View.VISIBLE);
+        preguntaview2.setonclickFuncSec(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nvacaja();
+            }
+        });
         preguntaview2.onclickAceptar(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -791,6 +806,12 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         {
             if(!preguntaview.getPregSiNoResp()) //se selecciono no
             {
+                if(!validasSecuenciaCaj()){
+                    //no son consecutivas
+                    Toast.makeText(getContext(),R.string.el_numcaja,Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
                 avanzarPregunta(preguntaAct.getSigAlt()); //voy a fotos caja
                 return;
 
@@ -911,7 +932,33 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
 
     }
+    public boolean validasSecuenciaCaj(){
+        List<InformeEtapaDet> cajas=preViewModel.listaCajasEtiqxCdCli(infEtiquetado.getCiudadNombre(),infEtiquetado.getClientesId());
+        int i=1;
+        for (InformeEtapaDet caja:cajas) {
+            if(caja.getNum_caja()==i)
+                i++;
+            else
+                return false;
 
+        }
+        return true;
+    }
+
+    public void nvacaja(){
+        ultimacaja++;
+        cajasValues.put(ultimacaja,ultimacaja+"");
+        Log.d(TAG, "aqui");
+        Collection<String> vals = cajasValues.values();
+
+        String[] spinnerArray =  vals.toArray(new String[vals.size()]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_spinner_dropdown_item,spinnerArray);
+
+        preguntaview2.getSpclientes().setAdapter(adapter);
+        preguntaview2.getSpclientes().performClick();
+
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

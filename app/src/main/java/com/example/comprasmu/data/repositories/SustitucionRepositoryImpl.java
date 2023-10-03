@@ -83,7 +83,7 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
     }
 
 
-    public List<Sustitucion> getByFiltrosJumSim(int categoria, String productoNombre, int empaque,int tamanio,int clienteId ) {
+    public List<Sustitucion> getByFiltrosJumSim(int categoria, String productoNombre, int empaque,int tamanio,int clienteId, int plantaId ) {
 
         String query="Select * from sustitucion where 1=1";
         ArrayList<String> filtros=new ArrayList<String>();
@@ -104,6 +104,10 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         if(clienteId>0) {
             query = query + " and clientesId=?";
             filtros.add(clienteId+"");
+        }
+        if(plantaId>0) {
+            query = query + " and plantasId=?";
+            filtros.add(plantaId+"");
         }
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
