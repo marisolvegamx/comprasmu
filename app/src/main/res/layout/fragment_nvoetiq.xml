@@ -371,7 +371,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="@string/reubicar"
+                android:visibility="visible" />
         </LinearLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

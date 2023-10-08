@@ -433,7 +433,14 @@ public class NvaCorreccionFragment extends Fragment {
                 valor3 = txtrutaim3.getText().toString();
                 valor3 = valor3.toUpperCase();
             }
-            //paso a
+            //valido q haya 3 fotos si es de atributo
+            if(solicitud.getDescripcionFoto().equals("foto_atributoa")) { //es 360
+                if(valor2.equals("")||valor3.equals("")){
+                    Toast.makeText(getContext(),"Favor de capturar las 3 fotos",Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+                //paso a
             //creo el informe
             mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, valor2, valor3));
             actualizarSolicitud();

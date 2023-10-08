@@ -13,12 +13,10 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 
-@Entity(tableName = "sustitucion")
+@Entity(tableName = "sustitucion",primaryKeys = {"id_sustitucion", "plantasId"})
 public class Sustitucion {
-    @PrimaryKey
-    private int id_sustitucion;
 
-    @ColumnInfo(name="clientesId", defaultValue = "0")
+    private int id_sustitucion;
     private int clientesId;
     private int su_tipoempaque;
     private int su_producto;
@@ -28,7 +26,6 @@ public class Sustitucion {
     private String nomempaque;
     private int categoriasId;
     private String nomcategoria;
-    @ColumnInfo(name="plantasId", defaultValue = "0")
     private int plantasId;
 
 

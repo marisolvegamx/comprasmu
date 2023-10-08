@@ -74,7 +74,7 @@ import java.util.List;
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class,
         Configuracion.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=22, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=23, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -113,7 +113,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
-                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22)
+                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -422,6 +422,27 @@ public abstract class ComprasDataBase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL(
                     "ALTER TABLE sustitucion ADD COLUMN plantasId INTEGER DEFAULT 0 NOT NULL; " );
+
+
+        }
+    };
+    static final Migration MIGRATION_22_23 = new Migration(22,23) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("drop TABLE if exists sustitucion ");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `sustitucion` (`id_sustitucion` INTEGER NOT NULL, " +
+                            "clientesId INTEGER NOT NULL, "+
+                    "su_tipoempaque INTEGER NOT NULL, "
+                            + "`nomempaque` TEXT," +
+                    " su_producto INTEGER NOT NULL, " +
+                    "su_tamanio INTEGER NOT NULL," +
+                    " nomproducto TEXT, " +
+                    "nomtamanio TEXT," +
+                            "categoriasId INTEGER NOT NULL," +
+                    "nomcategoria TEXT, " +
+
+                            "plantasId INTEGER NOT NULL, "+
+                            "PRIMARY KEY(`id_sustitucion`, plantasId));");
 
 
         }

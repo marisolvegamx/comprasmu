@@ -278,11 +278,14 @@ public class ReubicEtiqFragment extends Fragment {
 
                int clienteSel = informeEtapaAct.getClientesId();
                List<InformeEtapaDet> listacaj=mViewModel.listaCajasEtiqxCdCli(Constantes.CIUDADTRABAJO, clienteSel);
+
                if(listacaj!=null) {
-                   for (int i = 0; i < listacaj.size(); i++) {
-                       spinnerValues.add(listacaj.get(i).getNum_caja() + "");
-                       ultimacaja=listacaj.get(i).getNum_caja();
+                   int maxcaja=listacaj.get(listacaj.size()-1).getNum_caja();
+                   for (int i = 1; i < maxcaja; i++) {
+                       spinnerValues.add(i + "");
+                      // ultimacaja=listacaj.get(i).getNum_caja();
                    }
+                   ultimacaja=maxcaja;
                    totcajas = listacaj.size();
                }
                //todo buscar 1ro qr y luego la caja

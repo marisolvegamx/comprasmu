@@ -132,6 +132,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     public String[] descripfoto = {"FOTO CALIDAD DE CAJA CARA A", "FOTO CALIDAD DE CAJA CARA B", "FOTO ACOMODO DE MUESTRAS DENTRO DE CAJA"};
     public int[] descripcionid = {12, 13, 14};
     private int cajainif;
+    private Button btnreubicar;
 
     public NvoEtiquetadoFragment() {
 
@@ -163,6 +164,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         aceptar4 = root.findViewById(R.id.btnneac4);
         aceptar5 = root.findViewById(R.id.btnneac5);
         aceptar6 = root.findViewById(R.id.btnneacep6);
+        btnreubicar= root.findViewById(R.id.btnnereubicar);
         btnneacfotocaj = root.findViewById(R.id.btnneacfotocaj);
         nvacaja = root.findViewById(R.id.btnnecajamas);
         // eliminarCaja = root.findViewById(R.id.btnneelimcaj);
@@ -271,6 +273,12 @@ public class NvoEtiquetadoFragment extends Fragment {
                 iniciarLecQR();
             }
 
+        });
+        btnreubicar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iraReubicar();
+            }
         });
         aceptar1.setEnabled(false);
         if (preguntaAct == 0)
@@ -551,12 +559,14 @@ public class NvoEtiquetadoFragment extends Fragment {
         mViewModel.preguntaAct = preguntaAct;
         return root;
     }
-/*public void iraReubicar(){
+
+
+public void iraReubicar(){
     Intent intento1 = new Intent(getActivity(), NavigationDrawerActivity.class);
-    intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"listainformeeta");
+    intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"nav_reubicetiq");
     startActivity(intento1);
     getActivity().finish();
-}*/
+}
 
     //el total de cajas si es x ciudad cliente
     public void cargarListaCajas() {
@@ -784,6 +794,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     }
 
     public void capturarFotoCaja() {
+        svotra.setVisibility(View.VISIBLE);
         // ver si ya existe esta foto
         Log.d(TAG,"capturarFoto"+(preguntaAct - 5));
         mostrarCapturaCajaxDesc(descripfoto[preguntaAct - 5]);
@@ -1011,7 +1022,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         switch (preguntaAct){
             case 3: //qr
                 sv3.setVisibility(View.VISIBLE);
-
+                svotra.setVisibility(View.GONE);
                 sv4.setVisibility(View.GONE);
                 preguntaAct=preguntaAct-1;
                 mViewModel.preguntaAct=preguntaAct;
@@ -1023,10 +1034,12 @@ public class NvoEtiquetadoFragment extends Fragment {
             case 4://caja
                 sv4.setVisibility(View.VISIBLE);
                 sv6.setVisibility(View.GONE);
+                svotra.setVisibility(View.GONE);
                 preguntaAct=preguntaAct-1;
                 mViewModel.preguntaAct=preguntaAct;
                 break;
             case 5://foto cara a
+                svotra.setVisibility(View.GONE);
                 //puede ser que tenga que volver a otra caja
                 if(contcajaf>1){
                     preguntaAct=7;
