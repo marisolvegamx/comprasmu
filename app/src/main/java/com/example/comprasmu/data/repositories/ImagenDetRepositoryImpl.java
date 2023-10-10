@@ -49,6 +49,10 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
     public ImagenDetalle findsimple(int id) {
         return dao.findsimple(id);
     }
+
+    public ImagenDetalle findByRuta(String ruta) {
+        return dao.findByRuta(ruta);
+    }
     public ImagenDetalle findsimpleInd(int id, String indice) {
         return dao.findInd(id, indice);
     }

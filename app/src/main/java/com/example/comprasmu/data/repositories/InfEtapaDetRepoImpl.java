@@ -72,10 +72,12 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         return dao.getByQr( qr, etapa);
     }
 
-    public List<InformeEtapaDet> getByCaja( int idinf, int etapa, int numcaja) {
+    /*public List<InformeEtapaDet> getByCaja( int idinf, int etapa, int numcaja) {
         return dao.getByCaja(idinf,etapa, numcaja);
+    }*/
+    public List<InformeEtapaDet> getMuestraByCaja( int idinf, int etapa, int numcaja) {
+        return dao.getMuestraByCaja(idinf,etapa, numcaja);
     }
-
 
     public LiveData<InformeEtapaDet> getBynumfoto( int idinf, int etapa, int numfoto) {
         return dao.getBynumfoto(idinf,etapa, numfoto);

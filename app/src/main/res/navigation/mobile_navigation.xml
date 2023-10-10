@@ -115,7 +115,7 @@
     <fragment
         android:id="@+id/nav_listar"
         android:name="com.example.comprasmu.ui.SelPlantaFragment"
-        android:label="@string/menu_lista_informe"
+        android:label="@string/menu_resumencomp"
         tools:layout="@layout/lista_selec_fragment" >
     <argument
         android:name="comprasmu.selcli.tipocons"
@@ -255,7 +255,7 @@
     <fragment
         android:id="@+id/nav_listaprep"
         android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
-        android:label="@string/menu_resumeninf">
+        android:label="@string/menu_lista_prep">
         <argument
             android:name="comprasmu.correselcli.tipocons"
             app:argType="string"
@@ -319,7 +319,7 @@
     <fragment
         android:id="@+id/nav_resumenprep"
         android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
-        android:label="@string/menu_resumeninf" >
+        android:label="@string/menu_lista_prep" >
     <argument
         android:name="comprasmu.correselcli.tipocons"
         app:argType="string"
@@ -375,7 +375,7 @@
     <fragment
         android:id="@+id/nav_resumenetiq"
         android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
-        android:label="@string/menu_resumeninf" >
+        android:label="@string/menu_lista_etiq" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
             app:argType="string"
@@ -427,7 +427,7 @@
     <fragment
         android:id="@+id/nav_resumenemp"
         android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
-        android:label="@string/menu_resumeninf" >
+        android:label="@string/menu_lista_emp" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
             app:argType="string"

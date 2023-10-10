@@ -724,9 +724,14 @@ public void iraReubicar(){
 
                 } else {
                     preguntaAct = 5;
+                    //todo aqui validacion consecutivos
                     if(!validasSecuenciaCaj()){
                         svotra.setVisibility(View.VISIBLE);
                         return;
+                    }
+                    if(validarCajasVacias()){
+                        Toast.makeText(getActivity(), "Las cajas vacías se eliminarán", Toast.LENGTH_SHORT).show();
+
                     }
                     //lleno el total de cajas
                     txttotcaj.setText("TOTAL CAJAS:" + totcajas);
@@ -735,7 +740,7 @@ public void iraReubicar(){
                     contcajaf = 1; //para el for de cuantas veces pedir fotos
                     //busco la caja en la que empiezo
                      cajainif = mViewModel.getMinCajaxCli(ciudadInf, clienteSel);
-                  //todo aqui validacion consecutivos
+
 
                     //busco total de cajas final
                     totcajas = mViewModel.getTotCajasEtiqxCli(ciudadInf,clienteSel);
@@ -794,7 +799,7 @@ public void iraReubicar(){
     }
 
     public void capturarFotoCaja() {
-        svotra.setVisibility(View.VISIBLE);
+        svotra.setVisibility(View.GONE);
         // ver si ya existe esta foto
         Log.d(TAG,"capturarFoto"+(preguntaAct - 5));
         mostrarCapturaCajaxDesc(descripfoto[preguntaAct - 5]);
@@ -848,6 +853,26 @@ public void iraReubicar(){
 
         }
         return true;
+    }
+    //si hhay cajas vacias devuelve true
+    public boolean validarCajasVacias(){
+
+         int i=1;
+        for (String caja:spinnerValues) {
+            int numcaja=0;
+            try {
+                 numcaja = Integer.parseInt(caja);
+            }catch(NumberFormatException ex){
+                milog.grabarError(TAG+".validarCajasVacias "+ex.getMessage());
+            }
+            //busco si hay muestras
+            List<InformeEtapaDet> cajas=mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(),3,numcaja);
+
+            if(cajas!=null&&cajas.size()>0)
+              return true;
+
+        }
+        return false;
     }
     public List<DescripcionGenerica> deCompraADesc(List<InformeCompraDetalle> prods) {
         DescripcionGenerica desc;

@@ -278,10 +278,10 @@ public class ReubicEtiqFragment extends Fragment {
 
                int clienteSel = informeEtapaAct.getClientesId();
                List<InformeEtapaDet> listacaj=mViewModel.listaCajasEtiqxCdCli(Constantes.CIUDADTRABAJO, clienteSel);
-
-               if(listacaj!=null) {
+                //Log.d(TAG,)
+               if(listacaj!=null&&listacaj.size()>0) {
                    int maxcaja=listacaj.get(listacaj.size()-1).getNum_caja();
-                   for (int i = 1; i < maxcaja; i++) {
+                   for (int i = 1; i <=maxcaja; i++) {
                        spinnerValues.add(i + "");
                       // ultimacaja=listacaj.get(i).getNum_caja();
                    }
@@ -303,8 +303,6 @@ public class ReubicEtiqFragment extends Fragment {
         int numcaja = Integer.parseInt(opcionsel);
         if(validarUltMuesCaja()){
             //no son consecutivas
-            Toast.makeText(getContext(),R.string.el_numcaja,Toast.LENGTH_SHORT).show();
-
             return;
         }
             muestraEdit.setNum_caja(numcaja);
@@ -396,7 +394,7 @@ public class ReubicEtiqFragment extends Fragment {
             }
         }
     }
-    //devuelve verdadero si es la ultima muestra
+    //devuelve verdadero si es la ultima muestra de una caja intermedia
     public boolean validarUltMuesCaja(){
         int cajaorig= muestraEdit.getNum_caja();
         mViewModel.buscatTMuesxCaj(cajaorig, informeEtapaAct.getId());

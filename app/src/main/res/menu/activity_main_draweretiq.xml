@@ -41,7 +41,7 @@
         <item
             android:id="@+id/nav_resumenetiq"
             android:icon="?attr/actionModePasteDrawable"
-            android:title="@string/menu_resumeninf" />
+            android:title="@string/menu_lista_etiq" />
 
         <item
             android:id="@+id/nav_solcoretiq"
@@ -53,15 +53,16 @@
             android:icon="@drawable/ic_baseline_check_24"
             android:title="@string/menu_rescorreccion" />
         <item
-            android:id="@+id/nav_menuini"
-            android:icon="?attr/actionModeCloseDrawable"
-            android:title="@string/menu_inicial"
-            />
-        <item
             android:id="@+id/nav_canceleti"
             android:icon="@android:drawable/ic_dialog_alert"
             android:title="@string/menu_cancel"
             app:actionViewClass="android.widget.TextView" />
+        <item
+            android:id="@+id/nav_menuini"
+            android:icon="?attr/actionModeCloseDrawable"
+            android:title="@string/menu_inicial"
+            />
+
         <item
             android:id="@+id/nav_cerrarsesion"
             android:icon="@android:drawable/ic_menu_close_clear_cancel"

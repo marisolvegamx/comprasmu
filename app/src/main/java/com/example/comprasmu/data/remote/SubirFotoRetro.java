@@ -1,25 +1,17 @@
 package com.example.comprasmu.data.remote;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
-import com.example.comprasmu.services.SubirFotoServiceAlt;
-
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.ServerResponse;
-import net.gotev.uploadservice.UploadInfo;
-import net.gotev.uploadservice.UploadStatusDelegate;
+import com.example.comprasmu.services.SubirColaFotoService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -29,7 +21,7 @@ import retrofit2.Response;
 
 public class SubirFotoRetro implements ImageUploadCallback {
 
-     private final ArrayList<SubirFotoServiceAlt.SubirFotoListenerAlt> observadores = new ArrayList<SubirFotoServiceAlt.SubirFotoListenerAlt>();
+     private final ArrayList<SubirColaFotoService.SubirFotoListenerAlt> observadores = new ArrayList<SubirColaFotoService.SubirFotoListenerAlt>();
     ImagenDetRepositoryImpl idrepo;
     private final String TAG="SubirFotoAlt";
     ImagenDetalle imagen;
@@ -40,7 +32,7 @@ public class SubirFotoRetro implements ImageUploadCallback {
 
     }
 
-    public void agregarObservador(SubirFotoServiceAlt.SubirFotoListenerAlt o)
+    public void agregarObservador(SubirColaFotoService.SubirFotoListenerAlt o)
     {
         observadores.add(o);
 
@@ -48,7 +40,7 @@ public class SubirFotoRetro implements ImageUploadCallback {
     public void notificarObservadores()
     {
         // Enviar la notificación a cada observador a través de su propio método
-        for (SubirFotoServiceAlt.SubirFotoListenerAlt obj : observadores) {
+        for (SubirColaFotoService.SubirFotoListenerAlt obj : observadores) {
             obj.onSuccess();
         }
     }
@@ -56,7 +48,7 @@ public class SubirFotoRetro implements ImageUploadCallback {
     public void notificarAvance(int progress)
     {
         // Enviar la notificación a cada observador a través de su propio método
-        for (SubirFotoServiceAlt.SubirFotoListenerAlt obj : observadores) {
+        for (SubirColaFotoService.SubirFotoListenerAlt obj : observadores) {
             obj.onProgress(progress);
         }
     }
@@ -155,7 +147,7 @@ public class SubirFotoRetro implements ImageUploadCallback {
 
                 Log.d("ejemploimagen","Respuesta->"+compraResp.getData());
                 //todo descomentar
-               // actualizarEstado(imagen);
+                actualizarEstado(imagen);
             }else { //hubo un error
                 //lo registro en el log
                 if(compraResp!=null) {
@@ -171,7 +163,8 @@ public class SubirFotoRetro implements ImageUploadCallback {
 
     public void actualizarEstado(ImagenDetalle imagen){
         //  for(Imagen imagen:lista){
-        ImagenDetalle imagenedit=idrepo.findsimple(imagen.getId());
+        //ImagenDetalle imagenedit=idrepo.findsi(imagen.getId());
+        ImagenDetalle imagenedit=idrepo.findByRuta(imagen.getRuta());
         imagenedit.setEstatusSync(2);
         idrepo.insert(imagenedit);
 

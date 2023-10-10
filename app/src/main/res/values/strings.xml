@@ -64,6 +64,10 @@
     <string name="menu_abrir_informe">Abrir informe</string>
     <string name="menu_continuar_informe">Continuar informe</string>
     <string name="menu_lista_informe">Resumen informes</string>
+
+    <string name="menu_lista_prep">Resumen preparación</string>
+    <string name="menu_lista_etiq">Resumen etiquetado</string>
+    <string name="menu_lista_emp">Resumen empaque</string>
     <string name="menu_borrar">Borrar datos</string>
     <string name="menu_borrar_lista">Lista de compras por índice</string>
     <string name="menu_borrar_informe">Informes por índice</string>
@@ -256,8 +260,8 @@
     <string name="descripcion">DESCRIPCION</string>
     <string name="menu_nvopreparacion">Nuevo Inf Prep</string>
     <string name="req_foto">¿REQUIERES OTRA FOTO?</string>
-    <string name="menu_resumeninf">Resumen informes</string>
-    <string name="menu_resumencomp">Resumen compras</string>
+
+    <string name="menu_resumencomp">Resumen compra</string>
     <string name="preparacion">PREPARACION</string>
     <string name="compra">COMPRA</string>
     <string name="informe">INFORME</string>
@@ -329,6 +333,7 @@
     <string name="solicitudcor">SOLICITUDES CORRECCION</string>
     <string name="informe_reubicar">PARA REUBICAR NECESITAS CREAR UN NUEVO INFORME</string>
     <string name="el_numcaja">EL NUMERO DE CAJA DEBE SER CONSECUTIVO FAVOR DE REUBICAR</string>
+    <string name="atras">ATRAS</string>
 
 
 </resources>

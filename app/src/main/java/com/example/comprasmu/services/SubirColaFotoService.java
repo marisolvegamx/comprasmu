@@ -1,24 +1,11 @@
 package com.example.comprasmu.services;
 
 import android.app.IntentService;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.example.comprasmu.NavigationDrawerActivity;
-import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.remote.SubirFoto;
-import com.example.comprasmu.data.remote.SubirFotoAlt;
 import com.example.comprasmu.data.remote.SubirFotoRetro;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
@@ -30,13 +17,12 @@ import com.example.comprasmu.utils.Constantes;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /****un servicio x foto****/
-public class SubirFotoServiceAlt extends IntentService
+public class SubirColaFotoService extends IntentService
 {
 
-    private static final String TAG = "SubirFotoServiceAlt";
+    private static final String TAG = "SubirColaFotoService";
     public static String EXTRA_INDICE="comprasmu.extraindice";
     InfEtapaDetRepoImpl etapadetRepo;
     CorreccionRepoImpl correccionRepo;
@@ -56,9 +42,9 @@ public class SubirFotoServiceAlt extends IntentService
     SubirFotoListenerAlt objObservador;
     List<ImagenDetalle> listaimagenes;
     String dir;
-    public SubirFotoServiceAlt()
+    public SubirColaFotoService()
     {
-        super("SubirFotoServiceAlt");
+        super("SubirColaFotoService");
         pvm=new PostInformeViewModel(getApplication());
     }
     @Override
@@ -78,14 +64,15 @@ public class SubirFotoServiceAlt extends IntentService
                 cadenarutas=intent.getStringExtra(EXTRA_IMG_PATH);
           //      imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
                 indiceimagen=intent.getStringExtra(EXTRA_INDICE);
-                handleUploadImgFila();
+                handleUploadImgCola();
             }
         }
     }
 
     //para subirlas en fila
-    private void handleUploadImgFila()
+    private void handleUploadImgCola()
     {
+         dir=   this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
 
         // Instanciar y registrar un Observador
          objObservador  = new SubirFotoListenerAlt();
@@ -102,25 +89,24 @@ public class SubirFotoServiceAlt extends IntentService
 
 
                 if(partes!=null&&partes.length>0)
-             for(int i=1;i<partes[i].length();i++) {
+             for(int i=0;i<partes.length;i++) {
                         ImagenDetalle imagen = new ImagenDetalle();
                         imagen.setId(i);
                         imagen.setIndice(indiceimagen);
                         imagen.setRuta(partes[i]);
                         listaimagenes.add(imagen);
                 }
-
+                Log.d(TAG,"totalfotos "+listaimagenes.size());
                 if(listaimagenes!=null&&listaimagenes.size()>0) {
+                    //mando la 1era
                     // notificar();
-                  //  SubirFotoAlt sf = new SubirFotoAlt();
                     SubirFotoRetro sf = new SubirFotoRetro();
-
+                    //SubirFoto sf = new SubirFoto();
                     sf.agregarObservador(objObservador);
                     //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
-                    dir = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
-
-                    ImagenDetRepositoryImpl idrepo = new ImagenDetRepositoryImpl(this);
-                    sf.subirFoto(Constantes.CLAVEUSUARIO, dir, listaimagenes.get(0), indiceimagen, this, idrepo);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    ImagenDetRepositoryImpl idrepo=new ImagenDetRepositoryImpl(this);
+                    sf.subirFoto(Constantes.CLAVEUSUARIO,dir, listaimagenes.get(0),indiceimagen, this,idrepo);
                 }
 
                 // pvm.actualizarEstatusFoto(imagenSubir);
@@ -168,54 +154,43 @@ public class SubirFotoServiceAlt extends IntentService
 
         public void onProgress(int progress)
         {
-           // updateNotification(progress);
+            Log.d(TAG,"subiendo"+index);
+
+            // updateNotification(progress);
         }
         public void onSuccess(){
 
             downloadComplete = true;
           //  onDownloadComplete(downloadComplete);
             index++;
-
+            //subir sigueinte foto
             if(index<listaimagenes.size()) {
                // SubirFotoAlt sf = new SubirFotoAlt();
                 SubirFotoRetro sf = new SubirFotoRetro();
                 sf.agregarObservador(objObservador);
                 //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
 
-                ImagenDetRepositoryImpl idrepo = new ImagenDetRepositoryImpl(SubirFotoServiceAlt.this);
+                ImagenDetRepositoryImpl idrepo = new ImagenDetRepositoryImpl(SubirColaFotoService.this);
                 try {
-                    sf.subirFoto(Constantes.CLAVEUSUARIO, dir, listaimagenes.get(index), indiceimagen, SubirFotoServiceAlt.this, idrepo);
+                    sf.subirFoto(Constantes.CLAVEUSUARIO, dir, listaimagenes.get(index), indiceimagen, SubirColaFotoService.this, idrepo);
                 } catch (Exception e) {
                     Log.e(TAG,"error"+e.getMessage());
                     e.printStackTrace();
                     milog.grabarError(TAG+".onSuccess "+e.getMessage());
                 }
 
-               /* SubirFotoRetro sf = new SubirFotoRetro();
-                sf.agregarObservador(objObservador);
-                //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
-
-                ImagenDetRepositoryImpl idrepo = new ImagenDetRepositoryImpl(SubirFotoServiceAlt.this);
-                try {
-                    sf.subirFoto(Constantes.CLAVEUSUARIO, dir, listaimagenes.get(index), indiceimagen, SubirFotoServiceAlt.this, idrepo);
-                } catch (Exception e) {
-                    Log.e(TAG,"error"+e.getMessage());
-                    e.printStackTrace();
-                    milog.grabarError(TAG+".onSuccess "+e.getMessage());
-                }*/
-
-
             }
         }
+
         public void onSuccess2(ImagenDetalle imagen){
             downloadComplete = true;
-           if(tipo.equals("correccion"))
+            if(tipo.equals("correccion"))
                 //actualizo correccion
-            correccionRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
-           else
-               if(tipo.equals("etapa")){
-                   etapadetRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
-               }
+                correccionRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
+            else
+            if(tipo.equals("etapa")){
+                etapadetRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
+            }
             //  onDownloadComplete(downloadComplete);
 
         }
@@ -227,7 +202,6 @@ public class SubirFotoServiceAlt extends IntentService
             //  onDownloadComplete(downloadComplete);
 
         }
-
 
 
     }

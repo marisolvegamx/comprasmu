@@ -262,6 +262,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 preguntaview.onclickAceptar(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        preguntaview.aceptarSetEnabled(false);
                         //validar qr
                         buscarQr();
 
@@ -464,6 +465,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
             Log.d(TAG,"totcajas"+totcajas+"--"+ultimacaja);
         }
         //creo para poner la caja
+        sv2.removeAllViewsInLayout();
         preguntaview2=new DetalleInfView(getContext());
         Reactivo pregunta2=new Reactivo();
         pregunta2.setId(0);
@@ -521,7 +523,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
 
 
-                Log.d(TAG,"actmuestra "+preguntaview2.getSelectedItem()+"--"+valor2);
+               // Log.d(TAG,"actmuestra "+preguntaview2.getSelectedItem()+"--"+valor2);
 
             }
             if(!valor2.equals(""))
@@ -594,7 +596,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
     }
 
-    //devuelve verdadero si es la ultima muestra
+    //devuelve verdadero si es la ultima muestra y es caja intermedia
     public boolean validarUltMuesCaja(){
         int cajaorig= muestraEdit.getNum_caja();
         preViewModel.buscatTMuesxCaj(cajaorig, infEtiquetado.getId());

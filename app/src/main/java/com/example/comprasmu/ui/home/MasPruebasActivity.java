@@ -8,8 +8,7 @@ import android.util.Log;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.services.SubirFotoService;
-import com.example.comprasmu.services.SubirFotoServiceAlt;
+import com.example.comprasmu.services.SubirColaFotoService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +31,12 @@ public class MasPruebasActivity extends AppCompatActivity {
 
             Log.d("MasPruebas",cadenarutas);
             //subo cada una
-            Intent msgIntent = new Intent(this, SubirFotoServiceAlt.class);
-            msgIntent.putExtra(SubirFotoServiceAlt.EXTRA_IMAGE_ID, 100);
-            msgIntent.putExtra(SubirFotoServiceAlt.EXTRA_IMG_PATH,cadenarutas);
+            Intent msgIntent = new Intent(this, SubirColaFotoService.class);
+            msgIntent.putExtra(SubirColaFotoService.EXTRA_IMAGE_ID, 100);
+            msgIntent.putExtra(SubirColaFotoService.EXTRA_IMG_PATH,cadenarutas);
             // Log.d(TAG,"error "+informe.get)
-            msgIntent.putExtra(SubirFotoServiceAlt.EXTRA_INDICE,indice);
-            msgIntent.setAction(SubirFotoServiceAlt.ACTION_UPLOAD_LISTA);
+            msgIntent.putExtra(SubirColaFotoService.EXTRA_INDICE,indice);
+            msgIntent.setAction(SubirColaFotoService.ACTION_UPLOAD_LISTA);
 
             // Constantes.INDICEACTUAL
             Log.d("MasPruebas", "subiendo fotos");

@@ -25,6 +25,7 @@ import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Configuracion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
@@ -489,6 +490,20 @@ public class ComprasUtils {
         return false;
     }
 
+
+    public static String listaaCadena(List<ImagenDetalle> imagenes){
+        String cadenarutas="";
+
+        for(int i=0;i<imagenes.size();i++) {
+            if(imagenes.get(i)!=null)
+            cadenarutas=cadenarutas+"¬"+imagenes.get(i).getRuta();
+        }
+        //quito el ¬ inicial
+        if(cadenarutas.length()>0){
+            cadenarutas=cadenarutas.substring(1);
+        }
+        return cadenarutas;
+    }
 
 
 }

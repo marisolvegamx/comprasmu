@@ -60,6 +60,9 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
     @Query("SELECT ruta FROM imagen_detalle where id=:id")
     public  abstract LiveData<String> findRuta( int id);
 
+    @Query("SELECT * FROM imagen_detalle where ruta=:ruta")
+    public  abstract ImagenDetalle findByRuta( String ruta);
+
     @Query("update imagen_detalle set estatusSync=:estatus WHERE id=:id")
     public abstract void actualizarEstatusSync(int id, int estatus);
 

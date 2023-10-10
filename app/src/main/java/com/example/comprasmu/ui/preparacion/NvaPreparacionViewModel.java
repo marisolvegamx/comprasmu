@@ -349,7 +349,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
     public List<InformeEtapaDet> getDetEtaxCaja(int idinf, int etapa,int numcaja){
       // Log.d(TAG,"buscando a "+idinf+"--"+numcaja);
-         return infDetRepo.getByCaja(idinf, etapa, numcaja);
+         return infDetRepo.getMuestraByCaja(idinf, etapa, numcaja);
     }
     public void borrarDetEtaxCaja(int idinf, int etapa,int numcaja){
         // Log.d(TAG,"buscando a "+idinf+"--"+numcaja);
@@ -528,7 +528,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
             return reacRepo.findAnterior(id);
 
     }
-    public List<InformeCompraDetalle> buscarProdsxQr(int idNuevo, int etapa, int numcaja) {
+    /*public List<InformeCompraDetalle> buscarProdsxQr(int idNuevo, int etapa, int numcaja) {
         List<InformeEtapaDet> qrs=infDetRepo.getByCaja(idNuevo,etapa,numcaja);
        InformeComDetRepositoryImpl comrepo=new InformeComDetRepositoryImpl(application);
        InformeCompraDetalle prod;
@@ -539,7 +539,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
             listaProds.add(prod);
         }
         return  listaProds;
-    }
+    }*/
 
     public InformeEtapaDet buscarDetxQr(String qr) {
          return infDetRepo.getByQr(qr,3);

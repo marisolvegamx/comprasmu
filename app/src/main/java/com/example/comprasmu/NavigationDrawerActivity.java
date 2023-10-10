@@ -162,6 +162,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         Log.d(TAG,"pso x aqui"+Constantes.ETAPAACTUAL);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        //cargo el menu lateral de acuerdo a la etapa
         if(Constantes.ETAPAACTUAL==1) {
             navigationView.getMenu().clear();
 
@@ -281,6 +282,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             graph.setStartDestination(R.id.nav_home);
         }
         navController.setGraph(graph);
+        //pongo canceladas x etapa
         if(Constantes.ETAPAACTUAL==1) {
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcor2));
@@ -346,9 +348,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         Log.d(TAG,"ciudades"+Constantes.CIUDADTRABAJO);
 
             mViewModel.getCiudades().observe(this, data -> {
-                if(data!=null)
-                    Log.d(TAG,"....regresó de la consulta "+ data.size());
-                if(data.size()>1)
+               // if(data!=null)
+              //      Log.d(TAG,"....regresó de la consulta "+ data.size());
+                if(data!=null&&data.size()>1)
                     Constantes.varciudades = true;
 
 
@@ -374,8 +376,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                          guardarCiudadPref(Constantes.CIUDADTRABAJO);
                 }
                     Constantes.varciudades = false;
-                    if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3)
-                        return; //ya no importa la ciudad
+                 //   if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3)
+                  //      return; //ya no importa la ciudad
                     NavigationView navigationView =  findViewById(R.id.nav_view);
                     navigationView.getMenu().findItem(R.id.nav_ciudad_trabajo).setVisible(false);
 

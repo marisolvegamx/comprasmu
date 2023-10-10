@@ -60,6 +60,8 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
 
   @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja  order by num_muestra")
     public abstract List<InformeEtapaDet> getByCaja( int id,int etapa, int numcaja);
+  @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja and descripcionId=11  order by num_muestra")
+  public abstract List<InformeEtapaDet> getMuestraByCaja( int id,int etapa, int numcaja);
 
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja order by id")
     public abstract LiveData<List<InformeEtapaDet>> getByCajaEmp( int id,int etapa, int numcaja);
@@ -76,10 +78,10 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where id=:id")
     public abstract InformeEtapaDet findsimple( int id);
 
-    @Query("SELECT count(*) FROM informe_etapa_det where informeEtapaId=:idinf and num_caja=:numcaja and etapa=3")
+    @Query("SELECT count(*) FROM informe_etapa_det where informeEtapaId=:idinf and num_caja=:numcaja and etapa=3 and descripcionId=11")
     public abstract int totalMuesxCaja( int  numcaja, int idinf);
 
-    @Query("SELECT count(*) FROM informe_etapa_det where  num_caja=:numcaja and etapa=3")
+    @Query("SELECT count(*) FROM informe_etapa_det where  num_caja=:numcaja and etapa=3 and descripcionId=11")
     public abstract int totalMuesxCaja( int  numcaja);
 
     @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
