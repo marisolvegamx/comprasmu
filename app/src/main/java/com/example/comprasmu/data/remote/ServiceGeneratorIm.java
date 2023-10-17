@@ -1,7 +1,6 @@
 package com.example.comprasmu.data.remote;
 
 import android.os.Build;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,7 +11,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ServiceGenerator {
+public class ServiceGeneratorIm {
     private static  String BASE_URL = "https://muesmerc.mx/comprasv1/api/public/";
 
   //  private static final String BASE_URL = "http://192.168.1.79/comprasv1/api/public/";
@@ -42,14 +41,14 @@ public class ServiceGenerator {
        }else
         {
             BASE_URL = "https://muesmerc.mx/comprasv1/api/public/";
-          //  BASE_URL = "http://192.168.1.84/comprasv1/pruebas/public/";
-         //   BASE_URL = "https://muesmerc.mx/comprasv1/pruebas/public/";
+           // BASE_URL = "http://192.168.1.84/comprasv1/pruebas/public/";
+          //  BASE_URL = "https://muesmerc.mx/comprasv1/pruebas/public/";
         }
 
 
         OkHttpClient httpClient =new OkHttpClient.Builder()
                 .readTimeout(90, TimeUnit.SECONDS)
-                .connectTimeout(15, TimeUnit.SECONDS)
+                .connectTimeout(90, TimeUnit.SECONDS)
                 .build();
 
         Gson gson = new GsonBuilder()

@@ -30,6 +30,7 @@ import com.example.comprasmu.ui.correccion.NvaCorrecCalCajaFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionEtiqFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
+import com.example.comprasmu.ui.correccion.NvaCorrecionEmpFragment;
 import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
@@ -200,6 +201,10 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                         frag.setArguments(bundle);
                         ft.add(R.id.continfeta_fragment, frag);
                     }
+                }else  if(etapa==4) {
+                    NvaCorreccionEtiqFragment frag = new NvaCorreccionEtiqFragment();
+                    frag.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment, frag);
                 }else
                 {
                     NvaCorreccionFragment frag = new NvaCorreccionFragment();
@@ -406,7 +411,14 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     @Override
     public void onBackPressed() {
         if(isCor) {
+            if(etapa==4)//el regreso se maneja en el fragment
+            {
+                NvaCorrecionEmpFragment fragment = (NvaCorrecionEmpFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                fragment.atras();
+                return;
+            }
             super.onBackPressed();
+
         }else
 
 

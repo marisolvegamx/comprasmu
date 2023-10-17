@@ -149,6 +149,10 @@ public class InformeCompraRepositoryImpl   {
 
         icDao.actualizarEstatusSync(id, estatus);
     }
+    public void actualizarEstatusSyncAll(int estatus) {
+
+        icDao. actualizarEstatusSyncAll( estatus);
+    }
 
     public List<InformeCompra> getInformesPendSubir(String indice) {
 

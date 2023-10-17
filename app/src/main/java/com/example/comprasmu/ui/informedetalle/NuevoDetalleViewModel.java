@@ -54,6 +54,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class NuevoDetalleViewModel extends AndroidViewModel {
@@ -458,6 +459,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
             return null;
         }
         ImagenDetalle     foto=new ImagenDetalle();
+      //  foto.setRuta(temps.getValor().toLowerCase());
         foto.setRuta(temps.getValor());
         foto.setDescripcion(descripcion);
         foto.setEstatus(1);

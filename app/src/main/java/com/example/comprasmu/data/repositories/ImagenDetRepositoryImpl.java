@@ -129,6 +129,9 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
     public  List<ImagenDetalle> getImagenPendSyncsimple2(long fecha){
         return  dao.getImagenByEstSyncsim2(1,0,fecha);
     }
+    public ImagenDetalle getImagenxEstatusSync(int id, int estatus,String indice) {
+        return dao.getImagenByIdEstSyncsim(id,estatus,indice);
+    }
 
     public List<ImagenDetalle> getFotosInfDet(InformeCompraDetalle informe) {
 

@@ -75,7 +75,10 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
     @Query("SELECT * FROM imagen_detalle WHERE estatus =:estatus and estatusSync=:estatusSync and createdAt<:fecha")
     public abstract List<ImagenDetalle> getImagenByEstSyncsim2(int estatus, int estatusSync, long fecha);
 
-    @Query("SELECT * FROM imagen_detalle WHERE estatus =:estatus and estatusSync=:estatusSync")
+    @Query("SELECT * FROM imagen_detalle WHERE id=:id and  estatusSync=:estatusSync and indice=:indice")
+    public abstract ImagenDetalle getImagenByIdEstSyncsim(int id, int estatusSync,String indice);
+
+    @Query("SELECT * FROM imagen_detalle WHERE estatus =:estatus and estatusSync=:estatusSync ")
     public abstract List<ImagenDetalle> getImagenByEstSyncsimple(int estatus, int estatusSync);
 //    @Query("SELECT * FROM imagen_detalle WHERE informesId=:informe")
  //   public abstract LiveData<List<ImagenDetalle>> getImagenesByInforme(int informe);

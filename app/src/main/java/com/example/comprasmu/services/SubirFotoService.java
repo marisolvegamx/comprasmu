@@ -44,7 +44,7 @@ public class SubirFotoService extends IntentService
 
     String userId, indiceimagen, cadenarutas;
     ImagenDetalle imagenSubir;
-    PostInformeViewModel pvm;
+    //PostInformeViewModel pvm;
     private String tipo; //para saber que tabla actualizare
     ComprasLog milog;
 
@@ -61,7 +61,8 @@ public class SubirFotoService extends IntentService
     public SubirFotoService()
     {
         super("SubirFotoService");
-        pvm=new PostInformeViewModel(getApplication());
+      //  pvm=new PostInformeViewModel(getApplicationContext());
+       // pvm.iniciarConexiones();
     }
     @Override
     protected void onHandleIntent(Intent intent)
@@ -104,6 +105,11 @@ public class SubirFotoService extends IntentService
     private void handleUploadImg()
     {
 
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
             // Instanciar y registrar un Observador
             SubirFotoListener objObservador  = new SubirFotoListener();
 
@@ -320,7 +326,10 @@ public class SubirFotoService extends IntentService
 
             downloadComplete = true;
           //  onDownloadComplete(downloadComplete);
-
+            //todo
+            //veo si puedo cambiar el estatus del informe
+           // pvm.actualizarEstatuscoloInf(0);
+            Constantes.SINCRONIZANDO=0;
         }
         public void onSuccess2(ImagenDetalle imagen){
             downloadComplete = true;

@@ -40,8 +40,9 @@ public class Constantes {
     public static boolean LOGGEADO;
     public static boolean ACTUALIZADO;
 
-    public static final int SINCRONIZANDO = 1;
+    public static int SINCRONIZANDO;
     public static final int ENVIADO =2;
+    public static final int ENVIANDO =1;
     /********************/
     public static SimpleDateFormat  vistasdf=new SimpleDateFormat("dd-MM-yy HH:mm:ss");
     public static SimpleDateFormat  sdfcaducidad=new SimpleDateFormat("dd-MM-yy");

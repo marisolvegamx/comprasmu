@@ -28,6 +28,7 @@ public class InformeCompraAdapter extends RecyclerView.Adapter<InformeCompraAdap
 
     private final ListaInformesViewModel mViewModel;
     private final AdapterCallback callback;
+    private boolean subiendoInf; //para saber si se está subiendo un informe y bloquear los demas
 
     public InformeCompraAdapter(ListaInformesViewModel viewModel, AdapterCallback callback) {
 
@@ -37,7 +38,19 @@ public class InformeCompraAdapter extends RecyclerView.Adapter<InformeCompraAdap
 
     public void setInformeCompraList(List<InformeCompraDao.InformeCompravisita> informesList) {
         mInformeCompraList = informesList;
-       // notifyDataSetChanged();
+        subiendoInf=false;
+        //reviso si alguno se está subiendo
+       /* for( int i=0;i<mInformeCompraList.size();i++){
+
+            if(mInformeCompraList.get(i)!=null&&mInformeCompraList.get(i).estatusSync==1){
+              Log.d("InformeCompraAdapter","estoy subiendo algo");
+                subiendoInf=true;
+                break;
+            }
+        }*/
+
+
+
     }
     @NonNull
     @Override
@@ -45,7 +58,7 @@ public class InformeCompraAdapter extends RecyclerView.Adapter<InformeCompraAdap
         ListaInformeItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.lista_informe_item, parent, false);
-        return new InformeCompraViewHolder(binding,callback);
+        return new InformeCompraViewHolder(binding,callback,subiendoInf);
     }
 
     @Override
@@ -55,6 +68,10 @@ public class InformeCompraAdapter extends RecyclerView.Adapter<InformeCompraAdap
         holder.binding.setSdf(Constantes.vistasdf);
       //  holder.binding.setVisita();
       //  holder.binding.executePendingBindings();
+        if(Constantes.SINCRONIZANDO==1){
+            subiendoInf=true;
+            holder.binding.liBtnsubir.setEnabled(false);
+        }
 
     }
 
@@ -71,7 +88,7 @@ public class InformeCompraAdapter extends RecyclerView.Adapter<InformeCompraAdap
 
 
 
-        public InformeCompraViewHolder(ListaInformeItemBinding binding,AdapterCallback callback) {
+        public InformeCompraViewHolder(ListaInformeItemBinding binding,AdapterCallback callback,boolean subiendoInf) {
             super(binding.getRoot());
             this.binding = binding;
             binding.liBtnedit.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +100,7 @@ public class InformeCompraAdapter extends RecyclerView.Adapter<InformeCompraAdap
 
                 }
             });
+
          /*   binding.liBtnborrar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -94,8 +112,10 @@ public class InformeCompraAdapter extends RecyclerView.Adapter<InformeCompraAdap
             binding.liBtnsubir.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    view.setEnabled(false);
+                    binding.liBtnsubir.setEnabled(false);
+
                         callback.onClickSubir(Integer.parseInt(binding.liTxtid.getText().toString()));
+                    //notifyDataSetChanged();
                 }
             });
 

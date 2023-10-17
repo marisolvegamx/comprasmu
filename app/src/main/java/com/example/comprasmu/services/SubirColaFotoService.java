@@ -85,11 +85,11 @@ public class SubirColaFotoService extends IntentService
                 String partes[] = cadenarutas.split("¬");
                  listaimagenes = new ArrayList<ImagenDetalle>();
 
-                this.index=0;
+                this.index=1;
 
 
                 if(partes!=null&&partes.length>0)
-             for(int i=0;i<partes.length;i++) {
+             for(int i=1;i<partes.length;i++) { //empiezo en la 1 xq no trea nada
                         ImagenDetalle imagen = new ImagenDetalle();
                         imagen.setId(i);
                         imagen.setIndice(indiceimagen);
@@ -164,7 +164,7 @@ public class SubirColaFotoService extends IntentService
           //  onDownloadComplete(downloadComplete);
             index++;
             //subir sigueinte foto
-            if(index<listaimagenes.size()) {
+            if(index<=listaimagenes.size()) {
                // SubirFotoAlt sf = new SubirFotoAlt();
                 SubirFotoRetro sf = new SubirFotoRetro();
                 sf.agregarObservador(objObservador);
@@ -180,6 +180,7 @@ public class SubirColaFotoService extends IntentService
                 }
 
             }
+            //if(index<=listaimagenes.size())
         }
 
         public void onSuccess2(ImagenDetalle imagen){

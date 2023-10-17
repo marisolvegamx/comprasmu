@@ -33,6 +33,7 @@ public class NuevoinformeFragment {
     public static void subirFotos(Activity activity, InformeEnvio informe){
         //las imagenes
         for(ImagenDetalle imagen:informe.getImagenDetalles()){
+
             //subo cada una
             Intent msgIntent = new Intent(activity, SubirFotoService.class);
             msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
@@ -56,7 +57,7 @@ public class NuevoinformeFragment {
         //las imagenes
         String cadenarutas="";
         if(informe.getImagenDetalles()!=null)
-        cadenarutas= ComprasUtils.listaaCadena(informe.getImagenDetalles());
+            cadenarutas= ComprasUtils.listaaCadena(informe.getImagenDetalles());
 
             //subo cada una
             Intent msgIntent = new Intent(activity, SubirColaFotoService.class);

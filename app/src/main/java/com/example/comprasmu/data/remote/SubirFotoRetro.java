@@ -57,8 +57,6 @@ public class SubirFotoRetro implements ImageUploadCallback {
 
     public void subirFoto(String idusuario, String dir, ImagenDetalle imagen, String indice, Context context, ImagenDetRepositoryImpl idrepo) throws Exception {
 
-
-
         try {
             this.idrepo=idrepo;
             this.imagen=imagen;
@@ -98,7 +96,7 @@ public class SubirFotoRetro implements ImageUploadCallback {
                     RequestBody.create(MultipartBody.FORM,idusuario );
 
 
-            Call<PostResponse> uploadImage = ServiceGenerator.getApiService().uploadImage(filePart, rruta, ridlocalim, rusuario, rindice);
+            Call<PostResponse> uploadImage = ServiceGeneratorIm.getApiService().uploadImage(filePart, rruta, ridlocalim, rusuario, rindice);
 
             uploadImage.enqueue(new Callback<PostResponse>() {
                 @Override
@@ -135,6 +133,7 @@ public class SubirFotoRetro implements ImageUploadCallback {
             PostResponse compraResp = response.body();
             Log.d("SubirFoto", "Error al subir" + compraResp.getData());
         }
+            notificarObservadores();
         }
         @Override
         public void onSuccess(Response<PostResponse> response) {
@@ -147,7 +146,7 @@ public class SubirFotoRetro implements ImageUploadCallback {
 
                 Log.d("ejemploimagen","Respuesta->"+compraResp.getData());
                 //todo descomentar
-                actualizarEstado(imagen);
+               // actualizarEstado(imagen);
             }else { //hubo un error
                 //lo registro en el log
                 if(compraResp!=null) {
@@ -159,7 +158,15 @@ public class SubirFotoRetro implements ImageUploadCallback {
 
         }
 
+    @Override
+    public void onErrorGen(Response<PostResponse> response) {
 
+    }
+
+    @Override
+    public void onSuccessGen(Response<PostResponse> response) {
+
+    }
 
     public void actualizarEstado(ImagenDetalle imagen){
         //  for(Imagen imagen:lista){

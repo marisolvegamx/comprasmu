@@ -4,24 +4,29 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
-import com.example.comprasmu.services.SubirColaFotoService;
+import com.example.comprasmu.services.SubirFotoService;
+import com.example.comprasmu.utils.Constantes;
+
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
 import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadStatusDelegate;
-import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
-
+/****original subir foto con multipart***/
 public class SubirFotoAlt {
     MultipartUploadRequest upload;
     String URL_SUBIRPICTURE="https://muesmerc.mx/comprasv1/api/public/subirfoto";
-    private final ArrayList<SubirColaFotoService.SubirFotoListenerAlt> observadores = new ArrayList<SubirColaFotoService.SubirFotoListenerAlt>();
+    private final ArrayList<SubirFotoService.SubirFotoListener> observadores = new ArrayList<SubirFotoService.SubirFotoListener>();
     ImagenDetRepositoryImpl idrepo;
-    private final String TAG="SubirFotoAlt";
+    private final String TAG="SubirFoto";
 
     public SubirFotoAlt() {
         if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")){
@@ -40,7 +45,7 @@ public class SubirFotoAlt {
 
     }
 
-    public void agregarObservador(SubirColaFotoService.SubirFotoListenerAlt o)
+    public void agregarObservador(SubirFotoService.SubirFotoListener o)
     {
         observadores.add(o);
 
@@ -48,29 +53,85 @@ public class SubirFotoAlt {
     public void notificarObservadores()
     {
         // Enviar la notificación a cada observador a través de su propio método
-        for (SubirColaFotoService.SubirFotoListenerAlt obj : observadores) {
+        for (SubirFotoService.SubirFotoListener obj : observadores) {
             obj.onSuccess();
         }
     }
     public void notificarObservadoresIm(ImagenDetalle imagen)
     {
         // Enviar la notificación a cada observador a través de su propio método
-        for (SubirColaFotoService.SubirFotoListenerAlt obj : observadores) {
+        for (SubirFotoService.SubirFotoListener obj : observadores) {
             obj.onSuccess2(imagen);
         }
     }
     public void notificarAvance(int progress)
     {
         // Enviar la notificación a cada observador a través de su propio método
-        for (SubirColaFotoService.SubirFotoListenerAlt obj : observadores) {
+        for (SubirFotoService.SubirFotoListener obj : observadores) {
             obj.onProgress(progress);
         }
     }
 
+
+//    public void subirFoto(List<String> uploadFileArrayList,String idusuario, Context context){
+//
+////filenameGaleria=getFilename();
+//
+//            try {
+//                 upload= new MultipartUploadRequest(context,URL_SUBIRPICTURE)
+//                        .setMaxRetries(2)
+//                          .addParameter("idusuario", idusuario)
+//                         .setUtf8Charset();
+//
+//                upload.setDelegate(new UploadStatusDelegate(){
+//
+//                            @Override
+//                            public void onProgress(UploadInfo uploadInfo) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onError(UploadInfo uploadInfo, Exception exception) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
+//                               /* File eliminar = new File(rutaFotoCamaraGaleria.getPath());
+//                                if (eliminar.exists()) {
+//                                    if (eliminar.delete()) {
+//                                        System.out.println(“archivo eliminado:” + rutaFotoCamaraGaleria.getPath());
+//                                    } else {
+//                                        System.out.println(“archivo no eliminado” + rutaFotoCamaraGaleria.getPath());
+//                                    }*/
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(UploadInfo uploadInfo) {
+//
+//                            }
+//
+//
+//                        });
+//
+//                 int i=0;
+//                for (String uf : uploadFileArrayList) {
+//                    addFileToUploadRequest(uf,i++);
+//                }
+//                upload.startUpload();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//    }
+
     public void subirFoto( String idusuario,String dir, ImagenDetalle imagen,String indice,  Context context, ImagenDetRepositoryImpl idrepo) throws Exception {
+
+//filenameGaleria=getFilename();
 
         try {
             this.idrepo=idrepo;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String uploadFileArrayList=dir + imagen.getRuta();
             Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList);
             upload= new MultipartUploadRequest(context,URL_SUBIRPICTURE)
@@ -85,27 +146,26 @@ public class SubirFotoAlt {
 
                 @Override
                 public void onProgress(UploadInfo uploadInfo) {
-                    Log.d(TAG,"Subiendo foto....."+uploadFileArrayList);
+                    Log.d("SubirFoto","Subiendo foto....."+uploadFileArrayList);
                     notificarAvance(uploadInfo.getProgressPercent());
                 }
 
                 @Override
                 public void onError(UploadInfo uploadInfo, Exception exception) {
-                    Log.d(TAG,"Error al subir"+uploadInfo.getUploadedBytes());
+                    Log.d("SubirFoto","Error al subir"+uploadInfo.getUploadedBytes());
                 }
 
                 @Override
                 public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
-                    Log.d(TAG,"Respuesta->"+serverResponse.getHttpCode());
-                    Log.d(TAG,"Respuesta->"+serverResponse.getBodyAsString());
+                    Log.d("ejemploimagen","Respuesta->"+serverResponse.getHttpCode());
+                    Log.d("ejemploimagen","Respuesta->"+serverResponse.getBodyAsString());
                     if(serverResponse.getHttpCode()==200) {
                         actualizarEstado(imagen);
                     }else { //hubo un error
                         //lo registro en el log
-                        Log.d(TAG,"Hubo un error al subir imagen "+serverResponse.getBodyAsString());
+                        Log.d("SubirFoto","Hubo un error al subir imagen "+serverResponse.getBodyAsString());
                     }
-                    Log.d(TAG, "terminó de subir");
-                    upload=null;
+                    Log.d("SubirFoto", "terminó de subir");
                     notificarObservadores();
 
 
@@ -155,12 +215,13 @@ public class SubirFotoAlt {
 
                 @Override
                 public void onProgress(UploadInfo uploadInfo) {
+                    // Log.d("SubirFoto","Subiendo foto....."+uploadFileArrayList);
                     notificarAvance(uploadInfo.getProgressPercent());
                 }
 
                 @Override
                 public void onError(UploadInfo uploadInfo, Exception exception) {
-                    Log.d(TAG,"Error al subir"+uploadInfo.getUploadedBytes());
+                    Log.d("SubirFoto","Error al subir"+uploadInfo.getUploadedBytes());
                 }
 
                 @Override
@@ -171,8 +232,9 @@ public class SubirFotoAlt {
                         notificarObservadoresIm(imagen);
                     }else { //hubo un error
                         notificarObservadoresIm(null);
-                        Log.d(TAG,"Hubo un error al subir imagen "+serverResponse.getBodyAsString());
+                        Log.d("SubirFoto","Hubo un error al subir imagen "+serverResponse.getBodyAsString());
                     }
+                    // Log.d("SubirFoto", "terminó de subir");
 
 
 
@@ -205,8 +267,6 @@ public class SubirFotoAlt {
 
     }
 
-
-
     public void addFileToUploadRequest(String uf,int i) throws Exception {
         try {
             upload.addFileToUpload(uf, "file").setMethod("POST");
@@ -214,8 +274,6 @@ public class SubirFotoAlt {
             throw new Exception("No se encontró el archivo "+uf+" Verifique");
         }
     }
-
-
 
 
 }

@@ -174,9 +174,9 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public  Integer getConsecutivo(int oplantaSel, Activity actividad, LifecycleOwner owner) {
 
         int respcon=1;
-        Log.d(TAG, "ahorita es la planta"+oplantaSel);
+      //  Log.d(TAG, "ahorita es la planta"+oplantaSel);
         int ultimo=repository.getLastConsecutivoInforme(Constantes.INDICEACTUAL,oplantaSel);
-        Log.d(TAG, "consecutivo encontrado"+ultimo);
+     //   Log.d(TAG, "consecutivo encontrado"+ultimo);
 
         respcon=1+ultimo;
         return respcon;
@@ -196,10 +196,11 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return imagenDetRepository.findsimple(idfoto);
 
     }
-    /*public ImagenDetalle getFotoPend(int idfoto){
-        return imagenDetRepository.getImagenPendSyncsimple(idfoto);
+    //busca la foto si está pendiente
+    public ImagenDetalle getFotoPend(int idfoto,String indice){
+        return imagenDetRepository.getImagenxEstatusSync(idfoto,0,indice);
 
-    }*/
+    }
     public LiveData<ImagenDetalle> getFotoLD(int idfoto){
         return imagenDetRepository.find(idfoto);
 
@@ -227,13 +228,13 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     /**para envio***/
     public InformeEnvio preparaInforme(int informe){
         InformeWithDetalle info=repository.getInformeWithDetalleByIdsimple(informe);
-        Log.d(TAG,"xxxx"+info.informe.getId()+info.informe.getVisitasId());
+       // Log.d(TAG,"xxxx"+info.informe.getId()+info.informe.getVisitasId());
 
         InformeEnvio envio=new InformeEnvio();
         //busco la visita pero tiene que estar en estatussync pendiente
         //   VisitaRepositoryImpl vrepo=new VisitaRepositoryImpl(getContext());
         Visita visita=visitaRepository.findsimple(info.informe.getVisitasId());
-        Log.d(TAG,"wwwwwwwww"+info.informe.getId()+"---"+visita.getTiendaNombre());
+       // Log.d(TAG,"wwwwwwwww"+info.informe.getId()+"---"+visita.getTiendaNombre());
         envio.setIndice(visita.getIndice());
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         //if(visita.getEstatusSync()==0)
@@ -249,6 +250,70 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return envio;
     }
 
+    /**para revisar el detalle del estatus
+     * 0 algo pendiente
+     * 2 todo enviado ***/
+    public  int getEstatusSyncInforme(int informe){
+        InformeWithDetalle info=repository.getInformeWithDetalleByIdsimple(informe);
+
+
+        //busco la visita
+
+        Visita visita=visitaRepository.findsimple(info.informe.getVisitasId());
+      //  Log.d(TAG,"wwwwwwwww"+info.informe.getId()+"---"+visita.getTiendaNombre());
+
+        //busco los detalles
+        List<InformeCompraDetalle> detalles=detalleRepo.getAllSencillo(info.informe.getId());
+        if(this.todasFotosEnviadas(visita,info.informe,detalles))
+            return 2;
+        return 0;
+
+    }
+    //reviso el estatus sync de todas las fotos del informe y la visita
+    //si una está pendiente de envio devuelvo false
+    public boolean todasFotosEnviadas(Visita visita, InformeCompra informe, List<InformeCompraDetalle> detalles){
+
+        //la visita
+
+        ImagenDetalle imagenDetalle = getFotoPend(visita.getFotoFachada(),visita.getIndice());
+        if(imagenDetalle!=null) //esta pendiente
+            return false;
+
+        //las del informe
+
+        imagenDetalle=getFotoPend(informe.getCondiciones_traslado(),visita.getIndice());
+        if(imagenDetalle!=null) //esta pendiente
+            return false;
+        imagenDetalle=getFotoPend(informe.getTicket_compra(),visita.getIndice());
+        if(imagenDetalle!=null) //esta pendiente
+            return false;
+
+        //las del los detalles
+        if(detalles!=null)
+            for(InformeCompraDetalle detalle:detalles) {
+                List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
+                for(int i=0;i<fotos.size();i++) {
+                    imagenDetalle=getFotoPend(fotos.get(i),visita.getIndice());
+                    if(imagenDetalle!=null) //esta pendiente
+                        return false;
+                }
+
+            }
+
+        //las de producto ex
+        List<ImagenDetalle> productoExhibidos = prodRepo.getImagenByVisitasimple(visita.getId());
+        for(ImagenDetalle detalle:productoExhibidos) {
+            imagenDetalle=getFotoPend(detalle.getId(),visita.getIndice());
+            if(imagenDetalle!=null) //esta pendiente
+                return false;
+
+
+        }
+
+        return true; //si llegue hasta aqui es que ya todo se envio
+
+
+    }
     public List<ProductoExhibido> buscarProdExhi(){
         return prodRepo.getAllsimple(visita.getId());
     }
@@ -344,7 +409,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         if(!nombrecampo.equals("clientesId"))
             temporal.setClienteSel(clienteSel);
         try {
-            Log.d(TAG,"buscando a "+nombrecampo);
+          //  Log.d(TAG,"buscando a "+nombrecampo);
             //reviso si ya existe
             InformeTemp editar=null;
             if(!tabla.equals("I"))

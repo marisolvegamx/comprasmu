@@ -907,7 +907,10 @@ public class NvoEmpaqueFragment extends Fragment {
         try{
             String rutafoto = null;
             String qr = null;
-
+            int descripcionId=preguntaAct.getId()-78;
+            if(preguntaAct.getId()==113){
+                descripcionId=23;
+            }
             Log.d(TAG,"guardando det"+mViewModel.getIdNuevo());
             rutafoto=textoint.getText().toString();
            // qr=txtqr.getText().toString();
@@ -921,7 +924,7 @@ public class NvoEmpaqueFragment extends Fragment {
                     isEdicion = false;
                 } else if (mViewModel.getIdNuevo() > 0)
                     //guardo el detalle
-                    mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), 1, preguntaAct.getNombreCampo(), rutafoto, 0, mViewModel.cajaAct.consCaja,Constantes.INDICEACTUAL,mViewModel.cajaAct.numMuestras, preguntaAct.getLabel());
+                    mViewModel.insertarEmpDet(mViewModel.getIdNuevo(), descripcionId, preguntaAct.getNombreCampo(), rutafoto, 0, mViewModel.cajaAct.consCaja,Constantes.INDICEACTUAL,mViewModel.cajaAct.numMuestras, preguntaAct.getLabel());
                 fotomos.setImageBitmap(null);
                 fotomos.setVisibility(View.GONE);
                 btnrotar.setVisibility(View.GONE);

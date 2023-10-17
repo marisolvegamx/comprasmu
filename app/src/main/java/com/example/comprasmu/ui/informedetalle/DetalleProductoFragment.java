@@ -1787,7 +1787,8 @@ public class DetalleProductoFragment extends Fragment {
 
     }
     public void rotar(){
-        String foto=preguntaview.getTextoint().toString();
+       // String foto=preguntaview.getTextoint().toString().toLowerCase();
+        String foto=preguntaview.getTextoint().toString().toLowerCase();
         if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
         {
             Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();

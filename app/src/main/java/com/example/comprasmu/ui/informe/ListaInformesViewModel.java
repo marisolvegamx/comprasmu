@@ -198,7 +198,10 @@ public class ListaInformesViewModel extends AndroidViewModel {
     public MutableLiveData<Event<Integer>> getSnackbarText() {
         return mSnackbarText;
     }
+    public void actualizarEstatusSyncInf(int id,int estatusSync) {
 
+        repository.actualizarEstatusSync(id,estatusSync);
+    }
    /* public  LiveData<List<InformeCompra>>  cargarPestañas(){
         return repository.getClientesByIndice(Constantes.INDICEACTUAL, nombreTienda,ciudadSel,plantaSel,clienteSel);
 

@@ -70,8 +70,8 @@ public class DescargarDocsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View root= inflater.inflate(R.layout.fragment_descargar_docs, container, false);
-        btndesc = (Button) root.findViewById(R.id.btndddescargar);
+        View root= inflater.inflate(R.layout.lista_generic_fragment, container, false);
+     //   btndesc = (Button) root.findViewById(R.id.btndddescargar);
         btndesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

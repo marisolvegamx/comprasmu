@@ -144,13 +144,19 @@ public class PostInformeViewModel {
             prodeRepo.actualizarEstatusSyncxVisita(informe.getVisita().getId(), Constantes.ENVIADO);
         }
         //actualizo informe
-        infoRepo.actualizarEstatusSync(informe.getInformeCompra().getId(),Constantes.ENVIADO);
+       // infoRepo.actualizarEstatusSync(informe.getInformeCompra().getId(),Constantes.ENVIADO);
         //actualizo detalles
         infoDetRepo.actualizarEstatusSyncxInfo(informe.getInformeCompra().getId(),Constantes.ENVIADO);
-        //imagenes
-        if(informe.getImagenDetalles()!=null)
+        //imagenes se actualiza en enviar foto
+       /* if(informe.getImagenDetalles()!=null)
         for(ImagenDetalle imagen: informe.getImagenDetalles())
-        imagenRepo.actualizarEstatusSync(imagen.getId(),Constantes.ENVIADO);
+        imagenRepo.actualizarEstatusSync(imagen.getId(),Constantes.ENVIADO);*/
+
+    }
+
+    public void actualizarEstatuscoloInf(int idinfo){
+       //todo pensar en como actualizar solo el informe que subi
+         infoRepo.actualizarEstatusSyncAll(Constantes.ENVIADO);
 
     }
     public void actualizarEstatusTodo(TodoEnvio informes){
