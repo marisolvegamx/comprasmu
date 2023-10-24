@@ -155,7 +155,7 @@ public class BorrarDatosFragment extends Fragment {
         ei.eliminarCorrecciones();
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
-
+        ei.eliminarTablaVers();
 
 
     }

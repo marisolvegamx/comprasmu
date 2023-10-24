@@ -37,6 +37,7 @@ import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirPendService;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
@@ -200,7 +201,10 @@ public class EliminadorIndice {
     public void eliminarSolicitudes(){
         solRepo.deleteByIndice(indice);
     }
-
+    public void eliminarTablaVers(){
+        TablaVersionesRepImpl tvrepo=new TablaVersionesRepImpl(this.application);
+        tvrepo.deleteByIndice();
+    }
     public void borrarImagenes(){
 
         //busco los detalles

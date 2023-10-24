@@ -86,6 +86,7 @@ public class BorrarActivity extends AppCompatActivity {
         ei.eliminarCorrecciones();
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
+        ei.eliminarTablaVers();
         //inicializo constantes
         Constantes.CIUDADTRABAJO ="" ;
         Constantes.IDCIUDADTRABAJO=0;

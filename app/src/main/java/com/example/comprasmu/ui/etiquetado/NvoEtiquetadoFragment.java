@@ -1057,6 +1057,7 @@ public void iraReubicar(){
             //   txtcajaact.setVisibility(View.GONE);
 
             case 4://caja
+
                 sv4.setVisibility(View.VISIBLE);
                 sv6.setVisibility(View.GONE);
                 svotra.setVisibility(View.GONE);
@@ -1064,6 +1065,8 @@ public void iraReubicar(){
                 mViewModel.preguntaAct=preguntaAct;
                 break;
             case 5://foto cara a
+                contmuestra--;
+                contmuint--;
                 svotra.setVisibility(View.GONE);
                 //puede ser que tenga que volver a otra caja
                 if(contcajaf>1){

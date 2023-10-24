@@ -65,7 +65,6 @@ public class LoginActivity extends AppCompatActivity
      EditText usernameEditText;
      EditText passwordEditText;
      ProgressBar loadingProgressBar;
-    //private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
     ImagenDetRepositoryImpl imagenDetRepo;
     int desclis; int descinf; int descfoto;

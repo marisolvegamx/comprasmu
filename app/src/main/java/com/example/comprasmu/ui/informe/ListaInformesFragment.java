@@ -253,13 +253,14 @@ public class    ListaInformesFragment extends Fragment implements InformeCompraA
             InformeEnvio informeenv = niViewModel.preparaInforme(informe);
             //todo cambio estatus a enviando
             //mViewModel.actualizarEstatusSyncInf(informe,Constantes.ENVIANDO);
-            Constantes.SINCRONIZANDO=1;
-            mListAdapter.notifyDataSetChanged();
+
             SubirInformeTask miTareaAsincrona = new SubirInformeTask(true, informeenv, getActivity(), niViewModel);
             miTareaAsincrona.execute();
             Log.d(TAG, "preparando informe**********");
             // NuevoinformeFragment.subirFotosFila(getActivity(), informeenv);
             NuevoinformeFragment.subirFotos(getActivity(), informeenv);
+           // Constantes.SINCRONIZANDO=1;
+          //  mListAdapter.notifyDataSetChanged();
         } else
             Toast.makeText(getActivity(), getString(R.string.sin_conexion), Toast.LENGTH_LONG).show();
 

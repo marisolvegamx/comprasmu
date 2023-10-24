@@ -99,8 +99,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     VisitaRepositoryImpl visRepo;
     InformeComDetRepositoryImpl infdrepo;
     InformeCompraRepositoryImpl infrepo;
-   // private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
-    private   String DESTINATION_PATH ;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private ListaSolsViewModel scViewModel;
     public static final String PROGRESS_UPDATE = "progress_update";
@@ -123,7 +121,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         setContentView(R.layout.activity_navigation_darawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        Constantes.SINCRONIZANDO=0;
         if (savedInstanceState != null) {    // Restore value of members from saved state
           buscarEtapa();
         }

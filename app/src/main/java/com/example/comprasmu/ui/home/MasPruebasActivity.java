@@ -69,7 +69,7 @@ public class MasPruebasActivity extends AppCompatActivity {
             for(int i=1;i<partes.length;i++) { //empiezo en la 1 xq no trea nada
                 ImagenDetalle imagen = new ImagenDetalle();
                 imagen.setId(i);
-                imagen.setIndice("10.2023");
+                imagen.setIndice("10.2022");
                 imagen.setRuta(partes[i]);
                 listaimagenes.add(imagen);
             }

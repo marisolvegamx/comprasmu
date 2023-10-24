@@ -53,7 +53,7 @@ public class NuevoinformeFragment {
 
     }
 
-    public static void subirFotosFila(Activity activity, InformeEnvio informe){
+   /* public static void subirFotosFila(Activity activity, InformeEnvio informe){
         //las imagenes
         String cadenarutas="";
         if(informe.getImagenDetalles()!=null)
@@ -73,6 +73,6 @@ public class NuevoinformeFragment {
             //cambio su estatus a subiendo
 
 
-    }
+    }*/
 
 }

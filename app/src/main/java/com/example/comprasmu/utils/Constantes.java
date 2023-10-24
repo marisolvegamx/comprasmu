@@ -55,6 +55,12 @@ public class Constantes {
     public static String[] PUNTOCARDINAL={"NORTE","SUR","ESTE","OESTE","CENTRO"};
     public static boolean varciudades;
     public static List<DescripcionGenerica> clientesAsignados;
+    public static String URLSERV="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
+    //nam
+    public static String URLPRUEBAS1="http://192.168.1.84/comprasv1/";
+
+   // public static String URLPRUEBAS1="http://192.168.1.66/comprasv1/";
+    public static String URLPRUEBAS2="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
 
     public static HashMap<Integer,String> plantasAsignadas;
     public static String ni_clientesel;
