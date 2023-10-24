@@ -33,7 +33,8 @@ public abstract class TablaVersionesDao extends BaseDao<TablaVersiones>{
 
     @Query("SELECT * FROM tabla_versiones")
     public  abstract LiveData<List<TablaVersiones>> findAll();
-
+    @Query("delete FROM tabla_versiones")
+    public  abstract void deleteAll();
     @Query("SELECT * FROM tabla_versiones where id=:id")
      public abstract LiveData<TablaVersiones> find( int id);
 

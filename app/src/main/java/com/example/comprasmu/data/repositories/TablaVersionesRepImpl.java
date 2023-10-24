@@ -52,6 +52,10 @@ public class TablaVersionesRepImpl extends BaseRepository<TablaVersiones> {
         dao.delete(object);
     }
 
+    public void deleteByIndice() {
+        dao.deleteAll();
+    }
+
     @Override
     public void insertAll(List<TablaVersiones> objects) {
         dao.insertAll(objects);

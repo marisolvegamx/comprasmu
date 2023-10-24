@@ -67,7 +67,7 @@ public class SubirFoto implements ImageUploadCallback {
         try {
             this.idrepo = idrepo;
             this.imagen=imagen;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+           // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String uploadFileArrayList = dir + imagen.getRuta();
             Log.d(TAG, "ahora si voy a subir" + uploadFileArrayList);
             File file = new File(uploadFileArrayList);
@@ -117,7 +117,7 @@ public class SubirFoto implements ImageUploadCallback {
 
     public void subirFotoGen( String idusuario,String dir, ImagenDetalle imagen,String indice,  Context context,String tabla) throws Exception {
 
-           //filenameGaleria=getFilename();
+        //filenameGaleria=getFilename();
 
         try {
             this.idrepo = new ImagenDetRepositoryImpl(context);
@@ -192,7 +192,7 @@ public class SubirFoto implements ImageUploadCallback {
 
                 Log.d(TAG, "Respuesta->" + compraResp.getData());
                 //todo descomentar
-                 actualizarEstado(imagen);
+                actualizarEstado(imagen);
             } else { //hubo un error
                 //lo registro en el log
                 if (compraResp != null) {

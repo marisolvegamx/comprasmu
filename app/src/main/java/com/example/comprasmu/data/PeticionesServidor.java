@@ -41,6 +41,7 @@ import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.login.LoginActivity;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
 import java.io.IOException;
@@ -62,10 +63,11 @@ public class PeticionesServidor {
     static final String TAG="PeticionesServidor";
     static final String TABLA_DETALLE="pr_listacompradetalle";
     MutableLiveData<List<Tienda>> lista;
-
+    ComprasLog milog;
     public PeticionesServidor(String usuario ) {
         this.usuario = usuario;
         lista=new MutableLiveData<>();
+        milog= ComprasLog.getSingleton();
     }
 
     public void getCatalogos(CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atRepo,DescargasIniAsyncTask.DescargaIniListener listener) {
@@ -136,7 +138,7 @@ public class PeticionesServidor {
                     insertarSustitucion(respuestaCats,trepo,sustRepo,listener);
 
                 }else {
-                    Log.e("PeticionesServidor", "algo salio mal en peticion catalogo");
+                    Log.e("PeticionesServidor", "algo salio mal en peticion sustitucion");
                     listener.finalizar();
                 }
             }
@@ -790,7 +792,8 @@ public class PeticionesServidor {
                    listener.validarEtapa(respuesta);
                 }else {
                     Log.e("PeticionesServidor", "algo salio mal en peticion de etapa");
-
+                    milog.grabarError("PeticionesServidor.getEtapaAct"+ "algo salio mal en peticion de etapa");
+                    listener.validarEtapa(null);
                       }
             }
 
