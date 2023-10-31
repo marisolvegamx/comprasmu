@@ -39,12 +39,12 @@
             android:title="@string/menu_lista_emp" />
 
         <item
-            android:id="@+id/nav_solcor2"
+            android:id="@+id/nav_solcorem"
             android:icon="@drawable/ic_baseline_notifications_active_24"
             android:title="@string/menu_correccion"
             app:actionViewClass="android.widget.TextView" />
         <item
-            android:id="@+id/nav_rescorreccion2"
+            android:id="@+id/nav_rescorremp"
             android:icon="@drawable/ic_baseline_check_24"
             android:title="@string/menu_rescorreccion" />
 
@@ -59,25 +59,5 @@
 
             android:title="@string/cerrar_sesion" />
 
-<!--        <item-->
-<!--            android:id="@+id/nav_borrar"-->
-<!--            android:icon="@drawable/ic_menu_slideshow"-->
-<!--            android:title="@string/menu_borrar" >-->
-<!--        <menu>-->
-<!--            <item-->
-<!--                android:id="@+id/nav_borrarinformes"-->
-<!--                android:icon="@drawable/ic_menu_slideshow"-->
-<!--                android:title="@string/menu_borrar_informe" />-->
-<!--            <item-->
-<!--                android:id="@+id/nav_borrarcompras"-->
-<!--                android:icon="@drawable/ic_menu_slideshow"-->
-<!--                android:title="@string/menu_borrar_lista" />-->
-<!--        </menu>-->
-
-<!--        </item>-->
-<!--        <item-->
-<!--            android:id="@+id/nav_tiendas"-->
-<!--            android:icon="@drawable/ic_menu_slideshow"-->
-<!--            android:title="@string/buscar_tienda" />-->
     </group>
 </menu>

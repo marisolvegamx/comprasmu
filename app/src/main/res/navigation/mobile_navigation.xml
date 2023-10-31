@@ -446,12 +446,27 @@
 
     <fragment
         android:id="@+id/nav_etiq"
-        android:name="com.example.comprasmu.utils.ui.DescargarDocsFragment"
+        android:name="com.example.comprasmu.ui.empaque.DescargarEtiqFragment"
         android:label="@string/desc_etiq" >
         <argument
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
             android:defaultValue="4" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_solcorem"
+        android:name="com.example.comprasmu.ui.solcorreccion.ListaSolCorreFragment"
+        android:label="@string/coreccion_pend"
+      >
+    </fragment>
+    <fragment
+        android:id="@+id/nav_rescorremp"
+        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:label="@string/menu_rescorreccion" >
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="rescor" />
     </fragment>
     <activity
         android:id="@+id/nav_menuini"
