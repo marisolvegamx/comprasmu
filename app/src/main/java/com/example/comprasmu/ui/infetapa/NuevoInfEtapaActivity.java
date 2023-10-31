@@ -16,7 +16,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
@@ -30,13 +29,11 @@ import com.example.comprasmu.ui.correccion.NvaCorrecCalCajaFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionEtiqFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
-import com.example.comprasmu.ui.correccion.NvaCorrecionEmpFragment;
+import com.example.comprasmu.ui.correccion.NvaCorreccionEmpFragment;
 import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
-import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 
@@ -202,7 +199,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                         ft.add(R.id.continfeta_fragment, frag);
                     }
                 }else  if(etapa==4) {
-                    NvaCorreccionEtiqFragment frag = new NvaCorreccionEtiqFragment();
+                    NvaCorreccionEmpFragment frag = NvaCorreccionEmpFragment.newInstance();
                     frag.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment, frag);
                 }else
@@ -413,7 +410,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         if(isCor) {
             if(etapa==4)//el regreso se maneja en el fragment
             {
-                NvaCorrecionEmpFragment fragment = (NvaCorrecionEmpFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                NvaCorreccionEmpFragment fragment = (NvaCorreccionEmpFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
                 fragment.atras();
                 return;
             }
@@ -438,6 +435,13 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             if(reactivo!=null)
             //busco el reactivo anterior
             {
+                if (dViewModel.preguntaAct ==93) {
+                    //tal vez regrese a otra caja
+                    if(dViewModel.cajaAct.consCaja>1){
+                        reactivo=dViewModel.buscarReactivoSim(113);
+                        dViewModel.cajaAct.consCaja=dViewModel.cajaAct.consCaja-1;
+                    }
+                }
                 if (dViewModel.preguntaAct > 91) {
                     Bundle bundle=new Bundle();
 
@@ -454,7 +458,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     // fragmentTransaction.addToBackStack(null);
 // Cambiar
                     fragmentTransaction.commit();
-                }
+                }else
                 if (dViewModel.preguntaAct == 92 && dViewModel.variasClientes) {
                     Bundle bundle=new Bundle();
 

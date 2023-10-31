@@ -585,7 +585,7 @@ public void iraReubicar(){
                 Log.d(TAG, clienteSel + "numcajas ll" + listacajas.size());
                 if (listacajas.size() > 0) { //las numeracion que ya tengo
                     totcajas=listacajas.size();
-                    cajaini =listacajas.get(0).getNum_caja() ;
+                    cajaini =totxciu;
                     for (InformeEtapaDet det : listacajas
                     ) {
                         spinnerValues.add(det.getNum_caja() + "");
@@ -832,6 +832,8 @@ public void iraReubicar(){
     public boolean validarQr(String qr) {
         // listaqr.setAdapter(null);
         InformeEtapaDet prods = mViewModel.buscarDetxQr(qr);
+        if(prods!=null&&detalleEdit!=null)
+            Log.d(TAG,prods.getId()+"--"+detalleEdit.getId()+" "+isEdicion);
         if(prods!=null&&detalleEdit!=null&&prods.getId()==detalleEdit.getId()&&isEdicion){
             //es el mismo
         }else

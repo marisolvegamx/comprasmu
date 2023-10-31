@@ -305,7 +305,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
         if(Constantes.ETAPAACTUAL==4)
             gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcor2));
+                    findItem(R.id.nav_solcorem));
 
         initializeCountDrawer();
         revisarCiudades();
@@ -665,6 +665,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     private void contarCorrecc(){
        // totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
+        if(Constantes.ETAPAACTUAL==4){
+            //busco x ciudad
+            totCorrecciones=scViewModel.getTotSolsEtiqxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);
+
+        }else
+
         if(Constantes.ETAPAACTUAL==3){
             //busco x ciudad
             totCorrecciones=scViewModel.getTotSolsEtiqxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);

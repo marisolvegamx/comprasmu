@@ -217,7 +217,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         root = inflater.inflate(R.layout.fragment_abririnforme, container, false);
 
-            TextView indice = root.findViewById(R.id.txtaiindice);
+        TextView indice = root.findViewById(R.id.txtaiindice);
         indice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
         milog=ComprasLog.getSingleton();
         milog.crearLog(getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
@@ -585,7 +585,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                         sv.addView(cf1.crearFormulario());
                         //   sv.addView(cf2.crearFormulario());
                         visitaEdi = visita;
-
+                        mViewModel.visitaEdicion.removeObservers(getViewLifecycleOwner());
 
                     }
                 });

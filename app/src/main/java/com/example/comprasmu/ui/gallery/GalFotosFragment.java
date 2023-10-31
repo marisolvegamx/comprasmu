@@ -104,7 +104,7 @@ public class GalFotosFragment extends Fragment {
                   }
                   if(Constantes.ETAPAACTUAL==4){
                       int infsel = params.getInt(VerEmpaqueFragment.ARG_INFSEL);
-
+                      Log.d(TAG,infsel+"--"+Constantes.ETAPAACTUAL+"--"+idmuestra);
                       listafotos=igViewModel.getfotosxetapaxcaj(infsel,Constantes.ETAPAACTUAL,idmuestra);
 
                       startuiEta(idmuestra);

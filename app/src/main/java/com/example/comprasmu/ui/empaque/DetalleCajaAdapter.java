@@ -70,7 +70,7 @@ public class DetalleCajaAdapter extends RecyclerView.Adapter<DetalleCajaAdapter.
                 @Override
                 public void onClick(View view) {
                     // view.setEnabled(false);
-                    callback.onClickVer(Integer.parseInt(binding.txtdcid.getText().toString()));
+                    callback.onClickVer(Integer.parseInt(binding.txtdcnnumcaja.getText().toString()));
                 }
             });
         }

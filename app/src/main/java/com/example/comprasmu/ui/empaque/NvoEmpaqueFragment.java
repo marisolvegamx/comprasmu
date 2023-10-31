@@ -195,7 +195,17 @@ public class NvoEmpaqueFragment extends Fragment {
 
                     }
                     if (preguntaAct.getTabla().equals("IE")) {
-                        //son comentarios
+                        //son comentarios o sel cliente
+                        listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+                        Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+
+                        if (listainfetiq.size() > 1) {
+                            //tengo varias clientes
+                            // preguntaAct=1;
+                            convertirLista(listainfetiq);
+                            mViewModel.variasClientes = true;
+
+                        }
                         Log.d(TAG,"DONE 10");
                         crearFormulario();
                     }
@@ -208,7 +218,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
             }else
             {
-                //es nuevo nuevito
+
 
                 ciudadInf=Constantes.CIUDADTRABAJO;
                 if (datosRecuperados != null) {
@@ -223,7 +233,7 @@ public class NvoEmpaqueFragment extends Fragment {
                             public void onChanged(InformeEtapa informeEtapa) {
 
                                 mViewModel.setNvoinforme(informeEtapa);
-                              //  clienteId=informeEtapa.getClientesId();
+                                clienteId=informeEtapa.getClientesId();
                                 mViewModel.setIdNuevo(informeSel);
                                 int pregact = 0;
                                 ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informeEtapa,informeEtapa.getTotal_muestras(), informeEtapa.getTotal_cajas());
@@ -315,7 +325,9 @@ public class NvoEmpaqueFragment extends Fragment {
                         });
                     }
                 }
-            } else { //es nuevo pregunta 91
+            } else {
+                    //es nuevo nuevito
+                    //es nuevo pregunta 91
   //reviso si ya tengo uno abierto
             InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,4);
 
@@ -592,7 +604,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
         }
 
-        if(isEdicion&&!textoint.getText().equals("")){
+        if(isEdicion&&preguntaAct.getId()>91&&!textoint.getText().equals("")){
             aceptar.setEnabled(true);
         }
          if(preguntaAct.getId()==114){ //los comentarios no son obligatorios
@@ -910,6 +922,15 @@ public class NvoEmpaqueFragment extends Fragment {
             int descripcionId=preguntaAct.getId()-78;
             if(preguntaAct.getId()==113){
                 descripcionId=23;
+            }
+            if(preguntaAct.getId()==99){
+                descripcionId=20;
+            }
+            if(preguntaAct.getId()==101){
+                descripcionId=21;
+            }
+            if(preguntaAct.getId()==103){
+                descripcionId=22;
             }
             Log.d(TAG,"guardando det"+mViewModel.getIdNuevo());
             rutafoto=textoint.getText().toString();

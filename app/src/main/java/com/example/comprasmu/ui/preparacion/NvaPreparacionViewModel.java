@@ -410,6 +410,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     }*/
 
     public void getCajasEtiq(int cliente, String ciudad){
+        Log.d(TAG,Constantes.INDICEACTUAL+"--"+cliente+"--"+ciudad);
         List<InformeEtapaDet> muestras= infDetRepo.getResumenEtiq(3,Constantes.INDICEACTUAL,cliente, ciudad);
         EtiquetadoxCliente resul=null;
         int i=1;

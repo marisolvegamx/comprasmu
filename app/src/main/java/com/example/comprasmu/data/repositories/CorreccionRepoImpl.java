@@ -53,8 +53,8 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
 
         Object[] params=filtros.toArray();
 
-      //  for(int i=0;i<params.length;i++)
-      //      Log.d("CorreccionRepoImpl","***"+params[i]);
+        for(int i=0;i<params.length;i++)
+           Log.d("CorreccionRepoImpl","***"+params[i]);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 filtros.toArray());

@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -29,7 +28,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
-import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -37,7 +35,6 @@ import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
-import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -55,17 +52,16 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-/**
+/**Informe de correccion para empaque pide foto x foto de acuerdo al tipo
+ * de foto que se solicitó
  * A simple {@link Fragment} subclass.
- * Use the {@link NvaCorrecionEmpFragment#newInstance} factory method to
+ * Use the {@link NvaCorreccionEmpFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NvaCorrecionEmpFragment extends Fragment {
+public class NvaCorreccionEmpFragment extends Fragment {
 
 
     CreadorFormulario cf;
@@ -73,8 +69,6 @@ public class NvaCorrecionEmpFragment extends Fragment {
     private static final String TAG = "NvaCorrecionEmpFragment";
     private long lastClickTime = 0;
     int solicitudSel;
-
-    private static final int REQUEST_CODEQR = 341;
 
     public static int REQUEST_CODE_TAKE_PHOTO = 1;
 
@@ -104,19 +98,13 @@ public class NvaCorrecionEmpFragment extends Fragment {
 
     private TextView txtcajaact;
 
-    public NvaCorrecionEmpFragment() {
+    public NvaCorreccionEmpFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Informe de correccion de calidad caja para etiquetado
-     *Pasa pregunta por pregunta
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NvaCorrecCalCajaFragment.
-     */
-    public static NvaCorrecionEmpFragment newInstance(String param1, String param2) {
-        NvaCorrecionEmpFragment fragment = new NvaCorrecionEmpFragment();
+
+    public static NvaCorreccionEmpFragment newInstance() {
+        NvaCorreccionEmpFragment fragment = new NvaCorreccionEmpFragment();
 
         return fragment;
     }
@@ -148,7 +136,8 @@ public class NvaCorrecionEmpFragment extends Fragment {
         compraslog = ComprasLog.getSingleton();
         try {
             //    buscar la solicitud
-            solViewModel.getSolicitud(solicitudSel, numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
+            LiveData<SolicitudCor> solcorlive=solViewModel.getSolicitud(solicitudSel, numfoto);
+            solcorlive.observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
                 @Override
                 public void onChanged(SolicitudCor solicitudCor) {
                     solicitud = solicitudCor;
@@ -173,7 +162,7 @@ public class NvaCorrecionEmpFragment extends Fragment {
                         }
                     });
 
-
+                    solcorlive.removeObservers(getViewLifecycleOwner());
 
                 }
             });
@@ -187,12 +176,30 @@ public class NvaCorrecionEmpFragment extends Fragment {
     }
 
     public void crearPregunta() {
-        int num_pregact = 91;
+        int num_pregact = 93;
         Log.d(TAG, "creando preg");
 
 
         if(preguntaAct==null) //para la 1a vez
         {
+            //segun la descripcion
+            if(fotoEdit.getDescripcionId()>14&&fotoEdit.getDescripcionId()<20)
+                num_pregact=fotoEdit.getDescripcionId()+78;
+            if(fotoEdit.getDescripcionId()==23){
+                num_pregact=113;
+            }
+            if(fotoEdit.getDescripcionId()==22){
+                num_pregact=99;
+            }
+            if(fotoEdit.getDescripcionId()==21){
+            num_pregact=101;
+            }
+            if(fotoEdit.getDescripcionId()==22){
+                num_pregact=103;
+            }
+            //busco si ya tengo alguna correccion
+            correccion=mViewModel.getCorrecionxSolSimple(solicitudSel,numfoto,Constantes.INDICEACTUAL);
+
             //busco preguntaAct
             preguntaAct = dViewModel.buscarReactivoSimpl(num_pregact);
         }
@@ -201,11 +208,21 @@ public class NvaCorrecionEmpFragment extends Fragment {
             if (preguntaAct == null) {
                 return;
             }
-            if(preguntaAct.getId()>122) {
-                //todo saber en que pregunta voy primero veo si ya tiene una correccion iniciada es edicion
+            if(preguntaAct.getId()>94) {
                 int descripcionId=preguntaAct.getId()-78;
-
-                //busco el numfoto
+                if(preguntaAct.getId()==113){
+                    descripcionId=23;
+                }
+                if(preguntaAct.getId()==99){
+                    descripcionId=20;
+                }
+                if(preguntaAct.getId()==101){
+                    descripcionId=21;
+                }
+                if(preguntaAct.getId()==103){
+                    descripcionId=22;
+                }
+                //busco el numfoto original
                 InformeEtapaDet lddetalle = preViewModel.getByDescripCajaSim(infEtiquetado.getId(), descripcionId, cajaAct);
 
                 if (lddetalle != null) {
@@ -215,12 +232,15 @@ public class NvaCorrecionEmpFragment extends Fragment {
                     } catch (NumberFormatException ex) {
                         compraslog.grabarError(TAG, "guardarCorr", ex.getMessage());
                     }
-                    correccion = mViewModel.getUltCorrecionxSolSimple(solicitudSel, num_foto, Constantes.INDICEACTUAL);
+                    // veo si ya tiene una correccion iniciada es edicion
+
+                    correccion = mViewModel.getCorrecionxSolSimple(solicitudSel, num_foto, Constantes.INDICEACTUAL);
                 }
             }
             if(correccion!=null){
+                Log.d(TAG,"buscando edicion "+correccion.getId());
                 isEdicion=true;
-                //y ya iba en las fotos
+
 
             }
 
@@ -251,11 +271,8 @@ public class NvaCorrecionEmpFragment extends Fragment {
                                             }
             });
 
-            //todo no se cual es la ultima
-            if (preguntaAct.getId() == 7) {
-                //cambio el boton a finalizar y muestro alerta
-                preguntaview.setEnviarButton(getString(R.string.enviar));
-            }
+
+
             if(preguntaview.hayPreguntaSino()){
                 preguntaview.setPregSINoOnChange(new RadioGroup.OnCheckedChangeListener() {
                     @Override
@@ -306,13 +323,10 @@ public class NvaCorrecionEmpFragment extends Fragment {
             });
 
             if(isEdicion){
-                // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                //ComprasUtils cu=new ComprasUtils();
-                // bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
-                if(inftemp.getValor().equals("0")){
+                  if(inftemp.getValor().equals("0")){
                     //lo manejo en el view
                 }else {
-                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + inftemp.getValor(), 100, 100);
+                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + correccion.getRuta_foto1(), 100, 100);
 
                     preguntaview.setImageView(bitmap1);
                 }
@@ -340,25 +354,40 @@ public class NvaCorrecionEmpFragment extends Fragment {
                 valor = valor.toUpperCase();
 
             }
-            int descripcionId=12;
-            if(preguntaAct.getId()==124){
-                descripcionId=13;
+            int descripcionId=preguntaAct.getId()-78;
+            if(preguntaAct.getId()==113){
+                descripcionId=23;
             }
-            if(preguntaAct.getId()==125){
-                descripcionId=14;
+            if(preguntaAct.getId()==99){
+                descripcionId=20;
             }
-            //buscar el num de foto para las que son cara a y para las sig. cajas
-            InformeEtapaDet lddetalle= preViewModel.getByDescripCajaSim(infEtiquetado.getId(),descripcionId,cajaAct);
+            if(preguntaAct.getId()==101){
+                descripcionId=21;
+            }
+            if(preguntaAct.getId()==103){
+                descripcionId=22;
+            }
+            if(!isEdicion) {
+                //busco numfoto orig
+                Log.d(TAG, "foto orig " + descripcionId + "caja " + cajaAct);
+                InformeEtapaDet lddetalle = preViewModel.getByDescripCajaSim(infEtiquetado.getId(), descripcionId, cajaAct);
 
-            if (lddetalle != null) {
-                int num_foto=0;
-                try {
-                             num_foto = Integer.parseInt(lddetalle.getRuta_foto());
-                }catch(NumberFormatException ex){
-                            compraslog.grabarError(TAG,"guardarCorr",ex.getMessage());
+                if (lddetalle != null) {
+                    Log.d(TAG, "foto orig " + lddetalle.getRuta_foto());
+                    int num_foto = 0;
+                    try {
+                        num_foto = Integer.parseInt(lddetalle.getRuta_foto());
+                    } catch (NumberFormatException ex) {
+                        compraslog.grabarError(TAG, "guardarCorr", ex.getMessage());
+                    }
+                    mViewModel.setIdNuevo(mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL, num_foto, valor, "", "", ""));
+                    preguntaview.aceptarSetEnabled(true);
                 }
-                mViewModel.setIdNuevo(mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL, num_foto, valor, "", "", ""));
-                preguntaview.aceptarSetEnabled(true);
+            }else
+            {
+                correccion.setRuta_foto1(valor);
+                //es edicion
+                mViewModel.editarCorreccionEtiq(this.correccion);
             }
 
 
@@ -393,6 +422,9 @@ public class NvaCorrecionEmpFragment extends Fragment {
                    mViewModel.setIdNuevo(0);
 
                    mViewModel.setNvocorreccion(null);
+                   nuevasCor.removeObservers(getViewLifecycleOwner());
+                   Toast.makeText(getContext(),"Se guardó la corrección correctamente",Toast.LENGTH_SHORT).show();
+
                    salir();
                }
            });
@@ -515,32 +547,7 @@ public class NvaCorrecionEmpFragment extends Fragment {
             }
 
 
-        } else  if(requestCode == REQUEST_CODEQR) {
-
-
-            //  IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
-            IntentResult result =IntentIntegrator.parseActivityResult(resultCode, data);
-
-            Log.d(TAG,"res del qr "+result.getContents());
-            if(result != null) {
-
-                if(result.getContents() == null) {
-                    Toast.makeText(getActivity(), "Scan cancelled", Toast.LENGTH_LONG).show();
-                }
-                else
-                {   /* Update the textview with the scanned URL result */
-                    preguntaview.setTextoint(result.getContents());
-                    //Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
-                }
-
-            }
-            else
-            {
-                super.onActivityResult(requestCode, resultCode, data);
-                Toast.makeText(getActivity(), "hubo un error",Toast.LENGTH_LONG ).show();
-
-            }
-        }    else
+        }   else
         {
             Log.e(TAG,"Algo salió muy mal**");
         }
@@ -576,7 +583,7 @@ public class NvaCorrecionEmpFragment extends Fragment {
    //esta se escribe de acuerdo al num de pregunta
     public void siguienteTipoA(){
         guardarCorr();
-        if(preguntaAct.getId()==105){ //ultima
+        if(preguntaAct.getId()==97){ //ultima
                 //reviso la opcion seleccionada
 
             avanzarPregunta(113); //voy a foto peso
@@ -584,7 +591,12 @@ public class NvaCorrecionEmpFragment extends Fragment {
 
 
         }
+        if(preguntaAct.getId()==113){ //ultima
+            actualizarSolicitud();
+            return;
 
+
+        }
         avanzarPregunta(preguntaAct.getSigId());
 
 
@@ -679,10 +691,6 @@ public class NvaCorrecionEmpFragment extends Fragment {
                 contCajas--;
                 cajaAct++;
             }
-        }
-        if (preguntaAct.getId()>122) { //son fotos de caja y tengo que buscar la foto
-            //busco la ultima correccion
-          //  correccion=mViewModel.getUltCorrecionxSolSimple
         }
 
         //busco el ant

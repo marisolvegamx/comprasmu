@@ -582,6 +582,8 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                    mViewModel.setIdNuevo(0);
 
                    mViewModel.setNvocorreccion(null);
+                   Toast.makeText(getContext(),"Se envió la corrección",Toast.LENGTH_SHORT).show();
+
                    salir();
                }
            });

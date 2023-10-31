@@ -81,7 +81,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                              @Nullable Bundle savedInstanceState) {
 
         if (getArguments() != null) {
-            Log.e(TAG,"si hay"+getArguments().toString());
+            //Log.e(TAG,"si hay"+getArguments().toString());
             tipocons = getArguments().getString(SelClienteGenFragment.ARG_TIPOCONS);
             plantasel=getArguments().getInt(ListaCompraFragment.ARG_PLANTASEL);
             etapa=getArguments().getInt(ContInfEtapaFragment.ETAPA);
@@ -235,8 +235,13 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
       //  intento1.putExtra(NuevoInfEtapaActivity.NUMFOTO, numFoto);
         intento1.putExtra(ARG_TIPOCONS, tipocons);
         Constantes.ETAPAACTUAL=etapa;
-        if(etapa==4)
-            intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_VEREMPQ);
+        if(etapa==4) {
+            if(tipocons.equals("rescor")){ //es correccion
+                intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);
+
+            }else //es resumen de informe
+                 intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_VEREMPQ);
+        }
         else
             intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);
         startActivity(intento1);

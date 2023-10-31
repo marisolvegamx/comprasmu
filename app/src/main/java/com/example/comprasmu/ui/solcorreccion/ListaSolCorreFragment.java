@@ -25,12 +25,12 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
 
-
+/*************Muestra la lista de solicitudes de correccion para todas las etapas*******/
 public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.AdapterCallback {
 
     private ListaSolsViewModel mViewModel;
 
-    public static final String TAG = "ListaInformesFragment";
+    public static final String TAG = "ListaSolCorreFragment";
     private ListaInformesFragmentBinding mBinding;
     private SolCorreAdapter mListAdapter;
     private String indice;
