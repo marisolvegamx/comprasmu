@@ -21,7 +21,7 @@ public class ServiceGenerator {
     private static APIService servicio;
 
     public static APIService getApiService() {
-
+        servicio=null;
         // Creamos un interceptor y le indicamos el log level a usar
        /* HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -39,7 +39,7 @@ public class ServiceGenerator {
             //nam
            BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
            BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";
-        //    BASE_URL = Constantes.URLPRUEBAS2+ "api/public/";
+            BASE_URL = Constantes.URLSERV+ "api/public/";
        }else
         {
             BASE_URL = Constantes.URLSERV+"api/public/";
@@ -66,7 +66,7 @@ public class ServiceGenerator {
                     .build();
             servicio = retrofit.create(APIService.class);
         }
-
+       // Log.d("NUEVA URL",servicio.);
         return servicio;
     }
 
