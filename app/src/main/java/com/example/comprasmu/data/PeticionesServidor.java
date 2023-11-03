@@ -782,13 +782,13 @@ public class PeticionesServidor {
     public void getEtapaAct(PruebasActivity.EtapaListener listener) {
 
         final Call<EtapaResponse> batch = ServiceGenerator.getApiService().getEtapaAct(usuario);
-
+        Log.d(TAG,"+++"+usuario);
         batch.enqueue(new Callback<EtapaResponse>() {
             @Override
             public void onResponse(@Nullable Call<EtapaResponse> call, @Nullable Response<EtapaResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     EtapaResponse respuesta = response.body();
-                    Log.d("PeticionesServidor","leyendo etapaact ");
+                    Log.d("PeticionesServidor","leyendo etapaact "+response.body().getIndiceact());
                    listener.validarEtapa(respuesta);
                 }else {
                     Log.e("PeticionesServidor", "algo salio mal en peticion de etapa");

@@ -25,7 +25,7 @@ public class ServiceGeneratorIm {
         if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")){//pruebas y el lenovo
             //nam
             BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";
-          //  BASE_URL = Constantes.URLPRUEBAS2+ "api/public/";
+            BASE_URL = Constantes.URLSERV+ "api/public/";
         }else {
             BASE_URL = Constantes.URLSERV + "api/public/";
         }
