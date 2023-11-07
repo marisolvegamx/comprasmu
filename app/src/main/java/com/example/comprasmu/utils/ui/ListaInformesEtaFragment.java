@@ -342,7 +342,6 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     public static void subirFotos(Activity activity, InformeEtapaEnv informe){
         //las imagenes
-        if(informe.getInformeEtapa().getEtapa()==1||informe.getInformeEtapa().getEtapa()==3){
             //busco la imagenes
             for(ImagenDetalle imagen:informe.getImagenDetalles()){
                 //
@@ -366,26 +365,6 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             }
 
 
-        }else
-            for(InformeEtapaDet imagen:informe.getInformeEtapaDet()){
-                //subo cada una
-                Intent msgIntent = new Intent(activity, SubirFotoService.class);
-                msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
-                msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta_foto());
-                msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
-                // Constantes.INDICEACTUAL
-                Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
-
-                msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
-
-                //cambio su estatus a subiendo
-                imagen.setEstatusSync(1);
-                activity.startService(msgIntent);
-                //cambio su estatus a subiendo
-
-
-
-            }
 
     }
 
