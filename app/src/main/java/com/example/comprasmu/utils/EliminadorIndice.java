@@ -37,6 +37,7 @@ import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirPendService;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
@@ -136,44 +137,30 @@ public class EliminadorIndice {
                     {
                         boolean resp= fdelete2.delete();
                         complog.grabarError("*eliminando archivo "+Environment.DIRECTORY_PICTURES+img2.getRuta()+"--"+resp);
-
+                        //la tabla la borra en borrar activity
                     }
             }
 
-        List<VisitaWithInformes> pend = visitaRepository.getVisitaWithInformesByIndice(indice);
+        List<Visita> pend = visitaRepository.getVisitasxIndice(indice);
         if(pend!=null&pend.size()>0) {
+            borrarDetallesCompra();
+            for (Visita vis : pend) {
 
-            for (VisitaWithInformes vis : pend) {
-
-                for (InformeCompra inf : vis.informes) {
-                    borrarImagenesxInforme(inf);
-                    //borro los detalles
-
-                }
                 //borro el informe
-                infrepo.deleteInformeCompraByVisita(vis.visita.getId());
+                infrepo.deleteInformeCompraByVisita(vis.getId());
                 //borro los prod exhibidos
-                prodeRepository.deleteAllByVisita(vis.visita.getId());
+                prodeRepository.deleteAllByVisita(vis.getId());
             }
         }
             //borro las visitas
             visitaRepository.deleteVisitaByIndice(indice);
 
-            //eliminar producto exhibido
-          //  mSnackbarText.setValue("Se eliminó correctamente");
-
-
     }
-    //borra los detalles de compra
-    public void borrarImagenesxInforme(InformeCompra inf){
+    //borra los detalles de compra ¡¡toda la tabla!!
+    public void borrarDetallesCompra(){
 
-        //busco los detalles
-        List<InformeCompraDetalle> det=idrepo.getAllSencillo(inf.getId());
-        if(det!=null)
-            for (InformeCompraDetalle infd : det) {
-                //borro los detalles
-                idrepo.delete(infd);
-            }
+        idrepo.deleteAll();
+
     }
     public void enviarReporte() {
         //reviso si tengo conexion
@@ -194,13 +181,70 @@ public class EliminadorIndice {
         }
     }
 
+    public void eliminarVisitasxIndice(){ //banpas indica si se elimina por que es de 1 dia anterior
+        //solo puedo eliminar si no tiene informes
+
+
+        //antes de borrar la imagenes borro los archivos
+        List<ImagenDetalle> pendsi=imdRepository.getByIndice(indice);
+        if(pendsi!=null&&pendsi.size()>0)
+            for ( ImagenDetalle img2:pendsi) {
+                complog.grabarError("eliminando archivo "+Environment.DIRECTORY_PICTURES+img2.getRuta());
+                File fdelete2 = new File(application.getExternalFilesDir(Environment.DIRECTORY_PICTURES),img2.getRuta());
+                if (fdelete2.exists())
+                {
+                    boolean resp= fdelete2.delete();
+                    complog.grabarError("*eliminando archivo "+Environment.DIRECTORY_PICTURES+img2.getRuta()+"--"+resp);
+
+                }
+                imdRepository.delete(img2);
+            }
+
+        List<VisitaWithInformes> pend = visitaRepository.getVisitaWithInformesByIndice2(indice);
+        if(pend!=null&pend.size()>0) {
+
+            for (VisitaWithInformes vis : pend) {
+
+                for (InformeCompra inf : vis.informes) {
+                    borrarInfcompxInforme(inf);
+                    //borro los detalles
+
+                }
+                //borro el informe
+                infrepo.deleteInformeCompraByVisita(vis.visita.getId());
+                //borro los prod exhibidos
+                prodeRepository.deleteAllByVisita(vis.visita.getId());
+            }
+        }
+        //borro las visitas
+        visitaRepository.deleteVisitaByIndice(indice);
+
+        //eliminar producto exhibido
+        //  mSnackbarText.setValue("Se eliminó correctamente");
+
+
+    }
+    //borra los detalles de compra
+    public void borrarInfcompxInforme(InformeCompra inf){
+
+        //busco los detalles
+        List<InformeCompraDetalle> det=idrepo.getAllSencillo(inf.getId());
+        if(det!=null)
+            for (InformeCompraDetalle infd : det) {
+                //borro los detalles
+                idrepo.delete(infd);
+            }
+    }
     public void eliminarCorrecciones(){
         corRepo.deleteByIndice(indice);
     }
     public void eliminarSolicitudes(){
         solRepo.deleteByIndice(indice);
     }
-
+    public void eliminarTablaVers(){
+        TablaVersionesRepImpl tvrepo=new TablaVersionesRepImpl(this.application);
+        tvrepo.deleteByIndice();
+    }
     public void borrarImagenes(){
 
         //busco los detalles

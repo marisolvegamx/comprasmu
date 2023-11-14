@@ -51,7 +51,7 @@ public class BorrarDatosFragment extends Fragment {
          txtipo=root.findViewById(R.id.eitxttipo);
         //llenar los indices
 
-        String []indices= {"AGOSTO 2023"};
+        String []indices= {"AGOSTO 2023,SEPTIEMBRE 2023,OCTUBRE 2023,NOVIEMBRE 2023,DICIEMBRE 2023"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, indices);
         spindice.setAdapter(adapter);
         Button btnborrar=root.findViewById(R.id.btndbborrar);
@@ -88,8 +88,8 @@ public class BorrarDatosFragment extends Fragment {
         dialogo1.setCancelable(false);
         dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogo1, int id) {
-                borrarautomatico("8.2023");
-
+              //  borrarautomatico("8.2023");
+            borrarxindice();
 
             }
         });
@@ -115,9 +115,8 @@ public class BorrarDatosFragment extends Fragment {
               public void onClick(DialogInterface dialogo1, int id) {
                  //depende del tipo
                   if(tipo.equals("informe")) {
-
+                    borrarxindice(indice);
                     //  mViewModel.borrarInformes(indice);
-                      Toast.makeText(getActivity(), "Se eliminaron los informes",Toast.LENGTH_SHORT).show();
 
                   }
                   if(tipo.equals("compra")) {
@@ -155,10 +154,18 @@ public class BorrarDatosFragment extends Fragment {
         ei.eliminarCorrecciones();
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
-
+        ei.eliminarTablaVers();
 
 
     }
+    public void borrarxindice(String indice_anterior){
 
+
+        EliminadorIndice ei=new EliminadorIndice(getActivity(),indice_anterior);
+        ei.eliminarVisitas();
+        aviso.setVisibility(View.VISIBLE);
+        Toast.makeText(getActivity(), "Se eliminaron los informes",Toast.LENGTH_SHORT).show();
+
+    }
 
 }

@@ -143,7 +143,9 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
     public void deleteByInforme(int idInforme) {
         dao.deleteByInforme(idInforme);
     }
-
+    public void deleteAll() {
+        dao.deleteAll();
+    }
     @Override
     public void insertAll(List<InformeCompraDetalle> objects) {
     dao.insertAll(objects);

@@ -837,6 +837,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (!gpsEnabled) {
+            Log.d(TAG, "1");
                 Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(settingsIntent);
                 return;
@@ -844,12 +845,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            Log.d(TAG, "2");
                 return;
             }
         if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
                 mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, Local);
                 provedorgps = LocationManager.NETWORK_PROVIDER;
-
+            Log.d(TAG, "3");
 
         } else  if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
             //  if (Local == null) { //Validación que evita NullPointerException
@@ -857,6 +859,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, Local);
             provedorgps = LocationManager.GPS_PROVIDER;
             // }
+            Log.d(TAG, "4");
         } else
                 Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
 
@@ -2222,10 +2225,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 ultimaLoc.setLatitude(ultlatitud);
             }
             mensajedir.setText("Ubicación registrada");
-            if (Build.PRODUCT.contains ("sdk")) {
+        //    if (Build.PRODUCT.contains ("sdk")) {
 
 
-            } else
+          //  } else
 
                 if (ComprasUtils.isOnlineNet()) {
                 Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());

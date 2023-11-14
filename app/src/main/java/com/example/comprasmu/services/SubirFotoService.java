@@ -82,7 +82,8 @@ public class SubirFotoService extends IntentService
                 imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
                 indiceimagen=intent.getStringExtra(EXTRA_INDICE);
                 handleUploadImg();
-            }else if (ACTION_UPLOAD_LISTA.equals(action)) //para informe compra foto en fila
+            }/*else
+                if (ACTION_UPLOAD_LISTA.equals(action)) //para informe compra foto en fila
             {
                 //  Log.d(TAG,"action"+action);
               //  imagenSubir=new ImagenDetalle();
@@ -90,7 +91,8 @@ public class SubirFotoService extends IntentService
           //      imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
                 indiceimagen=intent.getStringExtra(EXTRA_INDICE);
                 handleUploadImgFila();
-            }else
+            }*/
+            else
 
             {
                 //  Log.d(TAG,"action"+action);
@@ -105,11 +107,7 @@ public class SubirFotoService extends IntentService
     private void handleUploadImg()
     {
 
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
             // Instanciar y registrar un Observador
             SubirFotoListener objObservador  = new SubirFotoListener();
 
@@ -230,7 +228,7 @@ public class SubirFotoService extends IntentService
     }
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        notificationManager.cancel(0);
+        //notificationManager.cancel(0);
     }
 
     private void onErrors(Throwable throwable) {
@@ -329,6 +327,7 @@ public class SubirFotoService extends IntentService
             //todo
             //veo si puedo cambiar el estatus del informe
            // pvm.actualizarEstatuscoloInf(0);
+            Log.d(TAG,"ya termino");
             Constantes.SINCRONIZANDO=0;
         }
         public void onSuccess2(ImagenDetalle imagen){

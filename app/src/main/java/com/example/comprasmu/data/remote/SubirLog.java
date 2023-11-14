@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirLogService;
+import com.example.comprasmu.utils.Constantes;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 
 public class SubirLog {
     MultipartUploadRequest upload;
-    String URL_SUBIRPICTURE="https://muesmerc.mx/comprasv1/api/public/subirlog";
+    String URL_SUBIRPICTURE="subirlog";
     private SubirLogService.SubirLogListener observadores;
     ImagenDetRepositoryImpl idrepo;
     private final String TAG="SubirLog";
@@ -53,7 +54,7 @@ public class SubirLog {
 
             String uploadFileArrayList=arch;
             Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList);
-            upload= new MultipartUploadRequest(context,URL_SUBIRPICTURE)
+            upload= new MultipartUploadRequest(context, Constantes.URLSERV+URL_SUBIRPICTURE)
                     .setMaxRetries(2)
                      .addParameter ("usuario", idusuario)
                       .setUtf8Charset();

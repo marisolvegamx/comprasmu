@@ -21,8 +21,6 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
     @RawQuery(observedEntities = VisitaWithInformes.class)
     public abstract LiveData<List<VisitaWithInformes>> getVisitaWithInformesByFiltros(SupportSQLiteQuery query);
 
-    @Query("DELETE FROM visitas where indice=:indice")
-    public abstract void deleteListasByIndice(String indice);
 
     @Query("select max(id) from visitas where indice=:indice")
     public abstract int getUltimoId(String indice);
@@ -46,6 +44,12 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
 
     @Query("SELECT * FROM visitas WHERE indice=:indice and estatusSync=:estatusSync")
     public abstract List<Visita> getVisitasxEst(String indice, int estatusSync);
+
+    @Query("SELECT * FROM visitas WHERE indice=:indice")
+    public abstract List<Visita> getVisitasxIndice(String indice);
+    @Transaction
+    @Query("SELECT * FROM visitas WHERE indice=:indice")
+    public abstract List<VisitaWithInformes> getVisitasWithInformesByIndice2(String indice);
 
     @Transaction
     @Query("SELECT * FROM visitas WHERE indice=:indice and estatusSync=2")

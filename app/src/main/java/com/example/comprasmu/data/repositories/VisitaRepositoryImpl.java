@@ -110,14 +110,18 @@ public class VisitaRepositoryImpl  extends BaseRepository<Visita>{
     public List<VisitaWithInformes> getVisitaWithInformesByIndice(String indice) {
         return icDao.getVisitasWithInformesByIndice(indice);
     }
-
+    public List<VisitaWithInformes> getVisitaWithInformesByIndice2(String indice) {
+        return icDao.getVisitasWithInformesByIndice2(indice);
+    }
     public List<VisitaWithInformes> getVisitaWithInformesByIndicePend(String indice) {
         return icDao.getVisitasWithInformesByIndicePend(indice);
     }
     public List<Visita> getVisitaPendSubir(String indice) {
         return icDao.getVisitasxEst( indice,0);
     }
-
+    public List<Visita> getVisitasxIndice(String indice) {
+        return icDao.getVisitasxIndice( indice);
+    }
     public LiveData<List<Visita>> getInformesByIndice(String indice) {
         return icDao.findAllByIndice(indice);
     }

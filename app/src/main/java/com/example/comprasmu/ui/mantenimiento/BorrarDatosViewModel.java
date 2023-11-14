@@ -131,7 +131,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     }
 
 
-    //borra los detalles de compra
+    //borra los detalles informe x etapa
     public void borrarInfEtapaDetalle(InformeEtapa inf){
 
         //busco los detalles

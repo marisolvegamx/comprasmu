@@ -248,6 +248,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     @Override
     public void onClickFinalizar(int idvisita, Visita visitaCont) {
         ValidadorDatos valdat=new ValidadorDatos();
+        //si se creo antes de hoy
        if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
             //elimino
             mViewModel.eliminarVisita(idvisita, 1);

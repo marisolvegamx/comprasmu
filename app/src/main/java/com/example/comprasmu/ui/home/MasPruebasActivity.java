@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.SubirInformeTask;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.services.SubirColaFotoService;

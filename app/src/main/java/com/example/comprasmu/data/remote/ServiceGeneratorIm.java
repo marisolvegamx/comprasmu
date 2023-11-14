@@ -2,6 +2,7 @@ package com.example.comprasmu.data.remote;
 
 import android.os.Build;
 
+import com.example.comprasmu.utils.Constantes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -12,7 +13,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGeneratorIm {
-    private static  String BASE_URL = "https://muesmerc.mx/comprasv1/api/public/";
+    private static  String BASE_URL ;
 
   //  private static final String BASE_URL = "http://192.168.1.79/comprasv1/api/public/";
 
@@ -20,29 +21,13 @@ public class ServiceGeneratorIm {
 
     public static APIService getApiService() {
 
-        // Creamos un interceptor y le indicamos el log level a usar
-       /* HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-*/
-        // Asociamos el interceptor a las peticiones
-    /*    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);
-        Retrofit.Builder builder =
-                new Retrofit.Builder()
-                        .baseUrl(BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create());*/
 
-       // Log.e("mi disp ",Build.PRODUCT);
         if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")){//pruebas y el lenovo
             //nam
-           BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
-         //  BASE_URL = "http://192.168.1.66/comprasv1/api/public/";
+            BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";
 
-       }else
-        {
-            BASE_URL = "https://muesmerc.mx/comprasv1/api/public/";
-           // BASE_URL = "http://192.168.1.84/comprasv1/pruebas/public/";
-          //  BASE_URL = "https://muesmerc.mx/comprasv1/pruebas/public/";
+        }else {
+            BASE_URL = Constantes.URLSERV + "api/public/";
         }
 
 

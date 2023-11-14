@@ -50,7 +50,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
    ProgressDialog progreso;
     String TAG="PruebasActivity";
 
-    private static  String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
+    private static  String DOWNLOAD_PATH = Constantes.URLSERV+"fotografias";
     private   String DESTINATION_PATH ;
     SimpleDateFormat sdfparaindice=new SimpleDateFormat("M-yyyy");
     private int etapapref;
@@ -82,8 +82,9 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
        // mTextView = findViewById(R.id.txtlllog);
         if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
 
-           DOWNLOAD_PATH = "http://192.168.1.84/comprasv1/fotografias";
-           // DOWNLOAD_PATH = "http://192.168.1.66/comprasv1/fotografias";
+           DOWNLOAD_PATH = Constantes.URLPRUEBAS1+"fotografias";
+        //    DOWNLOAD_PATH = Constantes.URLPRUEBAS2+"fotografias";
+
 
         }
 

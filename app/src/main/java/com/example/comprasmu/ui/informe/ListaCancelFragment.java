@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.SubirInformeTask;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 
