@@ -840,7 +840,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         initializeCountDrawer();
     }
     ///se usaba para etiquetado actualiza visitas e informes ahora quedó en el home
-    public void pedirInformes(int actualiza) {
+   /* public void pedirInformes(int actualiza) {
         tvRepo=new TablaVersionesRepImpl(this);
         visRepo=new VisitaRepositoryImpl(this);
         infdrepo=new InformeComDetRepositoryImpl(this);
@@ -871,7 +871,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             notificar = true;
 
 
-    }
+    }*/
     public class ActualListener {
 
         public int actualizarCorre(SolCorreResponse corrResp, int etapa) {

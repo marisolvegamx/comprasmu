@@ -1289,7 +1289,7 @@ public class DetalleProductoFragment extends Fragment {
                                 //preguntar si hay otro cliente, para agregar otro o cerrar
                             }else
                             {
-                                Log.d(TAG,"ya me voy");
+
                                 mViewModel.numMuestra++;
                                 Log.d(TAG, "sume muestra"+mViewModel.numMuestra);
 
@@ -1336,12 +1336,12 @@ public class DetalleProductoFragment extends Fragment {
                     dViewModel.setIddetalleNuevo(0);
                     dViewModel.limpiarVarsMuestra();
                     yaestoyProcesando=false;
-                    if(Constantes.NM_TOTALISTA>=16&&numues==4||Constantes.NM_TOTALISTA<16&&numues==2) //ya terminé
+                    if(numues==3||Constantes.NM_TOTALISTA<17&&numues==2) //ya terminé
                     {
                         Log.d(TAG,"terminé debo guardar y salir"+Constantes.NM_TOTALISTA+"--"+numues);
                         //   limpiarTablTemp();
                         avanzarPregunta(5);
-                        //preguntar si hay otro cliente, para agregar otro o cerrar
+
                     }else
                     {
                         mViewModel.numMuestra++;

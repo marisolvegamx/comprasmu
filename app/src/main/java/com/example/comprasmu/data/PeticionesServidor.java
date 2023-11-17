@@ -405,7 +405,7 @@ public class PeticionesServidor {
             }
         });
     }
-
+/******informes para etiquetado********/
     public void pedirRespaldoSup(String indice, DescRespInformes.DescargaRespListener listener){
 
         Log.d("PeticionesServidor","pedir respaldosup "+usuario);
@@ -533,7 +533,7 @@ public class PeticionesServidor {
             }
         });
     }
-
+/*
     public void pedirInformes(String indice,String version, NavigationDrawerActivity.ActualListener listener){
 
         Log.d("PeticionesServidor","haciendo petición pedir respaldo "+usuario);
@@ -556,7 +556,7 @@ public class PeticionesServidor {
                         //actualizar version en tabla
                         tvrepo.insertAll(compraResp.getVersiones());
 */
-                    }
+               /*     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lista vacia");
@@ -574,7 +574,7 @@ public class PeticionesServidor {
                 }
             }
         });
-    }
+    }*/
     public void cancelarInforme(int informeId,InformeCancelar informe){
 
         Call<ResponseBody> respuesta= ServiceGenerator.getApiService().cancelarInforme(informeId,informe);

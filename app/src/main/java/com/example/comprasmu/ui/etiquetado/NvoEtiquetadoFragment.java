@@ -1236,7 +1236,7 @@ public void iraReubicar(){
         }
 
     }
-    //cambiar estatus sol
+
     public void finalizarInf() {
         try {
             mViewModel.finalizarInf();

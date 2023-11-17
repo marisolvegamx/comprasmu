@@ -654,16 +654,16 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                 //sumo en la lista de compra
                 //   List<InformeCompraDetalle> detalles=infdrepo.getAllsimple();
                 //ajusto cantidades
-                Log.d(TAG, "ajusto cantidades");
+               // Log.d(TAG, "ajusto cantidades");
 
                 if (infoResp.getInformeCompraDetalles() != null)
                     for (InformeCompraDetalle det : infoResp.getInformeCompraDetalles()) {
-                        Log.d(TAG, "ttttt" + det.getComprasId() + "--" + det.getComprasDetId());
+                      //  Log.d(TAG, "ttttt" + det.getComprasId() + "--" + det.getComprasDetId());
                         if (det.getTipoMuestra() != 3) {//para normal o catchup
                             ListaCompraDetalle compradet = lcdrepo.findsimple(det.getComprasId(), det.getComprasDetId());
                             if (compradet != null && det.getEstatus() != 2 && det.getEstatus() != 4) {
                                 //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
-                                Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
+                                //Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
 
                                 int nvacant = compradet.getComprados() + 1;
                                 //  lcdrepo.actualizarComprados(det.getId(),det.getComprasId(),nvacant);
@@ -690,7 +690,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                             ListaCompraDetalle compradet = lcdrepo.findsimple(det.getComprasId(), det.getComprasDetId());
                             if (compradet != null && det.getEstatus() != 2 && det.getEstatus() != 4) {
                                 //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
-                                Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
+                               // Log.d(TAG, "sss" + compradet.getProductoNombre() + "--" + compradet.getComprados());
 
                                 int nvacant = compradet.getComprados() + 1;
                                 compradet.setComprados(nvacant);
@@ -700,7 +700,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                                 ListaCompraDetalle compradetbu = lcdrepo.findsimple(det.getComprasIdbu(), det.getComprasDetIdbu());
                                 if (compradetbu != null) {
                                     //  Log.d(TAG,"ttttt"+det.getComprasId()+"--"+det.getId());
-                                    Log.d(TAG, "sss" + compradetbu.getProductoNombre() + "--" + compradetbu.getComprados());
+                                   // Log.d(TAG, "sss" + compradetbu.getProductoNombre() + "--" + compradetbu.getComprados());
                                     //actualizo lo codigos comprados
                                     String listaCodigos = "";
                                     SimpleDateFormat sdfcodigo = new SimpleDateFormat("dd-MM-yy");
