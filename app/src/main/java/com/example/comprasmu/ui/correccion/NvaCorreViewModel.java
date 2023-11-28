@@ -127,6 +127,10 @@ public class NvaCorreViewModel extends AndroidViewModel {
         return correpository.getxsol(idsol,indice);
     }
 
+    public List<Correccion> getCorreccionesxsolSimp(int idsol,String indice){
+        return correpository.getxsolSimp(idsol,indice);
+    }
+
     public Correccion getUltCorrecionxSolSimple(int idsol,int numfoto,String indice){
        List<Correccion> lista=correpository.getCorrecxSolSim(idsol,numfoto,indice);
        if(lista!=null&&lista.size()>0)

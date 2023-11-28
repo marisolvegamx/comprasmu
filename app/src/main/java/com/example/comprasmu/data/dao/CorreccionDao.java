@@ -20,6 +20,10 @@ public abstract class CorreccionDao extends  BaseDao<Correccion>{
     @Query("SELECT * FROM correccion where   solicitudId=:solicitudId and indice=:indice ")
     public abstract LiveData<List<Correccion>> getCorrecciones( int solicitudId, String indice);
 
+
+    @Query("SELECT * FROM correccion where   solicitudId=:solicitudId and indice=:indice ")
+    public abstract List<Correccion> getCorreccionesSimp( int solicitudId, String indice);
+
     @Query("SELECT * FROM correccion where  solicitudId=:solicitudId and numfoto=:numfoto and indice=:indice")
     public abstract List<Correccion> getCorreccxsolSimple(int solicitudId,int numfoto, String indice);
 

@@ -72,7 +72,7 @@ public class NvaCorreccionEmpFragment extends Fragment {
 
     public static int REQUEST_CODE_TAKE_PHOTO = 1;
 
-    LiveData<List<Correccion>> nuevasCor;
+    List<Correccion> nuevasCor;
     private View root;
     private NvaCorreViewModel mViewModel;
     ListaSolsViewModel solViewModel;
@@ -408,26 +408,22 @@ public class NvaCorreccionEmpFragment extends Fragment {
 
 
             solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
-           nuevasCor=mViewModel.getCorreccionesxsol(solicitudSel,Constantes.INDICEACTUAL);
-           nuevasCor.observe(getViewLifecycleOwner(), new Observer<List<Correccion>>() {
-               @Override
-               public void onChanged(List<Correccion> correccions) {
-                   CorreccionEnvio envio=mViewModel.prepararEnvioVar(correccions);
-                   SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
-                   miTareaAsincrona.execute();
-                   for(Correccion cor:correccions) {
-                       subirFotos(getActivity(), cor.getId(), cor.getRuta_foto1());
-                   }
-                   //todo limpio variables de sesion
-                   mViewModel.setIdNuevo(0);
+           nuevasCor=mViewModel.getCorreccionesxsolSimp(solicitudSel,Constantes.INDICEACTUAL);
 
-                   mViewModel.setNvocorreccion(null);
-                   nuevasCor.removeObservers(getViewLifecycleOwner());
-                   Toast.makeText(getContext(),"Se guardó la corrección correctamente",Toast.LENGTH_SHORT).show();
+           CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
+           SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
+           miTareaAsincrona.execute();
+           for(Correccion cor:nuevasCor) {
+               subirFotos(getActivity(), cor.getId(), cor.getRuta_foto1());
+           }
+           //todo limpio variables de sesion
+            mViewModel.setIdNuevo(0);
 
-                   salir();
-               }
-           });
+           mViewModel.setNvocorreccion(null);
+
+           Toast.makeText(getContext(),"Se guardó la corrección correctamente",Toast.LENGTH_SHORT).show();
+            salir();
+
 
 
         }catch(Exception ex){

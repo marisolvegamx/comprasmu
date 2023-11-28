@@ -454,16 +454,42 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                         color = tienda.getEstjum() + "";
                         tienda.setColor(color);
                     }
+                    //para poner en que tiendas puedo comprar
+                String estatusClientes="";
+                    //el estatus es 1-rojo, 2 amarillo, 3.verde solo en verde puedo comprar
+                if(tienda.getEstpep()==3) {
+                    estatusClientes=estatusClientes+"PEPSI, ";
+                }
+                if(tienda.getEstpen()==3) {
+
+                    estatusClientes=estatusClientes+"PEÑAFIEL, ";
+                }
+
+                if(tienda.getEstele()==3) {
+                    estatusClientes=estatusClientes+"ELECTROPURA, ";
+                }  if(tienda.getEstjum()==3) {
+
+                    estatusClientes=estatusClientes+"JUMEX, ";
+                }
+                if(estatusClientes.length()>0){
+                    estatusClientes=estatusClientes.substring(0,estatusClientes.length()-2);
+                }
                     // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
                     if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
                         String[] aux = tienda.getUne_coordenadasxy().split(",");
 
                         japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-                        Marker marker=mMap.addMarker(new MarkerOptions()
-                                .position(japon2)
+                        MarkerOptions moptions=new MarkerOptions();
+                        moptions.position(japon2)
                                 .title(tienda.getUne_descripcion())
-                                .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color))));
+                                .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color)));
+                        if(estatusClientes.length()>0) {
+                            moptions.snippet(estatusClientes);
+                        }
+                        Marker marker=mMap.addMarker(moptions
+                                );
                         marker.setTag(tienda);
+
                         martiendas.add(marker);
 
                 }

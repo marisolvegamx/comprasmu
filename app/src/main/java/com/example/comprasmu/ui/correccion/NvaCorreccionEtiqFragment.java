@@ -147,7 +147,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
                         case 3:
                            infcor= preViewModel.getInformexId(solicitudCor.getInformesId());
-                            Log.d(TAG,"ciud"+infcor.getCiudadNombre());
+                          //  Log.d(TAG,"ciud"+infcor.getCiudadNombre());
                             solViewModel.buscarFotoEta(solicitud.getNumFoto(),solicitudCor.getInformesId(),3).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                                 @Override
                                 public void onChanged(InformeEtapaDet informeEtapaDet) {
@@ -369,6 +369,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             //paso a
             //creo el informe
             mViewModel.setIdNuevo(mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, "", "",valor2));
+
             actualizarSolicitud();
             //actualizar el detalle el numero de caja buscarlo promero
             if(nucaja>0)

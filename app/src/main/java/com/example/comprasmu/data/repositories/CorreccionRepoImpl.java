@@ -113,6 +113,9 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
     public LiveData<List<Correccion>> getxsol(int idsol, String indice) {
         return icDao.getCorrecciones(idsol, indice );
     }
+    public List<Correccion> getxsolSimp(int idsol, String indice) {
+        return icDao.getCorreccionesSimp(idsol, indice );
+    }
 
     @Override
     public long insert(Correccion newCorreccion) {
