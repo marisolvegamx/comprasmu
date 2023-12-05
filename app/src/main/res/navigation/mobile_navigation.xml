@@ -204,7 +204,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_solcor2"
-        android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
+        android:name="com.example.comprasmu.ui.solcorreccion.SelPlantaFragment"
         android:label="@string/coreccion_pend"
         tools:layout="@layout/lista_selec_fragment">
         <argument

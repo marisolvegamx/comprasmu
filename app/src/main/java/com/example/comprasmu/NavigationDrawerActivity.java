@@ -291,7 +291,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
         if(Constantes.ETAPAACTUAL==2) {
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_listasolcor));
+                    findItem(R.id.nav_solcor2));
             txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_cancel));
         }
@@ -676,8 +676,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             totCorrecciones=scViewModel.getTotSolsEtiqxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);
 
         }else
-            totCorrecciones=scViewModel.getTotalSolsxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);
-
+            totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
+        //la solicitudes de coreecciones ya no serán por cd sino x indice y etapa
         Log.d(TAG,"contarCorrecc"+totCorrecciones.getValue()+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
     }

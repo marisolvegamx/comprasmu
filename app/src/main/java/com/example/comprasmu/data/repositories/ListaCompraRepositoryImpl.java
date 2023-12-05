@@ -251,11 +251,11 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
        String query="Select * from lista_compras  " +
                 " where indice=? " +
                 "and plantasId=?";
-        Log.d("wiiiiiiii",query);
+
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idPlanta});
-        Log.d("LISTACOMPRREPIMP",indice+"---"+idPlanta+"--"+sqlquery.getSql());
+      //  Log.d("LISTACOMPRREPIMP",indice+"---"+idPlanta+"--"+sqlquery.getSql());
 
 
         return dao.getListasWithDetalleByFiltros( sqlquery);

@@ -92,6 +92,13 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
+
+    public  LiveData<List<ListaCompra>>  cargarClientePlanta(){
+
+            return repository.getPlantas(Constantes.INDICEACTUAL);
+
+
+    }
     public  LiveData<List<ListaCompra>>  cargarPestañasEta(String ciudadSel,int clienteSel){
         if(clienteSel>0){
             //ya elegi cliente vengo de muestra
