@@ -43,6 +43,7 @@ import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
@@ -59,6 +60,7 @@ import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import static android.app.Activity.RESULT_OK;
@@ -86,8 +88,8 @@ public class NvoEmpaqueFragment extends Fragment {
     private String clienteNombre;
     private int clienteId;
     private ListaDetalleViewModel lcViewModel;
-    List<InformeEtapa> listainfetiq;
-
+   // List<InformeEtapa> listainfetiq;
+    List<ListaCompra> listacomp;
     private  ArrayList<DescripcionGenerica> listaClientes; //otra vez lista clientes
     public final static String ARG_PREGACT="comprasmu.nem_pregact";
     public final static String ARG_ESEDI="comprasmu.nem_esedi";
@@ -196,13 +198,15 @@ public class NvoEmpaqueFragment extends Fragment {
                     }
                     if (preguntaAct.getTabla().equals("IE")) {
                         //son comentarios o sel cliente
-                        listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
-                        Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+                       // listacomp = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+                        listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
+                        Integer[] clientesprev = mViewModel.tieneInforme(4);
+                     //   Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
 
-                        if (listainfetiq.size() > 1) {
+                        if (listacomp.size() > 1) {
                             //tengo varias clientes
                             // preguntaAct=1;
-                            convertirLista(listainfetiq);
+                            convertirLista(listacomp,clientesprev);
                             mViewModel.variasClientes = true;
 
                         }
@@ -348,24 +352,29 @@ public class NvoEmpaqueFragment extends Fragment {
                 dialogo1.show();
             }
                     //busco si tengo varios clientes x ciudad
-                    listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
-                    Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+                 //   listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+                    listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
 
-                    if (listainfetiq.size() > 1) {
+                   //busco clientes con informe
+
+                    Integer[] clientesprev = mViewModel.tieneInforme(4);
+
+                    if (listacomp.size() > 1) {
                             //tengo varias clientes
                             // preguntaAct=1;
-                            convertirLista(listainfetiq);
+                        convertirLista(listacomp, clientesprev);
+                       // cargarPlantas(listaClientes, "");
 
                             mViewModel.variasClientes = true;
                             buscarPreguntas();
                             preguntaAct = mViewModel.getListaPreguntas().get(0);
                             crearFormulario();
 
-                        } else if (listainfetiq.size() > 0) {
+                        } else if (listacomp.size() > 0) {
 
                             mViewModel.variasClientes = false;
-                            clienteId = listainfetiq.get(0).getClientesId();
-                            clienteNombre = listainfetiq.get(0).getClienteNombre();
+                            clienteId = listacomp.get(0).getClientesId();
+                            clienteNombre = listacomp.get(0).getClienteNombre();
                             InformeEtapa informetemp = new InformeEtapa();
                             informetemp.setClienteNombre(clienteNombre);
                             informetemp.setClientesId(clienteId);
@@ -455,7 +464,7 @@ public class NvoEmpaqueFragment extends Fragment {
                         aceptar.setEnabled(false);
                         long currentClickTime = SystemClock.elapsedRealtime();
                         // preventing double, using threshold of 1000 ms
-                        if (currentClickTime - lastClickTime < 5500) {
+                        if (currentClickTime - lastClickTime < 5000) {
                             //  Log.d(TAG,"doble click :("+lastClickTime);
                             return;
                         }
@@ -901,7 +910,7 @@ public class NvoEmpaqueFragment extends Fragment {
                 Log.d(TAG, "creando nvo inf");
                 //creo el informe
                 if(mViewModel.getIdNuevo()==0)
-                mViewModel.setIdNuevo(mViewModel.insertarInformeEmp(Constantes.INDICEACTUAL,4,mViewModel.getNvoinforme().getClientesId(),mViewModel.getNvoinforme().getClienteNombre(), ciudadInf));
+                    mViewModel.setIdNuevo(mViewModel.insertarInformeEmp(Constantes.INDICEACTUAL,4,mViewModel.getNvoinforme().getClientesId(),mViewModel.getNvoinforme().getClienteNombre(), ciudadInf));
             }
         }catch (Exception ex){
             ex.getStackTrace();
@@ -1206,7 +1215,7 @@ public class NvoEmpaqueFragment extends Fragment {
         return preguntaAct.getId();
     }
 
-    private  void convertirLista(List<InformeEtapa>lista){
+   /* private  void convertirLista(List<InformeEtapa>lista){
             listaClientes =new ArrayList<DescripcionGenerica>();
             for (InformeEtapa listaCompra: lista ) {
 
@@ -1214,7 +1223,22 @@ public class NvoEmpaqueFragment extends Fragment {
 
             }
 
+        }*/
+
+    private  void convertirLista(List<ListaCompra>lista, Integer[] clientesprev){
+        listaClientes =new ArrayList<DescripcionGenerica>();
+        for (ListaCompra listaCompra: lista ) {
+            Log.d(TAG,listaCompra.getPlantaNombre());
+            if( clientesprev!=null)
+                if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
+                {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
+                    Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
+                    continue;}
+            listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
+
         }
+
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

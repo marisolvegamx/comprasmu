@@ -408,7 +408,9 @@ public class NvaCorreccionEmpFragment extends Fragment {
 
 
             solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
-           nuevasCor=mViewModel.getCorreccionesxsolSimp(solicitudSel,Constantes.INDICEACTUAL);
+          //una pausa para que lo actualice en el serv
+
+           nuevasCor=mViewModel.getCorreccionesxsolPendSimp(solicitudSel,Constantes.INDICEACTUAL);
 
            CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
            SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
@@ -421,7 +423,13 @@ public class NvaCorreccionEmpFragment extends Fragment {
 
            mViewModel.setNvocorreccion(null);
 
-           Toast.makeText(getContext(),"Se guardó la corrección correctamente",Toast.LENGTH_SHORT).show();
+           Toast.makeText(getContext(),"Se guardó la corrección correctamente",Toast.LENGTH_LONG).show();
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             salir();
 
 

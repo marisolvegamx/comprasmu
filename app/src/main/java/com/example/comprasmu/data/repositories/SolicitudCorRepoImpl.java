@@ -119,4 +119,6 @@ public class SolicitudCorRepoImpl  {
     public void deleteByIndice(String indice) {
         icDao.deleteByIndice(indice);
     }
+
+
 }

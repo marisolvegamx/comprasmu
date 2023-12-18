@@ -130,6 +130,10 @@ public class NvaCorreViewModel extends AndroidViewModel {
     public List<Correccion> getCorreccionesxsolSimp(int idsol,String indice){
         return correpository.getxsolSimp(idsol,indice);
     }
+//las que no se han enviado
+    public List<Correccion> getCorreccionesxsolPendSimp(int idsol,String indice){
+        return correpository.getxsolPendSimp(idsol,indice,0);
+    }
 
     public Correccion getUltCorrecionxSolSimple(int idsol,int numfoto,String indice){
        List<Correccion> lista=correpository.getCorrecxSolSim(idsol,numfoto,indice);

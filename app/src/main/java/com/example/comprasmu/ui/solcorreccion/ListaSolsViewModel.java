@@ -72,6 +72,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         return repository.totalSolsxPlantaxCd(etapa,indiceSel, estatus,ciudad);
     }
 
+
     public LiveData<Integer> getTotSolsEtiqxCd(int etapa, String indiceSel, int estatus, String ciudad){
 
         return repository.getTotSolsEtiqxCd(etapa,indiceSel, estatus,ciudad);

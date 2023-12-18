@@ -380,7 +380,11 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
             miTareaAsincrona.execute();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
-
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             salir();
 
         }catch (Exception ex){

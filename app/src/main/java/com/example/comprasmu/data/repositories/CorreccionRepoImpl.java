@@ -116,6 +116,9 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
     public List<Correccion> getxsolSimp(int idsol, String indice) {
         return icDao.getCorreccionesSimp(idsol, indice );
     }
+    public List<Correccion> getxsolPendSimp(int idsol, String indice, int estatus) {
+        return icDao.getCorreccionesPendSimp(idsol, indice,estatus );
+    }
 
     @Override
     public long insert(Correccion newCorreccion) {

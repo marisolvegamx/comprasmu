@@ -24,6 +24,9 @@ public abstract class CorreccionDao extends  BaseDao<Correccion>{
     @Query("SELECT * FROM correccion where   solicitudId=:solicitudId and indice=:indice ")
     public abstract List<Correccion> getCorreccionesSimp( int solicitudId, String indice);
 
+    @Query("SELECT correccion.* FROM correccion inner join solicitud_cor on correccion.solicitudId=solicitud_cor.id where   solicitudId=:solicitudId and correccion.indice=:indice and correccion.estatusSync=:estatus ")
+    public abstract List<Correccion> getCorreccionesPendSimp( int solicitudId, String indice, int estatus);
+
     @Query("SELECT * FROM correccion where  solicitudId=:solicitudId and numfoto=:numfoto and indice=:indice")
     public abstract List<Correccion> getCorreccxsolSimple(int solicitudId,int numfoto, String indice);
 

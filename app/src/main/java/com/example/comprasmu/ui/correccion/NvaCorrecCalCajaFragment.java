@@ -569,7 +569,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
             Log.d(TAG,"actualizar estatus "+numfoto);
             solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
-           nuevasCor=mViewModel.getCorreccionesxsolSimp(solicitudSel,Constantes.INDICEACTUAL);
+           nuevasCor=mViewModel.getCorreccionesxsolPendSimp(solicitudSel,Constantes.INDICEACTUAL);
 
            CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
            SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
@@ -581,7 +581,11 @@ public class NvaCorrecCalCajaFragment extends Fragment {
             mViewModel.setIdNuevo(0);
            mViewModel.setNvocorreccion(null);
            Toast.makeText(getContext(),"Se envió la corrección",Toast.LENGTH_SHORT).show();
-
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
            salir();
 
 

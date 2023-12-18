@@ -114,7 +114,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     int desclis; int descinf; int descfoto;
     LiveData<List<InformeCompraDetalle>> totCancel;
     LiveData<List<InformeEtapa>> totCanceleta;
-
+    NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,7 +161,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
 
         Log.d(TAG,"pso x aqui"+Constantes.ETAPAACTUAL);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         //cargo el menu lateral de acuerdo a la etapa
         if(Constantes.ETAPAACTUAL==1) {
             navigationView.getMenu().clear();
@@ -196,6 +196,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             navigationView.getMenu().clear();
 
             navigationView.inflateMenu(R.menu.activity_main_draweremp);
+//            navigationView.getMenu().setGroupVisible(R.id.HelpGroup,false);
+            //navigationView.getMenu().setGroupVisible(R.id.SetupGroup,false);
+
             View header=navigationView.getHeaderView(0);
             header.setBackgroundResource(R.drawable.side_nav_baremp);
             TextView mNameTextView = header.findViewById(R.id.txthmmodulo);
@@ -465,8 +468,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 return true;*/
             case R.id.cerrarsesion: //realmente es borrar datos
 
-               Intent pruebai =new Intent(this, MasPruebasActivity.class);
-                startActivity(pruebai);
+              // Intent pruebai =new Intent(this, MasPruebasActivity.class);
+             //   startActivity(pruebai);
 
 
                /* navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -483,6 +486,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
     }
 
+    public void LoadNavMenu(int iMenu){
+       // navigationView.getMenu().clear();
+        //navigationView.inflateMenu(iMenu);
+       }
 
     public void borrarUsuario(){
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
@@ -613,10 +620,16 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         LocalBroadcastManager.getInstance(this).unregisterReceiver(rcv);
         Log.i(TAG," detuve");
     }
-
+//esta funcion no funciona nunca se llama
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Log.i(TAG,"click en el menu");
+        Log.e(TAG," hola");
+        return false;
+    }
+
+   /* @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.d(TAG,"click en el menu");
         switch (item.getItemId()) {
 
             case R.id.nav_cerrarsesion: {
@@ -625,12 +638,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 break;
             }
         }
+        if(Constantes.ETAPAACTUAL==4)
+            this.onNavigationMenuEmp(item);
         //close navigation drawer
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
 
-    }
+    }*/
 
 
 
@@ -665,15 +680,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     private void contarCorrecc(){
        // totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
-        if(Constantes.ETAPAACTUAL==4){
+        if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3){
             //busco x ciudad
-            totCorrecciones=scViewModel.getTotSolsEtiqxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);
-
-        }else
-
-        if(Constantes.ETAPAACTUAL==3){
-            //busco x ciudad
-            totCorrecciones=scViewModel.getTotSolsEtiqxCd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1,Constantes.CIUDADTRABAJO);
+            totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
 
         }else
             totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
@@ -996,5 +1005,25 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
     }
+  /*  public boolean onNavigationMenuEmp(MenuItem item) {
+        // Handle navigation view item clicks here.
+        Log.d(TAG,"SI DI CLICK");
+        int id = item.getItemId();
+        navigationView.getMenu().setGroupVisible(R.id.HelpGroup,false);
+       // navigationView.getMenu().setGroupVisible(R.id.SetupGroup,false);
+        switch (item.getItemId()){
+            case R.id.nav_etiqmen:
+                Log.d(TAG,"SI DI CLICK");
+                navigationView.getMenu().setGroupVisible(R.id.HelpGroup,true);
+             //   navigationView.getMenu().setGroupVisible(R.id.SetupGroup,false);
+                return true;
+            /*case R.id.SetupGr:
+                navigationView.getMenu().setGroupVisible(R.id.SetupGroup,true);
+               // navigationView.getMenu().setGroupVisible(R.id.HelpGroup,false);
+                return true;*/
 
+     //   }
+      //  base.closeDrawer(GravityCompat.START);
+      /*  return true;
+    }*/
 }

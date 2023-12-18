@@ -123,10 +123,10 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                  }else{
                     bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,0);
                     bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
-                 //   bundle.putInt(NvaPreparacionFragment.ARG_INFORMEDET,det.getId() );
-                 NvaPreparacionFragment frag=new NvaPreparacionFragment();
-                 frag.setArguments(bundle);
-                 ft.add(R.id.continfeta_fragment,frag );
+                     //   bundle.putInt(NvaPreparacionFragment.ARG_INFORMEDET,det.getId() );
+                     NvaPreparacionFragment frag=new NvaPreparacionFragment();
+                     frag.setArguments(bundle);
+                     ft.add(R.id.continfeta_fragment,frag );
 
                 }
             }

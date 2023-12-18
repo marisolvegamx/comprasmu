@@ -104,7 +104,7 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
     }
     public void descargarPDF2(int cliente){
         long archact;
-        String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&idmes="+ Constantes.INDICEACTUAL+"&idrec="+Constantes.CLAVEUSUARIO+"&idplan=29&numcaja=1";
+        String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&indicelis="+ Constantes.INDICEACTUAL+"&rec="+Constantes.CLAVEUSUARIO+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO;
 
         Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
         // registrer receiver in order to verify when download is complete
