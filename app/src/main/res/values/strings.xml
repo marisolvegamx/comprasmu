@@ -334,6 +334,9 @@
     <string name="informe_reubicar">PARA REUBICAR NECESITAS CREAR UN NUEVO INFORME</string>
     <string name="el_numcaja">EL NUMERO DE CAJA DEBE SER CONSECUTIVO FAVOR DE REUBICAR</string>
     <string name="atras">ATRAS</string>
+    <string name="eti_destinatario">Destinatario</string>
+    <string name="eti_fragil">Fragil</string>
+    <string name="eti_contenido">Contenido</string>
 
 
 </resources>

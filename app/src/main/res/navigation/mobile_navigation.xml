@@ -388,8 +388,18 @@
 
     <fragment
         android:id="@+id/nav_solcoretiq"
-        android:name="com.example.comprasmu.ui.solcorreccion.ListaSolCorreFragment"
+        android:name="com.example.comprasmu.ui.solcorreccion.SelPlantaFragment"
         android:label="@string/solicitudcor" >
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="c" />
+        <action android:id="@+id/action_selclitosolcor2"
+            app:destination="@id/nav_listasolcor"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
     </fragment>
     <fragment
@@ -455,9 +465,20 @@
     </fragment>
     <fragment
         android:id="@+id/nav_solcorem"
-        android:name="com.example.comprasmu.ui.solcorreccion.ListaSolCorreFragment"
+        android:name="com.example.comprasmu.ui.solcorreccion.SelPlantaFragment"
         android:label="@string/coreccion_pend"
       >
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="c" />
+        <action android:id="@+id/action_selclitosolcor2"
+            app:destination="@id/nav_listasolcor"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+
     </fragment>
     <fragment
         android:id="@+id/nav_rescorremp"
