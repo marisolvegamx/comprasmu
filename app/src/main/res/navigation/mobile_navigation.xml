@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-   >
+    >
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.comprasmu.ui.home.VHomeFragment"
@@ -25,12 +25,12 @@
         android:name="com.example.comprasmu.ui.mantenimiento.CiudadTrabajoFragment"
         android:label="@string/menu_ciudad_trabajo"
         tools:layout="@layout/ciudad_trabajo_fragment" >
-    <action android:id="@+id/action_ciudadtohome"
-        app:destination="@id/nav_home"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_ciudadtohome"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
 
     <fragment
@@ -54,24 +54,24 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    <action android:id="@+id/action_selplantoselcli"
-        app:destination="@id/nav_selcliente"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_selplantoselcli"
+            app:destination="@id/nav_selcliente"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/nav_selcliente"
         android:name="com.example.comprasmu.ui.listacompras.SelClienteFragment"
         android:label="@string/menu_ver_lista"
         tools:layout="@layout/lista_selec_fragment">
-    <action android:id="@+id/action_selclitolista"
-        app:destination="@id/nav_listacompras"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_selclitolista"
+            app:destination="@id/nav_listacompras"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action android:id="@+id/action_selclitoinformes"
             app:destination="@id/nav_listar2"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -83,7 +83,7 @@
         android:id="@+id/nav_listacompras"
         android:name="com.example.comprasmu.ui.listadetalle.ListaCompraFragment"
         android:label="@string/menu_ver_lista"
-       />
+        />
 
     <fragment
         android:id="@+id/nav_nuevoinforme"
@@ -106,7 +106,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
 
-</fragment>
+    </fragment>
     <activity
         android:id="@+id/nav_abririnf"
         android:name="com.example.comprasmu.ui.informedetalle.ContinuarInformeActivity"
@@ -117,10 +117,10 @@
         android:name="com.example.comprasmu.ui.SelPlantaFragment"
         android:label="@string/menu_resumencomp"
         tools:layout="@layout/lista_selec_fragment" >
-    <argument
-        android:name="comprasmu.selcli.tipocons"
-        app:argType="string"
-        android:defaultValue="action_selclitoinformes" />
+        <argument
+            android:name="comprasmu.selcli.tipocons"
+            app:argType="string"
+            android:defaultValue="action_selclitoinformes" />
         <action android:id="@+id/action_selplantoselcli"
             app:destination="@id/nav_selcliente"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -244,10 +244,10 @@
         android:id="@+id/nav_listacor2"
         android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
         android:label="@string/menu_informescorrec">
-    <argument
-        android:name="comprasmu.correselcli.tipocons"
-        app:argType="string"
-        android:defaultValue="rescor" />
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="rescor" />
 
     </fragment>
 
@@ -309,10 +309,10 @@
         android:id="@+id/nav_continuarprep"
         android:name="com.example.comprasmu.ui.infetapa.ContInfEtapaFragment"
         android:label="@string/continuar" >
-    <argument
-        android:name="comprasmu.cie.etapasel"
-        app:argType="integer"
-        android:defaultValue="1" />
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="1" />
     </fragment>
 
 
@@ -320,20 +320,20 @@
         android:id="@+id/nav_resumenprep"
         android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
         android:label="@string/menu_lista_prep" >
-    <argument
-        android:name="comprasmu.correselcli.tipocons"
-        app:argType="string"
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
             android:defaultValue="action_selclitoinf1" />
         <argument
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
             android:defaultValue="1" />
-    <action android:id="@+id/action_selclitoinf1"
-        app:destination="@id/nav_listacor2"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
+        <action android:id="@+id/action_selclitoinf1"
+            app:destination="@id/nav_listacor2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
     <fragment
         android:id="@+id/nav_precancel"
         android:name="com.example.comprasmu.ui.informe.ListaCancelFragment"
@@ -384,22 +384,12 @@
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
             android:defaultValue="3" />
-       </fragment>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_solcoretiq"
-        android:name="com.example.comprasmu.ui.solcorreccion.SelPlantaFragment"
+        android:name="com.example.comprasmu.ui.solcorreccion.ListaSolCorreFragment"
         android:label="@string/solicitudcor" >
-        <argument
-            android:name="comprasmu.correselcli.tipocons"
-            app:argType="string"
-            android:defaultValue="c" />
-        <action android:id="@+id/action_selclitosolcor2"
-            app:destination="@id/nav_listasolcor"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
     </fragment>
     <fragment
@@ -465,20 +455,9 @@
     </fragment>
     <fragment
         android:id="@+id/nav_solcorem"
-        android:name="com.example.comprasmu.ui.solcorreccion.SelPlantaFragment"
+        android:name="com.example.comprasmu.ui.solcorreccion.ListaSolCorreFragment"
         android:label="@string/coreccion_pend"
-      >
-        <argument
-            android:name="comprasmu.correselcli.tipocons"
-            app:argType="string"
-            android:defaultValue="c" />
-        <action android:id="@+id/action_selclitosolcor2"
-            app:destination="@id/nav_listasolcor"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-
+        >
     </fragment>
     <fragment
         android:id="@+id/nav_rescorremp"

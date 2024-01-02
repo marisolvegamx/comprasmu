@@ -55,6 +55,9 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and descripcion=:descripcion and num_caja=:caja")
     public abstract LiveData<InformeEtapaDet> getByDescripcionCaja( int id,String descripcion, int caja);
 
+  @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and descripcion=:descripcion and num_caja=:caja")
+  public abstract InformeEtapaDet getByDescripcionCajaSim( int id,String descripcion, int caja);
+
   @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and descripcionId=:descripcion and num_caja=:caja")
   public abstract InformeEtapaDet getByDescripCajaSim( int id,int descripcion, int caja);
 

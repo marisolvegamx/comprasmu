@@ -104,8 +104,8 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
     }
     public void descargarPDF2(int cliente){
         long archact;
-        String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&indicelis="+ Constantes.INDICEACTUAL+"&rec="+Constantes.CLAVEUSUARIO+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO;
-
+       // String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&indicelis="+ Constantes.INDICEACTUAL+"&rec="+Constantes.CLAVEUSUARIO+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO;
+        String MY_URL = Constantes.URLSERV+"imprimirReporte.php?tipo_consulta=d&indicelis="+ Constantes.INDICEACTUAL+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO+"&rec="+Constantes.CLAVEUSUARIO;
         Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
         // registrer receiver in order to verify when download is complete
         //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -117,6 +117,7 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
         request.setTitle("DESCARGA ETIQUETAS"); // Title for notification.
         // request.setVisibleInDownloadsUi(true);
         // request.setTitle("DESCARGA ETIQUETAS");
+        Log.d(TAG,"hola"+MY_URL);
 
         request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, "etiquetas.pdf");  // Storage directory path
         archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading

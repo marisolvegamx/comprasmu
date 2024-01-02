@@ -340,6 +340,10 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
         return infDetRepo.getByDescripcionCaja(descripcion,idinf, caja);
     }
+    public InformeEtapaDet getDetallexDescCajaSim(int idinf, String descripcion, int caja){
+
+        return infDetRepo.getByDescripcionCajaSim(descripcion,idinf, caja);
+    }
     public InformeEtapaDet getByDescripCajaSim(int idinf, int descripcion, int caja){
 
         return infDetRepo.getByDescripCajaSim(idinf,descripcion, caja);
@@ -435,7 +439,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         List<InformeEtapaDet> muestras= infDetRepo.listaCajasEtiqxCdCli2( 3,ciudad,cliente);
         EtiquetadoxCliente resul=null;
         int i=1;
-        Log.d(TAG,"tot cajas"+muestras.size());
+
         resumenEtiq=new ArrayList<>();
         this.numMuestras=0;
         for(InformeEtapaDet muestra:muestras) {
@@ -448,7 +452,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
             //para obtener el total de muestras
             this.numMuestras+=muestra.getNum_muestra();
         }
-
+        Log.d(TAG,"tot cajas"+muestras.size());
 
     }
     public int getTotCajasEtiqxCli(String ciudad, int cliente){

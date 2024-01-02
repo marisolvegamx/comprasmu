@@ -62,9 +62,7 @@ public class Constantes {
    // public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
 
    // public static String URLPRUEBAS1="http://192.168.1.66/comprasv1/";
-    public static String URLPRUEBAS2="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
-
-    public static HashMap<Integer,String> plantasAsignadas;
+   // public static String URLPRUEBAS2="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
     public static String ni_clientesel;
     public static int ni_plantasel;
     public static String ni_plantanombre;

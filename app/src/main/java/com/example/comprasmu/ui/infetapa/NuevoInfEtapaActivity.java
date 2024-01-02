@@ -439,7 +439,8 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     //tal vez regrese a otra caja
                     if(dViewModel.cajaAct.consCaja>1){
                         reactivo=dViewModel.buscarReactivoSim(113);
-                        dViewModel.cajaAct.consCaja=dViewModel.cajaAct.consCaja-1;
+                      //  dViewModel.cajaAct.consCaja=dViewModel.cajaAct.consCaja-1;
+                        dViewModel.cajaAct=dViewModel.resumenEtiq.get(dViewModel.cajaAct.consCaja-2);
                     }
                 }
                 if (dViewModel.preguntaAct > 91) {
