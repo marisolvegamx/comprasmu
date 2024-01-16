@@ -468,5 +468,11 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         return false;
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(progreso!=null){
+            progreso.dismiss();
+        }
     }
+}

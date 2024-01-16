@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
+import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -13,12 +15,15 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
+import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TodoEnvio;
+import com.example.comprasmu.data.repositories.CorEtiqCajaDetRepoImpl;
+import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
@@ -54,6 +59,8 @@ public class PostInformeViewModel {
    InfEtapaDetRepoImpl etapadetRepo;
    Context context;
    CorreccionRepoImpl correccionRepo;
+   CorEtiqCajaRepoImpl corecRepo;
+   CorEtiqCajaDetRepoImpl corecdRepo;
 
     public PostInformeViewModel(@NonNull Context context) {
 
@@ -373,11 +380,57 @@ public class PostInformeViewModel {
 
         });
     }
+
+    public  void sendCorreccionEC(CorEtiquetaCajaEnvio correccion) {
+
+        Log.d(TAG+"sendCorreccionEC", "enviando correccion"+correccion.toJson(correccion));
+
+        ServiceGenerator.getApiService().saveCorreccionEC(correccion).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
+                //  { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+
+                    mensaje=response.body().getData();
+                    Log.d(TAG, "jjjjjjjjj"+mensaje);
+                    //actualizo el estatus
+                    actEstatusCorreccionEC(correccion.getCorreccion());
+                        //actualizo cada uno
+                        for (CorEtiquetadoCajaDet corre:correccion.getCorrecciones()
+                        ) {
+                            actEstatusCorreccionECD(corre);
+                        }
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+
+
+        });
+    }
     public void iniciarDBCor(){
         correccionRepo=new CorreccionRepoImpl(context);
     }
+
+
     public void actEstatusCorreccion(Correccion correccion){
 
+        correccionRepo.actualizarEstatusSync(correccion.getId(),2);
+    }
+    public void actEstatusCorreccionEC(CorEtiquetadoCaja correccion){
+        corecRepo=new CorEtiqCajaRepoImpl(context);
+        corecRepo.actualizarEstatusSync(correccion.getId(),2);
+    }
+    public void actEstatusCorreccionECD(CorEtiquetadoCajaDet correccion){
+        corecdRepo=new CorEtiqCajaDetRepoImpl(context);
         correccionRepo.actualizarEstatusSync(correccion.getId(),2);
     }
     public String getMensaje() {

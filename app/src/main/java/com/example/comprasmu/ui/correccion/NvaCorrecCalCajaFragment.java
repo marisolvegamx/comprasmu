@@ -33,12 +33,15 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEtaTask;
+import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
+import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
+import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
@@ -53,6 +56,7 @@ import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.DetalleInfView;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
+import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -82,16 +86,18 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
     public static int REQUEST_CODE_TAKE_PHOTO = 1;
 
-   List<Correccion> nuevasCor;
+
     private View root;
-    private NvaCorreViewModel mViewModel;
+
+    private NvaCorreECViewModel corViewModel;
     ListaSolsViewModel solViewModel;
     private NvaPreparacionViewModel preViewModel;
     SolicitudCor solicitud;
-    int numfoto;
+    int numfotoSol;
     InformeEtapa infEtiquetado;
     private Reactivo preguntaAct;
-    Correccion correccion; //por si es edicion
+    CorEtiquetadoCaja correccion; //por si es edicion
+    CorEtiquetadoCajaDet correccionDet;
     LinearLayout svprin;
     private NuevoDetalleViewModel dViewModel;
     private ComprasLog compraslog;
@@ -131,10 +137,8 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         Bundle datosRecuperados = getArguments();
         if (datosRecuperados != null) {
             solicitudSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
-            numfoto = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
-
+            numfotoSol = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
         }
-
 
     }
 
@@ -146,25 +150,27 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         svprin = root.findViewById(R.id.fgllcontentmain);
         sv2 = root.findViewById(R.id.fgll2); //para las cajas
         txtcajaact = root.findViewById(R.id.fgtxttitulo1);
-        mViewModel = new ViewModelProvider(requireActivity()).get(NvaCorreViewModel.class);
         solViewModel = new ViewModelProvider(requireActivity()).get(ListaSolsViewModel.class);
         preViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         dViewModel = new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
-
+        corViewModel=new ViewModelProvider(requireActivity()).get(NvaCorreECViewModel.class);
         compraslog = ComprasLog.getSingleton();
         try {
             //    aceptar.setEnabled(false);
-            solViewModel.getSolicitud(solicitudSel, numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
+            solViewModel.getSolicitud(solicitudSel, numfotoSol).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
                 @Override
                 public void onChanged(SolicitudCor solicitudCor) {
                     solicitud = solicitudCor;
-                    Log.e(TAG, "estatus " + solicitud.getInformesId() + numfoto + "--" + solicitud.getEtapa());
+                    Log.e(TAG, "estatus " + solicitud.getInformesId() + "--"+numfotoSol + "--" + solicitud.getEtapa());
                     //busco el consecutivo de la tienda
                     int constienda = 0;
                     // txtmotivo.setText(solicitud.getMotivo());
                     infEtiquetado = preViewModel.getInformexId(solicitudCor.getInformesId());
+                  if(infEtiquetado==null){
+                      Toast.makeText(getContext(),"Hubo un error al buscar el informe",Toast.LENGTH_SHORT).show();
+                        return;
+                  }
                     ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCorEta(solicitud,0);
-
 
                     //busco el total de cajas del informe
                     detallesInf = preViewModel.getInfDetCalCaja(infEtiquetado.getId()); //solo de calidad de caja
@@ -190,10 +196,8 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         int num_pregact = 120;
         Log.d(TAG, "creando preg");
 
-
         if(preguntaAct==null) //para la 1a vez
         {
-
             //busco preguntaAct
             preguntaAct = dViewModel.buscarReactivoSimpl(num_pregact);
         }
@@ -221,7 +225,10 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                     } catch (NumberFormatException ex) {
                         compraslog.grabarError(TAG, "guardarCorr", ex.getMessage());
                     }
-                    correccion = mViewModel.getUltCorrecionxSolSimple(solicitudSel, num_foto, Constantes.INDICEACTUAL);
+                    correccion = corViewModel.getUltCorrecionxSolSimple(solicitudSel, numfotoSol, Constantes.INDICEACTUAL);
+                    //busco el detalle
+                    if(correccion!=null)
+                        correccionDet=corViewModel.getUltCorDetSimple(correccion.getId(),num_foto);
                 }
             }
             if(correccion!=null){
@@ -293,9 +300,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 txtcajaact.setText("CAJA "+cajaAct);
                 txtcajaact.setVisibility(View.VISIBLE);
             }
-        } catch(Exception ex)
-
-    {
+        } catch(Exception ex) {
         ex.printStackTrace();
     }
 
@@ -307,14 +312,12 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         if(isEdicion) {
              inftemp=new InformeTemp();// en detalleinfview se usa informetemporal para obtener el valor que se edita
             //por eso creo un objeto para guardar el valor
-            inftemp.setValor(correccion.getRuta_foto1());
+            inftemp.setValor(correccionDet.getRuta_fotonva());
             preguntaview.setUltimares(inftemp);
             preguntaview.setEdicion(isEdicion);
         }
 
-
         if( preguntaAct.getType().equals("agregarImagen")) {
-
             preguntaview.setTomarFoto( new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -352,7 +355,6 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 public void onClick(View view) {
                     iniciarLecQR();
                 }
-
             });
         }
         if(preguntaAct.getId()==121) //qr y caja
@@ -360,10 +362,6 @@ public class NvaCorrecCalCajaFragment extends Fragment {
            //todavia no se como ponerlo
           //       cargarListaCajas();
                  //preguntaview.setCausas(cajasValues);
-
-
-
-
        }else{
             preguntaview.verBtnSecundario(View.GONE);
         }
@@ -393,11 +391,14 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
             }
             int descripcionId=12;
+            String descripcion=getString(R.string.caraa);
             if(preguntaAct.getId()==124){
                 descripcionId=13;
+                descripcion=getString(R.string.carab);
             }
             if(preguntaAct.getId()==125){
                 descripcionId=14;
+                descripcion=getString(R.string.acomodo_mues);
             }
             //todavia no se donde guardar que hubo reubicacion
             //buscar el num de foto para las que son cara a y para las sig. cajas
@@ -406,13 +407,19 @@ public class NvaCorrecCalCajaFragment extends Fragment {
             if (lddetalle != null) {
                 int num_foto=0;
                 try {
-                             num_foto = Integer.parseInt(lddetalle.getRuta_foto());
+                    num_foto = Integer.parseInt(lddetalle.getRuta_foto());
                 }catch(NumberFormatException ex){
-                            compraslog.grabarError(TAG,"guardarCorr",ex.getMessage());
+                    compraslog.grabarError(TAG,"guardarCorr",ex.getMessage());
                 }
+                if(corViewModel.getIdNuevo()==0)
+                    //guardo encabezado
+                    corViewModel.insertarCorreccionEtiqCaj(solicitud.getId(), Constantes.INDICEACTUAL, num_foto);
                 Log.d(TAG,"num foto"+num_foto);
-                mViewModel.setIdNuevo(mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL, num_foto, valor, "", "", ""));
-                        preguntaview.aceptarSetEnabled(true);
+                if(corViewModel.getIdNuevo()>0)//todo bien
+                    //inserto detalle
+                    corViewModel.insertarCorEtiqCajDet(corViewModel.getIdNuevo(),num_foto+"",valor,cajaAct,descripcion,descripcionId);
+              // mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL, num_foto, valor, "", "", ""));
+                preguntaview.aceptarSetEnabled(true);
             }
 
 
@@ -520,7 +527,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
                 //busco la caja
                 if(preguntaview2.haySPClientes())
-                valor2 = preguntaview2.getSpclientes().getSelectedItem() + "";
+                    valor2 = preguntaview2.getSpclientes().getSelectedItem() + "";
 
 
 
@@ -549,6 +556,9 @@ public class NvaCorrecCalCajaFragment extends Fragment {
             InformeEtapaEnv envio=preViewModel.preparaInformeEtiqCor(solicitud.getInformesId(),muestraEdit);
             SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
             miTareaAsincrona.execute();
+            //actualizo total de cajas por si se agrego una
+            totcajas = preViewModel.getTotCajasxInf(infEtiquetado.getId());
+
             Toast.makeText(getContext(),"Muestra reubicada correctamente",Toast.LENGTH_SHORT).show();
 
 
@@ -567,19 +577,18 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     public void actualizarSolicitud() {
         try {
 
-            Log.d(TAG,"actualizar estatus "+numfoto);
-            solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
-           nuevasCor=mViewModel.getCorreccionesxsolPendSimp(solicitudSel,Constantes.INDICEACTUAL);
-
-           CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
-           SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
+            Log.d(TAG,"actualizar estatus "+numfotoSol);
+            solViewModel.actualizarEstSolicitud(solicitudSel,numfotoSol,4);
+            List<CorEtiquetadoCajaDet> nuevasCor= corViewModel.getCorreccionesDet(corViewModel.getIdNuevo());
+           CorEtiquetaCajaEnvio envio=corViewModel.prepararEnvio(corViewModel.getNvocoreticaja(),nuevasCor);
+           SubirCorrEtiqCajaTask miTareaAsincrona = new SubirCorrEtiqCajaTask(envio,getActivity());
            miTareaAsincrona.execute();
-           for(Correccion cor:nuevasCor) {
-               subirFotos(getActivity(), cor.getId(), cor.getRuta_foto1());
+           for(CorEtiquetadoCajaDet cor:nuevasCor) {
+               subirFotos(getActivity(), cor.getId(), cor.getRuta_fotonva());
            }
            //todo limpio variables de sesion
-            mViewModel.setIdNuevo(0);
-           mViewModel.setNvocorreccion(null);
+            corViewModel.setIdNuevo(0);
+           corViewModel.setNvocoreticaja(null);
            Toast.makeText(getContext(),"Se envió la corrección",Toast.LENGTH_SHORT).show();
             try {
                 Thread.sleep(4000);
@@ -587,8 +596,6 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 e.printStackTrace();
             }
            salir();
-
-
 
         }catch(Exception ex){
             ex.getStackTrace();
@@ -967,13 +974,13 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mViewModel = null;
+        corViewModel = null;
         solViewModel=null;
         cf=null;
 
         root=null;
-    preguntaview=null;
-    preguntaAct=null;
+        preguntaview=null;
+        preguntaAct=null;
 
         //fotomos=null;
         svprin=null;

@@ -309,6 +309,7 @@
     <string name="menu_reubiqetiq">Reubicar muestra</string>
     <string name="menu_eliminaretiq">"Eliminar caja "</string>
     <string name="atributod">DAÑO D</string>
+    <string name="selec_motivo_sust">SELECCIONE EL MOTIVO</string>
     <string name="elim_caja">ELIMINAR CAJA</string>
     <string name="selec_caja">SELECCIONE LA CAJA</string>
     <string name="esta_caja">PARA ELIMINAR LA CAJA REUBIQUE LAS MUESTRAS</string>

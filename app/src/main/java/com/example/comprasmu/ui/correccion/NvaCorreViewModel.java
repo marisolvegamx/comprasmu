@@ -7,10 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
+import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.SolicitudWithCor;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
+import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.utils.Constantes;
@@ -22,9 +25,11 @@ import java.util.List;
 public class NvaCorreViewModel extends AndroidViewModel {
 
     private final CorreccionRepoImpl correpository;
+
     private final SolicitudCorRepoImpl solRepo;
     private int idNuevo;
     private Correccion nvocorreccion;
+    private CorEtiquetadoCaja nvocoreticaja;
     final String TAG="NvaCorreViewModel";
     Application application;
 
@@ -33,6 +38,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
         this.application = application;
         this.correpository = new CorreccionRepoImpl(application);
         this.solRepo=new SolicitudCorRepoImpl(application);
+
 
     }
 

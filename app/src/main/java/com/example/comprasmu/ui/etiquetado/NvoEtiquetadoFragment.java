@@ -114,7 +114,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     List<ListaCompra> listacomp;
     private static final int REQUEST_CODEQR = 345;
     int cajaini; //se usa para las cajas de la muestra
-    int contmuestra, contmuint, contcajaf;
+    int contmuestra, contmuint, contcajaf; //contador para fotos caja
     int totmuestras, totcajas; //cajaact
     private ArrayList<DescripcionGenerica> listaClientes;
     private boolean isEdicion;
@@ -870,7 +870,7 @@ public void iraReubicar(){
             //busco si hay muestras
             List<InformeEtapaDet> cajas=mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(),3,numcaja);
 
-            if(cajas!=null&&cajas.size()>0)
+            if(cajas==null||cajas.size()<1)
               return true;
 
         }
@@ -973,8 +973,9 @@ public void iraReubicar(){
             txtcajaact.setText(cajainif + "");
             //  txtcajaact.setText("CAJA "+contcaja);
             //para saber el contador
-        contcajaf=cajainif-primerCaja+1;
-
+      //  contcajaf=cajainif-primerCaja+1;
+        //siempre empiezo en 1
+        contcajaf=1;
             // totcajas=infomeEdit.getTotal_cajas();
 
         Log.e(TAG, "--" + contcajaf);
@@ -1046,6 +1047,7 @@ public void iraReubicar(){
     }
     public void atras(){
         Log.d(TAG,"**contf"+contcajaf);
+        isEdicion=true; //siempre es edicion
         switch (preguntaAct){
             case 3: //qr
                 sv3.setVisibility(View.VISIBLE);
@@ -1068,7 +1070,7 @@ public void iraReubicar(){
             case 5://foto cara a
                 svotra.setVisibility(View.GONE);
                 //puede ser que tenga que volver a otra caja
-                if(contcajaf>1){
+                if(cajainif>1){
                     preguntaAct=7;
                     mViewModel.preguntaAct=preguntaAct;
                     contcajaf--;
