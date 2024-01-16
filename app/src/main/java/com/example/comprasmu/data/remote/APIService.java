@@ -154,4 +154,11 @@ public interface APIService {
     Call<PostResponse> uploadImage(@Part MultipartBody.Part file, @Part("ruta") RequestBody ruta,@Part("idlocalim") RequestBody idimagen,
                                    @Part("idusuario") RequestBody idusuario,
                                    @Part("indice") RequestBody indice);
+
+    @POST("correccion/createec")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> saveCorreccionEC(@Body CorEtiquetaCajaEnvio item);
 }

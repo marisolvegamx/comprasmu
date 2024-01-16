@@ -442,7 +442,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                                     detalle.setNvoCodigo(existe.getNvoCodigo());
                                     //lcrepo.updateSC(compra);
                                 }
-                                lcdrepo.insert(detalle);
+                                Log.d(TAG,"insertando"+detalle.getListaId()+"--"+detalle.getId());
+                                long id=lcdrepo.insert(detalle);
+                                Log.d(TAG,"**insertando"+id);
+
 
 
                             }

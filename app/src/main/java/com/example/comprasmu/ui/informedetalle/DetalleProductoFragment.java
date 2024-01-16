@@ -107,6 +107,7 @@ public class DetalleProductoFragment extends Fragment {
     private List<CatalogoDetalle> tomadoDe;
     private List<CatalogoDetalle> atributos;
     private List<CatalogoDetalle> causas;
+    public List<CatalogoDetalle> causassust;
     private static final String TAG="DETALLEPRODUCTOFRAG";
     private static final int REQUEST_CODEQR = 341;
     SimpleDateFormat sdf;
@@ -286,7 +287,7 @@ public class DetalleProductoFragment extends Fragment {
             {
                 ((ContinuarInformeActivity)getActivity()).noSalir(true);
             }
-            if(preguntaAct.getId()>=23) //ya tengo producto voy en siglas
+            if(preguntaAct.getId()>=23&&preguntaAct.getId() !=126) //ya tengo producto voy en siglas
             {
                 //  Constantes.ni_clientesel=opcionsel.getNombre();
                 //int consecutivo=mViewModel.getConsecutivo(valor);
@@ -303,7 +304,7 @@ public class DetalleProductoFragment extends Fragment {
 
                 ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
             }
-            if (preguntaAct.getId() >= 25&&preguntaAct.getId() !=47) {//si compro prod
+            if (preguntaAct.getId() >= 25&&preguntaAct.getId() !=47&&preguntaAct.getId() !=126) {//si compro prod
                 InformeTemp resp=dViewModel.buscarxNombreCam("codigo",mViewModel.numMuestra);
                 ((ContinuarInformeActivity)getActivity()).actualizarCodProd(resp.getValor());
 
@@ -311,7 +312,7 @@ public class DetalleProductoFragment extends Fragment {
             if(dViewModel.productoSel!=null)
             { getAtributos();
                 getTomadoDe();}
-            if (preguntaAct.getId() >= 26&&preguntaAct.getId()!=47) { //si hay prod
+            if (preguntaAct.getId() >= 26&&preguntaAct.getId()!=47&&preguntaAct.getId() !=126) { //si hay prod
 
 
                 InformeTemp resp=dViewModel.buscarxNombreCam("origen",mViewModel.numMuestra);
@@ -327,7 +328,7 @@ public class DetalleProductoFragment extends Fragment {
                 ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
 
             }
-            if (preguntaAct.getId() >= 33&&preguntaAct.getId()!=47) {
+            if (preguntaAct.getId() >= 33&&preguntaAct.getId()!=47&&preguntaAct.getId() !=126) {
                 InformeTemp resp=dViewModel.buscarxNombreCam("atributoa",mViewModel.numMuestra);
                 String valor="";
                 if(resp!=null) {
@@ -342,7 +343,7 @@ public class DetalleProductoFragment extends Fragment {
                 }
 
             }
-            if (preguntaAct.getId() >= 36&&preguntaAct.getId()!=47) {
+            if (preguntaAct.getId() >= 36&&preguntaAct.getId()!=47&&preguntaAct.getId() !=126) {
                 InformeTemp resp=dViewModel.buscarxNombreCam("atributob",mViewModel.numMuestra);
                 String valor="";
                 if(resp!=null) {
@@ -357,7 +358,7 @@ public class DetalleProductoFragment extends Fragment {
                 }
 
             }
-            if (preguntaAct.getId() >= 39&&preguntaAct.getId()!=47) {
+            if (preguntaAct.getId() >= 39&&preguntaAct.getId()!=47&&preguntaAct.getId() !=126) {
                 InformeTemp resp=dViewModel.buscarxNombreCam("atributoc",mViewModel.numMuestra);
                 String valor="";
                 if(resp!=null) {
@@ -372,7 +373,7 @@ public class DetalleProductoFragment extends Fragment {
                 }
 
             }
-            if (preguntaAct.getId() >= 90&&preguntaAct.getId()!=47) {
+            if (preguntaAct.getId() >= 90&&preguntaAct.getId()!=47&&preguntaAct.getId() !=126) {
                 InformeTemp resp=dViewModel.buscarxNombreCam("atributod",mViewModel.numMuestra);
                 String valor="";
                 if(resp!=null) {
@@ -564,11 +565,16 @@ public class DetalleProductoFragment extends Fragment {
                     getTomadoDe();
                     preguntaview.setAtributos(tomadoDe);
                     break;
+
                 case "clientesId":
                     cargarClientes();
                     preguntaview.setClientesAsignados( clientesAsignados);
                     break;
 
+                case Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID:
+                    getCausasSust();
+                    preguntaview.setAtributos(causassust); //el campo es del tipo selectcatalogo
+                    break;
             }
 
         }
@@ -783,6 +789,11 @@ public class DetalleProductoFragment extends Fragment {
         tomadoDe = catalogoDetalles;
         Log.d(TAG,"ya tengo los catalogos"+catalogoDetalles.size());
 
+
+
+    }
+    public void getCausasSust(){
+         causassust =   dViewModel.buscarCatalogoGen(Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID);
 
 
     }
@@ -1859,6 +1870,7 @@ public class DetalleProductoFragment extends Fragment {
                     //guardo el total de la lista
                     //generar consecutivo tienda
                     Log.d(TAG, "antes de generar cons "+  dViewModel.productoSel.clienteNombre+"--"+dViewModel.productoSel.plantaSel);
+
                     if(mViewModel.consecutivo==0) {
                         int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
                         //  Log.d(TAG, "*genere cons=" + consecutivo);
@@ -1875,8 +1887,11 @@ public class DetalleProductoFragment extends Fragment {
                         mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
                         ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
-
-                        avanzarPregunta(23);
+                        //veo si fue sustitucion
+                        if(Constantes.productoSel.tipoMuestra==3)
+                            avanzarPregunta(126); //pregunto motivo
+                        else
+                            avanzarPregunta(23);
 
                     }else {
 
@@ -1887,8 +1902,13 @@ public class DetalleProductoFragment extends Fragment {
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                         mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
+                        //veo si fue sustitucion
+                        if(Constantes.productoSel.tipoMuestra==3)
+                            avanzarPregunta(126); //pregunto motivo
+                        else
+                            avanzarPregunta(23);
 
-                        avanzarPregunta(23);
+
                     }
 
                 }else

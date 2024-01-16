@@ -112,6 +112,15 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                     //me muevo a la anterior
                     ultimares = dViewModel.buscarTempxId(ultimares.getId() - 1);
                 }
+                if (ultimares.getNombre_campo().equals("causaSustId")) {
+                    //me muevo a la anterior
+                    ultimares = dViewModel.buscarTempxId(ultimares.getId() - 1);
+                    if (ultimares.getNombre_campo().equals("totalLista")) {
+                    //otro mas
+                        ultimares = dViewModel.buscarTempxId(ultimares.getId() - 1);
+
+                    }
+                }
                 Log.d(TAG, "++" + ultimares.getNombre_campo());
                 preguntaAct = dViewModel.inftempToReac(ultimares);
 

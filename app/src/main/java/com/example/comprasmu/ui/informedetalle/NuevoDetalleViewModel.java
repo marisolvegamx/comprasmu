@@ -115,6 +115,11 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         causas=catRepo.getxCatalogo("causas");
 
     }
+    /**busca el catalogo mandado por el campo***/
+    public List<CatalogoDetalle> buscarCatalogoGen(String campo){
+        return catRepo.getxCatalogo(campo);
+
+    }
     //ver si tiene informe la visita y devuelve el cliente o los clientes
    /* public Integer[] tieneInforme(Visita visita){
         Integer[] clienteAnt=null;
@@ -431,6 +436,27 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
                     e.printStackTrace();
                 }
              //   Log.d("NuevoDetVM",">>>>"+nuevo.getCaducidad());
+            } else   if(info.getNombre_campo().equals("causaSustId")) {
+
+                params[0] = Integer.class;
+                Integer nval=null;
+                try {
+                    nval=Integer.parseInt(info.getValor());
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Method metodo = claseCargada.getDeclaredMethod("set"+ ComprasUtils.upperCaseFirst(info.getNombre_campo()),params);
+
+                    metodo.invoke(nuevo,nval);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+                //   Log.d("NuevoDetVM",">>>>"+nuevo.getCaducidad());
             }
             else {
                 params[0] = String.class;

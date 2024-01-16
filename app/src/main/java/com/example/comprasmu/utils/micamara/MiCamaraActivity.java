@@ -265,6 +265,7 @@ public class MiCamaraActivity extends AppCompatActivity {
                             //   Toast.makeText(MainActivity.this, "Image Saved successfully", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "la imagen se tomo correctamente " + file.getName());
                             //veo la imagen
+
                             try {
                                 // este no getRotacion(archivo_foto);
                                 if (ComprasUtils.debeRotar(MiCamaraActivity.this)) {
@@ -377,7 +378,10 @@ public class MiCamaraActivity extends AppCompatActivity {
     }
     public void rotateImage(String filePath, float angle) {
         Bitmap source = BitmapFactory.decodeFile(filePath);//get file path from intent when you take iamge.
-
+        if(source==null){
+            milog.grabarError(TAG,"rorateImage","Error al tomar la foto");
+            return;
+        }
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         Bitmap rotatedBitmap = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
@@ -449,9 +453,6 @@ public class MiCamaraActivity extends AppCompatActivity {
         int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                 ExifInterface.ORIENTATION_UNDEFINED);
         System.out.println(">>>"+orientation);
-
-
-
         System.out.println(">>>"+orientation);
 
         int rotate=0;

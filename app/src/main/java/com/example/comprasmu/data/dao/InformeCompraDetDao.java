@@ -146,7 +146,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
             "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
             "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
-            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel  " +
+            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel, causaSustId, causaSustitucion  " +
             "FROM informe_detalle " +
             " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
             " inner join visitas on visitas.id=informe_compras.visitasId" +
@@ -163,7 +163,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
             "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
             "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
-            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel  " +
+            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel,causaSustId, causaSustitucion  " +
             "FROM informe_detalle " +
             " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
             " inner join visitas on visitas.id=informe_compras.visitasId" +
@@ -182,7 +182,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
             "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
             "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
-            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel  " +
+            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel ,causaSustId, causaSustitucion " +
             "FROM informe_detalle " +
             " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
             " inner join visitas on visitas.id=informe_compras.visitasId" +

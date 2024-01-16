@@ -56,7 +56,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
 public class LoginActivity extends AppCompatActivity
 //        implements DescargasIniAsyncTask.ProgresoListener
 {
@@ -310,10 +309,10 @@ public class LoginActivity extends AppCompatActivity
 
         Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
         // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-        Constantes.INDICEACTUAL = "6.2022";
-        if(Constantes.CLAVEUSUARIO.equals("4")){
-            Constantes.INDICEACTUAL = "6.2022";
-        }
+      //  Constantes.INDICEACTUAL = "6.2022";
+      //  if(Constantes.CLAVEUSUARIO.equals("4")){
+      //      Constantes.INDICEACTUAL = "6.2022";
+      //  }
 
      //
         //TODO falta pais trabajo

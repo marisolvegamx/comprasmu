@@ -132,13 +132,19 @@ public class EliminadorIndice {
         if(pendsi!=null&&pendsi.size()>0)
             for ( ImagenDetalle img2:pendsi) {
                 complog.grabarError("eliminando archivo "+Environment.DIRECTORY_PICTURES+img2.getRuta());
-                    File fdelete2 = new File(application.getExternalFilesDir(Environment.DIRECTORY_PICTURES),img2.getRuta());
-                    if (fdelete2.exists())
-                    {
-                        boolean resp= fdelete2.delete();
-                        complog.grabarError("*eliminando archivo "+Environment.DIRECTORY_PICTURES+img2.getRuta()+"--"+resp);
-                        //la tabla la borra en borrar activity
-                    }
+                File dir=application.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                  if(dir!=null) {
+                      try {
+                          File fdelete2 = new File(dir, img2.getRuta());
+                          if (fdelete2.exists()) {
+                              boolean resp = fdelete2.delete();
+                              complog.grabarError("*eliminando archivo " + Environment.DIRECTORY_PICTURES + img2.getRuta() + "--" + resp);
+                              //la tabla la borra en borrar activity
+                          }
+                      }catch(NullPointerException ex){
+                          complog.grabarError("EliminadorIndice","eliminarVisitas", "error al borrar el archivo");
+                      }
+                  }
             }
 
         List<Visita> pend = visitaRepository.getVisitasxIndice(indice);

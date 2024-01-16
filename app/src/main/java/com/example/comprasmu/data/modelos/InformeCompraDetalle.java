@@ -68,6 +68,8 @@ public class InformeCompraDetalle {
 
     private Date fechaCancel;
     private String motivoCancel;
+    private Integer causaSustId;
+    private String causaSustitucion;
 
 
     public int getId() {
@@ -464,6 +466,22 @@ public class InformeCompraDetalle {
 
     public void setAtributod(String atributod) {
         this.atributod = atributod;
+    }
+
+    public Integer getCausaSustId() {
+        return causaSustId;
+    }
+
+    public void setCausaSustId(Integer causaSustId) {
+        this.causaSustId = causaSustId;
+    }
+
+    public String getCausaSustitucion() {
+        return causaSustitucion;
+    }
+
+    public void setCausaSustitucion(String causaSustitucion) {
+        this.causaSustitucion = causaSustitucion;
     }
 }
 

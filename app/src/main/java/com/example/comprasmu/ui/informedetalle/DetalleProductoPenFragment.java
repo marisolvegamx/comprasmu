@@ -104,6 +104,7 @@ public class DetalleProductoPenFragment extends Fragment {
     protected List<CatalogoDetalle> tomadoDe;
     protected List<CatalogoDetalle>atributos;
     protected List<CatalogoDetalle>causas;
+    public List<CatalogoDetalle> causassust;
     protected static final String TAG="DETALLEPRODUCTOPEÑFRAG";
     SimpleDateFormat sdf;
     SimpleDateFormat sdfcodigo;
@@ -464,7 +465,10 @@ public class DetalleProductoPenFragment extends Fragment {
                     cargarClientes(campo);
 
                     break;
-
+                case Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID:
+                    getCausasSust();
+                    campo.selectcat=causassust; //el campo es del tipo selectcatalogo
+                    break;
             }
 
         }
@@ -551,7 +555,7 @@ public class DetalleProductoPenFragment extends Fragment {
         {
             ((ContinuarInformeActivity)getActivity()).noSalir(true);
         }
-        if(preguntaAct.getId()>=57&&preguntaAct.getId()!=67&&preguntaAct.getId()!=69) //ya tengo producto voy en siglas
+        if(preguntaAct.getId()>=57&&preguntaAct.getId()!=67&&preguntaAct.getId()!=69&&preguntaAct.getId()!=127) //ya tengo producto voy en siglas
         {
             //  Constantes.ni_clientesel=opcionsel.getNombre();
             //int consecutivo=mViewModel.getConsecutivo(valor);
@@ -569,7 +573,7 @@ public class DetalleProductoPenFragment extends Fragment {
             Log.d(TAG,"tipo muestras>>>>"+dViewModel.productoSel.nombreTipoMuestra);
             ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
         }
-        if (preguntaAct.getId() >= 60&&preguntaAct.getId() !=69&&preguntaAct.getId() !=67) {//si compro prod
+        if (preguntaAct.getId() >= 60&&preguntaAct.getId() !=69&&preguntaAct.getId() !=67&&preguntaAct.getId() !=127) {//si compro prod
             InformeTemp resp=dViewModel.buscarxNombreCam("codigo",mViewModel.numMuestra);
             ((ContinuarInformeActivity)getActivity()).actualizarCodProd(resp.getValor());
 
@@ -577,7 +581,7 @@ public class DetalleProductoPenFragment extends Fragment {
         if(dViewModel.productoSel!=null)
         {
             getTomadoDe();}
-        if (preguntaAct.getId() >= 61&&preguntaAct.getId()!=69&&preguntaAct.getId() !=67) { //si hay prod
+        if (preguntaAct.getId() >= 61&&preguntaAct.getId()!=69&&preguntaAct.getId() !=67&&preguntaAct.getId() !=127) { //si hay prod
 
             InformeTemp resp=dViewModel.buscarxNombreCam("origen",mViewModel.numMuestra);
             String valor="";
@@ -753,7 +757,11 @@ public class DetalleProductoPenFragment extends Fragment {
         Log.d(TAG,"ya tengo los catalogos"+catalogoDetalles.size());
 
     }
+    public void getCausasSust(){
+        causassust =   dViewModel.buscarCatalogoGen(Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID);
 
+
+    }
     public void guardarCliente(){
         DescripcionGenerica opcionsel = (DescripcionGenerica) spclientes.getSelectedItem();
         int valor = opcionsel.getId();
@@ -1694,7 +1702,9 @@ public class DetalleProductoPenFragment extends Fragment {
             ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                 mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-
+            if(Constantes.productoSel.tipoMuestra==3)
+                avanzarPregunta(127); //pregunto motivo
+            else
                avanzarPregunta(58);
 
 

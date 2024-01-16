@@ -234,6 +234,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         registerReceiver(rcv, filter);
         LocalBroadcastManager.getInstance(this).registerReceiver(rcv, filter);
         Log.e(TAG,"wwww"+inicio);
+        Log.d(TAG, "***** indice " + Constantes.CLAVEUSUARIO );
+
+
         if( Constantes.CLAVEUSUARIO.equals("")){
             graph.setStartDestination(R.id.nav_configurar);
             //cargo todos o le digo que la configure?

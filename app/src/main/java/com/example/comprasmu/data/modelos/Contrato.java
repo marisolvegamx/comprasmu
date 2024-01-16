@@ -15,6 +15,7 @@ public  class Contrato {
         public static int TOMADOSDE=8;
         public static int TIPODEMUESTRA=12;
         public static int TIPODETIENDA=2;
+        public static int CAUSASSUST=22;
     }
     interface ColumnasInformeDetalle{
 
@@ -52,8 +53,8 @@ public  class Contrato {
         String AZUCARES = "azucares";
         String SIGLAS = "siglas";
         String causa_nocompra = "causa_nocompra";
-
-
+        String CAUSA_SUSTITUCIONID = "causaSustId";
+        String CAUSA_SUSTITUCION = "causaSustitucion";
         String QR = "qr";
     }
     public static class TablaInformeDet
