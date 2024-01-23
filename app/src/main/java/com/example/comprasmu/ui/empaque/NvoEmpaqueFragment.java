@@ -391,7 +391,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
 
                         }else{
-                            Toast.makeText(getContext(),"NO TIENE INFORMES DE ETIQUETADO ",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(),"NO HAY DATOS QUE MOSTRAR ",Toast.LENGTH_LONG).show();
 
                             getActivity().finish();
                         }

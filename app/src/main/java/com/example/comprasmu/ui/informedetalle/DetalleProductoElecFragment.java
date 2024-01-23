@@ -358,7 +358,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         {
             ((ContinuarInformeActivity)getActivity()).noSalir(true);
         }
-        if(preguntaAct.getId()>=78&&preguntaAct.getId()!=89) //ya tengo producto voy en siglas
+        if(preguntaAct.getId()>=78&&preguntaAct.getId()!=89&&preguntaAct.getId() !=128) //ya tengo producto voy en siglas
         {
             //  Constantes.ni_clientesel=opcionsel.getNombre();
             //int consecutivo=mViewModel.getConsecutivo(valor);
@@ -375,7 +375,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             if(dViewModel.productoSel!=null)
                 ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
         }
-        if (preguntaAct.getId() >= 80&&preguntaAct.getId() !=89&&preguntaAct.getId()!=77&&preguntaAct.getId()!=115) {//si compro prod
+        if (preguntaAct.getId() >= 80&&preguntaAct.getId() !=89&&preguntaAct.getId()!=77&&preguntaAct.getId()!=115&&preguntaAct.getId() !=128) {//si compro prod
             InformeTemp resp=dViewModel.buscarxNombreCam("codigo",mViewModel.numMuestra);
             ((ContinuarInformeActivity)getActivity()).actualizarCodProd(resp.getValor());
 
@@ -383,7 +383,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         if(dViewModel.productoSel!=null)
         {
             getTomadoDe();}
-        if (preguntaAct.getId() >= 81&&preguntaAct.getId()!=89&&mViewModel.numMuestra>0) { //si hay prod
+        if (preguntaAct.getId() >= 81&&preguntaAct.getId()!=89&&mViewModel.numMuestra>0&&preguntaAct.getId() !=128) { //si hay prod
 
 
             InformeTemp resp=dViewModel.buscarxNombreCam("origen",mViewModel.numMuestra);
@@ -836,8 +836,10 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                     mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-
-                    avanzarPregunta(78);
+                    if(Constantes.productoSel.tipoMuestra==3)
+                        avanzarPregunta(128); //pregunto motivo
+                    else
+                        avanzarPregunta(78);
 
                 }else
                     Log.e(TAG,"Algo salió muy mal al elegir el producto");

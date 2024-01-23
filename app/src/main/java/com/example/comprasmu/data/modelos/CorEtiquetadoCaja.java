@@ -20,9 +20,11 @@ public class CorEtiquetadoCaja {
     private int numfoto;
     private int estatus;
     private int estatusSync;
+    //private boolean reubico;
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
     private Date createdAt;
+
     public int getId() {
         return id;
     }

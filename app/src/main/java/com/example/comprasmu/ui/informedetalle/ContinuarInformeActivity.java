@@ -111,16 +111,17 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 if (ultimares.getNombre_campo().equals("ticket_noemiten")) {
                     //me muevo a la anterior
                     ultimares = dViewModel.buscarTempxId(ultimares.getId() - 1);
+               if(ultimares==null){
+                   ultimares = dViewModel.getPenultimoTemp();
+               }
                 }
                 if (ultimares.getNombre_campo().equals("causaSustId")) {
                     //me muevo a la anterior
-                    ultimares = dViewModel.buscarTempxId(ultimares.getId() - 1);
-                    if (ultimares.getNombre_campo().equals("totalLista")) {
-                    //otro mas
-                        ultimares = dViewModel.buscarTempxId(ultimares.getId() - 1);
+                    ultimares = dViewModel.getPenultimoTemp();
 
-                    }
                 }
+                if(ultimares==null)
+                    return;
                 Log.d(TAG, "++" + ultimares.getNombre_campo());
                 preguntaAct = dViewModel.inftempToReac(ultimares);
 

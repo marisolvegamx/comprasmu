@@ -341,7 +341,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return infDetRepo.getByDescripcionCaja(descripcion,idinf, caja);
     }
     public InformeEtapaDet getDetallexDescCajaSim(int idinf, String descripcion, int caja){
-
+        Log.d("VIEM",idinf+"--"+descripcion+"--"+caja);
         return infDetRepo.getByDescripcionCajaSim(descripcion,idinf, caja);
     }
     public InformeEtapaDet getByDescripCajaSim(int idinf, int descripcion, int caja){
@@ -458,6 +458,13 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public int getTotCajasEtiqxCli(String ciudad, int cliente){
         int val= infDetRepo.totalCajasEtiqxCli(3, ciudad,cliente);
         Log.d(TAG,"getTotCajasEtiqxCli "+val);
+        return val;
+
+
+    }
+    public int getTotCajasEtiqxInf( int infid){
+        int val= infDetRepo.totalCajasEtiqxInf(3, infid);
+        Log.d(TAG,"totalCajasEtiqxInf "+val);
         return val;
 
 

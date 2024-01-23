@@ -157,6 +157,11 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         return itemprepo.getUltimo(true);
     }
 
+    public InformeTemp getPenultimoTemp(){
+        //reivos si hay respuestas temporales si no devuelvo null
+        return itemprepo.getPenultimo(true);
+    }
+
     public InformeTemp buscarxNombreCam(String campo){
         //reivos si hay respuestas temporales si no devuelvo null
         return itemprepo.findByNombre(campo);

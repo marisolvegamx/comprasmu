@@ -31,6 +31,7 @@ import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionEmpFragment;
 import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
+import com.example.comprasmu.ui.etiquetado.NvoEtiqCajaFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
@@ -365,7 +366,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             isCor = datosRecuperados.getBoolean(CORRECCION);
             plantaSel = datosRecuperados.getInt( NuevoInfEtapaActivity.PLANTASEL);
             numfoto = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
-
+            Log.d(TAG,"es correccion"+isCor);
             if(!isCor&&idinformeSel>0) {
                 isEdicion = true;
 
@@ -414,6 +415,12 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 fragment.atras();
                 return;
             }
+            if(etapa==3)//el regreso se maneja en el fragment
+            {
+                NvaCorrecCalCajaFragment fragment = (NvaCorrecCalCajaFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                fragment.atras();
+                return;
+            }
             super.onBackPressed();
 
         }else
@@ -421,9 +428,15 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
         if(etapa==3)//el regreso se maneja en el fragment
         {
-            NvoEtiquetadoFragment fragment = (NvoEtiquetadoFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
-            fragment.atras();
+            try {
+                NvoEtiquetadoFragment fragment = (NvoEtiquetadoFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                fragment.atras();
+            }catch(ClassCastException ex){
+                NvoEtiqCajaFragment fragment = (NvoEtiqCajaFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                fragment.atras();
+            }
             return;
+
         }
         if(etapa==4)
         {

@@ -89,6 +89,14 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
         else return null;
     }
 
+    public InformeTemp getPenultimo(boolean pregunta) {
+        List<InformeTemp> resp=icDao.getUltimo(pregunta);
+        //  Log.d("consulta",resp+"--");
+        if(resp.size()>1)
+            return resp.get(1);
+        else return null;
+    }
+
     @Override
     public long insert(InformeTemp object) {
         return icDao.insert(object);

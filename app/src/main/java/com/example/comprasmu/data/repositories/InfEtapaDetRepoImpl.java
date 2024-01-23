@@ -172,6 +172,14 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         return 0;
     }
 
+    public int totalCajasEtiqxInf(int etapa, int infid) {
+        List<InformeEtapaDet> det= dao.getDetEtiqxInf(etapa,infid);
+        if(det!=null){
+            return det.size();
+        }
+        return 0;
+    }
+
     public int getMinCajaxCli(int i, String ciudad, int cliente) {
         List<InformeEtapaDet> det= dao.getDetEtiqxCdCli(i,ciudad,cliente);
         if(det!=null&&det.size()>0){
@@ -179,6 +187,7 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         }
         return 0;
     }
+
 
     public List<InformeEtapaDet> listaCajasEtiqxCli(int i, int cliente) {
        return dao.totalCajasEtiqxCli(i,cliente);

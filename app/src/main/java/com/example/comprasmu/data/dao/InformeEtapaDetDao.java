@@ -97,6 +97,11 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     public abstract List<InformeEtapaDet> getDetEtiqxCdCli(int etapa, String ciudad, int cliente);
 
   @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
+          " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja " +
+          "FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and informeEtapaId=:infid  group by num_caja order by num_caja")
+  public abstract List<InformeEtapaDet> getDetEtiqxInf(int etapa, int infid);
+
+  @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
           " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and clientesId=:cliente and estatus>0 and descripcionId=11 group by num_caja order by num_caja")
   public abstract List<InformeEtapaDet> getDetEtiqxCdCli2(int etapa, String ciudad, int cliente);
 

@@ -31,7 +31,7 @@ public class NvaCorreECViewModel extends AndroidViewModel {
     private int idNuevo;
 
     private CorEtiquetadoCaja nvocoreticaja;
-    final String TAG="NvaCorreViewModel";
+    final String TAG="NvaCorreECViewModel";
     Application application;
 
     public NvaCorreECViewModel(@NonNull Application application) {
@@ -86,6 +86,16 @@ public class NvaCorreECViewModel extends AndroidViewModel {
 
 
     }
+
+    public void editarCorreccionEtiqDet(CorEtiquetadoCajaDet correccion){
+        Log.d(TAG,"editar correcc ");
+
+        corecdrepository.insert(correccion);
+
+
+
+
+    }
     public CorEtiquetaCajaEnvio prepararEnvio(CorEtiquetadoCaja nvacorreccion, List<CorEtiquetadoCajaDet> correcciones){
         CorEtiquetaCajaEnvio envio=new CorEtiquetaCajaEnvio();
 
@@ -101,9 +111,10 @@ public class NvaCorreECViewModel extends AndroidViewModel {
         return corecrepository.findsimple(idcor);
     }
     public CorEtiquetadoCaja getUltCorrecionxSolSimple(int idsol,int numfoto,String indice){
+        //Log.d(TAG,"buscandocor cor"+correccion);
         List<CorEtiquetadoCaja> lista=corecrepository.getCorrecxSolSim(idsol,indice,numfoto);
         if(lista!=null&&lista.size()>0)
-            if( lista.get(lista.size()-1).getEstatus()==3) //devuelvo el ultimo pend
+           // if( lista.get(lista.size()-1).getEstatus()==3) //devuelvo el ultimo pend
                 return lista.get(lista.size()-1);
         return null;
     }
@@ -111,7 +122,7 @@ public class NvaCorreECViewModel extends AndroidViewModel {
     public CorEtiquetadoCajaDet getUltCorDetSimple(int corId,int numfoto){
         List<CorEtiquetadoCajaDet> lista=corecdrepository.getCorrecxnumfotoSimple(corId,numfoto);
         if(lista!=null&&lista.size()>0)
-            if( lista.get(lista.size()-1).getEstatus()==3) //devuelvo el ultimo pend
+         //   if( lista.get(lista.size()-1).getEstatus()==3) //devuelvo el ultimo pend
                 return lista.get(lista.size()-1);
         return null;
     }
