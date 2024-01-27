@@ -166,6 +166,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
+        Log.d("ListaCompraRepositoryImpl","clientes "+query);
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
 

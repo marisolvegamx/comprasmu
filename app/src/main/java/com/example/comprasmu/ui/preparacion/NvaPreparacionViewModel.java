@@ -382,6 +382,10 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return infDetRepo.getInfDetCalCaja(id);
     }
 
+    public List<DetalleCaja> getdetalleCajaxInf(int idinf){
+        return cajaRepo.getAllsimplexInf(idinf);
+    }
+
     public int getTotCajasxInf(int id){
         return infDetRepo.getTotcajasxInf(id);
     }

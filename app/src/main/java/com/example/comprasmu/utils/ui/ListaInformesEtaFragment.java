@@ -330,6 +330,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         envio.setInformeEtapaDet(npViewModel.getInformeDet(informeid));
+        //busco caja det
+        envio.setDetalleCaja(npViewModel.getdetalleCajaxInf(informeid));
         //busco las imagenes
 
             List<ImagenDetalle> imagenes=npViewModel.buscarImagenes(envio.getInformeEtapaDet());
