@@ -190,7 +190,7 @@ public class NvoEtiqCajaFragment extends Fragment {
 
 
         mViewModel.preguntaAct = preguntaAct;
-        milog.grabarError(TAG + " o x aca");
+        milog.grabarError(TAG + " o x aca"+informeSel);
         //busco si tengo varias plantas
         ciudadInf = Constantes.CIUDADTRABAJO;
         cajainif=1;

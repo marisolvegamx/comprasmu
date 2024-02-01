@@ -335,17 +335,18 @@ public class NvoEtiquetadoFragment extends Fragment {
                 }
 
             }
-            if (listacomp.size() > 1) {
+            convertirLista(listacomp, clientesprev);
+            if (listaClientes.size() > 1) {
                 //tengo varios clientes
                 preguntaAct = 1;
 
-                convertirLista(listacomp, clientesprev);
+
                 cargarPlantas(listaClientes, "");
 
                 mViewModel.variasClientes = true;
                 sv1.setVisibility(View.VISIBLE);
                 aceptar1.setEnabled(true);
-            } else if (listacomp.size() > 0) {
+            } else if (listaClientes.size() > 0) {
                 preguntaAct = 2;
 
                 sv3.setVisibility(View.VISIBLE);

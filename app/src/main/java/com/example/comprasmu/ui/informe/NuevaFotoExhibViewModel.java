@@ -45,9 +45,23 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
     public void guardarFoto(String rutaFoto, int idcliente,String cliente,int visitasId,Activity actividad,NuevoinformeViewModel ninfvm) {
         //guardo la foto
         try {
-            //busco el ultimo id
-            int nvoidimagem=(int)imagenDetRepository.getUltimo();
-         //   if(nvoidimagem==0) {
+            //veo si tengo foto de ese cliente
+            List<ProductoExhibidoDao.ProductoExhibidoFoto> listafoto=repository.getAllByVisitaClisimp(visitasId,idcliente);
+            if(listafoto!=null&&listafoto.size()>0) //ya habia tomado foto es edicion
+            {
+                ImagenDetalle foto = new ImagenDetalle();
+                foto.setId(listafoto.get(0).imagenId);
+                foto.setRuta(rutaFoto);
+                foto.setEstatusSync(0);
+                foto.setEstatus(0);
+                foto.setDescripcion("foto producto exhibido");
+                foto.setIndice(Constantes.INDICEACTUAL);
+                foto.setCreatedAt(new Date());
+                int idfoto = (int) imagenDetRepository.insert(foto);
+            }else //es nva
+            {//busco el ultimo id
+                int nvoidimagem = (int) imagenDetRepository.getUltimo();
+                //   if(nvoidimagem==0) {
 
              /*   PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
                 NuevoinformeViewModel.EnvioListener listener = ninfvm.crearEnvioListener(actividad);
@@ -58,26 +72,27 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
                     nvoidimagem=nvoidimagem+1;
                 }*/
 
-          //  }else
-            nvoidimagem=nvoidimagem+1;
+                //  }else
+                nvoidimagem = nvoidimagem + 1;
 
-            ImagenDetalle foto = new ImagenDetalle();
-            foto.setId(nvoidimagem);
-            foto.setRuta(rutaFoto);
-            foto.setEstatusSync(0);
-            foto.setEstatus(0);
-            foto.setDescripcion("foto producto exhibido");
-            foto.setIndice(Constantes.INDICEACTUAL);
-            foto.setCreatedAt(new Date());
-            int idfoto = (int) imagenDetRepository.insert(foto);
-            Log.e("NuevaFotoExhibViewModel",idfoto+"--"+idcliente);
-            ProductoExhibido prod1 = new ProductoExhibido();
-            prod1.setClienteId(idcliente);
-            prod1.setVisitasId(visitasId);
-            prod1.setEstatusSync(0);
-            prod1.setImagenId(idfoto);
-            prod1.setNombreCliente(cliente);
-            repository.insert(prod1);
+                ImagenDetalle foto = new ImagenDetalle();
+                foto.setId(nvoidimagem);
+                foto.setRuta(rutaFoto);
+                foto.setEstatusSync(0);
+                foto.setEstatus(0);
+                foto.setDescripcion("foto producto exhibido");
+                foto.setIndice(Constantes.INDICEACTUAL);
+                foto.setCreatedAt(new Date());
+                int idfoto = (int) imagenDetRepository.insert(foto);
+                Log.e("NuevaFotoExhibViewModel", idfoto + "--" + idcliente);
+                ProductoExhibido prod1 = new ProductoExhibido();
+                prod1.setClienteId(idcliente);
+                prod1.setVisitasId(visitasId);
+                prod1.setEstatusSync(0);
+                prod1.setImagenId(idfoto);
+                prod1.setNombreCliente(cliente);
+                repository.insert(prod1);
+            }
         }catch (Exception ex){
             Log.e("NuevaFotoExhibViewModel",ex.getMessage());
             mSnackbarText.setValue(new Event<>(R.string.error_imagen));
