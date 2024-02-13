@@ -10,6 +10,7 @@ import androidx.room.Transaction;
 import androidx.sqlite.db.SupportSQLiteQuery;
 import com.example.comprasmu.data.modelos.InfEtapaWithDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.Visita;
 
 import java.util.List;
@@ -114,4 +115,7 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("SELECT * FROM informe_etapa where indice=:indice")
     public  abstract List<InformeEtapa> findAllByIndice(String indice);
+    @Query("SELECT informe_etapa.* FROM informe_etapa  inner join informe_etapa_det on informe_etapa.id=informeEtapaId  where   informe_etapa.etapa=:etapa and informe_etapa_det.estatus=:estatus and informe_etapa.estatus<>0 and informe_etapa.indice=:indice and descripcionId=11")
+    public abstract LiveData<List<InformeEtapa>> getCanceladasEtiq(int etapa, String indice, int estatus);
+
 }

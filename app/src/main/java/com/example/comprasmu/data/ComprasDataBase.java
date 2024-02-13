@@ -72,7 +72,7 @@ import java.util.List;
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class,
         Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=25, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=26, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -113,7 +113,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
-                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25)
+                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
+                                    MIGRATION_25_26)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -482,6 +483,15 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     "ALTER TABLE informe_detalle ADD COLUMN causaSustId INTEGER; " );
             database.execSQL(
                     "ALTER TABLE informe_detalle ADD COLUMN causaSustitucion TEXT; " );
+
+        }
+    };
+    static final Migration MIGRATION_25_26 = new Migration(25,26) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+
+            database.execSQL("ALTER TABLE informe_etapa_det ADD COLUMN estatus INTEGER");
+            database.execSQL("ALTER TABLE detalle_caja ADD COLUMN estatus INTEGER");
 
         }
     };

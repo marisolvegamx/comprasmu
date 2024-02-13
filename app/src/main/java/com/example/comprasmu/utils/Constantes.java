@@ -70,6 +70,7 @@ public class Constantes {
     public static int DP_CONSECUTIVO;
     public static int LC_CONSECUTIVO;
     public static int DP_TIPOTIENDA;
+
     public static NuevoDetalleViewModel.ProductoSel productoSel;
     public static HashMap <Integer,String>TIPOTIENDA;
     public static String CONFROTAR="rotar"; //0 no roto 1 roto

@@ -22,7 +22,7 @@ public class InformeEtapa {
     private int etapa;
     private int total_cajas;
     private int total_muestras;
-    private int estatus;
+    private int estatus; //1-abierto 2-finalizado 0-cancelado
     private int estatusSync;
     private Integer ciudadesId;//es la ciudad de trabajo
     private String ciudadNombre;//es la ciudad de trabajo

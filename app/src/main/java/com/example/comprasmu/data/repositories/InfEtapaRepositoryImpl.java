@@ -182,6 +182,9 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
         return icDao.getClientesconInf(indice, ciudad);
     }
 
+    public LiveData<List<InformeEtapa>> getCanceladasEtiq( String indice) {
+        return icDao.getCanceladasEtiq(3,indice,0);
 
+    }
 
 }

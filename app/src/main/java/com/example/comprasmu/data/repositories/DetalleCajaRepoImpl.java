@@ -115,5 +115,6 @@ public class DetalleCajaRepoImpl extends BaseRepository<DetalleCaja> {
     }
 
 
-
+    public void actualizarEstatus(int id, int i) {
+    }
 }

@@ -1702,9 +1702,9 @@ public class DetalleProductoPenFragment extends Fragment {
             ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                 mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-            if(Constantes.productoSel.tipoMuestra==3)
-                avanzarPregunta(127); //pregunto motivo
-            else
+           // if(Constantes.productoSel.tipoMuestra==3)
+            //    avanzarPregunta(127); //pregunto motivo
+          //  else
                avanzarPregunta(58);
 
 
@@ -1875,7 +1875,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
             opcion = BackActivity.OP_LISTACOMPRA;
       //  }
-
+       // Constantes.DP_NUMMUESTRA = mViewModel.numMuestra;
         //ya existe el informe
         intento1.putExtra(DetalleProductoPenFragment.ARG_NUEVOINFORME, mViewModel.getIdInformeNuevo());
         intento1.putExtra(BackActivity.ARG_FRAGMENT,opcion);
@@ -1887,7 +1887,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
         // intento1.putExtra(ListaCompraFragment.ARG_MUESTRA,"true");
         // spclientes = root.findViewById(1001);
-        Log.d(TAG, " antes de ir a listacom planta" + plantaSel + "--" + NOMBREPLANTASEL);
+        Log.d(TAG, " antes de ir a listacom nummuestra" + nummuestra);
         intento1.putExtra(ARG_CLIENTESEL, mViewModel.clienteSel);
         //intento1.putExtra(ARG_CLIENTENOMBRE,);
         intento1.putExtra(DetalleProductoPenFragment.NUMMUESTRA, nummuestra);

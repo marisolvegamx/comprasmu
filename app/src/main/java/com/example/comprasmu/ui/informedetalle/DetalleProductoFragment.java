@@ -147,7 +147,6 @@ public class DetalleProductoFragment extends Fragment {
 
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -1888,9 +1887,9 @@ public class DetalleProductoFragment extends Fragment {
                         ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
                         //veo si fue sustitucion
-                        if(Constantes.productoSel.tipoMuestra==3)
-                            avanzarPregunta(126); //pregunto motivo
-                        else
+                       // if(Constantes.productoSel.tipoMuestra==3)
+                       //     avanzarPregunta(126); //pregunto motivo
+                      //  else
                             avanzarPregunta(23);
 
                     }else {
@@ -1903,9 +1902,9 @@ public class DetalleProductoFragment extends Fragment {
 
                         mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
                         //veo si fue sustitucion
-                        if(Constantes.productoSel.tipoMuestra==3)
-                            avanzarPregunta(126); //pregunto motivo
-                        else
+                      //  if(Constantes.productoSel.tipoMuestra==3)
+                      //      avanzarPregunta(126); //pregunto motivo
+                      //  else
                             avanzarPregunta(23);
 
 
@@ -2101,10 +2100,10 @@ public class DetalleProductoFragment extends Fragment {
         intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, NOMBREPLANTASEL);
         intento1.putExtra(ListaCompraFragment.ARG_MUESTRA, "true");
 
-        // Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
+
         // intento1.putExtra(ListaCompraFragment.ARG_MUESTRA,"true");
         // spclientes = root.findViewById(1001);
-        Log.d(TAG, " antes de ir a listacom planta" + plantaSel + "--" + NOMBREPLANTASEL);
+        Log.d(TAG, " antes de ir a listacom nummuestra" + nummuestra);
         intento1.putExtra(ARG_CLIENTESEL, mViewModel.clienteSel);
         //intento1.putExtra(ARG_CLIENTENOMBRE,);
         intento1.putExtra(DetalleProductoFragment.NUMMUESTRA, nummuestra);

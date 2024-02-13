@@ -1,4 +1,4 @@
-package com.example.comprasmu.ui.infetapa;
+package com.example.comprasmu.ui.etiquetado;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,20 +10,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.InformeEtapa;
-
 import com.example.comprasmu.databinding.InformeetaCancelItemBinding;
+import com.example.comprasmu.databinding.NotificacionEtiqItemBinding;
 import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
 
-public class CancelEtaAdapter extends RecyclerView.Adapter<CancelEtaAdapter.InformeEtapaViewHolder> {
+public class NotifEtiqAdapter extends RecyclerView.Adapter<NotifEtiqAdapter.InformeEtapaViewHolder> {
 
     private List<InformeEtapa> mInformes;
-
-    public CancelEtaAdapter() {
-
+    private final AdapterCallback callback;
 
 
+    public NotifEtiqAdapter(AdapterCallback callback) {
+
+
+        this.callback = callback;
     }
 
     public void setInformeCompraList(List<InformeEtapa> informesList) {
@@ -34,11 +36,11 @@ public class CancelEtaAdapter extends RecyclerView.Adapter<CancelEtaAdapter.Info
 
     @NonNull
     @Override
-    public CancelEtaAdapter.InformeEtapaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        InformeetaCancelItemBinding binding = DataBindingUtil
+    public NotifEtiqAdapter.InformeEtapaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        NotificacionEtiqItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()),
-                        R.layout.informeeta_cancel_item, parent, false);
-        return new InformeEtapaViewHolder(binding);
+                        R.layout.notificacion_etiq_item, parent, false);
+        return new InformeEtapaViewHolder(binding,callback);
     }
 
 
@@ -61,17 +63,26 @@ public class CancelEtaAdapter extends RecyclerView.Adapter<CancelEtaAdapter.Info
     }
 
     static class InformeEtapaViewHolder extends RecyclerView.ViewHolder {
-        final InformeetaCancelItemBinding binding;
+        final NotificacionEtiqItemBinding binding;
 
-        public InformeEtapaViewHolder(InformeetaCancelItemBinding binding) {
+        public InformeEtapaViewHolder(NotificacionEtiqItemBinding binding, AdapterCallback callback) {
             super(binding.getRoot());
             this.binding = binding;
-
+            binding.btnecagregar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                        callback.onClickAgregar(Integer.parseInt(binding.icTxtiecid.getText().toString()));
+                }
+            });
         }
 
 
     }
+    public interface AdapterCallback {
+        void onClickAgregar(int idinforme);
 
+
+    }
 
 
 }

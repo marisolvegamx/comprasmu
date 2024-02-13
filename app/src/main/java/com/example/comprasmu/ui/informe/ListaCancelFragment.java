@@ -1,6 +1,5 @@
 package com.example.comprasmu.ui.informe;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,11 +7,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -21,17 +18,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.databinding.ListaGenericFragmentBinding;
-import com.example.comprasmu.ui.BackActivity;
 
 import com.example.comprasmu.ui.infetapa.CancelEtaAdapter;
-import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 import com.google.android.material.snackbar.Snackbar;

@@ -23,6 +23,7 @@ public class InformeEtapaDet {
     private int descripcionId;
     private String descripcion;
     private int num_caja;
+    private Integer estatus;
 
     public int getId() {
         return id;
@@ -102,6 +103,14 @@ public class InformeEtapaDet {
 
     public void setNum_caja(int num_caja) {
         this.num_caja = num_caja;
+    }
+
+    public Integer getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(Integer estatus) {
+        this.estatus = estatus;
     }
 }
 

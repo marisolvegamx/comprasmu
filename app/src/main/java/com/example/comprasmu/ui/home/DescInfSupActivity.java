@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.comprasmu.DescRespInformes;
+import com.example.comprasmu.DescRespInformesEta;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
@@ -23,14 +24,13 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
 
-/***actualizo los informes de compras que se modificaron desde el sistema web*/
-public class DescInfSupActivity extends AppCompatActivity implements DescRespInformes.ProgresoRespListener {
+/***actualizo los informes de compras que se modificaron desde el sistema web
+ * se utiliza antes de entrar al modulo etiquetado
+ * se actualizan muestras canceladas de etiq y emp
+ * */
+public class DescInfSupActivity extends AppCompatActivity implements DescRespInformes.ProgresoRespListener,DescRespInformesEta.ProgresoRespListener {
 
-    InformeComDetRepositoryImpl infdrepo;
 
-    InformeCompraRepositoryImpl infrepo;
-
-    SimpleDateFormat sdfdias;
     TablaVersionesRepImpl tvRepo;
     String TAG="DescInfSupActivity";
     ProgressDialog progreso;
@@ -38,6 +38,7 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
     private ComprasLog complog;
 
    TextView destxtsincon;
+   int contprocesos=0;//para saber que ya terminó las 2 descargas
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +67,10 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
         DescRespInformes desc=new DescRespInformes(this,this,tvRepo);
 
         desc.getInformes();
+        //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
+        DescRespInformesEta desetiq=new DescRespInformesEta(this,this,tvRepo);
+        desetiq.getCambiosSupEtiq();
+        desetiq.getCambiosEtiq();
 
     }
 
@@ -77,14 +82,19 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
 
     @Override
     public void todoBien() {
-        //pasaría a otra actividad
-        progreso.dismiss();
-        Constantes.ACTUALIZADO=true;
-        //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        Intent intento=new Intent(this, NavigationDrawerActivity.class);
-        intento.putExtra(NavigationDrawerActivity.ETAPA, 3);
-        startActivity(intento);
-        finish();
+        if(contprocesos==1) {
+            //pasaría a otra actividad
+            progreso.dismiss();
+            Constantes.ACTUALIZADO = true;
+            //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            Intent intento = new Intent(this, NavigationDrawerActivity.class);
+            intento.putExtra(NavigationDrawerActivity.ETAPA, 3);
+            startActivity(intento);
+            finish();
+        }
+        else{
+            contprocesos++;
+        }
     }
 
 

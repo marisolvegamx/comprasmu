@@ -14,6 +14,7 @@ public class DetalleCaja {
     private String largo;
     private String peso;
     private int estatusSync;
+    private Integer estatus;
 
     public int getId() {
         return id;
@@ -77,5 +78,13 @@ public class DetalleCaja {
 
     public void setEstatusSync(int estatusSync) {
         this.estatusSync = estatusSync;
+    }
+
+    public int getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(int estatus) {
+        this.estatus = estatus;
     }
 }

@@ -22,15 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.comprasmu.R;
-import com.example.comprasmu.utils.ComprasUtils;
-import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.EliminadorIndice;
-
-import org.w3c.dom.Text;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class BorrarDatosFragment extends Fragment {
 

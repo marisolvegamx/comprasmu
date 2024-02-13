@@ -437,6 +437,47 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
     }
 
+    public boolean guardarRespSust(int idvisita, int idcliente, int xnumMuestra, int informeid, int informedet,String resp,String nombrecampo,String tabla,int consecutivo, boolean isPregunta){
+        InformeTemp temporal=new InformeTemp();
+        temporal.setNombre_campo(nombrecampo);
+        temporal.setValor(resp);
+        temporal.setTabla(tabla);
+        temporal.setConsecutivo(consecutivo);
+        temporal.setPregunta(isPregunta);
+        temporal.setVisitasId(idvisita);
+        temporal.setInformesId(informeid);
+        temporal.setIddetalle(informedet);
+        if(!nombrecampo.equals("clientesId"))
+            temporal.setClienteSel(idcliente);
+        try {
+            //  Log.d(TAG,"buscando a "+nombrecampo);
+            //reviso si ya existe
+            InformeTemp editar=null;
+            if(!tabla.equals("I"))
+            {     temporal.setNumMuestra(xnumMuestra);
+                editar = itemprepo.findByNombreMues(nombrecampo, xnumMuestra);
+            }
+            else {
+                editar=itemprepo.findByNombre(nombrecampo);
+            }
+            if(editar!=null){
+                editar.setNombre_campo(nombrecampo);
+                editar.setValor(resp);
+                editar.setTabla(tabla);
+                if(!nombrecampo.equals("clientesId"))
+                    editar.setClienteSel(idcliente);
+                editar.setConsecutivo(consecutivo);
+                itemprepo.insert(editar);
+            }else
+                itemprepo.insert(temporal);
+            return true;
+        }catch(Exception ex){
+            Log.e(TAG,ex.getMessage());
+            return false;
+        }
+
+    }
+
 
     MutableLiveData<Integer> finalid;
     public  MutableLiveData<Integer>  guardarVisita(Activity actividad, LifecycleOwner owner) {

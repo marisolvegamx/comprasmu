@@ -1,10 +1,13 @@
 package com.example.comprasmu.ui.listadetalle;
 
-
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,17 +18,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.CatalogoDetalle;
+import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaDetalleBu;
-import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.databinding.ListaCompraFragmentBinding;
-
-import com.example.comprasmu.databinding.ListaDetalleItem2Binding;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
@@ -49,6 +58,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     private ListaDetalleViewModel mViewModel;
     private ListaCompraFragmentBinding mBinding;
     private ListaCompraDetalleAdapter mListAdapter;
+
     TextView paraDebug;
     String nombrePlanta;
     String nombreCliente;
@@ -90,6 +100,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             "MISMA FECHA DE CADUCIDAD PARA EL PRODUCTO QUE ESTÁ INTENTANDO SUSTITUIR"
     };
     private NuevoinformeViewModel niViewModel;
+    private int nummuestra;
 
     public  ListaCompraFragment() {
 
@@ -119,13 +130,14 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             clienteSel=bundle.getInt(ARG_CLIENTESEL);//ya llega como la clave
 
             //busco el nombre
-
+            nummuestra=bundle.getInt(DetalleProductoFragment.NUMMUESTRA);
             nombreCliente =mViewModel.buscarClientexPlan(plantaSel);
             int  consecutivo = niViewModel.getConsecutivo(plantaSel, getActivity(), this);
             //  Log.d(TAG, "*genere cons=" + consecutivo);
 
             Log.d(TAG, "plantasel " + plantaSel);
             consecutivoTienda = consecutivo;
+            Log.d(TAG, " nummuestra" + nummuestra);
 
 
             if(bundle.getString(ARG_MUESTRA)!=null&&bundle.getString(ARG_MUESTRA).equals("true")) {
@@ -151,6 +163,8 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 //busco el consecutivo
             }
         }
+        Log.d(TAG, "*****"+niViewModel);
+
         return    mBinding.getRoot();
     }
 
@@ -468,6 +482,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         int analisisid=mViewModel.getDetallebuSel().getAnalisisId();
         String analisis=mViewModel.getDetallebuSel().getTipoAnalisis();
         mViewModel.consultasBackup(idlista,opcionsel,categoria,productoNombre,empaque,tamanio ,analisisid,analisis,detId);
+
         mViewModel.getDetallebu().observe(getViewLifecycleOwner(), myProducts -> {
             if (myProducts != null && myProducts.size() > 0) {
                 //ordeno la lista
@@ -700,6 +715,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     public void verBackup(ListaCompraDetalle productoSel) {
         //paso los params que necesito
       //  Log.d(TAG," ++plantas"+plantaSel+"--"+nombrePlanta);
+        if(ismuestra) {
+            this.dialogoSust(getContext(),clienteSel,0,0);
+        }
         mViewModel.setIdListaSel(lista.getId());
         mViewModel.listaSelec = lista;
         //es el detalle original
@@ -715,7 +733,6 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             intento1.putExtra("ciudadNombre", mViewModel.nombreCiudadSel);
             intento1.putExtra(ISBACKUP, true);
             intento1.putExtra(ARG_CLIENTESEL, mViewModel.getClienteSel());
-            //   intento1.putExtra(NuevoinformeFragment.NUMMUESTRA,nummuestra );
             if (clienteSel == 4) {
                 intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_LISTACOMPRA);
 
@@ -745,6 +762,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             Bundle bundle = new Bundle();
             bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL, clienteSel);
+            bundle.putInt(DetalleProductoPenFragment.NUMMUESTRA,nummuestra );
 
             //   Log.d(TAG, "ppppppp" + clienteSel);
             if (clienteSel == 4) {
@@ -804,6 +822,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
     @Override
     public void verBackupPen(ListaDetalleBu productoSel, int numtienda) {
+        if(ismuestra) {
+            this.dialogoSust(getContext(),clienteSel,0,0);
+        }
         //paso los params que necesito
         //  Log.d(TAG," ++plantas"+plantaSel+"--"+nombrePlanta);
         mViewModel.setIdListaSel(lista.getId());
@@ -811,6 +832,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         //es el detalle original
         mViewModel.setDetallebuSel(productoSel);
         Constantes.VarListCompra.detallebuSel=productoSel;
+
         if(!ismuestra) { //solo de consulta
             Constantes.VarListCompra.detallebuSel=productoSel;
             Constantes.VarListCompra.idListaSel=lista.getId();
@@ -821,7 +843,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             intento1.putExtra("ciudadNombre", mViewModel.nombreCiudadSel);
             intento1.putExtra(ISBACKUP, true);
             intento1.putExtra(ARG_CLIENTESEL, mViewModel.getClienteSel());
-            //   intento1.putExtra(NuevoinformeFragment.NUMMUESTRA,nummuestra );
+
             intento1.putExtra(SustitucionFragment.ARG_CONSTIENDA, numtienda);
             Log.d(TAG,"cat"+productoSel.getCategoriaid());
             intento1.putExtra(SustitucionFragment.ARG_CATEGORIAID, productoSel.getCategoriaid());
@@ -854,6 +876,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             bundle.putInt(SustitucionFragment.ARG_CONSTIENDA, numtienda);
             Log.d(TAG,"XXX"+productoSel.getCategoriaid());
             bundle.putInt(SustitucionFragment.ARG_CATEGORIAID, productoSel.getCategoriaid());
+            bundle.putInt(DetalleProductoPenFragment.NUMMUESTRA,nummuestra );
 
             bundle.putInt(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
                 bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
@@ -872,7 +895,115 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 fragmentTransaction.commit();
 
         }
+
+
     }
 
+    public void dialogoSust(Context context, int idcliente, int iddetalleNuevo, int consecutivo){
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
 
+        LayoutInflater inflater=LayoutInflater.from(context);
+        builder.setTitle(R.string.selec_motivo_sust);
+        View vdialog=inflater.inflate(R.layout.activity_list_dialog,null);
+
+        builder.setView(vdialog);
+        Spinner spcausas=vdialog.findViewById(R.id.spldiselect);
+        getCausasSust(spcausas);
+        final AlertDialog dialog=builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+        Button btnacepdialog=vdialog.findViewById(R.id.btnldiaceptar);
+        btnacepdialog.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                //aqui guardo la seleccion
+              //  Toast.makeText(getContext(),"guardar",Toast.LENGTH_LONG).show();
+               guardarResp(spcausas,idcliente,iddetalleNuevo, consecutivo);
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public void getCausasSust(Spinner mySpinner){
+         List<CatalogoDetalle> causassust;
+        NuevoDetalleViewModel dViewModel=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
+
+        causassust =   dViewModel.buscarCatalogoGen(Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID);
+        ArrayAdapter catAdapter = new ArrayAdapter<CatalogoDetalle>(getContext(), android.R.layout.simple_spinner_dropdown_item, causassust) {
+
+            // And the "magic" goes here
+            // This is for the "passive" state of the spinner
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
+                TextView label = (TextView) super.getView(position, convertView, parent);
+                label.setTextColor(Color.BLACK);
+                // Then you can get the current item using the values array (Users array) and the current position
+                // You can NOW reference each method you has created in your bean object (User class)
+                CatalogoDetalle item = getItem(position);
+                label.setText(item.getCad_descripcionesp());
+                //TODO elegir idioma
+
+                // And finally return your dynamic (or custom) view for each spinner item
+                return label;
+            }
+
+            // And here is when the "chooser" is popped up
+            // Normally is the same view, but you can customize it if you want
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                TextView label = (TextView) super.getDropDownView(position, convertView, parent);
+                label.setTextColor(Color.BLACK);
+                CatalogoDetalle item = getItem(position);
+                label.setText(item.getCad_descripcionesp());
+
+                return label;
+            }
+        };
+        mySpinner.setAdapter(catAdapter);
+        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    // Get the value selected by the user
+                    // e.g. to store it as a field or immediately call a method
+                    CatalogoDetalle opcion = (CatalogoDetalle) parent.getSelectedItem();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+
+    }
+    //guardo en tabla temp
+    public void guardarResp(Spinner select, int idcliente, int iddetalleNuevo,int  consecutivo) {
+        niViewModel=new ViewModelProvider(requireActivity()).get(NuevoinformeViewModel.class);
+        nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
+
+        Log.d(TAG, "guardando en temp*****"+niViewModel);
+        //busco los datos que me faltan
+        InformeTemp inf= nuevoInf.buscarxNombreCam("clientesId");
+        if(inf==null){
+            Toast.makeText(getContext(), "Hubo un error, intente de nuevo", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int idvista=inf.getVisitasId();
+
+        String valor = null;
+
+        CatalogoDetalle opcionsel = (CatalogoDetalle) select.getSelectedItem();
+        valor = opcionsel.getCad_idopcion() + "";
+
+
+
+        if (valor != null && valor.length() > 0) {
+                //actualizo la visita
+            niViewModel.guardarRespSust(idvista, idcliente,nummuestra,niViewModel.getIdInformeNuevo(), iddetalleNuevo, valor,Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID, "ID", consecutivo, false);
+        }
+
+
+
+    }
 }

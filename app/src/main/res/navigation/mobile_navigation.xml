@@ -489,7 +489,25 @@
         tools:layout="@layout/lista_selec_fragment" >
 
     </fragment>
+    <fragment
+        android:id="@+id/nav_notificacionseti"
+        android:name="com.example.comprasmu.ui.etiquetado.ListaNotifEtiqFragment"
+        android:label="@string/menu_nuevas_compras"
+        tools:layout="@layout/lista_selec_fragment" >
+        <action android:id="@+id/action_nottoact"
+            app:destination="@id/nav_editeti"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_editeti"
+        android:name="com.example.comprasmu.ui.etiquetado.EditEtiquetadoFragment"
+        android:label="@string/editar_informe"
+        tools:layout="@layout/fragment_edietiq" >
 
+    </fragment>
     <fragment
         android:id="@+id/nav_borrarind"
         android:name="com.example.comprasmu.ui.mantenimiento.BorrarDatosFragment"

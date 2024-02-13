@@ -43,6 +43,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.comprasmu.ActInformeEtaTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
@@ -105,7 +106,7 @@ public class NvoEtiqCajaFragment extends Fragment {
     int  totcajas; //cajaact
 
     private boolean isEdicion;
-
+    private boolean isActualizacion; //para saber si es actualizacion
     ComprasLog milog;
     List<String> spinnerValues;
     ArrayAdapter<String> adaptercaja;
@@ -114,6 +115,7 @@ public class NvoEtiqCajaFragment extends Fragment {
     public final static String ARG_ESEDI = "comprasmu.ne_esedip";
     public final static String ARG_INFORMEDET = "comprasmu.ne_infdet";
     public final static String ARG_INFORMESEL = "comprasmu.neinfsel";
+    public final static String ARG_ESACT = "comprasmu.necesact";
     public String ciudadInf;
     public String[] descripfoto = {"FOTO CALIDAD DE CAJA CARA A", "FOTO CALIDAD DE CAJA CARA B", "FOTO ACOMODO DE MUESTRAS DENTRO DE CAJA"};
     public int[] descripcionid = {12, 13, 14};
@@ -178,6 +180,7 @@ public class NvoEtiqCajaFragment extends Fragment {
                 this.detalleEdit = det;
 
             this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
+            this.isActualizacion = getArguments().getBoolean(ARG_ESACT);
         }
        // cajaini = 1;
         totcajas=0;
@@ -257,9 +260,12 @@ public class NvoEtiqCajaFragment extends Fragment {
                 }
 
                 lastClickTime = currentClickTime;
-
-                actualizarComent();
-                finalizarInf();
+                if(isActualizacion){
+                    actualizarInf();
+                }else {
+                    actualizarComent();
+                    finalizarInf();
+                }
                 Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
                 yaestoyProcesando = false;
                 salir();
@@ -551,6 +557,28 @@ public void iraReubicar(){
             SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
             miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
+        }catch(Exception ex){
+            ex.printStackTrace();
+            Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());
+            Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
+        }
+        // limpio variables de sesion
+
+        mViewModel.setIdNuevo(0);
+        mViewModel.setIddetalle(0);
+        mViewModel.setNvoinforme(null);
+
+    }
+
+    public void actualizarInf() {
+        try {
+            mViewModel.finalizarInf();
+            InformeEtapaEnv envio=mViewModel.preparaInformeEtiqAct(mViewModel.getIdNuevo());
+            ActInformeEtaTask miTareaAsincrona = new ActInformeEtaTask(envio,getActivity());
+            miTareaAsincrona.execute();
+            subirFotos(getActivity(),envio);
+            //cambio el estatus para que no vuelva a pedir en el task
+
         }catch(Exception ex){
             ex.printStackTrace();
             Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());

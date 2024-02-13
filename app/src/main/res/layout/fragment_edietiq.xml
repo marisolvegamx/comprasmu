@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:id="@+id/lleepreg3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txteenummuesorig"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/txteemuestra"
+                    style="@style/formlabel2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/txteeruta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="Name"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/btneefoto"
+                    style="@style/imbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/ic_menu_camera" />
+
+                <ImageView
+                    android:id="@+id/iveefotomue"
+                    android:layout_width="match_parent"
+                    android:layout_height="97dp"
+
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    tools:srcCompat="@tools:sample/avatars"
+                    tools:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/btneerotar1"
+                    style="@style/imbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/dark_grey"
+                    android:contentDescription="rotar"
+                    android:src="@drawable/ic_baseline_loop_24"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <Button
+                    android:id="@+id/btneeac3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_weight="1"
+                    android:text="@string/aceptar" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/llrepre4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/formlabel2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="QR" />
+
+                <EditText
+                    android:id="@+id/txteeqr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/btneeobtqr"
+                    style="@style/imbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_baseline_qr_code_scanner_24" />
+
+                <Button
+                    android:id="@+id/btneeac4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_weight="1"
+                    android:text="@string/aceptar" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lleeotra"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btneeac5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/aceptar"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lleepre6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView14"
+                    style="@style/formlabel2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/selec_caja" />
+
+                <Spinner
+                    android:id="@+id/speecaja"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btneecajamas"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/agregar_caja"
+                    android:textSize="12sp"
+                    android:visibility="visible" />
+
+                <Button
+                    android:id="@+id/btneeacep6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/guardar" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/lleebotones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:visibility="visible">
+
+                <!--  <Button
+                    android:id="@+id/btnneselplanta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/reubicar" />-->
+
+                <TextView
+                    android:id="@+id/txtxeemensaje"
+                    style="@style/formlabel2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/el_numcaja"
+                    android:textAlignment="center" />
+
+                <Button
+                    android:id="@+id/btneereubicar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_weight="1"
+                    android:text="@string/reubicar"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</layout>

@@ -12,6 +12,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
@@ -340,6 +341,8 @@ public class PostInformeViewModel {
 
     }
 
+
+
     public  void sendCorreccion(CorreccionEnvio correccion) {
 
         Log.d("Correccion", "enviando correccion"+correccion.toJson(correccion));
@@ -416,6 +419,40 @@ public class PostInformeViewModel {
 
         });
     }
+
+    public  void actInformeEtiq(InformeEtapaEnv informeEtapa) {
+        Log.d(TAG+"actInformeEta", informeEtapa.toJson(informeEtapa));
+        ServiceGenerator.getApiService().actInformeEtiq(informeEtapa).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
+                // respuesta serv:
+                // { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+
+                    mensaje=response.body().getData();
+                    Log.d(TAG+"actInformeEtiq", ""+mensaje);
+                    //actualizo el estatus
+                    iniciarBD();
+                    actEstatusInfEtapa(informeEtapa);
+                    for (InformeEtapaDet det:informeEtapa.getInformeEtapaDet()) {
+                        actEstatusNotifEtiq(det.getId());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
+                t.printStackTrace();
+                Log.e(TAG, "actInformeEtiq Unable to submit post to API.");
+            }
+
+
+        });
+    }
+
     public void iniciarDBCor(){
         correccionRepo=new CorreccionRepoImpl(context);
     }
@@ -432,6 +469,12 @@ public class PostInformeViewModel {
     public void actEstatusCorreccionECD(CorEtiquetadoCajaDet correccion){
         corecdRepo=new CorEtiqCajaDetRepoImpl(context);
         correccionRepo.actualizarEstatusSync(correccion.getId(),2);
+    }
+    public void actEstatusNotifEtiq(int iddet){
+
+        //actualizo detalles
+        etapadetRepo.actEstatus(iddet,3); //corregido
+
     }
     public String getMensaje() {
         return mensaje;

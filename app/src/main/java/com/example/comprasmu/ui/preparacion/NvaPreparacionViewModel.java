@@ -55,6 +55,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     InformeComDetRepositoryImpl compRepo;
     public int totCajasEmp;
     public List<EtiquetadoxCliente> resumenEtiq; //es uno x indice
+    public List<Integer> muestrasactEtiq; //para guardar las muestras que se actualizaron y se enviaran al serv
     public NvaPreparacionViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
@@ -66,6 +67,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         compraslog=ComprasLog.getSingleton();
         this.compRepo=new InformeComDetRepositoryImpl(application);
         this.cajaAct=new EtiquetadoxCliente();
+        muestrasactEtiq=new ArrayList<>();
     }
     //es para la preparacion
     public int insertarInformeEtapa(String indice,String plantaNombre,int plantaId, String clienteNombre,int clienteId){
@@ -705,7 +707,32 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return envio;
     }
 
-        public void corregirEtiquetado(InformeEtapaDet muestra,int numcaja){
+    public InformeEtapaEnv preparaInformeEtiqAct(int idnvo){
+        InformeEtapaEnv envio=new InformeEtapaEnv();
+
+        envio.setInformeEtapa(getInformexId(idnvo));
+
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(Constantes.INDICEACTUAL);
+        List<InformeEtapaDet> muestras=new ArrayList<>();
+        //busco los nuevo detalles
+        if(muestrasactEtiq!=null)
+            for (int iddet:
+                 muestrasactEtiq) {
+                muestras.add(infDetRepo.findsimple(iddet));
+            }
+
+        List<InformeEtapaDet> fotocaja=infDetRepo.getInfDetCalCaja(idnvo);
+        muestras.addAll(fotocaja);
+        envio.setInformeEtapaDet(muestras);
+        List<ImagenDetalle> imagenes=this.buscarImagenes(envio.getInformeEtapaDet());
+
+        envio.setImagenDetalles(imagenes);
+        return envio;
+    }
+
+
+    public void corregirEtiquetado(InformeEtapaDet muestra,int numcaja){
 
             if(muestra!=null) {
                 muestra.setNum_caja(numcaja);
@@ -726,5 +753,6 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
         return envio;
     }
+
 
 }

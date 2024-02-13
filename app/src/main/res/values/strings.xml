@@ -338,6 +338,9 @@
     <string name="eti_destinatario">Destinatario</string>
     <string name="eti_fragil">Fragil</string>
     <string name="eti_contenido">Contenido</string>
+    <string name="menu_notificaciones">Notificaciones</string>
+    <string name="menu_nuevas_compras">Muestras pendientes</string>
+    <string name="agregar_muestra">AGREGAR MUESTRA</string>
 
 
 </resources>

@@ -59,5 +59,7 @@ public abstract class DetalleCajaDao extends  BaseDao<DetalleCaja>{
     @Query("delete from detalle_caja where informeEtapaId=:informe")
     public  abstract  void deleteByInforme(int informe);
 
+    @Query("update detalle_caja set estatus=:estatus WHERE id=:id")
+    public abstract  void actualizarEstatus(int id, int estatus);
 
 }

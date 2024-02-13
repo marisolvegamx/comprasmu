@@ -7,6 +7,9 @@ public  class Contrato {
     public static String TBLSOLCORRECCIONES="solicitud_cor";
     public static String TBLINFORMESCOMP="informe_compras";
     public static String TBLINFORMESDET="informe_detalle";
+    public static String TBLINFORMESETAPA="informe_etapa";
+    public static String TBLINFORMESETAPADET="informe_etapadet";
+    public static String TBLDETALLECAJA="detalle_caja";
     public static String TBLVISITAS="visitas";
 
     public static class  CatalogosId{

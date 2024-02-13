@@ -836,9 +836,9 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
                     mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-                    if(Constantes.productoSel.tipoMuestra==3)
-                        avanzarPregunta(128); //pregunto motivo
-                    else
+                   // if(Constantes.productoSel.tipoMuestra==3)
+                   //     avanzarPregunta(128); //pregunto motivo
+                  //  else
                         avanzarPregunta(78);
 
                 }else

@@ -213,6 +213,20 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     public int totalMuestrasEtiqxCli(int i, int cliente) {
         return dao.totalMuestrasEtiqxCli(i, cliente);
     }
+    public LiveData<List<InformeEtapaDet>> getCanceladasEtiq( String indice) {
+        return dao.getCanceladasEtiq(3,indice,2);
 
+    }
+    public void actEstatus(int id, int estatus) {
+        dao.actualizarEstatus(id, estatus);
+    }
+
+    public void deleteCajaEtiq(int idinf) {
+        dao.deleteCajaEtiq(idinf,3);
+    }
+
+    public void actQr(int id, String qr) {
+        dao.actualizarQr(id,qr);
+    }
 }
 

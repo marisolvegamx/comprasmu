@@ -161,4 +161,18 @@ public interface APIService {
             "Content-Type: application/json"
     })
     Call<PostResponse> saveCorreccionEC(@Body CorEtiquetaCajaEnvio item);
+
+    @GET("notifetiquetado")
+    Call<RespNotifEtiqResponse> getActualizaEtiq( @Query("indice") String indice, @Query("cvereco") String usuario);
+
+    @POST("infetiq/update")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> actInformeEtiq(@Body InformeEtapaEnv item);
+
+    @GET("descrespetiq")
+    Call<RespInfEtapaResponse> getRespaldoEtiq( @Query("indice") String indice, @Query("usuario") String usuario);
+
 }
