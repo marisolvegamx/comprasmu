@@ -988,6 +988,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
                     }
                 }catch(NumberFormatException ex){
+
                     Toast.makeText(getContext(),"Número incorrecto, verifique",Toast.LENGTH_SHORT).show();
                 }
                 if(isEdicion)
@@ -1002,7 +1003,7 @@ public class NvoEmpaqueFragment extends Fragment {
             return true;
         }catch (Exception ex){
             compraslog.grabarError(TAG+" Hubo un error al guardar intente de nuevo"+ex.getMessage());
-
+            ex.printStackTrace();
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
             return  false;
         }
