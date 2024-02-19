@@ -306,6 +306,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         milog.grabarError(TAG + " o x aca");
         //busco si tengo varias plantas
         ciudadInf = Constantes.CIUDADTRABAJO;
+        //busco los clientes x ciudad
         listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
         Log.d(TAG, "PLANTA" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
 
@@ -714,7 +715,8 @@ public void iraReubicar(){
         args.putInt(NvoEtiquetadoFragment.ARG_PREGACT,5 );
         args.putBoolean(NvoEtiquetadoFragment.ARG_ESEDI,this.isEdicion);
 
-        args.putInt(NvoEtiquetadoFragment.ARG_INFORMESEL,this.informeSel);
+        args.putInt(NvoEtiquetadoFragment.ARG_INFORMESEL,mViewModel.getIdNuevo());
+        Log.d(TAG,"aqui"+mViewModel.getIdNuevo());
         NvoEtiqCajaFragment nvofrag = new NvoEtiqCajaFragment();
         nvofrag.setArguments(args);
 
