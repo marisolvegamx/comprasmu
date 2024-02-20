@@ -16,8 +16,7 @@ public class CorEtiquetadoCaja {
     private int id;
     private int solicitudId;
     private String indice;
-    @ColumnInfo(defaultValue = "0")
-    private int numfoto;
+    private Integer numfoto;
     private int estatus;
     private int estatusSync;
     //private boolean reubico;
@@ -65,11 +64,11 @@ public class CorEtiquetadoCaja {
         this.indice = indice;
     }
 
-    public int getNumfoto() {
+    public Integer getNumfoto() {
         return numfoto;
     }
 
-    public void setNumfoto(int numfoto) {
+    public void setNumfoto(Integer numfoto) {
         this.numfoto = numfoto;
     }
 

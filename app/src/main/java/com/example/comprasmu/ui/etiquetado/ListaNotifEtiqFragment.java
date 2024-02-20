@@ -69,17 +69,32 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
     public void cargarLista(){
 
         //mViewModel.cargarDetalles();
-        mViewModel.cargarCancelados();
+        mViewModel.cargarCanceladosEtiq();
+
+
         mViewModel.getInfcancelados().observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
             @Override
             public void onChanged(List<InformeEtapa> informeDetalles) {
-                if (informeDetalles.size() < 1) {
+
+                Log.d(TAG, "YA CARGÓ " + informeDetalles.size());
+
+                //tambien necesito saber si eliminé empaque
+                List<InformeEtapa> empaque= mViewModel.cargarCanceladosEmp();
+                if(empaque!=null&&empaque.size()>0) {
+                    informeDetalles.addAll(empaque);
+                    Log.d(TAG, "ELIMI EMP " + empaque.size());
+                }
+                //o informes por completar
+                List<InformeEtapa> etiqpend=mViewModel.cargarInfxCompletar();
+                if(etiqpend!=null&&etiqpend.size()>0) {
+                    informeDetalles.addAll(etiqpend);
+                    Log.d(TAG, "COMP ETIQ " + etiqpend.size());
+                }
+                mEtaAdapter.setInformeCompraList(informeDetalles);
+                mEtaAdapter.notifyDataSetChanged();
+                if (informeDetalles.size() < 1&&etiqpend.size()<1 &&empaque.size()<1) {
                     mBinding.emptyStateText.setVisibility(View.VISIBLE);
                 }
-                Log.d(TAG, "YA CARGÓ " + informeDetalles.size());
-                mEtaAdapter.setInformeCompraList(informeDetalles);
-
-                mEtaAdapter.notifyDataSetChanged();
             }
             });
     }
@@ -103,6 +118,19 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
     public void onClickAgregar(int idinforme) {
         Log.d(TAG,"di click en continua inf");
        // NavHostFragment.findNavController(this).navigate(R.id.action_nottoact);
+        Intent intento1 = new Intent(getActivity(), EditInfEtapaActivity.class);
+        intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,idinforme );
+        intento1.putExtra(ContInfEtapaFragment.ETAPA,3 );
+        startActivity(intento1);
+    }
+
+    @Override
+    public void onClickContinuar(int idinforme) {
+       /* Intent intento1 = new Intent(getActivity(), NuevoInfEtapaActivity.class);
+        intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,idinforme );
+        intento1.putExtra(ContInfEtapaFragment.ETAPA,3 );
+        startActivity(intento1);*/
+
         Intent intento1 = new Intent(getActivity(), EditInfEtapaActivity.class);
         intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,idinforme );
         intento1.putExtra(ContInfEtapaFragment.ETAPA,3 );

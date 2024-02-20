@@ -131,7 +131,7 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         }
         return null;
     }
-    public InformeEtapaDet getUltimaMuestra(int idinf, int etapa) {
+    public InformeEtapaDet getUltimaMuestraEtiq(int idinf, int etapa) {
         List<InformeEtapaDet> lista=dao.getUltimaMuestra(idinf,etapa);
         if(lista!=null&&lista.size()>0){
             return lista.get(0);
@@ -217,6 +217,7 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         return dao.getCanceladasEtiq(3,indice,2);
 
     }
+
     public void actEstatus(int id, int estatus) {
         dao.actualizarEstatus(id, estatus);
     }

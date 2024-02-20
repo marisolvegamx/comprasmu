@@ -186,5 +186,14 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
         return icDao.getCanceladasEtiq(3,indice,0);
 
     }
+    public List<InformeEtapa> getCancelados( String indice, int etapa) {
+        return icDao.getInformesxEstatusas(indice,etapa,0);
+
+    }
+
+    public List<InformeEtapa> getInformesxEstatusas( String indice, int etapa, int estatus) {
+        return icDao.getInformesxEstatusas(indice,etapa,estatus);
+
+    }
 
 }

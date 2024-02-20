@@ -35,6 +35,10 @@ import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.etiquetado.EditEtiquetadoFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiqCajaFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoElecFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoJumFragment;
+import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -241,11 +245,6 @@ public void cambiarTitulo(String titulo){
             case R.id.csalir:
                 int numpreg=0;
                 //reviso que no sea de las que no debe salir
-                if(etapa==3)
-                if(dViewModel.preguntaAct==3||dViewModel.preguntaAct==4) {
-
-                        noSalir=true;
-                    }
 
 
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
@@ -293,6 +292,13 @@ public void cambiarTitulo(String titulo){
 
         return false;
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_continuar, menu);
+        return true;
+    }
+
 
     @Override
     protected void onDestroy() {

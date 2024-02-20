@@ -55,7 +55,7 @@ public class DescRespInformesEta {
         Log.d(TAG, "descargando cambios etiq");
         infrepo = new InfEtapaRepositoryImpl(act);
         infdrepo = new InfEtapaDetRepoImpl(act);
-
+        cajarepo=new DetalleCajaRepoImpl(act);
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         DescargaRespieListener listener=new DescargaRespieListener();
         ps.getCambiosEtiq(Constantes.INDICEACTUAL,listener);
@@ -123,6 +123,18 @@ public class DescRespInformesEta {
                     }
 
                 }
+                //por si se agregaron muestras
+                if (infoResp.getEtiq_comp()!= null && infoResp.getEtiq_comp().size() > 0) {
+                    for (InformeEtapa infemp : infoResp.getEtiq_comp()
+                    ) {
+
+                        //ahora si cambio estatus
+
+                        infrepo.actualizarEstatus(infemp.getId(), 4);
+                        //elimino las fotos de las cajas
+                        infdrepo.deleteCajaEtiq(infemp.getId());
+                    }
+                }
                 if (infoResp.getEmp_elim() != null && infoResp.getEmp_elim().size() > 0) {
                     for (InformeEtapa infemp:infoResp.getEmp_elim()
                          ) {
@@ -145,7 +157,7 @@ public class DescRespInformesEta {
                                 cajarepo.actualizarEstatus(foto.getId(), 0);
                             }
                         }
-                        //ahora si borro el informe
+                        //ahora si cancelo el informe
 
                         infrepo.actualizarEstatus(infemp.getId(),0);
 

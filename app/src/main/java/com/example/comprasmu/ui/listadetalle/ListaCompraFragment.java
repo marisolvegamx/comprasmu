@@ -205,16 +205,16 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 mBinding.txtlcopcionbu.setVisibility(View.VISIBLE);
                 String descri="";
                 switch(Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
-                    case 1:
+                    case 1: case 5:
                         descri=desccritFis[opcionbu-2];
                         break;
-                    case 2:
+                    case 2: case 6:
                         descri=desccritSen[opcionbu-2];
                         break;
-                    case 3:
+                    case 3: case 7:
                         descri=desccritTor[opcionbu-2];
                         break;
-                    case 4:
+                    case 4: case 8:
                         descri=desccritMic[opcionbu-2];
                         break;
 
@@ -274,16 +274,16 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                             mBinding.txtlcopcionbu.setText(getString(R.string.criterio)+" "+(opcionbu));
                             String descri="";
                             switch(Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
-                                case 1:
+                                case 1: case 5:
                                     descri=desccritFis[opcionbu-1];
                                     break;
-                                case 2:
+                                case 2: case 6:
                                     descri=desccritSen[opcionbu-1];
                                     break;
-                                case 3:
+                                case 3: case 7:
                                     descri=desccritTor[opcionbu-1];
                                     break;
-                                case 4:
+                                case 4: case 8:
                                     descri=desccritMic[opcionbu-1];
                                     break;
 
@@ -311,16 +311,16 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                                                                    mBinding.txtlcopcionbu.setText(getString(R.string.criterio)+" "+(opcionbu-1));
                                                                    String descri="";
                                                                    switch(Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
-                                                                       case 1:
+                                                                       case 1: case 5:
                                                                            descri=desccritFis[opcionbu-2];
                                                                            break;
-                                                                       case 2:
+                                                                       case 2: case 6:
                                                                            descri=desccritSen[opcionbu-2];
                                                                            break;
-                                                                       case 3:
+                                                                       case 3: case 7:
                                                                            descri=desccritTor[opcionbu-2];
                                                                            break;
-                                                                       case 4:
+                                                                       case 4: case 8:
                                                                            descri=desccritMic[opcionbu-2];
                                                                            break;
 
@@ -482,7 +482,11 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         int analisisid=mViewModel.getDetallebuSel().getAnalisisId();
         String analisis=mViewModel.getDetallebuSel().getTipoAnalisis();
         mViewModel.consultasBackup(idlista,opcionsel,categoria,productoNombre,empaque,tamanio ,analisisid,analisis,detId);
-
+        if( mViewModel.getDetallebu()==null){
+            mBinding.txtsdatosbu.setText(getString(R.string.sin_datosbu)+" "+opcionsel);
+            mBinding.txtsdatosbu.setVisibility(View.VISIBLE);
+            return;
+        }
         mViewModel.getDetallebu().observe(getViewLifecycleOwner(), myProducts -> {
             if (myProducts != null && myProducts.size() > 0) {
                 //ordeno la lista
@@ -909,26 +913,38 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         builder.setView(vdialog);
         Spinner spcausas=vdialog.findViewById(R.id.spldiselect);
         getCausasSust(spcausas);
+
+        Button btnacepdialog=vdialog.findViewById(R.id.btnldiaceptar);
+        // btnacepdialog.setEnabled(false);
         final AlertDialog dialog=builder.create();
         dialog.setCancelable(false);
-        dialog.show();
-        Button btnacepdialog=vdialog.findViewById(R.id.btnldiaceptar);
         btnacepdialog.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 //aqui guardo la seleccion
-              //  Toast.makeText(getContext(),"guardar",Toast.LENGTH_LONG).show();
-               guardarResp(spcausas,idcliente,iddetalleNuevo, consecutivo);
+                if(spcausas.getSelectedItemId()<1){
+                    Toast.makeText(getContext(),"Seleccione una opción",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                guardarResp(spcausas,idcliente,iddetalleNuevo, consecutivo);
                 dialog.dismiss();
             }
         });
+
+        dialog.show();
+
     }
 
     public void getCausasSust(Spinner mySpinner){
-         List<CatalogoDetalle> causassust;
+         List<CatalogoDetalle> causassust=new ArrayList<>();
         NuevoDetalleViewModel dViewModel=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
 
-        causassust =   dViewModel.buscarCatalogoGen(Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID);
+        List<CatalogoDetalle> otralist =   dViewModel.buscarCatalogoGen(Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID);
+        CatalogoDetalle selop=new CatalogoDetalle();
+        selop.setCad_idopcion(0);
+        selop.setCad_descripcionesp(getString(R.string.seleccione_opcion));
+        causassust.add(selop);
+        causassust.addAll(otralist);
         ArrayAdapter catAdapter = new ArrayAdapter<CatalogoDetalle>(getContext(), android.R.layout.simple_spinner_dropdown_item, causassust) {
 
             // And the "magic" goes here

@@ -131,6 +131,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         detalle.setDescripcionId(descripcionid);
         detalle.setEstatusSync(0);
         detalle.setEtapa(1);
+        detalle.setEstatus(1);
         if(iddet>0)
         detalle.setId(iddet);
         iddetalle=(int)infDetRepo.insert(detalle);
@@ -166,6 +167,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         detalle.setDescripcionId(descripcionid);
         detalle.setEstatusSync(0);
         detalle.setEtapa(1);
+        detalle.setEstatus(1);
         if(iddet>0)
             detalle.setId(iddet);
         iddetalle=(int)infDetRepo.insert(detalle);
@@ -212,6 +214,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         detalle.setNum_muestra(num_muestra);
         detalle.setEstatusSync(0);
         detalle.setEtapa(3);
+        detalle.setEstatus(1);
         if(iddet>0)
             detalle.setId(iddet);
         iddetalle=(int)infDetRepo.insert(detalle);
@@ -280,7 +283,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         detalle.setNum_caja(numcaja);
         detalle.setInformeEtapaId(idinf);
 
-
+        detalle.setEstatus(1);
         detalle.setEstatusSync(0);
 
         if(iddet>0)
@@ -300,7 +303,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         detalle.setPeso(peso);
         if(largo!=null&&!largo.equals(""))
         detalle.setLargo(largo);
-
+        detalle.setEstatus(1);
         detalle.setEstatusSync(0);
         detalle.setId(iddet);
         cajaRepo.actualizar(detalle);
@@ -398,8 +401,8 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
     }
 
-    public InformeEtapaDet getUltimaMuestra(int id){
-        return infDetRepo.getUltimaMuestra(id, 3);
+    public InformeEtapaDet getUltimaMuestraEtiq(int id){
+        return infDetRepo.getUltimaMuestraEtiq(id, 3);
 
     }
    /* public void listaCajasEtiqxCliCd(int cliente){
@@ -691,6 +694,24 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         }
 
         return clienteAnt;
+
+    }
+    //devuelvo lista de plantas con informe
+    public InformeEtapa tieneInforme(int etapa, String ciudad,int cliente){
+
+        List<InformeEtapa> informes=infEtaRepository.getAllSimple(etapa,Constantes.INDICEACTUAL);
+        if(informes!=null&&informes.size()>0) {
+
+            for (int i = 0; i < informes.size(); i++) //y no estan cancelado
+            {
+                //  Log.d(TAG,"zzz"+informes.get(i).getEstatus());
+                if(informes.get(i).getEstatus()>0&&informes.get(i).getCiudadNombre().equals(ciudad)&&informes.get(i).getClientesId()==cliente) //no cancelados y de la cd
+                    return informes.get(i);
+
+            }
+        }
+
+        return null;
 
     }
     public InformeEtapaEnv preparaInformeEtiq(int idnvo){

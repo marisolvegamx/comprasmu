@@ -101,6 +101,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -285,6 +286,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 guardarContinuar();
             }
         });*/
+        Constantes.TIPOTIENDA=new HashMap<>();
+        Constantes.TIPOTIENDA.put(0,getString(R.string.seleccione_opcion));
+        Constantes.TIPOTIENDA.put(1,getString(R.string.grande));
+        Constantes.TIPOTIENDA.put(2,getString(R.string.mediana));
+        Constantes.TIPOTIENDA.put(3,getString(R.string.chica));
+        Constantes.TIPOTIENDA.put(4,getString(R.string.otras));
         fotoexhibido.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 tomarFoto(txtfotoex1, fotoex1, REQUEST_CODE_PROD1);
@@ -1673,7 +1680,19 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 guardar.setEnabled(true);
                 return false;
             }
+            //tipo tienda
+            Spinner tipotien = root.findViewById(1005);
+            if(tipotien!=null) {
+                int op=(int)tipotien.getSelectedItemId();
+
+                if (op<1){
+                    Toast.makeText(getActivity(), "Seleccione el tipo de tienda", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
+                    return false;
+                }
+            }
         }
+
         if (txtaiultubic.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
@@ -1748,7 +1767,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 mViewModel.visita.setTiendaNombre(input1.getText().toString());
                 mViewModel.visita.setTipoTienda(tipotiendasel);
 
-                mViewModel.visita.setTipoId(idtipo+1);
+                mViewModel.visita.setTipoId(idtipo);
                 if(mensajedir!=null)
                     mViewModel.visita.setDireccion(mensajedir.getText().toString());
 
@@ -1971,6 +1990,16 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                  guardar.setEnabled(true);
                  return;
              }
+            Spinner tipotien = root.findViewById(1005);
+            if(tipotien!=null) {
+                int op=(int)tipotien.getSelectedItemId();
+
+                if (op<1){
+                    Toast.makeText(getActivity(), "Seleccione el tipo de tienda", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
+                    return ;
+                }
+            }
         }
         if (txtaiultubic.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
@@ -2048,7 +2077,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             visitaEdi.setTiendaNombre(input1.getText().toString());
             visitaEdi.setTipoTienda((input5.getSelectedItem()).toString());
 
-            visitaEdi.setTipoId((int)input5.getSelectedItemId()+1);
+            visitaEdi.setTipoId((int)input5.getSelectedItemId());
            // visitaEdi.setDireccion(input2.getText().toString());
 
             //visitaEdi.setCadenaComercial(input6.getText().toString());
@@ -2319,7 +2348,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         Activity activity=this.getActivity();
         Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
         try{
-            try{
+
 
                 SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
@@ -2329,11 +2358,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
                 foto = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), nombre_foto);
                 Log.d(TAG, "****"+foto.getAbsolutePath());
-            } catch (Exception  ex) {
-                ex.printStackTrace();
-                Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
 
-            }
            // Parcelable state = svprincipal.onSaveInstanceState();
             Uri photoURI = FileProvider.getUriForFile(activity,
                     "com.example.comprasmu.fileprovider",
@@ -2354,8 +2379,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Toast.makeText(activity, "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
 
-        }
 
+        } catch (Exception  ex) {
+            ex.printStackTrace();
+            Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+
+        }
     }
     /****vuelve el foco***/
     @Override

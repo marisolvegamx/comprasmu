@@ -144,7 +144,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
         //sacarlas del catalogo detalle ya lo tengo
         Constantes.TIPOTIENDA=new HashMap<>();
-
+        Constantes.TIPOTIENDA.put(0,getString(R.string.seleccione_opcion));
         Constantes.TIPOTIENDA.put(1,getString(R.string.grande));
         Constantes.TIPOTIENDA.put(2,getString(R.string.mediana));
         Constantes.TIPOTIENDA.put(3,getString(R.string.chica));
@@ -231,7 +231,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
            }
        }//es 1a vez y ya puede descargar
         else{
-            Log.d(TAG,etapanva+"--"+ indicenvo+"--"+ etapafin);
+          //  Log.d(TAG,etapanva+"--"+ indicenvo+"--"+ etapafin);
            puedodescargar = true;
            guardarEtapaPref(etapanva, indicenvo, etapafin,tiporec);
            Constantes.INDICEACTUAL = indicenvo;

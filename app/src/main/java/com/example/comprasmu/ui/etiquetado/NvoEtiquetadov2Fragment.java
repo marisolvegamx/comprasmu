@@ -913,7 +913,7 @@ public void iraReubicar(){
 
     }
 
-    public void editarMuestra() {
+ /*   public void editarMuestra() {
 
         ImagenDetalle foto;
         detalleEdit=mViewModel.getUltimaMuestra(informeSel);
@@ -943,7 +943,7 @@ public void iraReubicar(){
             aceptar6.setEnabled(true);
         }
 
-    }
+    }*/
     public void atras(){
         Log.d(TAG,"**contf"+contcajaf);
         isEdicion=true; //siempre es edicion
@@ -980,7 +980,7 @@ public void iraReubicar(){
                     sv6.setVisibility(View.VISIBLE);
                     preguntaAct = preguntaAct - 1;
                     mViewModel.preguntaAct = preguntaAct;
-                    editarMuestra();
+                  //  editarMuestra();
                 }
                 break;
 

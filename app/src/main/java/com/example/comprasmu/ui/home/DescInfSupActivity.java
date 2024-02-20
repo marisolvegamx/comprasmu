@@ -36,7 +36,7 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
     ProgressDialog progreso;
 
     private ComprasLog complog;
-
+    int procesos;
    TextView destxtsincon;
    int contprocesos=0;//para saber que ya terminó las 2 descargas
     @Override
@@ -82,19 +82,22 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
 
     @Override
     public void todoBien() {
-        if(contprocesos==1) {
+      //  if(contprocesos==1) {
             //pasaría a otra actividad
             progreso.dismiss();
             Constantes.ACTUALIZADO = true;
             //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            Intent intento = new Intent(this, NavigationDrawerActivity.class);
-            intento.putExtra(NavigationDrawerActivity.ETAPA, 3);
-            startActivity(intento);
-            finish();
-        }
-        else{
-            contprocesos++;
-        }
+           if(procesos==1) {
+               Intent intento = new Intent(this, NavigationDrawerActivity.class);
+               intento.putExtra(NavigationDrawerActivity.ETAPA, 3);
+               startActivity(intento);
+               finish();
+           }
+           else procesos++;
+      //  }
+      ////  else{
+        //    contprocesos++;
+       // }
     }
 
 

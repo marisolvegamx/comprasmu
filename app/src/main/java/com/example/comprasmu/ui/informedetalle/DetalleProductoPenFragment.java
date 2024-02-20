@@ -1999,7 +1999,10 @@ public class DetalleProductoPenFragment extends Fragment {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             //count es cantidad de caracteres que tiene
+            if(aceptar!=null)
             aceptar.setEnabled(charSequence.length() > 0);
+            else
+                compraslog.grabarError(TAG,"botontextwatcher","no hay aceptar en "+preguntaAct.getNombreCampo());
 
         }
 

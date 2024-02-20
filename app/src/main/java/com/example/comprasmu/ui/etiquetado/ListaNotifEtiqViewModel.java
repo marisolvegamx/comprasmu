@@ -41,12 +41,19 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
         size = Transformations.map(cancelados, res->{ return cancelados.getValue().size();});
         empty = Transformations.map(cancelados, res->{return cancelados.getValue().isEmpty();});
     }
-    public void cargarCancelados(){
+    public void cargarCanceladosEtiq(){
         infcancelados =inferepo.getCanceladasEtiq(Constantes.INDICEACTUAL);
         size = Transformations.map(cancelados, res->{ return cancelados.getValue().size();});
         empty = Transformations.map(cancelados, res->{return cancelados.getValue().isEmpty();});
     }
 
+    public List<InformeEtapa> cargarCanceladosEmp(){
+        return inferepo.getCancelados(Constantes.INDICEACTUAL,4);
+    }
+    //para los informes etiq cuando se agregó muestras
+    public List<InformeEtapa> cargarInfxCompletar(){
+        return inferepo.getInformesxEstatusas(Constantes.INDICEACTUAL,3,4);
+    }
     public LiveData<List<InformeEtapaDet>> getCancelados() {
         return cancelados;
     }

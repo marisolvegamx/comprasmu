@@ -182,6 +182,7 @@ public class NvoEtiqCajaFragment extends Fragment {
             this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
             this.isActualizacion = getArguments().getBoolean(ARG_ESACT);
         }
+         Log.d(TAG,"aqui"+informeSel);
        // cajaini = 1;
         totcajas=0;
         //  txtcajaact=root.findViewById(R.id.txtnenumcaja);

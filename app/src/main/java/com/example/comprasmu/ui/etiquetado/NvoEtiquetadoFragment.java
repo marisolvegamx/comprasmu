@@ -106,7 +106,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     private int clienteSel;
 
     private String clienteNombreSel;
-
+    private boolean issegundoinf; //para saber que es un segundo informe
     private boolean isCont;
     private InformeEtapa infomeEdit;
     int preguntaAct;
@@ -355,6 +355,16 @@ public class NvoEtiquetadoFragment extends Fragment {
                 clienteSel = listacomp.get(0).getClientesId();
                 clienteNombreSel = listacomp.get(0).getClienteNombre();
                 totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, Constantes.CIUDADTRABAJO);
+                //veo si ya tengo un informe
+                InformeEtapa primero=mViewModel.tieneInforme(3,Constantes.CIUDADTRABAJO,clienteSel);
+                if(primero!=null){
+                    issegundoinf=true;
+                    //busco la ultima muestra
+                    InformeEtapaDet ultima = mViewModel.getUltimaMuestraEtiq(primero.getId());
+                    if(ultima!=null)
+                        contmuestra = ultima.getNum_muestra()+1;
+                }
+
                 InformeEtapa informetemp = new InformeEtapa();
                 informetemp.setClienteNombre( clienteNombreSel);
                 informetemp.setClientesId(clienteSel);
@@ -631,6 +641,15 @@ public void iraReubicar(){
                 // txttotmues.setVisibility(View.VISIBLE);
                 sv3.setVisibility(View.VISIBLE);
                 preguntaAct = preguntaAct + 1;
+                //veo si ya tengo un informe
+                InformeEtapa primero=mViewModel.tieneInforme(3,Constantes.CIUDADTRABAJO,clienteSel);
+                if(primero!=null){
+                    issegundoinf=true;
+                    //busco la ultima muestra
+                    InformeEtapaDet ultima = mViewModel.getUltimaMuestraEtiq(primero.getId());
+                   if(ultima!=null)
+                        contmuestra = ultima.getNum_muestra()+1;
+                }
                 cargarListaCajas();
                 break;
             case 2: //foto
@@ -848,10 +867,10 @@ public void iraReubicar(){
 
 
 
-    public void editarMuestra() {
+   /* public void editarMuestra() {
 
         ImagenDetalle foto;
-        detalleEdit=mViewModel.getUltimaMuestra(informeSel);
+        detalleEdit=mViewModel.getUltimaMuestraEtiq(informeSel);
         if (detalleEdit != null) {
             //busco en la bd para regresar a la primer muestra
             foto = mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));
@@ -878,7 +897,7 @@ public void iraReubicar(){
             aceptar6.setEnabled(true);
         }
 
-    }
+    }*/
     public void atras(){
         Log.d(TAG,"**contf"+contcajaf);
         isEdicion=true; //siempre es edicion
@@ -942,6 +961,13 @@ public void iraReubicar(){
                 //creo el informe
                 mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL, clienteNombreSel,clienteSel,0,totmuestras,ciudadInf));
               //  ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEtiq(mViewModel.getNvoinforme());
+
+            }else
+            if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null&&issegundoinf) {
+                Log.d(TAG, "creando segundo inf");
+                //creo el informe
+                mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL, clienteNombreSel,clienteSel,0,totmuestras,ciudadInf));
+                //  ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEtiq(mViewModel.getNvoinforme());
 
             }
         }catch (Exception ex){
@@ -1160,17 +1186,17 @@ public void iraReubicar(){
 
     }
 
-
+ //ya se puede varios informes de etiquetado para la reactivacion
 
     private  void convertirLista(List<ListaCompra>lista, Integer[] clientesprev){
         listaClientes =new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
             Log.d(TAG,listaCompra.getPlantaNombre());
-            if( clientesprev!=null)
+         /*   if( clientesprev!=null)
                 if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
                 {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
                     Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
-                    continue;}
+                    continue;}*/
             listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 
         }

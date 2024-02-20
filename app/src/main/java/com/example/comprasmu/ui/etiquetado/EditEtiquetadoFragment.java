@@ -238,9 +238,9 @@ public class EditEtiquetadoFragment extends Fragment {
         ciudadInf=infomeEdit.getCiudadNombre();
         totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, ciudadInf);
         //busco el ultimo num de muestra
-        InformeEtapaDet ultima=mViewModel.getUltimaMuestra(informeSel);
+        InformeEtapaDet ultima=mViewModel.getUltimaMuestraEtiq(informeSel);
         if(ultima!=null)
-            contmuestra =ultima.getNum_muestra();
+            contmuestra =ultima.getNum_muestra()+1;
         //veo si es de muestra o de cja
         if (detalleEdit != null && detalleEdit.getDescripcionId() > 11) {
             capturarFotoCaja();
@@ -645,7 +645,7 @@ public void iraReubicar(){
     public void editarMuestra() {
 
         ImagenDetalle foto;
-        detalleEdit=mViewModel.getUltimaMuestra(informeSel);
+        detalleEdit=mViewModel.getUltimaMuestraEtiq(informeSel);
         if (detalleEdit != null) {
             //busco en la bd para regresar a la primer muestra
             foto = mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));

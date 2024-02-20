@@ -188,12 +188,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         opciones.add(new DescripcionGenerica(2,"Criterio 2"));
 
         switch (idanalisis){
-            case 1:  //fisico
+            case 1: case 5: //fisico
                 opciones.add(new DescripcionGenerica(3,"Criterio 3"));
                 opciones.add(new DescripcionGenerica(4,"Criterio 4"));
                 break;
 
-            case 3: //torque
+            case 3: case 7://torque
                 opciones.add(new DescripcionGenerica(3,"Criterio 3"));
                 break;
 
@@ -225,38 +225,39 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     //para las colsultas de bu
     public void consultasBackup(int idlista,int opcionsel,String categoria, String productoNombre, String empaque,int tamanio,int analisisid, String analisis,int iddetorig ){
-      switch (analisisid){
-          case 1: //fisico
-                consultaFisico(idlista, opcionsel, categoria, productoNombre, empaque, analisis,tamanio,iddetorig);
+      Log.d(TAG,"consuta bu params"+idlista+"--"+ opcionsel+"--"+ categoria+"--"+ productoNombre+"--"+ empaque+"--"+ analisis+"--"+tamanio+"--"+iddetorig+"--"+analisisid);
+        switch (analisisid){
+          case 1: case 5: //fisico
+                consultaFisico(idlista, opcionsel, categoria, productoNombre, empaque, analisisid,tamanio,iddetorig);
                 break;
-          case 2: //sensorial
-              consultaSensorial(idlista, opcionsel, categoria, productoNombre, empaque, analisis,tamanio,iddetorig);
+          case 2: case 6: //sensorial
+              consultaSensorial(idlista, opcionsel, categoria, productoNombre, empaque, analisisid,tamanio,iddetorig);
               break;
-          case 3: //torque
-              consultaTorque(idlista, opcionsel, categoria, productoNombre, empaque, analisis,tamanio,iddetorig);
+          case 3: case 7: //torque
+              consultaTorque(idlista, opcionsel, categoria, productoNombre, empaque, analisisid,tamanio,iddetorig);
               break;
-          case 4: //micro
+          case 4: case 8: //micro
               consultaMicro(idlista, opcionsel, categoria, productoNombre, empaque, analisisid,tamanio,iddetorig);
 
               break;
       }
 
     }
-    public void consultaFisico(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int tamanio,int iddetorig ){
+    public void consultaFisico(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisisid,int tamanio,int iddetorig ){
    //     Log.d(TAG,"criterio"+opcionsel);
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista,1, categoria, productoNombre, empaque, tamanio);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista,analisisid, categoria, productoNombre, empaque, tamanio);
                 break;
             case 2:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista,1, categoria, productoNombre, empaque, 0);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista,analisisid, categoria, productoNombre, empaque, 0);
                 break;
             case 3:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista, 1,categoria,productoNombre, "", 0);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, analisisid,categoria,productoNombre, "", 0);
                 break;
             case 4: default: //la misma lista
                // detallebu = detRepo.getDetalleByFiltrosUD(idlista,categoria,"","",0);
-                detallebu = detRepo.consultaFisico4(idlista,1, categoria, productoNombre, empaque, tamanio,"",iddetorig);
+                detallebu = detRepo.consultaFisico4(idlista,analisisid, categoria, productoNombre, empaque, tamanio,"",iddetorig);
                // detallebu = detRepo.getAllByLista(idlista);
 
                 break;
@@ -265,13 +266,13 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public void consultaSensorial(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis,int tamanio,int iddetorig ){
+    public void consultaSensorial(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisisid,int tamanio,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista,2, categoria, productoNombre, empaque, tamanio);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista,analisisid, categoria, productoNombre, empaque, tamanio);
                 break;
             case 2: default: //muestro toda la lista
-                 detallebu = detRepo.getDetalleByFiltros(idlista,2, categoria, productoNombre, empaque, tamanio,"",iddetorig);
+                 detallebu = detRepo.getDetalleByFiltros(idlista,analisisid, categoria, productoNombre, empaque, tamanio,"",iddetorig);
               //  detallebu = detRepo.getAllByLista(idlista);
                 break;
 
@@ -280,18 +281,18 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public void consultaTorque(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, String analisis ,int tamanio,int iddetorig){
+    public void consultaTorque(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisisid ,int tamanio,int iddetorig){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUD(idlista, 3,categoria, productoNombre, empaque, tamanio);
+                detallebu = detRepo.getDetalleByFiltrosUD(idlista, analisisid,categoria, productoNombre, empaque, tamanio);
                 break;
             case 2:
-                detallebu = detRepo.consultaTorque2(idlista,3, categoria, productoNombre, empaque);
+                detallebu = detRepo.consultaTorque2(idlista,analisisid, categoria, productoNombre, empaque);
                 break;
 
             case 3: default:
               //  detallebu = detRepo.consultaTorque4(idlista, categoria, empaque);
-                detallebu = detRepo.getDetalleByFiltros(idlista, 3,categoria, productoNombre, empaque, tamanio,"",iddetorig);
+                detallebu = detRepo.getDetalleByFiltros(idlista, analisisid,categoria, productoNombre, empaque, tamanio,"",iddetorig);
 
                 //    detallebu = detRepo.getAllByLista(idlista);
                 break;
@@ -303,12 +304,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisis,int tamanio,int iddetorig ){
         switch (opcionsel) {
             case 1:
-                detallebu = detRepo.getDetalleByFiltrosUDA2(idlista, 4,categoria, analisis,productoNombre, "", 0);
+                detallebu = detRepo.getDetalleByFiltrosUDA2(idlista, analisis,categoria, analisis,productoNombre, "", 0);
 
                // detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque, tamanio);
                 break;
             case 2: default:
-                detallebu = detRepo.getDetalleByFiltros(idlista,4, categoria, productoNombre, empaque, tamanio,analisis+"",0);
+                detallebu = detRepo.getDetalleByFiltros(idlista,analisis, categoria, productoNombre, empaque, tamanio,analisis+"",0);
 
               //  detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque,0);
                 break;

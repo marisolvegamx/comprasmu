@@ -774,7 +774,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
         Constantes.INDICEACTUAL=prefe.getString("indiceact", "");
         Constantes.TIPOTIENDA=new HashMap<>();
-
+        Constantes.TIPOTIENDA.put(0,getString(R.string.seleccione_opcion));
         Constantes.TIPOTIENDA.put(1,getString(R.string.grande));
         Constantes.TIPOTIENDA.put(2,getString(R.string.mediana));
         Constantes.TIPOTIENDA.put(3,getString(R.string.chica));

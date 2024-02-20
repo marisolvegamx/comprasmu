@@ -169,8 +169,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                       //  String indicefin = (String) spindicefin.getSelectedItem();
                         String indiceini=Constantes.INDICEACTUAL;
                         //calculo indice fin
-
-
                         buscarTiendas(planta, indiceini);
                     }
                     else

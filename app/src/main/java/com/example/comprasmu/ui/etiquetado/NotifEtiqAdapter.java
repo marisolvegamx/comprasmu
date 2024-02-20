@@ -74,6 +74,12 @@ public class NotifEtiqAdapter extends RecyclerView.Adapter<NotifEtiqAdapter.Info
                         callback.onClickAgregar(Integer.parseInt(binding.icTxtiecid.getText().toString()));
                 }
             });
+            binding.btneccontinuar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    callback.onClickContinuar(Integer.parseInt(binding.icTxtiecid.getText().toString()));
+                }
+            });
         }
 
 
@@ -82,6 +88,7 @@ public class NotifEtiqAdapter extends RecyclerView.Adapter<NotifEtiqAdapter.Info
         void onClickAgregar(int idinforme);
 
 
+        void onClickContinuar(int idinforme);
     }
 
 

@@ -80,11 +80,11 @@ public class DetalleCaja {
         this.estatusSync = estatusSync;
     }
 
-    public int getEstatus() {
+    public Integer getEstatus() {
         return estatus;
     }
 
-    public void setEstatus(int estatus) {
+    public void setEstatus(Integer estatus) {
         this.estatus = estatus;
     }
 }

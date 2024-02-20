@@ -117,5 +117,7 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     public  abstract List<InformeEtapa> findAllByIndice(String indice);
     @Query("SELECT informe_etapa.* FROM informe_etapa  inner join informe_etapa_det on informe_etapa.id=informeEtapaId  where   informe_etapa.etapa=:etapa and informe_etapa_det.estatus=:estatus and informe_etapa.estatus<>0 and informe_etapa.indice=:indice and descripcionId=11")
     public abstract LiveData<List<InformeEtapa>> getCanceladasEtiq(int etapa, String indice, int estatus);
+    @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) and etapa=:etapa order by id")
+    public abstract List<InformeEtapa>  getInformesxEstatusas(String indice, int etapa, int estatus);
 
 }

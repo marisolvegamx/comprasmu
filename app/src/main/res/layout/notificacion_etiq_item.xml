@@ -59,7 +59,12 @@
                 android:text="@{detalle.ciudadNombre}" />
 
 
-
+            <TextView
+                android:id="@+id/txtiecetapa"
+                style="@style/textolista2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{Constantes.ETAPAS[detalle.etapa]}" />
 
             <TextView
                 android:id="@+id/ic_txtiecid"
@@ -71,11 +76,25 @@
                 android:visibility="gone" />
 
 
+            <TextView
+                android:id="@+id/txtiecestatusmen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{Constantes.ESTATUSINFORME[detalle.estatus]}" />
+
             <Button
                 android:id="@+id/btnecagregar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/agregar_muestra" />
+                android:text="@string/agregar_muestra"
+                android:visibility="@{detalle.etapa==3&amp;&amp;detalle.estatus==1? View.VISIBLE: View.GONE}"/>
+
+            <Button
+                android:id="@+id/btneccontinuar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/agregar_muestra"
+                android:visibility="@{detalle.etapa==3&amp;&amp;detalle.estatus==4? View.VISIBLE: View.GONE}"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

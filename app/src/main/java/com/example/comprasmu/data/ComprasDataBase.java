@@ -452,9 +452,9 @@ public abstract class ComprasDataBase extends RoomDatabase {
     static final Migration MIGRATION_23_24 = new Migration(23,24) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("create  TABLE coretiquetado_caja ( id integer not null," +
+            database.execSQL("create  TABLE coretiquetado_caja ( id INTEGER not null," +
                     "indice TEXT," +
-                    "solicitudId integer not null," +
+                    "solicitudId INTEGER not null," +
                     " numfoto INTEGER,  " +
 
                     "  estatus INTEGER not null," +

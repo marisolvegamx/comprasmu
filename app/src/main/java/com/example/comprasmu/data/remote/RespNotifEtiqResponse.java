@@ -10,6 +10,7 @@ public class RespNotifEtiqResponse {
     private List<InformeEtapa> etiq_elim;
     private List<InformeEtapaDet> etiq_cancel;
     private List<InformeEtapa> emp_elim;
+    private List<InformeEtapa> etiq_comp;
 
     public List<InformeEtapa> getEtiq_elim() {
         return etiq_elim;
@@ -34,4 +35,13 @@ public class RespNotifEtiqResponse {
     public void setEmp_elim(List<InformeEtapa> emp_elim) {
         this.emp_elim = emp_elim;
     }
+
+    public List<InformeEtapa> getEtiq_comp() {
+        return etiq_comp;
+    }
+
+    public void setEtiq_comp(List<InformeEtapa> etiq_comp) {
+        this.etiq_comp = etiq_comp;
+    }
 }
+

@@ -174,15 +174,15 @@ public class PostInformeViewModel {
             visitaRepo.actualizarEstatusSync(visita.getId(), Constantes.ENVIADO);
         //actualizo informe
         if(informes.getInformeCompra()!=null)
-        for(InformeCompra informe:informes.getInformeCompra())
+         for(InformeCompra informe:informes.getInformeCompra())
             infoRepo.actualizarEstatusSync(informe.getId(),Constantes.ENVIADO);
         //actualizo detalles
         if(informes.getInformeCompraDetalles()!=null)
-        for(InformeCompraDetalle detalle:informes.getInformeCompraDetalles())
+         for(InformeCompraDetalle detalle:informes.getInformeCompraDetalles())
             infoDetRepo.actualizarEstatusSyncxInfo(detalle.getId(),Constantes.ENVIADO);
         //producto exhibido
         if(informes.getProductosEx()!=null)
-        for(ProductoExhibido prod:informes.getProductosEx())
+            for(ProductoExhibido prod:informes.getProductosEx())
             prodeRepo.actualizarEstatusSyncxVisita(prod.getId(), Constantes.ENVIADO);
 
 

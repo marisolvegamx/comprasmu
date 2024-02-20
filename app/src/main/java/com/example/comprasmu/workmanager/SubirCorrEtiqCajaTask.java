@@ -10,7 +10,7 @@ import com.example.comprasmu.ui.informe.PostInformeViewModel;
 
 public class SubirCorrEtiqCajaTask extends AsyncTask<String, Float, Integer> {
 
-    public static String TAG = "SubirCorreccionTask";
+    public static String TAG = "SubirCorrEtiqCajaTask";
     CorEtiquetaCajaEnvio envio;
     Context context;
 
