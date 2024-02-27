@@ -33,15 +33,13 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEtaTask;
-import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
-import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
-import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
@@ -56,7 +54,6 @@ import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.DetalleInfView;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
-import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -86,18 +83,16 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
     public static int REQUEST_CODE_TAKE_PHOTO = 1;
 
-
+    List<Correccion> nuevasCor;
     private View root;
-
-    private NvaCorreECViewModel corViewModel;
+    private NvaCorreViewModel mViewModel;
     ListaSolsViewModel solViewModel;
     private NvaPreparacionViewModel preViewModel;
     SolicitudCor solicitud;
-    int numfotoSol;
+    int numfoto;
     InformeEtapa infEtiquetado;
     private Reactivo preguntaAct;
-    CorEtiquetadoCaja correccion; //por si es edicion
-    CorEtiquetadoCajaDet correccionDet;
+    Correccion correccion; //por si es edicion
     LinearLayout svprin;
     private NuevoDetalleViewModel dViewModel;
     private ComprasLog compraslog;
@@ -114,7 +109,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     private boolean reubicoMuestra;
     private TextView txtcajaact;
     private TextView txtmotivo;
-
+    InformeEtapaDet nvoDet;
     public NvaCorrecCalCajaFragment() {
         // Required empty public constructor
     }
@@ -138,8 +133,10 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         Bundle datosRecuperados = getArguments();
         if (datosRecuperados != null) {
             solicitudSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
-            numfotoSol = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
+            numfoto = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
+
         }
+
 
     }
 
@@ -152,27 +149,25 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         sv2 = root.findViewById(R.id.fgll2); //para las cajas
         txtcajaact = root.findViewById(R.id.fgtxttitulo1);
         txtmotivo = root.findViewById(R.id.fgtxtmotivo);
+        mViewModel = new ViewModelProvider(requireActivity()).get(NvaCorreViewModel.class);
         solViewModel = new ViewModelProvider(requireActivity()).get(ListaSolsViewModel.class);
         preViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         dViewModel = new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
-        corViewModel=new ViewModelProvider(requireActivity()).get(NvaCorreECViewModel.class);
+
         compraslog = ComprasLog.getSingleton();
         try {
             //    aceptar.setEnabled(false);
-            solViewModel.getSolicitud(solicitudSel, numfotoSol).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
+            solViewModel.getSolicitud(solicitudSel, numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
                 @Override
                 public void onChanged(SolicitudCor solicitudCor) {
                     solicitud = solicitudCor;
-                    Log.e(TAG, "estatus " + solicitud.getInformesId() + "--"+numfotoSol + "--" + solicitud.getEtapa());
+                    Log.e(TAG, "estatus " + solicitud.getInformesId() + numfoto + "--" + solicitud.getEtapa());
                     //busco el consecutivo de la tienda
                     int constienda = 0;
                     // txtmotivo.setText(solicitud.getMotivo());
                     infEtiquetado = preViewModel.getInformexId(solicitudCor.getInformesId());
-                  if(infEtiquetado==null){
-                      Toast.makeText(getContext(),"Hubo un error al buscar el informe",Toast.LENGTH_SHORT).show();
-                        return;
-                  }
                     ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCorEta(solicitud,0);
+
 
                     //busco el total de cajas del informe
                     detallesInf = preViewModel.getInfDetCalCaja(infEtiquetado.getId()); //solo de calidad de caja
@@ -189,7 +184,6 @@ public class NvaCorrecCalCajaFragment extends Fragment {
             ex.printStackTrace();
             compraslog.grabarError(ex.getMessage());
         }
-    Log.d(TAG,"totcajas"+totcajas);
         return root;
 
 
@@ -199,8 +193,10 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         int num_pregact = 120;
         Log.d(TAG, "creando preg");
 
+
         if(preguntaAct==null) //para la 1a vez
         {
+
             //busco preguntaAct
             preguntaAct = dViewModel.buscarReactivoSimpl(num_pregact);
         }
@@ -215,7 +211,6 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 txtmotivo.setText(solicitud.getMotivo());
                 txtmotivo.setVisibility(View.VISIBLE);
             }
-
             if(preguntaAct.getId()>122) {
                 //todo saber en que pregunta voy primero veo si ya tiene una correccion iniciada es edicion
                 int descripcionId=12;
@@ -235,17 +230,13 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                     } catch (NumberFormatException ex) {
                         compraslog.grabarError(TAG, "guardarCorr", ex.getMessage());
                     }
-                    correccion = corViewModel.getUltCorrecionxSolSimple(solicitudSel, numfotoSol, Constantes.INDICEACTUAL);
-                   Log.d(TAG,"ya hay cor"+correccion);
-                    correccionDet=null;
-                    //busco el detalle
-                    if(correccion!=null)
-                        correccionDet=corViewModel.getUltCorDetSimple(correccion.getId(),num_foto);
-                    Log.d(TAG,"ya hay cor"+correccionDet);
+                    correccion = mViewModel.getUltCorrecionxSolSimple(solicitudSel, num_foto, Constantes.INDICEACTUAL);
+
+
                 }
             }
             isEdicion=false;
-            if(correccionDet!=null){
+            if(correccion!=null){
                 isEdicion=true;
                 //y ya iba en las fotos
                 num_pregact=123;
@@ -253,7 +244,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
 
             cajasValues=new HashMap<>();
-          Log.d(TAG, "mmmmmmmmmmm" + preguntaAct.getId());
+            Log.d(TAG, "mmmmmmmmmmm" + preguntaAct.getId());
             crearFormulario();
 
             if (isEdicion)
@@ -262,22 +253,22 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 preguntaview.aceptarSetEnabled(false);
             lastClickTime=0;
             preguntaview.onclickAceptar(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
+                @Override
+                public void onClick(View view) {
 
-                                                preguntaview.aceptarSetEnabled(false);
-                                                long currentClickTime = SystemClock.elapsedRealtime();
-                                                // preventing double, using threshold of 1000 ms
-                                                if (currentClickTime - lastClickTime < 5500) {
-                                                    //  Log.d(TAG,"doble click :("+lastClickTime);
-                                                    return;
-                                                }
+                    preguntaview.aceptarSetEnabled(false);
+                    long currentClickTime = SystemClock.elapsedRealtime();
+                    // preventing double, using threshold of 1000 ms
+                    if (currentClickTime - lastClickTime < 5500) {
+                        //  Log.d(TAG,"doble click :("+lastClickTime);
+                        return;
+                    }
 
-                                                lastClickTime = currentClickTime;
+                    lastClickTime = currentClickTime;
 
 
-                                               siguiente();
-                                            }
+                    siguiente();
+                }
             });
             if(preguntaAct.getId()==121){
                 preguntaview.onclickAceptar(new View.OnClickListener() {
@@ -314,26 +305,165 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 txtcajaact.setText("CAJA "+cajaAct);
                 txtcajaact.setVisibility(View.VISIBLE);
             }
-        } catch(Exception ex) {
-        ex.printStackTrace();
+        } catch(Exception ex)
+
+        {
+            ex.printStackTrace();
+        }
+
     }
 
-}
+    public void crearPreguntaatras() {
+        int num_pregact = 120;
+        Log.d(TAG, "creando preg");
+
+        //siempre es edicion
+        isEdicion=true;
+        if(preguntaAct==null) //para la 1a vez
+        {
+
+            //busco preguntaAct
+            preguntaAct = dViewModel.buscarReactivoSimpl(num_pregact);
+        }
+
+        try {
+            if (preguntaAct == null) {
+                return;
+            }
+            //si es la primera preguna
+            txtmotivo.setVisibility(View.GONE);
+            if(preguntaAct.getId()<123){
+                txtmotivo.setText(solicitud.getMotivo());
+                txtmotivo.setVisibility(View.VISIBLE);
+            }
+            if(preguntaAct.getId()>122) {
+                //todo saber en que pregunta voy primero veo si ya tiene una correccion iniciada es edicion
+                int descripcionId=12;
+                if(preguntaAct.getId()==124){
+                    descripcionId=13;
+                }
+                if(preguntaAct.getId()==125){
+                    descripcionId=14;
+                }
+                //busco el numfoto
+                InformeEtapaDet lddetalle = preViewModel.getByDescripCajaSim(infEtiquetado.getId(), descripcionId, cajaAct);
+
+                if (lddetalle != null) {
+                    int num_foto=0;
+                    try {
+                        num_foto = Integer.parseInt(lddetalle.getRuta_foto());
+                    } catch (NumberFormatException ex) {
+                        compraslog.grabarError(TAG, "guardarCorr", ex.getMessage());
+                    }
+                    correccion = mViewModel.getUltCorrecionxSolSimple(solicitudSel, num_foto, Constantes.INDICEACTUAL);
+
+                    if(correccion==null){
+                        nvoDet=lddetalle;
+                    }
+                }
+            }
+            if(correccion!=null){
+
+                //y ya iba en las fotos
+                num_pregact=123;
+            }
+
+
+
+
+
+            cajasValues=new HashMap<>();
+            Log.d(TAG, "mmmmmmmmmmm" + preguntaAct.getId());
+            crearFormulario();
+
+
+                preguntaview.aceptarSetEnabled(true);
+
+            lastClickTime=0;
+            preguntaview.onclickAceptar(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    preguntaview.aceptarSetEnabled(false);
+                    long currentClickTime = SystemClock.elapsedRealtime();
+                    // preventing double, using threshold of 1000 ms
+                    if (currentClickTime - lastClickTime < 5500) {
+                        //  Log.d(TAG,"doble click :("+lastClickTime);
+                        return;
+                    }
+
+                    lastClickTime = currentClickTime;
+
+
+                    siguiente();
+                }
+            });
+            if(preguntaAct.getId()==121){
+                preguntaview.onclickAceptar(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        preguntaview.aceptarSetEnabled(false);
+                        //validar qr
+                        buscarQr();
+
+
+                    }
+
+                });
+            }
+            if(preguntaview.hayTextoInt()){ //los comentarios no son obligatorios
+                preguntaview.miBotonTextWatcher();
+
+            }
+
+            if (preguntaAct.getId() == 7) {
+                //cambio el boton a finalizar y muestro alerta
+                preguntaview.setEnviarButton(getString(R.string.enviar));
+            }
+            if(preguntaview.hayPreguntaSino()){
+                preguntaview.setPregSINoOnChange(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                        preguntaview.aceptarSetEnabled(true);
+                    }
+                });
+            }
+            txtcajaact.setVisibility(View.GONE);
+            if(preguntaAct.getId()>122){
+                txtcajaact.setText("CAJA "+cajaAct);
+                txtcajaact.setVisibility(View.VISIBLE);
+            }
+        } catch(Exception ex)
+
+        {
+            ex.printStackTrace();
+        }
+
+    }
     public void crearFormulario(){
-
-
         preguntaview=new DetalleInfView(getContext());
         preguntaview.setPreguntaAct(preguntaAct);
         InformeTemp inftemp=null;
-        if(isEdicion) {
-             inftemp=new InformeTemp();// en detalleinfview se usa informetemporal para obtener el valor que se edita
+        if(isEdicion&&correccion!=null) {
+            inftemp=new InformeTemp();// en detalleinfview se usa informetemporal para obtener el valor que se edita
             //por eso creo un objeto para guardar el valor
-            inftemp.setValor(correccionDet.getRuta_fotonva());
+            inftemp.setValor(correccion.getRuta_foto1());
             preguntaview.setUltimares(inftemp);
             preguntaview.setEdicion(isEdicion);
         }
+        else{
+            if(isEdicion) {
+                inftemp=new InformeTemp();// en detalleinfview se usa informetemporal para obtener el valor que se edita
+                //por eso creo un objeto para guardar el valor
+                inftemp.setValor(nvoDet.getRuta_foto());
+                preguntaview.setUltimares(inftemp);
+                preguntaview.setEdicion(isEdicion);
+            }
+        }
+
 
         if( preguntaAct.getType().equals("agregarImagen")) {
+
             preguntaview.setTomarFoto( new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -371,14 +501,19 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 public void onClick(View view) {
                     iniciarLecQR();
                 }
+
             });
         }
         if(preguntaAct.getId()==121) //qr y caja
-       {
-           //todavia no se como ponerlo
-          //       cargarListaCajas();
-                 //preguntaview.setCausas(cajasValues);
-       }else{
+        {
+            //todavia no se como ponerlo
+            //       cargarListaCajas();
+            //preguntaview.setCausas(cajasValues);
+
+
+
+
+        }else{
             preguntaview.verBtnSecundario(View.GONE);
         }
         preguntaview.crearFormulario();
@@ -394,7 +529,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     }
     public void mostrarPreg2(int opcion){
         sv2.setVisibility(opcion);
-  }
+    }
     public void guardarCorr(){
         try {
             lastClickTime = 0;
@@ -407,19 +542,19 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
             }
             int descripcionId=12;
-            String descripcion=getString(R.string.caraa);
+            String descripfoto=getString(R.string.caraa);
             if(preguntaAct.getId()==124){
                 descripcionId=13;
-                descripcion=getString(R.string.carab);
+                descripfoto=getString(R.string.carab);
             }
             if(preguntaAct.getId()==125){
                 descripcionId=14;
-                descripcion=getString(R.string.acomodo_mues);
+                descripfoto=getString(R.string.acomodo_mues);
             }
             //todavia no se donde guardar que hubo reubicacion
             //buscar el num de foto para las que son cara a y para las sig. cajas
             InformeEtapaDet lddetalle= preViewModel.getByDescripCajaSim(infEtiquetado.getId(),descripcionId,cajaAct);
-            Log.d(TAG,"??"+lddetalle);
+
             if (lddetalle != null) {
                 int num_foto=0;
                 try {
@@ -427,26 +562,25 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 }catch(NumberFormatException ex){
                     compraslog.grabarError(TAG,"guardarCorr",ex.getMessage());
                 }
-                if(correccion!=null) {
-                   correccion.setCreatedAt(new Date());
-                    corViewModel.editarCorreccionEtiq(correccion);
-                } else if(corViewModel.getIdNuevo()==0)
-                    //guardo encabezado
-                    corViewModel.insertarCorreccionEtiqCaj(solicitud.getId(), Constantes.INDICEACTUAL, numfotoSol);
                 Log.d(TAG,"num foto"+num_foto);
-                if(corViewModel.getIdNuevo()>0)//todo bien
-                {
-                   if(isEdicion){
-                       correccionDet.setRuta_fotonva(valor); //solo cambia la foto
-                       corViewModel.editarCorreccionEtiqDet(correccionDet);
-                   }else
-                    //inserto detalle
-                    corViewModel.insertarCorEtiqCajDet(corViewModel.getIdNuevo(), num_foto + "", valor, cajaAct, descripcion, descripcionId);
-                }
-              // mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL, num_foto, valor, "", "", ""));
-                preguntaview.aceptarSetEnabled(true);
-            }
+               if(!this.isEdicion) {
+                   //puede que sea edicion pero caja nueva
+                   if(correccion==null){
+                       preViewModel.actualizarEtiqDet(infEtiquetado.getId(),descripcionId,descripfoto,valor,lddetalle.getId(),cajaAct,null,0,lddetalle.getRuta_foto(),Constantes.INDICEACTUAL);
 
+                   }else
+                   mViewModel.setIdNuevo(mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL, num_foto, valor, "", "", ""));
+               }else {
+                   correccion.setRuta_foto1(valor);
+                   mViewModel.editarCorreccionEtiq(correccion);
+               }
+                preguntaview.aceptarSetEnabled(true);
+            }else{
+                //es caja nueva inserto nuevo detalle
+
+                preViewModel.insertarEtiqDet(infEtiquetado.getId(),descripcionId,descripfoto,valor,0,cajaAct,null,0,Constantes.INDICEACTUAL);
+
+            }
 
 
         }catch (Exception ex){
@@ -545,7 +679,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     public void actualizarMuestra(){
         try {
             lastClickTime = 0;
-           int numcaja=0;
+            int numcaja=0;
             String valor2="";
             if (preguntaAct.getId()==121) {
                 Log.d(TAG,"<<"+preguntaview2.getSpclientes().getSelectedItem());
@@ -556,16 +690,16 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
 
 
-               // Log.d(TAG,"actmuestra "+preguntaview2.getSelectedItem()+"--"+valor2);
+                // Log.d(TAG,"actmuestra "+preguntaview2.getSelectedItem()+"--"+valor2);
 
             }
             if(!valor2.equals(""))
-                    try {
-                        numcaja = Integer.parseInt(valor2);
-                    }catch (NumberFormatException ex){
-                        Log.e(TAG,ex.getMessage());
-                        ex.printStackTrace();
-                    }
+                try {
+                    numcaja = Integer.parseInt(valor2);
+                }catch (NumberFormatException ex){
+                    Log.e(TAG,ex.getMessage());
+                    ex.printStackTrace();
+                }
 
             // validar que no queden cajas vacias
             if(validarUltMuesCaja()){
@@ -583,7 +717,6 @@ public class NvaCorrecCalCajaFragment extends Fragment {
             miTareaAsincrona.execute();
             //actualizo total de cajas por si se agrego una
             totcajas = preViewModel.getTotCajasEtiqxInf(this.solicitud.getInformesId());
-
 
             Toast.makeText(getContext(),"Muestra reubicada correctamente",Toast.LENGTH_SHORT).show();
 
@@ -603,25 +736,34 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     public void actualizarSolicitud() {
         try {
 
-            Log.d(TAG,"actualizar estatus "+numfotoSol);
-            solViewModel.actualizarEstSolicitud(solicitudSel,numfotoSol,4);
-            List<CorEtiquetadoCajaDet> nuevasCor= corViewModel.getCorreccionesDet(corViewModel.getIdNuevo());
-           CorEtiquetaCajaEnvio envio=corViewModel.prepararEnvio(corViewModel.getNvocoreticaja(),nuevasCor);
-           SubirCorrEtiqCajaTask miTareaAsincrona = new SubirCorrEtiqCajaTask(envio,getActivity());
-           miTareaAsincrona.execute();
-           for(CorEtiquetadoCajaDet cor:nuevasCor) {
-               subirFotos(getActivity(), cor.getId(), cor.getRuta_fotonva());
-           }
-           //todo limpio variables de sesion
-            corViewModel.setIdNuevo(0);
-           corViewModel.setNvocoreticaja(null);
-           Toast.makeText(getContext(),"Se envió la corrección",Toast.LENGTH_SHORT).show();
+            Log.d(TAG,"actualizar estatus "+numfoto);
+            solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
+            nuevasCor=mViewModel.getCorreccionesxsolPendSimp(solicitudSel,Constantes.INDICEACTUAL);
+
+            CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
+            SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
+            miTareaAsincrona.execute();
+
+            for(Correccion cor:nuevasCor) {
+                subirFotos(getActivity(), cor.getId(), cor.getRuta_foto1());
+            }
+            //reenvio los detalles por si hay nueva caja
+            InformeEtapaEnv envioinf=preViewModel.preparaInformeEtiq(mViewModel.getIdNuevo());
+            SubirInformeEtaTask miTareaAsincrona2 = new SubirInformeEtaTask(envioinf,getActivity());
+            miTareaAsincrona2.execute();
+            subirFotosInf(getActivity(),envioinf);
+            //todo limpio variables de sesion
+            mViewModel.setIdNuevo(0);
+            mViewModel.setNvocorreccion(null);
+            Toast.makeText(getContext(),"Se envió la corrección",Toast.LENGTH_SHORT).show();
             try {
                 Thread.sleep(4000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-           salir();
+            salir();
+
+
 
         }catch(Exception ex){
             ex.getStackTrace();
@@ -822,11 +964,31 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
 
     }
+    public static void subirFotosInf(Activity activity, InformeEtapaEnv informe){
+        //las imagenes
+        for(ImagenDetalle imagen:informe.getImagenDetalles()){
+            //
+            //subo cada una
+            Intent msgIntent = new Intent(activity, SubirFotoService.class);
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
+            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+            // Constantes.INDICEACTUAL
+            Log.d(TAG,"subiendo fotos inf"+activity.getLocalClassName());
 
+            msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
+
+            //cambio su estatus a subiendo
+            imagen.setEstatusSync(1);
+            activity.startService(msgIntent);
+
+        }
+
+    }
     public void siguiente(){
 
         if(preguntaAct.getId()==120){ //reubicaste muestra
-                //reviso la opcion seleccionada
+            //reviso la opcion seleccionada
             if(!preguntaview.getPregSiNoResp()) //se selecciono no
             {
                 reubicoMuestra = false; //todo guardar en bd talvez en la solicitud
@@ -840,7 +1002,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         {
             actualizarMuestra(); //avanzo a la sig
         }else
-           if(preguntaAct.getId()==122) //reubico otra
+        if(preguntaAct.getId()==122) //reubico otra
         {
             if(!preguntaview.getPregSiNoResp()) //se selecciono no
             {
@@ -861,38 +1023,37 @@ public class NvaCorrecCalCajaFragment extends Fragment {
             guardarCorr();
         }else
 
-            if(preguntaAct.getId()==125) //ultima foto
-            {
-                guardarCorr();
-              //reviso si hay más cajas
-                if(contCajas<totcajas){
-                    contCajas++;
-                    cajaAct=cajaAct+1;
+        if(preguntaAct.getId()==125) //ultima foto
+        {
+            guardarCorr();
+            //reviso si hay más cajas
+            if(contCajas<totcajas){
+                contCajas++;
+                cajaAct=cajaAct+1;
 
 
-                }
-              else //es la ultima caja
-                {
-
-
-                    this.actualizarSolicitud(); //aqui me salgo
-
-                        return;
-
-                    }
             }
+            else //es la ultima caja
+            {
 
-            avanzarPregunta(preguntaAct.getSigId());
+
+                this.actualizarSolicitud(); //aqui me salgo
+
+                return;
+
+            }
+        }
+
+        avanzarPregunta(preguntaAct.getSigId());
 
 
         //   preguntaview.aceptarSetEnabled(true);
     }
     public void avanzarPregunta(int sig){
         Log.d(TAG,"avanzando "+sig);
-        Log.d(TAG,"totcajas "+totcajas);
         //busco el siguiente
         Reactivo nvoReac = dViewModel.buscarReactivoSimpl(sig);
-      //limpio variables
+        //limpio variables
         this.correccion=null;
         this.muestraEdit=null;
         preguntaview=null;
@@ -917,7 +1078,6 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     }
 
     public void atras(){
-        Log.d(TAG, "*atras"+contCajas);
         if(preguntaAct.getId()==120){
             //no puedo regresar
             return;
@@ -948,7 +1108,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         }
         if (preguntaAct.getId()>122) { //son fotos de caja y tengo que buscar la foto
             //busco la ultima correccion
-          //  correccion=mViewModel.getUltCorrecionxSolSimple
+            //  correccion=mViewModel.getUltCorrecionxSolSimple
         }
 
         //busco el ant
@@ -964,11 +1124,11 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     }
     //el total de cajas si es x ciudad
     public void cargarListaCajas() {
-       for (int i=cajaAct;i<totcajas;i++)
-       {
-           cajasValues.put(i,i + "");
-                        //   cajaini = det.getNum_caja();
-       }
+        for (int i=cajaAct;i<totcajas;i++)
+        {
+            cajasValues.put(i,i + "");
+            //   cajaini = det.getNum_caja();
+        }
 
 
     }
@@ -1002,7 +1162,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        corViewModel = null;
+        mViewModel = null;
         solViewModel=null;
         cf=null;
 
