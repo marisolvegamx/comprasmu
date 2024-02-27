@@ -12,7 +12,7 @@ import java.util.List;
 public class CorEtiquetaCajaEnvio {
 
     private CorEtiquetadoCaja correccion;
-    private List<CorEtiquetadoCajaDet> correcciones;
+    private List<CorEtiquetadoCajaDet> cordetalles;
     private String claveUsuario;
     private String indice;
 
@@ -24,12 +24,12 @@ public class CorEtiquetaCajaEnvio {
         this.correccion = correccion;
     }
 
-    public List<CorEtiquetadoCajaDet> getCorrecciones() {
-        return correcciones;
+    public List<CorEtiquetadoCajaDet> getCordetalles() {
+        return cordetalles;
     }
 
-    public void setCorrecciones(List<CorEtiquetadoCajaDet> correcciones) {
-        this.correcciones = correcciones;
+    public void setCordetalles(List<CorEtiquetadoCajaDet> cordetalles) {
+        this.cordetalles = cordetalles;
     }
 
     public String getClaveUsuario() {

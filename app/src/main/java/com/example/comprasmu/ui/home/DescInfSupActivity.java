@@ -26,9 +26,9 @@ import java.text.SimpleDateFormat;
 
 /***actualizo los informes de compras que se modificaron desde el sistema web
  * se utiliza antes de entrar al modulo etiquetado
- * se actualizan muestras canceladas de etiq y emp
+ *
  * */
-public class DescInfSupActivity extends AppCompatActivity implements DescRespInformes.ProgresoRespListener,DescRespInformesEta.ProgresoRespListener {
+public class DescInfSupActivity extends AppCompatActivity implements DescRespInformes.ProgresoRespListener,DescRespInformesEta.ProgresoRespIEListener {
 
 
     TablaVersionesRepImpl tvRepo;
@@ -64,13 +64,15 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
             notificarSinConexion();
             return;
         }
+        /**descargo inf compras**/
         DescRespInformes desc=new DescRespInformes(this,this,tvRepo);
 
         desc.getInformes();
         //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
         DescRespInformesEta desetiq=new DescRespInformesEta(this,this,tvRepo);
         desetiq.getCambiosSupEtiq();
-        desetiq.getCambiosEtiq();
+        //lo hago al inicio para consultarlo en cualquier modulo
+       // desetiq.getCambiosEtiq();
 
     }
 
@@ -81,19 +83,20 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
 
 
     @Override
-    public void todoBien() {
+            public void finalizarrespie(){
       //  if(contprocesos==1) {
             //pasaría a otra actividad
-            progreso.dismiss();
-            Constantes.ACTUALIZADO = true;
+        procesos++;
             //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
            if(procesos==1) {
+               progreso.dismiss();
+               Constantes.ACTUALIZADO = true;
                Intent intento = new Intent(this, NavigationDrawerActivity.class);
                intento.putExtra(NavigationDrawerActivity.ETAPA, 3);
                startActivity(intento);
                finish();
            }
-           else procesos++;
+
       //  }
       ////  else{
         //    contprocesos++;
@@ -101,4 +104,8 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
     }
 
 
+    @Override
+    public void todoBien() {
+        this.finalizarrespie();
+    }
 }

@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Environment;
 import android.util.Log;
@@ -64,6 +66,12 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
 
         setIndicacion(getString(R.string.seleccione_cliente));
         //busco si tengo varios clientes x ciudad
+        if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
+
+            // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
+            irAcdSel();
+            return;
+        }
         List<InformeEtapa> listainfetiq;
         listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
         Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
@@ -122,5 +130,13 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
         request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, "etiquetas.pdf");  // Storage directory path
         archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
         // return 0;
+    }
+    public void irAcdSel(){
+        NavHostFragment navHostFragment =
+                (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();
+        if(navController!=null)
+            navController.navigate(R.id.action_descetitocdtrab);
+
     }
 }

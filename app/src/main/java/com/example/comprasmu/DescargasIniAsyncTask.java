@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
+public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> implements  DescRespInformesEta.ProgresoRespIEListener {
 
     CatalogoDetalleRepositoryImpl cdrepo;
     SustitucionRepositoryImpl sustRepo;
@@ -138,10 +138,18 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
                     procesos_lev++;
                     ps.pedirRespaldoCor(Constantes.INDICEACTUAL, listresp);
                 }
+
+
             }else {
 
                 Log.d(TAG,"no hagos resp 2 ni cor"+procesos);
             }
+
+            //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
+            DescRespInformesEta desetiq=new DescRespInformesEta(act,this,tvRepo);
+
+            desetiq.getCambiosEtiq();
+            procesos_lev++;
         }
 
       /*  }else
@@ -369,12 +377,26 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> {
 
     }
 
+    @Override
+    public void finalizarrespie() {
+        Log.d(TAG,"DescargaIniListener procesos "+procesos+"--"+procesos_lev);
+        procesos++;
+        if(procesos==procesos_lev){ //llama 2 veces al home etra 2 vece
+
+
+            miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
+
+            //para que no vuelva a entrar
+
+        }
+    }
 
 
     public class DescargaIniListener{
         public DescargaIniListener(){
                 //if(proglist!=null&&actualiza==1)
                   //  proglist.cerrarAlerta();
+
         }
        public void finalizar(){
             Log.d(TAG,"DescargaIniListener procesos "+procesos+"--"+procesos_lev);

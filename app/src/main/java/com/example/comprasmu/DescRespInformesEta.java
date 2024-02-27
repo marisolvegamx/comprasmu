@@ -34,10 +34,10 @@ public class DescRespInformesEta {
 
     Activity act;
 
-    private final DescRespInformesEta.ProgresoRespListener miproglis;
+    private final DescRespInformesEta.ProgresoRespIEListener miproglis;
    // DescargaRespListener listener;
 
-    public DescRespInformesEta(Activity act, DescRespInformesEta.ProgresoRespListener miproglis, TablaVersionesRepImpl tvRepo) {
+    public DescRespInformesEta(Activity act, DescRespInformesEta.ProgresoRespIEListener miproglis, TablaVersionesRepImpl tvRepo) {
 
         this.act = act;
         this.tvRepo=tvRepo;
@@ -63,8 +63,8 @@ public class DescRespInformesEta {
     }
 
 
-    public interface ProgresoRespListener {
-        void todoBien();
+    public interface ProgresoRespIEListener {
+        void finalizarrespie();
 
     }
 
@@ -73,10 +73,8 @@ public class DescRespInformesEta {
 
         }
 
-        public void finalizar() {
-            miproglis.todoBien();
-        }
 
+/*este todavia no esta usandose*/
         public void actualizarQr(RespInfEtapaResponse infoResp) {
             Log.d(TAG, "actualizando bd informes");
             //primero los inserts
@@ -103,7 +101,7 @@ public class DescRespInformesEta {
             tinfo.setTipo("I");
             tvRepo.insertUpdate(tinfo);
 
-            finalizar();
+            miproglis.finalizarrespie();
 
     }
         public void actualizarInformesEtiq(RespNotifEtiqResponse infoResp) {
@@ -118,7 +116,8 @@ public class DescRespInformesEta {
 
                         //elimino las fotos de las cajas
                         infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
-
+                        //vuelvo a abrir
+                        infrepo.actualizarEstatus(det.getInformeEtapaId(), 1);
 
                     }
 
@@ -186,7 +185,7 @@ public class DescRespInformesEta {
             tinfod.setTipo("I");
             tinfod.setIndice(Constantes.INDICEACTUAL);
             tvRepo.insertUpdate(tinfo);
-            finalizar();
+            miproglis.finalizarrespie();
         }
     }
 

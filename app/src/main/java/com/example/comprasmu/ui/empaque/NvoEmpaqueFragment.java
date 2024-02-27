@@ -100,6 +100,7 @@ public class NvoEmpaqueFragment extends Fragment {
     DetalleCaja ultimarescaja;
     ComprasLog compraslog;
     String ciudadInf;
+    int etapa=4;
 
 
     public NvoEmpaqueFragment() {
@@ -195,7 +196,7 @@ public class NvoEmpaqueFragment extends Fragment {
                     if (preguntaAct.getTabla().equals("IE")) {
                         //son comentarios o sel cliente
                        // listacomp = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
-                        listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
+                        listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
                         Integer[] clientesprev = mViewModel.tieneInforme(4);
                      //   Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
 
@@ -346,7 +347,7 @@ public class NvoEmpaqueFragment extends Fragment {
             }
                     //busco si tengo varios clientes x ciudad
                  //   listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
-                    listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
+                    listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO,this.etapa);
 
                    //busco clientes con informe
 

@@ -505,7 +505,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 irAcdSel();
                 return;
             }
-            List<ListaCompra> data=lcviewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
+            List<ListaCompra> data=lcviewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 2);
 
             Log.d(TAG, "regresó de la consulta de clientes " + data.size()+"--"+Constantes.CIUDADTRABAJO);
            clientesAsignados = convertirListaaClientes(data);

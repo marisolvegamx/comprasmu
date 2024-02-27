@@ -1434,7 +1434,7 @@ public void iraReubicar(){
         if (preguntaAct == 0)
             preguntaAct = 1;
         mViewModel.preguntaAct = preguntaAct;
-        listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
+        listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO,3);
         Log.d(TAG, "PLANTA" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
 
         //veo si ya tengo informes

@@ -131,6 +131,13 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         }
         return null;
     }
+    public InformeEtapaDet getUltimonocan(int idinf, int etapa) {
+        List<InformeEtapaDet> lista=dao.getUltimonocan(idinf,etapa);
+        if(lista!=null&&lista.size()>0){
+            return lista.get(0);
+        }
+        return null;
+    }
     public InformeEtapaDet getUltimaMuestraEtiq(int idinf, int etapa) {
         List<InformeEtapaDet> lista=dao.getUltimaMuestra(idinf,etapa);
         if(lista!=null&&lista.size()>0){

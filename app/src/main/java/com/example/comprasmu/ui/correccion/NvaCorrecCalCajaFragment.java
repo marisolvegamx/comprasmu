@@ -113,6 +113,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     private int ultimacaja;
     private boolean reubicoMuestra;
     private TextView txtcajaact;
+    private TextView txtmotivo;
 
     public NvaCorrecCalCajaFragment() {
         // Required empty public constructor
@@ -150,6 +151,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         svprin = root.findViewById(R.id.fgllcontentmain);
         sv2 = root.findViewById(R.id.fgll2); //para las cajas
         txtcajaact = root.findViewById(R.id.fgtxttitulo1);
+        txtmotivo = root.findViewById(R.id.fgtxtmotivo);
         solViewModel = new ViewModelProvider(requireActivity()).get(ListaSolsViewModel.class);
         preViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         dViewModel = new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
@@ -207,6 +209,13 @@ public class NvaCorrecCalCajaFragment extends Fragment {
             if (preguntaAct == null) {
                 return;
             }
+            //si es la primera preguna
+            txtmotivo.setVisibility(View.GONE);
+            if(preguntaAct.getId()<123){
+                txtmotivo.setText(solicitud.getMotivo());
+                txtmotivo.setVisibility(View.VISIBLE);
+            }
+
             if(preguntaAct.getId()>122) {
                 //todo saber en que pregunta voy primero veo si ya tiene una correccion iniciada es edicion
                 int descripcionId=12;
@@ -311,6 +320,8 @@ public class NvaCorrecCalCajaFragment extends Fragment {
 
 }
     public void crearFormulario(){
+
+
         preguntaview=new DetalleInfView(getContext());
         preguntaview.setPreguntaAct(preguntaAct);
         InformeTemp inftemp=null;

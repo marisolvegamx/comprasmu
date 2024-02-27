@@ -100,7 +100,7 @@ public class NvaCorreECViewModel extends AndroidViewModel {
         CorEtiquetaCajaEnvio envio=new CorEtiquetaCajaEnvio();
 
         envio.setCorreccion(nvacorreccion);
-        envio.setCorrecciones(correcciones);
+        envio.setCordetalles(correcciones);
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         return envio;

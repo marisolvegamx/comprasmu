@@ -48,6 +48,11 @@
             android:title="@string/menu_cancel"
             app:actionViewClass="android.widget.TextView"/>
         <item
+            android:id="@+id/nav_notificacionseti"
+            android:icon="@android:drawable/ic_dialog_alert"
+            android:title="@string/menu_notificaciones"
+            app:actionViewClass="android.widget.TextView" />
+        <item
             android:id="@+id/nav_menuini"
             android:icon="?attr/actionModeCloseDrawable"
             android:title="@string/menu_inicial"

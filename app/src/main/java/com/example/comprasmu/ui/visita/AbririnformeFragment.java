@@ -880,7 +880,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //   if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1)
 
         List<ListaCompra> data=null;
-        data = lViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
+        data = lViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO,2);
         List<ListaCompra> nvadata=new ArrayList<>();
         if (estatusPepsi == 0) {
 

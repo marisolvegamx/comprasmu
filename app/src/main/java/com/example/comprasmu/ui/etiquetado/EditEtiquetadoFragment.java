@@ -89,7 +89,7 @@ public class EditEtiquetadoFragment extends Fragment {
     private NvaPreparacionViewModel mViewModel;
     private int informeSel;
     private int clienteSel;
-
+    int etapa=3;
     private String clienteNombreSel;
 
     private boolean isCont;
@@ -236,7 +236,18 @@ public class EditEtiquetadoFragment extends Fragment {
         mViewModel.setIdNuevo(informeSel);
         clienteSel=infomeEdit.getClientesId();
         ciudadInf=infomeEdit.getCiudadNombre();
+        //busco los clientes x ciudad
+        listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO,this.etapa);
+        if (listacomp.size() <=0) {
+            TextView txtmensaje = root.findViewById(R.id.txteefaltacom);
+            txtmensaje.setText("FALTA REALIZAR EL INFORME DE COMPRA");
+            txtmensaje.setVisibility(View.VISIBLE);
+            return root; //todavía no puede hacer etiquetado
+        }
+
+
         totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, ciudadInf);
+
         //busco el ultimo num de muestra
         InformeEtapaDet ultima=mViewModel.getUltimaMuestraEtiq(informeSel);
         if(ultima!=null)

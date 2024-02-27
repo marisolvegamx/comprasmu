@@ -158,9 +158,9 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
 
-    public  List<ListaCompra>  cargarClientesSimplxet(String ciudadSel){
-        Log.d(TAG,"xxxx"+Constantes.ETAPAACTUAL);
-        return repository.getClientesByIndiceCiudadSimplxet(Constantes.INDICEACTUAL,ciudadSel,Constantes.ETAPAACTUAL);
+    public  List<ListaCompra>  cargarClientesSimplxet(String ciudadSel, int etapa){
+        Log.d(TAG,"xxxx"+etapa);
+        return repository.getClientesByIndiceCiudadSimplxet(Constantes.INDICEACTUAL,ciudadSel,etapa);
 
 
     }

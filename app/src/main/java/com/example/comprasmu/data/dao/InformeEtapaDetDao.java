@@ -42,6 +42,8 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     public abstract LiveData<InformeEtapaDet> find( int id);
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa order by id desc")
     public abstract List<InformeEtapaDet> getUltimo( int id,int etapa);
+  @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and (estatus>0 or estatus is null) order by id desc")
+  public abstract List<InformeEtapaDet> getUltimonocan( int id,int etapa);
 
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:inf and etapa=:etapa and descripcionId=11  order by id desc")
     public abstract List<InformeEtapaDet> getUltimaMuestra( int inf, int etapa);

@@ -341,6 +341,7 @@
     <string name="menu_notificaciones">Notificaciones</string>
     <string name="menu_nuevas_compras">Muestras pendientes</string>
     <string name="agregar_muestra">AGREGAR MUESTRA</string>
+    <string name="capturar_inf">CAPTURAR EL INFORME EN EL MODULO CORRESPONDIENTE</string>
 
 
 </resources>

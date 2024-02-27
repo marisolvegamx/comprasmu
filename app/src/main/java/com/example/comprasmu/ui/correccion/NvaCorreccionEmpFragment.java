@@ -97,6 +97,7 @@ public class NvaCorreccionEmpFragment extends Fragment {
 
 
     private TextView txtcajaact;
+    private TextView txtmotivo;
 
     public NvaCorreccionEmpFragment() {
         // Required empty public constructor
@@ -128,6 +129,7 @@ public class NvaCorreccionEmpFragment extends Fragment {
         svprin = root.findViewById(R.id.fgllcontentmain);
         sv2 = root.findViewById(R.id.fgll2); //para las cajas
         txtcajaact = root.findViewById(R.id.fgtxttitulo1);
+        txtmotivo = root.findViewById(R.id.fgtxtmotivo);
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaCorreViewModel.class);
         solViewModel = new ViewModelProvider(requireActivity()).get(ListaSolsViewModel.class);
         preViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
@@ -182,6 +184,8 @@ public class NvaCorreccionEmpFragment extends Fragment {
 
         if(preguntaAct==null) //para la 1a vez
         {
+            txtmotivo.setText(solicitud.getMotivo());
+            txtmotivo.setVisibility(View.VISIBLE);
             //segun la descripcion
             if(fotoEdit.getDescripcionId()>14&&fotoEdit.getDescripcionId()<20)
                 num_pregact=fotoEdit.getDescripcionId()+78;
@@ -244,7 +248,7 @@ public class NvaCorreccionEmpFragment extends Fragment {
 
             }
 
-          Log.d(TAG, "mmmmmmmmmmm" + preguntaAct.getId());
+          Log.d(TAG, "mmmmmmmmmmm" + preguntaAct.getId()+"cajact"+cajaAct);
             crearFormulario();
 
             if (isEdicion)

@@ -60,9 +60,9 @@ public class Constantes {
     //nam
    public static String URLPRUEBAS1="http://192.168.1.84/comprasv1/";
     //muesmerc
-   // public static String URLPRUEBAS1="http://192.168.1.95/comprasv1/";
+    //public static String URLPRUEBAS1="http://192.168.1.95/comprasv1/";
    // public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
-//chama
+//nva
   //  public static String URLPRUEBAS1="http://192.168.1.68/comprasv1/";
    // public static String URLPRUEBAS2="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
     public static String ni_clientesel;

@@ -452,6 +452,14 @@
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
             android:defaultValue="4" />
+        <action android:id="@+id/action_descetitocdtrab"
+            app:popUpTo="@+id/nav_ciudad_trabajo"
+            app:popUpToInclusive="true"
+            app:destination="@id/nav_ciudad_trabajo"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/nav_solcorem"

@@ -133,7 +133,7 @@ public class NvoEtiquetadoFragment extends Fragment {
     public int[] descripcionid = {12, 13, 14};
     private int cajainif;
     private Button btnreubicar;
-
+    int etapa=3;
     public NvoEtiquetadoFragment() {
 
     }
@@ -307,7 +307,7 @@ public class NvoEtiquetadoFragment extends Fragment {
         //busco si tengo varias plantas
         ciudadInf = Constantes.CIUDADTRABAJO;
         //busco los clientes x ciudad
-        listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO);
+        listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, this.etapa);
         Log.d(TAG, "PLANTA" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
 
         //veo si ya tengo informes
@@ -357,7 +357,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, Constantes.CIUDADTRABAJO);
                 //veo si ya tengo un informe
                 InformeEtapa primero=mViewModel.tieneInforme(3,Constantes.CIUDADTRABAJO,clienteSel);
-                if(primero!=null){
+                if(primero!=null&&primero.getEstatus()==2){
                     issegundoinf=true;
                     //busco la ultima muestra
                     InformeEtapaDet ultima = mViewModel.getUltimaMuestraEtiq(primero.getId());

@@ -80,7 +80,14 @@
                 android:id="@+id/txtiecestatusmen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{Constantes.ESTATUSINFORME[detalle.estatus]}" />
+                android:text='@{detalle.estatus==0?"ELIMINADO":Constantes.ESTATUSINFORME[detalle.estatus]}' />
+
+            <TextView
+                android:id="@+id/txtecmenemp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/capturar_inf"
+                android:visibility="@{detalle.etapa==4? View.VISIBLE: View.GONE}"/>
 
             <Button
                 android:id="@+id/btnecagregar"

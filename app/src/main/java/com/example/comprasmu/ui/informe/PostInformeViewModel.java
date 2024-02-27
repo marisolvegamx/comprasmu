@@ -170,8 +170,8 @@ public class PostInformeViewModel {
     public void actualizarEstatusTodo(TodoEnvio informes){
         //actualizo la visita
         if(informes.getVisita()!=null)
-        for(Visita visita:informes.getVisita())
-            visitaRepo.actualizarEstatusSync(visita.getId(), Constantes.ENVIADO);
+            for(Visita visita:informes.getVisita())
+             visitaRepo.actualizarEstatusSync(visita.getId(), Constantes.ENVIADO);
         //actualizo informe
         if(informes.getInformeCompra()!=null)
          for(InformeCompra informe:informes.getInformeCompra())
@@ -401,7 +401,7 @@ public class PostInformeViewModel {
                     //actualizo el estatus
                     actEstatusCorreccionEC(correccion.getCorreccion());
                         //actualizo cada uno
-                        for (CorEtiquetadoCajaDet corre:correccion.getCorrecciones()
+                        for (CorEtiquetadoCajaDet corre:correccion.getCordetalles()
                         ) {
                             actEstatusCorreccionECD(corre);
                         }
