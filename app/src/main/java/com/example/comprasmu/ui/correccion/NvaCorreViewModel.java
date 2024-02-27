@@ -60,6 +60,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
         return idNuevo;
 
     }
+
     public Correccion insertarCorreccion2(int solicitudid,String indice,int numFoto,String ruta1, String ruta2,String ruta3){
         Correccion correccion=new Correccion();
         correccion.setSolicitudId(solicitudid);
