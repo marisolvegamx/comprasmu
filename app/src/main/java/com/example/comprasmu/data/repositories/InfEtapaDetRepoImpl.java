@@ -196,27 +196,20 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     }
 
 
-    public List<InformeEtapaDet> listaCajasEtiqxCli(int i, int cliente) {
-       return dao.totalCajasEtiqxCli(i,cliente);
 
-    }
-    public List<InformeEtapaDet> listaCajasEtiqxCd(int i, String cd) {
-        return dao.getDetEtiqxCd(i,cd);
-
-    }
     public List<InformeEtapaDet> listaCajasEtiqxCdCli(int i, String cd, int cliente) {
-        return dao.getDetEtiqxCdCli(i,cd, cliente);
+        return dao.getMuestrasEtiqxCdCli(i,cd, cliente);
 
     }
 
-    public List<InformeEtapaDet> listaCajasEtiqxCdCli2(int i, String cd, int cliente) {
-        return dao.getDetEtiqxCdCli2(i,cd, cliente);
+    public List<InformeEtapaDet> listaCajasEtiqxCdCli2(int i, String cd, int cliente, String indice) {
+        return dao.getDetEtiqxCdCli2(i,cd, cliente,indice);
 
     }
-    public List<InformeEtapaDet> getResumenEtiq(int i, String indice, int cliente, String ciudad) {
+    /*public List<InformeEtapaDet> getResumenEtiq(int i, String indice, int cliente, String ciudad) {
         return dao.resumenEtiq(i,indice,cliente,ciudad);
 
-    }
+    }*/
     public int totalMuestrasEtiqxCli(int i, int cliente) {
         return dao.totalMuestrasEtiqxCli(i, cliente);
     }

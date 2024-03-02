@@ -274,8 +274,8 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                 }
             if(preguntaAct.getId()==57){ //los comentarios no son obligatorios
                     //  textoint.addTextChangedListener(new MayusTextWatcher());
-                    textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-                    aceptar.setEnabled(true);
+                textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(300)});
+                aceptar.setEnabled(true);
             }
             if(preguntaAct.getId()==57&&mViewModel.informe.isSinproducto()) {
                     aceptar.setEnabled(false);

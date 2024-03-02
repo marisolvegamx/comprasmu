@@ -331,7 +331,6 @@ public class DetalleProductoPenFragment extends Fragment {
                         aceptar.setEnabled(charSequence.length() > 0);
 
                     }
-
                 });
             }else
             if(textoint!=null&&preguntaAct.getId()!=57){ //los comentarios no son obligatorios
@@ -340,7 +339,9 @@ public class DetalleProductoPenFragment extends Fragment {
             }
             if(preguntaAct.getId()==57){ //los comentarios no son obligatorios
               //  textoint.addTextChangedListener(new MayusTextWatcher());
-                textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+             //   textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+                textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(300)});
+
                 aceptar.setEnabled(true);
             }
             if(preguntaAct.getId()==57&&mViewModel.informe.isSinproducto()) {

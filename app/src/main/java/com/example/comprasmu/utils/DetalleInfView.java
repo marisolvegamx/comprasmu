@@ -60,6 +60,7 @@ public class DetalleInfView extends LinearLayout {
     Button validar;
     int idCampo;
 
+
     private HashMap<Integer, String> causas;
     private OnClickListener finiciarLecQR;
     private Button btnfuncsecund;
@@ -435,6 +436,11 @@ public class DetalleInfView extends LinearLayout {
 
     public void setTextFilters(){
         textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+
+    }
+    public void setMaxLengthFilters(int maxlength){
+       // textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(maxlength)});
 
     }
 

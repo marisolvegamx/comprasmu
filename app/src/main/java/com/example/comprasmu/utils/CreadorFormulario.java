@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Editable;
 
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -270,7 +271,14 @@ public class CreadorFormulario {
         input.setId(this.infocampo.id);
         input.setText(valor);
         input.setEnabled(!this.readonly);
-        input.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        if(this.infocampo.maxlength>0){
+            input.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(this.infocampo.maxlength)});
+
+        }else{
+            input.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        }
+
+
       //  input.addTextChangedListener(new MayusTextWatcher());
      //  ".this.required." "..
      return input;

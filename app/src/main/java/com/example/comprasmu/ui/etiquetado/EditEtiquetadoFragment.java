@@ -201,6 +201,7 @@ public class EditEtiquetadoFragment extends Fragment {
         aceptar4.setEnabled(false);
         aceptar5.setEnabled(false);
         txtqr.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+
         txtqr.addTextChangedListener(new BotonTextWatcher(aceptar4));
 
         //   txtnumcajas.addTextChangedListener(new BotonTextWatcher(aceptar2));

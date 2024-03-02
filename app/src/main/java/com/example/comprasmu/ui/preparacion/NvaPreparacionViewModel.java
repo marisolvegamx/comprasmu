@@ -422,45 +422,27 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
     }*/
 
-    public void getCajasEtiq(int cliente, String ciudad){
-        Log.d(TAG,Constantes.INDICEACTUAL+"--"+cliente+"--"+ciudad);
-        List<InformeEtapaDet> muestras= infDetRepo.getResumenEtiq(3,Constantes.INDICEACTUAL,cliente, ciudad);
-        EtiquetadoxCliente resul=null;
-        int i=1;
-        Log.d(TAG,"tot cajas"+muestras.size());
-        resumenEtiq=new ArrayList<>();
-        this.numMuestras=0;
-        for(InformeEtapaDet muestra:muestras) {
-            EtiquetadoxCliente caja=new EtiquetadoxCliente();
-            caja.consCaja=i;
-            caja.numCaja=muestra.getNum_caja();
-            caja.numMuestras=muestra.getNum_muestra();
-            resumenEtiq.add(caja);
-            i++;
-            //para obtener el total de muestras
-            this.numMuestras+=muestra.getNum_muestra();
-        }
 
-
-    }
         //se usa en empaque para traer solo las del cliente
-    public void getCajasEtiqCdCli(String ciudad, int cliente){
-        List<InformeEtapaDet> muestras= infDetRepo.listaCajasEtiqxCdCli2( 3,ciudad,cliente);
-        EtiquetadoxCliente resul=null;
-        int i=1;
+    public void getCajasEtiqCdCli(String ciudad, int cliente,String indice){
+        List<InformeEtapaDet> muestras= infDetRepo.listaCajasEtiqxCdCli2( 3,ciudad,cliente,indice);
 
+        int i=1;
+        EtiquetadoxCliente caja;
         resumenEtiq=new ArrayList<>();
         this.numMuestras=0;
         for(InformeEtapaDet muestra:muestras) {
-            EtiquetadoxCliente caja=new EtiquetadoxCliente();
+             caja=new EtiquetadoxCliente();
             caja.consCaja=i;
             caja.numCaja=muestra.getNum_caja();
             caja.numMuestras=muestra.getNum_muestra();
+            Log.d(TAG,"agregando etiqxcliente :"+caja.toString());
             resumenEtiq.add(caja);
             i++;
             //para obtener el total de muestras
             this.numMuestras+=muestra.getNum_muestra();
         }
+        caja=null;
         Log.d(TAG,"tot cajas"+muestras.size());
 
     }

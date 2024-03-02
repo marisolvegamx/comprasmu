@@ -91,30 +91,31 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT count(*) FROM informe_etapa_det where  num_caja=:numcaja and etapa=3 and descripcionId=11")
     public abstract int totalMuesxCaja( int  numcaja);
 
-    @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
-            " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja, informe_etapa_det.estatus FROM informe_etapa_det " +
-            " inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and clientesId=:cliente group by num_caja")
-    public abstract List<InformeEtapaDet> totalCajasEtiqxCli(int etapa, int cliente);
 
 
   @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
-            " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja, informe_etapa_det.estatus FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and clientesId=:cliente and (informe_etapa.estatus is null or informe_etapa.estatus>0) group by num_caja order by num_caja")
+            " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja, informe_etapa_det.estatus FROM informe_etapa_det " +
+          "inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and clientesId=:cliente and (informe_etapa.estatus is null or informe_etapa.estatus>0) group by num_caja order by num_caja")
     public abstract List<InformeEtapaDet> getDetEtiqxCdCli(int etapa, String ciudad, int cliente);
 
   @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
           " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja, informe_etapa_det.estatus " +
-          "FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and informeEtapaId=:infid  group by num_caja order by num_caja")
+          "FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId " +
+          "where   informe_etapa.etapa=:etapa and descripcionId=11 and ciudadNombre=:ciudad and clientesId=:cliente and (informe_etapa.estatus is null or informe_etapa.estatus>0) group by num_caja order by num_caja")
+  public abstract List<InformeEtapaDet> getMuestrasEtiqxCdCli(int etapa, String ciudad, int cliente);
+
+
+  @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
+          " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja, informe_etapa_det.estatus " +
+          "FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and informeEtapaId=:infid and descripcionId=11 group by num_caja order by num_caja")
   public abstract List<InformeEtapaDet> getDetEtiqxInf(int etapa, int infid);
 
   @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
-          " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja, informe_etapa_det.estatus FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and clientesId=:cliente and  (informe_etapa.estatus is null or informe_etapa.estatus>0) and descripcionId=11 group by num_caja order by num_caja")
-  public abstract List<InformeEtapaDet> getDetEtiqxCdCli2(int etapa, String ciudad, int cliente);
+          " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja, informe_etapa_det.estatus FROM informe_etapa_det " +
+          "inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and informe_etapa.indice=:indice and ciudadNombre=:ciudad and clientesId=:cliente and  (informe_etapa.estatus is null or informe_etapa.estatus>0) and descripcionId=11 group by num_caja order by num_caja")
+  public abstract List<InformeEtapaDet> getDetEtiqxCdCli2(int etapa, String ciudad, int cliente,String indice);
 
-  @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
-          " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja, informe_etapa_det.estatus FROM informe_etapa_det inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and ciudadNombre=:ciudad and (informe_etapa.estatus is null or informe_etapa.estatus>0) group by num_caja order by num_caja")
-  public abstract List<InformeEtapaDet> getDetEtiqxCd(int etapa, String ciudad);
-
-
+  //este no lo uso
   @Query("SELECT informe_etapa_det.id, informeEtapaId, informe_etapa_det.etapa, informe_etapa_det.estatusSync,ruta_foto,qr," +
             " count(informe_etapa_det.id) as num_muestra,descripcionId, descripcion, num_caja, informe_etapa_det.estatus FROM informe_etapa_det " +
             " inner join informe_etapa on informe_etapa.id=informeEtapaId where   informe_etapa.etapa=:etapa and informe_etapa.indice=:indice and ciudadNombre=:ciudad and clientesId=:cliente group by num_caja order by num_caja")

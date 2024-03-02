@@ -446,7 +446,7 @@ public class DetalleProductoFragment extends Fragment {
         }
         if(preguntaAct.getId()==7){ //los comentarios no son obligatorios
             //  textoint.addTextChangedListener(new MayusTextWatcher());
-            preguntaview.setTextFilters();
+            preguntaview.setMaxLengthFilters(300);
             preguntaview.aceptarSetEnabled(true);
         }
 

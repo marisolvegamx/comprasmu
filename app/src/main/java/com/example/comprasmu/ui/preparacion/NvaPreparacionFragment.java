@@ -304,7 +304,8 @@ public class NvaPreparacionFragment extends Fragment {
           if(preguntaAct<6)
             textoint.addTextChangedListener(new NvaPreparacionFragment.BotonTextWatcher());
             else //solo los comentarios a mayusculas
-            textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+              textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(200)});
+
 
         }
 

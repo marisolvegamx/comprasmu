@@ -247,7 +247,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             if(preguntaAct.getId()==77){ //los comentarios no son obligatorios
                 //  textoint.addTextChangedListener(new MayusTextWatcher());
                 aceptar.setEnabled(true);
-                textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+                textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(300)});
+
             }
 
 

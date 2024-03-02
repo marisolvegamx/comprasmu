@@ -188,7 +188,8 @@ public class NvoEtiqCajaFragment extends Fragment {
         //  txtcajaact=root.findViewById(R.id.txtnenumcaja);
 
         btnneacfotocaj.setEnabled(false);
-        txtcomentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+       // txtcomentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        txtcomentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(200)});
         adaptercaja = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerValues);
 
 

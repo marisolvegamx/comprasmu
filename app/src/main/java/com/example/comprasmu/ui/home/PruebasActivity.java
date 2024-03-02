@@ -44,7 +44,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-/***procesos iniciales y descarga de info va despues del login y después al home***/
+/***procesos iniciales y descarga de info va despues del login y antes al home***/
 public class PruebasActivity  extends AppCompatActivity  implements    DescargasIniAsyncTask.ProgresoListener  {
 
    ProgressDialog progreso;

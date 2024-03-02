@@ -242,7 +242,7 @@ public class NvoEmpaqueFragment extends Fragment {
                             Log.e(TAG, "no deberia entrar aqui");
                         } else {
                                     //busco la lista de cajas
-                            mViewModel.getCajasEtiq(clienteId,Constantes.CIUDADTRABAJO);
+                            mViewModel.getCajasEtiqCdCli(Constantes.CIUDADTRABAJO,clienteId,Constantes.INDICEACTUAL);
                             mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
                             mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
                             mViewModel.cajaAct.numCaja=ultimares.getNum_caja();
@@ -375,7 +375,7 @@ public class NvoEmpaqueFragment extends Fragment {
                             informetemp.setIndice(Constantes.INDICEACTUAL);
                             mViewModel.setNvoinforme(informetemp);
                             //busco total de muestras y cajas
-                            mViewModel.getCajasEtiqCdCli(ciudadInf,clienteId);
+                            mViewModel.getCajasEtiqCdCli(ciudadInf,clienteId,Constantes.INDICEACTUAL);
                             mViewModel.totCajasEmp=mViewModel.resumenEtiq.size();
 
                             mViewModel.cajaAct=mViewModel.resumenEtiq.get(0);
@@ -606,8 +606,8 @@ public class NvoEmpaqueFragment extends Fragment {
         }
          if(preguntaAct.getId()==114){ //los comentarios no son obligatorios
             //  textoint.addTextChangedListener(new MayusTextWatcher());
-            textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-            aceptar.setEnabled(true);
+             textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(200)});
+             aceptar.setEnabled(true);
         }
         if (preguntaAct!=null&&preguntaAct.getId() == 114) {
             //cambio el boton a finalizar y muestro alerta
@@ -692,7 +692,7 @@ public class NvoEmpaqueFragment extends Fragment {
                 Log.d(TAG,"clientesel"+clienteId);
                 //busco total de muestras y cajas
 
-                mViewModel.getCajasEtiqCdCli(Constantes.CIUDADTRABAJO,clienteId);
+                mViewModel.getCajasEtiqCdCli(Constantes.CIUDADTRABAJO,clienteId,Constantes.INDICEACTUAL);
               if(mViewModel.resumenEtiq!=null) {
                   mViewModel.totCajasEmp = mViewModel.resumenEtiq.size();
 

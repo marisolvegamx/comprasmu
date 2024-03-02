@@ -34,6 +34,7 @@ public class CampoForm {
     public List<CampoForm> listadatos;
     public int style;
     public ArrayAdapter<String> adaptersel;
+    public int maxlength;
     public CampoForm() {
     }
 
