@@ -19,6 +19,7 @@ import com.example.comprasmu.data.dao.GeocercaDao;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.dao.InformeCompraDetDao;
+import com.example.comprasmu.data.dao.InformeEnvioDetDao;
 import com.example.comprasmu.data.dao.InformeEtapaDao;
 import com.example.comprasmu.data.dao.InformeEtapaDetDao;
 import com.example.comprasmu.data.dao.InformeTempDao;
@@ -43,6 +44,7 @@ import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
@@ -71,8 +73,8 @@ import java.util.List;
         CatalogoDetalle.class, Atributo.class, Geocerca.class,
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class,
-        Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=26, exportSchema = false)
+        Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class},
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=27, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -100,6 +102,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
     public abstract ConfiguracionDao getConfiguracionDao();
     public abstract CorEtiquetadoCajaDao getCorEtiquetadoCajaDao();
     public abstract CorEtiquetadoCajaDetDao getCorEtiquetadoCajaDetDao();
+    public abstract InformeEnvioDetDao getInformeEnvioDetDao();
     public static ComprasDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
             ctx=context;
@@ -114,7 +117,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
                                     ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
-                                    MIGRATION_25_26)
+                                    MIGRATION_25_26, MIGRATION_26_27)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -492,6 +495,18 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
             database.execSQL("ALTER TABLE informe_etapa_det ADD COLUMN estatus INTEGER");
             database.execSQL("ALTER TABLE detalle_caja ADD COLUMN estatus INTEGER");
+
+        }
+    };
+    static final Migration MIGRATION_26_27 = new Migration(26,27) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+              database.execSQL("create  TABLE informe_envio_det ( informeEtapaId integer not null," +
+                    "fotoSello INTEGER , " +
+                      "nombreRecibe TEXT," +
+                      "fechaEntrega INTEGER DEFAULT CURRENT_TIMESTAMP,"+
+                    " estatus INTEGER," +
+                    "    estatusSync INTEGER,  PRIMARY KEY(informeEtapaId)) ");
 
         }
     };

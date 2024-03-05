@@ -195,5 +195,8 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
         return icDao.getInformesxEstatusas(indice,etapa,estatus);
 
     }
-
+    public int getTotalCajasxCliCd(int clienteSel, String indiceactual, String cd) {
+        int tot=(int) icDao.getTotalCajxCli(indiceactual,cd,clienteSel,4);
+      return tot;
+    }
 }

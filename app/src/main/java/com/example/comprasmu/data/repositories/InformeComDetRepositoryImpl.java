@@ -202,5 +202,7 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
             return muestras.size();
         return 0;
     }
+
+
 }
 

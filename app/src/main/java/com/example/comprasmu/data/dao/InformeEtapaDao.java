@@ -119,5 +119,7 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     public abstract LiveData<List<InformeEtapa>> getCanceladasEtiq(int etapa, String indice, int estatus);
     @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) and etapa=:etapa order by id")
     public abstract List<InformeEtapa>  getInformesxEstatusas(String indice, int etapa, int estatus);
+    @Query("select sum(total_cajas) from informe_etapa where indice=:indice and etapa=:etapa and estatusSync =2 and ciudadNombre=:ciudad and estatus>0 and clientesId=:cliente group by clientesId")
+    public abstract   long getTotalCajxCli(String indice,String ciudad, int cliente, int etapa);
 
 }

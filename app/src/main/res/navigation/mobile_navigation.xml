@@ -476,20 +476,7 @@
             app:argType="string"
             android:defaultValue="rescor" />
     </fragment>
-    <activity
-        android:id="@+id/nav_menuini"
-        android:name="com.example.comprasmu.ui.home.PruebasActivity"
-        android:label="@string/menu_inicial"
-        >
-    </activity>
-    <fragment
-        android:id="@+id/nav_cerrarsesion"
-        android:name="com.example.comprasmu.ui.home.CerrarSesionFragment"
-        android:label="@string/cerrar_sesion"
-        tools:layout="@layout/fragment_cerrar_sesion" >
 
-
-    </fragment>
     <fragment
         android:id="@+id/nav_canceleti"
         android:name="com.example.comprasmu.ui.informe.ListaCancelFragment"
@@ -514,6 +501,116 @@
         android:name="com.example.comprasmu.ui.etiquetado.EditEtiquetadoFragment"
         android:label="@string/editar_informe"
         tools:layout="@layout/fragment_edietiq" >
+
+    </fragment>
+    <!-- fin empaque -->
+    <!---opciones envio-->
+    <activity
+        android:id="@+id/nav_nvoenvio"
+        android:name="com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity"
+        android:label="@string/nuevo_informe">
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="5" />
+    </activity>
+    <fragment
+        android:id="@+id/nav_continuarenv"
+        android:name="com.example.comprasmu.ui.infetapa.ContInfEtapaFragment"
+        android:label="@string/continuar" >
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="5" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_resumenenv"
+        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:label="@string/menu_resumenenv" >
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="e" />
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="5" />
+        <action android:id="@+id/action_selclitoinf1"
+            app:destination="@id/nav_listacor2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
+
+
+    <fragment
+        android:id="@+id/nav_envdescargas"
+        android:name="com.example.comprasmu.ui.envio.DescargarFragment"
+        android:label="@string/documentos" >
+        <argument
+            android:name="comprasmu.cie.etapasel"
+            app:argType="integer"
+            android:defaultValue="5" />
+        <action android:id="@+id/action_envtocdtrabajo"
+            app:popUpTo="@+id/nav_ciudad_trabajo"
+            app:popUpToInclusive="true"
+            app:destination="@id/nav_ciudad_trabajo"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_solcorenv"
+        android:name="com.example.comprasmu.ui.solcorreccion.ListaSolCorreFragment"
+        android:label="@string/coreccion_pend"
+        >
+    </fragment>
+    <fragment
+        android:id="@+id/nav_rescorrenv"
+        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:label="@string/menu_rescorreccion" >
+        <argument
+            android:name="comprasmu.correselcli.tipocons"
+            app:argType="string"
+            android:defaultValue="rescor" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_cancelenv"
+        android:name="com.example.comprasmu.ui.informe.ListaCancelFragment"
+        android:label="@string/menu_cancel"
+        tools:layout="@layout/lista_selec_fragment" >
+
+    </fragment>
+    <fragment
+        android:id="@+id/nav_notificacionsenv"
+        android:name="com.example.comprasmu.ui.etiquetado.ListaNotifEtiqFragment"
+        android:label="@string/menu_nuevas_compras"
+        tools:layout="@layout/lista_selec_fragment" >
+        <action android:id="@+id/action_nottoact"
+            app:destination="@id/nav_editeti"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
+
+
+    <activity
+        android:id="@+id/nav_menuini"
+        android:name="com.example.comprasmu.ui.home.PruebasActivity"
+        android:label="@string/menu_inicial"
+        >
+    </activity>
+    <fragment
+        android:id="@+id/nav_cerrarsesion"
+        android:name="com.example.comprasmu.ui.home.CerrarSesionFragment"
+        android:label="@string/cerrar_sesion"
+        tools:layout="@layout/fragment_cerrar_sesion" >
+
 
     </fragment>
     <fragment

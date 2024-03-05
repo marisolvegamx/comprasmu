@@ -342,6 +342,13 @@
     <string name="menu_nuevas_compras">Muestras pendientes</string>
     <string name="agregar_muestra">AGREGAR MUESTRA</string>
     <string name="capturar_inf">CAPTURAR EL INFORME EN EL MODULO CORRESPONDIENTE</string>
+    <string name="env_guia">Guía</string>
+    <string name="env_factura">Factura</string>
+    <string name="documentos">Documentos</string>
+    <string name="menu_resumenenv">Resumen envíos</string>
+    <string name="fecha_entrega">FECHA ENTREGA A DHL</string>
+    <string name="foto_sello">FOTO SELLO DE ENTREGADO</string>
+    <string name="nombre_recibe">NOMBRE DE QUIEN RECIBE EN DHL</string>
 
 
 </resources>

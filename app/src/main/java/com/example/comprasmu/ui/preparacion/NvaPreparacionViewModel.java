@@ -12,6 +12,7 @@ import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
@@ -22,6 +23,7 @@ import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
@@ -35,6 +37,7 @@ import java.util.List;
 public class NvaPreparacionViewModel extends AndroidViewModel {
     private final InfEtapaRepositoryImpl infEtaRepository;
     private final InfEtapaDetRepoImpl infDetRepo;
+    private final InformeEnvioRepositoryImpl infEnvioRepo;
     private final DetalleCajaRepoImpl cajaRepo;
     private int idNuevo;
     private int iddetalle;
@@ -68,6 +71,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         this.compRepo=new InformeComDetRepositoryImpl(application);
         this.cajaAct=new EtiquetadoxCliente();
         muestrasactEtiq=new ArrayList<>();
+        this.infEnvioRepo=new InformeEnvioRepositoryImpl(application);
     }
     //es para la preparacion
     public int insertarInformeEtapa(String indice,String plantaNombre,int plantaId, String clienteNombre,int clienteId){
@@ -756,6 +760,11 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
         return envio;
     }
+    public InformeEnvioPaq getInformeEnvio(int idinf){
 
-
+        return infEnvioRepo.findInfsimple(idinf);
+    }
+    public int getTotalCajasxCliXcd(int clienteSel,String cd) {
+        return infEtaRepository.getTotalCajasxCliCd(clienteSel,Constantes.INDICEACTUAL,cd);
+    }
 }
