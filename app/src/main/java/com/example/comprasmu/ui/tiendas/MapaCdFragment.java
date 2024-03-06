@@ -475,20 +475,24 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                     // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
                     if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
                         String[] aux = tienda.getUne_coordenadasxy().split(",");
+                        //todo es aqui meter un catch
+                        try {
+                            japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+                            MarkerOptions moptions = new MarkerOptions();
+                            moptions.position(japon2)
+                                    .title(tienda.getUne_descripcion())
+                                    .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color)));
+                            if (estatusClientes.length() > 0) {
+                                moptions.snippet(estatusClientes);
+                            }
+                            Marker marker = mMap.addMarker(moptions
+                            );
+                            marker.setTag(tienda);
 
-                        japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-                        MarkerOptions moptions=new MarkerOptions();
-                        moptions.position(japon2)
-                                .title(tienda.getUne_descripcion())
-                                .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color)));
-                        if(estatusClientes.length()>0) {
-                            moptions.snippet(estatusClientes);
+                            martiendas.add(marker);
+                        }catch(NumberFormatException ex){
+                            Log.e(TAG,"error de formato "+ex.getMessage());
                         }
-                        Marker marker=mMap.addMarker(moptions
-                                );
-                        marker.setTag(tienda);
-
-                        martiendas.add(marker);
 
                 }
 

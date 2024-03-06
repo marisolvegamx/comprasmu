@@ -158,8 +158,13 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         String mesactual = sdfparaindice.format(cal.getTime());
 
         String[] aux = mesactual.split("-");
-        int mes = Integer.parseInt(aux[0])+1;
-        int anio = Integer.parseInt(aux[1]);
+        int mes=0,anio=0;
+        try {
+             mes = Integer.parseInt(aux[0]) + 1;
+             anio = Integer.parseInt(aux[1]);
+        }catch(NumberFormatException ex){
+            complog.grabarError(TAG,"definirTienda","Error def formato "+ex.getMessage());
+        }
 
         Constantes.listaindices = new String[4];
         int j = 3;
