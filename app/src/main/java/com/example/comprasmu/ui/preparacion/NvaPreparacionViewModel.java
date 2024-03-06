@@ -1,6 +1,7 @@
 package com.example.comprasmu.ui.preparacion;
 
 import android.app.Application;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,11 +13,13 @@ import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
@@ -29,6 +32,7 @@ import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -191,6 +195,23 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         informe.setEtapa(3);
         informe.setTotal_cajas(num_cajas);
         informe.setTotal_muestras(tot_muestras);
+        informe.setCreatedAt(new Date());
+        informe.setCiudadNombre(ciudadNombre);
+        idNuevo=(int)infEtaRepository.insert(informe);
+        informe.setId(idNuevo);
+        this.nvoinforme=informe;
+        return idNuevo;
+
+    }
+    public int insertarEnvio(String indice, String clienteNombre,int clienteId,int num_cajas, int tot_muestras,String ciudadNombre){
+        InformeEtapa informe=new InformeEtapa();
+        informe.setIndice(indice);
+        informe.setClientesId(clienteId);
+        informe.setClienteNombre(clienteNombre);
+        informe.setEstatusSync(0);
+        informe.setEstatus(1);
+        informe.setEtapa(5);
+        informe.setTotal_cajas(num_cajas);
         informe.setCreatedAt(new Date());
         informe.setCiudadNombre(ciudadNombre);
         idNuevo=(int)infEtaRepository.insert(informe);
@@ -583,6 +604,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         infEtaRepository.actualizarEstatus(idNuevo,2);
     }
 
+
     public int getIdNuevo() {
         return idNuevo;
     }
@@ -714,6 +736,22 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return envio;
     }
 
+    public InformeEnvPaqEnv prepararInformeEnvPaq(int idnvo){
+        InformeEnvPaqEnv envio=new InformeEnvPaqEnv();
+
+        envio.setInformeEtapa(getInformexId(idnvo));
+
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(Constantes.INDICEACTUAL);
+        envio.setInformeEnvioDet(this.getInformeEnvioDet(idnvo));
+        List listaimg=new ArrayList();
+        listaimg.add(envio.getInformeEnvioDet().getFotoSello());
+        List<ImagenDetalle> imagenes=this.buscarImagenes(listaimg);
+
+        envio.setImagenDetalles(imagenes);
+        return envio;
+    }
+
     public InformeEtapaEnv preparaInformeEtiqAct(int idnvo){
         InformeEtapaEnv envio=new InformeEtapaEnv();
 
@@ -766,5 +804,45 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     }
     public int getTotalCajasxCliXcd(int clienteSel,String cd) {
         return infEtaRepository.getTotalCajasxCliCd(clienteSel,Constantes.INDICEACTUAL,cd);
+    }
+
+    public void actualizarEnvioDet(InformeEnvioDet informe){
+        infEnvioRepo.insert(informe);
+    }
+
+    public void actualizarImagenEnvio(InformeEnvioDet informe, String nvaruta)  {
+
+            ImagenDetalle fotoSello = this.getFoto(informe.getFotoSello());
+            //borro la anterior
+
+            this.eliminarImagen(fotoSello.getRuta());
+            fotoSello.setRuta(nvaruta);
+
+           // infEnvioRepo.insert(informe);
+
+    }
+
+    public void eliminarImagen(String rutaimg)  {
+        File dir=application.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if(dir!=null) {
+            try {
+                File fdelete2 = new File(dir, rutaimg);
+                if (fdelete2.exists()) {
+                    boolean resp = fdelete2.delete();
+                    compraslog.grabarError(TAG,"eliminarImagen","*eliminando archivo " + Environment.DIRECTORY_PICTURES + rutaimg + "--" + resp);
+                    //la tabla la borra en borrar activity
+                }
+            }catch(NullPointerException ex){
+                compraslog.grabarError(TAG,"eliminarImagen", "error al borrar el archivo");
+
+            }
+        }
+    }
+    public InformeEnvioDet getInformeEnvioDet(int idinf){
+      return  infEnvioRepo.findsimple(idinf);
+    }
+
+    public void insertarEnvioDet(InformeEnvioDet nvoDet) {
+        infEnvioRepo.insert(nvoDet);
     }
 }

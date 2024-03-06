@@ -1,14 +1,22 @@
 package com.example.comprasmu.ui.envio;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Layout;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +31,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -42,11 +52,13 @@ import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Reactivo;
+import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
@@ -67,6 +79,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -248,7 +261,7 @@ public class NvoEnvioFragment extends Fragment {
             //ya puedo tener varios informes
          //   Integer[] clientesprev = mViewModel.tieneInforme(3);
 
-          /*      convertirLista(listacomp);
+               convertirLista(listacomp);
             if (listaClientes.size() > 1) {
                     //tengo varios clientes
                     preguntaAct = 1;
@@ -294,8 +307,6 @@ public class NvoEnvioFragment extends Fragment {
 
             }
 
-
-
             aceptar1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -322,28 +333,28 @@ public class NvoEnvioFragment extends Fragment {
       aceptar2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                a
+
                 guardarInf();
             }
         });
             aceptar3.setOnClickListener(new View.OnClickListener() { //foto
                 @Override
                 public void onClick(View view) {
-                    avanzar();
+                 guardarDet();
 
                 }
             });
             aceptar4.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    avanzar();
+                    guardarDet();
 
                 }
             });
             guardar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    avanzar();
+                    guardarDet();
 
                 }
             });
@@ -364,7 +375,7 @@ public class NvoEnvioFragment extends Fragment {
                 }
             });
 
-            mViewModel.preguntaAct = preguntaAct;*/
+            mViewModel.preguntaAct = preguntaAct;
 
         }catch(Exception ex){
             ex.printStackTrace();
@@ -412,15 +423,14 @@ public class NvoEnvioFragment extends Fragment {
                     break;
                 case 4: //foto
                     svsello.setVisibility(View.GONE);
-                    svrecibe.setVisibility(View.VISIBLE);
+                    svcoment.setVisibility(View.VISIBLE);
 
                     preguntaAct = preguntaAct + 1;
 
                     break;
                 case 5: //comentarios
-                    svsello.setVisibility(View.GONE);
-                    svcoment.setVisibility(View.VISIBLE);
-                 //   guardarDet();
+                    svcoment.setVisibility(View.GONE);
+                   finalizarInf();
                     isEdicion = false;
 
                     break;
@@ -436,15 +446,17 @@ public class NvoEnvioFragment extends Fragment {
 
 
         public void editarInforme() {
-            sv1.setVisibility(View.GONE);
-            sv6.setVisibility(View.GONE);
-            sv3.setVisibility(View.VISIBLE);
+            svcli.setVisibility(View.GONE);
+            svrecibe.setVisibility(View.GONE);
+            svsello.setVisibility(View.GONE);
+            svcoment.setVisibility(View.GONE);
+            svfecha.setVisibility(View.VISIBLE);
             //  txtcajaact.setVisibility(View.VISIBLE);
             preguntaAct = 2;
             ImagenDetalle foto;
             mViewModel.preguntaAct = preguntaAct;
             if (informeEdit != null) {
-                //busco en la bd para regresar a la primer muestra
+                //busco en la bd la imagen
                 foto = mViewModel.getFoto(informeEdit.infEnvioDet.getFotoSello());
                 txtfotosello.setText(foto.getRuta());
                 Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 80, 80);
@@ -455,17 +467,7 @@ public class NvoEnvioFragment extends Fragment {
                 txtnombrerec.setText(informeEdit.infEnvioDet.getNombreRecibe());
                // contmuestra = detalleEdit.getNum_muestra();
 
-            } else {
-                //busco en la bd para regresar a la primer muestra
-                List<InformeEtapaDet> informeEtapaDet = mViewModel.getDetEtaxCaja(mViewModel.getIdNuevo(), 3, cajaini);
-                Log.e(TAG, "total" + informeEtapaDet.size());
-                if (informeEtapaDet != null && informeEtapaDet.size() > 0) {
-
-                }
-
-
             }
-
 
         }
 
@@ -522,20 +524,14 @@ public class NvoEnvioFragment extends Fragment {
 
                 //totcajas =Integer.parseInt(txtnumcajas.getText().toString());
 
-                if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null&&contmuestra==1) {
+                if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null) {
                     Log.d(TAG, "creando nvo inf");
                     //creo el informe
-                    mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL, clienteNombre,clienteId,0,totmuestras,ciudadInf));
-                    //  ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEtiq(mViewModel.getNvoinforme());
-
-                }else
-                if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null&&issegundoinf) {
-                    Log.d(TAG, "creando segundo inf");
-                    //creo el informe
-                    mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL, clienteNombre,clienteId,0,totmuestras,ciudadInf));
+                    mViewModel.setIdNuevo(mViewModel.insertarEnvio(Constantes.INDICEACTUAL, clienteNombre,clienteId,totalcajas,0,ciudadInf));
                     //  ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEtiq(mViewModel.getNvoinforme());
 
                 }
+                //ya existe
             }catch (Exception ex){
                 ex.printStackTrace();
                 Log.e(TAG,"Algo salió mal al guardarInf"+ex.getMessage());
@@ -544,44 +540,102 @@ public class NvoEnvioFragment extends Fragment {
             }
 
             aceptar1.setEnabled(true);
-            avanzar();
+           guardarDet();
         }
         public void guardarDet(){
             try{
                 String rutafoto = null;
-                String qr = null;
+                //busco si ya tiene detalle
+                if(informeEdit.infEnvioDet!=null) {
+                   switch(preguntaAct){
+                       case 2:
+                           Date fechaenv;
+                           SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
+                           String fecha=txtfechaent.getText().toString();
+                           if (!fecha.equals("")) {
+
+                               try {
+                                   fechaenv = sdf.parse(fecha);
+                               } catch (ParseException e) {
+
+                                   Toast.makeText(getContext(), R.string.error_fecha_formato, Toast.LENGTH_SHORT).show();
+
+                                   return;
+                               }
 
 
-                rutafoto=txtrutaim.getText().toString();
-                qr=txtqr.getText().toString();
+                               informeEdit.infEnvioDet.setFechaEnvio(fechaenv);
+                           }
+                           break;
+                       case 3:
+                           String recibe=txtnombrerec.getText().toString();
+                           if(!recibe.equals("")){
+                               informeEdit.infEnvioDet.setNombreRecibe(recibe);
+                           }
+                           else {
+                               Toast.makeText(getContext(), "Capture el nombre de quien recibe", Toast.LENGTH_SHORT).show();
 
-                String opcionsel = (String) spcaja.getSelectedItem();
-                int numcaja = Integer.parseInt(opcionsel);
-                if(isEdicion&&detalleEdit!=null){
-                    mViewModel.actualizarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,detalleEdit.getId(),numcaja,qr,contmuestra,detalleEdit.getRuta_foto(),Constantes.INDICEACTUAL);
-                    isEdicion=false;
+                               return;
+                           }
+                           break;
+                       case 4:
+                           //la foto se guarda primero en imagenes
+                           String nomfoto=txtfotosello.getText().toString();
+                           if(!nomfoto.equals("")){
+                           mViewModel.actualizarImagenEnvio(informeEdit.infEnvioDet,nomfoto);
+                             }
+                           else {
+                               Toast.makeText(getContext(), "Capture la foto de sello de entregado", Toast.LENGTH_SHORT).show();
 
-                }else
-                if(mViewModel.getIdNuevo()>0)
-                    //guardo el detalle
-                    mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,numcaja,qr,contmuestra,Constantes.INDICEACTUAL);
+
+                           }
+                           return;
+
+                       case 5:
+                           String coment=txtcoment.getText().toString();
+
+                           informeEdit.infEnvioDet.setNombreRecibe(coment);
+
+                           break;
+
+
+                   }
+
+                    //es actualizacion
+                    mViewModel.actualizarEnvioDet(informeEdit.infEnvioDet);
+                }else{
+                    //es un nuevo registro
+                    if(preguntaAct==2&&mViewModel.getIdNuevo()>0){
+                        Date fechaenv;
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
+                        String fecha=txtfechaent.getText().toString();
+                        if (!fecha.equals("")) {
+
+                            try {
+                                fechaenv = sdf.parse(fecha);
+                            } catch (ParseException e) {
+
+                                Toast.makeText(getContext(), R.string.error_fecha_formato, Toast.LENGTH_SHORT).show();
+
+                                return;
+                            }
+                            InformeEnvioDet nvoDet=new InformeEnvioDet();
+                            nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
+
+
+                            nvoDet.setFechaEnvio(fechaenv);
+                            mViewModel.insertarEnvioDet(nvoDet);
+                        }
+                    }
+
+
+               }
+
                 //limpio campos
-                txtrutaim.setText("");
-                fotomos.setImageBitmap(null);
-                fotomos.setVisibility(View.GONE);
-                btnrotar.setVisibility(View.GONE);
-                aceptar3.setEnabled(false);
-                aceptar4.setEnabled(false);
-                txtqr.setText("");
-                detalleEdit=null;
-                //muevo contadores
-                contmuestra++;
-                contmuint++;
-                //actualizo vista
-                txtnumuestra.setText("MUESTRA "+contmuestra);
+                avanzar();
             }catch (Exception ex){
                 ex.printStackTrace();
-                Log.e(TAG,"Algo salió mal al guardarDet"+ex.getMessage());
+                milog.grabarError(TAG,"guardarDet",ex.getMessage());
                 Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
             }
@@ -644,9 +698,7 @@ public class NvoEnvioFragment extends Fragment {
                     return;
 
                 }
-                Uri photoURI = FileProvider.getUriForFile(activity,
-                        "com.example.comprasmu.fileprovider",
-                        archivofoto);
+
                 intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
 
                 if (fotomos != null) {
@@ -667,11 +719,11 @@ public class NvoEnvioFragment extends Fragment {
                 if (archivofoto!=null&&archivofoto.exists()) {
                     if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
 
-                        mostrarFoto(txtrutaim,fotomos,btnrotar);
+                        mostrarFoto(txtfotosello,fotomos,btnrotar);
 
                     }
                     if(requestCode==1)
-                        aceptar3.setEnabled(true);
+                        aceptar4.setEnabled(true);
 
 
                 }
@@ -680,33 +732,8 @@ public class NvoEnvioFragment extends Fragment {
                 }
 
 
-            }else if(requestCode == REQUEST_CODEQR) {
+            }else
 
-
-                //  IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
-                IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
-
-                Log.d(TAG,"res del qr "+result.getContents());
-                if(result != null) {
-
-                    if(result.getContents() == null) {
-                        Toast.makeText(getActivity(), "Scan cancelled", Toast.LENGTH_LONG).show();
-                    }
-                    else
-                    {   /* Update the textview with the scanned URL result */
-                      /*  txtqr.setText(result.getContents());
-                        aceptar4.setEnabled(true);
-                        //  Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
-                    }
-
-                }
-                else
-                {
-                    super.onActivityResult(requestCode, resultCode, data);
-                    Toast.makeText(getActivity(), "hubo un error",Toast.LENGTH_LONG ).show();
-
-                }
-            }    else
             {
                 Log.e(TAG,"Algo salió muy mal**");
             }
@@ -754,27 +781,17 @@ public class NvoEnvioFragment extends Fragment {
 
         //ya se puede varios informes de etiquetado para la reactivacion
 
-        private  void convertirLista(List<ListaCompra>lista, Integer[] clientesprev){
+        private  void convertirLista(List<ListaCompra>lista){
             listaClientes =new ArrayList<DescripcionGenerica>();
             for (ListaCompra listaCompra: lista ) {
                 Log.d(TAG,listaCompra.getPlantaNombre());
-         /*   if( clientesprev!=null)
-                if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
-                {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
-                    Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
-                    continue;}*/
-            /*    listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
+
+                listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 
             }
 
         }
-        public void iniciarLecQR(){
-            IntentIntegrator integrator  =new  IntentIntegrator ( getActivity() ).forSupportFragment(NvoEtiquetadoFragment.this);
-            integrator.setRequestCode(REQUEST_CODEQR);
-            //  integrator.setOrientationLocked(false);
-            Log.d(TAG, "inciando scanner");
-            integrator.initiateScan();
-        }
+
 
         class BotonTextWatcher implements TextWatcher {
 
@@ -870,7 +887,47 @@ public class NvoEnvioFragment extends Fragment {
                 }
             }
         }
-*/
+    public void finalizarInf() {
+        try {
+            mViewModel.finalizarInf();
+            InformeEnvPaqEnv envio=mViewModel.prepararInformeEnvPaq(mViewModel.getIdNuevo());
+          //  SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
+          //  miTareaAsincrona.execute();
+            subirFotos(getActivity(),envio);
+        }catch(Exception ex){
+            ex.printStackTrace();
+            Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());
+            Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
+        }
+        // limpio variables de sesion
+
+        mViewModel.setIdNuevo(0);
+        mViewModel.setIddetalle(0);
+        mViewModel.setNvoinforme(null);
+
+    }
+    public static void subirFotos(Activity activity, InformeEnvPaqEnv informe){
+        //las imagenes
+        for(ImagenDetalle imagen:informe.getImagenDetalles()){
+            //
+            //subo cada una
+            Intent msgIntent = new Intent(activity, SubirFotoService.class);
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
+            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+            // Constantes.INDICEACTUAL
+            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+
+            msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
+
+            //cambio su estatus a subiendo
+            imagen.setEstatusSync(1);
+            activity.startService(msgIntent);
+
+        }
+
+    }
+
         @Override
         public void onDestroyView() {
             super.onDestroyView();

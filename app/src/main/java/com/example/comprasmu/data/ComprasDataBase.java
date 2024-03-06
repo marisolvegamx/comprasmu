@@ -510,7 +510,19 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         }
     };
+    static final Migration MIGRATION_27_28 = new Migration(27,28) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("drop TABLE if exists informe_envio_det ");
+            database.execSQL("create  TABLE informe_envio_det ( informeEtapaId integer not null," +
+                    "fotoSello INTEGER , " +
+                    "nombreRecibe TEXT," +
+                    "fechaEnvio INTEGER DEFAULT CURRENT_TIMESTAMP,"+
+                    " estatus INTEGER," +
+                    "    estatusSync INTEGER,  PRIMARY KEY(informeEtapaId)) ");
 
+        }
+    };
     private void cargandodatos(){
 
         runInTransaction(new Runnable() {

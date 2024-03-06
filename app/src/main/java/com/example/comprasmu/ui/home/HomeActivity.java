@@ -26,7 +26,7 @@ public class HomeActivity extends AppCompatActivity {
 
     TextView textusuario;
     Button prep;
-    Button comp,etiq,emp;
+    Button comp,etiq,emp,envio,gasto;
     private boolean isEdit;
     private int tiporec;
     ComprasLog milog;
@@ -49,6 +49,8 @@ public class HomeActivity extends AppCompatActivity {
 
         etiq= findViewById(R.id.btnetiq);
         emp= findViewById(R.id.btnemp);
+        envio= findViewById(R.id.btnenvio);
+        gasto= findViewById(R.id.btngasto);
         prep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,6 +76,18 @@ public class HomeActivity extends AppCompatActivity {
                 ira(4);
             }
         });
+        envio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ira(5);
+            }
+        });
+        gasto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ira(6);
+            }
+        });
 
             //veo que tipo de recolector es
             if(tiporec==1) { //es forenaeo
@@ -85,6 +99,8 @@ public class HomeActivity extends AppCompatActivity {
                 comp.setVisibility(View.GONE);
                 prep.setVisibility(View.GONE);
                 etiq.setVisibility(View.GONE);
+                envio.setVisibility(View.GONE);
+                gasto.setVisibility(View.GONE);
                 Button btnsalir = findViewById(R.id.btnhsalir);
                 btnsalir.setVisibility(View.VISIBLE);
                 btnsalir.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +119,10 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case 4:  emp.setVisibility(View.VISIBLE);
                         break;
+                    case 5:  envio.setVisibility(View.VISIBLE);
+                        break;
+                    case 6:  gasto.setVisibility(View.VISIBLE);
+                        break;
 
                 }
             }
@@ -113,6 +133,8 @@ public class HomeActivity extends AppCompatActivity {
                 comp.setVisibility(View.VISIBLE);
                 etiq.setVisibility(View.VISIBLE);
                 emp.setVisibility(View.VISIBLE);
+                envio.setVisibility(View.VISIBLE);
+                gasto.setVisibility(View.VISIBLE);
             }
 
     }

@@ -19,7 +19,7 @@ public class InformeEnvioDet {
     private String nombreRecibe;
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
-    private Date fechaEntrega;
+    private Date fechaEnvio;
     private Integer estatus;
     private Integer estatusSync;
 
@@ -47,12 +47,12 @@ public class InformeEnvioDet {
         this.nombreRecibe = nombreRecibe;
     }
 
-    public Date getFechaEntrega() {
-        return fechaEntrega;
+    public Date getFechaEnvio() {
+        return fechaEnvio;
     }
 
-    public void setFechaEntrega(Date fechaEntrega) {
-        this.fechaEntrega = fechaEntrega;
+    public void setFechaEnvio(Date fechaEnvio) {
+        this.fechaEnvio = fechaEnvio;
     }
 
     public Integer getEstatus() {
