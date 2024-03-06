@@ -30,7 +30,7 @@
         android:id="@+id/btnhmprep"
         android:layout_width="0dp"
         android:layout_height="55dp"
-        android:layout_marginTop="136dp"
+        android:layout_marginTop="36dp"
         android:backgroundTint="#9C27B0"
         android:text="@string/preparacion"
         android:visibility="gone"
@@ -58,11 +58,12 @@
         android:id="@+id/btnhmcom"
         android:layout_width="0dp"
         android:layout_height="55dp"
-        android:layout_marginTop="236dp"
+        android:layout_marginTop="116dp"
         android:backgroundTint="#3F51B5"
         android:text="@string/compra"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
@@ -71,7 +72,7 @@
         android:id="@+id/btnetiq"
         android:layout_width="0dp"
         android:layout_height="55dp"
-        android:layout_marginTop="352dp"
+        android:layout_marginTop="196dp"
         android:backgroundTint="#E80909"
         android:text="@string/etiquetado"
         android:visibility="gone"
@@ -85,15 +86,57 @@
         android:id="@+id/btnemp"
         android:layout_width="0dp"
         android:layout_height="55dp"
-        android:layout_marginTop="460dp"
-        android:backgroundTint="#FFEB3B"
+        android:layout_marginTop="272dp"
+        android:backgroundTint="#03A9F4"
         android:text="@string/empaque"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
+
+
+
+    <Button
+        android:id="@+id/btnenvio"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="348dp"
+        android:backgroundTint="#FFEB3B"
+        android:text="@string/envio"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+    <Button
+        android:id="@+id/btngasto"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="428dp"
+        android:backgroundTint="#4CAF50"
+        android:text="@string/gastos"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/btnhsalir"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:text="SALIR"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.594" />
 
     <TextView
         android:id="@+id/txtherror"
@@ -103,19 +146,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnhsalir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
-        android:text="SALIR"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtherror"
-        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
