@@ -351,6 +351,7 @@
     <string name="nombre_recibe">NOMBRE DE QUIEN RECIBE EN DHL</string>
     <string name="envio">ENVIO</string>
     <string name="gastos">GASTOS</string>
+    <string name="menu_lista_env">Resumen envío</string>
 
 
 </resources>

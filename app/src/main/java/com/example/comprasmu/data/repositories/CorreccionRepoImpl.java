@@ -10,7 +10,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.CorreccionDao;
 import com.example.comprasmu.data.modelos.Correccion;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
+import com.example.comprasmu.data.modelos.SolicitudCor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +39,11 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
         return null;
     }
 
-    public LiveData<List<SolicitudWithCor>> getAllxEtaPlan(int plantaSel, String indice, int etapa) {
-        String query="Select * from solicitud_cor  " +
-                "inner join correccion on correccion.solicitudId=solicitud_cor.id" +
+    public List<Correccion> getAllxEtaPlan(int plantaSel, String indice, int etapa) {
+        String query="Select correccion.* from correccion  " +
+                "inner join solicitud_cor on correccion.solicitudId=solicitud_cor.id" +
                 " and correccion.numfoto=solicitud_cor.numfoto" +
-                " where solicitud_cor.indice=?";
+                 " where solicitud_cor.indice=?";
         ArrayList<String> filtros=new ArrayList<String>();
         filtros.add(indice);
         query = query + " and plantasId=?";
@@ -58,11 +58,11 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 filtros.toArray());
-        return icDao.getCorreSolByFiltros( sqlquery);
+        return icDao.getCorrByFiltros( sqlquery);
     }
-    public LiveData<List<SolicitudWithCor>> getAllxEta( String indice, int etapa) {
-        String query="Select * from solicitud_cor  " +
-                "inner join correccion on correccion.solicitudId=solicitud_cor.id" +
+    public List<Correccion> getAllxEta( String indice, int etapa) {
+        String query="Select correccion.* from correccion  " +
+                "inner join solicitud_cor on correccion.solicitudId=solicitud_cor.id" +
                 " and correccion.numfoto=solicitud_cor.numfoto" +
                 " where solicitud_cor.indice=?";
         ArrayList<String> filtros=new ArrayList<String>();
@@ -77,13 +77,13 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 filtros.toArray());
-        return icDao.getCorreSolByFiltros( sqlquery);
+        return icDao.getCorrByFiltros( sqlquery);
     }
 
 
 
 
-    public LiveData<SolicitudWithCor> findSolCor(int id) {
+   /* public LiveData<SolicitudWithCor> findSolCor(int id) {
         String query="SELECT * FROM solicitud_cor inner join correccion on correccion.solicitudId=solicitud_cor.id" +
                 "     and correccion.numfoto=solicitud_cor.numfoto  WHERE correccion.id =?";
         ArrayList<String> filtros=new ArrayList<String>();
@@ -94,7 +94,7 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
                 filtros.toArray());
         Log.d("CorreccionRepoImpl",query);
         return icDao.getCorreSolByFiltro( sqlquery);
-    }
+    }*/
     public List<Correccion> getCorrecxSolSim(int solid, int numfoto,String indice) {
         return icDao.getCorreccxsolSimple(solid,numfoto, indice);
     }

@@ -1,17 +1,13 @@
 package com.example.comprasmu.data.repositories;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CorEtiqCajaRepoImpl extends BaseRepository<CorEtiquetadoCaja> {

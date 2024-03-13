@@ -36,7 +36,7 @@
         <item
             android:id="@+id/nav_resumenenv"
             android:icon="?attr/actionModePasteDrawable"
-            android:title="@string/menu_lista_emp" />
+            android:title="@string/menu_lista_env" />
 
         <item
             android:id="@+id/nav_solcorenv"

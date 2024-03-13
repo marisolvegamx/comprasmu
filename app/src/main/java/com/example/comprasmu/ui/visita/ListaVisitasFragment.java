@@ -249,14 +249,14 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     public void onClickFinalizar(int idvisita, Visita visitaCont) {
         ValidadorDatos valdat=new ValidadorDatos();
         //si se creo antes de hoy
-       if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
+      /* if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
             //elimino
             mViewModel.eliminarVisita(idvisita, 1);
 
             //actualizo la lista
             mListAdapter.notifyDataSetChanged();
             return;
-        }
+        }*/
         //pregunto si habrá más clientes
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
         dialogo1.setTitle(R.string.importante);

@@ -43,8 +43,8 @@ public  class InformeEnvioRepositoryImpl extends BaseRepository<InformeEnvioDet>
         return dao.findSimple(id);
     }
     public InformeEnvioPaq findInfsimple(int id) {
-       // return dao.getInformeEnviosimple(id);
-        return null;
+       return dao.getInformeEnviosimple(id);
+      // return null;
     }
 
     @Override

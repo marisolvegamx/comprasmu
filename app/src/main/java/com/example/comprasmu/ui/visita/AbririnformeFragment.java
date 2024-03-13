@@ -1235,7 +1235,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             campo.label = "TIPO TIENDA";
             campo.nombre_campo = "tipoTienda";
             campo.type = "select";
-            campo.value = visita.getTipoId() + "";
+            campo.value = (visita.getTipoId()+1) + "";
             Log.d(TAG, "tienda sel " + visita.getTipoId());
             campo.select = Constantes.TIPOTIENDA;
             campo.required = "required";
@@ -1945,7 +1945,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             return 0;
         }
         String[] auxp=puntotxt.split(",");
-        LatLng punto=new LatLng(Double.parseDouble(auxp[0]),Double.parseDouble(auxp[1]));
+        try {
+            LatLng punto = new LatLng(Double.parseDouble(auxp[0]), Double.parseDouble(auxp[1]));
+
         //busco las zonas de la ciudad de trabajo
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getActivity());
         List<Geocerca> zonas=georep.findsimplexCd(Constantes.CIUDADTRABAJO);
@@ -1975,6 +1977,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
            if(PolyUtil.containsLocation(punto,poly,true))
                return geo.getGeo_region();
+        }
+        }catch(NumberFormatException ex){
+            Log.d(TAG,"Error de formato "+ex.getMessage());
+            Toast.makeText(getContext(), "Errro de formato", Toast.LENGTH_SHORT).show();
         }
         return 0; //no estuvo lol
     }

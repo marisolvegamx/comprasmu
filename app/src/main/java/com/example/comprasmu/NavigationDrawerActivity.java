@@ -205,6 +205,30 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             mNameTextView.setTextColor(Color.BLACK);
             mNameTextView.setText(R.string.empaque);
         }
+        if(Constantes.ETAPAACTUAL==5) {
+            navigationView.getMenu().clear();
+
+            navigationView.inflateMenu(R.menu.activity_main_drawerenv);
+//
+            View header=navigationView.getHeaderView(0);
+            header.setBackgroundResource(R.drawable.side_nav_barenv);
+            TextView mNameTextView = header.findViewById(R.id.txthmmodulo);
+            mNameTextView.setTextColor(Color.BLACK);
+            mNameTextView.setText(R.string.envio);
+        }
+        if(Constantes.ETAPAACTUAL==6) {
+            navigationView.getMenu().clear();
+
+            navigationView.inflateMenu(R.menu.activity_main_draweremp);
+//            navigationView.getMenu().setGroupVisible(R.id.HelpGroup,false);
+            //navigationView.getMenu().setGroupVisible(R.id.SetupGroup,false);
+
+            View header=navigationView.getHeaderView(0);
+            header.setBackgroundResource(R.drawable.side_nav_baremp);
+            TextView mNameTextView = header.findViewById(R.id.txthmmodulo);
+            mNameTextView.setTextColor(Color.BLACK);
+            mNameTextView.setText(R.string.empaque);
+        }
 
         //navigationView.setNavigationItemSelectedListener(this);
         // Passing each menu ID as a set of Ids because each
@@ -312,7 +336,21 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         if(Constantes.ETAPAACTUAL==4)
             gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcorem));
+        if(Constantes.ETAPAACTUAL==5) {
 
+            gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_solcorenv));
+            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_cancel));
+        }
+       /* if(Constantes.ETAPAACTUAL==6) {
+            //Ya lo hago desde el menu
+            // pedirInformes(0);
+            gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_solcoretiq));
+            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_canceleti));
+        }*/
         initializeCountDrawer();
         revisarCiudades();
         if (checkPermission()) {
@@ -683,7 +721,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     private void contarCorrecc(){
        // totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
-        if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3){
+        if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3||Constantes.ETAPAACTUAL==5||Constantes.ETAPAACTUAL==6){
             //busco x ciudad
             totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
 
@@ -752,11 +790,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     @Override
     public void onBackPressed() {
-        Log.e(TAG,"aprete atras");
+     //   Log.e(TAG,"aprete atras");
         try {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
             if (fragment instanceof AbririnformeFragment){
-               Log.e(TAG,"aprete atras***");
+          //     Log.e(TAG,"aprete atras***");
                 ((AbririnformeFragment)fragment).saliendoSinguardar();
             }else
                  super.onBackPressed();
@@ -890,7 +928,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
             //primero los inserts
             if (corrResp != null) {
-                Log.d(TAG,"dddddd"+etapa);
+                //Log.d(TAG,"dddddd"+etapa);
                 if (corrResp != null && corrResp.getInserts() != null) {
                     for (SolicitudCor sol : corrResp.getInserts()) {
                         //veo si ya existe
@@ -929,7 +967,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 tinfo.setTipo("I");
 
                 tvRepo.insertUpdate(tinfo);
-            Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
+          //  Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
                 //veo las muestras canceladas
                 if (corrResp.getCanceladas() != null)
                     if (etapa == 2)//solo para compra
@@ -942,7 +980,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     else
                         for (MuestraCancelada cancel :
                                 corrResp.getCanceladas()) {
-                            Log.d(TAG,"dddddd"+cancel.getInf_id());
+                           // Log.d(TAG,"dddddd"+cancel.getInf_id());
                             //busco el informedetalle y actualizo el estatus
                             scViewModel.procesarCanceladasEta(cancel); //canceladas será 0
 
@@ -954,7 +992,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
 
         public void actualizarInformes(RespInformesResponse infoResp) {
-            Log.d(TAG, "actualizando bd informes");
+           // Log.d(TAG, "actualizando bd informes");
             //primero los inserts
             if (infoResp != null) {
 

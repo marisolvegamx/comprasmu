@@ -3,6 +3,7 @@ package com.example.comprasmu.ui.envio;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -84,6 +86,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class NvoEnvioFragment extends Fragment {
@@ -116,11 +119,9 @@ public class NvoEnvioFragment extends Fragment {
     private boolean isEdicion;
     Spinner spcliente;
     InformeEnvioPaq informeEdit;
-    DetalleCaja ultimarescaja;
-    ComprasLog compraslog;
     int totalcajas;
     int etapa=5;
-    private Button btntomarf;
+    private ImageButton btntomarf;
     private NuevoInfEtapaViewModel niviewModel;
     ComprasLog milog;
     private EditText txtfechaent,txtnombrerec,txtcoment,txtfotosello;
@@ -163,7 +164,7 @@ public class NvoEnvioFragment extends Fragment {
             btnrotar = root.findViewById(R.id.btnnvrotar);
 
             btntomarf = root.findViewById(R.id.btnnvfoto);
-
+            fotomos=root.findViewById(R.id.ivnvfotosello);
             niviewModel = new ViewModelProvider(requireActivity()).get(NuevoInfEtapaViewModel.class);
 
             mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
@@ -206,12 +207,18 @@ public class NvoEnvioFragment extends Fragment {
             aceptar2.setEnabled(false);
             aceptar3.setEnabled(false);
             aceptar4.setEnabled(false);
-            guardar.setEnabled(false);
+            guardar.setEnabled(true);
 
             txtcoment.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
             txtnombrerec.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-
-         //   txtnombrerec.addTextChangedListener(new NvoEnvioFragment().BotonTextWatcher(aceptar4));
+            txtfechaent.addTextChangedListener(new BotonTextWatcher(aceptar2));
+            txtfechaent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDatePickerDialog();
+                }
+            });
+            txtnombrerec.addTextChangedListener(new BotonTextWatcher(aceptar3));
 
             spcliente.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -288,7 +295,8 @@ public class NvoEnvioFragment extends Fragment {
                     informetemp.setClientesId(clienteId);
                     informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
                     informetemp.setIndice(Constantes.INDICEACTUAL);
-                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(informetemp);
+                    informetemp.setTotal_cajas(totalcajas);
+                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(informetemp);
             }
 
             if (isEdicion) { //busco el informe
@@ -300,7 +308,7 @@ public class NvoEnvioFragment extends Fragment {
                 mViewModel.preguntaAct = 2;
                 if (listaClientes != null && listaClientes.size() > 0)
                     cargarPlantas(listaClientes, this.informeEdit.informeEtapa.getClientesId() + "");
-                ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(this.informeEdit.informeEtapa);
+                ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(this.informeEdit.informeEtapa);
                 mViewModel.setIdNuevo(informeSel);
                 totalcajas = this.informeEdit.informeEtapa.getTotal_cajas();
                 clienteId = this.informeEdit.informeEtapa.getClientesId();
@@ -324,8 +332,8 @@ public class NvoEnvioFragment extends Fragment {
                         temp.setClientesId(clienteId);
                         temp.setCiudadNombre(Constantes.CIUDADTRABAJO);
                         temp.setIndice(Constantes.INDICEACTUAL);
-                        temp.setTotal_muestras(totalcajas);
-                        ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(temp);
+                        temp.setTotal_cajas(totalcajas);
+                        ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(temp);
                         avanzar();
                     }
                 }
@@ -364,7 +372,7 @@ public class NvoEnvioFragment extends Fragment {
             btnrotar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    rotar(R.id.txtneruta);
+                    rotar(txtfotosello.getId());
                 }
             });
 
@@ -479,11 +487,14 @@ public class NvoEnvioFragment extends Fragment {
             switch (preguntaAct){
 
                 case 2:
-                    svcli.setVisibility(View.VISIBLE);
-                    svfecha.setVisibility(View.GONE);
+                    //regreso a sel cliente puedo?
+                    if(   mViewModel.variasClientes) {
+                        svcli.setVisibility(View.VISIBLE);
+                        svfecha.setVisibility(View.GONE);
 
-                    preguntaAct=preguntaAct-1;
-                    mViewModel.preguntaAct=preguntaAct;
+                        preguntaAct = preguntaAct - 1;
+                        mViewModel.preguntaAct = preguntaAct;
+                    }
                     break;
                 case 3:
                     svfecha.setVisibility(View.VISIBLE);
@@ -523,14 +534,33 @@ public class NvoEnvioFragment extends Fragment {
                 //  totcajas = 0;
 
                 //totcajas =Integer.parseInt(txtnumcajas.getText().toString());
+                //valido fecha
+                Date fechaenv;
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
+                String fecha=txtfechaent.getText().toString();
+                if (!fecha.equals("")) {
 
+                    try {
+                        fechaenv = sdf.parse(fecha);
+                    } catch (ParseException e) {
+
+                        Toast.makeText(getContext(), R.string.error_fecha_formato, Toast.LENGTH_SHORT).show();
+
+                        return;
+                    }
+
+
+
+                }
                 if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null) {
                     Log.d(TAG, "creando nvo inf");
                     //creo el informe
                     mViewModel.setIdNuevo(mViewModel.insertarEnvio(Constantes.INDICEACTUAL, clienteNombre,clienteId,totalcajas,0,ciudadInf));
                     //  ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEtiq(mViewModel.getNvoinforme());
-
+                    informeSel=mViewModel.getIdNuevo();
                 }
+
+                guardarDet();
                 //ya existe
             }catch (Exception ex){
                 ex.printStackTrace();
@@ -540,75 +570,19 @@ public class NvoEnvioFragment extends Fragment {
             }
 
             aceptar1.setEnabled(true);
-           guardarDet();
+
         }
         public void guardarDet(){
             try{
                 String rutafoto = null;
-                //busco si ya tiene detalle
-                if(informeEdit.infEnvioDet!=null) {
-                   switch(preguntaAct){
-                       case 2:
-                           Date fechaenv;
-                           SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-                           String fecha=txtfechaent.getText().toString();
-                           if (!fecha.equals("")) {
-
-                               try {
-                                   fechaenv = sdf.parse(fecha);
-                               } catch (ParseException e) {
-
-                                   Toast.makeText(getContext(), R.string.error_fecha_formato, Toast.LENGTH_SHORT).show();
-
-                                   return;
-                               }
-
-
-                               informeEdit.infEnvioDet.setFechaEnvio(fechaenv);
-                           }
-                           break;
-                       case 3:
-                           String recibe=txtnombrerec.getText().toString();
-                           if(!recibe.equals("")){
-                               informeEdit.infEnvioDet.setNombreRecibe(recibe);
-                           }
-                           else {
-                               Toast.makeText(getContext(), "Capture el nombre de quien recibe", Toast.LENGTH_SHORT).show();
-
-                               return;
-                           }
-                           break;
-                       case 4:
-                           //la foto se guarda primero en imagenes
-                           String nomfoto=txtfotosello.getText().toString();
-                           if(!nomfoto.equals("")){
-                           mViewModel.actualizarImagenEnvio(informeEdit.infEnvioDet,nomfoto);
-                             }
-                           else {
-                               Toast.makeText(getContext(), "Capture la foto de sello de entregado", Toast.LENGTH_SHORT).show();
-
-
-                           }
-                           return;
-
-                       case 5:
-                           String coment=txtcoment.getText().toString();
-
-                           informeEdit.infEnvioDet.setNombreRecibe(coment);
-
-                           break;
-
-
-                   }
-
-                    //es actualizacion
-                    mViewModel.actualizarEnvioDet(informeEdit.infEnvioDet);
-                }else{
-                    //es un nuevo registro
-                    if(preguntaAct==2&&mViewModel.getIdNuevo()>0){
+                Log.d(TAG,"preg act "+preguntaAct);
+                //es un nuevo registro
+                if(preguntaAct==2&&mViewModel.getIdNuevo()>0){
+                    informeEdit = mViewModel.getInformeEnvio(informeSel);
+                    if(informeEdit.infEnvioDet==null) { //es 1a vez
                         Date fechaenv;
                         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-                        String fecha=txtfechaent.getText().toString();
+                        String fecha = txtfechaent.getText().toString();
                         if (!fecha.equals("")) {
 
                             try {
@@ -619,13 +593,91 @@ public class NvoEnvioFragment extends Fragment {
 
                                 return;
                             }
-                            InformeEnvioDet nvoDet=new InformeEnvioDet();
+                            InformeEnvioDet nvoDet = new InformeEnvioDet();
                             nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
 
 
                             nvoDet.setFechaEnvio(fechaenv);
                             mViewModel.insertarEnvioDet(nvoDet);
                         }
+                    }
+                    else{
+                        String fecha=txtfechaent.getText().toString();
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
+
+                        Date fechaenv;
+                        try {
+                            fechaenv = sdf.parse(fecha);
+                        } catch (ParseException e) {
+
+                            Toast.makeText(getContext(), R.string.error_fecha_formato, Toast.LENGTH_SHORT).show();
+
+                            return;
+                        }
+                        informeEdit.infEnvioDet.setFechaEnvio(fechaenv);
+                        mViewModel.actualizarEnvioDet(informeEdit.infEnvioDet);
+                    }
+                }else{
+                    //busco si ya tiene detalle
+
+                    informeEdit = mViewModel.getInformeEnvio(informeSel);
+
+
+                    if(informeEdit!=null&&informeEdit.infEnvioDet!=null) {
+                        switch(preguntaAct){
+                            case 2:
+                             break;
+                            case 3:
+                                String recibe=txtnombrerec.getText().toString();
+                                if(!recibe.equals("")){
+                                    informeEdit.infEnvioDet.setNombreRecibe(recibe);
+                                }
+                                else {
+                                    Toast.makeText(getContext(), "Capture el nombre de quien recibe", Toast.LENGTH_SHORT).show();
+
+                                    return;
+                                }
+                                //es actualizacion
+                                mViewModel.actualizarEnvioDet(informeEdit.infEnvioDet);
+                                break;
+                            case 4:
+
+                                //la foto se guarda primero en imagenes
+                                String nomfoto=txtfotosello.getText().toString();
+
+                                if(!nomfoto.equals("")){
+                                    if(informeEdit.infEnvioDet.getFotoSello()!=null&&informeEdit.infEnvioDet.getFotoSello()>0)
+                                        mViewModel.actualizarImagenEnvio(informeEdit.infEnvioDet,nomfoto);
+                                    else
+                                        //es 1a vez
+                                    {
+                                        int numfoto=mViewModel.insertarImagen("foto sello",nomfoto, Constantes.INDICEACTUAL);
+                                        if(numfoto>0){
+                                            informeEdit.infEnvioDet.setFotoSello(numfoto);
+                                            mViewModel.actualizarEnvioDet(informeEdit.infEnvioDet);
+                                        }
+                                    }
+
+                                }
+                                else {
+                                    Toast.makeText(getContext(), "Capture la foto de sello de entregado", Toast.LENGTH_SHORT).show();
+
+
+                                }
+                               break;
+
+                            case 5:
+                                String coment=txtcoment.getText().toString().trim();
+                                if(!coment.equals("")) {
+                                    informeEdit.informeEtapa.setComentarios(coment);
+                                    mViewModel.actualizarComentarios(mViewModel.getIdNuevo(),coment);
+                                }
+                                break;
+
+
+                        }
+
+
                     }
 
 
@@ -944,8 +996,17 @@ public class NvoEnvioFragment extends Fragment {
          //   archivofoto=null;
         }
 
-        private void showDatePickerDialog() {
-        DatePickerFragment newFragment = new DatePickerFragment();
+    private void showDatePickerDialog() {
+        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                // +1 because January is zero
+                final String selectedDate = day + "-" + String.format("%02d", month+1)
+                + "-" + year;
+                txtfechaent.setText(selectedDate);
+            }
+        });
+
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
     }
 

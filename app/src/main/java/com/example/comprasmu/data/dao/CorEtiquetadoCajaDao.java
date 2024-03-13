@@ -6,7 +6,7 @@ import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
+import com.example.comprasmu.data.modelos.Correccion;
 
 import java.util.List;
 
@@ -22,9 +22,9 @@ public abstract class CorEtiquetadoCajaDao extends  BaseDao<CorEtiquetadoCaja>{
     @RawQuery(observedEntities = CorEtiquetadoCaja.class)
     public abstract LiveData<List<CorEtiquetadoCaja>> getByFiltros(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM coretiquetado_caja inner join solicitud_cor on coretiquetado_caja.solicitudId=solicitud_cor.id" +
+  /*  @Query("SELECT * FROM coretiquetado_caja inner join solicitud_cor on coretiquetado_caja.solicitudId=solicitud_cor.id" +
             " and coretiquetado_caja.numfoto=solicitud_cor.numfoto  WHERE coretiquetado_caja.id = :id")
-    public abstract LiveData<SolicitudWithCor> getWithSol(int id);
+    public abstract LiveData<Correccion> getWithSol(int id);*/
 
     @Query("DELETE FROM coretiquetado_caja where id=:id")
     public abstract void delete(int id);

@@ -756,7 +756,12 @@ public class NvaCorrecCalCajaFragment extends Fragment {
             CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
             SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
             miTareaAsincrona.execute();
-
+            //necesito tiempo para no actualizar el estatus
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             for(Correccion cor:nuevasCor) {
                 subirFotos(getActivity(), cor.getId(), cor.getRuta_foto1());
             }

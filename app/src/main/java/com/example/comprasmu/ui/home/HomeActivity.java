@@ -134,7 +134,7 @@ public class HomeActivity extends AppCompatActivity {
                 etiq.setVisibility(View.VISIBLE);
                 emp.setVisibility(View.VISIBLE);
                 envio.setVisibility(View.VISIBLE);
-                gasto.setVisibility(View.VISIBLE);
+              //  gasto.setVisibility(View.VISIBLE);
             }
 
     }
@@ -160,6 +160,12 @@ public class HomeActivity extends AppCompatActivity {
         Intent intento=new Intent(this, DescInfSupActivity.class);
         startActivity(intento);
         finish();
+
+       /* Constantes.ETAPAACTUAL=3;
+        Intent intento=new Intent(this, NavigationDrawerActivity.class);
+        intento.putExtra(NavigationDrawerActivity.ETAPA, 3);
+        startActivity(intento);
+        finish();*/
     }
 
 

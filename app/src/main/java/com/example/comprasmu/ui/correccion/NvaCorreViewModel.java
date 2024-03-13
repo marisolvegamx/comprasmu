@@ -8,16 +8,15 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
-import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.SolicitudCor;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
+
 import com.example.comprasmu.data.remote.CorreccionEnvio;
-import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.utils.Constantes;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -155,11 +154,39 @@ public class NvaCorreViewModel extends AndroidViewModel {
             return lista.get(lista.size()-1);
         return null;
     }
-    public LiveData<List<SolicitudWithCor>> getCorreccionesxEtaPlan(int etapa, String indice, int plantaSel){
-        return correpository.getAllxEtaPlan(plantaSel,indice,etapa);
+    public List<CorreccionWithSol> getCorreccionesxEtaPlan(int etapa, String indice, int plantaSel){
+        List<CorreccionWithSol> resp=new ArrayList<>();
+
+        List<Correccion> listacor=correpository.getAllxEtaPlan(plantaSel,indice,etapa);
+        CorreccionWithSol solwcor=null;
+        if(listacor!=null)
+            for (Correccion cor:listacor) {
+               //busco la correccion
+                SolicitudCor sol= solRepo.findsimple(cor.getSolicitudId(), cor.getNumfoto());
+                solwcor=new CorreccionWithSol();
+                solwcor.solicitud=sol;
+                solwcor.correccion=cor;
+                resp.add(solwcor);
+            }
+        return resp;
     }
-    public LiveData<List<SolicitudWithCor>> getCorreccionesxEta(int etapa, String indice, int plantaSel){
-        return correpository.getAllxEta(indice,etapa);
+    public List<CorreccionWithSol> getCorreccionesxEta(int etapa, String indice, int plantaSel){
+
+        List<CorreccionWithSol> resp=new ArrayList<>();
+
+        List<Correccion> listacor=correpository.getAllxEta(indice,etapa);
+        CorreccionWithSol solwcor=null;
+        if(listacor!=null)
+            for (Correccion cor:listacor) {
+                //busco la correccion
+                SolicitudCor sol= solRepo.findsimple(cor.getSolicitudId(), cor.getNumfoto());
+                solwcor=new CorreccionWithSol();
+                solwcor.solicitud=sol;
+                solwcor.correccion=cor;
+                resp.add(solwcor);
+            }
+
+        return resp;
     }
     public LiveData<Correccion> getCorreccion(int id){
         Log.d(TAG,"ESTOY AQUI");

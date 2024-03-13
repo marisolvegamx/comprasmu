@@ -182,6 +182,19 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return iddetalle;
     }
 
+    public int insertarImagen(String descripcion, String ruta,String indice){
+        ImagenDetalle foto=new ImagenDetalle();
+        foto.setRuta( ruta);
+        foto.setDescripcion(descripcion);
+        foto.setEstatus(1);
+        foto.setEstatusSync(0);
+        foto.setIndice(indice);
+        foto.setCreatedAt(new Date());
+        int nvoidimagem =(int)imagenDetRepository.insertImg(foto);
+
+        return nvoidimagem;
+    }
+
 
 
 
@@ -818,7 +831,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
             this.eliminarImagen(fotoSello.getRuta());
             fotoSello.setRuta(nvaruta);
 
-           // infEnvioRepo.insert(informe);
+            infEnvioRepo.insert(informe);
 
     }
 

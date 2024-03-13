@@ -208,7 +208,7 @@ public class NvaCorreccionFragment extends Fragment {
 
                                             Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 80, 80);
                                             if(bitmap1!=null)
-                                            fotoori2.setImageBitmap(bitmap1);
+                                                fotoori2.setImageBitmap(bitmap1);
 
                                         fotoori2.setVisibility(View.VISIBLE);
                                         root.findViewById(R.id.gpocfototo2).setVisibility(View.VISIBLE);
@@ -445,7 +445,11 @@ public class NvaCorreccionFragment extends Fragment {
             mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, valor2, valor3));
             actualizarSolicitud();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
-
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             salir();
 
         }catch (Exception ex){

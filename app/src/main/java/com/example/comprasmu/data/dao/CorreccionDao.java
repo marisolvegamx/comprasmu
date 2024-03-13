@@ -4,13 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.RawQuery;
-
-import androidx.room.Transaction;
 import androidx.sqlite.db.SupportSQLiteQuery;
-
 import com.example.comprasmu.data.modelos.Correccion;
-import com.example.comprasmu.data.modelos.InformeWithDetalle;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
+import com.example.comprasmu.data.modelos.SolicitudCor;
+
 
 import java.util.List;
 
@@ -36,15 +33,15 @@ public abstract class CorreccionDao extends  BaseDao<Correccion>{
     @RawQuery(observedEntities = Correccion.class)
     public abstract LiveData<List<Correccion>> getCorreccionesByFiltros(SupportSQLiteQuery query);
 
-    @RawQuery(observedEntities = SolicitudWithCor.class)
-    public abstract LiveData<SolicitudWithCor> getCorreSolByFiltro(SupportSQLiteQuery query);
+   /* @RawQuery(observedEntities = SolicitudCor.class)
+    public abstract LiveData<SolicitudCor> getSolByFiltro(SupportSQLiteQuery query);
+*/
+    @RawQuery(observedEntities = Correccion.class)
+    public abstract List<Correccion> getCorrByFiltros(SupportSQLiteQuery query);
 
-    @RawQuery(observedEntities = SolicitudWithCor.class)
-    public abstract LiveData<List<SolicitudWithCor>> getCorreSolByFiltros(SupportSQLiteQuery query);
+    @RawQuery(observedEntities = SolicitudCor.class)
+    public abstract List<SolicitudCor> getSolByFiltros(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM correccion inner join solicitud_cor on correccion.solicitudId=solicitud_cor.id" +
-            " and correccion.numfoto=solicitud_cor.numfoto  WHERE correccion.id = :id")
-    public abstract LiveData<SolicitudWithCor> getWithSol(int id);
 
     @Query("DELETE FROM correccion where id=:id")
     public abstract void deleteCorreccion(int id);

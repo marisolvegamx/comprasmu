@@ -92,7 +92,8 @@
                 android:id="@+id/rowetiq"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TextView
                     android:id="@+id/txtnieciudad"

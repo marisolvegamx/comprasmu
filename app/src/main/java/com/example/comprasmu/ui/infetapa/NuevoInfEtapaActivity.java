@@ -31,6 +31,7 @@ import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionEmpFragment;
 import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
+import com.example.comprasmu.ui.envio.NvoEnvioFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiqCajaFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
@@ -172,6 +173,18 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
                 }
             }
+            if (etapa == 5) {
+                mBinding.row1.setVisibility(View.GONE);
+                Bundle args = new Bundle();
+                args.putInt(NvoEnvioFragment.ARG_PREGACT,1 );
+                args.putBoolean(NvoEnvioFragment.ARG_ESEDI,true);
+
+                args.putInt(NvoEnvioFragment.ARG_INFORMESEL,idinformeSel);
+                NvoEnvioFragment nvofrag = new NvoEnvioFragment();
+                nvofrag.setArguments(args);
+                ft.add(R.id.continfeta_fragment,nvofrag);
+
+            }
             ft.commit();
         }else {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -231,6 +244,11 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 ft.add(R.id.continfeta_fragment, new NvoEmpaqueFragment());
 
 
+            }  else if (etapa == 5) {
+
+                ft.add(R.id.continfeta_fragment, new NvoEnvioFragment());
+
+
             }
             ft.commit();
 
@@ -265,6 +283,17 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         mBinding.row1.setVisibility(View.GONE);
         mBinding.rowetiq.setVisibility(View.VISIBLE);
         mBinding.row2.setVisibility(View.VISIBLE);
+
+    }
+    public void actualizarBarraEnv(InformeEtapa nvoInf) {
+
+        mBinding.rowetiq.setVisibility(View.VISIBLE);
+        mBinding.setInforme(nvoInf);
+        mBinding.row1.setVisibility(View.GONE);
+        mBinding.row4.setVisibility(View.VISIBLE);
+        this.actualizarAtributo3(ComprasUtils.indiceLetra(nvoInf.getIndice()));
+        this.actualizarAtributo4("TOT. CAJAS "+nvoInf.getTotal_cajas());
+        mBinding.row2.setVisibility(View.GONE);
 
     }
 
@@ -417,9 +446,14 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             }
             if(etapa==3)//el regreso se maneja en el fragment
             {
-                NvaCorrecCalCajaFragment fragment = (NvaCorrecCalCajaFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
-                fragment.atras();
-                return;
+                try {
+                    NvaCorrecCalCajaFragment fragment = (NvaCorrecCalCajaFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                    fragment.atras();
+                    return;
+                }catch(ClassCastException ex){
+
+                }
+
             }
             super.onBackPressed();
 
@@ -556,6 +590,15 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
         }
         else
+        if(etapa==5)//el regreso se maneja en el fragment
+        {
+
+                NvoEnvioFragment fragment = (NvoEnvioFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                fragment.atras();
+
+            return;
+
+        }else
                 super.onBackPressed();
 
 }

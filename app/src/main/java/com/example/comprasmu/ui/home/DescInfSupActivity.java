@@ -64,7 +64,10 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
             notificarSinConexion();
             return;
         }
+
         /**descargo inf compras**/
+        //reviso primero en que etapa estoy
+
         DescRespInformes desc=new DescRespInformes(this,this,tvRepo);
 
         desc.getInformes();

@@ -3,12 +3,8 @@ package com.example.comprasmu.data.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
-import androidx.room.RawQuery;
-import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
-import com.example.comprasmu.data.modelos.Correccion;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
 
 import java.util.List;
 

@@ -21,9 +21,10 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.SolicitudCor;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
+
 import com.example.comprasmu.databinding.VerInformegenFragmentBinding;
 import com.example.comprasmu.ui.RevisarFotoActivity;
+import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -45,7 +46,7 @@ public class VerInformeGenFragment extends Fragment {
     private InformesGenViewModel mViewModel;
     private int informeSel;
     InformeEtapa informeEtapa;
-    SolicitudWithCor correccion;
+    CorreccionWithSol correccion;
     private CreadorFormulario cf1;
     private CreadorFormulario cf2;
     CampoForm campo2;
@@ -105,7 +106,7 @@ public class VerInformeGenFragment extends Fragment {
                   //  Log.d(TAG,"---"+vcorreccion.correccion.getSolicitudId()+"--"+vcorreccion.solicitud.getId()+"--"+vcorreccion.correccion.getNumfoto()+"--"+vcorreccion.solicitud.getNumFoto());
                    //busco la solicitud
                    SolicitudCor solicitudCor=corViewModel.getSolicitud(vcorreccion.getSolicitudId(),vcorreccion.getNumfoto());
-                    correccion=new SolicitudWithCor();
+                    correccion=new CorreccionWithSol();
                     correccion.correccion=vcorreccion;
                     correccion.solicitud=solicitudCor;
                     crearFormularioCor();
@@ -124,7 +125,7 @@ public class VerInformeGenFragment extends Fragment {
                         //  Log.d(TAG,"---"+vcorreccion.correccion.getSolicitudId()+"--"+vcorreccion.solicitud.getId()+"--"+vcorreccion.correccion.getNumfoto()+"--"+vcorreccion.solicitud.getNumFoto());
                         //busco la solicitud
                         SolicitudCor solicitudCor = corViewModel.getSolicitud(vcorreccion.getSolicitudId(), vcorreccion.getNumfoto());
-                        correccion = new SolicitudWithCor();
+                        correccion = new CorreccionWithSol();
                         correccion.correccion = vcorreccion;
                         correccion.solicitud = solicitudCor;
                         crearFormCorVarFotos();
@@ -146,7 +147,7 @@ public class VerInformeGenFragment extends Fragment {
                     public void onChanged(Correccion vcorreccion) {
                          //busco la solicitud
                         SolicitudCor solicitudCor = corViewModel.getSolicitud(vcorreccion.getSolicitudId(), vcorreccion.getNumfoto());
-                        correccion = new SolicitudWithCor();
+                        correccion = new CorreccionWithSol();
                         correccion.correccion = vcorreccion;
                         correccion.solicitud = solicitudCor;
                         Log.d(TAG,"---"+correccion.correccion.getSolicitudId()+"--"+correccion.solicitud.getId()+"--"+correccion.correccion.getNumfoto()+"--"+correccion.solicitud.getNumFoto());

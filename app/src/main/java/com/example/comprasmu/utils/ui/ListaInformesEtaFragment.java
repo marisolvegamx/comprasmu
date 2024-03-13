@@ -27,8 +27,7 @@ import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeEtapaDet;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
+import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
@@ -147,24 +146,21 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
             etapa=Constantes.ETAPAACTUAL;
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
-            LiveData<List<SolicitudWithCor>> listacor=null;
+            List<CorreccionWithSol> listacor=null;
             if(etapa==2)
                  listacor = corViewModel.getCorreccionesxEta(etapa, indice, plantasel);
 
             else
                 listacor = corViewModel.getCorreccionesxEtaPlan(etapa, indice, plantasel);
-            listacor.observe(getViewLifecycleOwner(), new Observer<List<SolicitudWithCor>>() {
-                @Override
-                public void onChanged(List<SolicitudWithCor> correccions) {
-                    if(correccions.size()<1){
+
+            if(listacor.size()<1){
                         mBinding.emptyStateText.setVisibility(View.VISIBLE);
                     }
                     //paso la correccion a informeetapa
 
-                    mListAdapter.setInformeCompraList(correccionAInforme(correccions));
+                    mListAdapter.setInformeCompraList(correccionAInforme(listacor));
                     mListAdapter.notifyDataSetChanged();
-                }
-            });
+
         }
 
 
@@ -205,24 +201,30 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
         return false;
     }
-    private List<InformeEtapa> correccionAInforme(List<SolicitudWithCor> correccs){
+    private List<InformeEtapa> correccionAInforme(List<CorreccionWithSol> correccs){
         List<InformeEtapa> informes=new ArrayList<>();
         InformeEtapa temp;
-        for(SolicitudWithCor cor:correccs){
-            temp=new InformeEtapa();
-            temp.setId(cor.correccion.getId());
-            temp.setEtapa(cor.solicitud.getEtapa());
-            temp.setIndice(cor.solicitud.getIndice());
-            temp.setPlantasId(cor.solicitud.getPlantasId());
-            temp.setPlantaNombre(cor.solicitud.getPlantaNombre());
-            temp.setClienteNombre(cor.solicitud.getClienteNombre());
-            temp.setClientesId(cor.solicitud.getClientesId());
-            temp.setEstatus(cor.correccion.getEstatus());
-            temp.setEstatusSync(cor.correccion.getEstatusSync());
-            temp.setCreatedAt(cor.correccion.getCreatedAt());
-            temp.setComentarios(cor.solicitud.getNombreTienda());
-            temp.setConsecutivo(cor.solicitud.getNumFoto());
-            informes.add(temp);
+        for(CorreccionWithSol cor:correccs){
+             //   Log.d(TAG,"correccion a inf idcor"+cor.correccion.getId());
+                temp = new InformeEtapa();
+                temp.setId(cor.correccion.getId());
+                temp.setEtapa(cor.solicitud.getEtapa());
+                temp.setIndice(cor.solicitud.getIndice());
+                temp.setPlantasId(cor.solicitud.getPlantasId());
+                temp.setPlantaNombre(cor.solicitud.getPlantaNombre());
+                temp.setClienteNombre(cor.solicitud.getClienteNombre());
+                temp.setClientesId(cor.solicitud.getClientesId());
+                temp.setEstatus(cor.correccion.getEstatus());
+                temp.setEstatusSync(cor.correccion.getEstatusSync());
+                temp.setCreatedAt(cor.correccion.getCreatedAt());
+                if (cor.solicitud.getEtapa() > 2) {
+                    //pongo el motivo
+                    temp.setComentarios(cor.solicitud.getDescMostrar());
+                } else
+                    temp.setComentarios(cor.solicitud.getNombreTienda());
+                temp.setConsecutivo(cor.solicitud.getNumFoto());
+                informes.add(temp);
+
 
         }
         return informes;

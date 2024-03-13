@@ -83,7 +83,7 @@ public class DescRespInformes {
 
                 if (infoResp.getInformeCompra() != null && infoResp.getInformeCompra().size() > 0) {
                     //como puede que ya existan reviso primero e inserto unoxuno
-                    infrepo.insertAll(infoResp.getInformeCompra());
+                    // infrepo.insertAll(infoResp.getInformeCompra());
                 }
                 if (infoResp.getInformeCompraDetalles() != null && infoResp.getInformeCompraDetalles().size() > 0) {
                     //como puede que ya existan reviso primero e inserto unoxuno

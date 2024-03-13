@@ -305,7 +305,11 @@ public class NvaCorreccionPreFragment extends Fragment {
             solViewModel.actualizarEstSolicitud(solicitudSel,solicitud.getNumFoto(),4);
             enviarSolicitud();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
-
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             salir();
 
         }catch (Exception ex){

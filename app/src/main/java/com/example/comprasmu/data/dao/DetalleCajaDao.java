@@ -4,13 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.RawQuery;
-import androidx.room.Transaction;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
-import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DetalleCaja;
-import com.example.comprasmu.data.modelos.InformeEtapaDet;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
 
 import java.util.List;
 

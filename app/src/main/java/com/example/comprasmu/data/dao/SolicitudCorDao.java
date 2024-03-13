@@ -1,13 +1,10 @@
 package com.example.comprasmu.data.dao;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
-
-import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 
 import java.util.Date;

@@ -84,11 +84,11 @@ public class ListaSelecFragment extends Fragment {
     }
 
 
-    public class AdaptadorListas extends ArrayAdapter<DescripcionGenerica> {
+    static public  class AdaptadorListas extends ArrayAdapter<DescripcionGenerica> {
 
         AppCompatActivity appCompatActivity;
         boolean desc2;
-        AdaptadorListas(AppCompatActivity context, ListaSelecViewModel lsvm) {
+       public  AdaptadorListas(AppCompatActivity context, ListaSelecViewModel lsvm) {
             super(context,0, lsvm.getLista());
             appCompatActivity = context;
         }

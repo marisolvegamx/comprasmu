@@ -41,7 +41,7 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
 
     private NvaPreparacionViewModel mViewModel;
     private  ArrayList<DescripcionGenerica> listaClientesEnv;
-    private static final String TAG = "ListaSelecFragment";
+    private static final String TAG = "DescargarEtiqFragment";
     public DescargarEtiqFragment() {
         // Required empty public constructor
     }
