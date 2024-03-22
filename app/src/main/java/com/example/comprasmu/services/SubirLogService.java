@@ -45,7 +45,7 @@ public class SubirLogService extends IntentService
             final String action = intent.getAction();
            // intent.setAction(ACTION_UPLOAD_IMG);
 
-            if (ACTION_UPLOAD_LOG.equals(action)) //para informe compra
+            if (ACTION_UPLOAD_LOG.equals(action))
             {
               //  Log.d(TAG,"action"+action);
                 handleUploadImg();

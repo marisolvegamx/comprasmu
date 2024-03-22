@@ -246,7 +246,18 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             }
             if(preguntaAct.getId()==77){ //los comentarios no son obligatorios
                 //  textoint.addTextChangedListener(new MayusTextWatcher());
-                aceptar.setEnabled(true);
+
+                //veo si ya tengo informe
+                    mViewModel.informe=mViewModel.getInformeCompra(mViewModel.getIdInformeNuevo());
+                    if( mViewModel.informe!=null) {
+                        mViewModel.consecutivo = mViewModel.informe.getConsecutivo();
+                        Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
+
+                        ((ContinuarInformeActivity) getActivity()).actualizarCliente(mViewModel.informe);
+
+                        //   ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
+                    }
+                    aceptar.setEnabled(true);
                 textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(300)});
 
             }

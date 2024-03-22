@@ -1,16 +1,8 @@
 package com.example.comprasmu.utils.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,23 +10,36 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.databinding.ListaSelecFragmentBinding;
+import com.example.comprasmu.databinding.ListaSelscrollFragmentBinding;
+
 import java.util.ArrayList;
 
 
-public class ListaSelecFragment extends Fragment {
+public class ListaSelScrollFragment extends Fragment {
 
     private ListaSelecViewModel mViewModel;
-    private ListaSelecFragmentBinding mBinding;
+    private ListaSelscrollFragmentBinding mBinding;
     protected AdaptadorListas adaptadorLista;
     private ListView objetosLV;
     protected ArrayList<DescripcionGenerica> listaSeleccionable;
     private TextView indicacion;
 
-    public static ListaSelecFragment newInstance() {
-        return new ListaSelecFragment();
+
+
+
+    public static ListaSelScrollFragment newInstance() {
+
+        return new ListaSelScrollFragment();
     }
 
     @Override
@@ -46,7 +51,7 @@ public class ListaSelecFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
          mBinding=DataBindingUtil.inflate(inflater,
-               R.layout.lista_selec_fragment, container, false);
+               R.layout.lista_selscroll_fragment, container, false);
 
          listaSeleccionable=new ArrayList<DescripcionGenerica>();
        // mViewModel.setLista( this.listaSeleccionable);
@@ -69,8 +74,8 @@ public class ListaSelecFragment extends Fragment {
     }
 
 
-    public void setupListAdapter() {
-        adaptadorLista = new AdaptadorListas((AppCompatActivity) getActivity(),mViewModel);
+    public void setupListAdapter(AdapterCallback callback) {
+        adaptadorLista = new AdaptadorListas((AppCompatActivity) getActivity(),mViewModel,callback);
 
         objetosLV.setAdapter(adaptadorLista);
 
@@ -88,9 +93,11 @@ public class ListaSelecFragment extends Fragment {
 
         AppCompatActivity appCompatActivity;
         boolean desc2;
-       public  AdaptadorListas(AppCompatActivity context, ListaSelecViewModel lsvm) {
+        private  AdapterCallback callback;
+       public  AdaptadorListas(AppCompatActivity context, ListaSelecViewModel lsvm,AdapterCallback callback) {
             super(context,0, lsvm.getLista());
             appCompatActivity = context;
+            this.callback=callback;
         }
         public void setDesc2(boolean val){
             desc2=true;
@@ -111,11 +118,21 @@ public class ListaSelecFragment extends Fragment {
                 textView3.setTypeface(null, Typeface.BOLD);
                 textView3.setTextColor(Color.RED);
                 textView3.setVisibility(View.VISIBLE);
+                textView3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        callback.onClickVer(position);
+                    }
+                });
             }
             return(item);
         }
     }
 
+    public interface AdapterCallback {
+        void onClickVer(int position);
+
+    }
 
 
 }

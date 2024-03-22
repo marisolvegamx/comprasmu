@@ -239,6 +239,8 @@ public class DetalleProductoFragment extends Fragment {
                     mViewModel.consecutivo = inft.getConsecutivo();
                     Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
                 }
+                //busco el informe
+
                 ultimares=null;
                 isEdicion=false;
 
@@ -446,6 +448,16 @@ public class DetalleProductoFragment extends Fragment {
         }
         if(preguntaAct.getId()==7){ //los comentarios no son obligatorios
             //  textoint.addTextChangedListener(new MayusTextWatcher());
+          //veo si ya tengo informe
+            mViewModel.informe=mViewModel.getInformeCompra(mViewModel.getIdInformeNuevo());
+        if( mViewModel.informe!=null) {
+            mViewModel.consecutivo = mViewModel.informe.getConsecutivo();
+            Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
+
+            ((ContinuarInformeActivity) getActivity()).actualizarCliente(mViewModel.informe);
+
+            //   ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
+        }
             preguntaview.setMaxLengthFilters(300);
             preguntaview.aceptarSetEnabled(true);
         }
@@ -540,6 +552,7 @@ public class DetalleProductoFragment extends Fragment {
         tipoTienda=Constantes.DP_TIPOTIENDA;
         } catch (Exception e) {
             e.printStackTrace();
+            compraslog.grabarError(TAG,"crearPregunta",e.getMessage());
         }
     }
     //btnaifotoexhibido
@@ -1385,6 +1398,8 @@ public class DetalleProductoFragment extends Fragment {
         }catch (Exception ex){
             ex.printStackTrace();
             Log.e(TAG,ex.getMessage());
+            compraslog.grabarError(TAG,"guardarMuestra",ex.getMessage());
+
             Toast.makeText(getActivity(), "No se pudo guardar la muestra", Toast.LENGTH_LONG).show();
 
         }
@@ -1479,7 +1494,8 @@ public class DetalleProductoFragment extends Fragment {
 
                         return false;
 
-                    }}
+                    }
+                }
 
             }
 

@@ -11,6 +11,7 @@ import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
@@ -18,6 +19,7 @@ import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
 import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
+import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.data.remote.PostResponse;
@@ -32,6 +34,7 @@ import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirPendService;
@@ -58,6 +61,7 @@ public class PostInformeViewModel {
    ProductoExhibidoRepositoryImpl prodeRepo;
    InfEtapaRepositoryImpl etapaRepo;
    InfEtapaDetRepoImpl etapadetRepo;
+   InformeEnvioRepositoryImpl envRepo;
    Context context;
    CorreccionRepoImpl correccionRepo;
    CorEtiqCajaRepoImpl corecRepo;
@@ -142,6 +146,7 @@ public class PostInformeViewModel {
     public void iniciarBD(){
        etapaRepo=new InfEtapaRepositoryImpl(context);
        etapadetRepo=new InfEtapaDetRepoImpl(context);
+       envRepo=new InformeEnvioRepositoryImpl(context);
     }
     public void actualizarEstatusInforme(InformeEnvio informe){
         if(informe.getVisita()!=null)
@@ -327,6 +332,7 @@ public class PostInformeViewModel {
         });
     }
 
+
     public void actEstatusInfEtapa(InformeEtapaEnv informe){
 
         //actualizo informe
@@ -478,5 +484,43 @@ public class PostInformeViewModel {
     }
     public String getMensaje() {
         return mensaje;
+    }
+
+    public  void sendInformeEnvio(InformeEnvPaqEnv informeEnvio) {
+        Log.d("sendInformeEta", informeEnvio.toJson(informeEnvio));
+        ServiceGenerator.getApiService().saveInformeEnvio(informeEnvio).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
+                //  { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+
+                    mensaje=response.body().getData();
+                    Log.d("sendInformeEta", ""+mensaje);
+                    //actualizo el estatus
+                    iniciarBD();
+                    actEstatusInfEnvioPaq(informeEnvio);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+
+
+        });
+    }
+    public void actEstatusInfEnvioPaq(InformeEnvPaqEnv informe){
+
+        //actualizo informe
+        etapaRepo.actualizarEstatusSync(informe.getInformeEtapa().getId(),Constantes.ENVIADO);
+        //actualizo detalles
+        envRepo.actualizarEstatusSync(informe.getInformeEnvioDet().getInformeEtapaId(),Constantes.ENVIADO);
+
+
     }
 }

@@ -35,7 +35,9 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
     private SolCorreAdapter mListAdapter;
     private String indice;
     int plantasel;
+    private boolean isGeneral; //para saber si es correccion de tienda
     CoordinatorLayout coordinator;
+    public static final String ARG_ESGEN="comprasmu.solcorreccion.esgeneral";//indica si se agregará muestra
 
     public ListaSolCorreFragment() {
 
@@ -55,8 +57,10 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
 
         if (getArguments() != null) {
                 //porque lo habia comentado????
+
             plantasel=getArguments().getInt(ListaCompraFragment.ARG_PLANTASEL);
-           // indice=getArguments().getString(BuscarInformeFragment.INDICE);
+            //para generales puede ser ciudad
+            isGeneral=getArguments().getBoolean(ARG_ESGEN);
 
         }
             indice = Constantes.INDICEACTUAL;
@@ -86,7 +90,20 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
 
     public void cargarLista(){
         Log.d(TAG,"etapa y planta sel"+Constantes.ETAPAACTUAL+"--"+plantasel);
+    if(isGeneral){
+        mViewModel.cargarDetallesVis(Constantes.ETAPAACTUAL,indice,1).observe(getViewLifecycleOwner(), new Observer<List<SolicitudCor>>() {
+            @Override
+            public void onChanged(List<SolicitudCor> solicitudCors) {
 
+                mListAdapter.setSolicitudCorList(solicitudCors);
+                mListAdapter.notifyDataSetChanged();
+                if(solicitudCors!=null&&solicitudCors.size()>0)
+                    mBinding.emptyStateText.setVisibility(View.INVISIBLE);
+                else
+                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
+            }
+        });
+    }else
    if(plantasel>0){
        mViewModel.cargarDetallesPlan(Constantes.ETAPAACTUAL,indice,plantasel,1).observe(getViewLifecycleOwner(), new Observer<List<SolicitudCor>>() {
            @Override

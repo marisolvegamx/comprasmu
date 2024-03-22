@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class SubirLog {
     MultipartUploadRequest upload;
-    String URL_SUBIRPICTURE="subirlog";
+    String URL_SUBIRPICTURE="api/public/subirlog";
     private SubirLogService.SubirLogListener observadores;
     ImagenDetRepositoryImpl idrepo;
     private final String TAG="SubirLog";
@@ -53,7 +53,7 @@ public class SubirLog {
             this.idrepo=idrepo;
 
             String uploadFileArrayList=arch;
-            Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList);
+            Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList+"  "+Constantes.URLSERV+URL_SUBIRPICTURE);
             upload= new MultipartUploadRequest(context, Constantes.URLSERV+URL_SUBIRPICTURE)
                     .setMaxRetries(2)
                      .addParameter ("usuario", idusuario)
@@ -75,8 +75,10 @@ public class SubirLog {
                 public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
                    String mensaje="TODO BIEN";
                     if(serverResponse.getHttpCode()==200) {
+                        Log.d(TAG,"todo bien");
 
                     }else { //hubo un error
+                        Log.d(TAG,"HUBO UN ERROR");
                         //lo registro en el log
                         mensaje="HUBO UN ERROR";
                             }

@@ -13,26 +13,24 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
-import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.ui.ListaSelecFragment;
+import com.example.comprasmu.utils.ui.ListaSelScrollFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/*** mostrará todas las plantas que tenga el recolector sin importar la ciudad de trabajo***/
+/*** para poner correcciones
+ * mostrará todas las plantas que tenga el recolector sin importar la ciudad de trabajo***/
 
-public class SelPlantaFragment extends ListaSelecFragment {
+public class SelPlantaFragment extends ListaSelScrollFragment implements  ListaSelScrollFragment.AdapterCallback{
 
     private  ArrayList<DescripcionGenerica> listaClientesEnv;
     ListaCompraRepositoryImpl lcrepo;
@@ -42,7 +40,13 @@ public class SelPlantaFragment extends ListaSelecFragment {
     String tipoconsulta;
 
     LiveData<List<ListaCompra>> listacomp;
+    LiveData<List<ListaCompra>> listacompcd;
     private ListaSolsViewModel scViewModel;
+    List<ListaCompra> listacd;
+
+    public SelPlantaFragment() {
+        super();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,8 @@ public class SelPlantaFragment extends ListaSelecFragment {
         tipoconsulta="";
 
         listacomp= mViewModel.cargarClientePlanta();
+        //para las correcciones generales
+        listacompcd=mViewModel.getCiudades();
 
     }
     @Override
@@ -65,6 +71,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
         setIndicacion(getString(R.string.seleccione_planta));
         // Log.d(TAG,"indice..............."+Constantes.INDICEACTUAL);
         // Create the observer which updates the UI.
+
         final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
             public void onChanged(@Nullable List<ListaCompra> lista) {
@@ -75,11 +82,8 @@ public class SelPlantaFragment extends ListaSelecFragment {
                     //voy a buscar la solicitudes pendientes
                     convertirListaCor(lista);
                     ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_ver_listasolcor);
-
                     setLista(listaClientesEnv);
-                    setupListAdapter();
-
-
+                    setupListAdapter(SelPlantaFragment.this);
                     adaptadorLista.setDesc2(true);
 
                 }else if(lista.size()>0)
@@ -99,16 +103,23 @@ public class SelPlantaFragment extends ListaSelecFragment {
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
-        listacomp.observe(getViewLifecycleOwner(),nameObserver);
-
-        getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listacompcd.observe(getViewLifecycleOwner(), new Observer<List<ListaCompra>>() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //  Toast.makeText(getContext(),listaSeleccionable.get(i).getId()+"", Toast.LENGTH_LONG).show();
-                siguiente(i);
+            public void onChanged(List<ListaCompra> listaCompras) {
+                listacd=listaCompras;
+                //lleno por planta
+                listacomp.observe(getViewLifecycleOwner(),nameObserver);
 
             }
         });
+      /*  getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //  Toast.makeText(getContext(),listaSeleccionable.get(i).getId()+"", Toast.LENGTH_LONG).show();
+
+
+            }
+        });*/
 
     }
 
@@ -117,13 +128,22 @@ public class SelPlantaFragment extends ListaSelecFragment {
        int  pendientes=scViewModel.getTotalSolsxplanta(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1, plantaId);
         return pendientes;
     }
+
+    /****para correcciones de tienda****/
+    private int contarCorreccGen(String ciudad){
+
+        int  pendientes=scViewModel.getTotalSolscorxcd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1, ciudad);
+        return pendientes;
+    }
     public void siguiente(int i){
         Log.d(TAG,"una planta "+tipoconsulta+"--"+listaSeleccionable.get(i).getId());
 
         Bundle bundle = new Bundle();
         bundle.putInt(ListaCompraFragment.ARG_PLANTASEL,listaSeleccionable.get(i).getId() );
         bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getDescripcion2());
-
+        if(listaSeleccionable.get(i).getDescripcion().equals("gen")){
+            bundle.putBoolean(ListaSolCorreFragment.ARG_ESGEN,true);
+        }
 
         bundle.putString(ARG_TIPOCONS,"action_selclitosolcor2" );
         NavHostFragment.findNavController(this).navigate(R.id.action_selclitosolcor2,bundle);
@@ -135,6 +155,15 @@ public class SelPlantaFragment extends ListaSelecFragment {
 
     private  void convertirListaCor(List<ListaCompra>lista) {
         listaClientesEnv = new ArrayList<DescripcionGenerica>();
+        //primero las generales
+        if(listacd!=null)
+            for (ListaCompra detalle:listacd
+            ) {
+                int pendientes=contarCorreccGen(detalle.getCiudadNombre());
+                        DescripcionGenerica gen = new DescripcionGenerica(detalle.getCiudadesId(),"GENERALES "+detalle.getCiudadNombre(),"gen",pendientes+"");
+                listaClientesEnv.add(gen);
+            }
+
         for (ListaCompra listaCompra : lista) {
           /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
           listaCompra.getPlantaNombre();*/
@@ -147,11 +176,12 @@ public class SelPlantaFragment extends ListaSelecFragment {
             listaClientesEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre() + " " + listaCompra.getPlantaNombre(), listaCompra.getClienteNombre(),pendientes+""));
 
         }
+
     }
 
 
-
-
-
-
+    @Override
+    public void onClickVer(int position) {
+        siguiente(position);
+    }
 }

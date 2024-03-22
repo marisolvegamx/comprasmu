@@ -25,6 +25,9 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
     @Query("SELECT count(id) FROM solicitud_cor where etapa=:etapa and indice=:indice  and (estatus=:estatus or estatus=5) and plantasId=:plantaId")
     public abstract int getTotSolsxPlanta(int etapa, String indice,  int estatus, int plantaId);
 
+    @Query("SELECT count(solicitud_cor.id) FROM solicitud_cor inner join visitas on val_vis_id=visitas.id where solicitud_cor.etapa=:etapa and solicitud_cor.indice=:indice  and (solicitud_cor.estatus=:estatus or solicitud_cor.estatus=5) and ciudad=:ciudad")
+    public abstract int getTotSolsxcd(int etapa, String indice,  int estatus, String ciudad);
+
     @Query("SELECT count(solicitud_cor.id) from solicitud_cor inner join lista_compras on solicitud_cor.plantasId=lista_compras.plantasId " +
             "where solicitud_cor.etapa=:etapa and solicitud_cor.indice=:indice  and (solicitud_cor.estatus=:estatus or solicitud_cor.estatus=5) and ciudadNombre=:cd")
     public abstract LiveData<Integer> getTotSolsxCd(int etapa, String indice,  int estatus, String cd);
@@ -80,5 +83,8 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
 
     @Query("select * from solicitud_cor where indice=:indice ")
     public abstract  LiveData<List<SolicitudCor>> getByIndice(String indice);
+
+    @Query("SELECT * FROM solicitud_cor where etapa=:etapa and indice=:indice and val_vis_id>0 and (estatus=:estatus or estatus=5)")
+    public abstract LiveData<List<SolicitudCor>> getSolicitudesVis(int etapa, String indice, int estatus);
 
 }

@@ -793,6 +793,7 @@ public class CreadorFormulario {
     public ImageView imagenView(){
         ImageView imagen=new ImageView(context);
         if(infocampo.value!=null&&!infocampo.value.equals("")) {
+            Log.d("CreadorForm","mostrando"+infocampo.value);
             Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(infocampo.value,150,150);
             imagen.setImageBitmap(bitmap1);
         }

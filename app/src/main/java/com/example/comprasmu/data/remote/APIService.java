@@ -9,6 +9,7 @@ import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.ui.envio.DocumentosEnvio;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -175,4 +176,13 @@ public interface APIService {
     @GET("descrespetiq")
     Call<RespInfEtapaResponse> getRespaldoEtiq( @Query("indice") String indice, @Query("usuario") String usuario);
 
+    @GET("documentosenv")
+    Call<DocumentosEnvio> getDocumentosEnvio(@Query("indice") String indice, @Query("usuario") String usuario, @Query("ciudad") String ciudad);
+
+    @POST("infenvio/create")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> saveInformeEnvio(@Body InformeEnvPaqEnv item);
 }

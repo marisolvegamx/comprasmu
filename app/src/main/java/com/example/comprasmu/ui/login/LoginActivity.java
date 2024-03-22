@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity
               //  loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
                 //        passwordEditText.getText().toString());
                 if(s.length()>0)
-                loginButton.setEnabled(true);
+                    loginButton.setEnabled(true);
             }
         };
         usernameEditText.addTextChangedListener(afterTextChangedListener);

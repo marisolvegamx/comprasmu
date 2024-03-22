@@ -757,9 +757,12 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         envio.setInformeEnvioDet(this.getInformeEnvioDet(idnvo));
-        List listaimg=new ArrayList();
-        listaimg.add(envio.getInformeEnvioDet().getFotoSello());
-        List<ImagenDetalle> imagenes=this.buscarImagenes(listaimg);
+        //List<Integer> listaimg=new ArrayList();
+       // listaimg.add(envio.getInformeEnvioDet().getFotoSello());
+        List<ImagenDetalle> imagenes=new ArrayList<>();
+
+        ImagenDetalle imagen=imagenDetRepository.findsimple(envio.getInformeEnvioDet().getFotoSello());
+        imagenes.add(imagen);
 
         envio.setImagenDetalles(imagenes);
         return envio;
@@ -827,11 +830,11 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
             ImagenDetalle fotoSello = this.getFoto(informe.getFotoSello());
             //borro la anterior
-
-            this.eliminarImagen(fotoSello.getRuta());
+            if(!nvaruta.equals(fotoSello.getRuta()))
+                this.eliminarImagen(fotoSello.getRuta());
             fotoSello.setRuta(nvaruta);
 
-            infEnvioRepo.insert(informe);
+            imagenDetRepository.insert(fotoSello);
 
     }
 

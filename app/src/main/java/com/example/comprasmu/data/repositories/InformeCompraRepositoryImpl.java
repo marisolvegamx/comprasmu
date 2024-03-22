@@ -222,6 +222,7 @@ public class InformeCompraRepositoryImpl   {
 
         for(int i=0;i<params.length;i++)
             Log.d("InformeCompraRepo","***"+params[i]);
+        Log.d("InformeCompraRepo",query);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
                 );

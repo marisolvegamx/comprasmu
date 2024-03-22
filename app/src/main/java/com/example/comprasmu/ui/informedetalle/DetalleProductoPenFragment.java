@@ -340,6 +340,16 @@ public class DetalleProductoPenFragment extends Fragment {
             if(preguntaAct.getId()==57){ //los comentarios no son obligatorios
               //  textoint.addTextChangedListener(new MayusTextWatcher());
              //   textoint.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+                //veo si ya tengo informe
+                mViewModel.informe=mViewModel.getInformeCompra(mViewModel.getIdInformeNuevo());
+                if( mViewModel.informe!=null) {
+                    mViewModel.consecutivo = mViewModel.informe.getConsecutivo();
+                    Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
+
+                    ((ContinuarInformeActivity) getActivity()).actualizarCliente(mViewModel.informe);
+
+                    //   ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
+                }
                 textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(300)});
 
                 aceptar.setEnabled(true);

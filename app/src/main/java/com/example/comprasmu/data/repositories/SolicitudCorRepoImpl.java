@@ -45,8 +45,13 @@ public class SolicitudCorRepoImpl  {
         return icDao.getTotSols(etapa, indice, estatus);
     }
     public int totalSolsxPlanta(int etapa, String indice, int estatus, int plantaid) {
-        Log.d("SolicitudCorRepoImpl","pendientes"+etapa+"--"+indice+"--"+estatus+"--"+plantaid);
+       // Log.d("SolicitudCorRepoImpl","pendientes"+etapa+"--"+indice+"--"+estatus+"--"+plantaid);
         return icDao.getTotSolsxPlanta(etapa, indice, estatus, plantaid);
+    }
+
+    public int totalSolscorxcd(int etapa, String indice, int estatus, String ciudad) {
+        // Log.d("SolicitudCorRepoImpl","pendientes"+etapa+"--"+indice+"--"+estatus+"--"+plantaid);
+        return icDao.getTotSolsxcd(etapa, indice, estatus, ciudad);
     }
 
     public LiveData<Integer> totalSolsxPlantaxCd(int etapa, String indice, int estatus, String cd) {
@@ -120,5 +125,7 @@ public class SolicitudCorRepoImpl  {
         icDao.deleteByIndice(indice);
     }
 
-
+    public LiveData<List<SolicitudCor>> getAllVisita(int etapa, String indice, int estatus) {
+        return icDao.getSolicitudesVis(etapa, indice, estatus);
+    }
 }

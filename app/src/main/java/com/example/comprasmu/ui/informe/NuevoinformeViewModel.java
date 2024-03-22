@@ -914,6 +914,9 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return detalleRepo.getCancelda(comprasId,comprasDetId,estatus);
 
     }
+    public InformeCompra getInformeCompra( int idinf){
+       return repository.findSimple(idinf);
+    }
 
     public void actualizarCancelada(int id, int estatus) {
          detalleRepo.actualizarEstatus(id, estatus);

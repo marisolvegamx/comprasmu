@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,9 +25,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
+import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.databinding.DescargarEnvFragmentBinding;
 import com.example.comprasmu.databinding.ListaSelecFragmentBinding;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
@@ -53,8 +58,9 @@ public class DescargarFragment extends Fragment {
     private DescargarEnvFragmentBinding mBinding;
     protected ListaSelecFragment.AdaptadorListas adaptadorLista;
     private ListView objetosLV;
-    private TextView indicacion;
+    private TextView indicacion,textView;
     int clientesel;
+    ProgressBar progressBar;
     protected ArrayList<DescripcionGenerica> listaSeleccionable;
 
     public DescargarFragment() {
@@ -80,11 +86,13 @@ public class DescargarFragment extends Fragment {
                 R.layout.descargar_env_fragment, container, false);
         lsViewModel = new ViewModelProvider(this).get(ListaSelecViewModel.class);
 
+
         listaSeleccionable=new ArrayList<DescripcionGenerica>();
         // mViewModel.setLista( this.listaSeleccionable);
         //  mBinding.setViewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
         objetosLV=mBinding.getRoot().findViewById(R.id.listaobjetos);
+        objetosLV.setVisibility(View.GONE);
 
         indicacion=mBinding.textView9;
         return mBinding.getRoot();
@@ -96,30 +104,23 @@ public class DescargarFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-        mBinding.lldeselcliente.setVisibility(View.VISIBLE);
-        mBinding.lldeseldoc.setVisibility(View.GONE);
-        setIndicacion(getString(R.string.seleccione_cliente));
-        //busco si tengo varios clientes x ciudad
+        if(!isOnlineNet()) {
+            notificarSinConexion();
+            //  miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
+
+            return ;
+        }
         if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
 
             // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
             irAcdSel();
             return;
         }
-        List<ListaCompra> listainfetiq;
-        listainfetiq = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, this.etapa);
-        Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
 
-                if(listainfetiq.size()>0) {
-
-                    convertirLista(listainfetiq);
-
-                    setLista(listaClientesEnv);
-                    setupListAdapter();
-
-                }
-                else
-                    Log.d(TAG,"algo salió mal con la consulta de listas");
+        //hago la peticion
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        DocsEnvioListener listener=new DocsEnvioListener();
+        ps.getDocumentosEnvio(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
 
 
         getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -134,25 +135,46 @@ public class DescargarFragment extends Fragment {
             }
         });
 
-        mBinding.txtdeguia.setOnClickListener(new View.OnClickListener() {
+        mBinding.btndeguia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 descargarPDF("g");
             }
         });
-        mBinding.txtdefda.setOnClickListener(new View.OnClickListener() {
+        mBinding.btndefda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 descargarPDF("fda");
             }
         });
-        mBinding.txtdefactura.setOnClickListener(new View.OnClickListener() {
+        mBinding.btndefactura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 descargarPDF("fac");
+            }
+        });
+        mBinding.btndeanexo1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                descargarPDF("anx1");
+            }
+        });
+        mBinding.btndeanexo2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                descargarPDF("anx2");
+            }
+        });
+        mBinding.btndeanexo3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                descargarPDF("anx3");
             }
         });
 
@@ -218,6 +240,75 @@ public class DescargarFragment extends Fragment {
             navController.navigate(R.id.action_descetitocdtrab);
 
     }
+    public void notificarSinConexion(){
+        mBinding.txtdemensaje.setText("Esta acción requiere conexión a Internet, verifique");
+        mBinding.txtdemensaje.setVisibility(View.VISIBLE);
+    }
+    public static Boolean isOnlineNet() {
+
+        try {
+            Process p = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.es");
+
+            int val           = p.waitFor();
+            boolean reachable = (val == 0);
+            return reachable;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public class DocsEnvioListener {
+        //  void cerrarAlerta(boolean res);
+        public void mostrarBotones(DocumentosEnvio docsenvio){
+            mBinding.deprogressBar3.setVisibility(View.GONE);
+            mBinding.btndefda.setVisibility(View.GONE);
+            mBinding.btndefactura.setVisibility(View.GONE);
+            mBinding.btndeanexo1.setVisibility(View.GONE);
+            mBinding.btndeanexo2.setVisibility(View.GONE);
+            mBinding.btndeanexo3.setVisibility(View.GONE);
+            if(docsenvio==null){
+                mBinding.txtdemensaje.setText(R.string.empty_state_text);
+                mBinding.txtdemensaje.setVisibility(View.VISIBLE);
+                return;
+
+            }
+            mBinding.lldeselcliente.setVisibility(View.GONE);
+            mBinding.lldeseldoc.setVisibility(View.GONE);
+            setIndicacion(getString(R.string.seleccione_cliente));
+            //busco si tengo varios clientes x ciudad
+
+            List<ListaCompra> listainfetiq;
+            listainfetiq = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, etapa);
+            Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+
+            if(listainfetiq.size()>0) {
+
+                convertirLista(listainfetiq);
+
+                setLista(listaClientesEnv);
+                setupListAdapter();
+
+            }
+            else
+                Log.d(TAG,"algo salió mal con la consulta de listas");
+            //ponemos botones
+            if(docsenvio.getFda()==1)
+                mBinding.btndefda.setVisibility(View.VISIBLE);
+            if(docsenvio.getRecoleccion()==1)
+                mBinding.btndefactura.setVisibility(View.VISIBLE);
+            if(docsenvio.getAnexo1()==1)
+                mBinding.btndeanexo1.setVisibility(View.VISIBLE);
+            if(docsenvio.getAnexo2()==1)
+                mBinding.btndeanexo2.setVisibility(View.VISIBLE);
+            if(docsenvio.getAnexo3()==1)
+                mBinding.btndeanexo3.setVisibility(View.VISIBLE);
+        }
+        //  void estatusInf(int es);
+        //  void estatusLis(int es);
+        // void imagenesEtapa(RespInfEtapaResponse infoResp);
 
 
+    }
 }

@@ -471,43 +471,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
             case R.id.action_mapa:
-                 // Log.d(TAG,"hice click en"+item.getItemId());
-              //  Intent homeIntent=new Intent(this, MapaCdActivity.class);
-              //  Intent homeIntent=new Intent(this, FirstMapActivity.class);
-
-               // startActivity(homeIntent);
-             //   finish();
-
-             //   NavHostFragment.findNavController(AbririnformeFragment.this).navigate(R.id.action_nuevotolista);
-           /*     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                MapaCdFragment fragconfig=new MapaCdFragment();
-                ft.add(R.id.nav_host_fragment, fragconfig);
-
-                ft.commit();*/
-               /* FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                BorrarDatosFragment fragconfig=new BorrarDatosFragment();
-                ft.add(R.id.nav_host_fragment, fragconfig);
-
-                ft.commit();*/
-            //    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-              //  PruebaFotosFragment fragconfig=new PruebaFotosFragment();
-                //ft.add(R.id.nav_host_fragment, fragconfig);
-
-                //ft.commit();
                 Intent homeIntent=new Intent(this, LeerLogActivity.class);
-
                 startActivity(homeIntent);
+                return true;
 
-                return true;
-          /*  case R.id.action_save:
-                guardarInforme();
-                return true;
-*/
      /*       case R.id.action_enviar_fotos:
               //  Log.d(TAG,"hice click en"+item.getItemId());
                    subirImagenes();
                 return true;*/
-            case R.id.cerrarsesion: //realmente es borrar datos
+         /*   case R.id.cerrarsesion: //realmente es borrar datos
 
               // Intent pruebai =new Intent(this, MasPruebasActivity.class);
              //   startActivity(pruebai);
@@ -517,7 +489,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
                 navController.navigate(R.id.nav_borrarind);*/
 
-                return true;
+              /*  return true;*/
 
             default:
                 // If we got here, the user's action was not recognized.

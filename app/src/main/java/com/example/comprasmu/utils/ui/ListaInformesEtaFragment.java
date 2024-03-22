@@ -24,9 +24,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
+import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
@@ -254,11 +256,19 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     public void onClickSubir(int informe, String tipo) {
         if(NavigationDrawerActivity.isOnlineNet()) {
             if(tipo.equals("e")) {
+                if(this.etapa==5) {
+                    InformeEnvPaqEnv envio=npViewModel.prepararInformeEnvPaq(informe);
+                    SubirInformeEnvTask miTareaAsincrona = new SubirInformeEnvTask(envio,getActivity());
+                    miTareaAsincrona.execute();
+                    subirFotosEnv(getActivity(),envio);
+                }else {
+                    InformeEtapaEnv informeEta = this.preparaInforme(informe);
 
-                InformeEtapaEnv informeEta=this.preparaInforme(informe);
-                SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(informeEta,getActivity());
-                miTareaAsincrona.execute();
-                subirFotos(getActivity(),informeEta);
+                    SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(informeEta, getActivity());
+                    miTareaAsincrona.execute();
+                    subirFotos(getActivity(),informeEta);
+                }
+
                 Log.d(TAG, "preparando informe**********");
              //   NuevoinformeFragment.subirFotos(getActivity(), informeenv);
             }else
@@ -371,5 +381,31 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
 
     }
+    public static void subirFotosEnv(Activity activity, InformeEnvPaqEnv informe){
+        //las imagenes
+        //busco la imagenes
+        for(ImagenDetalle imagen:informe.getImagenDetalles()){
+            //
+            //subo cada una
+            Intent msgIntent = new Intent(activity, SubirFotoService.class);
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
+            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+            // Constantes.INDICEACTUAL
+            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
 
+            msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
+
+            //cambio su estatus a subiendo
+            imagen.setEstatusSync(1);
+            activity.startService(msgIntent);
+            //cambio su estatus a subiendo
+
+
+
+        }
+
+
+
+    }
 }

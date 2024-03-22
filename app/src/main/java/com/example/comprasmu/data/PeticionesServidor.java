@@ -39,6 +39,8 @@ import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.ui.envio.DescargarFragment;
+import com.example.comprasmu.ui.envio.DocumentosEnvio;
 import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
@@ -926,6 +928,34 @@ public class PeticionesServidor {
             this.version_detalle = version_detalle;
         }
     }
+    public void getDocumentosEnvio(String indice, String ciudad, DescargarFragment.DocsEnvioListener petsocor){
+        Log.d(TAG,"pidiendo docsenvio");
+        final Call<DocumentosEnvio> batch = ServiceGenerator.getApiService().getDocumentosEnvio(indice,usuario,ciudad);
 
+        batch.enqueue(new Callback<DocumentosEnvio>() {
+            @Override
+            public void onResponse(@Nullable Call<DocumentosEnvio> call, @Nullable Response<DocumentosEnvio> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+
+                    DocumentosEnvio docs = response.body();
+                    //reviso si está actualizado
+
+
+                        petsocor.mostrarBotones(docs);
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<DocumentosEnvio> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+                    petsocor.mostrarBotones(null);
+                }
+            }
+        });
+    }
 
 }

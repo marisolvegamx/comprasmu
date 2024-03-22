@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintAttribute;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -19,6 +20,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.Correccion;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 
@@ -395,12 +398,18 @@ public class VerInformeGenFragment extends Fragment {
         campo.value = informeEtapa.getClienteNombre();
 
         camposTienda.add(campo);
+
         campo = new CampoForm();
         campo.style = R.style.verinforme2;
-        campo.label = getString(R.string.planta);
-        campo.type = "label";
-        campo.value = informeEtapa.getPlantaNombre();
-
+        if(Constantes.ETAPAACTUAL>2){
+            campo.label = getString(R.string.ciudad);
+            campo.type = "label";
+            campo.value = informeEtapa.getCiudadNombre();
+        }else {
+            campo.label = getString(R.string.planta);
+            campo.type = "label";
+            campo.value = informeEtapa.getPlantaNombre();
+        }
 
         camposTienda.add(campo);
         campo = new CampoForm();
@@ -410,14 +419,51 @@ public class VerInformeGenFragment extends Fragment {
         campo.value = Constantes.vistasdf.format(informeEtapa.getCreatedAt());
 
         camposTienda.add(campo);
-      /*  if (Constantes.ETAPAACTUAL==3) {
+        if (Constantes.ETAPAACTUAL==5) {
+            //busco detalle
+            InformeEnvioDet infenvio= mViewModel.getInformeEnvioDet(informeEtapa.getId());
+
             campo = new CampoForm();
             campo.style = R.style.verinforme2;
-            campo.label = getString(R.string.num_cajas);
+            campo.label = "TOTAL CAJAS";
             campo.type = "label";
-            campo.value = informeEtapa.getTotal_cajas()+"";
+            campo.value = informeEtapa.getTotal_cajas() + "";
             camposTienda.add(campo);
-        }*/
+            if(infenvio!=null) {
+                campo = new CampoForm();
+                campo.style = R.style.verinforme2;
+                campo.label = "FECHA ENTREGA";
+                campo.type = "label";
+                campo.value = Constantes.sdfsolofecha.format(infenvio.getFechaEnvio());
+                camposTienda.add(campo);
+                campo = new CampoForm();
+                campo.style = R.style.verinforme2;
+                campo.label = "NOMBRE DE QUIEN RECIBE";
+                campo.type = "label";
+                campo.value = infenvio.getNombreRecibe();
+                camposTienda.add(campo);
+                campo = new CampoForm();
+                campo.style = R.style.verinforme2;
+                campo.label = getString(R.string.foto_sello);
+                campo.type = "imagenView";
+                //busco la foto
+                ImagenDetalle foto= mViewModel.getFoto(infenvio.getFotoSello());
+               if(foto!=null) {
+                   campo.funcionOnClick = new View.OnClickListener() {
+                       @Override
+                       public void onClick(View view) {
+                           verImagen(foto.getRuta());
+                       }
+                   };
+                   campo.value = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" +foto.getRuta();
+               }
+                camposTienda.add(campo);
+                mBinding.btnverdet.setVisibility(View.GONE);
+            }
+
+
+        }
+
 
         campo = new CampoForm();
         campo.style = R.style.verinforme2;

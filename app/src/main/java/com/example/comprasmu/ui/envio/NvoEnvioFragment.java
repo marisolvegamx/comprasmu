@@ -50,6 +50,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
+import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.DetalleCaja;
@@ -288,7 +289,7 @@ public class NvoEnvioFragment extends Fragment {
                     clienteNombre = listacomp.get(0).getClienteNombre();
                     totalcajas = mViewModel.getTotalCajasxCliXcd(clienteId, Constantes.CIUDADTRABAJO);
                     //veo si ya tengo un informe
-                    InformeEtapa primero = mViewModel.tieneInforme(3, Constantes.CIUDADTRABAJO, clienteId);
+                    InformeEtapa primero = mViewModel.tieneInforme(etapa, Constantes.CIUDADTRABAJO, clienteId);
 
                     InformeEtapa informetemp = new InformeEtapa();
                     informetemp.setClienteNombre(clienteNombre);
@@ -312,7 +313,7 @@ public class NvoEnvioFragment extends Fragment {
                 mViewModel.setIdNuevo(informeSel);
                 totalcajas = this.informeEdit.informeEtapa.getTotal_cajas();
                 clienteId = this.informeEdit.informeEtapa.getClientesId();
-
+                editarInforme();
             }
 
             aceptar1.setOnClickListener(new View.OnClickListener() {
@@ -387,6 +388,7 @@ public class NvoEnvioFragment extends Fragment {
 
         }catch(Exception ex){
             ex.printStackTrace();
+            milog.grabarError(TAG,"oncreateview",ex.getMessage());
         }
         return root;
     }
@@ -463,18 +465,27 @@ public class NvoEnvioFragment extends Fragment {
             preguntaAct = 2;
             ImagenDetalle foto;
             mViewModel.preguntaAct = preguntaAct;
-            if (informeEdit != null) {
+            if (informeEdit != null&&informeEdit.infEnvioDet!=null) {
                 //busco en la bd la imagen
-                foto = mViewModel.getFoto(informeEdit.infEnvioDet.getFotoSello());
-                txtfotosello.setText(foto.getRuta());
-                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 80, 80);
-                fotomos.setImageBitmap(bitmap1);
-                fotomos.setVisibility(View.VISIBLE);
-                btnrotar.setVisibility(View.VISIBLE);
-                aceptar3.setEnabled(true);
-                txtnombrerec.setText(informeEdit.infEnvioDet.getNombreRecibe());
+                if(informeEdit.infEnvioDet.getFotoSello()!=null) {
+                    foto = mViewModel.getFoto(informeEdit.infEnvioDet.getFotoSello());
+                    txtfotosello.setText(foto.getRuta());
+                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 80, 80);
+                    fotomos.setImageBitmap(bitmap1);
+                    fotomos.setVisibility(View.VISIBLE);
+                    btnrotar.setVisibility(View.VISIBLE);
+                    aceptar3.setEnabled(true);
+                }
+                txtfechaent.setText(Constantes.sdfsolofecha.format(informeEdit.infEnvioDet.getFechaEnvio()));
+                if(informeEdit.infEnvioDet.getNombreRecibe()!=null&&!informeEdit.infEnvioDet.getNombreRecibe().equals("")) {
+                    txtnombrerec.setText(informeEdit.infEnvioDet.getNombreRecibe());
+                    aceptar4.setEnabled(true);
+                }
                // contmuestra = detalleEdit.getNum_muestra();
-
+                aceptar2.setEnabled(true);
+                if(informeEdit.informeEtapa.getComentarios()!=null&&!informeEdit.informeEtapa.getComentarios().equals("")){
+                    txtcoment.setText(informeEdit.informeEtapa.getComentarios());
+                }
             }
 
         }
@@ -683,7 +694,7 @@ public class NvoEnvioFragment extends Fragment {
 
                }
 
-                //limpio campos
+
                 avanzar();
             }catch (Exception ex){
                 ex.printStackTrace();
@@ -943,9 +954,10 @@ public class NvoEnvioFragment extends Fragment {
         try {
             mViewModel.finalizarInf();
             InformeEnvPaqEnv envio=mViewModel.prepararInformeEnvPaq(mViewModel.getIdNuevo());
-          //  SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
-          //  miTareaAsincrona.execute();
+            SubirInformeEnvTask miTareaAsincrona = new SubirInformeEnvTask(envio,getActivity());
+            miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
+            salir();
         }catch(Exception ex){
             ex.printStackTrace();
             Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());
