@@ -38,20 +38,29 @@ public class SolicitudCorRepoImpl  {
     public LiveData<List<SolicitudCor>> getAll(int etapa, String indice, int estatus) {
         return icDao.getSolicitudes(etapa, indice, estatus);
     }
+    public LiveData<List<SolicitudCor>> getSolicitudPendAll( String indice) {
+        return icDao.getSolicitudPendAll( indice);
+    }
     public LiveData<List<SolicitudCor>> getAllPlan(int etapa, String indice, int plan, int estatus) {
         return icDao.getSolicitudesPlan(etapa, indice,plan, estatus);
     }
     public LiveData<Integer> totalSols(int etapa, String indice, int estatus) {
         return icDao.getTotSols(etapa, indice, estatus);
     }
+    public LiveData<Integer> totalSolsGen( String indice, int estatus) {
+        return icDao.getTotSolsGen( indice, estatus);
+    }
     public int totalSolsxPlanta(int etapa, String indice, int estatus, int plantaid) {
        // Log.d("SolicitudCorRepoImpl","pendientes"+etapa+"--"+indice+"--"+estatus+"--"+plantaid);
         return icDao.getTotSolsxPlanta(etapa, indice, estatus, plantaid);
     }
-
-    public int totalSolscorxcd(int etapa, String indice, int estatus, String ciudad) {
+    public int totSolsxPlantaAll(String indice, int estatus, int plantaid) {
         // Log.d("SolicitudCorRepoImpl","pendientes"+etapa+"--"+indice+"--"+estatus+"--"+plantaid);
-        return icDao.getTotSolsxcd(etapa, indice, estatus, ciudad);
+        return icDao.getTotSolsxPlantaAll( indice, estatus, plantaid);
+    }
+    public int getTotSolsVis(int etapa, String indice, int estatus, String ciudad) {
+        // Log.d("SolicitudCorRepoImpl","pendientes"+etapa+"--"+indice+"--"+estatus+"--"+plantaid);
+        return icDao.getTotSolsVis(etapa, indice, estatus, ciudad);
     }
 
     public LiveData<Integer> totalSolsxPlantaxCd(int etapa, String indice, int estatus, String cd) {

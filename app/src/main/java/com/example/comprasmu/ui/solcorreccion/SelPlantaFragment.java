@@ -29,7 +29,7 @@ import java.util.List;
 
 /*** para poner correcciones
  * mostrará todas las plantas que tenga el recolector sin importar la ciudad de trabajo***/
-
+/***mod marzo 24: se muestran todas las solicitudes sin importar la etapa***/
 public class SelPlantaFragment extends ListaSelScrollFragment implements  ListaSelScrollFragment.AdapterCallback{
 
     private  ArrayList<DescripcionGenerica> listaClientesEnv;
@@ -125,14 +125,14 @@ public class SelPlantaFragment extends ListaSelScrollFragment implements  ListaS
 
     private int contarCorrecc(int plantaId){
 
-       int  pendientes=scViewModel.getTotalSolsxplanta(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1, plantaId);
+       int  pendientes=scViewModel.getTotalSolsxplantaAll(Constantes.INDICEACTUAL,1, plantaId);
         return pendientes;
     }
 
     /****para correcciones de tienda****/
     private int contarCorreccGen(String ciudad){
 
-        int  pendientes=scViewModel.getTotalSolscorxcd(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1, ciudad);
+        int  pendientes=scViewModel.getTotSolsVis(Constantes.INDICEACTUAL,1, ciudad);
         return pendientes;
     }
     public void siguiente(int i){

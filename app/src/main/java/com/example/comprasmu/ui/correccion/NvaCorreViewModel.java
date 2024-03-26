@@ -170,6 +170,22 @@ public class NvaCorreViewModel extends AndroidViewModel {
             }
         return resp;
     }
+    public List<CorreccionWithSol> getCorreccionesAll( String indice){
+        List<CorreccionWithSol> resp=new ArrayList<>();
+
+        List<Correccion> listacor=correpository.getAll(indice);
+        CorreccionWithSol solwcor=null;
+        if(listacor!=null)
+            for (Correccion cor:listacor) {
+                //busco la correccion
+                SolicitudCor sol= solRepo.findsimple(cor.getSolicitudId(), cor.getNumfoto());
+                solwcor=new CorreccionWithSol();
+                solwcor.solicitud=sol;
+                solwcor.correccion=cor;
+                resp.add(solwcor);
+            }
+        return resp;
+    }
     public List<CorreccionWithSol> getCorreccionesxEta(int etapa, String indice, int plantaSel){
 
         List<CorreccionWithSol> resp=new ArrayList<>();

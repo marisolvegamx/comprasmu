@@ -181,7 +181,7 @@ public class DescargarFragment extends Fragment {
     }
     public void setLista(ArrayList<DescripcionGenerica> lista){
         for(DescripcionGenerica des:lista) {
-            Log.d("ListaSelectFragment",des.getNombre()+"--"+ des.getDescripcion2());
+            Log.d(TAG,des.getNombre()+"--"+ des.getDescripcion2());
         }
         this.listaSeleccionable=lista;
         lsViewModel.setLista( this.listaSeleccionable);
@@ -281,7 +281,7 @@ public class DescargarFragment extends Fragment {
 
             List<ListaCompra> listainfetiq;
             listainfetiq = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, etapa);
-            Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+            Log.d(TAG, "id nuevo" + docsenvio.getCiudadId() + "--" + listainfetiq.size());
 
             if(listainfetiq.size()>0) {
 
@@ -289,11 +289,13 @@ public class DescargarFragment extends Fragment {
 
                 setLista(listaClientesEnv);
                 setupListAdapter();
+                objetosLV.setVisibility(View.VISIBLE);
 
             }
             else
                 Log.d(TAG,"algo salió mal con la consulta de listas");
             //ponemos botones
+            mBinding.lldeseldoc.setVisibility(View.VISIBLE);
             if(docsenvio.getFda()==1)
                 mBinding.btndefda.setVisibility(View.VISIBLE);
             if(docsenvio.getRecoleccion()==1)

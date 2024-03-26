@@ -80,6 +80,25 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
         return icDao.getCorrByFiltros( sqlquery);
     }
 
+    public List<Correccion> getAll( String indice) {
+        String query="Select correccion.* from correccion  " +
+                "inner join solicitud_cor on correccion.solicitudId=solicitud_cor.id" +
+                " and correccion.numfoto=solicitud_cor.numfoto" +
+                " where solicitud_cor.indice=?";
+        ArrayList<String> filtros=new ArrayList<String>();
+        filtros.add(indice);
+
+
+        Object[] params=filtros.toArray();
+
+        //  for(int i=0;i<params.length;i++)
+        //      Log.d("CorreccionRepoImpl","***"+params[i]);
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,
+                filtros.toArray());
+        return icDao.getCorrByFiltros( sqlquery);
+    }
+
 
 
 

@@ -84,7 +84,11 @@ public class SolCorreAdapter extends RecyclerView.Adapter<SolCorreAdapter.Solici
                 @Override
                 public void onClick(View view) {
                    // view.setEnabled(false);
-                        callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()),Integer.parseInt(binding.liTxtnumfoto.getText().toString()));
+                    try {
+                        callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()), Integer.parseInt(binding.liTxtnumfoto.getText().toString()), Integer.parseInt(binding.txtsolidetapa.getText().toString()));
+                    }catch (NumberFormatException ex){
+                        ex.printStackTrace();
+                    }
                 }
             });
 
@@ -94,7 +98,7 @@ public class SolCorreAdapter extends RecyclerView.Adapter<SolCorreAdapter.Solici
 
     }
     public interface AdapterCallback {
-        void onClickVer(int idinforme,int numfoto);
+        void onClickVer(int idinforme,int numfoto, int etapa);
 
     }
 

@@ -693,12 +693,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     private void contarCorrecc(){
        // totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
-        if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3||Constantes.ETAPAACTUAL==5||Constantes.ETAPAACTUAL==6){
+       /* if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3||Constantes.ETAPAACTUAL==5||Constantes.ETAPAACTUAL==6){
             //busco x ciudad
             totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
 
         }else
-            totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
+            totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);*/
+        /***mod marzo-24 ya no importa la etapa trae todas las solicitudes****/
+        totCorrecciones=scViewModel.getTotalSolsGen(Constantes.INDICEACTUAL,1);
+
         //la solicitudes de coreecciones ya no serán por cd sino x indice y etapa
         Log.d(TAG,"contarCorrecc"+totCorrecciones.getValue()+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 

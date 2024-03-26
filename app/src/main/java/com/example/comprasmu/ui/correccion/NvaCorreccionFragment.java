@@ -57,7 +57,7 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-
+/****correccion de compras***/
 public class NvaCorreccionFragment extends Fragment {
 
 

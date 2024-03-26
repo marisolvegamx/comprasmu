@@ -85,7 +85,7 @@ public class NvaCorreccionPreFragment extends Fragment {
         return new NvaCorreccionPreFragment();
     }
     List<Correccion> nuevasCor;
-
+    int ETAPAACTUAL=1;
     ComprasLog milog;
     @SuppressLint("ResourceType")
     @Override
@@ -120,9 +120,9 @@ public class NvaCorreccionPreFragment extends Fragment {
                 //BUSCO LAS FOTOS ORIGINAL
 
                 txtmotivo.setText(solicitud.getMotivo());
-                switch(Constantes.ETAPAACTUAL){
+                switch(ETAPAACTUAL){
                     case 1:
-                        solViewModel.buscarFotosEta(solicitud.getInformesId(),Constantes.ETAPAACTUAL).observe(getViewLifecycleOwner(), new Observer<List<ImagenDetalle>>() {
+                        solViewModel.buscarFotosEta(solicitud.getInformesId(),1).observe(getViewLifecycleOwner(), new Observer<List<ImagenDetalle>>() {
                             @Override
                             public void onChanged(List<ImagenDetalle> imagenDetalles) {
                                fotosorig=imagenDetalles;

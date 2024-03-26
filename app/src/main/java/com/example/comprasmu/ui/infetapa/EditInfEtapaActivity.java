@@ -21,25 +21,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.InformeEtapa;
-import com.example.comprasmu.data.modelos.InformeEtapaDet;
-import com.example.comprasmu.data.modelos.Reactivo;
-import com.example.comprasmu.data.modelos.SolicitudCor;
+
+
 import com.example.comprasmu.databinding.ActivityNuevoInfetapaBinding;
-import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
-import com.example.comprasmu.ui.correccion.NvaCorrecCalCajaFragment;
-import com.example.comprasmu.ui.correccion.NvaCorreccionEmpFragment;
-import com.example.comprasmu.ui.correccion.NvaCorreccionEtiqFragment;
-import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
-import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
-import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.etiquetado.EditEtiquetadoFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiqCajaFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoElecFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoJumFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
-import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
+
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;

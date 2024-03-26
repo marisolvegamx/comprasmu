@@ -25,12 +25,17 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
     @Query("SELECT count(id) FROM solicitud_cor where etapa=:etapa and indice=:indice  and (estatus=:estatus or estatus=5) and plantasId=:plantaId")
     public abstract int getTotSolsxPlanta(int etapa, String indice,  int estatus, int plantaId);
 
+    @Query("SELECT count(id) FROM solicitud_cor where indice=:indice  and (estatus=:estatus or estatus=5) and plantasId=:plantaId")
+    public abstract int getTotSolsxPlantaAll( String indice,  int estatus, int plantaId);
+
     @Query("SELECT count(solicitud_cor.id) FROM solicitud_cor inner join visitas on val_vis_id=visitas.id where solicitud_cor.etapa=:etapa and solicitud_cor.indice=:indice  and (solicitud_cor.estatus=:estatus or solicitud_cor.estatus=5) and ciudad=:ciudad")
-    public abstract int getTotSolsxcd(int etapa, String indice,  int estatus, String ciudad);
+    public abstract int getTotSolsVis(int etapa, String indice,  int estatus, String ciudad);
 
     @Query("SELECT count(solicitud_cor.id) from solicitud_cor inner join lista_compras on solicitud_cor.plantasId=lista_compras.plantasId " +
             "where solicitud_cor.etapa=:etapa and solicitud_cor.indice=:indice  and (solicitud_cor.estatus=:estatus or solicitud_cor.estatus=5) and ciudadNombre=:cd")
     public abstract LiveData<Integer> getTotSolsxCd(int etapa, String indice,  int estatus, String cd);
+    @Query("SELECT count(id) FROM solicitud_cor where   indice=:indice  and (estatus=:estatus or estatus=5)")
+    public abstract LiveData<Integer> getTotSolsGen(String indice, int estatus);
 
 
     @Query("SELECT count(solicitud_cor.id) from solicitud_cor inner join informe_etapa on solicitud_cor.informesId=informe_etapa.id " +
@@ -38,8 +43,8 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
     public abstract LiveData<Integer> getTotSolsEtiqxCd(int etapa, String indice,  int estatus, String cd);
 
 
-    @Query("SELECT * FROM solicitud_cor WHERE   indice=:indice and (estatus=1) and etapa=:etapa order by id desc")
-    public abstract List<SolicitudCor>  getSolicitudPendSimp(String indice, int etapa);
+    @Query("SELECT * FROM solicitud_cor WHERE   indice=:indice and (estatus=1 or estatus=5)  order by id desc")
+    public abstract LiveData<List<SolicitudCor>>  getSolicitudPendAll(String indice);
 
     @Query("SELECT * FROM solicitud_cor WHERE  indice=:indice and (estatus=1) and etapa=:etapa order by id desc")
     public abstract LiveData<List<SolicitudCor>>  getSolicitudPend(String indice, int etapa);

@@ -54,6 +54,12 @@ public class ListaSolsViewModel extends AndroidViewModel {
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
         return listas;
     }
+    public LiveData<List<SolicitudCor>>  cargarDetallesAll(String indiceSel){
+        LiveData<List<SolicitudCor>> listas =repository.getSolicitudPendAll(indiceSel);
+        size = Transformations.map(listas, res->{ return listas.getValue().size();});
+        empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
+        return listas;
+    }
     public LiveData<List<SolicitudCor>>  cargarDetallesPlan(int etapa,String indiceSel,int plantaSel, int estatus){
         LiveData<List<SolicitudCor>> listas =repository.getAllPlan(etapa,indiceSel,plantaSel, estatus);
         size = Transformations.map(listas, res->{ return listas.getValue().size();});
@@ -67,9 +73,12 @@ public class ListaSolsViewModel extends AndroidViewModel {
         return listas;
     }
     public LiveData<Integer> getTotalSols(int etapa, String indiceSel, int estatus){
-        Log.d(TAG,"wwww"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
         return repository.totalSols(etapa,indiceSel, estatus);
+    }
+    public LiveData<Integer> getTotalSolsGen( String indiceSel, int estatus){
+
+        return repository.totalSolsGen(indiceSel, estatus);
     }
 
     public LiveData<Integer> getTotalSolsxCd(int etapa, String indiceSel, int estatus, String ciudad){
@@ -87,10 +96,13 @@ public class ListaSolsViewModel extends AndroidViewModel {
         Log.d(TAG,"getTotalSolsxplanta"+etapa+"--"+indiceSel+"--"+estatus+"--"+planta);
         return repository.totalSolsxPlanta(etapa,indiceSel, estatus, planta);
     }
-
-    public int  getTotalSolscorxcd(int etapa,String indiceSel,int estatus, String ciudad){
-        Log.d(TAG,"getTotalSolsxplanta"+etapa+"--"+indiceSel+"--"+estatus+"--");
-        return repository.totalSolscorxcd(etapa,indiceSel, estatus, ciudad);
+    public int  getTotalSolsxplantaAll(String indiceSel,int estatus, int planta){
+        Log.d(TAG,"getTotalSolsxplantaAll"+indiceSel+"--"+estatus+"--"+planta);
+        return repository.totSolsxPlantaAll(indiceSel, estatus, planta);
+    }
+    public int  getTotSolsVis(String indiceSel,int estatus, String ciudad){
+        Log.d(TAG,"getTotalSolsxplanta"+indiceSel+"--"+estatus+"--");
+        return repository.getTotSolsVis(2,indiceSel, estatus, ciudad);
     }
     public LiveData<SolicitudCor>  getSolicitud(int id,int numfoto){
         LiveData<SolicitudCor> solicitud =repository.find(id,numfoto);

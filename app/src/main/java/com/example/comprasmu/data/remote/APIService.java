@@ -177,7 +177,7 @@ public interface APIService {
     Call<RespInfEtapaResponse> getRespaldoEtiq( @Query("indice") String indice, @Query("usuario") String usuario);
 
     @GET("documentosenv")
-    Call<DocumentosEnvio> getDocumentosEnvio(@Query("indice") String indice, @Query("usuario") String usuario, @Query("ciudad") String ciudad);
+    Call<DocumentosEnvio> getDocumentosEnvio(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("ciudad") String ciudad);
 
     @POST("infenvio/create")
     @Headers({

@@ -342,7 +342,7 @@
     <string name="menu_nuevas_compras">Muestras pendientes</string>
     <string name="agregar_muestra">AGREGAR MUESTRA</string>
     <string name="capturar_inf">CAPTURAR EL INFORME EN EL MODULO CORRESPONDIENTE</string>
-    <string name="env_guia">Guía</string>
+    <string name="env_guia">GUIA</string>
     <string name="env_factura">Factura</string>
     <string name="documentos">Documentos</string>
     <string name="menu_resumenenv">Resumen envíos</string>
@@ -352,6 +352,9 @@
     <string name="envio">ENVIO</string>
     <string name="gastos">GASTOS</string>
     <string name="menu_lista_env">Resumen envío</string>
-
+    <string name="env_recoleccion">RECOLECCION</string>
+    <string name="env_anexo1">ANEXO 1</string>
+    <string name="env_anexo2">ANEXO 2</string>
+    <string name="env_anexo3">ANEXO 3</string>
 
 </resources>

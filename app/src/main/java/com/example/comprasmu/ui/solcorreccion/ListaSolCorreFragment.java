@@ -85,7 +85,8 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
 
         setupListAdapter();
 
-       cargarLista();
+       //cargarLista();
+        cargarListaAll();
     }
 
     public void cargarLista(){
@@ -134,6 +135,25 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
 
 
     }
+    public void cargarListaAll(){
+        Log.d(TAG,"etapa y planta sel"+Constantes.ETAPAACTUAL+"--"+plantasel);
+
+            mViewModel.cargarDetallesAll(indice).observe(getViewLifecycleOwner(), new Observer<List<SolicitudCor>>() {
+                @Override
+                public void onChanged(List<SolicitudCor> solicitudCors) {
+
+                    mListAdapter.setSolicitudCorList(solicitudCors);
+                    mListAdapter.notifyDataSetChanged();
+                    if(solicitudCors!=null&&solicitudCors.size()>0)
+                        mBinding.emptyStateText.setVisibility(View.INVISIBLE);
+                    else
+                        mBinding.emptyStateText.setVisibility(View.VISIBLE);
+                }
+            });
+
+
+
+    }
     private void setupListAdapter() {
         mListAdapter = new SolCorreAdapter(this);
         mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -144,11 +164,11 @@ public class ListaSolCorreFragment extends Fragment implements SolCorreAdapter.A
 
 
     @Override
-    public void onClickVer(int sol, int numfoto) {
+    public void onClickVer(int sol, int numfoto, int etapa) {
         Intent intento1=new Intent(getActivity(), NuevoInfEtapaActivity.class);
         intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL, sol);
         intento1.putExtra(NuevoInfEtapaActivity.NUMFOTO, numfoto);
-        intento1.putExtra(ContInfEtapaFragment.ETAPA, Constantes.ETAPAACTUAL);
+        intento1.putExtra(ContInfEtapaFragment.ETAPA, etapa);
         intento1.putExtra(NuevoInfEtapaActivity.CORRECCION,true);
         startActivity(intento1);
     }
