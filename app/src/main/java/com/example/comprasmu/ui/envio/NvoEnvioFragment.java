@@ -957,11 +957,14 @@ public class NvoEnvioFragment extends Fragment {
             SubirInformeEnvTask miTareaAsincrona = new SubirInformeEnvTask(envio,getActivity());
             miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
+            Toast.makeText(getContext(),"El informe se envió correctamente",Toast.LENGTH_SHORT).show();
+
             salir();
+
         }catch(Exception ex){
             ex.printStackTrace();
-            Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());
-            Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
+            milog.grabarError(TAG,"finalizarInf","Algo salió mal al finalizar"+ex.getMessage());
+            Toast.makeText(getContext(),"Algo salio mal al enviar intente de nuevo desde el resumen",Toast.LENGTH_SHORT).show();
         }
         // limpio variables de sesion
 
