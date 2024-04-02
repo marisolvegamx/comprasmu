@@ -50,9 +50,9 @@ public class CancelAdapter extends RecyclerView.Adapter<CancelAdapter.InformeCom
        // holder.binding.setViewModel(mViewModel);
         if(mInformeCompraList!=null)
             holder.binding.setDetalle(mInformeCompraList.get(position));
-        if(mdetalle!=null)
+        if(mdetalle!=null&&mdetalle.size()>position)
             holder.binding.setProducto(mdetalle.get(position));
-        holder.binding.setSdf(Constantes.vistasdf);
+        holder.binding.setSdf(Constantes.sdfsolofecha);
       //  holder.binding.setVisita();
       //  holder.binding.executePendingBindings();
 

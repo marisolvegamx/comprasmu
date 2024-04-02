@@ -708,14 +708,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
     private void contarCanceladas(){
         //depende la etapa
-        if(Constantes.ETAPAACTUAL==2)
+       // if(Constantes.ETAPAACTUAL==2)
         totCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
-        else
-        {
-            totCanceleta=scViewModel.getTotalCancelEta(Constantes.INDICEACTUAL,Constantes.ETAPAACTUAL);
+        //else
+       // {
+            totCanceleta=scViewModel.getTotalCancelEta(Constantes.INDICEACTUAL);
             Log.d(TAG,"contarCanceladas"+totCanceleta+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
-        }
+
+
 
     }
     private void initializeCountDrawer(){
@@ -739,24 +740,25 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             txtcancel.setTypeface(null, Typeface.BOLD);
             txtcancel.setTextColor(Color.RED);
             //  gallery.setTextSize(15);
-            if(Constantes.ETAPAACTUAL==2)
+
             totCancel.observe(this, new Observer<List<InformeCompraDetalle>>() {
                 @Override
                 public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
-                    if(informeCompraDetalles!=null)
-                        txtcancel.setText(informeCompraDetalles.size() + "");
+
+                    totCanceleta.observe(NavigationDrawerActivity.this, new Observer<List<InformeEtapa>>() {
+                        @Override
+                        public void onChanged(List<InformeEtapa> informeCompraDetalles2) {
+                            Log.d(TAG, "wwww" + informeCompraDetalles2.size() + "--" + Constantes.ETAPAACTUAL + "," + Constantes.INDICEACTUAL);
+                            int total = 0;
+                            if (informeCompraDetalles != null)
+                                total = informeCompraDetalles.size();
+                            if (informeCompraDetalles2 != null)
+                                total = total + informeCompraDetalles2.size();
+                            txtcancel.setText(total + "");
+                        }
+                    });
                 }
             });
-            else
-                totCanceleta.observe(this, new Observer<List<InformeEtapa>>() {
-                    @Override
-                    public void onChanged(List<InformeEtapa> informeCompraDetalles) {
-                        Log.d(TAG,"wwww"+informeCompraDetalles.size()+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
-
-                        if(informeCompraDetalles!=null)
-                            txtcancel.setText(informeCompraDetalles.size() + "");
-                    }
-                });
 
         }
 

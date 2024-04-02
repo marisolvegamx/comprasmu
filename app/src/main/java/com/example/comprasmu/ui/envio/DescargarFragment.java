@@ -62,6 +62,7 @@ public class DescargarFragment extends Fragment {
     int clientesel;
     ProgressBar progressBar;
     protected ArrayList<DescripcionGenerica> listaSeleccionable;
+    int idcap;
 
     public DescargarFragment() {
         // Required empty public constructor
@@ -214,7 +215,7 @@ public class DescargarFragment extends Fragment {
     public void descargarPDF(String opcion){
         long archact;
        // String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&indicelis="+ Constantes.INDICEACTUAL+"&rec="+Constantes.CLAVEUSUARIO+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO;
-        String MY_URL = Constantes.URLSERV+"descargarenv.php?doc="+opcion+"&indice="+ Constantes.INDICEACTUAL+"&cli="+clientesel+"&ciu="+Constantes.CIUDADTRABAJO+"&rec="+Constantes.CLAVEUSUARIO;
+        String MY_URL = Constantes.URLSERV+"descargarenv.php?doc="+opcion+"&indice="+ Constantes.INDICEACTUAL+"&id="+idcap+"&rec="+Constantes.CLAVEUSUARIO;
         Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
         // registrer receiver in order to verify when download is complete
         //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -237,12 +238,13 @@ public class DescargarFragment extends Fragment {
                 (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         if(navController!=null)
-            navController.navigate(R.id.action_descetitocdtrab);
+            navController.navigate(R.id.action_envtocdtrabajo);
 
     }
     public void notificarSinConexion(){
         mBinding.txtdemensaje.setText("Esta acción requiere conexión a Internet, verifique");
         mBinding.txtdemensaje.setVisibility(View.VISIBLE);
+        mBinding.deprogressBar3.setVisibility(View.GONE);
     }
     public static Boolean isOnlineNet() {
 
@@ -274,6 +276,7 @@ public class DescargarFragment extends Fragment {
                 return;
 
             }
+            idcap= docsenvio.getInv_id();
             mBinding.lldeselcliente.setVisibility(View.GONE);
             mBinding.lldeseldoc.setVisibility(View.GONE);
             setIndicacion(getString(R.string.seleccione_cliente));

@@ -2,12 +2,21 @@ package com.example.comprasmu.ui.envio;
 
 /***para recibir el json de los documentos que se imprimen**/
 public class DocumentosEnvio {
+    private int inv_id;
     private int ciudadId;
     private int fda;
     private int recoleccion;
     private int anexo1;
     private int anexo2;
     private int anexo3;
+
+    public int getInv_id() {
+        return inv_id;
+    }
+
+    public void setInv_id(int inv_id) {
+        this.inv_id = inv_id;
+    }
 
     public int getCiudadId() {
         return ciudadId;

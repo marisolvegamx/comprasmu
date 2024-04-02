@@ -73,6 +73,7 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
         desc.getInformes();
         //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
         DescRespInformesEta desetiq=new DescRespInformesEta(this,this,tvRepo);
+       //todo falta esta actualizacion
         desetiq.getCambiosSupEtiq();
         //lo hago al inicio para consultarlo en cualquier modulo
        // desetiq.getCambiosEtiq();

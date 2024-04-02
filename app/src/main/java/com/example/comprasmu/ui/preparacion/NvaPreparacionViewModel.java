@@ -398,9 +398,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
       // Log.d(TAG,"buscando a "+idinf+"--"+numcaja);
          return infDetRepo.getMuestraByCaja(idinf, etapa, numcaja);
     }
-    public void borrarDetEtaxCaja(int idinf, int etapa,int numcaja){
+    public void borrarFotosCajaEtiq(int idinf, int numcaja){
         // Log.d(TAG,"buscando a "+idinf+"--"+numcaja);
-        infDetRepo.deleteByCaja(idinf, etapa, numcaja);
+        infDetRepo.deleteFotosCajaEtiq(idinf, 3, numcaja);
     }
     public void actualizarComentarios(int idinf, String comentarios){
         infEtaRepository.actualizarComentariosPrep(idinf,comentarios);

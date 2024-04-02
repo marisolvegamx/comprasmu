@@ -81,7 +81,10 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("DELETE FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja")
     public abstract void deleteByCaja( int id,int etapa, int numcaja);
 
-    @Query("SELECT * FROM informe_etapa_det where id=:id")
+  @Query("DELETE FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:numcaja and descripcionId in (12,13,14)")
+  public abstract void deleteFotosCajaEtiq( int id,int etapa, int numcaja);
+
+  @Query("SELECT * FROM informe_etapa_det where id=:id")
     public abstract InformeEtapaDet findsimple( int id);
 
     @Query("SELECT count(*) FROM informe_etapa_det where informeEtapaId=:idinf and num_caja=:numcaja and etapa=3 and descripcionId=11")

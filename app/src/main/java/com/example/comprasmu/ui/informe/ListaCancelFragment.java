@@ -32,6 +32,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
+/****muestro resumen de muestras canceladas o informes cancelados de la demas etapas**/
 public class ListaCancelFragment extends Fragment implements CancelAdapter.AdapterCallback {
     private ListaInformesViewModel mViewModel;
 
@@ -91,23 +92,52 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         mViewModel.cargarCancelados(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDetalle>>() {
             @Override
             public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
-                if (informeCompraDetalles.size() < 1) {
-                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
-                }
-                Log.d(TAG, "YA CARGÓ " + informeCompraDetalles.size());
+
+                Log.d(TAG, "compra YA CARGÓ " + informeCompraDetalles.size());
 
 
                 mViewModel.cargarCancelados2(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDao.InformeCompravisita>>() {
                     @Override
                     public void onChanged(List<InformeCompraDao.InformeCompravisita> informeCompravisitas) {
-                        if (informeCompravisitas.size() < 1) {
-                            mBinding.emptyStateText.setVisibility(View.VISIBLE);
-                        }
-                        Log.d(TAG, "YA CARGÓxx " + informeCompravisitas.size());
-                        mListAdapter.setInformeCompraList(informeCompravisitas);
+                        //busco los de las demas etapas
+
+
+                        mViewModel.cargarCanceladosEta(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+                            @Override
+                            public void onChanged(List<InformeEtapa> informes) {
+                                if (informes.size() < 1) {
+                                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
+                                }
+                                Log.d(TAG, "YA CARGÓ " + informes.size());
+                            //paso de informe etapa ainforme compra
+                                InformeCompraDao.InformeCompravisita nvoinf= new InformeCompraDao.InformeCompravisita();
+                                for (InformeEtapa infeta:informes
+                                     ) {
+                                    nvoinf.indice=infeta.getIndice();
+                                    nvoinf.idinforme=infeta.getId();
+                                    nvoinf.estatus= infeta.getEstatus();
+                                    if(infeta.getClienteNombre().equals("")){
+                                        nvoinf.clienteNombre=infeta.getCiudadNombre();
+                                    }else
+                                    nvoinf.clienteNombre=infeta.getClienteNombre();
+                                    nvoinf.plantaNombre=infeta.getPlantaNombre();
+                                   // nvoinf.mo
+                                    informeCompravisitas.add(nvoinf);
+                                }
+                                nvoinf=null;
+
+                                if (informeCompravisitas.size() < 1) {
+                                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
+                                }
+                                Log.d(TAG, "YA CARGÓxx " + informeCompravisitas.size());
+
+
+
+                                mListAdapter.setInformeCompraList(informeCompravisitas);
                         mListAdapter.setProductoList(informeCompraDetalles);
                         mListAdapter.notifyDataSetChanged();
-
+                            }
+                        });
 
                     }
                 });
@@ -115,41 +145,15 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
             });
     }
 
-    public void cargarListaEtapa(){
 
-
-
-
-        mViewModel.cargarCanceladosEta(indice, Constantes.ETAPAACTUAL).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
-            @Override
-            public void onChanged(List<InformeEtapa> informes) {
-                if (informes.size() < 1) {
-                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
-                }
-                Log.d(TAG, "YA CARGÓ " + informes.size());
-
-
-                mEtaAdapter.setInformeCompraList(informes);
-
-                mEtaAdapter.notifyDataSetChanged();
-
-
-            }
-        });
-    }
     private void setupListAdapter() {
         mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.detalleList.setHasFixedSize(true);
-        if(Constantes.ETAPAACTUAL==1||Constantes.ETAPAACTUAL==3){
-            mEtaAdapter = new CancelEtaAdapter();
-            mBinding.detalleList.setAdapter(mEtaAdapter);
-            cargarListaEtapa();
-        }else {
-            mListAdapter = new CancelAdapter(this);
+        mListAdapter = new CancelAdapter(this);
 
-            mBinding.detalleList.setAdapter(mListAdapter);
-            cargarLista();
-        }
+        mBinding.detalleList.setAdapter(mListAdapter);
+        cargarLista();
+
 
     }
 

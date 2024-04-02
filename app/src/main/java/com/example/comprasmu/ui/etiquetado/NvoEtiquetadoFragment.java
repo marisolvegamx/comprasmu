@@ -370,6 +370,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 informetemp.setClientesId(clienteSel);
                 informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
                 informetemp.setIndice(Constantes.INDICEACTUAL);
+                informetemp.setTotal_muestras(totmuestras);
                 ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(informetemp);
             }
         }

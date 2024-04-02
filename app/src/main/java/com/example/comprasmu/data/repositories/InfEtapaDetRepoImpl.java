@@ -93,6 +93,9 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
     public void deleteByCaja( int idinf, int etapa, int numcaja) {
          dao.deleteByCaja(idinf,etapa, numcaja);
     }
+    public void deleteFotosCajaEtiq( int idinf, int etapa, int numcaja) {
+        dao.deleteFotosCajaEtiq(idinf,etapa, numcaja);
+    }
 
     @Override
     public InformeEtapaDet findsimple(int id) {

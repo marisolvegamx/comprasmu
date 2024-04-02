@@ -415,10 +415,11 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
       //  request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);  // This will show notification on top when downloading the file.
         request.setTitle("Downloading a file"); // Title for notification.
        // request.setVisibleInDownloadsUi(true);
-
-        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
-        archact=((DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
-        return 0;
+        if(uri!=null) {
+            request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
+            archact = ((DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
+        }
+            return 0;
 
     }
 

@@ -119,8 +119,8 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     }
     //por ahora aplica preparacion y etiq donde se cancela todo el info
-    public LiveData<List<InformeEtapa>> getTotalCancelEta(String indiceSel, int etapa ){
-        return infetarepo.getInformesxEstatus(indiceSel,etapa,0);
+    public LiveData<List<InformeEtapa>> getTotalCancelEta(String indiceSel ){
+        return infetarepo.getInformesxEstatusAll(indiceSel,0);
 
     }
 

@@ -77,6 +77,7 @@ public class ReubicEtiqFragment extends Fragment {
     ArrayAdapter<String> adaptercaja;
     InformeEtapa informeEtapaAct;
     private TextView txtciudad, txtcliente, txtindice, txttotmuestras;
+    int cajaorig;
 
     public ReubicEtiqFragment() {
 
@@ -305,8 +306,19 @@ public class ReubicEtiqFragment extends Fragment {
             //no son consecutivas
             return;
         }
+         cajaorig= muestraEdit.getNum_caja();
+
             muestraEdit.setNum_caja(numcaja);
-            mViewModel.actualizarInfEtaDet(muestraEdit);
+           int res= mViewModel.actualizarInfEtaDet(muestraEdit);
+        if(validarCajasVacias()){
+            Toast.makeText(getActivity(), "Las cajas vacías se eliminarán", Toast.LENGTH_SHORT).show();
+
+        }
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
             //reenvio al serv
             InformeEtapaEnv envio= preparaInforme(muestraEdit.getInformeEtapaId(), muestraEdit);
             SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
@@ -405,7 +417,22 @@ public class ReubicEtiqFragment extends Fragment {
         }
         return false;
     }
+    //si hhay cajas vacias devuelve true
+    public boolean validarCajasVacias(){
 
+        int i=1;
+            //busco si hay muestras
+        List<InformeEtapaDet> cajas=mViewModel.getDetEtaxCaja( informeEtapaAct.getId(),3,cajaorig);
+
+        if(cajas==null||cajas.size()<1) {
+                //elimino las fotos
+                mViewModel.borrarFotosCajaEtiq( informeEtapaAct.getId(),cajaorig);
+                return true;
+        }
+
+
+        return false;
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

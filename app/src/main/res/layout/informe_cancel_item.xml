@@ -95,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text='@{producto.producto+" "+producto.empaque+" "+producto.presentacion+" "+producto.nombreAnalisis}'
+                android:text='@{producto!=null?producto.producto+" "+producto.empaque+" "+producto.presentacion+" "+producto.nombreAnalisis:""}'
                 android:visibility="visible" />
             <TextView
                 android:id="@+id/txtictipomue"
