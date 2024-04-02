@@ -356,5 +356,6 @@
     <string name="env_anexo1">ANEXO 1</string>
     <string name="env_anexo2">ANEXO 2</string>
     <string name="env_anexo3">ANEXO 3</string>
+    <string name="su_archivo">LA DESCARGA DEL ARCHIVO SE MOSTRARÁ EN LAS NOTIFICACIONES DEL CELULAR</string>
 
 </resources>
