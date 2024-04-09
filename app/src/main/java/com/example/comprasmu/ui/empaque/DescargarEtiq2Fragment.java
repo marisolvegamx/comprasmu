@@ -80,7 +80,7 @@ public class DescargarEtiq2Fragment extends Fragment {
     public void descargarArchivo(){
         long archact;
        // String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&indicelis="+ Constantes.INDICEACTUAL+"&rec="+Constantes.CLAVEUSUARIO+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO;
-        String MY_URL = Constantes.URLSERV+"etiquetas/"+tipo+".jpeg";
+        String MY_URL = Constantes.URLSERV+"etiquetas/"+tipo+".pdf";
         Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
         // registrer receiver in order to verify when download is complete
         //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -93,7 +93,7 @@ public class DescargarEtiq2Fragment extends Fragment {
         // request.setVisibleInDownloadsUi(true);
         // request.setTitle("DESCARGA ETIQUETAS");
 
-        request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, "etiqueta_"+tipo+".jpeg");  // Storage directory path
+        request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, "etiqueta_"+tipo+".pdf");  // Storage directory path
         archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
         // return 0;
     }

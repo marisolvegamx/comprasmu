@@ -225,7 +225,7 @@ public class NvaCorreccionFragment extends Fragment {
 
                                         Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 80, 80);
                                         if(bitmap1!=null)
-                                        fotoori3.setImageBitmap(bitmap1);
+                                            fotoori3.setImageBitmap(bitmap1);
                                         root.findViewById(R.id.gpofotoo3).setVisibility(View.VISIBLE);
                                         fotoori3.setVisibility(View.VISIBLE);
                                     }

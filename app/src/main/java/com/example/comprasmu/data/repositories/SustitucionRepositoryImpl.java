@@ -112,6 +112,7 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
         );
+        Log.d("SUsTREPOIMP",categoria+"--"+ productoNombre+"--"+empaque+"--"+tamanio+"--"+ clienteId+"--"+plantaId);
         Log.d("SUsTREPOIMP",query);
         return dao.getByFiltrosSimp(sqlquery);
     }
