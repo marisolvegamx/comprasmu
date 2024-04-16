@@ -80,7 +80,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         progreso.show();
 
        // mTextView = findViewById(R.id.txtlllog);
-        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo
+        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG")){//pruebas y el lenovo
 
            DOWNLOAD_PATH = Constantes.URLPRUEBAS1+"fotografias";
         //    DOWNLOAD_PATH = Constantes.URLPRUEBAS2+"fotografias";

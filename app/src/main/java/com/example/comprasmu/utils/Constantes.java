@@ -58,7 +58,7 @@ public class Constantes {
     public static List<DescripcionGenerica> clientesAsignados;
     public static String URLSERV="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
     //local
-   // public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
+  //  public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
 
      public static String URLPRUEBAS1="http://192.168.1.84/comprasv1/";
     //muesmerc

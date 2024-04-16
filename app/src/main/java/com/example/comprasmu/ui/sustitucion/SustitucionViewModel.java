@@ -48,7 +48,7 @@ public class SustitucionViewModel extends AndroidViewModel {
     private int idListaSel;
     public Sustitucion listaSelec;
     private int clienteSel;
-     private static final String TAG= SustitucionViewModel.class.getCanonicalName();
+    private static final String TAG= SustitucionViewModel.class.getCanonicalName();
     Context context;
 
     public SustitucionViewModel(Application application) {
@@ -59,16 +59,16 @@ public class SustitucionViewModel extends AndroidViewModel {
     }
 
 
-    public void cargarListas(int plantasel,int categoria,int cliente,int empaque, int tamanio, int numTienda){
-       if(cliente==7){
-           cargarListasJum(plantasel,categoria,empaque,tamanio);
-       }else
-           listaSustitucion =repository.getByFiltros(categoria,"",0,0, cliente);
+    public void cargarListas(int plantasel,int categoria,int cliente,int empaque, int tamanio, int numTienda, int productoorigId){
+        if(cliente==7){
+            cargarListasJum(plantasel,categoria,empaque,tamanio,productoorigId);
+        }else
+            listaSustitucion =repository.getByFiltros(categoria,"",0,0, cliente);
         size = Transformations.map(listaSustitucion,res->{ return listaSustitucion.getValue().size();});
         empty = Transformations.map(listaSustitucion, res->{return listaSustitucion.getValue().isEmpty();});
     }
 
-    public void cargarListasJum(int plantaSel,int categoria,int empaque, int tamanio){
+    public void cargarListasJum(int plantaSel,int categoria,int empaque, int tamanio,int productoorigId){
        /* if(productoSel.getClientesId()==7) { //valido que no exista en la compra
             if(!productoSel.getNomproducto().equals("")&&productoSel.getNomproducto().contains("FRUTZZO")){
                 //PUEDO COMPRAR
@@ -79,22 +79,26 @@ public class SustitucionViewModel extends AndroidViewModel {
             }
         }*/
 
-         //ver que no se haya comprado
+        //ver que no se haya comprado
         // if(numTienda>=5)
         MutableLiveData listaTemp=new MutableLiveData();
         List<Sustitucion> array=new ArrayList<>();
-       List<Sustitucion> listaProds =repository.getByFiltrosJumSim(categoria,"FRUTZZO",empaque ,tamanio,clienteSel, plantaSel);
+        List<Sustitucion> listaProds =repository.getByFiltrosJumSim(categoria,"FRUTZZO",empaque ,tamanio,clienteSel, plantaSel,productoorigId);
         Log.d(TAG,"encontre "+listaProds.size());
         for (Sustitucion producto:
-             listaProds) {
+                listaProds) {
             if(!validarProdJum(Constantes.INDICEACTUAL, plantaSel, producto))
                 array.add(producto);
 
         }
         Log.d(TAG,"quedaron"+array.size());
         //agrego los frutzo porque esto si se pueden volver a comprar
-        List<Sustitucion> listafrut=repository.getByFiltrosFrut(categoria,"FRUTZZO");
+        List<Sustitucion> listafrut=repository.getByFiltrosFrut(categoria,"FRUTZZO", productoorigId, tamanio,empaque);
         array.addAll(listafrut);
+        if(categoria==22) { //10-abr-24 para kermato no incluyo el tamanio
+            List<Sustitucion> listakermato =repository.getByFiltrosKerm(categoria,"KERMATO", productoorigId,tamanio,empaque);
+            array.addAll(listakermato);
+        }
         listaTemp.setValue(array);
         listaSustitucion=listaTemp;
         // else
@@ -110,12 +114,12 @@ public class SustitucionViewModel extends AndroidViewModel {
         InformeComDetRepositoryImpl icrepo=new InformeComDetRepositoryImpl(context);
         String nvoCodigos = "";
 
-            //busco los nuevos codigos
-      //  Log.d(TAG,"buscando cods "+Constantes.VarListCompra.plantaSel+"--"+detalle.getSu_producto()+"--"+Constantes.VarListCompra.detallebuSel.getAnalisisId()+"--"+detalle.getSu_tipoempaque()+"--"+detalle.getNomtamanio());
-            List<InformeCompraDetalle> informeCompraDetalles=icrepo.getByProductoAna(Constantes.INDICEACTUAL,Constantes.VarListCompra.plantaSel,detalle.getSu_producto(),Constantes.VarListCompra.detallebuSel.getAnalisisId(),detalle.getSu_tipoempaque(),detalle.getNomtamanio());
+        //busco los nuevos codigos
+        //  Log.d(TAG,"buscando cods "+Constantes.VarListCompra.plantaSel+"--"+detalle.getSu_producto()+"--"+Constantes.VarListCompra.detallebuSel.getAnalisisId()+"--"+detalle.getSu_tipoempaque()+"--"+detalle.getNomtamanio());
+        List<InformeCompraDetalle> informeCompraDetalles=icrepo.getByProductoAna(Constantes.INDICEACTUAL,Constantes.VarListCompra.plantaSel,detalle.getSu_producto(),Constantes.VarListCompra.detallebuSel.getAnalisisId(),detalle.getSu_tipoempaque(),detalle.getNomtamanio());
 
         if(informeCompraDetalles!=null) {
-       //     Log.d(TAG,"encontré " +informeCompraDetalles.size());
+            //     Log.d(TAG,"encontré " +informeCompraDetalles.size());
             for (InformeCompraDetalle info : informeCompraDetalles) {
                 nvoCodigos = nvoCodigos + sdfcodigo.format(info.getCaducidad()) + "\n";
 
@@ -142,7 +146,7 @@ public class SustitucionViewModel extends AndroidViewModel {
         return empty;
     }
     //valido que no haya comprado el mismo sabor empaque y tamanio para jumex
-   //devuelve true si ya hay
+    //devuelve true si ya hay
     public boolean validarProdJum(String indice,int planta,Sustitucion productosel ){
         InformeComDetRepositoryImpl icrepo=new InformeComDetRepositoryImpl(context);
 

@@ -2,15 +2,10 @@ package com.example.comprasmu.data.repositories;
 
 import android.content.Context;
 import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
-
 import com.example.comprasmu.data.ComprasDataBase;
-import com.example.comprasmu.data.dao.ListaCompraDetalleDao;
 import com.example.comprasmu.data.dao.SustitucionDao;
-import com.example.comprasmu.data.modelos.ListaCompraDetalle;
-import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Sustitucion;
 
 import java.util.ArrayList;
@@ -52,7 +47,7 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
             filtros.add(clienteId+"");
         }
 
-       // Object[] params=filtros.toArray();
+        // Object[] params=filtros.toArray();
         Log.d("query",query+" "+filtros.toString()+"");
 
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
@@ -62,15 +57,15 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         return dao.getByFiltros(sqlquery);
     }
 
-    public List<Sustitucion> getByFiltrosFrut(int categoria, String productoNombre) {
+    public List<Sustitucion> getByFiltrosFrut(int categoria, String productoNombre, int productoorigId,int tamanioorigid,int empaqueorigid) {
 
         String query="Select * from sustitucion where  categoriasId=1";
 
 
 
-        query = query + " and nomproducto like '%"+productoNombre+"%' ";
+        query = query + " and nomproducto like '%"+productoNombre+"%' and su_producto||'.'||su_tamanio||'.'||su_tipoempaque<>'"+productoorigId+"."+tamanioorigid+"."+empaqueorigid+"'";
 
-          //  filtros.add(productoNombre);
+        //  filtros.add(productoNombre);
 
         // Object[] params=filtros.toArray();
 
@@ -82,10 +77,29 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         return dao.getByFiltrosSimp(sqlquery);
     }
 
+    public List<Sustitucion> getByFiltrosKerm(int categoria, String productoNombre, int productoorigId,int tamanioorigid,int empaqueorigid) {
 
-    public List<Sustitucion> getByFiltrosJumSim(int categoria, String productoNombre, int empaque,int tamanio,int clienteId, int plantaId ) {
+        String query="Select * from sustitucion where  categoriasId="+categoria;
 
-        String query="Select * from sustitucion where 1=1";
+
+
+        query = query + " and nomproducto like '%"+productoNombre+"%' and su_producto||'.'||su_tamanio||'.'||su_tipoempaque<>'"+productoorigId+"."+tamanioorigid+"."+empaqueorigid+"'";
+
+        //  filtros.add(productoNombre);
+
+        // Object[] params=filtros.toArray();
+
+
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query
+        );
+
+        return dao.getByFiltrosSimp(sqlquery);
+    }
+
+    public List<Sustitucion> getByFiltrosJumSim(int categoria, String productoNombre, int empaque,int tamanio,int clienteId, int plantaId , int productoorigId) {
+
+        String query="Select * from sustitucion where 1=1 and su_producto||'.'||su_tamanio||'.'||su_tipoempaque<>'"+productoorigId+"."+tamanio+"."+empaque+"'";
         ArrayList<String> filtros=new ArrayList<String>();
 
         if(categoria>0) {
@@ -112,6 +126,7 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
         );
+        Log.d("SUsTREPOIMP",categoria+"--"+ productoNombre+"--"+empaque+"--"+tamanio+"--"+ clienteId+"--"+plantaId);
         Log.d("SUsTREPOIMP",query);
         return dao.getByFiltrosSimp(sqlquery);
     }
@@ -166,7 +181,7 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
     }
 
     public LiveData<List<Sustitucion>> getAll() {
-      return dao.findAll();
+        return dao.findAll();
     }
 
     @Override
@@ -181,7 +196,7 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         return dao.findsimple(id);
     }
 
-     @Override
+    @Override
     public LiveData<Sustitucion> find(int id) {
         return dao.find(id);
     }
@@ -193,7 +208,7 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         dao.delete(object);
     }
     public void deleteAll(){
-     dao.deleteAll();
+        dao.deleteAll();
     }
 
 
