@@ -64,6 +64,7 @@ public class DescargarFragment extends Fragment {
     protected ArrayList<DescripcionGenerica> listaSeleccionable;
     int idcap;
 
+
     public DescargarFragment() {
         // Required empty public constructor
     }
@@ -220,7 +221,26 @@ public class DescargarFragment extends Fragment {
         // registrer receiver in order to verify when download is complete
         //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
      //   Toast.makeText(getContext(),cliente+"", Toast.LENGTH_LONG).show();
-
+        String nombrearch="";
+        switch(opcion){
+            case "g":nombrearch="guia_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+            break;
+            case "fda":
+                nombrearch="fda_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                break;
+            case "fac":
+                nombrearch="guia_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                break;
+            case "anx1":
+                nombrearch="anexo1_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                break;
+            case "anx2":
+                nombrearch="anexo2_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                break;
+            case "anx3":
+                nombrearch="anexo3_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                break;
+        }
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -229,7 +249,7 @@ public class DescargarFragment extends Fragment {
         // request.setTitle("DESCARGA ETIQUETAS");
       //  Log.d(TAG,"hola"+MY_URL);
 
-        request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, "etiquetas.pdf");  // Storage directory path
+        request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, nombrearch+".pdf");  // Storage directory path
         archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
         // return 0;
     }

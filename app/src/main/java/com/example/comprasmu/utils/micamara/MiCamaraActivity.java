@@ -347,14 +347,16 @@ public class MiCamaraActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        if(requestCode == REQUEST_CODE_PERMISSIONS){
-            if(allPermissionsGranted()){
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (allPermissionsGranted()) {
                 startCamera(false);
-            } else{
+            } else {
                 Toast.makeText(this, "Es necesario que de todos los permisos para el funcionamiento de la aplicación.", Toast.LENGTH_SHORT).show();
                 this.finish();
             }
         }
+      //  super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
     }
 
 

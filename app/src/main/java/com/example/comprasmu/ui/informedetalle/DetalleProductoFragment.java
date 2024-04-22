@@ -816,6 +816,10 @@ public class DetalleProductoFragment extends Fragment {
     public void guardarCliente(){ //ahora tambien es planta
         lastClickTime=0;
         DescripcionGenerica opcionsel = (DescripcionGenerica) preguntaview.getSpclientes().getSelectedItem();
+       if(opcionsel==null){
+           Toast.makeText(getActivity(),"Hubo un error, intente de nuevo",Toast.LENGTH_LONG).show();
+        return;
+       }
         int valor = opcionsel.getId(); //esta es la planta
         String aux=opcionsel.getDescripcion2();
         String arraux[]=aux.split(";");
