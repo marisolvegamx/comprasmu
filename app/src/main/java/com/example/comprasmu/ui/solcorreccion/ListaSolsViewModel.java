@@ -11,6 +11,7 @@ import androidx.lifecycle.Transformations;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
@@ -21,6 +22,7 @@ import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.utils.Constantes;
@@ -37,6 +39,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
     InformeComDetRepositoryImpl infcrepo;
     InfEtapaRepositoryImpl infetarepo;
     InformeCompraRepositoryImpl infrepo;
+    InformeEnvioRepositoryImpl infenvrepo;
 
 
     public ListaSolsViewModel(Application application) {
@@ -45,6 +48,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         infcrepo=new InformeComDetRepositoryImpl(application);
         infetarepo=new InfEtapaRepositoryImpl(application);
         infrepo=new InformeCompraRepositoryImpl(application);
+        infenvrepo=new InformeEnvioRepositoryImpl(application);
 
     }
 
@@ -232,5 +236,9 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     public InformeCompra getInformeSol(int informesId) {
         return infrepo.findSimple(informesId);
+    }
+
+    public InformeEnvioPaq getInformeEnvSol(int informesId) {
+        return infenvrepo.findInfsimple(informesId);
     }
 }

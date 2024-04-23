@@ -905,10 +905,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
             //primero los inserts
             if (corrResp != null) {
-                //Log.d(TAG,"dddddd"+etapa);
+
                 if (corrResp != null && corrResp.getInserts() != null) {
                     for (SolicitudCor sol : corrResp.getInserts()) {
                         //veo si ya existe
+                       // Log.d(TAG,"solcorreccion"+sol.getId()+"--"+ sol.getNumFoto());
                         SolicitudCor solt = solRepo.findsimple(sol.getId(), sol.getNumFoto());
                         if (solt != null) {
                             if (solt.getEstatus() !=4||solt.getEstatus()!=5) {

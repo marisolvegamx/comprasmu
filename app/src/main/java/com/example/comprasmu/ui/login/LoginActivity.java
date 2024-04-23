@@ -15,6 +15,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Environment;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -68,7 +69,7 @@ public class LoginActivity extends AppCompatActivity
     private   String DESTINATION_PATH ;
     ImagenDetRepositoryImpl imagenDetRepo;
     int desclis; int descinf; int descfoto;
-
+    private long lastClickTime = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +116,15 @@ public class LoginActivity extends AppCompatActivity
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loginButton.setEnabled(false);
+                long currentClickTime= SystemClock.elapsedRealtime();
+                // preventing double, using threshold of 1000 ms
+                if (currentClickTime - lastClickTime < 5500){
+                    //  Log.d(TAG,"doble click :("+lastClickTime);
+                    return;
+                }
+
+                lastClickTime = currentClickTime;
                 if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo//entro rapido
                  new LoginListener().iniciar();
                 }

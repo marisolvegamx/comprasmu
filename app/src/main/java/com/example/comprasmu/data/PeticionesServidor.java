@@ -382,7 +382,7 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp!=null) //falta actualizar
                     {
-                        Log.d("PeticionesServidor","resp>>"+compraResp.getVisita());
+                        Log.d("PeticionesServidor","resp>>");
 
                         listener.actualizarInformes(compraResp);
                         /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl

@@ -26,6 +26,7 @@ import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.databinding.ActivityNuevoInfetapaBinding;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.correccion.NvaCorrecCalCajaFragment;
+import com.example.comprasmu.ui.correccion.NvaCorreccionEnvFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionEtiqFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
@@ -216,6 +217,10 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     NvaCorreccionEmpFragment frag = NvaCorreccionEmpFragment.newInstance();
                     frag.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment, frag);
+                }else if(etapa==5) {
+                    NvaCorreccionEnvFragment frag = NvaCorreccionEnvFragment.newInstance();
+                    frag.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment, frag);
                 }else
                 {
                     NvaCorreccionFragment frag = new NvaCorreccionFragment();
@@ -223,7 +228,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     ft.add(R.id.continfeta_fragment, frag);
                 }
 
-            }else
+            }else       /****nuevo informe etapa****/
             if(etapa==1) {
 
                 bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,1);
@@ -325,6 +330,8 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
   //    actualizarAtributo3(sol.getMotivo());
 
     }
+
+
     //para acomodar barra de titulos de correcciones de otra etapas menos compras
     public void actualizarBarraCorEta(SolicitudCor sol, int numcaja) {
         //convierto la solicitud en informeEtapa
@@ -409,7 +416,23 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
     }
 
+    public void actBarraCorreEnvio(SolicitudCor sol) {
+        //convierto la solicitud en informeEtapa
+        InformeEtapa temp=new InformeEtapa();
+        temp.setIndice(sol.getIndice());
+        temp.setPlantaNombre(sol.getPlantaNombre());
+        temp.setClienteNombre(sol.getClienteNombre());
 
+        actualizarBarra(temp);
+        actualizarAtributo1(sol.getNombreTienda());
+        SimpleDateFormat sdf=Constantes.sdfsolofecha;
+        mBinding.row3.setVisibility(View.GONE);
+       // if(sol.getCreatedAt()!=null)
+            actualizarAtributo2(sdf.format(sol.getCreatedAt()));
+        //actualizarAtributo3(sol.getContador()+"");
+        //    actualizarAtributo3(sol.getMotivo());
+
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -437,7 +460,9 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     }
     @Override
     public void onBackPressed() {
+        Log.d(TAG,"es corr "+isCor);
         if(isCor) {
+
             if(etapa==4)//el regreso se maneja en el fragment
             {
                 NvaCorreccionEmpFragment fragment = (NvaCorreccionEmpFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
@@ -456,48 +481,105 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
             }
             super.onBackPressed();
-
-        }else
-
-
-        if(etapa==3)//el regreso se maneja en el fragment
-        {
-            try {
-                NvoEtiquetadoFragment fragment = (NvoEtiquetadoFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
-                fragment.atras();
-            }catch(ClassCastException ex){
-                NvoEtiqCajaFragment fragment = (NvoEtiqCajaFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
-                fragment.atras();
-            }
             return;
+        }else {
 
-        }
-        if(etapa==4)
-        {
-            if(dViewModel.preguntaAct==92)
-                return;
-            Log.d(TAG,"regresando de "+dViewModel.preguntaAct);
-            //busco el siguiente
-            Reactivo reactivo = dViewModel.buscarReactivoAnterior(dViewModel.preguntaAct);
-            if(reactivo!=null)
-            //busco el reactivo anterior
+            if (etapa == 3)//el regreso se maneja en el fragment
             {
-                if (dViewModel.preguntaAct ==93) {
-                    //tal vez regrese a otra caja
-                    if(dViewModel.cajaAct.consCaja>1){
-                        reactivo=dViewModel.buscarReactivoSim(113);
-                      //  dViewModel.cajaAct.consCaja=dViewModel.cajaAct.consCaja-1;
-                        dViewModel.cajaAct=dViewModel.resumenEtiq.get(dViewModel.cajaAct.consCaja-2);
+                try {
+                    NvoEtiquetadoFragment fragment = (NvoEtiquetadoFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                    fragment.atras();
+                } catch (ClassCastException ex) {
+                    NvoEtiqCajaFragment fragment = (NvoEtiqCajaFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                    fragment.atras();
+                }
+                return;
+
+            }
+            if (etapa == 4) {
+                if (dViewModel.preguntaAct == 92)
+                    return;
+                Log.d(TAG, "regresando de " + dViewModel.preguntaAct);
+                //busco el siguiente
+                Reactivo reactivo = dViewModel.buscarReactivoAnterior(dViewModel.preguntaAct);
+                if (reactivo != null)
+                //busco el reactivo anterior
+                {
+                    if (dViewModel.preguntaAct == 93) {
+                        //tal vez regrese a otra caja
+                        if (dViewModel.cajaAct.consCaja > 1) {
+                            reactivo = dViewModel.buscarReactivoSim(113);
+                            //  dViewModel.cajaAct.consCaja=dViewModel.cajaAct.consCaja-1;
+                            dViewModel.cajaAct = dViewModel.resumenEtiq.get(dViewModel.cajaAct.consCaja - 2);
+                        }
                     }
+                    if (dViewModel.preguntaAct > 91) {
+                        Bundle bundle = new Bundle();
+
+
+                        bundle.putInt(NvoEmpaqueFragment.ARG_PREGACT, reactivo.getId());
+                        bundle.putBoolean(NvoEmpaqueFragment.ARG_ESEDI, true);
+                        NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment();
+                        nvofrag.setArguments(bundle);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+// Definir una transacción
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+// Remplazar el contenido principal por el fragmento
+                        fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
+                        // fragmentTransaction.addToBackStack(null);
+// Cambiar
+                        fragmentTransaction.commit();
+                    } else if (dViewModel.preguntaAct == 92 && dViewModel.variasClientes) {
+                        Bundle bundle = new Bundle();
+
+
+                        bundle.putInt(NvoEmpaqueFragment.ARG_PREGACT, reactivo.getId());
+                        bundle.putBoolean(NvoEmpaqueFragment.ARG_ESEDI, true);
+                        NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment();
+                        nvofrag.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+// Definir una transacción
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+// Remplazar el contenido principal por el fragmento
+                        fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
+                        // fragmentTransaction.addToBackStack(null);
+// Cambiar
+                        fragmentTransaction.commit();
+                    }
+                } else {
+                    super.onBackPressed();
+                    return;
                 }
-                if (dViewModel.preguntaAct > 91) {
-                    Bundle bundle=new Bundle();
+            } else if (etapa == 1) {
+                //infvm.cont es la preg actual
+                if (infvm.cont == 6) {
+                    return; //no puedo regresar de los comentarios porque la ultima preg de fotospuede ser variables
+                }
+                if (infvm.cont == 0) {
+                    super.onBackPressed();
+                    return;
+                }
+                if (infvm.cont > 1) {
+                    NvaPreparacionFragment nvofrag;
+                    Bundle bundle = new Bundle();
+                    if (infvm.cont > 100) {
+                        bundle.putInt(NvaPreparacionFragment.ARG_PREGACT, infvm.cont - 101);
+                        bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI, true);
+                        nvofrag = new NvaPreparacionFragment();
+                        nvofrag.setArguments(bundle);
 
+                        //nvofrag= new NvaPreparacionFragment(infvm.cont - 101, true, null);
 
-                    bundle.putInt(NvoEmpaqueFragment.ARG_PREGACT,reactivo.getId());
-                    bundle.putBoolean(NvoEmpaqueFragment.ARG_ESEDI,true);
-                    NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment();
-                    nvofrag.setArguments(bundle);
+                    } else {
+                        bundle.putInt(NvaPreparacionFragment.ARG_PREGACT, infvm.cont + 100);
+                        bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI, true);
+                        nvofrag = new NvaPreparacionFragment();
+                        nvofrag.setArguments(bundle);
+                        // nvofrag = new NvaPreparacionFragment(infvm.cont + 100, true, null);
+
+                    }
+
                     FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -506,16 +588,14 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     // fragmentTransaction.addToBackStack(null);
 // Cambiar
                     fragmentTransaction.commit();
-                }else
-                if (dViewModel.preguntaAct == 92 && dViewModel.variasClientes) {
-                    Bundle bundle=new Bundle();
-
-
-                    bundle.putInt(NvoEmpaqueFragment.ARG_PREGACT,reactivo.getId());
-                    bundle.putBoolean(NvoEmpaqueFragment.ARG_ESEDI,true);
-                    NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment();
+                }
+                if (infvm.cont == 1 && dViewModel.variasClientes) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT, infvm.cont - 1);
+                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI, true);
+                    NvaPreparacionFragment nvofrag = new NvaPreparacionFragment();
                     nvofrag.setArguments(bundle);
-
+                    //NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont - 1, true, null);
                     FragmentManager fragmentManager = getSupportFragmentManager();
 // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -525,82 +605,18 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 // Cambiar
                     fragmentTransaction.commit();
                 }
-            }else {
-                super.onBackPressed();
-                return;
-            }
-        }
-        else if(etapa==1)
-        {
-            //infvm.cont es la preg actual
-            if(infvm.cont==6){
-                return; //no puedo regresar de los comentarios porque la ultima preg de fotospuede ser variables
-            }
-            if(infvm.cont==0) {
-                super.onBackPressed();
-                return;
-            }
-            if (infvm.cont > 1) {
-                NvaPreparacionFragment nvofrag;
-                Bundle bundle=new Bundle();
-                if(infvm.cont>100){
-                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,infvm.cont - 101);
-                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
-                    nvofrag=    new NvaPreparacionFragment();
-                    nvofrag.setArguments(bundle);
 
-                    //nvofrag= new NvaPreparacionFragment(infvm.cont - 101, true, null);
-
-                }
-
-                else {
-                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,infvm.cont +100);
-                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
-                    nvofrag=    new NvaPreparacionFragment();
-                    nvofrag.setArguments(bundle);
-                   // nvofrag = new NvaPreparacionFragment(infvm.cont + 100, true, null);
-
-                }
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-// Definir una transacción
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
-                fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
-                // fragmentTransaction.addToBackStack(null);
-// Cambiar
-                fragmentTransaction.commit();
-            }
-          if (infvm.cont == 1 && dViewModel.variasClientes) {
-              Bundle bundle=new Bundle();
-              bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,infvm.cont - 1);
-              bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
-              NvaPreparacionFragment nvofrag=    new NvaPreparacionFragment();
-              nvofrag.setArguments(bundle);
-                //NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(infvm.cont - 1, true, null);
-                FragmentManager fragmentManager = getSupportFragmentManager();
-// Definir una transacción
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
-                fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
-                // fragmentTransaction.addToBackStack(null);
-// Cambiar
-                fragmentTransaction.commit();
-            }
-
-        }
-        else
-        if(etapa==5)//el regreso se maneja en el fragment
-        {
+            } else if (etapa == 5)//el regreso se maneja en el fragment
+            {
 
                 NvoEnvioFragment fragment = (NvoEnvioFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
                 fragment.atras();
 
-            return;
+                return;
 
-        }else
+            } else
                 super.onBackPressed();
-
+        }
 }
 
 public void cambiarTitulo(String titulo){
