@@ -79,7 +79,7 @@ public class EditEtiquetadoFragment extends Fragment {
     private long lastClickTime = 0;
     private boolean yaestoyProcesando = false;
     EditText txtrutaim, txtqr, txtrutacaja, txtcajaact, txtdescidfoto;
-    TextView txtnumuestra, txttotmues, txtdescfotocaj, txtcajafoto;
+    TextView txtnumuestra,txtmuestra, txttotmues, txtdescfotocaj, txtcajafoto;
     ImageView fotomos, fotomoscaj;
     private ImageButton btnrotar, btntomarf, btnqr;
     public int REQUEST_CODE_TAKE_PHOTO = 1;
@@ -171,7 +171,7 @@ public class EditEtiquetadoFragment extends Fragment {
         fotomos = root.findViewById(R.id.iveefotomue);
 
         txtrutaim = root.findViewById(R.id.txteeruta);
-        txtnumuestra = root.findViewById(R.id.txteemuestra);
+        txtmuestra = root.findViewById(R.id.txteemuestra);
         txtnumuestra = root.findViewById(R.id.txteenummuesorig);
 
         // pcoincide=root.findViewById(R.id.sinonecoincide);
@@ -243,6 +243,7 @@ public class EditEtiquetadoFragment extends Fragment {
             TextView txtmensaje = root.findViewById(R.id.txteefaltacom);
             txtmensaje.setText("FALTA REALIZAR EL INFORME DE COMPRA");
             txtmensaje.setVisibility(View.VISIBLE);
+            //todo falta desactivar botones
             return root; //todavía no puede hacer etiquetado
         }
 
@@ -251,11 +252,15 @@ public class EditEtiquetadoFragment extends Fragment {
 
         //busco el ultimo num de muestra
         InformeEtapaDet ultima=mViewModel.getUltimaMuestraEtiq(informeSel);
-        if(ultima!=null)
-            contmuestra =ultima.getNum_muestra()+1;
+        contmuestra=mViewModel.totalMuestrasEtiq(informeSel)+1;
+      //  if(ultima!=null)
+        //    contmuestra =ultima.getNum_muestra()+1;
         //veo si es de muestra o de cja
-        if (detalleEdit != null && detalleEdit.getDescripcionId() > 11) {
-            capturarFotoCaja();
+        if (infomeEdit != null && infomeEdit.getEstatus() ==1) {
+            if(totmuestras==ultima.getNum_muestra())
+                capturarFotoCaja();
+            else
+                mostrarCapMuestra();
         } else
             mostrarCapMuestra();
 
@@ -612,7 +617,7 @@ public void iraReubicar(){
         preguntaAct = 2;
         ImagenDetalle foto;
         mViewModel.preguntaAct = preguntaAct;
-        if (detalleEdit != null) {
+        if (detalleEdit != null) { //no entra aqui
             //busco en la bd para regresar a la primer muestra
             foto = mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));
             txtrutaim.setText(foto.getRuta());
@@ -641,7 +646,7 @@ public void iraReubicar(){
                 //  Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(detalleEdit.getRuta_foto(),80,80);
                 //  fotomos.setImageBitmap(bitmap1);
                 // txtqr.setText(detalleEdit.getQr());
-                contmuestra = informeEtapaDet.get(0).getNum_muestra();
+               // contmuestra = informeEtapaDet.get(0).getNum_muestra();
                 contmuint = contmuestra;
             }
             spinnerValues = new ArrayList<>();
@@ -654,7 +659,7 @@ public void iraReubicar(){
 
 
 
-    public void editarMuestra() {
+    /*public void editarMuestra() {
 
         ImagenDetalle foto;
         detalleEdit=mViewModel.getUltimaMuestraEtiq(informeSel);
@@ -684,7 +689,7 @@ public void iraReubicar(){
             aceptar6.setEnabled(true);
         }
 
-    }
+    }*/
     public void atras(){
         Log.d(TAG,"**contf"+contcajaf);
         isEdicion=true; //siempre es edicion
@@ -757,7 +762,10 @@ public void iraReubicar(){
             if(mViewModel.getIdNuevo()>0)
                 //guardo el detalle
                iddet= mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,numcaja,qr,contmuestra,Constantes.INDICEACTUAL);
-           //guardo para enviar despues
+           //actualizo estatus inf
+            //mViewModel.setIdNuevo();
+            mViewModel.actualizarEstatusInf(mViewModel.getIdNuevo());
+            //guardo para enviar despues
             mViewModel.muestrasactEtiq.add(iddet);
             //limpio campos
             txtrutaim.setText("");

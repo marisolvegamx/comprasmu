@@ -148,6 +148,10 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         }
         return null;
     }
+    public int totalMuestrasEtiq(int idinf, int etapa) {
+        return dao.totalMuestrasEtiq(idinf,etapa);
+
+    }
     public InformeEtapaDet getUltimoCaja(int idinf, int etapa, int caja) {
         List<InformeEtapaDet> lista=dao.getUltimoCaja(idinf,etapa,caja);
         if(lista!=null&&lista.size()>0){

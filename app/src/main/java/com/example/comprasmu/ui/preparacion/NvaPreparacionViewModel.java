@@ -443,6 +443,10 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return infDetRepo.getUltimaMuestraEtiq(id, 3);
 
     }
+    public int totalMuestrasEtiq(int id){
+        return infDetRepo.totalMuestrasEtiq(id, 3);
+
+    }
    /* public void listaCajasEtiqxCliCd(int cliente){
         List<InformeEtapaDet> muestras= infDetRepo.listaCajasEtiqxCli( 3, cliente);
         EtiquetadoxCliente resul=null;
@@ -616,7 +620,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public void finalizarInf(){
         infEtaRepository.actualizarEstatus(idNuevo,2);
     }
-
+    public void actualizarEstatusInf(int idinf){
+        infEtaRepository.actualizarEstatus(idinf,1);
+    }
 
     public int getIdNuevo() {
         return idNuevo;

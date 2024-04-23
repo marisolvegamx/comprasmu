@@ -48,6 +48,8 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:inf and etapa=:etapa and descripcionId=11  order by id desc")
     public abstract List<InformeEtapaDet> getUltimaMuestra( int inf, int etapa);
 
+  @Query("SELECT count(*) FROM informe_etapa_det where informeEtapaId=:inf and etapa=:etapa and descripcionId=11 and (estatus is null or estatus>0) order by id desc")
+  public abstract int totalMuestrasEtiq( int inf, int etapa);
 
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:caja order by id desc")
     public abstract List<InformeEtapaDet> getUltimoCaja( int id,int etapa, int caja);
