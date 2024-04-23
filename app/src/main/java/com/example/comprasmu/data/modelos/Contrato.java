@@ -47,6 +47,7 @@ public  class Contrato {
         String FOTO_ATRIBUTOB = "foto_atributob";
         String ATRIBUTOC = "atributoc";
         String FOTO_ATRIBUTOC = "foto_atributoc";
+        String FOTO_ATRIBUTOD = "foto_atributod";
         String ATRIBUTOD = "atributod";
         String ETIQUETA_EVALUACION = "etiqueta_evaluacion";
         String SEGUNDAMUESTRA = "segundaMuestra";

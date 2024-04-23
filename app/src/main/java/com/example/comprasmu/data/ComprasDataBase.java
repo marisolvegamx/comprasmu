@@ -74,7 +74,7 @@ import java.util.List;
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class,
         Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=28, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=29, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -117,7 +117,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
                                     ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
-                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28)
+                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -523,6 +523,13 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         }
     };
+    static final Migration MIGRATION_28_29 = new Migration(28,29) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "ALTER TABLE informe_detalle ADD COLUMN  foto_atributod INTEGER; " );
+                }
+    };
     private void cargandodatos(){
 
         runInTransaction(new Runnable() {
@@ -902,11 +909,21 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setType("agregarImagen");
         campo.setTabla("ID");
          campo.setId(46);
-        campo.setSigId(42);
+        campo.setSigId(130);
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
         camposForm.add(campo);
 
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_posicion4));
+        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOD);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(130);
+        campo.setSigId(42);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
 
         campo=new Reactivo();
         campo.setLabel(ctx.getString(R.string.etiqueta_evaluacion));
@@ -1254,10 +1271,11 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setLabel(ctx.getString(R.string.selec_motivo_sust));
         campo.setNombreCampo(Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID);
         campo.setType("selectCat");
+        campo.setId(127);
         campo.setSigId(58);
         campo.setCatalogo(true);
         campo.setTabla("ID");
-        campo.setId(127);
+
         //paso los atributos a catalogogen
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
@@ -1509,10 +1527,11 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setLabel(ctx.getString(R.string.selec_motivo_sust));
         campo.setNombreCampo(Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID);
         campo.setType("selectCat");
+        campo.setId(128);
         campo.setSigId(78);
         campo.setCatalogo(true);
         campo.setTabla("ID");
-        campo.setId(128);
+
         //paso los atributos a catalogogen
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);

@@ -42,6 +42,7 @@ public class InformeCompraDetalle {
     private String atributoc;
     private String atributod;
     private int foto_atributoc;
+    private int foto_atributod;
     private int azucares;
     private String qr;
     private int etiqueta_evaluacion;
@@ -482,6 +483,14 @@ public class InformeCompraDetalle {
 
     public void setCausaSustitucion(String causaSustitucion) {
         this.causaSustitucion = causaSustitucion;
+    }
+
+    public int getFoto_atributod() {
+        return foto_atributod;
+    }
+
+    public void setFoto_atributod(int foto_atributod) {
+        this.foto_atributod = foto_atributod;
     }
 }
 
