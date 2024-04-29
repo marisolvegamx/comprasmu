@@ -25,6 +25,8 @@ import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
 import com.example.comprasmu.ui.infetapa.EditInfEtapaActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.utils.Constantes;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter.AdapterCallback {
@@ -69,14 +71,22 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
     public void cargarLista(){
 
         //mViewModel.cargarDetalles();
-        mViewModel.cargarCanceladosEtiq();
+        List<InformeEtapa> informeDetalles= mViewModel.cargarCanceladosEtiq();
 
 
-        mViewModel.getInfcancelados().observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
-            @Override
-            public void onChanged(List<InformeEtapa> informeDetalles) {
+      //  mViewModel.getInfcancelados().observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+        //    @Override
+        //    public void onChanged() {
 
-                Log.d(TAG, "YA CARGÓ " + informeDetalles.size());
+               // Log.d(TAG, "YA CARGÓ " + informeDetalles.size());
+             //   List<InformeEtapa> informeDetalles=new ArrayList<>();
+
+                //o informes por completar con estatus 4
+                List<InformeEtapa> etiqpend=mViewModel.cargarInfxCompletar();
+                if(etiqpend!=null&&etiqpend.size()>0) {
+                    informeDetalles.addAll(etiqpend);
+                    Log.d(TAG, "COMP ETIQ " + etiqpend.size());
+                }
 
                 //tambien necesito saber si eliminé empaque
                 List<InformeEtapa> empaque= mViewModel.cargarCanceladosEmp();
@@ -84,19 +94,13 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
                     informeDetalles.addAll(empaque);
                     Log.d(TAG, "ELIMI EMP " + empaque.size());
                 }
-                //o informes por completar
-                List<InformeEtapa> etiqpend=mViewModel.cargarInfxCompletar();
-                if(etiqpend!=null&&etiqpend.size()>0) {
-                    informeDetalles.addAll(etiqpend);
-                    Log.d(TAG, "COMP ETIQ " + etiqpend.size());
-                }
-                mEtaAdapter.setInformeCompraList(informeDetalles);
-                mEtaAdapter.notifyDataSetChanged();
-                if (informeDetalles.size() < 1&&etiqpend.size()<1 &&empaque.size()<1) {
-                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
-                }
-            }
-            });
+        mEtaAdapter.setInformeCompraList(informeDetalles);
+        mEtaAdapter.notifyDataSetChanged();
+        if (informeDetalles.size() < 1&&etiqpend.size()<1 &&empaque.size()<1) {
+            mBinding.emptyStateText.setVisibility(View.VISIBLE);
+        }
+         //   }
+         //   });
     }
 
 

@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -155,7 +156,8 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         compraslog = ComprasLog.getSingleton();
         try {
             //    aceptar.setEnabled(false);
-            solViewModel.getSolicitud(solicitudSel, numfotosel).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
+            LiveData<SolicitudCor> resultad= solViewModel.getSolicitud(solicitudSel, numfotosel);
+            resultad.observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
                 @Override
                 public void onChanged(SolicitudCor solicitudCor) {
                     solicitud = solicitudCor;
@@ -178,7 +180,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                         Log.d(TAG,"totcajas"+totcajas);
                     }
                     ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCorEta(solicitud,0);
-
+                    resultad.removeObservers(getViewLifecycleOwner());
                 }
             });
         }catch(Exception ex){
@@ -633,7 +635,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         }
         // mostrar lista cajas
         int clienteSel = informeSel.getClientesId();
-        List<InformeEtapaDet> listacaj=preViewModel.listaCajasEtiqxCdCli(Constantes.CIUDADTRABAJO, clienteSel);
+        List<InformeEtapaDet> listacaj=preViewModel.listaCajasEtiqxCdCli(infEtiquetado.getCiudadNombre(), clienteSel);
         cajasValues=new HashMap<>();
         if(listacaj!=null) {
 

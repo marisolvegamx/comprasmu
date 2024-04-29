@@ -60,7 +60,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                              @Nullable Bundle savedInstanceState) {
 
 
-            indice = Constantes.INDICEACTUAL;
+        indice = Constantes.INDICEACTUAL;
 
 
 
@@ -88,7 +88,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
     }
 
     public void cargarLista(){
-
+        //muesmtras canceladas en compras
         mViewModel.cargarCancelados(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDetalle>>() {
             @Override
             public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
@@ -116,11 +116,15 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                                     nvoinf.indice=infeta.getIndice();
                                     nvoinf.idinforme=infeta.getId();
                                     nvoinf.estatus= infeta.getEstatus();
+                                    nvoinf.tiendaNombre=Constantes.ETAPAS[infeta.getEtapa()];
                                     if(infeta.getClienteNombre().equals("")){
                                         nvoinf.clienteNombre=infeta.getCiudadNombre();
                                     }else
                                     nvoinf.clienteNombre=infeta.getClienteNombre();
-                                    nvoinf.plantaNombre=infeta.getPlantaNombre();
+                                    if(infeta.getPlantaNombre()!=null&&!infeta.getPlantaNombre().equals("")) {
+                                        nvoinf.plantaNombre = infeta.getPlantaNombre();
+                                    }else
+                                        nvoinf.plantaNombre = infeta.getCiudadNombre();
                                    // nvoinf.mo
                                     informeCompravisitas.add(nvoinf);
                                 }

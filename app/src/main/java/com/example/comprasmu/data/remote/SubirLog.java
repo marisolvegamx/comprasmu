@@ -45,7 +45,7 @@ public class SubirLog {
 
 
 
-    public void subirlog( String idusuario,String arch,  Context context) throws Exception {
+    public void subirlog( String idusuario,String arch, String nombrearch, Context context) throws Exception {
 
 //filenameGaleria=getFilename();
 
@@ -57,6 +57,7 @@ public class SubirLog {
             upload= new MultipartUploadRequest(context, Constantes.URLSERV+URL_SUBIRPICTURE)
                     .setMaxRetries(2)
                      .addParameter ("usuario", idusuario)
+                    .addParameter ("archivo", nombrearch)
                       .setUtf8Charset();
             upload.setDelegate(new UploadStatusDelegate(){
 

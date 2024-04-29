@@ -48,7 +48,7 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     //from informe_etapa inner join lista_compras on informe_etapa.plantasId=lista_compras.plantasId
 
-    @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=1) and etapa=:etapa order by id desc")
+    @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=1 or estatus=4 or estatus=6) and etapa=:etapa order by id desc")
     public abstract List<InformeEtapa>  getInformePendSimp(String indice, int etapa);
 
     @Query("SELECT * FROM informe_etapa WHERE  indice=:indice and (estatus=1) and etapa=:etapa order by id desc")

@@ -68,6 +68,8 @@ import java.util.Date;
 import java.util.List;
 
 //cuando se cancela una muestra desde compra y se cancela en etiquetado se vuelve a pedir
+//si estatus=4 se agregaron muestras
+//si se cancelo estatus del informe es 1
 public class EditEtiquetadoFragment extends Fragment {
 
     private InformeEtapaDet detalleEdit;
@@ -246,23 +248,28 @@ public class EditEtiquetadoFragment extends Fragment {
             //todo falta desactivar botones
             return root; //todavía no puede hacer etiquetado
         }
-
+        //primero elimino la muestra de ivan
+        //todo quitarlodespues de la prueba
+        mViewModel.quitarMuestra(Constantes.CLAVEUSUARIO);
 
         totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, ciudadInf);
 
         //busco el ultimo num de muestra
         InformeEtapaDet ultima=mViewModel.getUltimaMuestraEtiq(informeSel);
         contmuestra=mViewModel.totalMuestrasEtiq(informeSel)+1;
+        int totalfotosetiq=mViewModel.totalMuestrasEtiq(informeSel);
       //  if(ultima!=null)
         //    contmuestra =ultima.getNum_muestra()+1;
         //veo si es de muestra o de cja
-        if (infomeEdit != null && infomeEdit.getEstatus() ==1) {
-            if(totmuestras==ultima.getNum_muestra())
+      //  if (infomeEdit != null && infomeEdit.getEstatus() ==1) {
+            if(totmuestras==totalfotosetiq) {
                 capturarFotoCaja();
+                return root;
+            }
             else
                 mostrarCapMuestra();
-        } else
-            mostrarCapMuestra();
+       // } else
+       //     mostrarCapMuestra();
 
 
         if (preguntaAct > 1) //ya tengo planta y cliente
@@ -452,7 +459,7 @@ public void iraReubicar(){
                 break;
             case 3: //qr
                 String qr=txtqr.getText().toString();
-                if(validarQr(qr)) {
+
                     //sv3.setVisibility(View.GONE);
                     sv4.setVisibility(View.GONE);
 
@@ -460,7 +467,7 @@ public void iraReubicar(){
                     preguntaAct = 4;
                     //pido caja
                     sv6.setVisibility(View.VISIBLE);
-                }
+                //}
               /*  }else {
 
                     guardarDet();
@@ -522,12 +529,18 @@ public void iraReubicar(){
     }
 
     public void capturarFotoCaja() {
+        //reviso si tengo ya fotos y es edición
+        InformeEtapaDet det = mViewModel.getUltimonocan(this.informeSel, etapa);
+        if(det.getDescripcionId()>11){
+            //ya tengo foto de caja
+            this.isEdicion=true;
+        }
         Bundle args = new Bundle();
-        args.putInt(EditEtiquetadoFragment.ARG_PREGACT,5 );
-        args.putBoolean(EditEtiquetadoFragment.ARG_ESEDI,this.isEdicion);
+        args.putInt(NvoEtiqCajaFragment.ARG_PREGACT,5 );
+        args.putBoolean(NvoEtiqCajaFragment.ARG_ESEDI,this.isEdicion);
         args.putBoolean(NvoEtiqCajaFragment.ARG_ESACT,true);
 
-        args.putInt(EditEtiquetadoFragment.ARG_INFORMESEL,this.informeSel);
+        args.putInt(NvoEtiqCajaFragment.ARG_INFORMESEL,this.informeSel);
         NvoEtiqCajaFragment nvofrag = new NvoEtiqCajaFragment();
         nvofrag.setArguments(args);
 
@@ -559,20 +572,14 @@ public void iraReubicar(){
 
     }*/
 
-    //devuelve verdadero si no existe el qr
-    public boolean validarQr(String qr) {
+    //devuelve el detalle si xiste el qr
+    public InformeEtapaDet buscarxQr(String qr) {
         // listaqr.setAdapter(null);
-        InformeEtapaDet prods = mViewModel.buscarDetxQr(qr);
-        if(prods!=null&&detalleEdit!=null)
-            Log.d(TAG,prods.getId()+"--"+detalleEdit.getId()+" "+isEdicion);
-        if(prods!=null&&detalleEdit!=null&&prods.getId()==detalleEdit.getId()&&isEdicion){
-            //es el mismo
-        }else
-        if (prods != null) {
-            Toast.makeText(getActivity(), getString(R.string.ya_existe_qr), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
+        InformeEtapaDet prods = mViewModel.buscarDetxQr2(qr);
+        if(prods!=null&&prods.getEstatus()==0) //esta cancelado es reemplazo
+        {   Log.d(TAG,prods.getId()+" "+isEdicion);
+            return prods;}
+        return null;
     }
 
     public boolean validasSecuenciaCaj(){
@@ -754,17 +761,18 @@ public void iraReubicar(){
             String opcionsel = (String) spcaja.getSelectedItem();
             int numcaja = Integer.parseInt(opcionsel);
             int iddet=0;
-            if(isEdicion&&detalleEdit!=null){
-               iddet= mViewModel.actualizarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,detalleEdit.getId(),numcaja,qr,contmuestra,detalleEdit.getRuta_foto(),Constantes.INDICEACTUAL);
+            detalleEdit=buscarxQr(qr);
+            if(detalleEdit!=null){ //ya existe y es cancelación
+               iddet= mViewModel.actualizarEtiqDet2(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,detalleEdit.getId(),numcaja,qr,detalleEdit.getNum_muestra(),detalleEdit.getRuta_foto(),Constantes.INDICEACTUAL, 5);//para enviarlo al final
                 isEdicion=false;
 
-            }else
-            if(mViewModel.getIdNuevo()>0)
+            }else //es nueva muestra
+                if(mViewModel.getIdNuevo()>0)
                 //guardo el detalle
-               iddet= mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,numcaja,qr,contmuestra,Constantes.INDICEACTUAL);
+                    iddet= mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,numcaja,qr,contmuestra,Constantes.INDICEACTUAL);
            //actualizo estatus inf
             //mViewModel.setIdNuevo();
-            mViewModel.actualizarEstatusInf(mViewModel.getIdNuevo());
+           // mViewModel.actualizarEstatusInf(mViewModel.getIdNuevo());
             //guardo para enviar despues
             mViewModel.muestrasactEtiq.add(iddet);
             //limpio campos

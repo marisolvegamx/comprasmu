@@ -76,6 +76,10 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
         return dao.getByQr( qr, etapa);
     }
 
+    public InformeEtapaDet getByQr2( String qr, int etapa) {
+        return dao.getByQr2( qr, etapa);
+    }
+
     /*public List<InformeEtapaDet> getByCaja( int idinf, int etapa, int numcaja) {
         return dao.getByCaja(idinf,etapa, numcaja);
     }*/
@@ -235,6 +239,15 @@ public  class InfEtapaDetRepoImpl extends BaseRepository<InformeEtapaDet> {
 
     public void actQr(int id, String qr) {
         dao.actualizarQr(id,qr);
+    }
+
+    public List<InformeEtapaDet> buscarEditadosEtiq(int idnvo) {
+        return dao.getEditadosEtiq(idnvo,5);
+    }
+
+
+    public InformeEtapaDet findxNumMuestra(int id, int nummuestra) {
+        return dao.findxNummuestra(id, nummuestra);
     }
 }
 

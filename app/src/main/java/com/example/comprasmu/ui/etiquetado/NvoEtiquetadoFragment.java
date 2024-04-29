@@ -362,7 +362,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                     //busco la ultima muestra
                     InformeEtapaDet ultima = mViewModel.getUltimaMuestraEtiq(primero.getId());
                     if(ultima!=null)
-                        contmuestra = ultima.getNum_muestra()+1;
+                        contmuestra = 1;
                 }
 
                 InformeEtapa informetemp = new InformeEtapa();

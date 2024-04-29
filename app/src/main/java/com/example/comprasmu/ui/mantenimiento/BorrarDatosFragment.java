@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,15 @@ import android.widget.Toast;
 import com.example.comprasmu.R;
 import com.example.comprasmu.utils.EliminadorIndice;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Date;
+
 public class BorrarDatosFragment extends Fragment {
 
     private BorrarDatosViewModel mViewModel;
@@ -34,6 +44,7 @@ public class BorrarDatosFragment extends Fragment {
     Spinner spindice;
     EditText txtipo;
     TextView aviso;
+    TextView txtlog;
     public static final String TIPODATA="comprasmu.tipodata";
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -47,6 +58,8 @@ public class BorrarDatosFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, indices);
         spindice.setAdapter(adapter);
         Button btnborrar=root.findViewById(R.id.btndbborrar);
+        Button btnprobar=root.findViewById(R.id.btnbsprueba);
+         txtlog = root.findViewById(R.id.txtxbdlog);
         aviso=root.findViewById(R.id.txtbdlisto);
         btnborrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +68,13 @@ public class BorrarDatosFragment extends Fragment {
                preguntar();
             }
         });
+        btnprobar.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View view) {
+                                             pruebalog();
+                                         }
+                                     }
+        );
         return root;
     }
 
@@ -160,4 +180,52 @@ public class BorrarDatosFragment extends Fragment {
 
     }
 
+    public void pruebalog(){
+        try {
+            Process process = Runtime.getRuntime().exec("logcat -d");
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+
+            StringBuilder log=new StringBuilder();
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                log.append(line);
+            }
+
+            txtlog.setText("fin");
+            File fichero=crearLog(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
+            if(fichero!=null) {
+                BufferedWriter br = new BufferedWriter(new FileWriter(fichero, true));
+
+                br.write(log.toString());
+
+                br.close();
+            }
+        }
+        catch (IOException e) {}
+    }
+    public File crearLog(String dir) {
+        //talvez borrarlo cada semana
+
+        try {
+            String ruta =dir + "/compraslogcat.txt";
+
+            File fichero = new File(ruta);
+            FileOutputStream fileOutputStream = null;
+            if (!fichero.exists()) {
+                try {
+                    fichero.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("BORRAR DATOS", "Error statusFile" + e.getMessage());
+                }
+            }
+            return fichero;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
 }

@@ -333,9 +333,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_canceleti));
         }
-        if(Constantes.ETAPAACTUAL==4)
-            gallery=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+        if(Constantes.ETAPAACTUAL==4) {
+            gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_solcorem));
+            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_cancel));
+        }
         if(Constantes.ETAPAACTUAL==5) {
 
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
@@ -475,7 +478,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 startActivity(homeIntent);
                 return true;
 
-     /*       case R.id.action_enviar_fotos:
+           /* case R.id.action_log:
               //  Log.d(TAG,"hice click en"+item.getItemId());
                    subirImagenes();
                 return true;*/
@@ -1045,4 +1048,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
       //  base.closeDrawer(GravityCompat.START);
       /*  return true;
     }*/
+
+    public void subirImagenes(){
+        NavController navController;
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        navController.navigate(R.id.nav_borrarind);
+    }
 }
