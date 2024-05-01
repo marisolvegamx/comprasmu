@@ -85,7 +85,25 @@
                         android:layout_height="100dp"
                         tools:srcCompat="@tools:sample/avatars" />
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/gpofotoo4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/ivcoriginal4"
+                        android:layout_width="150dp"
+                        android:layout_height="100dp"
+                        tools:srcCompat="@tools:sample/avatars" />
+                </LinearLayout>
                 <TextView
                     android:id="@+id/txtcmotivo"
                     style="@style/textolista2"
@@ -219,7 +237,41 @@
                         tools:visibility="visible" />
 
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/content_generic4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"></LinearLayout>
+                <LinearLayout
+                    android:id="@+id/gpofoto4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
+                    <ImageView
+                        android:id="@+id/ivgfoto4"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        android:visibility="gone"
+                        tools:srcCompat="@tools:sample/avatars"
+                        tools:visibility="visible" />
+
+                    <ImageButton
+                        android:id="@+id/btngrotar4"
+                        style="@style/imbutton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:visibility="gone"
+                        app:srcCompat="@android:drawable/stat_notify_sync"
+                        tools:visibility="visible" />
+
+                </LinearLayout>
                 <Button
                     android:id="@+id/btngvalidar"
                     android:layout_width="match_parent"

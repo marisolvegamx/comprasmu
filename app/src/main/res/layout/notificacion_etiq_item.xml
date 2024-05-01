@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/agregar_muestra"
-                android:visibility="@{detalle.etapa==3&amp;&amp;detalle.estatus==1? View.VISIBLE: View.GONE}"/>
+                android:visibility="@{detalle.etapa==3&amp;&amp;detalle.estatus==6? View.VISIBLE: View.GONE}"/>
 
             <Button
                 android:id="@+id/btneccontinuar"
