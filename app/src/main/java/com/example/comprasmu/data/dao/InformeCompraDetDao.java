@@ -143,7 +143,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "informe_detalle.estatusSync,productoId,producto,presentacion,tamanioId," +
             "empaque,empaquesId,codigo, caducidad,origen, costo,foto_codigo_produccion  ," +
             "energia,producto_exhibido,foto_num_tienda,marca_traslape, atributoa," +
-            "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
+            "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,foto_atributod,azucares," +
             "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
             "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
             "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel, causaSustId, causaSustitucion  " +
@@ -160,7 +160,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "informe_detalle.estatusSync,productoId,producto,presentacion,tamanioId," +
             "empaque,empaquesId,codigo, caducidad,origen, costo,foto_codigo_produccion  ," +
             "energia,producto_exhibido,foto_num_tienda,marca_traslape, atributoa," +
-            "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
+            "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,foto_atributod,azucares," +
             "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
             "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
             "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel,causaSustId, causaSustitucion  " +
@@ -179,7 +179,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "informe_detalle.estatusSync,productoId,producto,presentacion,tamanioId," +
             "empaque,empaquesId,codigo, caducidad,origen, costo,foto_codigo_produccion  ," +
             "energia,producto_exhibido,foto_num_tienda,marca_traslape, atributoa," +
-            "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,azucares," +
+            "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,foto_atributod,azucares," +
             "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
             "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
             "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel ,causaSustId, causaSustitucion " +

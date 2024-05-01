@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -63,7 +64,7 @@ public class NvaCorreccionFragment extends Fragment {
 
     CreadorFormulario cf;
     List<CampoForm> camposForm;
-    LinearLayout sv,sv2,sv3;
+    LinearLayout sv,sv2,sv3,sv4;
     private static final String TAG = "NvaCorreccionFragment";
     Button aceptar;
 
@@ -71,21 +72,24 @@ public class NvaCorreccionFragment extends Fragment {
     private final boolean yaestoyProcesando=false;
 
     int solicitudSel;
-    EditText textoint,txtrutaim2,txtrutaim3;
-    ImageView fotomos,fotomos2,fotomos3, fotoori1,fotoori2,fotoori3;
-    private ImageButton btnrotar,btnrotar2,btnrotar3;
+    EditText textoint,txtrutaim2,txtrutaim3,txtrutaim4;
+    ImageView fotomos,fotomos2,fotomos3,fotomos4, fotoori1,fotoori2,fotoori3,fotoori4;
+    private ImageButton btnrotar,btnrotar2,btnrotar3, btnrotar4;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
     public static int REQUEST_CODE2 = 2;
     public static int REQUEST_CODE3 = 3;
+    public static int REQUEST_CODE4=4;
     String rutafotoo;
     String rutafotoo3;
     String rutafotoo2;
+    String rutafotoo4;
     private View root;
     private NvaCorreViewModel mViewModel;
     ListaSolsViewModel solViewModel;
     SolicitudCor solicitud;
     TextView txtmotivo;
     int numfoto;
+
 
     public static NvaCorreccionFragment newInstance() {
         return new NvaCorreccionFragment();
@@ -100,6 +104,7 @@ public class NvaCorreccionFragment extends Fragment {
         sv = root.findViewById(R.id.content_generic);
         sv2 = root.findViewById(R.id.content_generic2);
         sv3 = root.findViewById(R.id.content_generic3);
+        sv4 = root.findViewById(R.id.content_generic4);
         aceptar = root.findViewById(R.id.btngaceptar);
         txtmotivo=root.findViewById(R.id.txtcmotivo);
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaCorreViewModel.class);
@@ -116,6 +121,7 @@ public class NvaCorreccionFragment extends Fragment {
         fotoori1=root.findViewById(R.id.ivcoriginal);
         fotoori2=root.findViewById(R.id.ivcoriginal2);
         fotoori3=root.findViewById(R.id.ivcoriginal3);
+        fotoori4=root.findViewById(R.id.ivcoriginal4);
         solViewModel.getSolicitud(solicitudSel,numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
@@ -198,6 +204,9 @@ public class NvaCorreccionFragment extends Fragment {
                             int numfoto2=corrige.getFoto_atributob();
 
                             int numfoto3=corrige.getFoto_atributoc();
+                            int numfoto4=0;
+                            if(corrige.getFoto_atributod()!=null)
+                                 numfoto4=corrige.getFoto_atributod();
                             //pongo datos del producto
                            //  producto=corrige.getProducto()+" "+corrige.getPresentacion();
                             solViewModel.buscarImagenCom(numfoto2).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
@@ -232,6 +241,21 @@ public class NvaCorreccionFragment extends Fragment {
                                     //como consigo las otras?
                                 }
                             });
+                            solViewModel.buscarImagenCom(numfoto4).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                                @Override
+                                public void onChanged(ImagenDetalle imagenDetalle) {
+                                    if(imagenDetalle!=null) {
+                                        rutafotoo4 = imagenDetalle.getRuta();
+
+                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo4, 80, 80);
+                                        if(bitmap1!=null)
+                                            fotoori4.setImageBitmap(bitmap1);
+                                        root.findViewById(R.id.gpofotoo4).setVisibility(View.VISIBLE);
+                                        fotoori4.setVisibility(View.VISIBLE);
+                                    }
+
+                                }
+                            });
                             fotoori2.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -242,6 +266,12 @@ public class NvaCorreccionFragment extends Fragment {
                                 @Override
                                 public void onClick(View view) {
                                     verImagen(rutafotoo3);
+                                }
+                            });
+                            fotoori4.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    verImagen(rutafotoo4);
                                 }
                             });
                         }else
@@ -412,6 +442,38 @@ public class NvaCorreccionFragment extends Fragment {
                     rotar(1003,3);
                 }
             });
+
+            camposForm = new ArrayList<>();
+            campo = new CampoForm();
+            campo.label =getString(R.string.foto_posicion4);
+            campo.nombre_campo = "foto4";
+            campo.type = "agregarImagen";
+            campo.style = R.style.formlabel2;
+            campo.id = 1004;
+            campo.funcionOnClick = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tomarFoto(REQUEST_CODE4);
+                }
+            };
+            campo.tomarFoto = true;
+
+            camposForm.add(campo);
+            Log.d(TAG, "haciendo form");
+            cf = new CreadorFormulario(camposForm, getContext());
+
+            sv4.addView(cf.crearFormulario());
+            sv4.setVisibility(View.VISIBLE);
+            txtrutaim4 = root.findViewById(1004);
+            fotomos4 = root.findViewById(R.id.ivgfoto4);
+            //  fotomos3.setVisibility(View.VISIBLE);
+            btnrotar4 = root.findViewById(R.id.btngrotar4);
+            btnrotar4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    rotar(1004,4);
+                }
+            });
         }
         textoint = root.findViewById(1001);
     }
@@ -421,6 +483,7 @@ public class NvaCorreccionFragment extends Fragment {
             String valor = null;
             String valor2 = null;
             String valor3 = null;
+            String valor4 = null;
             if (textoint != null) {
                 valor = textoint.getText().toString();
                 valor = valor.toUpperCase();
@@ -433,20 +496,24 @@ public class NvaCorreccionFragment extends Fragment {
                 valor3 = txtrutaim3.getText().toString();
                 valor3 = valor3.toUpperCase();
             }
+            if (txtrutaim4 != null) {
+                valor4 = txtrutaim4.getText().toString();
+                valor4 = valor4.toUpperCase();
+            }
             //valido q haya 3 fotos si es de atributo
             if(solicitud.getDescripcionFoto().equals("foto_atributoa")) { //es 360
-                if(valor2.equals("")||valor3.equals("")){
-                    Toast.makeText(getContext(),"Favor de capturar las 3 fotos",Toast.LENGTH_LONG).show();
+                if(valor2.equals("")||valor3.equals("")||valor4.equals("")){
+                    Toast.makeText(getContext(),"Favor de capturar las 4 fotos",Toast.LENGTH_LONG).show();
                     return;
                 }
             }
                 //paso a
             //creo el informe
-            mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, valor2, valor3));
+            mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, valor2, valor3, valor4));
             actualizarSolicitud();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
             try {
-                Thread.sleep(4000);
+                Thread.sleep(3500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -506,6 +573,8 @@ public class NvaCorreccionFragment extends Fragment {
 
             if(numimagen==3)
                 RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" +foto,fotomos3);
+            if(numimagen==4)
+                RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" +foto,fotomos4);
 
         }
     }
@@ -573,7 +642,7 @@ public class NvaCorreccionFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
-        if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode == REQUEST_CODE2||requestCode == REQUEST_CODE3) && resultCode == RESULT_OK) {
+        if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode == REQUEST_CODE2||requestCode == REQUEST_CODE3||requestCode == REQUEST_CODE4) && resultCode == RESULT_OK) {
             //   super.onActivityResult(requestCode, resultCode, data);
 
             if (archivofoto!=null&&archivofoto.exists()) {
@@ -585,11 +654,16 @@ public class NvaCorreccionFragment extends Fragment {
                     grupo.setVisibility(View.VISIBLE);
                     mostrarFoto(txtrutaim2,fotomos2,btnrotar2);
 
-                }
+                }else
                 if(requestCode == REQUEST_CODE3) {
                     View grupo=root.findViewById(R.id.gpofoto3);
                     grupo.setVisibility(View.VISIBLE);
                     mostrarFoto(txtrutaim3,fotomos3,btnrotar3);
+                }else
+                if(requestCode == REQUEST_CODE4) {
+                    View grupo=root.findViewById(R.id.gpofoto4);
+                    grupo.setVisibility(View.VISIBLE);
+                    mostrarFoto(txtrutaim4,fotomos4,btnrotar4);
                 }
                 aceptar.setEnabled(true);
 

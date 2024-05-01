@@ -2071,27 +2071,9 @@ public class DetalleProductoFragment extends Fragment {
         integrator.initiateScan();
     }
     public void verListaCompra(int nummuestra){
-        /* b2undle.putString("plantaNombre", listaSeleccionable.get(i).getNombre());*/
-        /*   NavHostFragment.findNavController(this).navigate(R.id.action_selclientetolistacompras,bundle);
-         */
-        //NavHostFragment.findNavController(this).navigate(R.id.action_lista compra);
-        String opcion = "";
+         String opcion = "";
         Intent intento1 = new Intent(getActivity(), BackActivity.class);
 
-
-        //  if(nummuestra<2) {
-          /*  List<ListaCompra> listapl = lcviewModel.cargarPlantas(mViewModel.visita.getCiudad(), mViewModel.clienteSel);
-            // Log.d(TAG,"todavia no se que hacer"+listapl.size());
-
-            if (listapl.size() > 1) {
-
-                //Log.d(TAG,"todavia no se que hacer");
-                opcion = BackActivity.OP_SELPLANTA;
-                intento1.putExtra(SelClienteFragment.ARG_TIPOCONS, "action_selclitolista");
-            } else if (listapl.size() > 0) {
-                //voy directo a la lista
-                plantaSel = listapl.get(0).getPlantasId();
-                NOMBREPLANTASEL = listapl.get(0).getPlantaNombre();*/
         opcion = BackActivity.OP_LISTACOMPRA;
 
         // }

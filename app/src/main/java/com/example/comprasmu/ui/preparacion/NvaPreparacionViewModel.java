@@ -291,6 +291,38 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return iddetalle;
     }
 
+    public int actualizarEtiqDet2(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja,String qr,int num_muestra,String idfoto,String indice, int estatus){
+        //busco la imagen detalle
+        int numfoto=0;
+        try {
+            numfoto =Integer.parseInt(idfoto);
+        }catch (NumberFormatException ex){
+            Log.d(TAG,"actualizarEtiqDet NumberFormatException");
+        }
+        ImagenDetalle  foto=getFoto(numfoto);
+        foto.setRuta( ruta);
+        foto.setDescripcion(descripcion);
+        foto.setEstatus(1);
+        foto.setEstatusSync(0);
+        foto.setIndice(indice);
+        foto.setCreatedAt(new Date());
+        int nvoidimagem =(int)imagenDetRepository.insertImg(foto);
+        InformeEtapaDet detalle=new InformeEtapaDet();
+        detalle.setDescripcion(descripcion);
+        detalle.setInformeEtapaId(idinf);
+        detalle.setRuta_foto(nvoidimagem+"");
+        detalle.setDescripcionId(descripcionid);
+        detalle.setNum_caja(numcaja);
+        detalle.setQr(qr);
+        detalle.setNum_muestra(num_muestra);
+        detalle.setEstatusSync(0);
+        detalle.setEtapa(3);
+        detalle.setEstatus(estatus);
+        detalle.setId(iddet);
+        iddetalle=(int)infDetRepo.insert(detalle);
+        return iddetalle;
+    }
+
     public int insertarEmpDet(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja,String indice, int totmuestras,String descfoto){
 
         ImagenDetalle foto=new ImagenDetalle();
@@ -443,6 +475,10 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return infDetRepo.getUltimaMuestraEtiq(id, 3);
 
     }
+    public int totalMuestrasEtiq(int id){
+        return infDetRepo.totalMuestrasEtiq(id, 3);
+
+    }
    /* public void listaCajasEtiqxCliCd(int cliente){
         List<InformeEtapaDet> muestras= infDetRepo.listaCajasEtiqxCli( 3, cliente);
         EtiquetadoxCliente resul=null;
@@ -586,6 +622,10 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
          return infDetRepo.getByQr(qr,3);
 
     }
+    public InformeEtapaDet buscarDetxQr2(String qr) {
+        return infDetRepo.getByQr2(qr,3);
+
+    }
 
 
     public List<InformeEtapa>  buscarInformesEtiq(String indice) {
@@ -616,8 +656,12 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public void finalizarInf(){
         infEtaRepository.actualizarEstatus(idNuevo,2);
     }
-
-
+    public void actualizarEstatusInf(int idinf){
+        infEtaRepository.actualizarEstatus(idinf,1);
+    }
+    public void actualizarEstatusDet(int iddet, int estatus){
+        infDetRepo.actEstatus(iddet,1);
+    }
     public int getIdNuevo() {
         return idNuevo;
     }
@@ -776,11 +820,13 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         List<InformeEtapaDet> muestras=new ArrayList<>();
-        //busco los nuevo detalles
-        if(muestrasactEtiq!=null)
-            for (int iddet:
-                 muestrasactEtiq) {
-                muestras.add(infDetRepo.findsimple(iddet));
+
+        //busco los nuevo detalles pendientes
+        List<InformeEtapaDet> editados=infDetRepo.buscarEditadosEtiq(idnvo);
+        if(editados!=null)
+            for (InformeEtapaDet iddet:
+                    editados) {
+                muestras.add(iddet);
             }
 
         List<InformeEtapaDet> fotocaja=infDetRepo.getInfDetCalCaja(idnvo);
@@ -860,5 +906,19 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
     public void insertarEnvioDet(InformeEnvioDet nvoDet) {
         infEnvioRepo.insert(nvoDet);
+    }
+
+    public void quitarMuestra(String claveusuario) {
+        if(claveusuario=="41"&&Constantes.INDICEACTUAL=="5.2024"){
+            InformeEtapaDet borrar=infDetRepo.findxNumMuestra(69,11);
+            if(borrar!=null){
+                infDetRepo.delete(borrar);
+            }
+        }
+    }
+    //busco el ultimo detalle informe
+    public InformeEtapaDet getUltimonocan(int idinf, int etapa){
+
+        return infDetRepo.getUltimonocan(idinf,etapa);
     }
 }

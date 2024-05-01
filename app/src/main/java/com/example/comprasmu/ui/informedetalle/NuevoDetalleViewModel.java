@@ -74,7 +74,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     public ImagenDetalle foto_atributoc;
     public ImagenDetalle marca_traslape;
     public ImagenDetalle etiqueta_evaluacion;
-    public ImagenDetalle fotoazucares;
+    public ImagenDetalle foto_atributod;
     public ImagenDetalle fotoqr;
     private final ImagenDetRepositoryImpl imagenDetRepository;
     private final AtributoRepositoryImpl atrRepo;
@@ -266,10 +266,10 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
             icdNuevo.setEtiqueta_evaluacion(idet);
         }
-        if(fotoazucares!=null) { //guardo las fotos
-            int idet = (int) imagenDetRepository.insertImg(fotoazucares);
+        if(foto_atributod!=null) { //guardo las fotos
+            int idet = (int) imagenDetRepository.insertImg(foto_atributod);
 
-            icdNuevo.setAzucares(idet);
+            icdNuevo.setFoto_atributod(idet);
         }
 
 
@@ -535,7 +535,8 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.foto_atributob = crearImagendeTmp(Contrato.TablaInformeDet.FOTO_ATRIBUTOB);
         this.foto_atributoc = crearImagendeTmp(Contrato.TablaInformeDet.FOTO_ATRIBUTOC);
         this.etiqueta_evaluacion = crearImagendeTmp( Contrato.TablaInformeDet.ETIQUETA_EVALUACION);
-        this.fotoazucares = crearImagendeTmp( Contrato.TablaInformeDet.AZUCARES);
+        //this.fotoazucares = crearImagendeTmp( Contrato.TablaInformeDet.AZUCARES);
+       this.foto_atributod = crearImagendeTmp(Contrato.TablaInformeDet.FOTO_ATRIBUTOD);
         int nuevoid = this.saveDetalle2();
 
 
@@ -552,7 +553,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         this.foto_atributob =null;
         this.foto_atributoc = null;
         this.etiqueta_evaluacion = null;
-        this.fotoazucares = null;
+        this.foto_atributod = null;
 
     }
 

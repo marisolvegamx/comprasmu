@@ -206,8 +206,11 @@ public class NvoEtiqCajaFragment extends Fragment {
             infomeEdit = mViewModel.getInformexId(informeSel);
             if(this.detalleEdit==null)
                 this.detalleEdit =niviewModel.getDetalleEtEdit(informeSel, 3);
-
-            ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(infomeEdit);
+           try {
+               ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(infomeEdit);
+           }catch(ClassCastException ex){
+               //entre por notificacion
+            }
             mViewModel.setIdNuevo(informeSel);
 
 
@@ -580,7 +583,13 @@ public void iraReubicar(){
             miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
             //cambio el estatus para que no vuelva a pedir en el task
+           if(envio.getInformeEtapaDet()!=null)
+            for (InformeEtapaDet iddet:
+                    envio.getInformeEtapaDet()) {
 
+
+                mViewModel.actualizarEstatusDet(iddet.getId(),1);
+            }
         }catch(Exception ex){
             ex.printStackTrace();
             Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());

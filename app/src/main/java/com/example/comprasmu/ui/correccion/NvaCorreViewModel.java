@@ -41,12 +41,13 @@ public class NvaCorreViewModel extends AndroidViewModel {
 
     }
 
-    public int insertarCorreccion(int solicitudid,String indice,int numFoto,String ruta1, String ruta2,String ruta3){
+    public int insertarCorreccion(int solicitudid,String indice,int numFoto,String ruta1, String ruta2,String ruta3,String ruta4){
         Correccion correccion=new Correccion();
         correccion.setSolicitudId(solicitudid);
         correccion.setRuta_foto1(ruta1);
         correccion.setRuta_foto2(ruta2);
         correccion.setRuta_foto3(ruta3);
+        correccion.setRuta_foto4(ruta4);
         correccion.setEstatusSync(0);
         correccion.setEstatus(1);
         correccion.setIndice(indice);

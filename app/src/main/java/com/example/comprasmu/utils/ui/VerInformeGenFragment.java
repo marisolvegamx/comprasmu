@@ -253,7 +253,7 @@ public class VerInformeGenFragment extends Fragment {
             }
         };
         camposTienda.add(campo);
-        //todo faltan otras 2 fotos
+
         if(correccion.correccion.getRuta_foto2()!=null&&!correccion.correccion.getRuta_foto2().equals(""))
         {
             campo = new CampoForm();
@@ -278,6 +278,20 @@ public class VerInformeGenFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     verImagen(correccion.correccion.getRuta_foto3());
+                }
+            };
+            camposTienda.add(campo);
+        }
+        if(correccion.correccion.getRuta_foto4()!=null&&!correccion.correccion.getRuta_foto4().equals(""))
+        {
+            campo = new CampoForm();
+            campo.nombre_campo = "foto4";
+            campo.type = "imagenView";
+            campo.value =directorio+correccion.correccion.getRuta_foto4();
+            campo.funcionOnClick=new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    verImagen(correccion.correccion.getRuta_foto4());
                 }
             };
             camposTienda.add(campo);

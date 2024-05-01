@@ -324,7 +324,7 @@ public class NvaCorreccionEnvFragment extends Fragment {
             }
                 //paso a
             //creo el informe
-            mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, valor2, valor3));
+            mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, valor2, valor3,null));
             actualizarSolicitud();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
             try {

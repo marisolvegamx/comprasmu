@@ -117,7 +117,7 @@ public class DescRespInformesEta {
                         //elimino las fotos de las cajas
                         infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
                         //vuelvo a abrir
-                        infrepo.actualizarEstatus(det.getInformeEtapaId(), 1);
+                        infrepo.actualizarEstatus(det.getInformeEtapaId(), 6);
 
                     }
 

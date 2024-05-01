@@ -18,6 +18,7 @@ public class Correccion {
     private String ruta_foto1;
     private String ruta_foto2;
     private String ruta_foto3;
+    private String ruta_foto4;
     private int estatus;
     private int estatusSync;
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
@@ -132,5 +133,13 @@ public class Correccion {
 
     public void setDato3(String dato3) {
         this.dato3 = dato3;
+    }
+
+    public String getRuta_foto4() {
+        return ruta_foto4;
+    }
+
+    public void setRuta_foto4(String ruta_foto4) {
+        this.ruta_foto4 = ruta_foto4;
     }
 }

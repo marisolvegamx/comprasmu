@@ -48,6 +48,8 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:inf and etapa=:etapa and descripcionId=11  order by id desc")
     public abstract List<InformeEtapaDet> getUltimaMuestra( int inf, int etapa);
 
+  @Query("SELECT count(*) FROM informe_etapa_det where informeEtapaId=:inf and etapa=:etapa and descripcionId=11 and (estatus is null or estatus>0) order by id desc")
+  public abstract int totalMuestrasEtiq( int inf, int etapa);
 
     @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:id and etapa=:etapa and num_caja=:caja order by id desc")
     public abstract List<InformeEtapaDet> getUltimoCaja( int id,int etapa, int caja);
@@ -133,7 +135,10 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
     @Query("SELECT * FROM informe_etapa_det where etapa=:etapa and qr=:qr and (estatus is null or estatus>0)")
     public abstract InformeEtapaDet getByQr( String qr, int etapa);
 
-    @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:informe and descripcionId>11 order by num_caja, descripcionId")
+    @Query("SELECT * FROM informe_etapa_det where etapa=:etapa and qr=:qr")
+    public abstract InformeEtapaDet getByQr2( String qr, int etapa);
+
+  @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:informe and descripcionId>11 order by num_caja, descripcionId")
     public  abstract List<InformeEtapaDet> getInfDetCalCaja(int informe);
 
     @Query("update informe_etapa_det set estatusSync=:estatus WHERE informeEtapaId=:idinforme")
@@ -152,5 +157,9 @@ public abstract class InformeEtapaDetDao extends  BaseDao<InformeEtapaDet> {
   @Query("SELECT * FROM informe_etapa_det  inner join informe_etapa on informe_etapa.id=informeEtapaId  where   informe_etapa.etapa=:etapa and informe_etapa_det.estatus=:estatus and informe_etapa.estatus<>2 and informe_etapa.indice=:indice and descripcionId=11")
   public abstract LiveData<List<InformeEtapaDet>> getCanceladasEtiq(int etapa,String indice, int estatus);
 
+  @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:idinf and estatus=:estatus and etapa=3 and descripcionId=11")
+  public abstract List<InformeEtapaDet> getEditadosEtiq(  int idinf, int estatus);
 
+  @Query("SELECT * FROM informe_etapa_det where informeEtapaId=:infid and num_muestra=:nummuestra")
+  public abstract InformeEtapaDet findxNummuestra( int infid, int nummuestra);
 }

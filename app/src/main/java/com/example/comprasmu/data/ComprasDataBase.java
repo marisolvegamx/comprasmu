@@ -528,8 +528,11 @@ public abstract class ComprasDataBase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL(
                     "ALTER TABLE informe_detalle ADD COLUMN  foto_atributod INTEGER; " );
-                }
+            database.execSQL("ALTER TABLE correccion ADD COLUMN ruta_foto4 TEXT");
+
+        }
     };
+
     private void cargandodatos(){
 
         runInTransaction(new Runnable() {
@@ -1194,8 +1197,19 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setType("agregarImagen");
         campo.setTabla("ID");
         campo.setId(66);
-        campo.setSigId(70);
+        campo.setSigId(131);
         campo.setCliente(cliente);    campo.setClienteSel(cliid);
+        camposForm.add(campo);
+
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_posicion4));
+        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOD);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(131);
+        campo.setSigId(70);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
         camposForm.add(campo);
         campo=new Reactivo();
         campo.setLabel(ctx.getString(R.string.seguro_muestra));
@@ -1460,11 +1474,20 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setType("agregarImagen");
         campo.setTabla("ID");
         campo.setId(86);
-        campo.setSigId(87);
+        campo.setSigId(132);
         campo.setCliente(cliente);    campo.setClienteSel(cliid);
         camposForm.add(campo);
 
-
+        campo=new Reactivo();
+        campo.setLabel(ctx.getString(R.string.foto_posicion4));
+        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOD);
+        campo.setType("agregarImagen");
+        campo.setTabla("ID");
+        campo.setId(132);
+        campo.setSigId(87);
+        campo.setCliente(cliente);
+        campo.setClienteSel(cliid);
+        camposForm.add(campo);
         campo=new Reactivo();
         campo.setLabel(ctx.getString(R.string.seguro_muestra));
         campo.setNombreCampo("confirmaMuestra");

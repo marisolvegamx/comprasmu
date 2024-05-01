@@ -750,7 +750,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
                     }
                 }else
                 if(info.getNombre_campo().equals("condiciones_traslado")) {
-                    Log.d(TAG,"******otro cons"+info.getConsecutivo()+info.getNombre_campo());
+                //    Log.d(TAG,"******otro cons"+info.getConsecutivo()+info.getNombre_campo());
                     nuevo.setConsecutivo(info.getConsecutivo());
                     this.condiciones_traslado = new ImagenDetalle();
                     this.condiciones_traslado.setRuta(info.getValor());

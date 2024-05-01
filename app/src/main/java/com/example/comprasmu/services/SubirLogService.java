@@ -25,10 +25,12 @@ public class SubirLogService extends IntentService
 {
     private static final String TAG = "SubirLogService";
     String userId;
-
+    String nombrearch;
+    String rutaarchivo;
     public static final String ACTION_UPLOAD_LOG = "com.example.comprasmu.intentservice.action.PROGRESOLOG";
 
     public static final String EXTRA_LOG_PATH = "com.example.comprasmu.intentservice.extra.EXTRA_LOG_PATH";
+    public static final String EXTRA_LOG_DIR = "com.example.comprasmu.intentservice.extra.EXTRA_LOG_DIR";
 
 
     public SubirLogService()
@@ -44,7 +46,8 @@ public class SubirLogService extends IntentService
         {
             final String action = intent.getAction();
            // intent.setAction(ACTION_UPLOAD_IMG);
-
+            nombrearch= intent.getStringExtra(EXTRA_LOG_PATH);
+            rutaarchivo=intent.getStringExtra(EXTRA_LOG_DIR);
             if (ACTION_UPLOAD_LOG.equals(action))
             {
               //  Log.d(TAG,"action"+action);
@@ -62,12 +65,19 @@ public class SubirLogService extends IntentService
                // notificar();
                 SubirLog sf = new SubirLog();
                 sf.agregarObservador(objObservador);
-                Log.d(TAG,"ahora si voy a subir* log");
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String dir=   this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath()+"/compraslog.txt";
+                Log.d(TAG,"ahora si voy a subir* log"+rutaarchivo);
+             if(rutaarchivo==null||rutaarchivo.equals("")) {
+                 Log.d(TAG,"ahora si voy a subir* log");
+                 String dir = this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath() + "/" + nombrearch;
 
-                sf.subirlog(Constantes.CLAVEUSUARIO,dir, this);
-               // pvm.actualizarEstatusFoto(imagenSubir);
+                 sf.subirlog(Constantes.CLAVEUSUARIO, dir, nombrearch, this);
+             }else{
+
+
+                 sf.subirlog(Constantes.CLAVEUSUARIO, rutaarchivo, "compras_data.txt", this);
+
+             }
+                 // pvm.actualizarEstatusFoto(imagenSubir);
                // Thread.sleep(10000);
                 // enviarOtra();
             }catch (Exception ex){
