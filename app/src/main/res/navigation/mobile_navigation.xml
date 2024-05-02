@@ -225,6 +225,36 @@
         android:label="@string/menu_ver_lissolcor"
         />
     <fragment
+        android:id="@+id/nav_notificaciongen"
+        android:name="com.example.comprasmu.ui.solcorreccion.SelNotifFragment"
+        android:label="@string/menu_notificaciones">
+    <action android:id="@+id/action_notiftosolcor"
+        app:destination="@id/nav_listasolcor"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    <action android:id="@+id/action_notiftocan"
+        app:destination="@id/nav_cancel"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    <action android:id="@+id/action_notiftomu"
+        app:destination="@id/nav_listanotif"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_listanotif"
+        android:name="com.example.comprasmu.ui.notificaciones.ListaNvaCompFragment"
+        android:label="@string/muestra_adicional"
+        />
+
+    <fragment
         android:id="@+id/nav_rescorreccion2"
         android:name="com.example.comprasmu.ui.infetapa.SelClienteGenFragment"
         android:label="@string/menu_ver_lissolcor"
@@ -507,7 +537,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_notificacionseti"
-        android:name="com.example.comprasmu.ui.etiquetado.ListaNotifEtiqFragment"
+        android:name="com.example.comprasmu.ui.notificaciones.ListaNotifEtiqFragment"
         android:label="@string/menu_nuevas_compras"
         tools:layout="@layout/lista_selec_fragment" >
         <action android:id="@+id/action_nottoact"
@@ -608,7 +638,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_notificacionsenv"
-        android:name="com.example.comprasmu.ui.etiquetado.ListaNotifEtiqFragment"
+        android:name="com.example.comprasmu.ui.notificaciones.ListaNotifEtiqFragment"
         android:label="@string/menu_nuevas_compras"
         tools:layout="@layout/lista_selec_fragment" >
         <action android:id="@+id/action_nottoact"

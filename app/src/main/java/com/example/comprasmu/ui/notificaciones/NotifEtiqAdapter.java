@@ -1,4 +1,4 @@
-package com.example.comprasmu.ui.etiquetado;
+package com.example.comprasmu.ui.notificaciones;
 
 import android.view.LayoutInflater;
 import android.view.View;

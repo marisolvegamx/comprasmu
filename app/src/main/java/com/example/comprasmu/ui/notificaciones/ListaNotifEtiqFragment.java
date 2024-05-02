@@ -1,4 +1,4 @@
-package com.example.comprasmu.ui.etiquetado;
+package com.example.comprasmu.ui.notificaciones;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,9 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.R;
@@ -26,7 +24,6 @@ import com.example.comprasmu.ui.infetapa.EditInfEtapaActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.utils.Constantes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter.AdapterCallback {

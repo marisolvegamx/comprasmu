@@ -11,8 +11,10 @@ import androidx.lifecycle.Transformations;
 
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.InformeCompraDao;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -20,11 +22,13 @@ import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -190,6 +194,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
         return inferepo.getInformesxEstatusAll(indiceSel,0);
 
     }
+    //para buscar si hay un inf de etiquetado reabierto
 
     public LiveData<List<InformeCompraDao.InformeCompravisita>> cargarCancelados2(String indiceSel ){
         return detrepository.getCanceladosVis(indiceSel);
@@ -202,6 +207,8 @@ public class ListaInformesViewModel extends AndroidViewModel {
 
         repository.actualizarEstatusSync(id,estatusSync);
     }
+
+
    /* public  LiveData<List<InformeCompra>>  cargarPestañas(){
         return repository.getClientesByIndice(Constantes.INDICEACTUAL, nombreTienda,ciudadSel,plantaSel,clienteSel);
 
