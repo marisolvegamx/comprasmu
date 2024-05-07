@@ -14,6 +14,8 @@ import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEnvioDet;
+import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
@@ -26,6 +28,7 @@ import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
@@ -43,6 +46,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     InformeCompraRepositoryImpl icrepo;
     InfEtapaRepositoryImpl ieRepo;
     InfEtapaDetRepoImpl iedRepo;
+    InformeEnvioRepositoryImpl ienRepo;
     DetalleCaja detCaja;
     ImagenDetRepositoryImpl imrepo;
     ListaCompraRepositoryImpl lcrepo;
@@ -131,6 +135,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     }
 
 
+
     //borra los detalles informe x etapa
     public void borrarInfEtapaDetalle(InformeEtapa inf){
 
@@ -147,7 +152,18 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         ieRepo.delete(inf);
     }
 
+    public void borrarEnvio(String indice) {
+       ienRepo=new InformeEnvioRepositoryImpl(this.context);
 
+
+        complog.grabarError("borrando informes envio det" + indice);
+        //busco el detalle
+        List<InformeEnvioDet> infos = ienRepo.getAllsimple();
+        if(infos!=null)
+        for (InformeEnvioDet informe : infos) {
+          ienRepo.delete(informe);
+        }
+    }
 
     private void puedoBorrarInforme(InformeCompra informe){
 
