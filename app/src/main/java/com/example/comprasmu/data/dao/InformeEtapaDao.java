@@ -43,6 +43,9 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) and etapa=:etapa order by id desc")
     public abstract LiveData<List<InformeEtapa>>  getInformesxEstatus(String indice, int etapa, int estatus);
 
+    @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) and etapa=:etapa and motivoCancel=:motivoCancel order by id desc")
+    public abstract LiveData<List<InformeEtapa>>  getByEstatusMotiv(String indice, int etapa, int estatus, String motivoCancel);
+
     @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) order by id desc")
     public abstract LiveData<List<InformeEtapa>>  getInformesxEstatusAll(String indice, int estatus);
 
@@ -83,6 +86,9 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("update informe_etapa set estatus=:estatus WHERE id=:id")
     public abstract  void actualizarEstatus(int id, int estatus);
+
+    @Query("update informe_etapa set motivoCancel=:motivoCancel WHERE id=:id")
+    public abstract  void actMotivoCancel(int id, String motivoCancel);
 
     @Query("update informe_etapa set etapa=:etapa WHERE id=:id")
     public abstract  void actualizarEtapa(int id, int etapa);

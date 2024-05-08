@@ -63,9 +63,9 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
 
     }
     //para buscar si hay un inf de empaque cancelado
-    public LiveData<List<InformeEtapa>> getEmpaqueCancel(String indiceSel ){
+    public LiveData<List<InformeEtapa>> getEmpaqueCancel(String indiceSel,String motivo ){
 
-        return inferepo.getInformesxEstatus(indiceSel,4,0);
+        return inferepo.getByEstatusMotiv(indiceSel,4,0,motivo);
 
     }
     public List<InformeEtapa> cargarCanceladosEmp(){

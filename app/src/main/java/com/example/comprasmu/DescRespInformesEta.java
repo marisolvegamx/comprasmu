@@ -159,7 +159,7 @@ public class DescRespInformesEta {
                         //ahora si cancelo el informe
 
                         infrepo.actualizarEstatus(infemp.getId(),0);
-
+                        infrepo.actMotivoCancel(infemp.getId(),infemp.getMotivoCancel());
                     }
                 }
             }

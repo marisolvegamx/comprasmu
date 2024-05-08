@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity
 
                 lastClickTime = currentClickTime;
                 if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo//entro rapido
-                new LoginListener().iniciar();
+                //new LoginListener().iniciar();
                 }
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.loginDataChanged(usernameEditText.getText().toString(),

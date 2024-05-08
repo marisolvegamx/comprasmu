@@ -94,6 +94,10 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
          icDao.actualizarEstatus(id, estatus);
     }
+    public void actMotivoCancel(int id, String motivoCancel) {
+
+        icDao.actMotivoCancel(id, motivoCancel);
+    }
     public void actualizarComentariosPrep(int id, String comentarios) {
 
         icDao.actualizarComentariosPrep(id, comentarios);
@@ -146,6 +150,12 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
 
     }
+    public LiveData<List<InformeEtapa>> getByEstatusMotiv(String indice,int etapa, int estatus,String motivoCancel) {
+        return icDao.getByEstatusMotiv(indice,etapa,estatus, motivoCancel);
+
+
+    }
+
     public LiveData<List<InformeEtapa>> getInformesxEstatusAll(String indice,int estatus) {
         return icDao.getInformesxEstatusAll(indice,estatus);
 

@@ -106,7 +106,7 @@ public class ListaNvaCompFragment extends Fragment implements NotifEtiqAdapter.A
             }
         });
         //busco empaque
-        mViewModel.getEmpaqueCancel(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+        mViewModel.getEmpaqueCancel(indice,"reactivacion2").observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
             @Override
             public void onChanged(List<InformeEtapa> informes) {
                 for (InformeEtapa infeta:informes
