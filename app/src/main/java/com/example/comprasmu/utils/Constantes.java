@@ -56,7 +56,7 @@ public class Constantes {
    public static String[] ETAPAS={"0","PREPARACION","COMPRA","ETIQUETADO","EMPAQUE"};
     public static boolean varciudades;
     public static List<DescripcionGenerica> clientesAsignados;
-    public static String URLSERV="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
+    public static String URLSERV="https://muesmerc.com/comprasv1/";
     //local
   //  public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
 
