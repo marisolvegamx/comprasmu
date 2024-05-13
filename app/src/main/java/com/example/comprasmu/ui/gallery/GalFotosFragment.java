@@ -263,6 +263,7 @@ public class GalFotosFragment extends Fragment {
         ponerFoto(getString(R.string.foto_posicion1),informe.getFoto_atributoa());
         ponerFoto(getString(R.string.foto_posicion2),informe.getFoto_atributob());
         ponerFoto(getString(R.string.foto_posicion3),informe.getFoto_atributoc());
+        if(informe.getFoto_atributod()!=null)
         ponerFoto(getString(R.string.foto_posicion4),informe.getFoto_atributod());
         ponerFoto(getString(R.string.etiqueta_evaluacion),informe.getEtiqueta_evaluacion());
        // ponerFoto(informe.getQr());

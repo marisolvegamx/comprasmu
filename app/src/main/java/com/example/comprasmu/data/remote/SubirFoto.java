@@ -225,6 +225,7 @@ public class SubirFoto implements ImageUploadCallback {
             if (response.isSuccessful() && compraResp != null) {
 
                 Log.d(TAG, "Respuesta->" + compraResp.getData());
+               // actualizarEstado(imagen);
                 notificarObservadoresIm(imagen);
             }
         }else { //hubo un error

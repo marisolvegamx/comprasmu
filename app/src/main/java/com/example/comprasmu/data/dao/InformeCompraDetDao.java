@@ -103,10 +103,14 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             "     foto_atributoc FROM informe_detalle " +
             "               WHERE id =:id" +
             "   union select" +
+            " foto_atributod FROM informe_detalle " +
+            "                WHERE id =:id" +
+            "      union select" +
             "    etiqueta_evaluacion " +
             "FROM informe_detalle " +
             "WHERE id =:id")
     public abstract List<Integer> getInformesWithImagen(int id);
+
     @Query("SELECT informe_detalle.* " +
             "FROM informe_detalle " +
             " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +

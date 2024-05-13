@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity
     ImagenDetRepositoryImpl imagenDetRepo;
     int desclis; int descinf; int descfoto;
     private long lastClickTime = 0;
+     Button loginButton;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +79,7 @@ public class LoginActivity extends AppCompatActivity
 
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
-        final Button loginButton = findViewById(R.id.login);
+        loginButton  = findViewById(R.id.login);
         loadingProgressBar = findViewById(R.id.loading);
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
@@ -102,7 +103,7 @@ public class LoginActivity extends AppCompatActivity
         };
         usernameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+       /* passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -111,7 +112,7 @@ public class LoginActivity extends AppCompatActivity
                 }
                 return false;
             }
-        });
+        });*/
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,14 +127,16 @@ public class LoginActivity extends AppCompatActivity
 
                 lastClickTime = currentClickTime;
                 if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo//entro rapido
-                new LoginListener().iniciar();
+                //new LoginListener().iniciar();
                 }
                 loadingProgressBar.setVisibility(View.VISIBLE);
+                //hago validaciones
                 loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
 
                 LoginFormState loginFormState=loginViewModel.getLoginFormState();
                 if (loginFormState == null) {
+                    loginButton.setEnabled(true);
                     return;
                 }
                 loginButton.setEnabled(loginFormState.isDataValid());
@@ -176,7 +179,7 @@ public class LoginActivity extends AppCompatActivity
     }
 
     public void comprobacion(){
-        //reviso si ya tengo el dato
+        //reviso si ya tengo el dato en preferencias
         LoggedInUser luser=tengoUsuario();
         //siempre checa el internet
         //luser=null;
@@ -186,6 +189,7 @@ public class LoginActivity extends AppCompatActivity
                 //veo que sea el mismo correo
                 if(!luser.getUserId().equals(usernameEditText.getText().toString())){
                     new LoginListener().incorrecto("Usuario o contraseña incorrectos");
+                     return;
                 }
 
             }
@@ -263,6 +267,7 @@ public class LoginActivity extends AppCompatActivity
 
     private void showLoginFailed(String errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+        loginButton.setEnabled(true);
     }
     public void entrar() {
         Constantes.LOGGEADO = true;

@@ -293,6 +293,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             for(InformeCompraDetalle detalle:detalles) {
                 List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
                 for(int i=0;i<fotos.size();i++) {
+                    if(fotos.get(i)!=null)
                     imagenDetalle=getFotoPend(fotos.get(i),visita.getIndice());
                     if(imagenDetalle!=null) //esta pendiente
                         return false;
@@ -341,12 +342,12 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         //las del los detalles
         if(detalles!=null)
-        for(InformeCompraDetalle detalle:detalles) {
-            List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
-            List<ImagenDetalle> imagenDetalles2=imagenDetRepository.findListsencillo(fotos);
-            fotosinfo.addAll(imagenDetalles2);
+            for(InformeCompraDetalle detalle:detalles) {
+                List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
+                List<ImagenDetalle> imagenDetalles2=imagenDetRepository.findListsencillo(fotos);
+                fotosinfo.addAll(imagenDetalles2);
 
-        }
+            }
 
         //las de producto ex
         if(visita.getEstatusSync()==0) {
@@ -368,7 +369,6 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         ImagenDetalle imagenDetalle = getFoto(visita.getFotoFachada());
         if(imagenDetalle!=null)
             fotosinfo.add(imagenDetalle);
-
 
         //las del informe
         List<Integer> arrFotos=new ArrayList<>();

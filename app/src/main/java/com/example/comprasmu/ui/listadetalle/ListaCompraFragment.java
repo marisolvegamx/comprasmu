@@ -3,7 +3,6 @@ package com.example.comprasmu.ui.listadetalle;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +23,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
@@ -38,7 +36,6 @@ import com.example.comprasmu.databinding.ListaCompraFragmentBinding;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
-
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listacompras.SelClienteFragment;
@@ -63,13 +60,12 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     String nombrePlanta;
     String nombreCliente;
     ListaCompra lista;
-        int clienteSel;
+    int clienteSel;
    // private String siglas;
     TextView etsiglas;
     int consecutivoTienda;
    // List<InformeCompraDetalle> listacomprasbu=null;
     private boolean isbu, ismuestra; //para saber si es reemplazo
-
     private static final String TAG="LISTACOMPRAFRAGMENT";
     public static final String ARG_PLANTASEL="comprasmu.lista.plantaSel";
     public static final String ARG_NOMBREPLANTASEL="comprasmu.lista.plantaNombre";
@@ -107,7 +103,6 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     }
 
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -117,7 +112,6 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         mViewModel=new ViewModelProvider(requireActivity()).get(ListaDetalleViewModel.class);
         nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
         niViewModel=new ViewModelProvider(requireActivity()).get(NuevoinformeViewModel.class);
-
         Bundle bundle = getArguments();
 
         if (bundle != null) {  //pra tomar los que vienen del navhost selcleitefragment

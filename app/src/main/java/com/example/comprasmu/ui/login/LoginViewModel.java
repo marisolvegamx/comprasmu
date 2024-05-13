@@ -1,12 +1,9 @@
 package com.example.comprasmu.ui.login;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import androidx.lifecycle.ViewModel;
 import android.util.Log;
 import android.util.Patterns;
-
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.LoggedInUser;
