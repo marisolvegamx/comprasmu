@@ -40,7 +40,7 @@ public class SubirFotoAlt {
         {
             //  URL_SUBIRPICTURE = "http://192.168.1.84/comprasv1/api/public/subirfoto";
 
-            URL_SUBIRPICTURE = "https://muesmerc.mx/comprasv1/api/public/subirfoto";
+            URL_SUBIRPICTURE = "https://muesmerc.com/comprasv1/api/public/subirfoto";
         }
 
     }
