@@ -359,5 +359,8 @@
     <string name="su_archivo">LA DESCARGA DEL ARCHIVO SE MOSTRARÁ EN LAS NOTIFICACIONES DEL CELULAR</string>
     <string name="menu_lista_gas">Gastos</string>
     <string name="foto_posicion4">FOTO POSICION 4</string>
+    <string name="realizo_gasto">¿REALIZÓ OTRO GASTO?</string>
+    <string name="tiene_comp">¿TIENE COMPROBANTE?</string>
+    <string name="foto_compr">FOTO COMPROBANTE</string>
 
 </resources>

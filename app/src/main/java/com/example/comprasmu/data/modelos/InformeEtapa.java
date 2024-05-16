@@ -31,7 +31,7 @@ public class InformeEtapa {
     private Date createdAt;
     private Date fechaCancel;
     private String motivoCancel;
-
+    private float importemuestras;
     public int getId() {
         return id;
     }
@@ -177,5 +177,13 @@ public class InformeEtapa {
 
     public void setCiudadNombre(String ciudadNombre) {
         this.ciudadNombre = ciudadNombre;
+    }
+
+    public float getImportemuestras() {
+        return importemuestras;
+    }
+
+    public void setImportemuestras(float importemuestras) {
+        this.importemuestras = importemuestras;
     }
 }

@@ -88,7 +88,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
     }
 
     public void cargarLista(){
-        //muesmtras canceladas en compras
+        //muestras canceladas en compras
         mViewModel.cargarCancelados(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDetalle>>() {
             @Override
             public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
@@ -99,54 +99,26 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                 mViewModel.cargarCancelados2(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDao.InformeCompravisita>>() {
                     @Override
                     public void onChanged(List<InformeCompraDao.InformeCompravisita> informeCompravisitas) {
-                        //busco los de las demas etapas
 
 
-                        mViewModel.cargarCanceladosEta(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
-                            @Override
-                            public void onChanged(List<InformeEtapa> informes) {
-                                if (informes.size() < 1) {
+                        if (informeCompravisitas.size() < 1) {
                                     mBinding.emptyStateText.setVisibility(View.VISIBLE);
-                                }
-                                Log.d(TAG, "YA CARGÓ " + informes.size());
-                            //paso de informe etapa ainforme compra
-                                InformeCompraDao.InformeCompravisita nvoinf= new InformeCompraDao.InformeCompravisita();
-                                for (InformeEtapa infeta:informes
-                                     ) {
-                                    nvoinf.indice=infeta.getIndice();
-                                    nvoinf.idinforme=infeta.getId();
-                                    nvoinf.estatus= infeta.getEstatus();
-                                    nvoinf.tiendaNombre=Constantes.ETAPAS[infeta.getEtapa()];
-                                    if(infeta.getClienteNombre().equals("")){
-                                        nvoinf.clienteNombre=infeta.getCiudadNombre();
-                                    }else
-                                    nvoinf.clienteNombre=infeta.getClienteNombre();
-                                    if(infeta.getPlantaNombre()!=null&&!infeta.getPlantaNombre().equals("")) {
-                                        nvoinf.plantaNombre = infeta.getPlantaNombre();
-                                    }else
-                                        nvoinf.plantaNombre = infeta.getCiudadNombre();
-                                   // nvoinf.mo
-                                    informeCompravisitas.add(nvoinf);
-                                }
-                                nvoinf=null;
-
-                                if (informeCompravisitas.size() < 1) {
-                                    mBinding.emptyStateText.setVisibility(View.VISIBLE);
-                                }
-                                Log.d(TAG, "YA CARGÓxx " + informeCompravisitas.size());
+                        }
+                        Log.d(TAG, "YA CARGÓxx " + informeCompravisitas.size());
 
 
 
-                                mListAdapter.setInformeCompraList(informeCompravisitas);
+                        mListAdapter.setInformeCompraList(informeCompravisitas);
                         mListAdapter.setProductoList(informeCompraDetalles);
                         mListAdapter.notifyDataSetChanged();
                             }
                         });
 
-                    }
-                });
+
             }
             });
+
+
     }
 
 
