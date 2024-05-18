@@ -35,7 +35,7 @@ public class ServiceGenerator {
                         .addConverterFactory(GsonConverterFactory.create());*/
 
        // Log.e("mi disp ",Build.PRODUCT);
-        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG1")){//pruebas y el lenovo
+        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG")){//pruebas y el lenovo
             //nam
            BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
            BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";
