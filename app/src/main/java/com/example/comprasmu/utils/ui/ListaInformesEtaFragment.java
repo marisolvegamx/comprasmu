@@ -289,6 +289,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto2());
                 if(envio.getCorreccion().getRuta_foto3()!=null&&envio.getCorreccion().getRuta_foto3().length()>1)
                     subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto3());
+                if(envio.getCorreccion().getRuta_foto4()!=null&&envio.getCorreccion().getRuta_foto4().length()>1)
+                    subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto4());
 
 
             }else
@@ -306,6 +308,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto2());
                 if(envio.getCorreccion().getRuta_foto3()!=null&&envio.getCorreccion().getRuta_foto3().length()>1)
                     subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto3());
+                if(envio.getCorreccion().getRuta_foto4()!=null&&envio.getCorreccion().getRuta_foto4().length()>1)
+                    subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto4());
 
 
             }

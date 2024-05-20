@@ -76,9 +76,9 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         progreso.setCancelable(false);
 
-
-        progreso.show();
-
+        if (!isFinishing()) {
+            progreso.show();
+        }
        // mTextView = findViewById(R.id.txtlllog);
         if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
 
@@ -122,13 +122,14 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
     public void success() {
         //pasaría a otra actividad
-        progreso.dismiss();
+       // progreso.dismiss();
         Constantes.ACTUALIZADO=true;
        // Log.d(TAG,"enviando al home");
         //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Intent intento=new Intent(this, HomeActivity.class);
         intento.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intento);
+         progreso.dismiss();
         finish();
     }
     public void cerrarSesion(){
@@ -477,6 +478,14 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     @Override
     protected void onStop() {
         super.onStop();
+        if(progreso!=null){
+            progreso.dismiss();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if(progreso!=null){
             progreso.dismiss();
         }

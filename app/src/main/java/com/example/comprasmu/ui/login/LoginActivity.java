@@ -185,6 +185,7 @@ public class LoginActivity extends AppCompatActivity
         //luser=null;
          //   Log.i("LoginActivity","primera vez");
         if(ComprasUtils.isOnlineNet()) {
+      //  if(true){
             if(luser!=null) {
                 //veo que sea el mismo correo
                 if(!luser.getUserId().equals(usernameEditText.getText().toString())){
@@ -201,7 +202,7 @@ public class LoginActivity extends AppCompatActivity
 
             if(luser==null) { //primera vez
                 loadingProgressBar.setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(), "Sin conexión a internet, verifique", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Sin conexión a internet, verifique**", Toast.LENGTH_LONG).show();
             }
             else
                 //loginlocal

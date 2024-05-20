@@ -30,9 +30,11 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,10 +49,18 @@ public class ComprasUtils {
     public static Boolean isOnlineNet() {
 
         try {
-            Process p = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.es");
+            Process p = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()));
+            String s;
+            while ((s = br.readLine()) != null)
+                System.out.println("line: " + s);
+
+            System.out.println ("exit: " + p.exitValue());
 
             int val = p.waitFor();
             boolean reachable = (val == 0);
+            p.destroy();
             return reachable;
 
         } catch (Exception e) {
