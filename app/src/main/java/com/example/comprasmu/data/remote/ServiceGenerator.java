@@ -7,8 +7,10 @@ import com.example.comprasmu.utils.Constantes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -48,11 +50,15 @@ public class ServiceGenerator {
          //   BASE_URL = "https://muesmerc.mx/comprasv1/pruebas/public/";
         }
 
+        OkHttpClient.Builder okbuilder=new OkHttpClient.Builder();
+        OkHttpClient httpClient;
 
-        OkHttpClient httpClient =new OkHttpClient.Builder()
-                .readTimeout(90, TimeUnit.SECONDS)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .build();
+             httpClient = okbuilder
+                    .readTimeout(90, TimeUnit.SECONDS)
+                    .connectTimeout(15, TimeUnit.SECONDS)
+                    .build();
+
+
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
