@@ -126,7 +126,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             int idVisita=visitaRepository.getUltimo(Constantes.INDICEACTUAL);
             if(idVisita==0)//no hay nada busco en el serv
             {
-                if (prefvisita == 0&&ComprasUtils.isOnlineNet()) {
+                if (prefvisita == 0&&ComprasUtils.isOnlineNet(application)) {
                    /* PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
                     NuevoinformeViewModel.EnvioListener listener = new NuevoinformeViewModel.EnvioListener(actividad);
                     MutableLiveData<Boolean> resul=ps.getUltimaVisita(Constantes.INDICEACTUAL, listener);*/

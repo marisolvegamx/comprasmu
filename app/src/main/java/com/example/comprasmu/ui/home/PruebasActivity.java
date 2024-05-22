@@ -90,7 +90,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         //se definirá en el servidor
         definirTienda();
-        if(!isOnlineNet()) { //no hay conexion trabajo conl lo que hay
+        if(!ComprasUtils.isOnlineNet(getApplicationContext())) {//no hay conexion trabajo conl lo que hay
             getEtapaPref();
             if(!indicepref.equals("")&&etapafinpref>0){
               //  Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);

@@ -8,6 +8,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,11 +36,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -46,7 +55,7 @@ public class ComprasUtils {
 
     Bitmap rotatedBitmap;
 
-    public static Boolean isOnlineNet() {
+  /*  public static Boolean isOnlineNet() {
 
         try {
             Process p = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
@@ -54,12 +63,13 @@ public class ComprasUtils {
                     new InputStreamReader(p.getInputStream()));
             String s;
             while ((s = br.readLine()) != null)
-                System.out.println("line: " + s);
+                Log.d("ComprasUtils","line: " + s);
 
-            System.out.println ("exit: " + p.exitValue());
+
 
             int val = p.waitFor();
             boolean reachable = (val == 0);
+            Log.d("ComprasUtils","exit: " + p.exitValue());
             p.destroy();
             return reachable;
 
@@ -68,6 +78,47 @@ public class ComprasUtils {
             e.printStackTrace();
         }
         return false;
+    }*/
+    public static Boolean isOnlineNet(Context context) {
+
+       ConnectivityManager connectivityManager = (ConnectivityManager)
+         context.getSystemService(Context.CONNECTIVITY_SERVICE);
+     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        RunnableFuture<Boolean> futureRun = new FutureTask<Boolean>(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                if ((networkInfo .isAvailable()) && (networkInfo .isConnected())) {
+                    try {
+                        HttpURLConnection urlc = (HttpURLConnection) (new URL("https://espanol.yahoo.com").openConnection());
+                        urlc.setRequestProperty("User-Agent", "Test");
+                        urlc.setRequestProperty("Connection", "close");
+                        urlc.setConnectTimeout(1500);
+                        urlc.connect();
+                        int res=urlc.getResponseCode();
+                        Log.d("ComprasUtils","ssss "+res);
+                        return (res== 200);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.e("ComprasUtils", "Error checking internet connection", e);
+                    }
+                } else {
+                    Log.d("ComprasUtils", "No network available!");
+                }
+                return false;
+            }
+        });
+
+        new Thread(futureRun).start();
+
+
+        try {
+            return futureRun.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     public void rotarImagen(ImageView imagen1, String pathName) {

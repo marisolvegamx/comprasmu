@@ -125,7 +125,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         //y de los informes correccion
         if(tipocons.equals("e")){
             // getActivity().getActionBar().setTitle("RESUMEN INFORMES");
-
+            if( ((AppCompatActivity) requireActivity()).getSupportActionBar()!=null)
              ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("RESUMEN INFORMES");
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             if(etapa==3)
@@ -257,7 +257,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     @Override
     public void onClickSubir(int informe, String tipo) {
-        if(NavigationDrawerActivity.isOnlineNet()) {
+        if(NavigationDrawerActivity.isOnlineNet(getContext())) {
             if(tipo.equals("e")) {
                 if(this.etapa==5) {
                     InformeEnvPaqEnv envio=npViewModel.prepararInformeEnvPaq(informe);

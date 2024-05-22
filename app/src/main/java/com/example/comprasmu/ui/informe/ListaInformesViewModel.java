@@ -109,7 +109,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
                     listas.getValue().remove(pos);
 
                     //reviso si hay conexion a internet
-                    if (ComprasUtils.isOnlineNet()) {     //envio al servidor
+                    if (ComprasUtils.isOnlineNet(getApplication())) {     //envio al servidor
                         PeticionesServidor peticion = new PeticionesServidor(Constantes.CLAVEUSUARIO);
                         InformeCancelar informeCan = new InformeCancelar();
                         informeCan.setInforme_compra(informeWithDetalle.informe);

@@ -95,7 +95,7 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
 
 
     public void success() {
-        if(textView!=null) {
+        if(this.isAdded()&&getContext()!=null) {
             textView.setVisibility(View.VISIBLE);
             textView.setText(getString(R.string.listas_actualiz));
         }

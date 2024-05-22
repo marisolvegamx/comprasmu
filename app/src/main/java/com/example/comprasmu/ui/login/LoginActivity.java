@@ -184,7 +184,7 @@ public class LoginActivity extends AppCompatActivity
         //siempre checa el internet
         //luser=null;
          //   Log.i("LoginActivity","primera vez");
-        if(ComprasUtils.isOnlineNet()) {
+        if(ComprasUtils.isOnlineNet(getApplicationContext())) {
       //  if(true){
             if(luser!=null) {
                 //veo que sea el mismo correo
