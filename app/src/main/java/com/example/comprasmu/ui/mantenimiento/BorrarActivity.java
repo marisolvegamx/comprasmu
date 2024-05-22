@@ -87,6 +87,7 @@ public class BorrarActivity extends AppCompatActivity {
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
         ei.eliminarTablaVers();
+      mViewModel.borrarEnvio(indice_anterior);
         //inicializo constantes
         Constantes.CIUDADTRABAJO ="" ;
         Constantes.IDCIUDADTRABAJO=0;

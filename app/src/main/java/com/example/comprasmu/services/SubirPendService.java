@@ -177,7 +177,7 @@ public class SubirPendService extends IntentService
 
     public void enviarReporte(SubirTodoListener listener) {
         //reviso si tengo conexion
-        if(ComprasUtils.isOnlineNet()) {
+        if(ComprasUtils.isOnlineNet(getApplicationContext())) {
             //busco los pendientes
             PostInformeViewModel postviewModel = new PostInformeViewModel(this);
             postviewModel.iniciarConexiones();

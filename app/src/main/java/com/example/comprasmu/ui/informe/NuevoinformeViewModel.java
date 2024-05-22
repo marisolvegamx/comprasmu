@@ -126,7 +126,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             int idVisita=visitaRepository.getUltimo(Constantes.INDICEACTUAL);
             if(idVisita==0)//no hay nada busco en el serv
             {
-                if (prefvisita == 0&&ComprasUtils.isOnlineNet()) {
+                if (prefvisita == 0&&ComprasUtils.isOnlineNet(application)) {
                    /* PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
                     NuevoinformeViewModel.EnvioListener listener = new NuevoinformeViewModel.EnvioListener(actividad);
                     MutableLiveData<Boolean> resul=ps.getUltimaVisita(Constantes.INDICEACTUAL, listener);*/
@@ -293,6 +293,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             for(InformeCompraDetalle detalle:detalles) {
                 List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
                 for(int i=0;i<fotos.size();i++) {
+                    if(fotos.get(i)!=null)
                     imagenDetalle=getFotoPend(fotos.get(i),visita.getIndice());
                     if(imagenDetalle!=null) //esta pendiente
                         return false;
@@ -341,12 +342,12 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         //las del los detalles
         if(detalles!=null)
-        for(InformeCompraDetalle detalle:detalles) {
-            List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
-            List<ImagenDetalle> imagenDetalles2=imagenDetRepository.findListsencillo(fotos);
-            fotosinfo.addAll(imagenDetalles2);
+            for(InformeCompraDetalle detalle:detalles) {
+                List<Integer> fotos=detalleRepo.getInformesWithImagen(detalle.getId());
+                List<ImagenDetalle> imagenDetalles2=imagenDetRepository.findListsencillo(fotos);
+                fotosinfo.addAll(imagenDetalles2);
 
-        }
+            }
 
         //las de producto ex
         if(visita.getEstatusSync()==0) {

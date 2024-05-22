@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity
     ImagenDetRepositoryImpl imagenDetRepo;
     int desclis; int descinf; int descfoto;
     private long lastClickTime = 0;
+     Button loginButton;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +79,7 @@ public class LoginActivity extends AppCompatActivity
 
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
-        final Button loginButton = findViewById(R.id.login);
+        loginButton  = findViewById(R.id.login);
         loadingProgressBar = findViewById(R.id.loading);
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
@@ -129,11 +130,13 @@ public class LoginActivity extends AppCompatActivity
                 //new LoginListener().iniciar();
                 }
                 loadingProgressBar.setVisibility(View.VISIBLE);
+                //hago validaciones
                 loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
 
                 LoginFormState loginFormState=loginViewModel.getLoginFormState();
                 if (loginFormState == null) {
+                    loginButton.setEnabled(true);
                     return;
                 }
                 loginButton.setEnabled(loginFormState.isDataValid());
@@ -181,11 +184,13 @@ public class LoginActivity extends AppCompatActivity
         //siempre checa el internet
         //luser=null;
          //   Log.i("LoginActivity","primera vez");
-        if(ComprasUtils.isOnlineNet()) {
+        if(ComprasUtils.isOnlineNet(getApplicationContext())) {
+      //  if(true){
             if(luser!=null) {
                 //veo que sea el mismo correo
                 if(!luser.getUserId().equals(usernameEditText.getText().toString())){
                     new LoginListener().incorrecto("Usuario o contraseña incorrectos");
+                     return;
                 }
 
             }
@@ -263,6 +268,7 @@ public class LoginActivity extends AppCompatActivity
 
     private void showLoginFailed(String errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+        loginButton.setEnabled(true);
     }
     public void entrar() {
         Constantes.LOGGEADO = true;

@@ -170,7 +170,7 @@ public class EliminadorIndice {
     }
     public void enviarReporte() {
         //reviso si tengo conexion
-        if(ComprasUtils.isOnlineNet()) {
+        if(ComprasUtils.isOnlineNet(application)) {
             //busco los pendientes
 
             PostInformeViewModel postviewModel = new PostInformeViewModel(application);

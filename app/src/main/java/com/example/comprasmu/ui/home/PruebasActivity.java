@@ -76,11 +76,11 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         progreso.setCancelable(false);
 
-
-        progreso.show();
-
+        if (!isFinishing()) {
+            progreso.show();
+        }
        // mTextView = findViewById(R.id.txtlllog);
-        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG")){//pruebas y el lenovo
+        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
 
            DOWNLOAD_PATH = Constantes.URLPRUEBAS1+"fotografias";
         //    DOWNLOAD_PATH = Constantes.URLPRUEBAS2+"fotografias";
@@ -90,7 +90,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         //se definirá en el servidor
         definirTienda();
-        if(!isOnlineNet()) { //no hay conexion trabajo conl lo que hay
+        if(!ComprasUtils.isOnlineNet(getApplicationContext())) {//no hay conexion trabajo conl lo que hay
             getEtapaPref();
             if(!indicepref.equals("")&&etapafinpref>0){
               //  Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
@@ -477,6 +477,14 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     @Override
     protected void onStop() {
         super.onStop();
+        if(progreso!=null){
+            progreso.dismiss();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if(progreso!=null){
             progreso.dismiss();
         }

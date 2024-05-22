@@ -37,6 +37,7 @@ import com.example.comprasmu.ui.etiquetado.NvoEtiqCajaFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 
@@ -66,6 +67,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try{
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_nuevo_infetapa);
         // get fragment manager
         myChildToolbar =
@@ -258,6 +260,11 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             ft.commit();
 
         }
+    }catch(Exception ex) {
+            ComprasLog flog=ComprasLog.getSingleton();
+            flog.grabarError("NuevoInfEtapaAct","oncreate etapa"+etapa,ex.getMessage());
+        }
+
     }
 
     @Override

@@ -78,7 +78,7 @@ descargar();
     }
 
     public void descargar(){
-        if(NavigationDrawerActivity.isOnlineNet()) {
+        if(NavigationDrawerActivity.isOnlineNet(getContext())) {
             InformeComDetRepositoryImpl ifodrepo=new InformeComDetRepositoryImpl(getContext());
             InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(getContext());
             ImagenDetRepositoryImpl imrepo=new ImagenDetRepositoryImpl(getContext());

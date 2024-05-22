@@ -41,6 +41,7 @@ import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.ui.tiendas.PeticionMapaCd;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
@@ -110,7 +111,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
                 actualiza=1;
            // if (indice[0].equals("cat")) //descargo cats tmb
            listenprin=new DescargaIniListener();
-        if(!isOnlineNet()) {
+        if(!ComprasUtils.isOnlineNet(act)) {
             miproglis.notificarSinConexion();
           //  miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
 
