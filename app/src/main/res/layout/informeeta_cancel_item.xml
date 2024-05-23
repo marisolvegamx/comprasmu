@@ -9,8 +9,7 @@
         <import type="android.view.View"/>
         <variable name="detalle"
             type="com.example.comprasmu.data.modelos.InformeEtapa"></variable>
-        <variable name="producto"
-            type="com.example.comprasmu.data.modelos.InformeEtapaDet"></variable>
+
         <variable
             name="sdf"
             type="java.text.SimpleDateFormat" />
@@ -56,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@{detalle.plantaNombre}" />
+                android:text="@{detalle.ciudadNombre}" />
 
 
 
@@ -93,6 +92,12 @@
                 android:text="@{detalle.motivoCancel}" />
 
 
+            <Button
+                android:id="@+id/btneccontinuar2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/agregar_muestra"
+                android:visibility="@{detalle.etapa==3&amp;&amp;detalle.estatus==4? View.VISIBLE: View.GONE}" />
 
             <LinearLayout
                 android:layout_width="match_parent"

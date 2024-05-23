@@ -22,6 +22,7 @@ import com.example.comprasmu.data.dao.InformeCompraDetDao;
 import com.example.comprasmu.data.dao.InformeEnvioDetDao;
 import com.example.comprasmu.data.dao.InformeEtapaDao;
 import com.example.comprasmu.data.dao.InformeEtapaDetDao;
+
 import com.example.comprasmu.data.dao.InformeTempDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.dao.ListaCompraDetalleDao;
@@ -74,7 +75,7 @@ import java.util.List;
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class,
         Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=29, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=30, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -117,7 +118,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
                                     ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
-                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29)
+                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29, MIGRATION_29_30)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -529,6 +530,16 @@ public abstract class ComprasDataBase extends RoomDatabase {
             database.execSQL(
                     "ALTER TABLE informe_detalle ADD COLUMN  foto_atributod INTEGER; " );
             database.execSQL("ALTER TABLE correccion ADD COLUMN ruta_foto4 TEXT");
+
+        }
+    };
+
+    static final Migration MIGRATION_29_30 = new Migration(29,30) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "ALTER TABLE lista_compra ADD COLUMN  lis_reactivado INTEGER; " );
+
 
         }
     };

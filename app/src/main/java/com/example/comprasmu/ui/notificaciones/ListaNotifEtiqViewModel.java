@@ -13,8 +13,10 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -33,7 +35,7 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
     private final MutableLiveData<Event<Integer>> mSnackbarText = new MutableLiveData<>();
 
     private InfEtapaRepositoryImpl inferepo;
-
+    ListaCompraDetRepositoryImpl lcdrepo;
     public ListaNotifEtiqViewModel(Application application) {
         super(application);
         inferepo=new InfEtapaRepositoryImpl(application);
@@ -41,7 +43,7 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
         detrepository = new InfEtapaDetRepoImpl(application);
         ListaCompraDao dao= ComprasDataBase.getInstance(application).getListaCompraDao();
         lcrepo = ListaCompraRepositoryImpl.getInstance(dao);
-
+        lcdrepo=new ListaCompraDetRepositoryImpl(application);
     }
 
 
@@ -78,7 +80,13 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
 
     public  List<ListaCompra>  cargarClientesSimplxet(String ciudadSel, int etapa){
         Log.d(TAG,"xxxx"+etapa);
-        return lcrepo.getClientesByIndiceCiudadSimplsp(Constantes.INDICEACTUAL,ciudadSel,etapa);
+        return lcrepo.getClientesByIndiceCiudadSimplxet(Constantes.INDICEACTUAL,ciudadSel,etapa);
+
+
+    }
+    public  List<ListaCompra>  cargarClientesSimplxetReac(String ciudadSel, int etapa, int reactivado){
+        Log.d(TAG,"xxxx"+etapa);
+        return lcrepo.getClieByIndiceCiudadSimplxetReac(Constantes.INDICEACTUAL,ciudadSel,etapa,  reactivado);
 
 
     }
@@ -88,5 +96,9 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
 
     public LiveData<List<InformeEtapa>> getInfcancelados() {
         return infcancelados;
+    }
+
+    public List<ListaCompraDetalle> getAllByListasimple(int idlista) {
+        return lcdrepo.getAllByListasimple(idlista);
     }
 }

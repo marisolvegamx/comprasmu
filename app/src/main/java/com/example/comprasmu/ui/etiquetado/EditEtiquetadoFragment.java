@@ -112,10 +112,10 @@ public class EditEtiquetadoFragment extends Fragment {
     List<String> spinnerValues;
     ArrayAdapter<String> adaptercaja;
     private TextView txttotcaj;
-    public final static String ARG_PREGACT = "comprasmu.ne_pregactp";
-    public final static String ARG_ESEDI = "comprasmu.ne_esedip";
-    public final static String ARG_INFORMEDET = "comprasmu.ne_infdet";
-    public final static String ARG_INFORMESEL = "comprasmu.neinfsel";
+    public final static String ARG_PREGACT = "comprasmu.edi_pregactp";
+    public final static String ARG_ESEDI = "comprasmu.edi_esedip";
+    public final static String ARG_INFORMEDET = "comprasmu.edi_infdet";
+    public final static String ARG_INFORMESEL = "comprasmu.ediinfsel";
     public String ciudadInf;
     public String[] descripfoto = {"FOTO CALIDAD DE CAJA CARA A", "FOTO CALIDAD DE CAJA CARA B", "FOTO ACOMODO DE MUESTRAS DENTRO DE CAJA"};
     public int[] descripcionid = {12, 13, 14};
@@ -233,9 +233,10 @@ public class EditEtiquetadoFragment extends Fragment {
         //busco el informe y el detalle
 
         infomeEdit = mViewModel.getInformexId(informeSel);
+
         preguntaAct = 3;
         mViewModel.preguntaAct = 3;
-        ((EditInfEtapaActivity) getActivity()).actualizarBarraEtiq(infomeEdit);
+
         mViewModel.setIdNuevo(informeSel);
         clienteSel=infomeEdit.getClientesId();
         ciudadInf=infomeEdit.getCiudadNombre();
@@ -250,10 +251,12 @@ public class EditEtiquetadoFragment extends Fragment {
         }
         //primero elimino la muestra de ivan
         //todo quitarlodespues de la prueba
-        mViewModel.quitarMuestra(Constantes.CLAVEUSUARIO);
+       // mViewModel.quitarMuestra(Constantes.CLAVEUSUARIO);
 
         totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, ciudadInf);
-
+        //busco total muestras
+        infomeEdit.setTotal_muestras(totmuestras);
+        ((EditInfEtapaActivity) getActivity()).actualizarBarraEtiq(infomeEdit);
         //busco el ultimo num de muestra
         InformeEtapaDet ultima=mViewModel.getUltimaMuestraEtiq(informeSel);
         contmuestra=mViewModel.totalMuestrasEtiq(informeSel)+1;
@@ -769,7 +772,10 @@ public void iraReubicar(){
             }else //es nueva muestra
                 if(mViewModel.getIdNuevo()>0)
                 //guardo el detalle
-                    iddet= mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,numcaja,qr,contmuestra,Constantes.INDICEACTUAL);
+                {
+                    iddet = mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(), 11, "foto_etiqueta", rutafoto, 0, numcaja, qr, contmuestra, Constantes.INDICEACTUAL);
+                    //todo actualizo muestras informe
+                }
            //actualizo estatus inf
             //mViewModel.setIdNuevo();
            // mViewModel.actualizarEstatusInf(mViewModel.getIdNuevo());

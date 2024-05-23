@@ -606,9 +606,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
         mListAdapter = new ListaCompraDetalleAdapter(mViewModel,this);
         //mBinding.detalleList.setAdapter(mListAdapter);
-        mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mBinding.detalleList.setHasFixedSize(true);
-        mBinding.detalleList.setAdapter(mListAdapter);
+        mBinding.lcdetalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mBinding.lcdetalleList.setHasFixedSize(true);
+        mBinding.lcdetalleList.setAdapter(mListAdapter);
 
     }
 

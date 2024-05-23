@@ -164,13 +164,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    //trae la lsta menos el cliente enviado
-    public  List<ListaCompra>  cargarClientesSimplsp(String ciudadSel, int cliente){
 
-        return repository.getClientesByIndiceCiudadSimplsp(Constantes.INDICEACTUAL,ciudadSel,cliente);
-
-
-    }
     public  LiveData<List<ListaCompra>>  cargarPlantas(String ciudadSel){
 
         return repository.getAllByIndiceCiudad(Constantes.INDICEACTUAL,ciudadSel);

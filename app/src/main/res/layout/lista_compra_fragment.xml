@@ -157,7 +157,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/lonota" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detalle_list"
+                android:id="@+id/lcdetalleList"
                 android:layout_width="0dp"
 
                 android:layout_height="0dp"
@@ -185,7 +185,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/detalle_list"
+                app:layout_constraintTop_toBottomOf="@id/lcdetalleList"
                 app:layout_constraintVertical_bias="0.986"
                 tools:visibility="visible">
 
@@ -225,9 +225,9 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="center"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/detalle_list"
+                app:layout_constraintBottom_toBottomOf="@+id/lcdetalleList"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/detalle_list"
+                app:layout_constraintStart_toStartOf="@+id/lcdetalleList"
                 app:layout_constraintTop_toBottomOf="@+id/lonota"
                 app:layout_constraintVertical_bias="0.0"
                 tools:visibility="visible" />

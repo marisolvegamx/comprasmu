@@ -537,7 +537,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_notificacionseti"
-        android:name="com.example.comprasmu.ui.notificaciones.ListaNotifEtiqFragment"
+        android:name="com.example.comprasmu.ui.notificaciones.ListaNvaCompFragment"
         android:label="@string/menu_nuevas_compras"
         tools:layout="@layout/lista_selec_fragment" >
         <action android:id="@+id/action_nottoact"
@@ -638,7 +638,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_notificacionsenv"
-        android:name="com.example.comprasmu.ui.notificaciones.ListaNotifEtiqFragment"
+        android:name="com.example.comprasmu.ui.notificaciones.ListaNvaCompFragment"
         android:label="@string/menu_nuevas_compras"
         tools:layout="@layout/lista_selec_fragment" >
         <action android:id="@+id/action_nottoact"

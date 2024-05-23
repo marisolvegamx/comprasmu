@@ -16,6 +16,7 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
 
+
 public class NotifEtiqAdapter extends RecyclerView.Adapter<NotifEtiqAdapter.InformeEtapaViewHolder> {
 
     private List<InformeEtapa> mInformes;
@@ -70,14 +71,20 @@ public class NotifEtiqAdapter extends RecyclerView.Adapter<NotifEtiqAdapter.Info
             this.binding = binding;
             binding.btnecagregar.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view) {  //para cuando se cancela
                         callback.onClickAgregar(Integer.parseInt(binding.icTxtiecid.getText().toString()));
                 }
             });
             binding.btneccontinuar.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view) { //para cuando se agrega
                     callback.onClickContinuar(Integer.parseInt(binding.icTxtiecid.getText().toString()));
+                }
+            });
+            binding.btnecnvoemp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    callback.onClickNvoEmp();
                 }
             });
         }
@@ -89,6 +96,8 @@ public class NotifEtiqAdapter extends RecyclerView.Adapter<NotifEtiqAdapter.Info
 
 
         void onClickContinuar(int idinforme);
+
+        void onClickNvoEmp();
     }
 
 

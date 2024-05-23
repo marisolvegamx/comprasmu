@@ -329,10 +329,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     findItem(R.id.nav_precancel));
         }
         if(Constantes.ETAPAACTUAL==2) {
+            //   gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+            //         findItem(R.id.nav_solcor2));
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcor2));
-            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_cancel));
+                    findItem(R.id.nav_notificaciongen));
+            /*txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_cancel));*/
+
         }
         if(Constantes.ETAPAACTUAL==3) {
             //Ya lo hago desde el menu

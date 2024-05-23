@@ -26,6 +26,7 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
 
+/***tiende a desaparecer se sust por listanvacompfragment**/
 public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter.AdapterCallback {
     private ListaNotifEtiqViewModel mViewModel;
     public static final String TAG = "ListaNotifEtiqFragment";
@@ -102,11 +103,11 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
 
 
     private void setupListAdapter() {
-        mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
+      /*  mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.detalleList.setHasFixedSize(true);
 
         mEtaAdapter = new NotifEtiqAdapter(this);
-        mBinding.detalleList.setAdapter(mEtaAdapter);
+        mBinding.detalleList.setAdapter(mEtaAdapter);*/
 
         cargarLista();
 
@@ -136,6 +137,11 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
         intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,idinforme );
         intento1.putExtra(ContInfEtapaFragment.ETAPA,3 );
         startActivity(intento1);
+    }
+
+    @Override
+    public void onClickNvoEmp() {
+
     }
 
 

@@ -83,41 +83,6 @@ public class ListaCompraDetRepositoryImpl {
     }
 
 
-    public LiveData<List<ListaCompraDetalle>> consultaSensorial4(int idlista,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
-
-        String query="Select * from lista_compras_detalle where listaId=?";
-        ArrayList<String> filtros=new ArrayList<String>();
-        filtros.add(idlista+"");
-
-        if(productoNombre!=null&&!productoNombre.equals("")) {
-            query = query + " and ((productoNombre=?";
-            filtros.add(productoNombre);
-        }
-        if(empaque!=null&&!empaque.equals("")) {
-            query = query + " and empaque=?";
-            filtros.add(empaque);
-        }
-        if(tamanio>0) {
-            query = query + " and tamanio=?) or (productoNombre!=? and empaque!=?))";
-            filtros.add(tamanio+"");
-            filtros.add(productoNombre);
-            filtros.add(empaque);
-        }
-
-      //  query=query+" )  prin group by productoNombre,empaque,tamanioId ";
-
-        Object[] params=filtros.toArray();
-
-        for(int i=0;i<params.length;i++)
-            Log.d("InformeCompraRepo","***"+params[i]);
-        Log.d("InformeCompraRepo","****"+query);
-        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
-                query,filtros.toArray()
-        );
-
-        return dao.getDetallesByFiltros(sqlquery);
-    }
-
     public LiveData<List<ListaCompraDetalle>> consultaFisico4(int idlista,int analisisid,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
 
         String query="select id,  listaId, productosId, productoNombre, " +
@@ -310,70 +275,7 @@ public class ListaCompraDetRepositoryImpl {
 
         return dao.getDetallesByFiltros(sqlquery);
     }
-    //el ultimo param debe ser diferente pero aqui viene el analisis
-    public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUDA(int idlista,String categoria,int analisis, String productoNombre, String empaque,int tamanio ) {
 
-        String query="Select * from lista_compras_detalle where listaId=?";
-        ArrayList<String> filtros=new ArrayList<String>();
-        filtros.add(idlista+"");
-        if(analisis==0) //catego es el ultimo y es diferente
-        { if(categoria!=null&&!categoria.equals("")) {
-            query =query+ " and categoria!=?";
-            filtros.add(categoria);
-        }}else
-        if(categoria!=null&&!categoria.equals("")) {
-            query =query+ " and categoria=?";
-            filtros.add(categoria);
-        }
-        if(productoNombre==null||productoNombre.equals("")) //analisis es el ultimo y es diferente
-        {
-            if(analisis>0) {
-                query = query + " and analisisId!=?";
-                filtros.add(analisis+"");
-            }
-        }else
-        if(analisis>0) {
-            query = query + " and analisisId=?";
-            filtros.add(analisis+"");
-        }
-        if(empaque==null||empaque.equals("")) //prdo es el ultimo y es diferente
-        {   if(productoNombre!=null&&!productoNombre.equals("")) {
-            query = query + " and productoNombre!=?";
-            filtros.add(productoNombre);
-        }}
-        else
-        if(productoNombre!=null&&!productoNombre.equals("")) {
-            query = query + " and productoNombre=?";
-            filtros.add(productoNombre);
-        }
-        if(tamanio==0)
-        { if(empaque!=null&&!empaque.equals("")) {
-            query = query + " and empaque!=?";
-            filtros.add(empaque);
-        }}else
-        if(empaque!=null&&!empaque.equals("")) {
-            query = query + " and empaque=?";
-            filtros.add(empaque);
-        }
-
-        if(tamanio>0) {
-            query = query + " and tamanioId!=?";
-            filtros.add(tamanio+"");
-        }
-
-
-
-        Object[] params=filtros.toArray();
-
-        for(int i=0;i<params.length;i++)
-            Log.d("InformeCompraRepo","getDetalleByFiltrosUDA***"+params[i]);
-        Log.d("InformeCompraRepo","getDetalleByFiltrosUDA****"+query);
-        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
-                query,filtros.toArray()
-        );
-
-        return dao.getDetallesByFiltros(sqlquery);
-    }
 
     //el ultimo param debe ser diferente pero aqui viene el analisis
     public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUDA2(int idlista,int analisisid, String categoria,int analisis, String productoNombre, String empaque,int tamanio ) {
@@ -460,8 +362,6 @@ public class ListaCompraDetRepositoryImpl {
     public List<ListaCompraDetalle> getAllSimpl() {
         return dao.findAllSimpl();
     }
-
-
 
 
     public LiveData<List<ListaCompraDetalle>> getAllByLista(int listasId) {

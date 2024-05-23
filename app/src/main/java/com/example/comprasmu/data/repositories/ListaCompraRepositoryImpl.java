@@ -104,16 +104,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
                 new Object[]{indice,idCiudad, etapa});
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
-//que no esten canceladas
-    public List<ListaCompra> getAllByIndiceCiudadEtaSimpl2(String indice,String idCiudad,String etapa) {
 
-        String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre like ? and lis_etapaactual=? group by plantasId";
-        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
-                query,
-                new Object[]{indice,idCiudad, etapa});
-        return dao.getListaCompraByFiltrosSimple( sqlquery);
-    }
     public LiveData<List<ListaCompra>> getAllByIndiceCiudadEta(String indice,String idCiudad,String etapa) {
 
         String query="Select * from lista_compras where indice=?" +
@@ -173,7 +164,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public List<ListaCompra> getClientesByIndiceCiudadSimplsp(String indice,String idCiudad, int cliente) {
         List<String> params= new ArrayList<>();
         params.add(indice);
-        String query="Select * from lista_compras where indice=? and clientesId!=?";
+        String query="Select * from lista_compras where indice=? and clientesId==?";
         params.add(cliente+"");
         if(!idCiudad.equals("")) {
             query = query + " and ciudadNombre like ?";
@@ -203,6 +194,24 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,ciudad,idCliente});
+        return dao.getListaCompraByFiltrosSimple( sqlquery);
+    }
+
+    public List<ListaCompra> getClieByIndiceCiudadSimplxetReac(String indice,String idCiudad,int etapa, int reactivado) {
+        List<String> params= new ArrayList<>();
+        params.add(indice);
+        String query="Select * from lista_compras where indice=? and lis_etapaactual=? and lis_reactivado=?";
+        params.add(etapa+"");
+        params.add(reactivado+"");
+        if(idCiudad!=null&&!idCiudad.equals("")) {
+            query = query + " and ciudadNombre like ?";
+            params.add(idCiudad);
+        }
+        query=query+ " group by clientesId";
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,params.toArray()
+        );
+        Log.d("ListaCompraRepositoryImpl","clientes "+query);
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
     public LiveData<List<ListaWithDetalle>> getListaWithDetalleByFiltros(String indice, int idPlanta, int idCliente ) {
