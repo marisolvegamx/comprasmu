@@ -56,7 +56,7 @@ public class SubirLog {
             String uploadFileArrayList=arch;
             Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList+"  "+Constantes.URLSERV+URL_SUBIRPICTURE);
            String serverurl="";
-            if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG")) {//pruebas y el lenovo
+            if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")) {//pruebas y el lenovo
                 serverurl=Constantes.URLPRUEBAS1;
 
             }else

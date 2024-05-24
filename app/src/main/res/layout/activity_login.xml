@@ -20,7 +20,7 @@
             android:id="@+id/textView18"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1.0.21" />
+            android:text="1.0.22" />
 
         <TextView
             android:id="@+id/textView27"

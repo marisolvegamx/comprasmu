@@ -22,7 +22,7 @@ public class ServiceGeneratorIm {
     public static APIService getApiService() {
 
 
-        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("2006C3MG")){//pruebas y el lenovo
+        if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("2006C3MG2")){//pruebas y el lenovo
             //nam
             BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";
 
