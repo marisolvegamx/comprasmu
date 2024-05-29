@@ -21,18 +21,22 @@
             android:title="@string/menu_ver_lista" />
 
         <item
-            android:id="@+id/nav_nvoenvio"
+            android:id="@+id/nav_nvogasto"
             android:icon="?attr/actionModePasteDrawable"
             android:title="@string/menu_nuevo_informe" />
 
         <item
-            android:id="@+id/nav_continuarenv"
+            android:id="@+id/nav_continuargas"
             android:icon="@drawable/ic_baseline_edit_24"
             android:title="@string/menu_continuar_informe" />
         <item
-            android:id="@+id/nav_resumenenv"
+            android:id="@+id/nav_resumengas"
             android:icon="?attr/actionModePasteDrawable"
             android:title="@string/menu_lista_gas" />
+        <item
+            android:id="@+id/nav_revrecibo"
+            android:icon="?attr/actionModePasteDrawable"
+            android:title="@string/menu_revrecibo" />
 
         <item
             android:id="@+id/nav_solcorenv"

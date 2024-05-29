@@ -357,10 +357,13 @@
     <string name="env_anexo2">ANEXO 2</string>
     <string name="env_anexo3">ANEXO 3</string>
     <string name="su_archivo">LA DESCARGA DEL ARCHIVO SE MOSTRARÁ EN LAS NOTIFICACIONES DEL CELULAR</string>
-    <string name="menu_lista_gas">Gastos</string>
+    <string name="menu_lista_gas">Resumen Gastos</string>
     <string name="foto_posicion4">FOTO POSICION 4</string>
     <string name="realizo_gasto">¿REALIZÓ OTRO GASTO?</string>
     <string name="tiene_comp">¿TIENE COMPROBANTE?</string>
     <string name="foto_compr">FOTO COMPROBANTE</string>
+    <string name="total_validar">TOTAL A VALIDAR</string>
+    <string name="menu_revrecibo">Revisa recibo</string>
+    <string name="realizo_otro">¿REALIZO OTRO GASTO?</string>
 
 </resources>

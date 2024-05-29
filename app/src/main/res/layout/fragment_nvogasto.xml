@@ -14,6 +14,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="vertical"
+            android:paddingTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -23,12 +24,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Button" />
 
                 <TextView
                     android:id="@+id/textView25"
@@ -46,66 +41,72 @@
                     <TableRow
                         android:id="@+id/rowpep"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView33"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
                             android:text="PEPSI" />
 
                         <TextView
                             android:id="@+id/txtgaspep"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="TextView" />
+                            android:text="$100" />
                     </TableRow>
 
                     <TableRow
                         android:id="@+id/rowfiel"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView35"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
                             android:text="PEÑAFIEL" />
 
                         <TextView
                             android:id="@+id/txtgaspen"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="" />
+                            android:text="$200" />
                     </TableRow>
 
                     <TableRow
                         android:id="@+id/rowelec"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/textView37"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
                             android:text="ELECTROPURA" />
 
                         <TextView
                             android:id="@+id/txtgaselec"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="" />
+                            android:text="$190" />
                     </TableRow>
 
                     <TableRow
                         android:id="@+id/rowjum"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/textView39"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
                             android:text="JUMEX" />
 
                         <TextView
@@ -118,27 +119,38 @@
                     <TableRow
                         android:id="@+id/rowtot"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView41"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/total" />
+                            android:layout_weight="2"
+                            android:text="@string/total"
+                            android:textAppearance="@style/formlabel" />
 
                         <TextView
                             android:id="@+id/txtgastotmue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="" />
+                            android:text="$300"
+                            android:textAppearance="@style/formlabel" />
                     </TableRow>
                 </TableLayout>
+
+                <Button
+                    android:id="@+id/btngasacep1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/aceptar" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/llgaspreg1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -146,7 +158,8 @@
                     style="@style/formlabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/realizo_gasto" />
+                    android:text="@string/realizo_gasto"
+                    android:visibility="gone" />
 
 
                 <com.example.comprasmu.utils.Preguntasino
@@ -205,7 +218,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:text="@string/descripcion"/>
+                    android:text="@string/descripcion" />
 
                 <EditText
                     android:id="@+id/txtgasdescrip"
@@ -213,7 +226,6 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="textPersonName" />
-
 
 
                 <Button
@@ -224,8 +236,6 @@
                     android:layout_weight="1"
                     android:text="@string/aceptar" />
             </LinearLayout>
-
-
 
 
             <LinearLayout
@@ -240,12 +250,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/costo" />
+
                 <EditText
                     android:id="@+id/txtgascosto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="textPersonName" />
+
                 <Button
                     android:id="@+id/btngasacepcos"
                     android:layout_width="match_parent"
@@ -254,6 +266,7 @@
                     android:layout_weight="1"
                     android:text="@string/aceptar" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/llgaspregcomp"
                 android:layout_width="match_parent"
@@ -265,7 +278,8 @@
                     style="@style/formlabel2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/tiene_comp" />
+                    android:text="@string/tiene_comp"
+                    android:visibility="gone" />
 
                 <com.example.comprasmu.utils.Preguntasino
                     android:id="@+id/sincomprobante"
@@ -280,6 +294,7 @@
                     android:layout_weight="1"
                     android:text="@string/aceptar" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/llgaspregfoto"
                 android:layout_width="match_parent"
@@ -292,6 +307,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/foto_compr" />
+
                 <EditText
                     android:id="@+id/txtgasfoto"
                     android:layout_width="match_parent"
@@ -299,6 +315,7 @@
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:visibility="gone" />
+
                 <ImageButton
                     android:id="@+id/btngasfoto"
                     style="@style/imbutton"
@@ -339,33 +356,27 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/llgasprecomen"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+
                 <TextView
-                    android:id="@+id/gastextView17"
-                    style="@style/formlabel2"
+                    android:id="@+id/txvtotal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/tiene_comp" />
+                    android:text="@string/total_validar" />
 
                 <TextView
                     android:id="@+id/txtgastotal"
+                    style="@style/textolista1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="@string/comentarios" />
 
                 <TextView
-                    android:id="@+id/textView24"
+                    android:id="@+id/textView23"
                     style="@style/formlabel2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
