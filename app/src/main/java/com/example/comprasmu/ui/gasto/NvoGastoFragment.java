@@ -717,7 +717,7 @@ public class NvoGastoFragment extends Fragment {
                         }
 
                         nvoDet.setComprobante(tienecom);
-                        if(!rutafoto.equals("")){
+                        if(rutafoto!=null&&!rutafoto.equals("")){
 
                                 int numfoto=mViewModel.insertarImagen("foto_comprobante",rutafoto, Constantes.INDICEACTUAL);
                                 if(numfoto>0){
