@@ -543,6 +543,8 @@ public class NvaCorreccionFragment extends Fragment {
                 subirFotos(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto2());
             if(envio.getCorreccion().getRuta_foto3()!=null&&envio.getCorreccion().getRuta_foto3().length()>1)
                 subirFotos(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto3());
+            if(envio.getCorreccion().getRuta_foto4()!=null&&envio.getCorreccion().getRuta_foto4().length()>1)
+                subirFotos(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto4());
 
         }catch(Exception ex){
             ex.getStackTrace();

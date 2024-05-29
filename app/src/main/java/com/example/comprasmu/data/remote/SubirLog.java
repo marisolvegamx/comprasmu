@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.remote;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
@@ -54,7 +55,16 @@ public class SubirLog {
 
             String uploadFileArrayList=arch;
             Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList+"  "+Constantes.URLSERV+URL_SUBIRPICTURE);
-            upload= new MultipartUploadRequest(context, Constantes.URLSERV+URL_SUBIRPICTURE)
+           String serverurl="";
+            if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")) {//pruebas y el lenovo
+                serverurl=Constantes.URLPRUEBAS1;
+
+            }else
+            {
+                serverurl=Constantes.URLSERV;
+
+            }
+                upload= new MultipartUploadRequest(context, serverurl+URL_SUBIRPICTURE)
                     .setMaxRetries(2)
                      .addParameter ("usuario", idusuario)
                     .addParameter ("archivo", nombrearch)

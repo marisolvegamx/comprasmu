@@ -17,6 +17,7 @@ import com.example.comprasmu.R;
 public class Preguntasino extends LinearLayout {
 
     TextView label;
+    RadioGroup grupo;
     RadioButton si;
     RadioButton no;
 
@@ -40,6 +41,7 @@ public class Preguntasino extends LinearLayout {
         label = this.findViewById(R.id.cvtxtlabel);
         si = this.findViewById(R.id.cvrbsi);
         no = this.findViewById(R.id.cvrbno);
+        grupo=this.findViewById(R.id.cvradiogpo);
         this.setOrientation(VERTICAL);
 
     }
@@ -90,6 +92,11 @@ public class Preguntasino extends LinearLayout {
     public void setNo(boolean val){
         if(val)
             no.setChecked(val);
+
+    }
+    public void clearCheck(){
+        grupo.clearCheck();
+
 
     }
 

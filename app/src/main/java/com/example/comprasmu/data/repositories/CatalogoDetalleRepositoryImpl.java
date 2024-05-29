@@ -53,6 +53,9 @@ public class CatalogoDetalleRepositoryImpl  extends BaseRepository<CatalogoDetal
             case Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID:
                 idcat=Contrato.CatalogosId.CAUSASSUST;
                 break;
+            case "tipo_gastos":
+                idcat=27;
+                break;
         }
 
         return dao.findAll(idcat);

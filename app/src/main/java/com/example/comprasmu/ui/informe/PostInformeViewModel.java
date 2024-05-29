@@ -14,6 +14,7 @@ import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
@@ -22,6 +23,7 @@ import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
+import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TodoEnvio;
@@ -32,6 +34,7 @@ import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
@@ -62,6 +65,7 @@ public class PostInformeViewModel {
    InfEtapaRepositoryImpl etapaRepo;
    InfEtapaDetRepoImpl etapadetRepo;
    InformeEnvioRepositoryImpl envRepo;
+    InfGastoDetRepositoryImpl gastoRepo;
    Context context;
    CorreccionRepoImpl correccionRepo;
    CorEtiqCajaRepoImpl corecRepo;
@@ -147,6 +151,11 @@ public class PostInformeViewModel {
        etapaRepo=new InfEtapaRepositoryImpl(context);
        etapadetRepo=new InfEtapaDetRepoImpl(context);
        envRepo=new InformeEnvioRepositoryImpl(context);
+    }
+    public void iniciarBDgasto(){
+        gastoRepo=new InfGastoDetRepositoryImpl(context);
+
+        etapaRepo=new InfEtapaRepositoryImpl(context);
     }
     public void actualizarEstatusInforme(InformeEnvio informe){
         if(informe.getVisita()!=null)
@@ -521,6 +530,50 @@ public class PostInformeViewModel {
         //actualizo detalles
         envRepo.actualizarEstatusSync(informe.getInformeEnvioDet().getInformeEtapaId(),Constantes.ENVIADO);
 
+
+    }
+
+
+
+    public  void sendInformeGasto(InformeGastoEnv informeEnvio) {
+        Log.d("sendInformeGasto", informeEnvio.toJson(informeEnvio));
+        ServiceGenerator.getApiService().saveInformeGasto(informeEnvio).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
+                //  { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+
+                    mensaje=response.body().getData();
+                    Log.d("sendInformeGasto", ""+mensaje);
+                    //actualizo el estatus
+                    iniciarBDgasto();
+                    actEstatusInfGasto(informeEnvio);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+
+
+        });
+    }
+    public void actEstatusInfGasto(InformeGastoEnv informe){
+
+        //actualizo informe
+        etapaRepo.actualizarEstatusSync(informe.getInformeEtapa().getId(),Constantes.ENVIADO);
+        //actualizo detalles
+        for (InformeGastoDet detalle:
+                informe.getInformeGastoDet()) {
+
+
+            gastoRepo.actualizarEstatusSync(detalle.getId(), Constantes.ENVIADO);
+        }
 
     }
 }

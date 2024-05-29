@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,20 +35,28 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEnvTask;
+import com.example.comprasmu.SubirInformeGastoTask;
+import com.example.comprasmu.data.modelos.Atributo;
+import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
+import com.example.comprasmu.data.remote.InformeGastoEnv;
+import com.example.comprasmu.databinding.FragmentNvogastoBinding;
+import com.example.comprasmu.databinding.VerEmpaqueFragmentBinding;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -56,6 +66,8 @@ import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
+import com.example.comprasmu.utils.CreadorFormulario;
+import com.example.comprasmu.utils.CurrencyTextWatcher;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import com.example.comprasmu.utils.ui.DatePickerFragment;
 
@@ -70,39 +82,40 @@ import java.util.List;
 public class NvoGastoFragment extends Fragment {
 
     private int preguntaAct;
-    LinearLayout svcli,svfecha,svrecibe,svsello,svcoment;
-    private static final String TAG = "NvoEnvioFragment";
+    LinearLayout llresumen,llpreg1,llconce, lldescripcion,llcosto,llcompr,llfoto,lltotal, llcomentarios;
+    private static final String TAG = "NvoGastoFragment";
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
     ImageView fotomos;
 
-    Button aceptar1,aceptar2,aceptar3,aceptar4,guardar;
+    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5, aceptar6, aceptar7, aceptar8,guardar;
     private ImageButton btnrotar;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
     private View root;
     private NvaPreparacionViewModel mViewModel;
     private int  informeSel;
+    private String ciudadInf;
 
-    private String clienteNombre;
-    private int clienteId;
     private ListaDetalleViewModel lcViewModel;
 
     List<ListaCompra> listacomp;
     private  ArrayList<DescripcionGenerica> listaClientes; //otra vez lista clientes
-    public final static String ARG_PREGACT="comprasmu.nen_pregact";
-    public final static String ARG_ESEDI="comprasmu.nen_esedi";
-    public final static String ARG_INFORMESEL = "comprasmu.neninfsel";
-    public String ciudadInf;
+    public final static String ARG_PREGACT="comprasmu.nga_pregact";
+    public final static String ARG_ESEDI="comprasmu.nga_esedi";
+    public final static String ARG_INFORMESEL = "comprasmu.ngainfsel";
 
+    private FragmentNvogastoBinding mBinding;
     private boolean isEdicion;
-    Spinner spcliente;
-    InformeEnvioPaq informeEdit;
-    int totalcajas;
-    int etapa=5;
+
+    InformeEtapa informeEdit;
+    InformeGastoDet detalleEdit;
+    int totalgastos;
+    int totalotros; //solo puede capturar 5
+    int etapa=6;
+    float totalval;
     private ImageButton btntomarf;
-    private NuevoInfEtapaViewModel niviewModel;
+    NvoGastoViewModel niviewModel;
     ComprasLog milog;
-    private EditText txtfechaent,txtnombrerec,txtcoment,txtfotosello;
 
     public NvoGastoFragment() {
 
@@ -116,92 +129,108 @@ public class NvoGastoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        root = inflater.inflate(R.layout.fragment_nvoenvio, container, false);
 
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_nvogasto, container, false);
+
+        //   mBinding.setMviewModel(mViewModel);
+        mBinding.setLifecycleOwner(this);
         try {
-
+//son 8 preguntas
+            root=mBinding.getRoot();
             mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
             lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
+            niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
+
             //reviso si es edicion y ya tengo info en temp
 
+            llresumen = root.findViewById(R.id.llgasresumen);
+            llpreg1 = root.findViewById(R.id.llgaspreg1);
+            llconce = root.findViewById(R.id.llgasselconce);
+            lldescripcion = root.findViewById(R.id.llgaspregdesc);
+            llcosto = root.findViewById(R.id.llgaspregcos);
+            llcompr = root.findViewById(R.id.llgaspregcomp);
+            llfoto = root.findViewById(R.id.llgaspregfoto);
 
-            svcli = root.findViewById(R.id.llnvpregcli);
-            svfecha = root.findViewById(R.id.llnvpregfecha);
-            svrecibe = root.findViewById(R.id.llnvpregrecibe);
-            svsello = root.findViewById(R.id.llnvpresello);
+            llcomentarios = root.findViewById(R.id.llgasprecomen);
 
-            svcoment = root.findViewById(R.id.llnvprecomen);
+            aceptar1 = root.findViewById(R.id.btngasacep1);
 
-            aceptar1 = root.findViewById(R.id.btnnvacecli);
-
-            aceptar2 = root.findViewById(R.id.btnnvacfecha);
-            aceptar3 = root.findViewById(R.id.btnnvacrec);
-            aceptar4 = root.findViewById(R.id.btnnvacepsello);
+            aceptar2 = root.findViewById(R.id.btngaspreg1);
+            aceptar3 = root.findViewById(R.id.btgasacepcon);
+            aceptar4 = root.findViewById(R.id.btngasacepdes);
+            aceptar5 = root.findViewById(R.id.btngasacepcos);
+            aceptar6 = root.findViewById(R.id.btngasacepcomp);
+            aceptar7 = root.findViewById(R.id.btngasacepfoto);
             guardar = root.findViewById(R.id.btnnvguardar);
 
-            btnrotar = root.findViewById(R.id.btnnvrotar);
+            btnrotar = root.findViewById(R.id.btngasrotar);
 
-            btntomarf = root.findViewById(R.id.btnnvfoto);
-            fotomos=root.findViewById(R.id.ivnvfotosello);
-            niviewModel = new ViewModelProvider(requireActivity()).get(NuevoInfEtapaViewModel.class);
+            btntomarf = root.findViewById(R.id.btngasfoto);
+            fotomos=root.findViewById(R.id.ivgasfoto);
 
-            mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
-            lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-            milog = ComprasLog.getSingleton();
+             milog = ComprasLog.getSingleton();
 
-            svcli.setVisibility(View.GONE);
-            svfecha.setVisibility(View.GONE);
-            svrecibe.setVisibility(View.GONE);
-            svsello.setVisibility(View.GONE);
+            llresumen.setVisibility(View.GONE);
+            llpreg1.setVisibility(View.GONE);
+            llconce.setVisibility(View.GONE);
+            lldescripcion.setVisibility(View.GONE);
+            llcosto.setVisibility(View.GONE);
+            llcompr.setVisibility(View.GONE);
+            llfoto.setVisibility(View.GONE);
 
-            svcoment.setVisibility(View.GONE);
-
-
-            txtfotosello = root.findViewById(R.id.txtnvfotosello);
-            txtfechaent = root.findViewById(R.id.txtnvfechaentr);
-            txtnombrerec=root.findViewById(R.id.txtnvnombrerec);
-            txtcoment=root.findViewById(R.id.txtnvcomentarios);
-            // pcoincide=root.findViewById(R.id.sinonecoincide);
-            // potra=root.findViewById(R.id.sinoneotramu);
-            spcliente = root.findViewById(R.id.spnvclientesel);
-
+            llcomentarios.setVisibility(View.GONE);
+            getConceptos();
+            ciudadInf=Constantes.CIUDADTRABAJO;
             if (getArguments() != null) {
                 // Log.d(TAG,"aqui");
                 this.preguntaAct = getArguments().getInt(ARG_PREGACT);
                 this.informeSel = getArguments().getInt(ARG_INFORMESEL);
                 // mViewModel.setIdNuevo(this.informeSel);
                 //BUSCo si viene de continuar
-                InformeEnvioPaq det = mViewModel.getInformeEnvio(informeSel);
-                if (det != null)
-                    this.informeEdit = det;
+                InformeEtapa informeEtapa =mViewModel.getInformexId(informeSel);
+                if (informeEtapa != null)
+                    this.informeEdit = informeEtapa;
 
 
                 this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
             }
 
-
+            totalgastos=totalotros=0;
+            totalval=0;
             //deshabilito botones de aceptar
-            aceptar1.setEnabled(false);
-            aceptar2.setEnabled(false);
-            aceptar3.setEnabled(false);
-            aceptar4.setEnabled(false);
+            aceptar1.setEnabled(true); //resumen
+            aceptar2.setEnabled(false);//pregunta gasto
+            aceptar3.setEnabled(true); //concepto
+            aceptar4.setEnabled(false);//descripcion
+            aceptar5.setEnabled(false); //costo
+            aceptar6.setEnabled(false); //comprobante
+            aceptar7.setEnabled(false); //foto
             guardar.setEnabled(true);
-
-            txtcoment.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-            txtnombrerec.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-            txtfechaent.addTextChangedListener(new BotonTextWatcher(aceptar2));
-            txtfechaent.setOnClickListener(new View.OnClickListener() {
+            mBinding.singasto.setmLabel(getString(R.string.realizo_otro));
+            mBinding.singasto.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View view) {
-                    showDatePickerDialog();
+                public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                    aceptar2.setEnabled(true);
                 }
             });
-            txtnombrerec.addTextChangedListener(new BotonTextWatcher(aceptar3));
+            mBinding.sincomprobante.setmLabel(getString(R.string.tiene_comp));
+            mBinding.sincomprobante.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                    aceptar6.setEnabled(true);
+                }
+            });
+            mBinding.txtgascomentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+            mBinding.txtgasdescrip.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+            mBinding.txtgasdescrip.addTextChangedListener(new BotonTextWatcher(aceptar4));
+            mBinding.txtgascosto.addTextChangedListener(new BotonTextWatcher(aceptar5));
+            mBinding.txtgascosto.setRawInputType(Configuration.KEYBOARD_12KEY);
+            mBinding.txtgascosto.addTextChangedListener(new CurrencyTextWatcher());
 
-            spcliente.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            mBinding.spgasconcep.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                    aceptar1.setEnabled(true);
+                    aceptar3.setEnabled(true);
                 }
 
                 @Override
@@ -235,102 +264,68 @@ public class NvoGastoFragment extends Fragment {
 
                     dialogo1.show();
                 }
+                llresumen.setVisibility(View.VISIBLE);
             }
-            milog.grabarError(TAG + " o x aca");
-            //busco si tengo varias plantas
-            ciudadInf = Constantes.CIUDADTRABAJO;
-            //busco los clientes x ciudad
-            listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, this.etapa);
-            Log.d(TAG, "cliente" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
+            milog.grabarError(TAG + " iniciando nvo informe gastos");
 
-            //ya puedo tener varios informes
-         //   Integer[] clientesprev = mViewModel.tieneInforme(3);
-
-               convertirLista(listacomp);
-            if (listaClientes.size() > 1) {
-                    //tengo varios clientes
-                    preguntaAct = 1;
-
-
-                    cargarPlantas(listaClientes, "");
-
-                    mViewModel.variasClientes = true;
-                    svcli.setVisibility(View.VISIBLE);
-                    aceptar1.setEnabled(true);
-           } else if (listaClientes.size() > 0) {
-                    preguntaAct = 2;
-
-                    svfecha.setVisibility(View.VISIBLE);
-                    mViewModel.variasClientes = false;
-                    clienteId = listacomp.get(0).getClientesId();
-                    clienteNombre = listacomp.get(0).getClienteNombre();
-                    totalcajas = mViewModel.getTotalCajasxCliXcd(clienteId, Constantes.CIUDADTRABAJO);
-                    //veo si ya tengo un informe
-                    InformeEtapa primero = mViewModel.tieneInforme(etapa, Constantes.CIUDADTRABAJO, clienteId);
-
-                    InformeEtapa informetemp = new InformeEtapa();
-                    informetemp.setClienteNombre(clienteNombre);
-                    informetemp.setClientesId(clienteId);
-                    informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
-                    informetemp.setIndice(Constantes.INDICEACTUAL);
-                    informetemp.setTotal_cajas(totalcajas);
-                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(informetemp);
-            }
+            ((NuevoInfEtapaActivity) getActivity()).actualizarBarraGas();
 
             if (isEdicion) { //busco el informe
 
                 //busco el informe y el detalle
-
-             //   infomeEdit = mViewModel.getInformexId(informeSel);
-                preguntaAct = 2;
-                mViewModel.preguntaAct = 2;
-                if (listaClientes != null && listaClientes.size() > 0)
-                    cargarPlantas(listaClientes, this.informeEdit.informeEtapa.getClientesId() + "");
-                ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(this.informeEdit.informeEtapa);
                 mViewModel.setIdNuevo(informeSel);
-                totalcajas = this.informeEdit.informeEtapa.getTotal_cajas();
-                clienteId = this.informeEdit.informeEtapa.getClientesId();
-                editarInforme();
+
+              //  editarInforme();
             }
 
             aceptar1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //todo guaradr unforme etapa
+                    guardarInf();
+                    avanzar();
 
-                    DescripcionGenerica opcionsel = (DescripcionGenerica) spcliente.getSelectedItem();
-                    if (opcionsel != null) {
-                        //busco par de id, cliente
-                        //String[] aux = opcionsel.getDescripcion().split(",");
-                        clienteId = opcionsel.getId();
-                        clienteNombre = opcionsel.getNombre();
-                        //busco el total de muestras
-                        totalcajas = mViewModel.getTotalCajasxCliXcd(clienteId, Constantes.CIUDADTRABAJO);
-                        InformeEtapa temp = new InformeEtapa();
-                        temp.setClienteNombre(clienteNombre);
-                        temp.setClientesId(clienteId);
-                        temp.setCiudadNombre(Constantes.CIUDADTRABAJO);
-                        temp.setIndice(Constantes.INDICEACTUAL);
-                        temp.setTotal_cajas(totalcajas);
-                        ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(temp);
-                        avanzar();
-                    }
                 }
             });
       aceptar2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                guardarInf();
+                avanzar();
             }
         });
-            aceptar3.setOnClickListener(new View.OnClickListener() { //foto
+            aceptar3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                 guardarDet();
+                    avanzar();
 
                 }
             });
             aceptar4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    avanzar();
+
+                }
+            });
+            aceptar5.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    avanzar();
+
+                }
+            });
+            aceptar6.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(mBinding.sincomprobante.getRespuesta()){
+                        avanzar();
+                    }else
+                    guardarDet();
+
+                }
+            });
+            aceptar7.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     guardarDet();
@@ -340,17 +335,15 @@ public class NvoGastoFragment extends Fragment {
             guardar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    guardarDet();
-
+                  //  guardarDet();
+                    finalizarInf();
                 }
             });
-
-
 
             btnrotar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    rotar(txtfotosello.getId());
+                    rotar(mBinding.txtgasfoto.getId());
                 }
             });
 
@@ -371,55 +364,87 @@ public class NvoGastoFragment extends Fragment {
     }
 
 
-
-
         public void avanzar() {
-            Log.d(TAG, "--" + preguntaAct);
-
+            Log.d(TAG, "++" + preguntaAct);
 
             switch (preguntaAct) {
-                case 1: //sel cliente
+                case 1: //pregunta
 
-
-                    // txtcajaact.setVisibility(View.VISIBLE);
-                    svcli.setVisibility(View.GONE);
+                    // txtcajaact.setVisibility(View.VISIBLE)
+                    llresumen.setVisibility(View.GONE);
                     // txttotmues.setVisibility(View.VISIBLE);
-                    svfecha.setVisibility(View.VISIBLE);
+
+                    llpreg1.setVisibility(View.VISIBLE);
                     preguntaAct = preguntaAct + 1;
-                    //veo si ya tengo un informe
-                    InformeEtapa primero=mViewModel.tieneInforme(this.etapa,Constantes.CIUDADTRABAJO,clienteId);
-                    if(primero!=null){
+                        //veo si ya tengo un informe
+                        // InformeEtapa primero=mViewModel.tieneInforme(this.etapa,Constantes.CIUDADTRABAJO,clienteId);
+                        // if(primero!=null){
 
                         //busco la ultima muestra
-                        InformeEtapaDet ultima = mViewModel.getUltimaMuestraEtiq(primero.getId());
+                        //     InformeEtapaDet ultima = mViewModel.getUltimaMuestraEtiq(primero.getId());
 
+                        // }
+
+                    break;
+                case 2: //concepto
+                    llpreg1.setVisibility(View.GONE);
+                    if(mBinding.singasto.getRespuesta()) {
+                            llconce.setVisibility(View.VISIBLE);
+                            preguntaAct = preguntaAct + 1;
+                    }else
+                    {
+                        //nos vamos a comentarios
+                        preguntaAct=8;
+                        //todo calcular total
+
+                        mBinding.txtgastotal.setText("$"+niviewModel.calcularTotal(informeSel));
+                        llcomentarios.setVisibility(View.VISIBLE);
+                    }
+                    break;
+                case 3: //descripcion
+                    llconce.setVisibility(View.GONE);
+                    lldescripcion.setVisibility(View.VISIBLE);
+                    preguntaAct = preguntaAct + 1;
+
+                    break;
+                case 4: //costo
+                    lldescripcion.setVisibility(View.GONE);
+                    llcosto.setVisibility(View.VISIBLE);
+
+                    preguntaAct = preguntaAct + 1;
+
+                    break;
+                case 5: //preg comprob
+                    llcosto.setVisibility(View.GONE);
+                    llcompr.setVisibility(View.VISIBLE);
+
+                    preguntaAct = preguntaAct + 1;
+
+                    break;
+                case 6: //foto
+
+                    llcompr.setVisibility(View.GONE);
+                    if(mBinding.sincomprobante.getRespuesta()) {
+                        llfoto.setVisibility(View.VISIBLE);
+                        preguntaAct = preguntaAct + 1;
+                    }
+                    else {
+                        llpreg1.setVisibility(View.VISIBLE);
+                        //todo limpio variables
+                        limpiarFrom();
+                        preguntaAct = 2;
                     }
 
-                    break;
-                case 2: //fecha
-                    svfecha.setVisibility(View.GONE);
 
-                    svrecibe.setVisibility(View.VISIBLE);
-                    preguntaAct = preguntaAct + 1;
-                    break;
-                case 3: //nombre recibe
-                    svrecibe.setVisibility(View.GONE);
-                    svsello.setVisibility(View.VISIBLE);
-                    preguntaAct = preguntaAct + 1;
 
                     break;
-                case 4: //foto
-                    svsello.setVisibility(View.GONE);
-                    svcoment.setVisibility(View.VISIBLE);
-
-                    preguntaAct = preguntaAct + 1;
-
-                    break;
-                case 5: //comentarios
-                    svcoment.setVisibility(View.GONE);
-                   finalizarInf();
-                    isEdicion = false;
-
+                case 7:
+                    llfoto.setVisibility(View.GONE);
+                    //otra vez pregnta 1
+                    preguntaAct=2;
+                    llpreg1.setVisibility(View.VISIBLE);
+                    //todo limpio variables
+                    limpiarFrom();
                     break;
 
 
@@ -430,9 +455,74 @@ public class NvoGastoFragment extends Fragment {
 
 
 
+        public void limpiarFrom() {
+            mBinding.singasto.clearCheck();
+
+            mBinding.sincomprobante.clearCheck();
+            aceptar2.setEnabled(false);//pregunta gasto
+            aceptar3.setEnabled(true); //concepto
+            aceptar4.setEnabled(false);//descripcion
+            aceptar5.setEnabled(false); //costo
+            aceptar6.setEnabled(false); //comprobante
+            aceptar7.setEnabled(false); //foto
+            guardar.setEnabled(true);
+            mBinding.txtgascomentarios.setText("");
+            mBinding.txtgasdescrip.setText("");
+
+            mBinding.txtgascosto.setText("");
 
 
-        public void editarInforme() {
+
+            mBinding.spgasconcep.setSelection(0);
+            mBinding.txtgasfoto.setText("");
+          fotomos.setImageBitmap(null);
+            btnrotar.setVisibility(View.GONE);
+          nombre_foto=null;
+          archivofoto=null;
+            // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+            fotomos.setVisibility(View.GONE);
+        }
+    public void getConceptos(){
+        //  Log.d(TAG,"buscando atributos"+dViewModel.productoSel.empaque+"--"+dViewModel.productoSel.idempaque+"--"+dViewModel.productoSel.clienteSel);
+        List<CatalogoDetalle> conceptos=niviewModel.cargarConceptos();
+        ArrayAdapter catAdapter = new ArrayAdapter<CatalogoDetalle>(getContext(), android.R.layout.simple_spinner_dropdown_item, conceptos) {
+
+
+            // And the "magic" goes here
+            // This is for the "passive" state of the spinner
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
+                TextView label = (TextView) super.getView(position, convertView, parent);
+                label.setTextColor(Color.BLACK);
+                // Then you can get the current item using the values array (Users array) and the current position
+                // You can NOW reference each method you has created in your bean object (User class)
+                CatalogoDetalle item = getItem(position);
+                label.setText(item.getCad_descripcionesp());
+                //TODO elegir idioma
+
+                // And finally return your dynamic (or custom) view for each spinner item
+                return label;
+            }
+
+            // And here is when the "chooser" is popped up
+            // Normally is the same view, but you can customize it if you want
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                TextView label = (TextView) super.getDropDownView(position, convertView, parent);
+                label.setTextColor(Color.BLACK);
+                CatalogoDetalle item = getItem(position);
+                label.setText(item.getCad_descripcionesp());
+
+                return label;
+            }
+        };
+
+
+        mBinding.spgasconcep.setAdapter(catAdapter);
+    }
+     /*   public void editarInforme() {
             svcli.setVisibility(View.GONE);
             svrecibe.setVisibility(View.GONE);
             svsello.setVisibility(View.GONE);
@@ -465,48 +555,95 @@ public class NvoGastoFragment extends Fragment {
                 }
             }
 
-        }
+        }*/
 
 
 
         public void atras(){
-
+            Log.d(TAG, "--" + preguntaAct);
             isEdicion=true; //siempre es edicion
             switch (preguntaAct){
 
                 case 2:
-                    //regreso a sel cliente puedo?
-                    if(   mViewModel.variasClientes) {
-                        svcli.setVisibility(View.VISIBLE);
-                        svfecha.setVisibility(View.GONE);
 
+                    if(totalgastos>0) //ya no vuelvo
+                    {
+
+                      /*  if (mBinding.sincomprobante.getRespuesta()) {
+                            llfoto.setVisibility(View.VISIBLE);
+                            preguntaAct=7;
+                        }else
+                        {
+                            llcompr.setVisibility(View.VISIBLE);
+                            preguntaAct=6;
+                        }*/
+                        break;
+                    }else {
+                        llpreg1.setVisibility(View.GONE);
+                        llresumen.setVisibility(View.VISIBLE);
                         preguntaAct = preguntaAct - 1;
-                        mViewModel.preguntaAct = preguntaAct;
                     }
+
+
+
+                        mViewModel.preguntaAct = preguntaAct;
+
                     break;
                 case 3:
-                    svfecha.setVisibility(View.VISIBLE);
-                    svrecibe.setVisibility(View.GONE);
+                    llpreg1.setVisibility(View.VISIBLE);
+                    llconce.setVisibility(View.GONE);
 
                     preguntaAct=preguntaAct-1;
                     mViewModel.preguntaAct=preguntaAct;
                     break;
-                //  sv6.setVisibility(View.VISIBLE);
-                //  sv3.setVisibility(View.GONE);
-                //   txtcajaact.setVisibility(View.GONE);
+
 
                 case 4:
-                    svrecibe.setVisibility(View.VISIBLE);
-                    svsello.setVisibility(View.GONE);
+                    llconce.setVisibility(View.VISIBLE);
+                    lldescripcion.setVisibility(View.GONE);
 
                     preguntaAct=preguntaAct-1;
                     mViewModel.preguntaAct=preguntaAct;
                     break;
                 case 5:
-                    svsello.setVisibility(View.VISIBLE);
-                    svcoment.setVisibility(View.GONE);
+                    lldescripcion.setVisibility(View.VISIBLE);
+                    llcosto.setVisibility(View.GONE);
 
                     preguntaAct=preguntaAct-1;
+                    mViewModel.preguntaAct=preguntaAct;
+                    break;
+                case 6:
+                    llcosto.setVisibility(View.VISIBLE);
+                    llcompr.setVisibility(View.GONE);
+
+                    preguntaAct=preguntaAct-1;
+                    mViewModel.preguntaAct=preguntaAct;
+                    break;
+                case 7:
+                    llcompr.setVisibility(View.VISIBLE);
+                    llfoto.setVisibility(View.GONE);
+
+                    preguntaAct=preguntaAct-1;
+                    mViewModel.preguntaAct=preguntaAct;
+                    break;
+                case 8:
+                    llcomentarios.setVisibility(View.GONE);
+                    if(mBinding.singasto.getRespuesta())
+                        if(mBinding.sincomprobante.getRespuesta()) {
+                            llfoto.setVisibility(View.VISIBLE);
+                            preguntaAct = preguntaAct - 1;
+                        }
+
+                    else {
+                            llcompr.setVisibility(View.VISIBLE);
+                            preguntaAct=6;
+                        }
+                   else {
+                        llpreg1.setVisibility(View.VISIBLE);
+                        preguntaAct=2;
+                    }
+
+
                     mViewModel.preguntaAct=preguntaAct;
                     break;
 
@@ -519,37 +656,18 @@ public class NvoGastoFragment extends Fragment {
         public void guardarInf(){
             try {
                 lastClickTime = 0;
-                //  totcajas = 0;
 
-                //totcajas =Integer.parseInt(txtnumcajas.getText().toString());
                 //valido fecha
-                Date fechaenv;
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-                String fecha=txtfechaent.getText().toString();
-                if (!fecha.equals("")) {
 
-                    try {
-                        fechaenv = sdf.parse(fecha);
-                    } catch (ParseException e) {
-
-                        Toast.makeText(getContext(), R.string.error_fecha_formato, Toast.LENGTH_SHORT).show();
-
-                        return;
-                    }
-
-
-
-                }
-                if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null) {
+                if (preguntaAct == 1 && !isEdicion&&mViewModel.getNvoinforme()==null) {
                     Log.d(TAG, "creando nvo inf");
                     //creo el informe
-                    mViewModel.setIdNuevo(mViewModel.insertarEnvio(Constantes.INDICEACTUAL, clienteNombre,clienteId,totalcajas,0,ciudadInf));
-                    //  ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEtiq(mViewModel.getNvoinforme());
-                    informeSel=mViewModel.getIdNuevo();
+                    mViewModel.setIdNuevo(mViewModel.insertarGasto(Constantes.INDICEACTUAL, 0,ciudadInf));
+                   informeSel=mViewModel.getIdNuevo();
+                    informeEdit = mViewModel.getInformexId(informeSel);
                 }
 
-                guardarDet();
-                //ya existe
+
             }catch (Exception ex){
                 ex.printStackTrace();
                 Log.e(TAG,"Algo salió mal al guardarInf"+ex.getMessage());
@@ -563,113 +681,86 @@ public class NvoGastoFragment extends Fragment {
         public void guardarDet(){
             try{
                 String rutafoto = null;
+               CatalogoDetalle consel=(CatalogoDetalle) mBinding.spgasconcep.getSelectedItem();
+                int conceptoid= consel.getCad_idopcion();
+                String concepto=consel.getCad_descripcionesp();
+                String descripcion=mBinding.txtgasdescrip.getText().toString();
+                String costo=mBinding.txtgascosto.getText().toString();
+                boolean tienecom=false;
+                if(mBinding.sincomprobante.getRespuesta()) {
+                    tienecom = true;
+                    rutafoto = mBinding.txtgasfoto.getText().toString();
+                }
+
                 Log.d(TAG,"preg act "+preguntaAct);
                 //es un nuevo registro
-                if(preguntaAct==2&&mViewModel.getIdNuevo()>0){
-                    informeEdit = mViewModel.getInformeEnvio(informeSel);
-                    if(informeEdit.infEnvioDet==null) { //es 1a vez
-                        Date fechaenv;
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-                        String fecha = txtfechaent.getText().toString();
-                        if (!fecha.equals("")) {
 
+
+                    if(detalleEdit==null) { //es 1a vez
+
+                        InformeGastoDet nvoDet = new InformeGastoDet();
+                        nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
+                        nvoDet.setConcepto(concepto);
+                        nvoDet.setConceptoId(conceptoid);
+                        nvoDet.setDescripcion(descripcion);
+                        //cambio el importe
+                        if(!costo.equals("")) {
+                            costo=costo.substring(1);
                             try {
-                                fechaenv = sdf.parse(fecha);
-                            } catch (ParseException e) {
-
-                                Toast.makeText(getContext(), R.string.error_fecha_formato, Toast.LENGTH_SHORT).show();
-
+                                float importe=Float.valueOf(costo);
+                                nvoDet.setImporte(importe);
+                            }catch (NumberFormatException ex) {
+                                Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_SHORT);
                                 return;
                             }
-                            InformeEnvioDet nvoDet = new InformeEnvioDet();
-                            nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
-
-
-                            nvoDet.setFechaEnvio(fechaenv);
-                            mViewModel.insertarEnvioDet(nvoDet);
-                        }
-                    }
-                    else{
-                        String fecha=txtfechaent.getText().toString();
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
-
-                        Date fechaenv;
-                        try {
-                            fechaenv = sdf.parse(fecha);
-                        } catch (ParseException e) {
-
-                            Toast.makeText(getContext(), R.string.error_fecha_formato, Toast.LENGTH_SHORT).show();
-
-                            return;
-                        }
-                        informeEdit.infEnvioDet.setFechaEnvio(fechaenv);
-                        mViewModel.actualizarEnvioDet(informeEdit.infEnvioDet);
-                    }
-                }else{
-                    //busco si ya tiene detalle
-
-                    informeEdit = mViewModel.getInformeEnvio(informeSel);
-
-
-                    if(informeEdit!=null&&informeEdit.infEnvioDet!=null) {
-                        switch(preguntaAct){
-                            case 2:
-                             break;
-                            case 3:
-                                String recibe=txtnombrerec.getText().toString();
-                                if(!recibe.equals("")){
-                                    informeEdit.infEnvioDet.setNombreRecibe(recibe);
-                                }
-                                else {
-                                    Toast.makeText(getContext(), "Capture el nombre de quien recibe", Toast.LENGTH_SHORT).show();
-
-                                    return;
-                                }
-                                //es actualizacion
-                                mViewModel.actualizarEnvioDet(informeEdit.infEnvioDet);
-                                break;
-                            case 4:
-
-                                //la foto se guarda primero en imagenes
-                                String nomfoto=txtfotosello.getText().toString();
-
-                                if(!nomfoto.equals("")){
-                                    if(informeEdit.infEnvioDet.getFotoSello()!=null&&informeEdit.infEnvioDet.getFotoSello()>0)
-                                        mViewModel.actualizarImagenEnvio(informeEdit.infEnvioDet,nomfoto);
-                                    else
-                                        //es 1a vez
-                                    {
-                                        int numfoto=mViewModel.insertarImagen("foto sello",nomfoto, Constantes.INDICEACTUAL);
-                                        if(numfoto>0){
-                                            informeEdit.infEnvioDet.setFotoSello(numfoto);
-                                            mViewModel.actualizarEnvioDet(informeEdit.infEnvioDet);
-                                        }
-                                    }
-
-                                }
-                                else {
-                                    Toast.makeText(getContext(), "Capture la foto de sello de entregado", Toast.LENGTH_SHORT).show();
-
-
-                                }
-                               break;
-
-                            case 5:
-                                String coment=txtcoment.getText().toString().trim();
-                                if(!coment.equals("")) {
-                                    informeEdit.informeEtapa.setComentarios(coment);
-                                    mViewModel.actualizarComentarios(mViewModel.getIdNuevo(),coment);
-                                }
-                                break;
-
 
                         }
 
+                        nvoDet.setComprobante(tienecom);
+                        if(!rutafoto.equals("")){
 
+                                int numfoto=mViewModel.insertarImagen("foto_comprobante",rutafoto, Constantes.INDICEACTUAL);
+                                if(numfoto>0){
+                                    nvoDet.setFotocomprob(numfoto);
+
+                                }
+                        }
+                            nvoDet.setEstatus(1);
+                            niviewModel.insertarGastoDet(nvoDet);
+                        totalgastos++;
+                        }
+                    else {
+
+                        //busco si ya tiene detalle
+
+
+                        detalleEdit.setConcepto(concepto);
+                        detalleEdit.setConceptoId(conceptoid);
+                        detalleEdit.setDescripcion(descripcion);
+                        //cambio el importe
+                        if (!costo.equals("")) {
+                            costo = costo.substring(1);
+                            try {
+                                float importe = Float.valueOf(costo);
+                                detalleEdit.setImporte(importe);
+                            } catch (NumberFormatException ex) {
+                                Toast.makeText(getActivity(), "El costo es incorrecto verifique", Toast.LENGTH_SHORT);
+                                return;
+                            }
+
+                        }
+
+                        detalleEdit.setComprobante(tienecom);
+                        if (!rutafoto.equals("")) {
+
+
+                            niviewModel.actualizarImagen(detalleEdit, rutafoto);
+                        }
+
+
+                        //es actualizacion
+                        niviewModel.actualizarDet(detalleEdit);
                     }
-
-
-               }
 
 
                 avanzar();
@@ -759,11 +850,9 @@ public class NvoGastoFragment extends Fragment {
                 if (archivofoto!=null&&archivofoto.exists()) {
                     if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
 
-                        mostrarFoto(txtfotosello,fotomos,btnrotar);
-
+                        mostrarFoto(mBinding.txtgasfoto,fotomos,btnrotar);
+                        mBinding.btngasacepfoto.setEnabled(true);
                     }
-                    if(requestCode==1)
-                        aceptar4.setEnabled(true);
 
 
                 }
@@ -821,18 +910,6 @@ public class NvoGastoFragment extends Fragment {
 
         //ya se puede varios informes de etiquetado para la reactivacion
 
-        private  void convertirLista(List<ListaCompra>lista){
-            listaClientes =new ArrayList<DescripcionGenerica>();
-            for (ListaCompra listaCompra: lista ) {
-                Log.d(TAG,listaCompra.getPlantaNombre());
-
-                listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
-
-            }
-
-        }
-
-
         class BotonTextWatcher implements TextWatcher {
 
             boolean mEditing;
@@ -859,79 +936,17 @@ public class NvoGastoFragment extends Fragment {
 
 
         }
-        private void cargarPlantas(List<DescripcionGenerica> selectdes,String value){
-            ArrayAdapter catAdapter = new ArrayAdapter<DescripcionGenerica>(getContext(), android.R.layout.simple_spinner_dropdown_item, selectdes) {
 
-
-                // And the "magic" goes here
-                // This is for the "passive" state of the spinner
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
-                    TextView label = (TextView) super.getView(position, convertView, parent);
-                    label.setTextColor(Color.BLACK);
-                    // Then you can get the current item using the values array (Users array) and the current position
-                    // You can NOW reference each method you has created in your bean object (User class)
-                    DescripcionGenerica item = getItem(position);
-                    label.setText(item.getNombre());
-                    //TODO elegir idioma
-
-                    // And finally return your dynamic (or custom) view for each spinner item
-                    return label;
-                }
-
-                // And here is when the "chooser" is popped up
-                // Normally is the same view, but you can customize it if you want
-                @Override
-                public View getDropDownView(int position, View convertView,
-                                            ViewGroup parent) {
-                    TextView label = (TextView) super.getDropDownView(position, convertView, parent);
-                    label.setTextColor(Color.BLACK);
-                    DescripcionGenerica item = getItem(position);
-                    label.setText(item.getNombre());
-
-                    return label;
-                }
-            };
-
-
-            spcliente.setAdapter(catAdapter);
-            spcliente.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    // Get the value selected by the user
-                    // e.g. to store it as a field or immediately call a method
-                    DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
-            if(value!=null&&value.length()>0){
-                //busco el valor en la lista
-                for(DescripcionGenerica cat:selectdes){
-                    Log.d("CreadorForm","val"+value+" cat"+cat.getId());
-                    if(value.equals(cat.getId()+"")){
-                        // Log.d("CreadorForm","val"+infocampo.value+" cat"+cat.getId());
-                        spcliente.setSelection(catAdapter.getPosition(cat),true);
-                        break;
-                    }
-                    if(value.equals(cat.getNombre())){
-                        Log.d("CreadorForm",catAdapter.getPosition(cat)+"");
-
-                        spcliente.setSelection(catAdapter.getPosition(cat),true);
-                        break;
-                    }
-                }
-            }
-        }
     public void finalizarInf() {
         try {
+            Log.d(TAG,"total gastos="+totalgastos);
+            String comentarios=mBinding.txtgascomentarios.getText().toString();
+            if(!comentarios.equals(""))
+                mViewModel.actualizarComentarios(mViewModel.getIdNuevo(),comentarios);
             mViewModel.finalizarInf();
-            InformeEnvPaqEnv envio=mViewModel.prepararInformeEnvPaq(mViewModel.getIdNuevo());
-            SubirInformeEnvTask miTareaAsincrona = new SubirInformeEnvTask(envio,getActivity());
+            InformeGastoEnv envio=niviewModel.prepararInformeEnv(mViewModel.getIdNuevo());
+
+            SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity());
             miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
             Toast.makeText(getContext(),"El informe se envió correctamente",Toast.LENGTH_SHORT).show();
@@ -950,7 +965,7 @@ public class NvoGastoFragment extends Fragment {
         mViewModel.setNvoinforme(null);
 
     }
-    public static void subirFotos(Activity activity, InformeEnvPaqEnv informe){
+    public static void subirFotos(Activity activity, InformeGastoEnv informe){
         //las imagenes
         for(ImagenDetalle imagen:informe.getImagenDetalles()){
             //
@@ -978,7 +993,6 @@ public class NvoGastoFragment extends Fragment {
             mViewModel = null;
 
             root=null;
-            txtnombrerec=null;
 
             fotomos=null;
           //  sv1= sv6 =sv3=sv4=null;
@@ -988,19 +1002,6 @@ public class NvoGastoFragment extends Fragment {
          //   archivofoto=null;
         }
 
-    private void showDatePickerDialog() {
-        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                // +1 because January is zero
-                final String selectedDate = day + "-" + String.format("%02d", month+1)
-                + "-" + year;
-                txtfechaent.setText(selectedDate);
-            }
-        });
-
-        newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
-    }
 
 
 

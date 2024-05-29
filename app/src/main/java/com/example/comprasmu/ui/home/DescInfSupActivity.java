@@ -60,7 +60,7 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
 
         progreso.show();
 
-        if(!ComprasUtils.isOnlineNet()) {
+        if(!ComprasUtils.isOnlineNet(getApplicationContext())) {
             notificarSinConexion();
             return;
         }

@@ -2265,7 +2265,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
           //  } else
 
-                if (ComprasUtils.isOnlineNet()) {
+                if (ComprasUtils.isOnlineNet(getContext())) {
                 Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
                 List<Address> list = new ArrayList<>();
                 if (geocoder != null&&ultimaLoc!=null)

@@ -102,7 +102,7 @@ public class VerInformeGenFragment extends Fragment {
             textoboton= getString(R.string.ver_muestras);
         }
         Log.d(TAG, "llenando detalles"+Constantes.ETAPAACTUAL+tipo+"--"+informeSel);
-        if(tipo.equals("rescor")) {
+        if(tipo.equals("rescor")) { //resumen correccion
             corViewModel.getCorreccion(informeSel).observe(getViewLifecycleOwner(), new Observer<Correccion>() {
                 @Override
                 public void onChanged(Correccion vcorreccion) {
@@ -112,9 +112,21 @@ public class VerInformeGenFragment extends Fragment {
                     correccion=new CorreccionWithSol();
                     correccion.correccion=vcorreccion;
                     correccion.solicitud=solicitudCor;
-                    crearFormularioCor();
-                    mBinding.igdatosgen.addView(cf1.crearTabla());
-                    mBinding.btnverdet.setVisibility(View.GONE);
+                    if(correccion.solicitud.getEtapa()==1) {
+                        crearFormCorVarFotos();
+                        mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                verFotos();
+                            }
+                        });
+                    }else {
+                        crearFormularioCor();
+                        mBinding.igdatosgen.addView(cf1.crearTabla());
+                        mBinding.btnverdet.setVisibility(View.GONE);
+                    }
+
+
 
                 }
             });
@@ -224,7 +236,7 @@ public class VerInformeGenFragment extends Fragment {
         campo.type = "label";
         campo.value = Constantes.vistasdf.format(correccion.correccion.getCreatedAt());
         camposTienda.add(campo);
-        if(Constantes.ETAPAACTUAL==2) {
+        if(correccion.solicitud.getEtapa()==2) {
             campo = new CampoForm();
             campo.style = R.style.verinforme2;
             campo.nombre_campo = "tiendaNombre";

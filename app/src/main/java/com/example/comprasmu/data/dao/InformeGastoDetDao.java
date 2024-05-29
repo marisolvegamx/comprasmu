@@ -46,7 +46,7 @@ public abstract class InformeGastoDetDao extends  BaseDao<InformeGastoDet> {
 
 
     @Query("SELECT imagen_detalle.* FROM informe_gasto_det inner join imagen_detalle on informe_gasto_det.fotocomprob=imagen_detalle.id where informeEtapaId=:informe ")
-    public  abstract LiveData<List<ImagenDetalle>> getImagenxInf(int informe, int etapa);
+    public  abstract LiveData<List<ImagenDetalle>> getImagenxInf(int informe);
 
 
   @Query("SELECT * FROM informe_gasto_det where id=:id")

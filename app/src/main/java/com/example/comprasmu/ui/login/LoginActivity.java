@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity
 
                 lastClickTime = currentClickTime;
                 if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo//entro rapido
-                //new LoginListener().iniciar();
+                new LoginListener().iniciar();
                 }
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 //hago validaciones
@@ -184,7 +184,8 @@ public class LoginActivity extends AppCompatActivity
         //siempre checa el internet
         //luser=null;
          //   Log.i("LoginActivity","primera vez");
-        if(ComprasUtils.isOnlineNet()) {
+        if(ComprasUtils.isOnlineNet(getApplicationContext())) {
+      //  if(true){
             if(luser!=null) {
                 //veo que sea el mismo correo
                 if(!luser.getUserId().equals(usernameEditText.getText().toString())){

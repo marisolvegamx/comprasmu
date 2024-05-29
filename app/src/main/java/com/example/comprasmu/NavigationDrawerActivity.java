@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -79,12 +81,19 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeUnit;
 
 
@@ -219,15 +228,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         if(Constantes.ETAPAACTUAL==6) {
             navigationView.getMenu().clear();
 
-            navigationView.inflateMenu(R.menu.activity_main_draweremp);
-//            navigationView.getMenu().setGroupVisible(R.id.HelpGroup,false);
-            //navigationView.getMenu().setGroupVisible(R.id.SetupGroup,false);
-
+            navigationView.inflateMenu(R.menu.activity_main_drawergas);
+//
             View header=navigationView.getHeaderView(0);
-            header.setBackgroundResource(R.drawable.side_nav_baremp);
+            header.setBackgroundResource(R.drawable.side_nav_bargas);
             TextView mNameTextView = header.findViewById(R.id.txthmmodulo);
             mNameTextView.setTextColor(Color.BLACK);
-            mNameTextView.setText(R.string.empaque);
+            mNameTextView.setText(R.string.gastos);
         }
 
         //navigationView.setNavigationItemSelectedListener(this);
@@ -346,14 +353,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                     findItem(R.id.nav_cancel));
         }
-       /* if(Constantes.ETAPAACTUAL==6) {
+        if(Constantes.ETAPAACTUAL==6) {
             //Ya lo hago desde el menu
             // pedirInformes(0);
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcoretiq));
+                    findItem(R.id.nav_solcorenv));
             txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_canceleti));
-        }*/
+                    findItem(R.id.nav_cancel));
+        }
         initializeCountDrawer();
         revisarCiudades();
         if (checkPermission()) {
@@ -575,20 +582,46 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 .create()
                 .show();
     }
-    public static Boolean isOnlineNet() {
+    public static Boolean isOnlineNet(Context context) {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        RunnableFuture<Boolean> futureRun = new FutureTask<Boolean>(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                if ((networkInfo .isAvailable()) && (networkInfo .isConnected())) {
+                    try {
+                        HttpURLConnection urlc = (HttpURLConnection) (new URL("https://espanol.yahoo.com").openConnection());
+                        urlc.setRequestProperty("User-Agent", "Test");
+                        urlc.setRequestProperty("Connection", "close");
+                        urlc.setConnectTimeout(1500);
+                        urlc.connect();
+                        int res=urlc.getResponseCode();
+                        Log.d("ComprasUtils","ssss "+res);
+                        return (res== 200);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.e("ComprasUtils", "Error checking internet connection", e);
+                    }
+                } else {
+                    Log.d("ComprasUtils", "No network available!");
+                }
+                return false;
+            }
+        });
+
+        new Thread(futureRun).start();
+
 
         try {
-            Process p = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.es");
-
-            int val           = p.waitFor();
-            boolean reachable = (val == 0);
-            return reachable;
-
-        } catch (Exception e) {
-
+            return futureRun.get();
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
+
     }
    //para el envio forzoso pero ya es automatico y es por informe
     /*
@@ -726,16 +759,19 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         contarCorrecc();
         contarCanceladas();
         //Gravity property aligns the text
-        gallery.setGravity(Gravity.CENTER_VERTICAL);
-        gallery.setTypeface(null, Typeface.BOLD);
-        gallery.setTextColor(Color.RED);
-      //  gallery.setTextSize(15);
-        totCorrecciones.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                gallery.setText(integer+"");
-            }
-        });
+        if(gallery!=null) {
+            gallery.setGravity(Gravity.CENTER_VERTICAL);
+            gallery.setTypeface(null, Typeface.BOLD);
+            gallery.setTextColor(Color.RED);
+
+            //  gallery.setTextSize(15);
+            totCorrecciones.observe(this, new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    gallery.setText(integer + "");
+                }
+            });
+        }
 
         if(txtcancel!=null) {
             txtcancel.setText("x");
@@ -846,7 +882,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             version = "1999-09-09"; //una fecha muy antigua
         }
         //siempre actualizo
-        if (NavigationDrawerActivity.isOnlineNet())
+        if (NavigationDrawerActivity.isOnlineNet(this))
             ps.pedirSolicitudesCorr(Constantes.INDICEACTUAL, etapa, version, new ActualListener());
         else
             notificar = true;

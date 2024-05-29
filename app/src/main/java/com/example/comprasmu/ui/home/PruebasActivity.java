@@ -90,7 +90,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         //se definirá en el servidor
         definirTienda();
-        if(!isOnlineNet()) { //no hay conexion trabajo conl lo que hay
+        if(!ComprasUtils.isOnlineNet(getApplicationContext())) {//no hay conexion trabajo conl lo que hay
             getEtapaPref();
             if(!indicepref.equals("")&&etapafinpref>0){
               //  Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
@@ -122,13 +122,14 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
     public void success() {
         //pasaría a otra actividad
-        progreso.dismiss();
+       // progreso.dismiss();
         Constantes.ACTUALIZADO=true;
        // Log.d(TAG,"enviando al home");
         //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Intent intento=new Intent(this, HomeActivity.class);
         intento.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intento);
+         progreso.dismiss();
         finish();
     }
     public void cerrarSesion(){
@@ -477,6 +478,14 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     @Override
     protected void onStop() {
         super.onStop();
+        if(progreso!=null){
+            progreso.dismiss();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if(progreso!=null){
             progreso.dismiss();
         }

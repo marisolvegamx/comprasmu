@@ -1,15 +1,17 @@
 package com.example.comprasmu;
 
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import com.example.comprasmu.data.remote.InformeEtapaEnv;
+
+import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
 
-public class SubirInformeEtaTask extends AsyncTask<String, Float, Integer> {
+public class SubirInformeGastoTask extends AsyncTask<String, Float, Integer> {
 
-    public static String TAG = "SubirInfEtaTask";
-    InformeEtapaEnv envio;
+    public static String TAG = "SubirInformeGastoTask";
+    InformeGastoEnv envio;
     Context context;
 
     /**
@@ -17,7 +19,7 @@ public class SubirInformeEtaTask extends AsyncTask<String, Float, Integer> {
      *
      * @param en este ejemplo le pasamos un booleano que indica si hay más de 100 archivos o no. Si le pasas true se cancela por la mitad del progreso, si le pasas false seguirá hasta el final sin cancelar la descarga simulada
      */
-    public SubirInformeEtaTask( InformeEtapaEnv envio, Context context) {
+    public SubirInformeGastoTask(InformeGastoEnv envio, Context context) {
 
         this.envio=envio;
         this.context=context;
@@ -75,7 +77,7 @@ public class SubirInformeEtaTask extends AsyncTask<String, Float, Integer> {
     @Override
     protected void onPostExecute(Integer cantidadProcesados) {
         //   TV_mensaje.setText("DESPUÉS de TERMINAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
-        Log.v(TAG, "DESPUÉS de TERMINAR el envio. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
+        Log.v(TAG, "DESPUÉS de TERMINAR el envio "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
 
         // TV_mensaje.setTextColor(Color.GREEN);
     }
@@ -91,7 +93,7 @@ public class SubirInformeEtaTask extends AsyncTask<String, Float, Integer> {
     @Override
     protected void onCancelled (Integer cantidadProcesados) {
         //   TV_mensaje.setText("DESPUÉS de CANCELAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
-        Log.v(TAG, "DESPUÉS de CANCELAR envio. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
+        Log.v(TAG, "DESPUÉS de CANCELAR envio. "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
 
         // TV_mensaje.setTextColor(Color.RED);
     }
@@ -100,7 +102,7 @@ public class SubirInformeEtaTask extends AsyncTask<String, Float, Integer> {
         if(NavigationDrawerActivity.isOnlineNet(context)) {
             PostInformeViewModel postviewModel = new PostInformeViewModel(context);
 
-            postviewModel.sendInformeEta(envio);
+            postviewModel.sendInformeGasto(envio);
 
           //  String result = postviewModel.getMensaje();
 

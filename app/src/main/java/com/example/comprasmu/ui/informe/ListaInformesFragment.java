@@ -247,7 +247,7 @@ public class    ListaInformesFragment extends Fragment implements InformeCompraA
 
     @Override
     public void onClickSubir(int informe) {
-        if (NavigationDrawerActivity.isOnlineNet()) {
+        if (NavigationDrawerActivity.isOnlineNet(getContext())) {
             NuevoinformeViewModel niViewModel = new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
             InformeEnvio informeenv = niViewModel.preparaInforme(informe);

@@ -50,8 +50,8 @@ public class InfGastoDetRepositoryImpl extends BaseRepository<InformeGastoDet> {
     }
 
 
-    public LiveData<List<ImagenDetalle>> getImagenxInf(int idinf, int etapa) {
-        return dao.getImagenxInf(idinf,etapa);
+    public LiveData<List<ImagenDetalle>> getImagenxInf(int idinf) {
+        return dao.getImagenxInf(idinf);
     }
 
 

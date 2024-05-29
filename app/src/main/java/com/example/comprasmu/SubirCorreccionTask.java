@@ -101,7 +101,7 @@ public class SubirCorreccionTask extends AsyncTask<String, Float, Integer> {
     }
     public void enviarReporte() {
         //reviso si tengo conexion
-        if(NavigationDrawerActivity.isOnlineNet()) {
+        if(NavigationDrawerActivity.isOnlineNet(context)) {
             PostInformeViewModel postviewModel = new PostInformeViewModel(context);
             postviewModel.sendCorreccion(envio);
 

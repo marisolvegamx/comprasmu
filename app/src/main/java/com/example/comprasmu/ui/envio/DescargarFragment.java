@@ -36,6 +36,7 @@ import com.example.comprasmu.databinding.DescargarEnvFragmentBinding;
 import com.example.comprasmu.databinding.ListaSelecFragmentBinding;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 import com.example.comprasmu.utils.ui.ListaSelecViewModel;
@@ -106,7 +107,7 @@ public class DescargarFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
         lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-        if(!isOnlineNet()) {
+        if(!ComprasUtils.isOnlineNet(getContext())) {
             notificarSinConexion();
             //  miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
 

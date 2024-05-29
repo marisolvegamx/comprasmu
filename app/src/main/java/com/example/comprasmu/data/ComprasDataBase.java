@@ -544,14 +544,15 @@ public abstract class ComprasDataBase extends RoomDatabase {
             database.execSQL("create  TABLE informe_gasto_det ( id INTEGER not null, " +
                     " informeEtapaId INTEGER not null," +
                     "   conceptoId INTEGER not null," +
-                    " concepto TEXT not null," +
-                    "   importe FLOAT not null," +
+                    " concepto TEXT ," +
+                    "   importe REAL not null," +
                     "    descripcion TEXT ," +
-                    "   comprobante BOOLEAN not null," +
-                    "fototcomprob INTEGER," +
-                    "estatus INTEGER ," +
-                    "estatusSync INTEGER ," +
+                    "   comprobante INTEGER not null," +
+                    "fotocomprob INTEGER not null," +
+                    "estatus INTEGER not null," +
+                    "estatusSync INTEGER not null ," +
                   " PRIMARY KEY(id )) ");
+            database.execSQL("alter  TABLE informe_etapa add column importemuestras real");
 
         }
     };

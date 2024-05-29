@@ -35,8 +35,10 @@ import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
 import com.example.comprasmu.ui.envio.NvoEnvioFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiqCajaFragment;
 import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
+import com.example.comprasmu.ui.gasto.NvoGastoFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 
@@ -66,6 +68,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try{
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_nuevo_infetapa);
         // get fragment manager
         myChildToolbar =
@@ -114,22 +117,22 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
                     //busco la pregunta actual en la decripcion
                     char preg = det.getDescripcion().charAt(det.getDescripcion().length() - 1);
-                   int x= Character.getNumericValue(preg);
-                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,x);
-                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
-                    bundle.putInt(NvaPreparacionFragment.ARG_INFORMEDET,det.getId() );
+                    int x = Character.getNumericValue(preg);
+                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT, x);
+                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI, true);
+                    bundle.putInt(NvaPreparacionFragment.ARG_INFORMEDET, det.getId());
 
-                    NvaPreparacionFragment frag=    new NvaPreparacionFragment();
-                     frag.setArguments(bundle);
-                    ft.add(R.id.continfeta_fragment,frag );
+                    NvaPreparacionFragment frag = new NvaPreparacionFragment();
+                    frag.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment, frag);
 
-                 }else{
-                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT,0);
-                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,true);
-                     //   bundle.putInt(NvaPreparacionFragment.ARG_INFORMEDET,det.getId() );
-                     NvaPreparacionFragment frag=new NvaPreparacionFragment();
-                     frag.setArguments(bundle);
-                     ft.add(R.id.continfeta_fragment,frag );
+                } else {
+                    bundle.putInt(NvaPreparacionFragment.ARG_PREGACT, 0);
+                    bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI, true);
+                    //   bundle.putInt(NvaPreparacionFragment.ARG_INFORMEDET,det.getId() );
+                    NvaPreparacionFragment frag = new NvaPreparacionFragment();
+                    frag.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment, frag);
 
                 }
             }
@@ -186,11 +189,24 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 ft.add(R.id.continfeta_fragment,nvofrag);
 
             }
+            if (etapa == 6) {
+                mBinding.row1.setVisibility(View.GONE);
+                Bundle args = new Bundle();
+                args.putInt(NvoGastoFragment.ARG_PREGACT,1 );
+                args.putBoolean(NvoGastoFragment.ARG_ESEDI,true);
+
+                args.putInt(NvoGastoFragment.ARG_INFORMESEL,idinformeSel);
+                NvoGastoFragment nvofrag = new NvoGastoFragment();
+                nvofrag.setArguments(args);
+                ft.add(R.id.continfeta_fragment,nvofrag);
+
+            }
+
             ft.commit();
         }else {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Bundle bundle=new Bundle();
-            if(isCor){
+            if(isCor){ //es  correccion
                 bundle.putInt(NuevoInfEtapaActivity.INFORMESEL, idinformeSel);
                 bundle.putInt(NuevoInfEtapaActivity.NUMFOTO, numfoto);
                 if(etapa==1) {
@@ -217,7 +233,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     NvaCorreccionEmpFragment frag = NvaCorreccionEmpFragment.newInstance();
                     frag.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment, frag);
-                }else if(etapa==5) {
+                }else if(etapa==5||etapa==6) {
                     NvaCorreccionEnvFragment frag = NvaCorreccionEnvFragment.newInstance();
                     frag.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment, frag);
@@ -254,10 +270,20 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 ft.add(R.id.continfeta_fragment, new NvoEnvioFragment());
 
 
+            }if (etapa == 6) {
+
+                ft.add(R.id.continfeta_fragment, new NvoGastoFragment());
+
+
             }
             ft.commit();
 
         }
+    }catch(Exception ex) {
+            ComprasLog flog=ComprasLog.getSingleton();
+            flog.grabarError("NuevoInfEtapaAct","oncreate etapa"+etapa,ex.getMessage());
+        }
+
     }
 
     @Override
@@ -312,6 +338,18 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
        this.actualizarAtributo2(ComprasUtils.indiceLetra(nvoInf.getIndice()));
         this.actualizarAtributo3("TOT. MUESTRAS:"+mues);
         this.actualizarAtributo4("TOT. CAJAS:"+cajas);
+    }
+
+    public void actualizarBarraGas() {
+
+        mBinding.rowetiq.setVisibility(View.VISIBLE);
+
+        mBinding.row1.setVisibility(View.GONE);
+        mBinding.row4.setVisibility(View.VISIBLE);
+        this.actualizarAtributo3(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
+
+        mBinding.row2.setVisibility(View.GONE);
+
     }
     //para acomodar barra de titulos de correcciones compras
     public void actualizarBarraCor(SolicitudCor sol,int constienda) {
@@ -610,6 +648,14 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             {
 
                 NvoEnvioFragment fragment = (NvoEnvioFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
+                fragment.atras();
+
+                return;
+
+            } else if (etapa == 6)//el regreso se maneja en el fragment
+            {
+
+                NvoGastoFragment fragment = (NvoGastoFragment) getSupportFragmentManager().findFragmentById(R.id.continfeta_fragment);
                 fragment.atras();
 
                 return;

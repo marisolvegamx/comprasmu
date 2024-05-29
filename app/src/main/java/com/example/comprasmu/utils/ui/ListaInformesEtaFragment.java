@@ -125,7 +125,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         //y de los informes correccion
         if(tipocons.equals("e")){
             // getActivity().getActionBar().setTitle("RESUMEN INFORMES");
-
+            if( ((AppCompatActivity) requireActivity()).getSupportActionBar()!=null)
              ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("RESUMEN INFORMES");
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             if(etapa==3)
@@ -257,7 +257,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     @Override
     public void onClickSubir(int informe, String tipo) {
-        if(NavigationDrawerActivity.isOnlineNet()) {
+        if(NavigationDrawerActivity.isOnlineNet(getContext())) {
             if(tipo.equals("e")) {
                 if(this.etapa==5) {
                     InformeEnvPaqEnv envio=npViewModel.prepararInformeEnvPaq(informe);
@@ -289,6 +289,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto2());
                 if(envio.getCorreccion().getRuta_foto3()!=null&&envio.getCorreccion().getRuta_foto3().length()>1)
                     subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto3());
+                if(envio.getCorreccion().getRuta_foto4()!=null&&envio.getCorreccion().getRuta_foto4().length()>1)
+                    subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto4());
 
 
             }else
@@ -306,6 +308,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto2());
                 if(envio.getCorreccion().getRuta_foto3()!=null&&envio.getCorreccion().getRuta_foto3().length()>1)
                     subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto3());
+                if(envio.getCorreccion().getRuta_foto4()!=null&&envio.getCorreccion().getRuta_foto4().length()>1)
+                    subirFotosCor(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto4());
 
 
             }

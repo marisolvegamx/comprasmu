@@ -99,7 +99,7 @@ public class SubirCorrEtiqCajaTask extends AsyncTask<String, Float, Integer> {
     }
     public void enviarReporte() {
         //reviso si tengo conexion
-        if(NavigationDrawerActivity.isOnlineNet()) {
+        if(NavigationDrawerActivity.isOnlineNet(context)) {
             PostInformeViewModel postviewModel = new PostInformeViewModel(context);
             postviewModel.sendCorreccionEC(this.envio);
 

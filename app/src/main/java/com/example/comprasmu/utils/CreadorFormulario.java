@@ -964,7 +964,7 @@ public class CreadorFormulario {
 
     }
 
-    class CurrencyTextWatcher implements TextWatcher {
+    public class CurrencyTextWatcher implements TextWatcher {
 
         boolean mEditing;
 

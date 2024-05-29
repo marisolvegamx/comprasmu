@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.comprasmu.EtiquetadoxCliente;
+import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -17,10 +18,12 @@ import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
+import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
@@ -225,6 +228,21 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         informe.setEstatus(1);
         informe.setEtapa(5);
         informe.setTotal_cajas(num_cajas);
+        informe.setCreatedAt(new Date());
+        informe.setCiudadNombre(ciudadNombre);
+        idNuevo=(int)infEtaRepository.insert(informe);
+        informe.setId(idNuevo);
+        this.nvoinforme=informe;
+        return idNuevo;
+
+    }
+
+    public int insertarGasto(String indice, int ciudadid,String ciudadNombre){
+        InformeEtapa informe=new InformeEtapa();
+        informe.setIndice(indice);
+        informe.setEstatusSync(0);
+        informe.setEtapa(6);
+        informe.setEstatus(1);
         informe.setCreatedAt(new Date());
         informe.setCiudadNombre(ciudadNombre);
         idNuevo=(int)infEtaRepository.insert(informe);
@@ -921,4 +939,6 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
         return infDetRepo.getUltimonocan(idinf,etapa);
     }
+
+
 }

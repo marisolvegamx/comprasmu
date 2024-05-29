@@ -134,7 +134,7 @@ public class HomeActivity extends AppCompatActivity {
                 etiq.setVisibility(View.VISIBLE);
                 emp.setVisibility(View.VISIBLE);
                 envio.setVisibility(View.VISIBLE);
-              //  gasto.setVisibility(View.VISIBLE);
+                gasto.setVisibility(View.VISIBLE);
             }
 
     }

@@ -185,4 +185,11 @@ public interface APIService {
             "Content-Type: application/json"
     })
     Call<PostResponse> saveInformeEnvio(@Body InformeEnvPaqEnv item);
+
+    @POST("infgasto/create")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> saveInformeGasto(@Body InformeGastoEnv item);
 }

@@ -37,7 +37,7 @@ public class ServiceGenerator {
                         .addConverterFactory(GsonConverterFactory.create());*/
 
        // Log.e("mi disp ",Build.PRODUCT);
-        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG1")){//pruebas y el lenovo
+        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
             //nam
            BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
            BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";
@@ -52,19 +52,11 @@ public class ServiceGenerator {
 
         OkHttpClient.Builder okbuilder=new OkHttpClient.Builder();
         OkHttpClient httpClient;
-        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG1")) {//pruebas y el lenovo
 
              httpClient = okbuilder
                     .readTimeout(90, TimeUnit.SECONDS)
                     .connectTimeout(15, TimeUnit.SECONDS)
                     .build();
-        }else{
-            httpClient = okbuilder
-                    .readTimeout(90, TimeUnit.SECONDS)
-                    .connectTimeout(15, TimeUnit.SECONDS)
-                    .connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS))
-                    .build();
-        }
 
 
 
