@@ -1366,7 +1366,7 @@ public class DetalleProductoPenFragment extends Fragment {
         }
         return true;
     }
-    // devuelve 1 cuando muestro solo un toat y sigo en la misma pantalla
+    // devuelve 1 cuando muestro solo un toast y sigo en la misma pantalla
     //devuelve 2 cuando falla los no permi o los repetidos
     public int validarCodigoProd(){
 
@@ -1399,7 +1399,7 @@ public class DetalleProductoPenFragment extends Fragment {
             if (!valdat.validarCodigonoPermPen(textoint.getText().toString(), codigonoper))
                 return 2;
 
-            if (dViewModel.productoSel.tipoMuestra != 3 || mViewModel.numMuestra > 1) //solo si no es bu
+            if (dViewModel.productoSel.tipoMuestra != 3 ) //solo si no es bu
                 if (this.buscarMuestraCodigoPeniafiel(fechacad))
                     return 2;
         }

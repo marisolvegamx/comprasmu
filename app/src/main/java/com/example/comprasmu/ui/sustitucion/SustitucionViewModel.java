@@ -60,10 +60,10 @@ public class SustitucionViewModel extends AndroidViewModel {
 
 
     public void cargarListas(int plantasel,int categoria,int cliente,int empaque, int tamanio, int numTienda, int productoorigId){
-      /*  if(cliente==7){
+       /* if(cliente==7){
             cargarListasJum(plantasel,categoria,empaque,tamanio,productoorigId);
         }else*/
-            listaSustitucion =repository.getByFiltros(categoria,"",0,0, cliente);
+        listaSustitucion =repository.getByFiltros(categoria,"",0,0, cliente);
         size = Transformations.map(listaSustitucion,res->{ return listaSustitucion.getValue().size();});
         empty = Transformations.map(listaSustitucion, res->{return listaSustitucion.getValue().isEmpty();});
     }
@@ -83,7 +83,9 @@ public class SustitucionViewModel extends AndroidViewModel {
         // if(numTienda>=5)
         MutableLiveData listaTemp=new MutableLiveData();
         List<Sustitucion> array=new ArrayList<>();
-        List<Sustitucion> listaProds =repository.getByFiltrosJumSim(categoria,"FRUTZZO",empaque ,tamanio,clienteSel, plantaSel,productoorigId);
+      //  List<Sustitucion> listaProds =repository.getByFiltrosJumSim(categoria,"FRUTZZO",empaque ,tamanio,clienteSel, plantaSel,productoorigId);
+        List<Sustitucion> listaProds =repository.getByFiltrosJumSim(categoria,"",0,0, clienteSel);
+
         Log.d(TAG,"encontre "+listaProds.size());
         for (Sustitucion producto:
                 listaProds) {
@@ -91,7 +93,7 @@ public class SustitucionViewModel extends AndroidViewModel {
                 array.add(producto);
 
         }
-        Log.d(TAG,"quedaron"+array.size());
+   /*     Log.d(TAG,"quedaron"+array.size());
         //agrego los frutzo porque esto si se pueden volver a comprar
         List<Sustitucion> listafrut=repository.getByFiltrosFrut(categoria,"FRUTZZO", productoorigId, tamanio,empaque);
         array.addAll(listafrut);
@@ -99,7 +101,7 @@ public class SustitucionViewModel extends AndroidViewModel {
             List<Sustitucion> listakermato =repository.getByFiltrosKerm(categoria,"KERMATO", productoorigId,tamanio,empaque);
             array.addAll(listakermato);
         }
-        listaTemp.setValue(array);
+        listaTemp.setValue(array);*/
         listaSustitucion=listaTemp;
         // else
         //   listaSustitucion =repository.getByFiltros(categoria,"",empaque,tamanio);

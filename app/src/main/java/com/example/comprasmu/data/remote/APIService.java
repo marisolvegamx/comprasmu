@@ -10,6 +10,7 @@ import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.ui.envio.DocumentosEnvio;
+import com.example.comprasmu.ui.gasto.TotalMuestra;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -192,4 +193,7 @@ public interface APIService {
             "Content-Type: application/json"
     })
     Call<PostResponse> saveInformeGasto(@Body InformeGastoEnv item);
+
+    @GET("totmuestras")
+    Call<List<TotalMuestra>> getTotalMuestras(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("ciudad") String ciudad);
 }

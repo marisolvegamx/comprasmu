@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.comprasmu.EtiquetadoxCliente;
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.InformeGastoDetDao_Impl;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DetalleCaja;
@@ -116,20 +117,20 @@ public class NvoGastoViewModel extends AndroidViewModel {
 
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
-        envio.setInformeGastoDet(this.getInformeDet(idNuevo));
+        envio.setInformeGastoDet(this.getGastoDetalles(idNuevo));
         List<ImagenDetalle> imagenes=this.buscarImagenes(envio.getInformeGastoDet());
 
         envio.setImagenDetalles(imagenes);
         return envio;
     }
-    public List<InformeGastoDet> getInformeDet(int id){
+    public List<InformeGastoDet> getGastoDetalles(int id){
         return gasdetrepo.getAllSencillo(id);
     }
     public float calcularTotal(int idNuevo) {
 
 
         float total=0;
-        for(InformeGastoDet detalle:this.getInformeDet(idNuevo)){
+        for(InformeGastoDet detalle:this.getGastoDetalles(idNuevo)){
 
             try {
                 total =total+ detalle.getImporte();
@@ -149,8 +150,10 @@ public class NvoGastoViewModel extends AndroidViewModel {
             int fotoid=0;
             try {
                 fotoid = detalle.getFotocomprob();
-                ImagenDetalle imagen=imagenDetRepository.findsimple(fotoid);
-                imagenes.add(imagen);
+                if(fotoid>0) {
+                    ImagenDetalle imagen = imagenDetRepository.findsimple(fotoid);
+                    imagenes.add(imagen);
+                }
             }catch(NumberFormatException ex){
                 compraslog.grabarError(TAG+" "+ex.getMessage());
             }
@@ -159,4 +162,12 @@ public class NvoGastoViewModel extends AndroidViewModel {
         }
         return  imagenes;
     }
+
+    public void getTotalMuestras(String ciudadInf, NvoGastoFragment.ListenerM listenerM){
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        ps.getTotalMuestras(Constantes.INDICEACTUAL,ciudadInf,listenerM);
+
+    }
+
+
 }

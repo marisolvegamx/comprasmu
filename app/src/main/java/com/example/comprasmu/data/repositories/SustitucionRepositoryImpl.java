@@ -97,16 +97,19 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
         return dao.getByFiltrosSimp(sqlquery);
     }
 
-    public List<Sustitucion> getByFiltrosJumSim(int categoria, String productoNombre, int empaque,int tamanio,int clienteId, int plantaId , int productoorigId) {
+    public List<Sustitucion> getByFiltrosJumSim(int categoria, String productoNombre, int empaque,int tamanio, int clienteId ) {
 
-        String query="Select * from sustitucion where 1=1 and su_producto||'.'||su_tamanio||'.'||su_tipoempaque<>'"+productoorigId+"."+tamanio+"."+empaque+"'";
+        String query="Select * from sustitucion where 1=1";
         ArrayList<String> filtros=new ArrayList<String>();
 
         if(categoria>0) {
             query =query+ " and categoriasId=?";
             filtros.add(categoria+"");
         }
-
+        if(productoNombre!=null&&!productoNombre.equals("")) {
+            query = query + " and nomproducto=?";
+            filtros.add(productoNombre);
+        }
         if(empaque>0) {
             query = query + " and su_tipoempaque=?";
             filtros.add(empaque+"");
@@ -119,15 +122,14 @@ public class SustitucionRepositoryImpl  extends BaseRepository<Sustitucion> {
             query = query + " and clientesId=?";
             filtros.add(clienteId+"");
         }
-        if(plantaId>0) {
-            query = query + " and plantasId=?";
-            filtros.add(plantaId+"");
-        }
+
+        // Object[] params=filtros.toArray();
+        Log.d("query",query+" "+filtros.toString()+"");
+
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
         );
-        Log.d("SUsTREPOIMP",categoria+"--"+ productoNombre+"--"+empaque+"--"+tamanio+"--"+ clienteId+"--"+plantaId);
-        Log.d("SUsTREPOIMP",query);
+
         return dao.getByFiltrosSimp(sqlquery);
     }
 

@@ -1,20 +1,11 @@
 package com.example.comprasmu.ui.informedetalle;
 
-import static android.app.Activity.RESULT_OK;
 
 import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -24,63 +15,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.SubirInformeTask;
-import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeTemp;
-import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Reactivo;
-import com.example.comprasmu.data.remote.InformeEnvio;
-import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
-import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
-import com.example.comprasmu.ui.listacompras.SelClienteFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
-import com.example.comprasmu.utils.CampoForm;
-import com.example.comprasmu.utils.ComprasLog;
-import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.Preguntasino;
-import com.example.comprasmu.utils.RPResultListener;
-import com.example.comprasmu.utils.RuntimePermissionUtil;
 import com.example.comprasmu.utils.ui.LoadingDialog;
-import com.example.comprasmu.utils.micamara.MiCamaraActivity;
-import java.io.File;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+
 
 public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
     protected static final String TAG="DETALLEPRODUCTOJUMFRAG";
@@ -864,11 +824,11 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                     return 1;
                 }
             }
-
+            //comprao con los comprados en indice anterior
             if (!valdat.validarCodigonoPermPen(textoint.getText().toString(), codigonoper))
                 return 2;
 
-            if (dViewModel.productoSel.tipoMuestra != 3 || mViewModel.numMuestra > 1) //solo si no es bu
+            if (dViewModel.productoSel.tipoMuestra != 3 ) //solo si no es bu
                 if (this.buscarMuestraCodigoPeniafiel(fechacad))
                     return 2;
         }

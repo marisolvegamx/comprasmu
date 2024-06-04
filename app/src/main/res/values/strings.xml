@@ -365,5 +365,9 @@
     <string name="total_validar">TOTAL A VALIDAR</string>
     <string name="menu_revrecibo">Revisa recibo</string>
     <string name="realizo_otro">¿REALIZO OTRO GASTO?</string>
+    <string name="costo_m">COSTO</string>
+    <string name="num_muestras">N. MUESTRAS</string>
+    <string name="costogas">COSTO</string>
+    <string name="concepto">CONCEPTO</string>
 
 </resources>

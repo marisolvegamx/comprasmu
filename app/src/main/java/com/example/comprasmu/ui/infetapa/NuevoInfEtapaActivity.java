@@ -192,7 +192,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             if (etapa == 6) {
                 mBinding.row1.setVisibility(View.GONE);
                 Bundle args = new Bundle();
-                args.putInt(NvoGastoFragment.ARG_PREGACT,1 );
+
                 args.putBoolean(NvoGastoFragment.ARG_ESEDI,true);
 
                 args.putInt(NvoGastoFragment.ARG_INFORMESEL,idinformeSel);
@@ -340,15 +340,15 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         this.actualizarAtributo4("TOT. CAJAS:"+cajas);
     }
 
-    public void actualizarBarraGas() {
+    public void actualizarBarraGas(String ciudad) {
 
-        mBinding.rowetiq.setVisibility(View.VISIBLE);
+        mBinding.rowetiq.setVisibility(View.GONE);
 
         mBinding.row1.setVisibility(View.GONE);
-        mBinding.row4.setVisibility(View.VISIBLE);
-        this.actualizarAtributo3(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
-
         mBinding.row2.setVisibility(View.GONE);
+        mBinding.row3.setVisibility(View.VISIBLE);
+        this.actualizarAtributo1(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
+        this.actualizarAtributo2(ciudad);
 
     }
     //para acomodar barra de titulos de correcciones compras
@@ -681,7 +681,11 @@ public void cambiarTitulo(String titulo){
 
                         noSalir=true;
                     }
+                if(etapa==6)
+                    if(dViewModel.preguntaAct>2&&dViewModel.preguntaAct<8) {
 
+                        noSalir=true;
+                    }
 
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
                 dialogo1.setTitle(R.string.importante);

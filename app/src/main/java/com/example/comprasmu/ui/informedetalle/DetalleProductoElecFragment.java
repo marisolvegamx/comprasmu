@@ -925,7 +925,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             if (!valdat.validarCodigonoPermPen(textoint.getText().toString(), codigonoper))
                 return 2;
 
-            if (dViewModel.productoSel.tipoMuestra != 3 || mViewModel.numMuestra > 1) //solo si no es bu
+            if (dViewModel.productoSel.tipoMuestra != 3) //solo si no es bu
                 if(this.buscarMuestraCodigoElec(fechacad))
                     return 2;
         }

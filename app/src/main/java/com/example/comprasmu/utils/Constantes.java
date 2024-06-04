@@ -18,6 +18,7 @@ public class Constantes {
 
     public static final String TAG = "Comprasmu";
     public static final int REQUEST_CHECK_SETTINGS =0 ;
+    public static String SIMBOLOMON="$" ; //todo falta definirlo al inicio
     public static String INDICEACTUAL; //esta en la forma m-yyyyy
     public static int PLANTASEL;
     public static int CIUDADSEL;

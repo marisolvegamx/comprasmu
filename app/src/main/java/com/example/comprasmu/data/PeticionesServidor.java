@@ -41,6 +41,9 @@ import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.envio.DescargarFragment;
 import com.example.comprasmu.ui.envio.DocumentosEnvio;
+import com.example.comprasmu.ui.gasto.NvoGastoFragment;
+import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
+import com.example.comprasmu.ui.gasto.TotalMuestra;
 import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
@@ -768,7 +771,7 @@ public class PeticionesServidor {
                     stListener.actualizar(true);
 
                 }else
-                    Log.e("PeticionesServidor", "algo salio mal en peticion catalogo");
+                    Log.e("PeticionesServidor", "algo salio mal en peticion getCatalogosPrueb");
 
             }
 
@@ -953,6 +956,32 @@ public class PeticionesServidor {
                 if (t != null) {
                     Log.e(Constantes.TAG, t.getMessage());
                     petsocor.mostrarBotones(null);
+                }
+            }
+        });
+    }
+
+
+    public void getTotalMuestras(String indiceactual, String ciudadInf, NvoGastoFragment.ListenerM listener) {
+        final Call<List<TotalMuestra>> batch = ServiceGenerator.getApiService().getTotalMuestras(indiceactual,usuario,ciudadInf);
+
+        batch.enqueue(new Callback<List<TotalMuestra>>() {
+            @Override
+            public void onResponse(@Nullable Call<List<TotalMuestra>> call, @Nullable Response<List<TotalMuestra>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<TotalMuestra> respuestaCats = response.body();
+                   listener.guardarRes(respuestaCats);
+
+                }else
+                    Log.e("PeticionesServidor", "algo salio mal en peticion getTotalMuestras");
+
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<List<TotalMuestra>> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio getTotalMuestras"+t.getMessage());
+                    listener.guardarRes(null);
                 }
             }
         });

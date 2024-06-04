@@ -537,6 +537,7 @@ public class PostInformeViewModel {
 
     public  void sendInformeGasto(InformeGastoEnv informeEnvio) {
         Log.d("sendInformeGasto", informeEnvio.toJson(informeEnvio));
+
         ServiceGenerator.getApiService().saveInformeGasto(informeEnvio).enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {

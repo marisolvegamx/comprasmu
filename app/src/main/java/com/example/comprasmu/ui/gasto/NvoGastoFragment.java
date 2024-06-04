@@ -16,6 +16,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +73,7 @@ import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.CurrencyTextWatcher;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import com.example.comprasmu.utils.ui.DatePickerFragment;
+import com.google.common.collect.Table;
 
 import java.io.File;
 import java.text.ParseException;
@@ -95,7 +99,7 @@ public class NvoGastoFragment extends Fragment {
     private NvaPreparacionViewModel mViewModel;
     private int  informeSel;
     private String ciudadInf;
-
+    ComprasLog compraslog;
     private ListaDetalleViewModel lcViewModel;
 
     List<ListaCompra> listacomp;
@@ -106,7 +110,7 @@ public class NvoGastoFragment extends Fragment {
 
     private FragmentNvogastoBinding mBinding;
     private boolean isEdicion;
-
+    List<CatalogoDetalle> conceptos;
     InformeEtapa informeEdit;
     InformeGastoDet detalleEdit;
     int totalgastos;
@@ -162,7 +166,7 @@ public class NvoGastoFragment extends Fragment {
             aceptar6 = root.findViewById(R.id.btngasacepcomp);
             aceptar7 = root.findViewById(R.id.btngasacepfoto);
             guardar = root.findViewById(R.id.btnnvguardar);
-
+            compraslog=ComprasLog.getSingleton();
             btnrotar = root.findViewById(R.id.btngasrotar);
 
             btntomarf = root.findViewById(R.id.btngasfoto);
@@ -194,11 +198,12 @@ public class NvoGastoFragment extends Fragment {
 
                 this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
             }
-
+            this.buscarTotalesMuestra();
             totalgastos=totalotros=0;
             totalval=0;
             //deshabilito botones de aceptar
             aceptar1.setEnabled(true); //resumen
+
             aceptar2.setEnabled(false);//pregunta gasto
             aceptar3.setEnabled(true); //concepto
             aceptar4.setEnabled(false);//descripcion
@@ -268,14 +273,14 @@ public class NvoGastoFragment extends Fragment {
             }
             milog.grabarError(TAG + " iniciando nvo informe gastos");
 
-            ((NuevoInfEtapaActivity) getActivity()).actualizarBarraGas();
+            ((NuevoInfEtapaActivity) getActivity()).actualizarBarraGas(ciudadInf);
 
             if (isEdicion) { //busco el informe
 
                 //busco el informe y el detalle
                 mViewModel.setIdNuevo(informeSel);
 
-              //  editarInforme();
+                editarInforme();
             }
 
             aceptar1.setOnClickListener(new View.OnClickListener() {
@@ -321,7 +326,7 @@ public class NvoGastoFragment extends Fragment {
                     if(mBinding.sincomprobante.getRespuesta()){
                         avanzar();
                     }else
-                    guardarDet();
+                       guardarDet();
 
                 }
             });
@@ -343,7 +348,7 @@ public class NvoGastoFragment extends Fragment {
             btnrotar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    rotar(mBinding.txtgasfoto.getId());
+                    rotar(mBinding.txtgasrutafoto.getId());
                 }
             });
 
@@ -363,6 +368,47 @@ public class NvoGastoFragment extends Fragment {
         return root;
     }
 
+    public void buscarTotalesMuestra(){
+        //voy al servidor por ellos
+        niviewModel.getTotalMuestras(ciudadInf,new ListenerM());
+    }
+    public void llenarTabla(List<TotalMuestra> totales){
+        TableRow tableRow;
+        TextView cliente;
+        TextView numuestra;
+        TextView costo;
+        float sumacosto=0;
+        int sumamuestras=0;
+        for (TotalMuestra detalle:totales
+             ) {
+             tableRow=new TableRow(getContext());
+            cliente=new TextView(getContext());
+           numuestra=new TextView(getContext());
+           costo=new TextView(getContext());
+            tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+            cliente.setText(detalle.getCliente());
+            cliente.setBackgroundResource(R.drawable.valuecellborder);
+           numuestra.setText(detalle.getNum_muestras()+"");
+            numuestra.setBackgroundResource(R.drawable.valuecellborder);
+           costo.setText(Constantes.SIMBOLOMON+""+detalle.getCosto());
+            costo.setBackgroundResource(R.drawable.valuecellborder);
+            tableRow.addView(cliente);
+            tableRow.addView(numuestra);
+            tableRow.addView(costo);
+            mBinding.tblnimuestras.addView(tableRow);
+            sumacosto+=detalle.getCosto();
+            sumamuestras+=detalle.getNum_muestras();
+        }
+         tableRow=null;
+         cliente=null;
+         numuestra=null;
+         costo=null;
+         mBinding.txtgatotnum.setText(sumamuestras);
+         mBinding.txtgastotmue.setText(Constantes.SIMBOLOMON+sumacosto);
+        aceptar1.setEnabled(true); //resumen
+    }
 
         public void avanzar() {
             Log.d(TAG, "++" + preguntaAct);
@@ -389,21 +435,37 @@ public class NvoGastoFragment extends Fragment {
                 case 2: //concepto
                     llpreg1.setVisibility(View.GONE);
                     if(mBinding.singasto.getRespuesta()) {
+                        //reviso los conceptos que ya están utilizados
+
+                        List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
+                        for (int i=0;i<conceptos.size();i++
+                             ){
+                            for (InformeGastoDet det:
+                                 detalles) {
+
+                                if (conceptos.get(i).getCad_idopcion() == det.getConceptoId())
+                                    conceptos.remove(i);
+                            }
+                        }
                             llconce.setVisibility(View.VISIBLE);
                             preguntaAct = preguntaAct + 1;
                     }else
                     {
                         //nos vamos a comentarios
                         preguntaAct=8;
-                        //todo calcular total
-
-                        mBinding.txtgastotal.setText("$"+niviewModel.calcularTotal(informeSel));
+                        mBinding.txtgaconceptosel.setText("");
+                        // calcular total
+                        llenarTablaConcep();
                         llcomentarios.setVisibility(View.VISIBLE);
                     }
                     break;
                 case 3: //descripcion
                     llconce.setVisibility(View.GONE);
                     lldescripcion.setVisibility(View.VISIBLE);
+                    //busco el concepto seleccionado
+                    CatalogoDetalle sel=(CatalogoDetalle) mBinding.spgasconcep.getSelectedItem();
+
+                    mBinding.txtgaconceptosel.setText(sel.getCad_descripcionesp());
                     preguntaAct = preguntaAct + 1;
 
                     break;
@@ -411,6 +473,12 @@ public class NvoGastoFragment extends Fragment {
                     lldescripcion.setVisibility(View.GONE);
                     llcosto.setVisibility(View.VISIBLE);
 
+                    try {
+                        String conceptosel = ((CatalogoDetalle) mBinding.spgasconcep.getSelectedItem()).getCad_descripcionesp();
+                        mBinding.txtgascosto.setText("COSTO " +conceptosel);
+                    }catch(Exception ex){
+
+                    }
                     preguntaAct = preguntaAct + 1;
 
                     break;
@@ -431,7 +499,7 @@ public class NvoGastoFragment extends Fragment {
                     else {
                         llpreg1.setVisibility(View.VISIBLE);
                         //todo limpio variables
-                        limpiarFrom();
+                        limpiarForm();
                         preguntaAct = 2;
                     }
 
@@ -444,7 +512,7 @@ public class NvoGastoFragment extends Fragment {
                     preguntaAct=2;
                     llpreg1.setVisibility(View.VISIBLE);
                     //todo limpio variables
-                    limpiarFrom();
+                    limpiarForm();
                     break;
 
 
@@ -455,7 +523,7 @@ public class NvoGastoFragment extends Fragment {
 
 
 
-        public void limpiarFrom() {
+        public void limpiarForm() {
             mBinding.singasto.clearCheck();
 
             mBinding.sincomprobante.clearCheck();
@@ -474,7 +542,7 @@ public class NvoGastoFragment extends Fragment {
 
 
             mBinding.spgasconcep.setSelection(0);
-            mBinding.txtgasfoto.setText("");
+            mBinding.txtgasrutafoto.setText("");
           fotomos.setImageBitmap(null);
             btnrotar.setVisibility(View.GONE);
           nombre_foto=null;
@@ -484,7 +552,7 @@ public class NvoGastoFragment extends Fragment {
         }
     public void getConceptos(){
         //  Log.d(TAG,"buscando atributos"+dViewModel.productoSel.empaque+"--"+dViewModel.productoSel.idempaque+"--"+dViewModel.productoSel.clienteSel);
-        List<CatalogoDetalle> conceptos=niviewModel.cargarConceptos();
+        conceptos=niviewModel.cargarConceptos();
         ArrayAdapter catAdapter = new ArrayAdapter<CatalogoDetalle>(getContext(), android.R.layout.simple_spinner_dropdown_item, conceptos) {
 
 
@@ -522,40 +590,112 @@ public class NvoGastoFragment extends Fragment {
 
         mBinding.spgasconcep.setAdapter(catAdapter);
     }
-     /*   public void editarInforme() {
-            svcli.setVisibility(View.GONE);
-            svrecibe.setVisibility(View.GONE);
-            svsello.setVisibility(View.GONE);
-            svcoment.setVisibility(View.GONE);
-            svfecha.setVisibility(View.VISIBLE);
-            //  txtcajaact.setVisibility(View.VISIBLE);
-            preguntaAct = 2;
+    public void llenarTablaConcep(){
+        TableRow tableRow;
+
+        TextView concepto;
+        TextView costo;
+        float sumacosto=0;
+     //busco lo capturado
+        List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(mViewModel.getIdNuevo());
+        for (InformeGastoDet detalle:detalles
+        ) {
+            tableRow=new TableRow(getContext());
+
+            concepto=new TextView(getContext());
+            costo=new TextView(getContext());
+            tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+
+            concepto.setText(detalle.getConcepto()+"");
+            concepto.setBackgroundResource(R.drawable.valuecellborder);
+            costo.setText(Constantes.SIMBOLOMON+""+detalle.getImporte());
+            costo.setBackgroundResource(R.drawable.valuecellborder);
+            concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+            costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+            tableRow.addView(concepto);
+            tableRow.addView(costo);
+            mBinding.tblgaresconcep.addView(tableRow);
+            try {
+                sumacosto =sumacosto+ detalle.getImporte();
+
+            }catch(NumberFormatException ex){
+                compraslog.grabarError(TAG+" "+ex.getMessage());
+            }
+
+
+        }
+
+        tableRow=new TableRow(getContext());
+
+        concepto=new TextView(getContext());
+        costo=new TextView(getContext());
+        tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        concepto.setText("TOTAL A VALIDAR");
+       costo.setText(Constantes.SIMBOLOMON+sumacosto);
+        concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+        costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+        tableRow.addView(concepto);
+        tableRow.addView(costo);
+        mBinding.tblgaresconcep.addView(tableRow);
+
+        tableRow=null;
+        concepto=null;
+
+        costo=null;
+    }
+    public void editarInforme() {
+
+
             ImagenDetalle foto;
+            //para saber si ya tego detalle
+            List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
+
+            if(detalles!=null&&detalles.size()>0) //ya tengo algo
+            {
+                totalgastos= detalles.size();
+                //muestro el ultimo
+                detalleEdit=null;
+                totalval=niviewModel.calcularTotal(informeSel);
+                preguntaAct=2;
+                llpreg1.setVisibility(View.VISIBLE);
+            }else
+                //solo hice informe
+            {
+                preguntaAct = 1;
+                llresumen.setVisibility(View.VISIBLE);
+            }
             mViewModel.preguntaAct = preguntaAct;
-            if (informeEdit != null&&informeEdit.infEnvioDet!=null) {
+            if (detalleEdit!=null) {
                 //busco en la bd la imagen
-                if(informeEdit.infEnvioDet.getFotoSello()!=null) {
-                    foto = mViewModel.getFoto(informeEdit.infEnvioDet.getFotoSello());
-                    txtfotosello.setText(foto.getRuta());
+                if(detalleEdit.getFotocomprob()>0) {
+                    foto = mViewModel.getFoto(detalleEdit.getFotocomprob());
+                    mBinding.txtgasrutafoto.setText(foto.getRuta());
+                    mBinding.sincomprobante.setSi(true);
                     Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 80, 80);
                     fotomos.setImageBitmap(bitmap1);
                     fotomos.setVisibility(View.VISIBLE);
                     btnrotar.setVisibility(View.VISIBLE);
-                    aceptar3.setEnabled(true);
-                }
-                txtfechaent.setText(Constantes.sdfsolofecha.format(informeEdit.infEnvioDet.getFechaEnvio()));
-                if(informeEdit.infEnvioDet.getNombreRecibe()!=null&&!informeEdit.infEnvioDet.getNombreRecibe().equals("")) {
-                    txtnombrerec.setText(informeEdit.infEnvioDet.getNombreRecibe());
-                    aceptar4.setEnabled(true);
-                }
-               // contmuestra = detalleEdit.getNum_muestra();
-                aceptar2.setEnabled(true);
-                if(informeEdit.informeEtapa.getComentarios()!=null&&!informeEdit.informeEtapa.getComentarios().equals("")){
-                    txtcoment.setText(informeEdit.informeEtapa.getComentarios());
-                }
+                    aceptar7.setEnabled(true);
+                }else
+                    mBinding.sincomprobante.setNo(true);
+                //lleno campos
+                mBinding.spgasconcep.setSelection(detalleEdit.getConceptoId());
+                aceptar3.setEnabled(true);
+
+                mBinding.txtgasdescrip.setText(detalleEdit.getDescripcion());
+                aceptar4.setEnabled(true);
+                mBinding.txtgascosto.setText(detalleEdit.getImporte()+"");
+                aceptar5.setEnabled(true);
+                aceptar6.setEnabled(true);
+
             }
 
-        }*/
+        }
 
 
 
@@ -689,14 +829,14 @@ public class NvoGastoFragment extends Fragment {
                 boolean tienecom=false;
                 if(mBinding.sincomprobante.getRespuesta()) {
                     tienecom = true;
-                    rutafoto = mBinding.txtgasfoto.getText().toString();
+                    rutafoto = mBinding.txtgasrutafoto.getText().toString();
                 }
 
                 Log.d(TAG,"preg act "+preguntaAct);
                 //es un nuevo registro
 
 
-                    if(detalleEdit==null) { //es 1a vez
+                if(detalleEdit==null) { //es 1a vez
 
                         InformeGastoDet nvoDet = new InformeGastoDet();
                         nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
@@ -729,7 +869,7 @@ public class NvoGastoFragment extends Fragment {
                             niviewModel.insertarGastoDet(nvoDet);
                         totalgastos++;
                         }
-                    else {
+                else {
 
                         //busco si ya tiene detalle
 
@@ -760,9 +900,8 @@ public class NvoGastoFragment extends Fragment {
 
                         //es actualizacion
                         niviewModel.actualizarDet(detalleEdit);
-                    }
-
-
+                }
+                mBinding.txtgaconceptosel.setText("");
                 avanzar();
             }catch (Exception ex){
                 ex.printStackTrace();
@@ -850,7 +989,7 @@ public class NvoGastoFragment extends Fragment {
                 if (archivofoto!=null&&archivofoto.exists()) {
                     if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
 
-                        mostrarFoto(mBinding.txtgasfoto,fotomos,btnrotar);
+                        mostrarFoto(mBinding.txtgasrutafoto,fotomos,btnrotar);
                         mBinding.btngasacepfoto.setEnabled(true);
                     }
 
@@ -984,6 +1123,20 @@ public class NvoGastoFragment extends Fragment {
             activity.startService(msgIntent);
 
         }
+
+    }
+    public class ListenerM{
+        //todo
+        public void guardarRes(List<TotalMuestra> respuesta){
+            //acomodo en la tabla
+            if(respuesta!=null) {
+                llenarTabla(respuesta);
+                mBinding.txtgaalgunerror.setText("");
+            }
+            else
+                mBinding.txtgaalgunerror.setText("No se pudo obtener la información del servidor");
+        }
+
 
     }
 
