@@ -3,6 +3,7 @@ package com.example.comprasmu.ui.gasto;
 //clase para consultar en el servisor los totales de muestra para gastos
 public class TotalMuestra {
    private String cliente;
+   private int clientesId;
     private int num_muestras;
     private float costo;
 
@@ -28,5 +29,13 @@ public class TotalMuestra {
 
     public void setCosto(float costo) {
         this.costo = costo;
+    }
+
+    public int getClientesId() {
+        return clientesId;
+    }
+
+    public void setClientesId(int clientesId) {
+        this.clientesId = clientesId;
     }
 }
