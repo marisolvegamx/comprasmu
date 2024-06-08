@@ -29,6 +29,7 @@ import com.example.comprasmu.ui.correccion.NvaCorrecCalCajaFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionEnvFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionEtiqFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionFragment;
+import com.example.comprasmu.ui.correccion.NvaCorreccionGasFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionPreFragment;
 import com.example.comprasmu.ui.correccion.NvaCorreccionEmpFragment;
 import com.example.comprasmu.ui.empaque.NvoEmpaqueFragment;
@@ -97,7 +98,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         // if(Constantes.NM_TOTALISTA>=16)
         loadData();
 
-        Log.d(TAG,"WWWWWW"+isEdicion+"++"+idinformeSel+"--"+etapa);
+        Log.d(TAG,"WWWWWW"+isEdicion+"++"+idinformeSel+"--"+etapa+"--"+isCor);
 
         if(isEdicion) //es edicion
         {
@@ -233,8 +234,12 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     NvaCorreccionEmpFragment frag = NvaCorreccionEmpFragment.newInstance();
                     frag.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment, frag);
-                }else if(etapa==5||etapa==6) {
+                }else if(etapa==5) {
                     NvaCorreccionEnvFragment frag = NvaCorreccionEnvFragment.newInstance();
+                    frag.setArguments(bundle);
+                    ft.add(R.id.continfeta_fragment, frag);
+                }else if(etapa==6) {
+                    NvaCorreccionGasFragment frag = NvaCorreccionGasFragment.newInstance();
                     frag.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment, frag);
                 }else
@@ -270,7 +275,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                 ft.add(R.id.continfeta_fragment, new NvoEnvioFragment());
 
 
-            }if (etapa == 6) {
+            }else if (etapa == 6) {
 
                 ft.add(R.id.continfeta_fragment, new NvoGastoFragment());
 

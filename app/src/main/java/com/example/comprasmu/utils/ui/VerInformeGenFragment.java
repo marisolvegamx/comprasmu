@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +26,7 @@ import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 
 import com.example.comprasmu.databinding.VerInformegenFragmentBinding;
@@ -30,14 +34,17 @@ import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
+import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
 import com.example.comprasmu.utils.CampoForm;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +67,7 @@ public class VerInformeGenFragment extends Fragment {
     String tipo;
     String textoboton;
     int numfoto;
-
+    ComprasLog milog;
 
     public static VerInformeGenFragment newInstance() {
         return new VerInformeGenFragment();
@@ -76,6 +83,7 @@ public class VerInformeGenFragment extends Fragment {
         mBinding.setLifecycleOwner(this);
         mViewModel = new ViewModelProvider(this).get(InformesGenViewModel.class);
         corViewModel=new ViewModelProvider(this).get(NvaCorreViewModel.class);
+        milog = ComprasLog.getSingleton();
         return mBinding.getRoot();
     }
 
@@ -95,7 +103,7 @@ public class VerInformeGenFragment extends Fragment {
     }
 
     public void llenarDetalle() {
-        if(Constantes.ETAPAACTUAL==1||Constantes.ETAPAACTUAL==4){
+        if(Constantes.ETAPAACTUAL==1||Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==6){
            textoboton= getString(R.string.ver_fotos);
         }
         if(Constantes.ETAPAACTUAL==3){
@@ -177,7 +185,7 @@ public class VerInformeGenFragment extends Fragment {
             }
 
         }
-        else
+        else    //para ver informes etapa
             mViewModel.getInforme(informeSel,Constantes.INDICEACTUAL).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
                 @Override
                 public void onChanged(InformeEtapa informeEtapax) {
@@ -416,15 +424,15 @@ public class VerInformeGenFragment extends Fragment {
         campo.type = "label";
         campo.value = informeEtapa.getConsecutivo()+"";
         camposTienda.add(campo);*/
+        if(Constantes.ETAPAACTUAL<6) {
+            campo = new CampoForm();
+            campo.label = getString(R.string.cliente);
+            campo.style = R.style.verinforme2;
+            campo.type = "label";
+            campo.value = informeEtapa.getClienteNombre();
 
-        campo = new CampoForm();
-        campo.label = getString(R.string.cliente);
-        campo.style = R.style.verinforme2;
-        campo.type = "label";
-        campo.value = informeEtapa.getClienteNombre();
-
-        camposTienda.add(campo);
-
+            camposTienda.add(campo);
+        }
         campo = new CampoForm();
         campo.style = R.style.verinforme2;
         if(Constantes.ETAPAACTUAL>2){
@@ -502,7 +510,7 @@ public class VerInformeGenFragment extends Fragment {
             case 3:
                 campo.value = informeEtapa.getComentarios();
                 break;
-            case 4:
+            case 4:case 5:case 6:
                 campo.value=informeEtapa.getComentarios();
                 break;
 
@@ -523,7 +531,10 @@ public class VerInformeGenFragment extends Fragment {
 
         Log.d(TAG,"CAMPOS TOT"+camposTienda);
         cf1 = new CreadorFormulario(camposTienda, getActivity());
-
+        if(Constantes.ETAPAACTUAL==6){
+            llenarTablaConcep(informeEtapa.getId());
+            mBinding.tblvigastos.setVisibility(View.VISIBLE);
+        }
     }
 
     public void verImagen(String nombrearch){
@@ -574,7 +585,78 @@ public class VerInformeGenFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
+    public void llenarTablaConcep(int infsel){
+        TableRow tableRow;
+        NvoGastoViewModel niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
 
+        TextView concepto;
+        TextView costo;
+        float sumacosto=0;
+        TableRow.LayoutParams lp;
+
+
+        lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+
+        //busco lo capturado
+        List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(infsel);
+        for (InformeGastoDet detalle:detalles
+        ) {
+            tableRow=new TableRow(getContext());
+
+
+            TextView tv1 = new TextView(getActivity());
+
+            concepto=new TextView(getContext());
+            costo=new TextView(getContext());
+            //  tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+            concepto.setLayoutParams(lp);
+            costo.setLayoutParams(lp);
+
+            concepto.setText(detalle.getConcepto()+"");
+            concepto.setBackgroundResource(R.drawable.valuecellborder);
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.##").format(detalle.getImporte()));
+            costo.setBackgroundResource(R.drawable.valuecellborder);
+            //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
+            //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
+
+            tableRow.addView(concepto);
+            tableRow.addView(costo);
+            mBinding.tblvigastos.addView(tableRow);
+            try {
+                sumacosto =sumacosto+ detalle.getImporte();
+
+            }catch(NumberFormatException ex){
+                milog.grabarError(TAG+" "+ex.getMessage());
+            }
+
+
+        }
+
+        tableRow=new TableRow(getContext());
+
+        concepto=new TextView(getContext());
+        costo=new TextView(getContext());
+
+        tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        costo.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setText("TOTAL A VALIDAR");
+        costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.##").format(sumacosto));
+        //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+        //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+        concepto.setLayoutParams(lp);
+        costo.setLayoutParams(lp);
+        tableRow.addView(concepto);
+        tableRow.addView(costo);
+        mBinding.tblvigastos.addView(tableRow);
+
+        //  tableRow=null;
+        //  concepto=null;
+
+        //  costo=null;
+    }
 
     @Override
     public void onDestroyView() {

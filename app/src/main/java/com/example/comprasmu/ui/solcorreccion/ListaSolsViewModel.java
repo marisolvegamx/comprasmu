@@ -5,7 +5,6 @@ import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -14,12 +13,14 @@ import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.MuestraCancelada;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
@@ -40,7 +41,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
     InfEtapaRepositoryImpl infetarepo;
     InformeCompraRepositoryImpl infrepo;
     InformeEnvioRepositoryImpl infenvrepo;
-
+    private final InfGastoDetRepositoryImpl gasdetrepo;
 
     public ListaSolsViewModel(Application application) {
         super(application);
@@ -50,6 +51,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         infrepo=new InformeCompraRepositoryImpl(application);
         infenvrepo=new InformeEnvioRepositoryImpl(application);
 
+        this.gasdetrepo = new InfGastoDetRepositoryImpl(application);
     }
 
     public LiveData<List<SolicitudCor>>  cargarDetalles(int etapa,String indiceSel, int estatus){
@@ -240,5 +242,8 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     public InformeEnvioPaq getInformeEnvSol(int informesId) {
         return infenvrepo.findInfsimple(informesId);
+    }
+    public List<InformeGastoDet> getGastoDetalles(int id){
+        return gasdetrepo.getAllSencillo(id);
     }
 }

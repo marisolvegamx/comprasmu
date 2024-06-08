@@ -24,6 +24,7 @@ import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
@@ -108,6 +109,11 @@ public class GalFotosFragment extends Fragment {
                       listafotos=igViewModel.getfotosxetapaxcaj(infsel,Constantes.ETAPAACTUAL,idmuestra);
 
                       startuiEta(idmuestra);
+                  }
+                  if(Constantes.ETAPAACTUAL==6){//gastos
+
+                      int infsel = params.getInt(VerInformeFragment.ARG_IDMUESTRA);
+                      startuiGasto(igViewModel.getfotosGasto(infsel));
                   }
               }else {
 
@@ -238,6 +244,52 @@ public class GalFotosFragment extends Fragment {
                         adapter.setmSpacePhotos(fotos);
                         adapter.notifyDataSetChanged();
                       //  recyclerView.setAdapter(adapter);
+
+
+
+
+            }
+        });
+
+        //   List<ImagenDetalle> lista=this.buscarImagenes(1,2,null);
+
+
+
+    }
+    public void startuiGasto(LiveData<List<InformeGastoDet>> listadet){
+
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,
+                false);
+        RecyclerView recyclerView = root.findViewById(R.id.rv_viimagenes);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+        ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext());
+
+        recyclerView.setAdapter(adapter);
+        //paso los detalle a imagenes
+
+        listadet.observe(getViewLifecycleOwner(), new Observer<List<InformeGastoDet>>() {
+            @Override
+            public void onChanged(List<InformeGastoDet> informeEtapaDets) {
+                Log.d(TAG,informeEtapaDets.size()+"--");
+                //paso todo a imagendet
+                fotos=new ArrayList<>();
+
+
+                for(InformeGastoDet inf:informeEtapaDets) {
+                    if (inf.isComprobante()) {
+                        ImagenDetalle id = igViewModel.getfotoxid(inf.getFotocomprob() + "");
+
+                        id.setDescripcion(inf.getConcepto() + "\r\nDescripción:" + inf.getDescripcion() + "\r\nCosto:" + inf.getImporte());
+
+                        fotos.add(id);
+                    }
+                    }
+                    //  ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext());
+                    adapter.setmSpacePhotos(fotos);
+                    adapter.notifyDataSetChanged();
+                    //  recyclerView.setAdapter(adapter);
 
 
 

@@ -43,6 +43,7 @@ import com.example.comprasmu.ui.envio.DescargarFragment;
 import com.example.comprasmu.ui.envio.DocumentosEnvio;
 import com.example.comprasmu.ui.gasto.NvoGastoFragment;
 import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
+import com.example.comprasmu.ui.gasto.RevReciboActivity;
 import com.example.comprasmu.ui.gasto.TotalMuestra;
 import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
@@ -987,4 +988,56 @@ public class PeticionesServidor {
         });
     }
 
+    public void acuseRecibo(String indiceactual, String ciudadInf,String comentarios,int resp, RevReciboActivity.ListenerRec listener) {
+        final Call<PostResponse> batch = ServiceGenerator.getApiService().acuseRecibo(indiceactual,usuario,ciudadInf,comentarios,resp+"");
+
+        batch.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    PostResponse respuestaCats = response.body();
+                    listener.guardarRes(respuestaCats);
+
+                }else {
+                    Log.e("PeticionesServidor", "algo salio mal en peticion getTotalMuestras");
+                    listener.guardarRes(null);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio getTotalMuestras"+t.getMessage());
+                    listener.guardarRes(null);
+                }
+            }
+        });
+    }
+
+    public void getEstatusRecibo(String indiceactual, String ciudadInf, RevReciboActivity.ListenerRec listener) {
+        final Call<PostResponse> batch = ServiceGenerator.getApiService().getEstatusRecibo(indiceactual,usuario,ciudadInf);
+
+        batch.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    PostResponse respuestaCats = response.body();
+                    listener.guardarEstatus(respuestaCats);
+
+                }else
+                    Log.e("PeticionesServidor", "algo salio mal en peticion getTotalMuestras");
+
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio getTotalMuestras"+t.getMessage());
+                    listener.guardarEstatus(null);
+                }
+            }
+        });
+    }
 }

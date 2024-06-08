@@ -196,4 +196,13 @@ public interface APIService {
 
     @GET("totmuestras")
     Call<List<TotalMuestra>> getTotalMuestras(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("ciudad") String ciudad);
+
+    @POST("acuseRecibo")
+    Call<PostResponse> acuseRecibo(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd, @Query("coment") String comentarios, @Query("resp") String resp);
+
+
+    @GET("reciboListo") //devuelve si si ya puedo no si no en data
+    Call<PostResponse> getEstatusRecibo(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
+
+
 }

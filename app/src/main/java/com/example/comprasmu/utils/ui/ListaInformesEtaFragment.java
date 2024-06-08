@@ -26,9 +26,11 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeEtaTask;
+import com.example.comprasmu.SubirInformeGastoTask;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
+import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
@@ -37,6 +39,7 @@ import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
+import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
 import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
 import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
@@ -129,7 +132,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
              ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("RESUMEN INFORMES");
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             if(etapa==3)
-            listainfs=mViewModel.cargarEtapaAll(etapa,indice);
+                listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             else
                 listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
@@ -264,6 +267,16 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     SubirInformeEnvTask miTareaAsincrona = new SubirInformeEnvTask(envio,getActivity());
                     miTareaAsincrona.execute();
                     subirFotosEnv(getActivity(),envio);
+                }else
+                if(this.etapa==6) {
+                    NvoGastoViewModel niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
+
+                    InformeGastoEnv envio=niviewModel.prepararInformeEnv(informe);
+
+                    SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity());
+                    miTareaAsincrona.execute();
+
+                    subirFotosGasto(getActivity(),envio);
                 }else {
                     InformeEtapaEnv informeEta = this.preparaInforme(informe);
 
@@ -408,11 +421,32 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             activity.startService(msgIntent);
             //cambio su estatus a subiendo
 
+        }
+
+    }
+
+    public static void subirFotosGasto(Activity activity, InformeGastoEnv informe){
+        //las imagenes
+        //busco la imagenes
+        for(ImagenDetalle imagen:informe.getImagenDetalles()){
+            //
+            //subo cada una
+            Intent msgIntent = new Intent(activity, SubirFotoService.class);
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
+            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+            // Constantes.INDICEACTUAL
+            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+
+            msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
+
+            //cambio su estatus a subiendo
+            imagen.setEstatusSync(1);
+            activity.startService(msgIntent);
+            //cambio su estatus a subiendo
 
 
         }
-
-
 
     }
 }

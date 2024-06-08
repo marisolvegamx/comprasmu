@@ -620,7 +620,7 @@
     </fragment>
 <!-- fin opciones envio-->
 
-    <!---opciones envio-->
+    <!---opciones gasto-->
     <activity
         android:id="@+id/nav_nvogasto"
         android:name="com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity"
@@ -652,7 +652,7 @@
         <argument
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
-            android:defaultValue="5" />
+            android:defaultValue="6" />
         <action android:id="@+id/action_selclitoinf1"
             app:destination="@id/nav_listacor2"
             app:enterAnim="@anim/nav_default_enter_anim"
@@ -662,13 +662,13 @@
 
 
     <fragment
-        android:id="@+id/nav_envdescargas"
+        android:id="@+id/nav_revrecibo"
         android:name="com.example.comprasmu.ui.envio.DescargarFragment"
-        android:label="@string/documentos" >
+        android:label="@string/menu_revrecibo" >
         <argument
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
-            android:defaultValue="5" />
+            android:defaultValue="6" />
         <action android:id="@+id/action_envtocdtrabajo"
             app:popUpTo="@+id/nav_ciudad_trabajo"
             app:popUpToInclusive="true"

@@ -76,6 +76,7 @@ import com.example.comprasmu.utils.ui.DatePickerFragment;
 import com.google.common.collect.Table;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -206,7 +207,7 @@ public class NvoGastoFragment extends Fragment {
 
             aceptar2.setEnabled(false);//pregunta gasto
             aceptar3.setEnabled(true); //concepto
-            aceptar4.setEnabled(false);//descripcion
+            aceptar4.setEnabled(true);//descripcion
             aceptar5.setEnabled(false); //costo
             aceptar6.setEnabled(false); //comprobante
             aceptar7.setEnabled(false); //foto
@@ -227,7 +228,7 @@ public class NvoGastoFragment extends Fragment {
             });
             mBinding.txtgascomentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
             mBinding.txtgasdescrip.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-            mBinding.txtgasdescrip.addTextChangedListener(new BotonTextWatcher(aceptar4));
+        //    mBinding.txtgasdescrip.addTextChangedListener(new BotonTextWatcher(aceptar4));
             mBinding.txtgascosto.addTextChangedListener(new BotonTextWatcher(aceptar5));
             mBinding.txtgascosto.setRawInputType(Configuration.KEYBOARD_12KEY);
             mBinding.txtgascosto.addTextChangedListener(new CurrencyTextWatcher());
@@ -385,14 +386,14 @@ public class NvoGastoFragment extends Fragment {
             cliente=new TextView(getContext());
            numuestra=new TextView(getContext());
            costo=new TextView(getContext());
-            tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+         //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
             tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
             cliente.setText(detalle.getCliente());
             cliente.setBackgroundResource(R.drawable.valuecellborder);
            numuestra.setText(detalle.getNum_muestras()+"");
             numuestra.setBackgroundResource(R.drawable.valuecellborder);
-           costo.setText(Constantes.SIMBOLOMON+""+detalle.getCosto());
+           costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.##").format(detalle.getCosto()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
             tableRow.addView(cliente);
             tableRow.addView(numuestra);
@@ -405,8 +406,21 @@ public class NvoGastoFragment extends Fragment {
          cliente=null;
          numuestra=null;
          costo=null;
-         mBinding.txtgatotnum.setText(sumamuestras);
-         mBinding.txtgastotmue.setText(Constantes.SIMBOLOMON+sumacosto);
+        TextView txtgatotnum=new TextView(getContext());
+        TextView txttotal=new TextView(getContext());
+        txtgatotnum.setText(sumamuestras+"");
+        TextView txtgastotmue=new TextView(getContext());
+        txtgastotmue.setText(Constantes.SIMBOLOMON+sumacosto);
+        txttotal.setBackgroundResource(R.drawable.valuecellborder);
+        txtgastotmue.setBackgroundResource(R.drawable.valuecellborder);
+        txtgatotnum.setBackgroundResource(R.drawable.valuecellborder);
+        tableRow=new TableRow(getContext());
+        tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        txttotal.setText("TOTAL");
+        tableRow.addView(txttotal);
+        tableRow.addView(txtgatotnum);
+        tableRow.addView(txtgastotmue);
+        mBinding.tblnimuestras.addView(tableRow);
         aceptar1.setEnabled(true); //resumen
     }
 
@@ -604,16 +618,16 @@ public class NvoGastoFragment extends Fragment {
 
             concepto=new TextView(getContext());
             costo=new TextView(getContext());
-            tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+          //  tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
             tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
 
             concepto.setText(detalle.getConcepto()+"");
             concepto.setBackgroundResource(R.drawable.valuecellborder);
-            costo.setText(Constantes.SIMBOLOMON+""+detalle.getImporte());
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.##").format(detalle.getImporte()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
-            concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
-            costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+         //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
+         //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
 
             tableRow.addView(concepto);
             tableRow.addView(costo);
@@ -632,21 +646,24 @@ public class NvoGastoFragment extends Fragment {
 
         concepto=new TextView(getContext());
         costo=new TextView(getContext());
+
         tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
         tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        costo.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setText("TOTAL A VALIDAR");
-       costo.setText(Constantes.SIMBOLOMON+sumacosto);
-        concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
-        costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+       costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.##").format(sumacosto));
+      //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+     //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
 
         tableRow.addView(concepto);
         tableRow.addView(costo);
         mBinding.tblgaresconcep.addView(tableRow);
 
-        tableRow=null;
-        concepto=null;
+      //  tableRow=null;
+      //  concepto=null;
 
-        costo=null;
+      //  costo=null;
     }
     public void editarInforme() {
 

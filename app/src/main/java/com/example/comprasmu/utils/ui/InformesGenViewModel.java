@@ -10,11 +10,13 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 
 import java.util.List;
@@ -27,6 +29,8 @@ public class InformesGenViewModel extends AndroidViewModel {
     private final CorreccionRepoImpl correpo;
     private final ImagenDetRepositoryImpl imagenDetRepository;
     private final DetalleCajaRepoImpl detCajaRepo;
+
+    private InfGastoDetRepositoryImpl infGastoDetRepo;
     public InformesGenViewModel(Application application) {
         super(application);
         ierepository=new InfEtapaRepositoryImpl(application);
@@ -35,6 +39,7 @@ public class InformesGenViewModel extends AndroidViewModel {
         this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
         this.detCajaRepo=new DetalleCajaRepoImpl(application);
         infEnvioRepo = new InformeEnvioRepositoryImpl(application);
+        infGastoDetRepo=new InfGastoDetRepositoryImpl(application);
     }
 
 
@@ -80,5 +85,9 @@ public class InformesGenViewModel extends AndroidViewModel {
         return imagenDetRepository.findsimple(idfoto);
 
     }
+    public LiveData<List<InformeGastoDet>> getfotosGasto(int id){
 
+        return infGastoDetRepo.getAll(id);
+
+    }
 }

@@ -58,6 +58,42 @@ xmlns:tools="http://schemas.android.com/tools">
 
                         </LinearLayout>
 
+                        <TableLayout
+                            android:id="@+id/tblvigastos"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
+                            tools:visibility="visible">
+
+                            <TableRow
+                                android:id="@+id/trowvigastos"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:id="@+id/textView34"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/valuecellborder"
+                                    android:text="@string/concepto" />
+
+                                <TextView
+                                    android:id="@+id/textView33"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/valuecellborder"
+                                    android:text="@string/costogas" />
+
+                            </TableRow>
+
+                        </TableLayout>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

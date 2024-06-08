@@ -55,13 +55,12 @@
                         android:id="@+id/rowtitulos"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/valuecellborder">
+                       >
 
                         <TextView
                             android:id="@+id/textView42"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:background="@drawable/valuecellborder"
                             android:text="@string/cliente" />
 
@@ -80,34 +79,6 @@
                             android:text="@string/costo_m" />
                     </TableRow>
 
-                    <TableRow
-                        android:id="@+id/rowtot"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/textView41"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="@string/total"
-                            android:background="@drawable/valuecellborder"
-                            android:textAppearance="@style/formlabel" />
-
-                        <TextView
-                            android:id="@+id/txtgatotnum"
-                            android:layout_width="wrap_content"
-                            android:background="@drawable/valuecellborder"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:id="@+id/txtgastotmue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="$300"
-                            android:background="@drawable/valuecellborder"
-                            android:textAppearance="@style/formlabel" />
-                    </TableRow>
                 </TableLayout>
 
                 <Button
@@ -355,6 +326,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="@drawable/valuecellborder"
                             android:text="@string/concepto" />
 
                         <TextView
@@ -362,6 +334,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="@drawable/valuecellborder"
                             android:text="@string/costogas" />
                     </TableRow>
 
