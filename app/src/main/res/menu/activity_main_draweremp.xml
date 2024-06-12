@@ -52,24 +52,15 @@
             android:title="@string/menu_lista_emp" />
 
         <item
-            android:id="@+id/nav_solcorem"
+            android:id="@+id/nav_notificaciongen"
             android:icon="@drawable/ic_baseline_notifications_active_24"
-            android:title="@string/menu_correccion"
+            android:title="@string/menu_notificaciones"
             app:actionViewClass="android.widget.TextView" />
         <item
             android:id="@+id/nav_rescorremp"
             android:icon="@drawable/ic_baseline_check_24"
             android:title="@string/menu_rescorreccion" />
-        <item
-            android:id="@+id/nav_cancel"
-            android:icon="@android:drawable/ic_dialog_alert"
-            android:title="@string/menu_cancel"
-            app:actionViewClass="android.widget.TextView" />
-        <item
-            android:id="@+id/nav_notificacionseti"
-            android:icon="@android:drawable/ic_dialog_alert"
-            android:title="@string/menu_notificaciones"
-            app:actionViewClass="android.widget.TextView" />
+
         <item
             android:id="@+id/nav_menuini"
             android:icon="?attr/actionModeCloseDrawable"
