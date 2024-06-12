@@ -370,5 +370,7 @@
     <string name="costogas">COSTO</string>
     <string name="concepto">CONCEPTO</string>
     <string name="descargar">DESCARGAR RECIBO</string>
+    <string name="muestra_adicional">MUESTRA ADICIONAL</string>
+    <string name="continuar_inf">CONTINUAR EL INFORME EN EL MODULO CORRESPONDIENTE</string>
 
 </resources>
