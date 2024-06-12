@@ -88,6 +88,16 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="clip_horizontal"
+
+
+                    android:text='@{detalle.estatus+""}'
+                    android:visibility="gone" />
+                <TextView
+                    android:id="@+id/txtcigestatuslet"
+                    style="@style/textolistagris"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="clip_horizontal"
                     android:layout_marginTop="14dp"
                     android:layout_weight="1"
                     android:text="@{Constantes.ESTATUSINFORME[detalle.estatus]}" />
