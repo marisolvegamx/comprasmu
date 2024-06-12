@@ -140,9 +140,20 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
         }
         return null;
     }
-
+    public InformeEtapa getInformeNoCancel(String indice,int etapa) {
+        List<InformeEtapa> lista=icDao.getInformeNoCancel(indice,etapa);
+        if(lista!=null&&lista.size()>0){
+            return lista.get(0);
+        }
+        return null;
+    }
     public LiveData<List<InformeEtapa>> getInformesxEstatus(String indice,int etapa, int estatus) {
         return icDao.getInformesxEstatus(indice,etapa,estatus);
+
+
+    }
+    public List<InformeEtapa> getInformesxEstatusSim(String indice,int etapa, int estatus) {
+        return icDao.getInformesxEstatusSim(indice,etapa,estatus);
 
 
     }
@@ -158,6 +169,12 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     }*/
     public LiveData<List<InformeEtapa>> getInformesPend(String indice,int etapa) {
        return icDao.getInformePend(indice,etapa);
+
+
+    }
+    //para reactivacion ahora puedo continuar informes en estatus 4-muestra adicional o 6 muestra cancelada
+    public LiveData<List<InformeEtapa>> getInformesPendRe(String indice,int etapa) {
+        return icDao.getInformePendRe(indice,etapa);
 
 
     }

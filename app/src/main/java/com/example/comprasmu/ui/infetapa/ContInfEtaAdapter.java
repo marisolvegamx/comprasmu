@@ -81,14 +81,14 @@ public class ContInfEtaAdapter extends RecyclerView.Adapter<ContInfEtaAdapter.Co
                 @Override
                 public void onClick(View view) {
                    // view.setEnabled(false);
-                        callback.onClickContinuar(Integer.parseInt(binding.txtcigid.getText().toString()));
+                        callback.onClickContinuar(Integer.parseInt(binding.txtcigid.getText().toString()),Integer.parseInt(binding.txtcigestatus.getText().toString()));
                 }
             });
         }
 
     }
     public interface AdapterCallback {
-        void onClickContinuar(int idinforme);
+        void onClickContinuar(int idinforme, int estatus);
         void onClickEliminar(int id);
 
     }

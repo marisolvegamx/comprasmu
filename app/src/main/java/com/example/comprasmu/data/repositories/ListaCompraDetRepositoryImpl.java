@@ -512,4 +512,8 @@ public class ListaCompraDetRepositoryImpl {
     public LiveData<List<ListaCompraDetalle>> getListaDetalleOrd(int listaid ) {
         return dao.getListasDetalleOrdByLista(listaid);
     }
+
+    public List<ListaCompraDetalle> getPendientes(int listasId) {
+        return dao.getPendientes(listasId);
+    }
 }

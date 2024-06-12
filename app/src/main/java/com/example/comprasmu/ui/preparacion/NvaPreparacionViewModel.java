@@ -674,6 +674,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public void finalizarInf(){
         infEtaRepository.actualizarEstatus(idNuevo,2);
     }
+
     public void actualizarEstatusInf(int idinf){
         infEtaRepository.actualizarEstatus(idinf,1);
     }
@@ -941,4 +942,29 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     }
 
 
+    public int insertarEtiqDet2(int idinf,int descripcionid,String descripcion, String ruta ,int iddet, int numcaja,String qr,int num_muestra,String indice, int estatus){
+        ImagenDetalle foto=new ImagenDetalle();
+        foto.setRuta( ruta);
+        foto.setDescripcion(descripcion);
+        foto.setEstatus(1);
+        foto.setEstatusSync(0);
+        foto.setIndice(indice);
+        foto.setCreatedAt(new Date());
+        int nvoidimagem =(int)imagenDetRepository.insertImg(foto);
+        InformeEtapaDet detalle=new InformeEtapaDet();
+        detalle.setDescripcion(descripcion);
+        detalle.setInformeEtapaId(idinf);
+        detalle.setRuta_foto(nvoidimagem+"");
+        detalle.setDescripcionId(descripcionid);
+        detalle.setNum_caja(numcaja);
+        detalle.setQr(qr);
+        detalle.setNum_muestra(num_muestra);
+        detalle.setEstatusSync(0);
+        detalle.setEtapa(3);
+        detalle.setEstatus(estatus);
+        if(iddet>0)
+            detalle.setId(iddet);
+        iddetalle=(int)infDetRepo.insert(detalle);
+        return iddetalle;
+    }
 }

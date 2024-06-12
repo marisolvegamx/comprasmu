@@ -43,6 +43,9 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) and etapa=:etapa order by id desc")
     public abstract LiveData<List<InformeEtapa>>  getInformesxEstatus(String indice, int etapa, int estatus);
 
+    @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) and etapa=:etapa order by id desc")
+    public abstract List<InformeEtapa>  getInformesxEstatusSim(String indice, int etapa, int estatus);
+
     @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) order by id desc")
     public abstract LiveData<List<InformeEtapa>>  getInformesxEstatusAll(String indice, int estatus);
 
@@ -54,6 +57,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     @Query("SELECT * FROM informe_etapa WHERE  indice=:indice and (estatus=1) and etapa=:etapa order by id desc")
     public abstract LiveData<List<InformeEtapa>>  getInformePend(String indice, int etapa);
 
+    @Query("SELECT * FROM informe_etapa WHERE  indice=:indice and (estatus=1 or estatus=4 or estatus=6) and etapa=:etapa order by id desc")
+    public abstract LiveData<List<InformeEtapa>>  getInformePendRe(String indice, int etapa);
 
     @RawQuery(observedEntities = InformeEtapa.class)
     public abstract LiveData<List<InformeEtapa>> getInformesByFiltros(SupportSQLiteQuery query);
@@ -107,7 +112,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     public abstract   LiveData<InformeEtapa> find(int id);
     @Query("SELECT * FROM informe_etapa WHERE estatusSync =:estatus and indice=:indice")
     public abstract   List<InformeEtapa> getxEstatusSync(String indice,int estatus);
-
+    @Query("SELECT * FROM informe_etapa WHERE estatus>0 and etapa=:etapa and indice=:indice")
+    public abstract   List<InformeEtapa> getInformeNoCancel(String indice, int etapa);
 
 
     @Query("select * from informe_etapa where indice=:indice and etapa=3 and estatusSync =2 and ciudadNombre=:ciudad and estatus>0 group by clientesId")

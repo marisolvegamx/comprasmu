@@ -24,9 +24,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
@@ -41,6 +44,8 @@ import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.home.MasPruebasActivity;
+import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
+import com.example.comprasmu.ui.informe.DetalleCancelado;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.mantenimiento.ConfiguracionCamFragment;
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
@@ -61,6 +66,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -86,6 +92,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.HashMap;
@@ -116,13 +123,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     public static final String PROGRESS_PEND = "progress_pend";
     public static final String NAVINICIAL="nd_navinicial";
     TextView txtcancel,gallery;
-    LiveData<Integer> totCorrecciones;
+    int totCorrecciones;
+
+    int totCancel;
+    int totMuestraAdic;
     SolicitudCorRepoImpl solRepo;
     TablaVersionesRepImpl tvRepo;
     boolean notificar=false;
     int desclis; int descinf; int descfoto;
-    LiveData<List<InformeCompraDetalle>> totCancel;
-    LiveData<List<InformeEtapa>> totCanceleta;
+
     NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +141,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         setContentView(R.layout.activity_navigation_darawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        totCancel=0;
+        totCorrecciones=0;
+        totMuestraAdic=0;
         if (savedInstanceState != null) {    // Restore value of members from saved state
           buscarEtapa();
         }
@@ -322,44 +333,37 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         //pongo canceladas x etapa
         if(Constantes.ETAPAACTUAL==1) {
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcor2));
-            txtcancel = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_precancel));
+                    findItem(R.id.nav_notificaciongen));
         }
         if(Constantes.ETAPAACTUAL==2) {
+            //   gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+            //         findItem(R.id.nav_solcor2));
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcor2));
-            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_cancel));
+                    findItem(R.id.nav_notificaciongen));
+            /*txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+                    findItem(R.id.nav_cancel));*/
+
         }
         if(Constantes.ETAPAACTUAL==3) {
             //Ya lo hago desde el menu
            // pedirInformes(0);
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcoretiq));
-            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_canceleti));
+                    findItem(R.id.nav_notificaciongen));
         }
         if(Constantes.ETAPAACTUAL==4) {
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcorem));
-            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_cancel));
+                    findItem(R.id.nav_notificaciongen));
         }
         if(Constantes.ETAPAACTUAL==5) {
 
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcorenv));
-            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_cancel));
+                    findItem(R.id.nav_notificaciongen));
         }
         if(Constantes.ETAPAACTUAL==6) {
             //Ya lo hago desde el menu
             // pedirInformes(0);
             gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_solcorenv));
-            txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_cancel));
+                    findItem(R.id.nav_notificaciongen));
         }
         initializeCountDrawer();
         revisarCiudades();
@@ -739,67 +743,145 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         totCorrecciones=scViewModel.getTotalSolsGen(Constantes.INDICEACTUAL,1);
 
         //la solicitudes de coreecciones ya no serán por cd sino x indice y etapa
-        Log.d(TAG,"contarCorrecc"+totCorrecciones.getValue()+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+        Log.d(TAG,"contarCorrecc"+totCorrecciones+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
     }
+
     private void contarCanceladas(){
-        //depende la etapa
-       // if(Constantes.ETAPAACTUAL==2)
-        totCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
-        //else
-       // {
-            totCanceleta=scViewModel.getTotalCancelEta(Constantes.INDICEACTUAL);
-            Log.d(TAG,"contarCanceladas"+totCanceleta+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
+
+        List<InformeCompraDetalle> informesCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
+        if(informesCancel!=null)
+
+            totCancel=informesCancel.size();
+
+        setEtiquetadoCancel(3,6);
+        //veo si ya puedo hacer empaque
+        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+        InformeEtapa nvoinf=new InformeEtapa();
+        List<InformeEtapa> listageneral=new ArrayList<>();
+        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()==1) {
+            //veo que no haya hecho informe para no esperar a la supervisión
+            ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+            InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL,4);
+            if(informesEtapa!=null) {
+                nvoinf.setIndice(listacomp.get(0).getIndice());
+                // nvoinf.set = listacomp.get(0).getId();
+                nvoinf.setEstatus(listacomp.get(0).getEstatus());
+                nvoinf.setEtapa(4);
+
+                nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
+                nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
+
+                // nvoinf.mo
+                listageneral.add(nvoinf);
+            }
+        }
+
+        totCancel=listageneral.size();
+
+    }
+    private void contarMuestraAdic(){
+
+        // lista de compra pendiente
+        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReac(Constantes.CIUDADTRABAJO, 2,2);
+        if(listacomp.size()>0){
+
+            int informesdetList=0;
+            InformeCompraDao.InformeCompravisita informetemp=new InformeCompraDao.InformeCompravisita();
+            InformeCompraDetalle detalleTemp=new InformeCompraDetalle();
+            //busco el detalle
+            for (ListaCompra compra:listacomp
+            ) {
+
+                List<ListaCompraDetalle> compraDetalles = scViewModel.getProductosPend(compra.getId());
+                if (compraDetalles != null && compraDetalles.size() > 0) {
+                    for (ListaCompraDetalle detalle : compraDetalles
+                    ) {
 
 
+                        informesdetList++;
+                    }
 
+
+                }
+            }
+            totMuestraAdic=informesdetList;
+
+        }
+
+        //busco etiquetado
+        List<InformeEtapa> informes=  scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
+         int informesfinal=0;//contador para saber cuantos informes hay
+        Log.d(TAG, "YA CARGÓ " + informes.size());
+
+        for (InformeEtapa infeta:informes
+        ) {
+            //reviso que ya pueda hacer esa etapa
+            //busco los clientes x ciudad
+             listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            if(listacomp!=null&&listacomp.size()>0&&listacomp.get(0).getClientesId()==infeta.getClientesId()) {
+
+                informesfinal++;
+            }
+        }
+        totMuestraAdic=informesfinal;
+
+        //veo si ya puedo hacer empaque
+        listacomp =scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+
+        int listageneral=0; //para contar los informes
+        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()==2) {
+            ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+            InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL,4);
+            if(informesEtapa==null) {
+
+                listageneral++;
+            }
+        }
+
+        totMuestraAdic=listageneral;
+
+    }
+    private void setEtiquetadoCancel(int etapa, int estatus) {
+        List<InformeEtapa> listageneral=new ArrayList<>();
+        //para ver si sigue etiquetado y empaque
+        List<InformeEtapa> informes=scViewModel.getInfEtapaxEstatusSim(Constantes.INDICEACTUAL,etapa,estatus);
+
+        //paso de informe etapa ainforme compra
+
+        for (InformeEtapa infeta : informes
+        ) {
+
+            //reviso si ya estoy en etapa 3
+            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
+
+                listageneral.add(infeta);
+
+
+            }
+
+        }
+        totCancel=listageneral.size();
 
     }
     private void initializeCountDrawer(){
         contarCorrecc();
+
         contarCanceladas();
-        //Gravity property aligns the text
-        if(gallery!=null) {
+        contarMuestraAdic();
+          if(gallery!=null) {
             gallery.setGravity(Gravity.CENTER_VERTICAL);
             gallery.setTypeface(null, Typeface.BOLD);
             gallery.setTextColor(Color.RED);
 
             //  gallery.setTextSize(15);
-            totCorrecciones.observe(this, new Observer<Integer>() {
-                @Override
-                public void onChanged(Integer integer) {
-                    gallery.setText(integer + "");
-                }
-            });
-        }
-
-        if(txtcancel!=null) {
-            txtcancel.setText("x");
-            txtcancel.setGravity(Gravity.CENTER_VERTICAL);
-            txtcancel.setTypeface(null, Typeface.BOLD);
-            txtcancel.setTextColor(Color.RED);
-            //  gallery.setTextSize(15);
-
-            totCancel.observe(this, new Observer<List<InformeCompraDetalle>>() {
-                @Override
-                public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
-
-                    totCanceleta.observe(NavigationDrawerActivity.this, new Observer<List<InformeEtapa>>() {
-                        @Override
-                        public void onChanged(List<InformeEtapa> informeCompraDetalles2) {
-                            Log.d(TAG, "wwww" + informeCompraDetalles2.size() + "--" + Constantes.ETAPAACTUAL + "," + Constantes.INDICEACTUAL);
-                            int total = 0;
-                            if (informeCompraDetalles != null)
-                                total = informeCompraDetalles.size();
-                            if (informeCompraDetalles2 != null)
-                                total = total + informeCompraDetalles2.size();
-                            txtcancel.setText(total + "");
-                        }
-                    });
-                }
-            });
+              int totalnotif=0;
+              totalnotif=totCorrecciones+totCancel+totMuestraAdic;
+              gallery.setText(totalnotif + "");
 
         }
+
 
     }
 

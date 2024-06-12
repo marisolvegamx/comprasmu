@@ -577,6 +577,11 @@ public void iraReubicar(){
 
     public void actualizarInf() {
         try {
+            //actualizo total muestras
+            InformeEtapa informe=mViewModel.getInformexId(mViewModel.getIdNuevo());
+           int totalmues= mViewModel.getTotalMuestrasxCliXcd(informe.getClientesId(), ciudadInf);
+            informe.setTotal_muestras(totalmues);
+            mViewModel.actualizarInfEtapa(informe);
             mViewModel.finalizarInf();
             InformeEtapaEnv envio=mViewModel.preparaInformeEtiqAct(mViewModel.getIdNuevo());
             ActInformeEtaTask miTareaAsincrona = new ActInformeEtaTask(envio,getActivity());

@@ -81,13 +81,14 @@ public class BorrarActivity extends AppCompatActivity {
         // mViewModel.borrarInformes(indice_anterior);
         mViewModel.borrarListasCompra(indice_anterior);
         // Log.d("Comprasmu.BorrarDatosFragment","Se eliminaron las listas");
-        //todo borrar informes etapa
+        // borrar informes etapa
         mViewModel.borrarInformesetapa(indice_anterior);
         ei.eliminarCorrecciones();
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
         ei.eliminarTablaVers();
       mViewModel.borrarEnvio(indice_anterior);
+      mViewModel.borrarGasto(indice_anterior);
         //inicializo constantes
         Constantes.CIUDADTRABAJO ="" ;
         Constantes.IDCIUDADTRABAJO=0;

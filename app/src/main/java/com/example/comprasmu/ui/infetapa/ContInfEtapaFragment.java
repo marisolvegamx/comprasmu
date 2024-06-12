@@ -115,12 +115,19 @@ public class ContInfEtapaFragment extends Fragment implements ContInfEtaAdapter.
     }
 
     @Override
-    public void onClickContinuar(int informe) {
-
-
-        Intent intento1 = new Intent(getActivity(), NuevoInfEtapaActivity.class);
-        intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,informe );
-        intento1.putExtra(ETAPA,etapa );
+    public void onClickContinuar(int informe, int estatus) {
+        Intent intento1;
+        if(etapa==3&&(estatus==4 || estatus==6) ) {
+            intento1 = new Intent(getActivity(), EditInfEtapaActivity.class);
+            intento1.putExtra(EditInfEtapaActivity.INFORMESEL, informe);
+            intento1.putExtra(EditInfEtapaActivity.ETAPA, 3);
+        }
+        else
+            {
+                intento1 = new Intent(getActivity(), NuevoInfEtapaActivity.class);
+                intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL, informe);
+                intento1.putExtra(ETAPA, etapa);
+            }
         startActivity(intento1);
 
         //  NavHostFragment.findNavController(this).navigate(R.id.nav_nvoprep,bundle);

@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -14,6 +16,7 @@ import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.MuestraCancelada;
@@ -25,6 +28,7 @@ import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.utils.Constantes;
 
@@ -41,6 +45,9 @@ public class ListaSolsViewModel extends AndroidViewModel {
     InfEtapaRepositoryImpl infetarepo;
     InformeCompraRepositoryImpl infrepo;
     InformeEnvioRepositoryImpl infenvrepo;
+    ListaCompraRepositoryImpl lcrepo;
+    ListaCompraDetRepositoryImpl lcdrepo;
+
     private final InfGastoDetRepositoryImpl gasdetrepo;
 
     public ListaSolsViewModel(Application application) {
@@ -50,8 +57,10 @@ public class ListaSolsViewModel extends AndroidViewModel {
         infetarepo=new InfEtapaRepositoryImpl(application);
         infrepo=new InformeCompraRepositoryImpl(application);
         infenvrepo=new InformeEnvioRepositoryImpl(application);
-
+        ListaCompraDao dao= ComprasDataBase.getInstance(application).getListaCompraDao();
+        lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         this.gasdetrepo = new InfGastoDetRepositoryImpl(application);
+        lcdrepo=new ListaCompraDetRepositoryImpl(application);
     }
 
     public LiveData<List<SolicitudCor>>  cargarDetalles(int etapa,String indiceSel, int estatus){
@@ -82,10 +91,11 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
         return repository.totalSols(etapa,indiceSel, estatus);
     }
-    public LiveData<Integer> getTotalSolsGen( String indiceSel, int estatus){
+    public int getTotalSolsGen( String indiceSel, int estatus){
 
         return repository.totalSolsGen(indiceSel, estatus);
     }
+
 
     public LiveData<Integer> getTotalSolsxCd(int etapa, String indiceSel, int estatus, String ciudad){
       //  Log.d(TAG,"wwww"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
@@ -120,8 +130,8 @@ public class ListaSolsViewModel extends AndroidViewModel {
         return infcrepo.gettotCancelados(indiceSel);
     }*/
 
-    public LiveData<List<InformeCompraDetalle>> getTotalCancel(String indiceSel ){
-        return infcrepo.getCancelados(indiceSel);
+    public List<InformeCompraDetalle> getTotalCancel(String indiceSel ){
+        return infcrepo.getCanceladosSim(indiceSel);
 
     }
     //por ahora aplica preparacion y etiq donde se cancela todo el info
@@ -235,7 +245,32 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
 
     }
+    //para buscar si hay un inf de etiquetado reabierto
+    public List<InformeEtapa> getInfEtapaxEstatusSim(String indiceSel, int etapa, int estatus ){
 
+        return infetarepo.getInformesxEstatusSim(indiceSel,etapa,estatus);
+
+    }
+    public  List<ListaCompra>  cargarClientesSimplxet(String ciudadSel, int etapa){
+
+        return lcrepo.getClientesByIndiceCiudadSimplxet(Constantes.INDICEACTUAL,ciudadSel,etapa);
+
+
+    }
+    public  List<ListaCompra>  cargarClientesSimplxetReac(String ciudadSel, int etapa, int reactivado){
+
+        return lcrepo.getClieByIndiceCiudadSimplxetReac(Constantes.INDICEACTUAL,ciudadSel,etapa,  reactivado);
+
+
+    }
+    public List<ListaCompraDetalle> getProductosPend(int idlista) {
+        return lcdrepo.getPendientes(idlista);
+    }
+    public List<InformeEtapa> getEtiquetadoAdicional(String indiceSel ){
+
+        return infetarepo.getInformesxEstatusSim(indiceSel,3,4);
+
+    }
     public InformeCompra getInformeSol(int informesId) {
         return infrepo.findSimple(informesId);
     }

@@ -1,4 +1,4 @@
-package com.example.comprasmu.ui.etiquetado;
+package com.example.comprasmu.ui.notificaciones;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +16,7 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
 
+/***solo será informativo****/
 public class NotifEtiqAdapter extends RecyclerView.Adapter<NotifEtiqAdapter.InformeEtapaViewHolder> {
 
     private List<InformeEtapa> mInformes;
@@ -68,27 +69,35 @@ public class NotifEtiqAdapter extends RecyclerView.Adapter<NotifEtiqAdapter.Info
         public InformeEtapaViewHolder(NotificacionEtiqItemBinding binding, AdapterCallback callback) {
             super(binding.getRoot());
             this.binding = binding;
-            binding.btnecagregar.setOnClickListener(new View.OnClickListener() {
+          /*  binding.btnecagregar.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view) {  //para cuando se cancela
                         callback.onClickAgregar(Integer.parseInt(binding.icTxtiecid.getText().toString()));
                 }
             });
             binding.btneccontinuar.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view) { //para cuando se agrega
                     callback.onClickContinuar(Integer.parseInt(binding.icTxtiecid.getText().toString()));
                 }
             });
+            binding.btnecnvoemp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    callback.onClickNvoEmp();
+                }
+            });*/
         }
 
 
     }
     public interface AdapterCallback {
-        void onClickAgregar(int idinforme);
+       // void onClickAgregar(int idinforme);
 
 
         void onClickContinuar(int idinforme);
+
+        void onClickNvoEmp();
     }
 
 

@@ -133,6 +133,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " inner join lista_compras_detalle ld on ld.id=comprasDetId and ld.listaId=comprasId and ld.comprados<ld.cantidad " +
             " where visitas.indice=:indice and informe_detalle.estatus=:estatus" )
     public abstract List<InformeCompraDetalle> getByEstatussimpl(String indice,  int estatus);
+
     @Query("SELECT informecompravisita.* " +
             "FROM informe_detalle " +
             " inner join informecompravisita on informecompravisita.idinforme=informe_detalle.informesId" +

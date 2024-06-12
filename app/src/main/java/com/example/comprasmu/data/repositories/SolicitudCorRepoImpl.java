@@ -47,9 +47,11 @@ public class SolicitudCorRepoImpl  {
     public LiveData<Integer> totalSols(int etapa, String indice, int estatus) {
         return icDao.getTotSols(etapa, indice, estatus);
     }
-    public LiveData<Integer> totalSolsGen( String indice, int estatus) {
+    public int totalSolsGen( String indice, int estatus) {
         return icDao.getTotSolsGen( indice, estatus);
     }
+
+
     public int totalSolsxPlanta(int etapa, String indice, int estatus, int plantaid) {
        // Log.d("SolicitudCorRepoImpl","pendientes"+etapa+"--"+indice+"--"+estatus+"--"+plantaid);
         return icDao.getTotSolsxPlanta(etapa, indice, estatus, plantaid);

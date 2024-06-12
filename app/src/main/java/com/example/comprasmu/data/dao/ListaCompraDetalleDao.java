@@ -125,7 +125,8 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
 
     @Query("update lista_compras_detalle set nvoCodigo=:nvocodigo WHERE id = :id and listaId=:listaid")
     public abstract void actualizarNvosCodigos(int id, int listaid, String nvocodigo) ;
-
+    @Query("SELECT * FROM lista_compras_detalle WHERE listaId =:uuid and comprados<cantidad")
+    public abstract List<ListaCompraDetalle> getPendientes(int uuid);
 
     /*  public class MinimalLstaDet{
         public int productosId;

@@ -38,10 +38,9 @@ import java.text.SimpleDateFormat;
 public class EditInfEtapaActivity extends AppCompatActivity  {
     Toolbar myChildToolbar;
     private ActivityNuevoInfetapaBinding mBinding;
-    public final static String INFORMESEL = "comprasmu.nie_informesel";
-    public final static String PLANTASEL = "comprasmu.nie_plantasel";
-    public final static String NUMFOTO = "comprasmu.nie_numfoto";
-    public final static String CORRECCION = "comprasmu.nie_correc"; //para saber que es correccion
+    public final static String INFORMESEL = "comprasmu.edi.informesel";
+    public final static String REACTIVADO = "comprasmu.edi.reactivado";
+    public final static String ETAPA = "comprasmu.edi_etapa";
     private static final String TAG = "EditInfEtapaActivity";
 
     boolean noSalir;
@@ -91,10 +90,10 @@ public class EditInfEtapaActivity extends AppCompatActivity  {
             if (etapa == 3) {
                 mBinding.row1.setVisibility(View.GONE);
                 Bundle args = new Bundle();
-                args.putInt(NvoEtiquetadoFragment.ARG_PREGACT,3 );
-                args.putBoolean(NvoEtiquetadoFragment.ARG_ESEDI,true);
+                args.putInt(EditEtiquetadoFragment.ARG_PREGACT,3 );
+                args.putBoolean(EditEtiquetadoFragment.ARG_ESEDI,true);
 
-                args.putInt(NvoEtiquetadoFragment.ARG_INFORMESEL,idinformeSel);
+                args.putInt(EditEtiquetadoFragment.ARG_INFORMESEL,idinformeSel);
                 EditEtiquetadoFragment nvofrag = new EditEtiquetadoFragment();
                 nvofrag.setArguments(args);
 
@@ -162,7 +161,7 @@ public class EditInfEtapaActivity extends AppCompatActivity  {
 
         if(datosRecuperados!=null) {
             idinformeSel = datosRecuperados.getInt(INFORMESEL);
-            etapa = datosRecuperados.getInt(ContInfEtapaFragment.ETAPA);
+            etapa = datosRecuperados.getInt(EditInfEtapaActivity.ETAPA);
             isEdicion = true;
 
             }

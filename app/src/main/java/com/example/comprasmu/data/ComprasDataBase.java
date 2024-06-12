@@ -568,9 +568,12 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     + "aceptado INTEGER not null, "+
                     " PRIMARY KEY(`id`));");
 
+            database.execSQL(
+                    "ALTER TABLE lista_compra ADD COLUMN  lis_reactivado INTEGER; " );
+
+
         }
     };
-
     private void cargandodatos(){
 
         runInTransaction(new Runnable() {

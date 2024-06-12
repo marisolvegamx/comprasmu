@@ -74,6 +74,7 @@ public class ListaSelecFragment extends Fragment {
 
         objetosLV.setAdapter(adaptadorLista);
 
+
     }
     public void setIndicacion(String indicacion) {
         this.indicacion.setText(indicacion);

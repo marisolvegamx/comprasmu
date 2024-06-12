@@ -20,11 +20,13 @@ import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -188,6 +190,12 @@ public class ListaInformesViewModel extends AndroidViewModel {
     public LiveData<List<InformeEtapa>> cargarCanceladosEta(String indiceSel ){
 
         return inferepo.getInformesxEstatusAll(indiceSel,0);
+
+    }
+    //para buscar si hay un inf de etiquetado reabierto
+    public LiveData<List<InformeEtapa>> getInfEtapaxEstatus(String indiceSel, int etapa, int estatus ){
+
+        return inferepo.getInformesxEstatus(indiceSel,etapa,estatus);
 
     }
 

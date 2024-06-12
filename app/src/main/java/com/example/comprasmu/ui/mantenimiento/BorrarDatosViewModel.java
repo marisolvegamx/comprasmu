@@ -18,6 +18,7 @@ import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.Visita;
@@ -26,6 +27,7 @@ import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
@@ -47,6 +49,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     InfEtapaRepositoryImpl ieRepo;
     InfEtapaDetRepoImpl iedRepo;
     InformeEnvioRepositoryImpl ienRepo;
+    InfGastoDetRepositoryImpl igasRepo;
     DetalleCaja detCaja;
     ImagenDetRepositoryImpl imrepo;
     ListaCompraRepositoryImpl lcrepo;
@@ -165,6 +168,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         }
     }
 
+
     private void puedoBorrarInforme(InformeCompra informe){
 
         List<InformeCompraDetalle> informeCompraDetalles=icdrepo.getAllSencillo(informe.getId());
@@ -242,5 +246,16 @@ public class BorrarDatosViewModel extends AndroidViewModel {
                 System.out.println("file Deleted :" + path); }
             else { Log.e("BorrarDatosFregment","No se pudo borrar el archivo "+path); } }
     }
+
+    public void borrarGasto(String indice) {
+        igasRepo=new InfGastoDetRepositoryImpl(this.context);
+
+
+        complog.grabarError("borrando informes gasto det" + indice);
+        //busco el detalle
+       igasRepo.deleteAll();
+
+    }
+
 
 }

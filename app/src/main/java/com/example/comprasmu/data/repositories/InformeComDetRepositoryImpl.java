@@ -168,6 +168,10 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
         return dao.getByEstatus2(indice,2);
     }
 
+    public List<InformeCompraDetalle> getCanceladosSim(String indice) {
+
+        return dao.getByEstatussimpl(indice,2);
+    }
     public LiveData<List<InformeCompraDao.InformeCompravisita>> getCanceladosVis(String indice) {
         return dao.getCancel(indice,2);
     }

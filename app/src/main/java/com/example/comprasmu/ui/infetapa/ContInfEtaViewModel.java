@@ -26,7 +26,10 @@ public class ContInfEtaViewModel extends AndroidViewModel {
         this.infEtaDetRepository=new InfEtapaDetRepoImpl(application);
     }
     public LiveData<List<InformeEtapa>> getInformesPend(String indice,int etapa){
-        return   infEtaRepository.getInformesPend(indice, etapa);
+        if(etapa==1||etapa==4||etapa==5||etapa==6)
+            return   infEtaRepository.getInformesPend(indice, etapa);
+        else
+            return   infEtaRepository.getInformesPendRe(indice, etapa);
     }
 
     public void eliminarInformeEta(int id){
@@ -35,4 +38,11 @@ public class ContInfEtaViewModel extends AndroidViewModel {
         infEtaRepository.deleteInformeEtapa(id);
 
     }
+    public InformeEtapa getInformeNoCancel(String indice,int etapa){
+
+            return   infEtaRepository.getInformeNoCancel(indice, etapa);
+
+
+    }
+
 }

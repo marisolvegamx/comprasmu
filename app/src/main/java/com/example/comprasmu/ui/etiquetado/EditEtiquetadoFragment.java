@@ -69,7 +69,7 @@ import java.util.List;
 
 //cuando se cancela una muestra desde compra y se cancela en etiquetado se vuelve a pedir
 //si estatus=4 se agregaron muestras
-//si se cancelo estatus del informe es 1
+//si se cancelo estatus del informe es 6
 public class EditEtiquetadoFragment extends Fragment {
 
     private InformeEtapaDet detalleEdit;
@@ -112,10 +112,10 @@ public class EditEtiquetadoFragment extends Fragment {
     List<String> spinnerValues;
     ArrayAdapter<String> adaptercaja;
     private TextView txttotcaj;
-    public final static String ARG_PREGACT = "comprasmu.ne_pregactp";
-    public final static String ARG_ESEDI = "comprasmu.ne_esedip";
-    public final static String ARG_INFORMEDET = "comprasmu.ne_infdet";
-    public final static String ARG_INFORMESEL = "comprasmu.neinfsel";
+    public final static String ARG_PREGACT = "comprasmu.edi_pregactp";
+    public final static String ARG_ESEDI = "comprasmu.edi_esedip";
+    public final static String ARG_INFORMEDET = "comprasmu.edi_infdet";
+    public final static String ARG_INFORMESEL = "comprasmu.ediinfsel";
     public String ciudadInf;
     public String[] descripfoto = {"FOTO CALIDAD DE CAJA CARA A", "FOTO CALIDAD DE CAJA CARA B", "FOTO ACOMODO DE MUESTRAS DENTRO DE CAJA"};
     public int[] descripcionid = {12, 13, 14};
@@ -245,15 +245,15 @@ public class EditEtiquetadoFragment extends Fragment {
             TextView txtmensaje = root.findViewById(R.id.txteefaltacom);
             txtmensaje.setText("FALTA REALIZAR EL INFORME DE COMPRA");
             txtmensaje.setVisibility(View.VISIBLE);
-            //todo falta desactivar botones
+
             return root; //todavía no puede hacer etiquetado
         }
         //primero elimino la muestra de ivan
-        //todo quitarlodespues de la prueba
-        mViewModel.quitarMuestra(Constantes.CLAVEUSUARIO);
 
         totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, ciudadInf);
-
+        //busco total muestras
+        infomeEdit.setTotal_muestras(totmuestras);
+        ((EditInfEtapaActivity) getActivity()).actualizarBarraEtiq(infomeEdit);
         //busco el ultimo num de muestra
         InformeEtapaDet ultima=mViewModel.getUltimaMuestraEtiq(informeSel);
         contmuestra=mViewModel.totalMuestrasEtiq(informeSel)+1;
@@ -500,7 +500,7 @@ public void iraReubicar(){
 
                 } else {
                     preguntaAct = 5;
-                    //todo aqui validacion consecutivos
+                    //aqui validacion consecutivos
                     if(!validasSecuenciaCaj()){
                         svotra.setVisibility(View.VISIBLE);
                         return;
@@ -769,7 +769,7 @@ public void iraReubicar(){
             }else //es nueva muestra
                 if(mViewModel.getIdNuevo()>0)
                 //guardo el detalle
-                    iddet= mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,numcaja,qr,contmuestra,Constantes.INDICEACTUAL);
+                    iddet= mViewModel.insertarEtiqDet2(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,numcaja,qr,contmuestra,Constantes.INDICEACTUAL,5);
            //actualizo estatus inf
             //mViewModel.setIdNuevo();
            // mViewModel.actualizarEstatusInf(mViewModel.getIdNuevo());

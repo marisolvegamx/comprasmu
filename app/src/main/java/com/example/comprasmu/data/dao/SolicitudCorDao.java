@@ -34,8 +34,9 @@ public abstract class SolicitudCorDao extends  BaseDao<SolicitudCor>{
     @Query("SELECT count(solicitud_cor.id) from solicitud_cor inner join lista_compras on solicitud_cor.plantasId=lista_compras.plantasId " +
             "where solicitud_cor.etapa=:etapa and solicitud_cor.indice=:indice  and (solicitud_cor.estatus=:estatus or solicitud_cor.estatus=5) and ciudadNombre=:cd")
     public abstract LiveData<Integer> getTotSolsxCd(int etapa, String indice,  int estatus, String cd);
+
     @Query("SELECT count(id) FROM solicitud_cor where   indice=:indice  and (estatus=:estatus or estatus=5)")
-    public abstract LiveData<Integer> getTotSolsGen(String indice, int estatus);
+    public abstract int getTotSolsGen(String indice, int estatus);
 
 
     @Query("SELECT count(solicitud_cor.id) from solicitud_cor inner join informe_etapa on solicitud_cor.informesId=informe_etapa.id " +

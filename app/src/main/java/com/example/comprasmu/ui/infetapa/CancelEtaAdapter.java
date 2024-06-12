@@ -15,7 +15,7 @@ import com.example.comprasmu.databinding.InformeetaCancelItemBinding;
 import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
-
+/***tiende a desaparecer se sustituyo por notifetaadapter****/
 public class CancelEtaAdapter extends RecyclerView.Adapter<CancelEtaAdapter.InformeEtapaViewHolder> {
 
     private List<InformeEtapa> mInformes;

@@ -772,7 +772,7 @@ public class PeticionesServidor {
                     stListener.actualizar(true);
 
                 }else
-                    Log.e("PeticionesServidor", "algo salio mal en peticion getCatalogosPrueb");
+                    Log.e("PeticionesServidor", "algo salio mal en peticion catalogo");
 
             }
 

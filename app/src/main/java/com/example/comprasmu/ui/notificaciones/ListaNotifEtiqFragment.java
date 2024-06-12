@@ -1,4 +1,4 @@
-package com.example.comprasmu.ui.etiquetado;
+package com.example.comprasmu.ui.notificaciones;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,9 +26,9 @@ import com.example.comprasmu.ui.infetapa.EditInfEtapaActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.utils.Constantes;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/***tiende a desaparecer se sust por listanvacompfragment**/
 public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter.AdapterCallback {
     private ListaNotifEtiqViewModel mViewModel;
     public static final String TAG = "ListaNotifEtiqFragment";
@@ -105,11 +105,11 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
 
 
     private void setupListAdapter() {
-        mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
+      /*  mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.detalleList.setHasFixedSize(true);
 
         mEtaAdapter = new NotifEtiqAdapter(this);
-        mBinding.detalleList.setAdapter(mEtaAdapter);
+        mBinding.detalleList.setAdapter(mEtaAdapter);*/
 
         cargarLista();
 
@@ -118,7 +118,7 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
 
 
 
-    @Override
+   /* @Override
     public void onClickAgregar(int idinforme) {
         Log.d(TAG,"di click en continua inf");
        // NavHostFragment.findNavController(this).navigate(R.id.action_nottoact);
@@ -126,7 +126,7 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
         intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,idinforme );
         intento1.putExtra(ContInfEtapaFragment.ETAPA,3 );
         startActivity(intento1);
-    }
+    }*/
 
     @Override
     public void onClickContinuar(int idinforme) {
@@ -139,6 +139,11 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
         intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,idinforme );
         intento1.putExtra(ContInfEtapaFragment.ETAPA,3 );
         startActivity(intento1);
+    }
+
+    @Override
+    public void onClickNvoEmp() {
+
     }
 
 
