@@ -569,7 +569,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     " PRIMARY KEY(`id`));");
 
             database.execSQL(
-                    "ALTER TABLE lista_compra ADD COLUMN  lis_reactivado INTEGER; " );
+                    "ALTER TABLE lista_compras ADD COLUMN  lis_reactivado INTEGER; " );
             database.execSQL(
                     "DROP TABLE IF EXISTS coretiquetado_caja; " );
             database.execSQL(
@@ -580,13 +580,13 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             " numfoto INTEGER,  " +
                             "  estatus INTEGER not null," +
                             " estatusSync INTEGER not null," +
-                            "reubico INTEGER "+
+                            "reubico INTEGER, "+
                             "createdAt INTEGER DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY(id)) ");
 
             database.execSQL("CREATE TABLE `coretiquetado_cajadet` (`id` INTEGER NOT NULL, " +
                             "coretiquetadocId INTEGER NOT NULL, "+
 
-                             "ruta_fotonva INTEGER," +
+                             "ruta_fotonva INTEGER not null," +
                             " descripcionId INTEGER NOT NULL, " +
                             "descripcion TEXT," +
                             "numcaja INTEGER NOT NULL," +

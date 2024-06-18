@@ -22,7 +22,7 @@ public class ListaCompra {
     private int estatus;
     private String lis_nota;
     private int lis_etapaactual;
-    private int lis_reactivado; //para saber si hubo reactivacion 1-por cancelacion 2- por muestra adcional
+    private Integer lis_reactivado; //para saber si hubo reactivacion 1-por cancelacion 2- por muestra adcional
 
     public int getId() {
         return id;
@@ -128,11 +128,12 @@ public class ListaCompra {
         this.lis_etapaactual = lis_etapaactual;
     }
 
-    public int getLis_reactivado() {
+
+    public Integer getLis_reactivado() {
         return lis_reactivado;
     }
 
-    public void setLis_reactivado(int lis_reactivado) {
+    public void setLis_reactivado(Integer lis_reactivado) {
         this.lis_reactivado = lis_reactivado;
     }
 }
