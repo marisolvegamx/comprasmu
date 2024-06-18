@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "452773843538",
+    "project_id": "tutorial-crashlitic",
+    "storage_bucket": "tutorial-crashlitic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452773843538:android:3443250839c6620e02458b",
+        "android_client_info": {
+          "package_name": "com.example.comprasmu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452773843538-vejttc9nvnepd8ftr6geh8gv2s7aieau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAALuGeRmRk9cKyE2bDUt6zCGCLZX1mpfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452773843538-vejttc9nvnepd8ftr6geh8gv2s7aieau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452773843538:android:a8ff2436428bb1b902458b",
+        "android_client_info": {
+          "package_name": "com.example.ejemploimagen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452773843538-vejttc9nvnepd8ftr6geh8gv2s7aieau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAALuGeRmRk9cKyE2bDUt6zCGCLZX1mpfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452773843538-vejttc9nvnepd8ftr6geh8gv2s7aieau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
