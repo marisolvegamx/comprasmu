@@ -19,7 +19,7 @@ public class CorEtiquetadoCaja {
     private Integer numfoto;
     private int estatus;
     private int estatusSync;
-    //private boolean reubico;
+    private boolean reubico;
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     @TypeConverters(Converters.class)
     private Date createdAt;
@@ -78,5 +78,13 @@ public class CorEtiquetadoCaja {
 
     public void setSolicitudId(int solicitudId) {
         this.solicitudId = solicitudId;
+    }
+
+    public boolean isReubico() {
+        return reubico;
+    }
+
+    public void setReubico(boolean reubico) {
+        this.reubico = reubico;
     }
 }

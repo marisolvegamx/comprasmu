@@ -16,11 +16,14 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.comprasmu.data.PeticionesServidor;
@@ -57,6 +60,7 @@ import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.workmanager.SyncWork;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -123,10 +127,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     public static final String PROGRESS_PEND = "progress_pend";
     public static final String NAVINICIAL="nd_navinicial";
     TextView txtcancel,gallery;
-    int totCorrecciones;
 
-    int totCancel;
-    int totMuestraAdic;
+    LiveData<Integer> totCorrecciones;
+
+    MutableLiveData<Integer> totCancel;
+    MutableLiveData<Integer> totMuestraAdic;
     SolicitudCorRepoImpl solRepo;
     TablaVersionesRepImpl tvRepo;
     boolean notificar=false;
@@ -141,9 +146,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         setContentView(R.layout.activity_navigation_darawer);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        totCancel=0;
-        totCorrecciones=0;
-        totMuestraAdic=0;
+
         if (savedInstanceState != null) {    // Restore value of members from saved state
           buscarEtapa();
         }
@@ -400,6 +403,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             e.printStackTrace();
         }*/
     }
+
+    @Nullable
+    @Override
+    public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+   //   initializeCountDrawer();
+        return super.onCreateView(parent, name, context, attrs);
+    }
+
     //saber si tiene mas de una ciudad para mostrar seleccionar ciudad
     public void revisarCiudades(){
 
@@ -740,7 +751,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }else
             totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);*/
         /***mod marzo-24 ya no importa la etapa trae todas las solicitudes****/
-        totCorrecciones=scViewModel.getTotalSolsGen(Constantes.INDICEACTUAL,1);
+        totCorrecciones=scViewModel.getTotalSols(Constantes.INDICEACTUAL,1);
 
         //la solicitudes de coreecciones ya no serán por cd sino x indice y etapa
         Log.d(TAG,"contarCorrecc"+totCorrecciones+"--"+Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
@@ -749,10 +760,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     private void contarCanceladas(){
 
-        List<InformeCompraDetalle> informesCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
-        if(informesCancel!=null)
+        totCancel=scViewModel.getTotalCancell(Constantes.INDICEACTUAL);
 
-            totCancel=informesCancel.size();
 
         setEtiquetadoCancel(3,6);
         //veo si ya puedo hacer empaque
@@ -776,8 +785,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 listageneral.add(nvoinf);
             }
         }
-
-        totCancel=listageneral.size();
+        if(listageneral.size()>0)
+           totCancel.setValue(listageneral.size());
 
     }
     private void contarMuestraAdic(){
@@ -805,7 +814,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
                 }
             }
-            totMuestraAdic=informesdetList;
+            totMuestraAdic.setValue(informesdetList);
 
         }
 
@@ -824,7 +833,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 informesfinal++;
             }
         }
-        totMuestraAdic=informesfinal;
+        totMuestraAdic.setValue(informesfinal);
 
         //veo si ya puedo hacer empaque
         listacomp =scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
@@ -839,7 +848,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             }
         }
 
-        totMuestraAdic=listageneral;
+        totMuestraAdic.setValue(listageneral);
 
     }
     private void setEtiquetadoCancel(int etapa, int estatus) {
@@ -862,26 +871,48 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             }
 
         }
-        totCancel=listageneral.size();
+        totCancel.setValue(listageneral.size());
 
     }
     private void initializeCountDrawer(){
+        totCancel=new MutableLiveData<>();
+        totMuestraAdic=new MutableLiveData<>();
         contarCorrecc();
 
         contarCanceladas();
         contarMuestraAdic();
-          if(gallery!=null) {
+
+        if(gallery!=null) {
             gallery.setGravity(Gravity.CENTER_VERTICAL);
             gallery.setTypeface(null, Typeface.BOLD);
             gallery.setTextColor(Color.RED);
 
             //  gallery.setTextSize(15);
-              int totalnotif=0;
-              totalnotif=totCorrecciones+totCancel+totMuestraAdic;
-              gallery.setText(totalnotif + "");
+            int totalnotif = 0;
 
         }
+        totCorrecciones.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer totcor) {
+                totCancel.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
+                    @Override
+                    public void onChanged(Integer totcan) {
+                        totMuestraAdic.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
+                            @Override
+                            public void onChanged(Integer totma) {
+                                int totalnotif = totcor + totcan + totma;
 
+                                gallery.setText(totalnotif + "");
+                            }
+                        });
+
+                    }
+                });
+
+
+
+            }
+        });
 
     }
 

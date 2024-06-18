@@ -91,8 +91,8 @@ public class CorEtiqCajaDetRepoImpl extends BaseRepository<CorEtiquetadoCajaDet>
         return icDao.getCorEtiquetadoCajaDetSimp(corid);
     }
 
-    public List<CorEtiquetadoCajaDet> getCorrecxnumfotoSimple(int corId, int numfoto) {
-        return icDao.getCorrecxnumfotoSimple(corId,numfoto);
+    public List<CorEtiquetadoCajaDet> getCorrecxdescSimple(int corId, int descripcionId, int numcaja) {
+        return icDao.getCorrecxdescSimple(corId,descripcionId, numcaja);
     }
     @Override
     public LiveData<CorEtiquetadoCajaDet> find(int id) {

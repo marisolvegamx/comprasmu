@@ -159,7 +159,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 listacor = corViewModel.getCorreccionesxEtaPlan(etapa, indice, plantasel);
           /********mod. marzo 24 ahora se muestran todas las correcciones siempre***/
             listacor = corViewModel.getCorreccionesAll(indice);
-
+            //las de caja etiquetado estan en otra tabla
+            listacor.addAll(corViewModel.getCorCajaAll(indice));
 
             if(listacor.size()<1){
                         mBinding.emptyStateText.setVisibility(View.VISIBLE);

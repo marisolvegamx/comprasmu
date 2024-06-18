@@ -592,10 +592,11 @@ public class VerInformeGenFragment extends Fragment {
         TextView concepto;
         TextView costo;
         float sumacosto=0;
-        TableRow.LayoutParams lp;
+        TableRow.LayoutParams lp1;
 
 
-        lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+        lp1 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, .65f);
+        TableRow.LayoutParams  lp2 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, .35f);
 
         //busco lo capturado
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(infsel);
@@ -610,8 +611,8 @@ public class VerInformeGenFragment extends Fragment {
             costo=new TextView(getContext());
             //  tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
             tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-            concepto.setLayoutParams(lp);
-            costo.setLayoutParams(lp);
+            concepto.setLayoutParams(lp1);
+            costo.setLayoutParams(lp2);
 
             concepto.setText(detalle.getConcepto()+"");
             concepto.setBackgroundResource(R.drawable.valuecellborder);
@@ -646,8 +647,8 @@ public class VerInformeGenFragment extends Fragment {
         costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.##").format(sumacosto));
         //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
         //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
-        concepto.setLayoutParams(lp);
-        costo.setLayoutParams(lp);
+        concepto.setLayoutParams(lp1);
+        costo.setLayoutParams(lp2);
         tableRow.addView(concepto);
         tableRow.addView(costo);
         mBinding.tblvigastos.addView(tableRow);

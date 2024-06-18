@@ -49,4 +49,7 @@ public abstract class CorEtiquetadoCajaDao extends  BaseDao<CorEtiquetadoCaja>{
 
     @Query("select * from coretiquetado_caja where indice=:indice ")
     public abstract  LiveData<List<CorEtiquetadoCaja>> getByIndice(String indice);
+
+    @Query("select * from coretiquetado_caja where indice=:indice ")
+    public abstract List<CorEtiquetadoCaja> getAllSim(String indice);
 }

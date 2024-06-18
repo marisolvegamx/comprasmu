@@ -14,17 +14,14 @@ public abstract class CorEtiquetadoCajaDetDao extends  BaseDao<CorEtiquetadoCaja
     @Query("SELECT * FROM coretiquetado_cajadet where   coretiquetadocId=:corEtiId")
     public abstract LiveData<List<CorEtiquetadoCajaDet>> getCorEtiquetadoCajaDetxcor( int corEtiId);
 
-
     @Query("SELECT * FROM coretiquetado_cajadet where   coretiquetadocId=:corEtiId")
     public abstract List<CorEtiquetadoCajaDet> getCorEtiquetadoCajaDetSimp( int corEtiId);
-    @Query("SELECT * FROM coretiquetado_cajadet where  coretiquetadocId=:corEtiId and numfotoant=:numfoto")
-    public abstract List<CorEtiquetadoCajaDet> getCorrecxnumfotoSimple(int corEtiId,int numfoto);
 
+    @Query("SELECT * FROM coretiquetado_cajadet where  coretiquetadocId=:corEtiId and descripcionId=:descripcionId and numcaja=:numcaja")
+    public abstract List<CorEtiquetadoCajaDet> getCorrecxdescSimple(int corEtiId,int descripcionId,int numcaja);
 
     @Query("DELETE FROM coretiquetado_cajadet where id=:id")
     public abstract void deleteCorEtiquetadoCajaDet(int id);
-
-
 
     @Query("update coretiquetado_cajadet set estatus=:estatus WHERE id=:id")
     public abstract  void actualizarEstatus(int id, int estatus);

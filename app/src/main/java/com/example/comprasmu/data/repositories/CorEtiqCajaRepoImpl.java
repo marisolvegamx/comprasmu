@@ -139,4 +139,8 @@ public class CorEtiqCajaRepoImpl extends BaseRepository<CorEtiquetadoCaja> {
     public LiveData<List<CorEtiquetadoCaja>> getByIndice(String indice){
         return icDao.getByIndice(indice);
     }
+
+    public List<CorEtiquetadoCaja> getAllSim(String indice) {
+        return icDao.getAllSim(indice);
+    }
 }

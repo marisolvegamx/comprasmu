@@ -10,8 +10,7 @@ public class CorEtiquetadoCajaDet {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private int coretiquetadocId;
-    private String numfotoant;
-    private String ruta_fotonva;
+    private int ruta_fotonva; //id de la foto se guarda en imagen detalle
     private int descripcionId;
     private String descripcion;
     private int numcaja;
@@ -59,19 +58,11 @@ public class CorEtiquetadoCajaDet {
         this.numcaja = numcaja;
     }
 
-    public String getNumfotoant() {
-        return numfotoant;
-    }
-
-    public void setNumfotoant(String numfotoant) {
-        this.numfotoant = numfotoant;
-    }
-
-    public String getRuta_fotonva() {
+    public int getRuta_fotonva() {
         return ruta_fotonva;
     }
 
-    public void setRuta_fotonva(String ruta_fotonva) {
+    public void setRuta_fotonva(int ruta_fotonva) {
         this.ruta_fotonva = ruta_fotonva;
     }
 

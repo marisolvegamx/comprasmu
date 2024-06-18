@@ -8,12 +8,15 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.repositories.CorEtiqCajaDetRepoImpl;
 import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
+import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.utils.Constantes;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class NvaCorreECViewModel extends AndroidViewModel {
     private final CorEtiqCajaDetRepoImpl corecdrepository;
     private final SolicitudCorRepoImpl solRepo;
     private int idNuevo;
-
+    private final ImagenDetRepositoryImpl imagenDetRepository;
     private CorEtiquetadoCaja nvocoreticaja;
     final String TAG="NvaCorreECViewModel";
     Application application;
@@ -34,11 +37,11 @@ public class NvaCorreECViewModel extends AndroidViewModel {
         this.corecdrepository = new CorEtiqCajaDetRepoImpl(application);
         this.solRepo=new SolicitudCorRepoImpl(application);
         this.corecrepository=new CorEtiqCajaRepoImpl(application);
-
+        this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
     }
 
 
-    public int insertarCorreccionEtiqCaj(int solicitudid,String indice,int numFoto){
+    public int insertarCorreccionEtiqCaj(int solicitudid,String indice,int numFoto, boolean reubico){
         Log.d(TAG,"guardar correcc "+solicitudid+"--"+numFoto);
 
         CorEtiquetadoCaja corec=new CorEtiquetadoCaja();
@@ -46,7 +49,7 @@ public class NvaCorreECViewModel extends AndroidViewModel {
         corec.setSolicitudId(solicitudid);
         corec.setNumfoto(numFoto);
         corec.setCreatedAt(new Date());
-
+        corec.setReubico(reubico);
         idNuevo=(int)corecrepository.insert(corec);
         corec.setId(idNuevo);
         this.nvocoreticaja =corec;
@@ -54,13 +57,20 @@ public class NvaCorreECViewModel extends AndroidViewModel {
 
     }
 
-    public int insertarCorEtiqCajDet(int coretiId,String numFoto,String ruta1, int numcaja, String descripcion, int descripcionId){
-        Log.d(TAG,"guardar correcc "+coretiId+"--"+numFoto+"--"+ruta1);
-
+    public int insertarCorEtiqCajDet(int coretiId,String numFotoant,String ruta1, int numcaja, String descripcion, int descripcionId,String indice){
+        Log.d(TAG,"guardar correcc "+coretiId+"--"+ruta1);
+        ImagenDetalle foto=new ImagenDetalle();
+        foto.setRuta( ruta1);
+        foto.setDescripcion(descripcion);
+        foto.setEstatus(1);
+        foto.setEstatusSync(0);
+        foto.setIndice(indice);
+        foto.setCreatedAt(new Date());
+        int nvoidimagem =(int)imagenDetRepository.insertImg(foto);
         CorEtiquetadoCajaDet corec=new CorEtiquetadoCajaDet();
         corec.setCoretiquetadocId(coretiId);
-        corec.setRuta_fotonva(ruta1);
-        corec.setNumfotoant(numFoto);
+        corec.setRuta_fotonva(nvoidimagem);
+
         corec.setNumcaja(numcaja);
         corec.setDescripcion(descripcion);
         corec.setDescripcionId(descripcionId);
@@ -72,7 +82,7 @@ public class NvaCorreECViewModel extends AndroidViewModel {
     }
 
     public void editarCorreccionEtiq(CorEtiquetadoCaja correccion){
-        Log.d(TAG,"editar correcc ");
+        Log.d(TAG,"editar correcc** ");
 
         corecrepository.insert(correccion);
 
@@ -81,10 +91,11 @@ public class NvaCorreECViewModel extends AndroidViewModel {
 
     }
 
-    public void editarCorreccionEtiqDet(CorEtiquetadoCajaDet correccion){
+    public void editarCorreccionEtiqDet(int fotoid,String nvaruta){
         Log.d(TAG,"editar correcc ");
-
-        corecdrepository.insert(correccion);
+        ImagenDetalle imagen=imagenDetRepository.findsimple(fotoid);
+        imagen.setRuta(nvaruta);
+      // corecdrepository.insert(correccion);
 
 
 
@@ -95,6 +106,14 @@ public class NvaCorreECViewModel extends AndroidViewModel {
 
         envio.setCorreccion(nvacorreccion);
         envio.setCordetalles(correcciones);
+        //busco las imagenes
+        List<ImagenDetalle> imagenes=new ArrayList<>();
+        for (CorEtiquetadoCajaDet detalle:correcciones
+             ) {
+            ImagenDetalle imagen=this.imagenDetRepository.findsimple(detalle.getRuta_fotonva());
+            imagenes.add(imagen);
+        }
+        envio.setImagenes(imagenes);
         envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
         envio.setIndice(Constantes.INDICEACTUAL);
         return envio;
@@ -113,8 +132,8 @@ public class NvaCorreECViewModel extends AndroidViewModel {
         return null;
     }
 
-    public CorEtiquetadoCajaDet getUltCorDetSimple(int corId,int numfoto){
-        List<CorEtiquetadoCajaDet> lista=corecdrepository.getCorrecxnumfotoSimple(corId,numfoto);
+    public CorEtiquetadoCajaDet getUltCorDetSimple(int corId,int descripcionId, int numcaja){
+        List<CorEtiquetadoCajaDet> lista=corecdrepository.getCorrecxdescSimple(corId,descripcionId, numcaja);
         if(lista!=null&&lista.size()>0)
          //   if( lista.get(lista.size()-1).getEstatus()==3) //devuelvo el ultimo pend
                 return lista.get(lista.size()-1);

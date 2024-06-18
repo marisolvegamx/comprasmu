@@ -233,7 +233,7 @@ public class NvaCorrecCalCajaFragmentv2 extends Fragment {
                     correccionDet=null;
                     //busco el detalle
                     if(correccion!=null)
-                        correccionDet=corViewModel.getUltCorDetSimple(correccion.getId(),num_foto);
+                        correccionDet=corViewModel.getUltCorDetSimple(correccion.getId(),num_foto,cajaAct);
                     Log.d(TAG,"ya hay cor"+correccionDet);
                 }
             }
@@ -321,7 +321,7 @@ public class NvaCorrecCalCajaFragmentv2 extends Fragment {
         if(isEdicion) {
              inftemp=new InformeTemp();// en detalleinfview se usa informetemporal para obtener el valor que se edita
             //por eso creo un objeto para guardar el valor
-            inftemp.setValor(correccionDet.getRuta_fotonva());
+          //  inftemp.setValor(correccionDet.getRuta_fotonva());
             preguntaview.setUltimares(inftemp);
             preguntaview.setEdicion(isEdicion);
         }
@@ -425,16 +425,17 @@ public class NvaCorrecCalCajaFragmentv2 extends Fragment {
                     corViewModel.editarCorreccionEtiq(correccion);
                 } else if(corViewModel.getIdNuevo()==0)
                     //guardo encabezado
-                    corViewModel.insertarCorreccionEtiqCaj(solicitud.getId(), Constantes.INDICEACTUAL, numfotoSol);
+                    corViewModel.insertarCorreccionEtiqCaj(solicitud.getId(), Constantes.INDICEACTUAL, numfotoSol,reubicoMuestra);
                 Log.d(TAG,"num foto"+num_foto);
                 if(corViewModel.getIdNuevo()>0)//todo bien
                 {
                    if(isEdicion){
-                       correccionDet.setRuta_fotonva(valor); //solo cambia la foto
-                       corViewModel.editarCorreccionEtiqDet(correccionDet);
-                   }else
+                      // correccionDet.setRuta_fotonva(valor); //solo cambia la foto
+                      // corViewModel.editarCorreccionEtiqDet(correccionDet);
+                   }
+                   //else
                     //inserto detalle
-                    corViewModel.insertarCorEtiqCajDet(corViewModel.getIdNuevo(), num_foto + "", valor, cajaAct, descripcion, descripcionId);
+                 //   corViewModel.insertarCorEtiqCajDet(corViewModel.getIdNuevo(), num_foto + "", valor, cajaAct, descripcion, descripcionId);
                 }
               // mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL, num_foto, valor, "", "", ""));
                 preguntaview.aceptarSetEnabled(true);
@@ -603,7 +604,7 @@ public class NvaCorrecCalCajaFragmentv2 extends Fragment {
            SubirCorrEtiqCajaTask miTareaAsincrona = new SubirCorrEtiqCajaTask(envio,getActivity());
            miTareaAsincrona.execute();
            for(CorEtiquetadoCajaDet cor:nuevasCor) {
-               subirFotos(getActivity(), cor.getId(), cor.getRuta_fotonva());
+           //    subirFotos(getActivity(), cor.getId(), cor.getRuta_fotonva());
            }
            //todo limpio variables de sesion
             corViewModel.setIdNuevo(0);

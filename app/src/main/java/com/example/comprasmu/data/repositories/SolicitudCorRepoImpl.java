@@ -44,8 +44,8 @@ public class SolicitudCorRepoImpl  {
     public LiveData<List<SolicitudCor>> getAllPlan(int etapa, String indice, int plan, int estatus) {
         return icDao.getSolicitudesPlan(etapa, indice,plan, estatus);
     }
-    public LiveData<Integer> totalSols(int etapa, String indice, int estatus) {
-        return icDao.getTotSols(etapa, indice, estatus);
+    public LiveData<Integer> totalSols( String indice, int estatus) {
+        return icDao.getTotSolsGenl( indice, estatus);
     }
     public int totalSolsGen( String indice, int estatus) {
         return icDao.getTotSolsGen( indice, estatus);

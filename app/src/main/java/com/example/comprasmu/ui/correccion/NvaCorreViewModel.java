@@ -7,11 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 
 import com.example.comprasmu.data.remote.CorreccionEnvio;
+import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.utils.Constantes;
@@ -31,13 +33,15 @@ public class NvaCorreViewModel extends AndroidViewModel {
     private CorEtiquetadoCaja nvocoreticaja;
     final String TAG="NvaCorreViewModel";
     Application application;
+    private CorEtiqCajaRepoImpl cocajaRepo;
+
 
     public NvaCorreViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
         this.correpository = new CorreccionRepoImpl(application);
         this.solRepo=new SolicitudCorRepoImpl(application);
-
+        this.cocajaRepo=new CorEtiqCajaRepoImpl(application);
 
     }
 
@@ -99,7 +103,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
 
     }
 
-    public void editarCorreccionEtiq(Correccion correccion){
+   public void editarCorreccionEtiq(Correccion correccion){
         Log.d(TAG,"editar correcc ");
 
         correpository.insert(correccion);
@@ -203,6 +207,32 @@ public class NvaCorreViewModel extends AndroidViewModel {
                 resp.add(solwcor);
             }
 
+        return resp;
+    }
+    public List<CorreccionWithSol> getCorCajaAll( String indice){
+        //paso de correccioncaja a correccion normal
+        List<CorreccionWithSol> resp=new ArrayList<>();
+
+        List<CorEtiquetadoCaja> listacor=cocajaRepo.getAllSim(indice);
+        CorreccionWithSol solwcor=null;
+        Correccion corTemp=null;
+        if(listacor!=null)
+            for (CorEtiquetadoCaja cor:listacor) {
+                //busco la correccion
+                SolicitudCor sol= solRepo.findsimple(cor.getSolicitudId(), cor.getNumfoto());
+                solwcor=new CorreccionWithSol();
+                solwcor.solicitud=sol;
+                corTemp=new Correccion();
+                corTemp.setId(cor.getId());
+                corTemp.setCreatedAt(cor.getCreatedAt());
+                corTemp.setEstatus(cor.getEstatus());
+                corTemp.setEstatusSync(cor.getEstatusSync());
+                corTemp.setIndice(cor.getIndice());
+                corTemp.setNumfoto(cor.getNumfoto());
+                corTemp.setSolicitudId(cor.getSolicitudId());
+                solwcor.correccion=corTemp;
+                resp.add(solwcor);
+            }
         return resp;
     }
     public LiveData<Correccion> getCorreccion(int id){

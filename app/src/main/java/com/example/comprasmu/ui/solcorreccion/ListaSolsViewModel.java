@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.comprasmu.data.ComprasDataBase;
@@ -87,9 +88,9 @@ public class ListaSolsViewModel extends AndroidViewModel {
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
         return listas;
     }
-    public LiveData<Integer> getTotalSols(int etapa, String indiceSel, int estatus){
+    public LiveData<Integer> getTotalSols( String indiceSel, int estatus){
 
-        return repository.totalSols(etapa,indiceSel, estatus);
+        return repository.totalSols(indiceSel, estatus);
     }
     public int getTotalSolsGen( String indiceSel, int estatus){
 
@@ -124,11 +125,11 @@ public class ListaSolsViewModel extends AndroidViewModel {
         LiveData<SolicitudCor> solicitud =repository.find(id,numfoto);
         return solicitud;
     }
-    /*public MutableLiveData<Integer>  getTotalCancel(String indiceSel){
+    public MutableLiveData<Integer> getTotalCancell(String indiceSel){
         Log.d(TAG,"wwww*"+ Constantes.ETAPAACTUAL+","+Constantes.INDICEACTUAL);
 
         return infcrepo.gettotCancelados(indiceSel);
-    }*/
+    }
 
     public List<InformeCompraDetalle> getTotalCancel(String indiceSel ){
         return infcrepo.getCanceladosSim(indiceSel);
