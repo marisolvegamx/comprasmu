@@ -2,45 +2,31 @@ package com.example.comprasmu.ui.gasto;
 
 import android.app.Application;
 import android.os.Environment;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
-import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.data.PeticionesServidor;
-import com.example.comprasmu.data.dao.InformeGastoDetDao_Impl;
+
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
-import com.example.comprasmu.data.modelos.DetalleCaja;
+
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeEnvioDet;
-import com.example.comprasmu.data.modelos.InformeEnvioPaq;
+
 import com.example.comprasmu.data.modelos.InformeEtapa;
-import com.example.comprasmu.data.modelos.InformeEtapaDet;
+
 import com.example.comprasmu.data.modelos.InformeGastoDet;
-import com.example.comprasmu.data.modelos.InformeTemp;
-import com.example.comprasmu.data.modelos.Reactivo;
-import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
-import com.example.comprasmu.data.remote.InformeEtapaEnv;
+
 import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
-import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
+
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
+
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
-import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.Event;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 //para preparacion, etiquetado y empaque

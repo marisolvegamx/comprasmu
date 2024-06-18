@@ -310,7 +310,8 @@
                     android:id="@+id/txvtotal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_validar" />
+                    android:text="@string/total_validar"
+                    android:visibility="gone" />
 
                 <TableLayout
                     android:id="@+id/tblgaresconcep"

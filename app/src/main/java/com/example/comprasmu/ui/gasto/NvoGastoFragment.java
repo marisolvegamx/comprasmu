@@ -543,7 +543,7 @@ public class NvoGastoFragment extends Fragment {
             mBinding.sincomprobante.clearCheck();
             aceptar2.setEnabled(false);//pregunta gasto
             aceptar3.setEnabled(true); //concepto
-            aceptar4.setEnabled(false);//descripcion
+          //  aceptar4.setEnabled(false);//descripcion
             aceptar5.setEnabled(false); //costo
             aceptar6.setEnabled(false); //comprobante
             aceptar7.setEnabled(false); //foto
@@ -610,7 +610,10 @@ public class NvoGastoFragment extends Fragment {
         TextView concepto;
         TextView costo;
         float sumacosto=0;
-     //busco lo capturado
+        TableRow.LayoutParams lp;
+        lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+
+        //busco lo capturado
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(mViewModel.getIdNuevo());
         for (InformeGastoDet detalle:detalles
         ) {
@@ -619,7 +622,8 @@ public class NvoGastoFragment extends Fragment {
             concepto=new TextView(getContext());
             costo=new TextView(getContext());
           //  tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+            tableRow.setLayoutParams(lp);
 
 
             concepto.setText(detalle.getConcepto()+"");
@@ -648,7 +652,7 @@ public class NvoGastoFragment extends Fragment {
         costo=new TextView(getContext());
 
         tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-        tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        tableRow.setLayoutParams(lp);
         costo.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setText("TOTAL A VALIDAR");

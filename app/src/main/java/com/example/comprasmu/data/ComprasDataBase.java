@@ -570,10 +570,34 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
             database.execSQL(
                     "ALTER TABLE lista_compra ADD COLUMN  lis_reactivado INTEGER; " );
+            database.execSQL(
+                    "DROP TABLE IF EXISTS coretiquetado_caja; " );
+            database.execSQL(
+                    "DROP TABLE IF EXISTS coretiquetado_cajadet; " );
+            database.execSQL("create  TABLE coretiquetado_caja ( id INTEGER not null," +
+                            "indice TEXT," +
+                            "solicitudId INTEGER not null," +
+                            " numfoto INTEGER,  " +
+                            "  estatus INTEGER not null," +
+                            " estatusSync INTEGER not null," +
+                            "reubico INTEGER "+
+                            "createdAt INTEGER DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY(id)) ");
+
+            database.execSQL("CREATE TABLE `coretiquetado_cajadet` (`id` INTEGER NOT NULL, " +
+                            "coretiquetadocId INTEGER NOT NULL, "+
+
+                             "ruta_fotonva INTEGER," +
+                            " descripcionId INTEGER NOT NULL, " +
+                            "descripcion TEXT," +
+                            "numcaja INTEGER NOT NULL," +
+                            " estatus INTEGER not null," +
+                            "  estatusSync INTEGER not null," +
+                            "PRIMARY KEY(`id`));");
 
 
         }
     };
+
     private void cargandodatos(){
 
         runInTransaction(new Runnable() {
