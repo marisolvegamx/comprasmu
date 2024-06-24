@@ -691,23 +691,16 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/></fragment>
 
 
-    <fragment
+    <activity
         android:id="@+id/nav_revrecibo"
-        android:name="com.example.comprasmu.ui.envio.DescargarFragment"
+        android:name="com.example.comprasmu.ui.gasto.RevReciboActivity"
         android:label="@string/menu_revrecibo" >
         <argument
             android:name="comprasmu.cie.etapasel"
             app:argType="integer"
             android:defaultValue="6" />
-        <action android:id="@+id/action_envtocdtrabajo"
-            app:popUpTo="@+id/nav_ciudad_trabajo"
-            app:popUpToInclusive="true"
-            app:destination="@id/nav_ciudad_trabajo"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    </fragment>
+
+    </activity>
     <!-- fin opciones gastos-->
     <activity
         android:id="@+id/nav_menuini"

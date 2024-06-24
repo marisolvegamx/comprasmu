@@ -5,8 +5,10 @@ import android.os.Environment;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -15,6 +17,7 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 
@@ -22,6 +25,7 @@ import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
@@ -154,6 +158,23 @@ public class NvoGastoViewModel extends AndroidViewModel {
         ps.getTotalMuestras(Constantes.INDICEACTUAL,ciudadInf,listenerM);
 
     }
+    /**valido si ya puedo hacer gastos***/
 
+    public  boolean  validarEtapa(String ciudadSel){
+        ListaCompraRepositoryImpl repository;
+        ListaCompraDao dao= ComprasDataBase.getInstance(application).getListaCompraDao();
+        repository = ListaCompraRepositoryImpl.getInstance(dao);
+        List<ListaCompra> listacomp= repository.getAllByIndiceCiudadSimpl(Constantes.INDICEACTUAL,ciudadSel);
+        for (ListaCompra lista:listacomp
+             ) {
+            if(lista.getLis_etapaactual()!=6)//no está en la 6
+            {
+                return false;
+            }
+        }
+        if(listacomp!=null)
+        return true;
+        return false;
+    }
 
 }

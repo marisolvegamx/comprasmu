@@ -501,6 +501,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
+
     @Override
     public void onBackPressed() {
         Log.d(TAG,"es corr "+isCor);

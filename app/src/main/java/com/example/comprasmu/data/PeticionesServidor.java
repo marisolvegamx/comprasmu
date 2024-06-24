@@ -786,7 +786,7 @@ public class PeticionesServidor {
         });
     }
     public void getEtapaAct(PruebasActivity.EtapaListener listener) {
-
+        Log.d("PeticionesServidor","peticion etapaact "+usuario);
         final Call<EtapaResponse> batch = ServiceGenerator.getApiService().getEtapaAct(usuario);
 
         batch.enqueue(new Callback<EtapaResponse>() {
@@ -805,6 +805,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<EtapaResponse> call, @Nullable Throwable t) {
                 if (t != null) {
+                    t.printStackTrace();
                     Log.e("PeticionesServidor", "algo salio mal en peticio etapa"+t.getMessage());
                     listener.validarEtapa(null);
                 }
@@ -1027,14 +1028,14 @@ public class PeticionesServidor {
                     listener.guardarEstatus(respuestaCats);
 
                 }else
-                    Log.e("PeticionesServidor", "algo salio mal en peticion getTotalMuestras");
+                    Log.e("PeticionesServidor", "algo salio mal en peticion getEstatusRecibo");
 
             }
 
             @Override
             public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e("PeticionesServidor", "algo salio mal en peticio getTotalMuestras"+t.getMessage());
+                    Log.e("PeticionesServidor", "algo salio mal en peticio getEstatusRecibo"+t.getMessage());
                     listener.guardarEstatus(null);
                 }
             }

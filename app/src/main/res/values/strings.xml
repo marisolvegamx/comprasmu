@@ -372,5 +372,6 @@
     <string name="descargar">DESCARGAR RECIBO</string>
     <string name="muestra_adicional">MUESTRA ADICIONAL</string>
     <string name="continuar_inf">CONTINUAR EL INFORME EN EL MODULO CORRESPONDIENTE</string>
+    <string name="esta_acuerdo">¿ESTÁ DE ACUERDO?</string>
 
 </resources>

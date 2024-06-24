@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity
 //        implements DescargasIniAsyncTask.ProgresoListener
 {
 
+    private static final String TAG ="LoginActivity" ;
     private LoginViewModel loginViewModel;
      EditText usernameEditText;
      EditText passwordEditText;
@@ -127,7 +128,8 @@ public class LoginActivity extends AppCompatActivity
 
                 lastClickTime = currentClickTime;
                 if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo//entro rapido
-                 new LoginListener().iniciar();
+                // new LoginListener().iniciar();
+                // return;
                 }
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 //hago validaciones
@@ -203,11 +205,13 @@ public class LoginActivity extends AppCompatActivity
             if(luser==null) { //primera vez
                 loadingProgressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "Sin conexión a internet, verifique", Toast.LENGTH_LONG).show();
+                loginButton.setEnabled(true);
             }
             else
                 //loginlocal
             {
                 //new LoginListener().correcto();
+                Log.i(TAG,"haciendo loginlocal");
                 loginViewModel.loginLocal(luser,usernameEditText.getText().toString(),
                         passwordEditText.getText().toString(),new LoginListener());
             }
@@ -437,6 +441,7 @@ public class LoginActivity extends AppCompatActivity
 
         }
         public void correcto(String cveusr) {
+
             loadingProgressBar.setVisibility(View.GONE);
             guardarUsuario( cveusr);
             //busco la clave de usuario
@@ -447,6 +452,8 @@ public class LoginActivity extends AppCompatActivity
             }
             String clave=aux[1];
             guardarClave(clave);
+            Log.d(TAG,"correcto"+clave);
+            Log.d(TAG,"correcto"+Constantes.CLAVEUSUARIO);
             updateUiWithUser(usernameEditText.getText().toString());
             //hago actualizacion y cuando termine envio a la sig actividad
          //   descargasIniciales();
@@ -455,6 +462,7 @@ public class LoginActivity extends AppCompatActivity
 
         }
         public void iniciar() {
+            Log.d(TAG,"iniciar"+Constantes.CLAVEUSUARIO);
             loadingProgressBar.setVisibility(View.GONE);
          //   guardarUsuario( cveusr);
             updateUiWithUser(usernameEditText.getText().toString());

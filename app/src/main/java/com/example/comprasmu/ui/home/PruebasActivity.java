@@ -78,7 +78,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
 
         progreso.show();
-
+        Log.d(TAG,"Y MI USER??"+Constantes.CLAVEUSUARIO);
        // mTextView = findViewById(R.id.txtlllog);
         if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
 
@@ -196,6 +196,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     public void buscarEtapa(){
 
         getEtapaPref();
+        Log.d(TAG,"Y MI USER"+Constantes.CLAVEUSUARIO);
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         EtapaListener listener=new EtapaListener();
         ps.getEtapaAct(listener);

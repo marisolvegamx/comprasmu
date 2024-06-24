@@ -54,8 +54,8 @@ import static android.content.Context.ACTIVITY_SERVICE;
 public class ComprasUtils {
 
     Bitmap rotatedBitmap;
-
-  /*  public static Boolean isOnlineNet() {
+/*
+   public static Boolean isOnlineNet(Context context) {
 
         try {
             Process p = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
@@ -69,7 +69,7 @@ public class ComprasUtils {
 
             int val = p.waitFor();
             boolean reachable = (val == 0);
-            Log.d("ComprasUtils","exit: " + p.exitValue());
+            Log.d("ComprasUtils","exit: " +val);
             p.destroy();
             return reachable;
 
@@ -79,45 +79,11 @@ public class ComprasUtils {
         }
         return false;
     }*/
-    public static Boolean isOnlineNet(Context context) {
-
-       ConnectivityManager connectivityManager = (ConnectivityManager)
-         context.getSystemService(Context.CONNECTIVITY_SERVICE);
-     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        RunnableFuture<Boolean> futureRun = new FutureTask<Boolean>(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                if ((networkInfo .isAvailable()) && (networkInfo .isConnected())) {
-                    try {
-                        HttpURLConnection urlc = (HttpURLConnection) (new URL("https://espanol.yahoo.com").openConnection());
-                        urlc.setRequestProperty("User-Agent", "Test");
-                        urlc.setRequestProperty("Connection", "close");
-                        urlc.setConnectTimeout(1500);
-                        urlc.connect();
-                        int res=urlc.getResponseCode();
-                        Log.d("ComprasUtils","ssss "+res);
-                        return (res== 200);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.e("ComprasUtils", "Error checking internet connection", e);
-                    }
-                } else {
-                    Log.d("ComprasUtils", "No network available!");
-                }
-                return false;
-            }
-        });
-
-        new Thread(futureRun).start();
-
-
-        try {
-            return futureRun.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return false;
-        }
+   public static Boolean isOnlineNet(Context context) {
+       ConnectivityManager connectivityManager
+               = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+       NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+       return activeNetworkInfo != null;
 
     }
 

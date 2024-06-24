@@ -101,7 +101,7 @@ public class NvoGastoFragment extends Fragment {
     private int  informeSel;
     private String ciudadInf;
     ComprasLog compraslog;
-    private ListaDetalleViewModel lcViewModel;
+
 
     List<ListaCompra> listacomp;
     private  ArrayList<DescripcionGenerica> listaClientes; //otra vez lista clientes
@@ -121,6 +121,7 @@ public class NvoGastoFragment extends Fragment {
     private ImageButton btntomarf;
     NvoGastoViewModel niviewModel;
     ComprasLog milog;
+    private ArrayAdapter<CatalogoDetalle> catAdapter;
 
     public NvoGastoFragment() {
 
@@ -143,7 +144,6 @@ public class NvoGastoFragment extends Fragment {
 //son 8 preguntas
             root=mBinding.getRoot();
             mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
-            lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
             niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
 
             //reviso si es edicion y ya tengo info en temp
@@ -202,6 +202,12 @@ public class NvoGastoFragment extends Fragment {
             this.buscarTotalesMuestra();
             totalgastos=totalotros=0;
             totalval=0;
+
+            //busco los clientes x ciudad
+           if(!niviewModel.validarEtapa(ciudadInf)){
+               Toast.makeText(getContext(),"No puede hacer gastos",Toast.LENGTH_SHORT).show();
+                return root;
+           }
             //deshabilito botones de aceptar
             aceptar1.setEnabled(true); //resumen
 
@@ -393,7 +399,7 @@ public class NvoGastoFragment extends Fragment {
             cliente.setBackgroundResource(R.drawable.valuecellborder);
            numuestra.setText(detalle.getNum_muestras()+"");
             numuestra.setBackgroundResource(R.drawable.valuecellborder);
-           costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.##").format(detalle.getCosto()));
+           costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
             tableRow.addView(cliente);
             tableRow.addView(numuestra);
@@ -457,8 +463,11 @@ public class NvoGastoFragment extends Fragment {
                             for (InformeGastoDet det:
                                  detalles) {
 
-                                if (conceptos.get(i).getCad_idopcion() == det.getConceptoId())
+                                if (conceptos.get(i).getCad_idopcion() == det.getConceptoId()) {
                                     conceptos.remove(i);
+                                    catAdapter.notifyDataSetChanged();
+                                }
+
                             }
                         }
                             llconce.setVisibility(View.VISIBLE);
@@ -555,7 +564,7 @@ public class NvoGastoFragment extends Fragment {
 
 
 
-            mBinding.spgasconcep.setSelection(0);
+            mBinding.spgasconcep.setSelection(-1);
             mBinding.txtgasrutafoto.setText("");
           fotomos.setImageBitmap(null);
             btnrotar.setVisibility(View.GONE);
@@ -567,7 +576,7 @@ public class NvoGastoFragment extends Fragment {
     public void getConceptos(){
         //  Log.d(TAG,"buscando atributos"+dViewModel.productoSel.empaque+"--"+dViewModel.productoSel.idempaque+"--"+dViewModel.productoSel.clienteSel);
         conceptos=niviewModel.cargarConceptos();
-        ArrayAdapter catAdapter = new ArrayAdapter<CatalogoDetalle>(getContext(), android.R.layout.simple_spinner_dropdown_item, conceptos) {
+        catAdapter = new ArrayAdapter<CatalogoDetalle>(getContext(), android.R.layout.simple_spinner_dropdown_item, conceptos) {
 
 
             // And the "magic" goes here
@@ -610,8 +619,9 @@ public class NvoGastoFragment extends Fragment {
         TextView concepto;
         TextView costo;
         float sumacosto=0;
-        TableRow.LayoutParams lp;
-        lp = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+        TableRow.LayoutParams lp1;
+        lp1 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, .7f);
+        TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, .3f);
 
         //busco lo capturado
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(mViewModel.getIdNuevo());
@@ -623,15 +633,15 @@ public class NvoGastoFragment extends Fragment {
             costo=new TextView(getContext());
           //  tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            tableRow.setLayoutParams(lp);
+         //   tableRow.setLayoutParams(lp);
 
 
             concepto.setText(detalle.getConcepto()+"");
             concepto.setBackgroundResource(R.drawable.valuecellborder);
-            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.##").format(detalle.getImporte()));
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("0.00").format(detalle.getImporte()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
-         //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
-         //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
+            concepto.setLayoutParams(lp1);
+            costo.setLayoutParams(lp2);
 
             tableRow.addView(concepto);
             tableRow.addView(costo);
@@ -652,14 +662,13 @@ public class NvoGastoFragment extends Fragment {
         costo=new TextView(getContext());
 
         tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-        tableRow.setLayoutParams(lp);
+     //   tableRow.setLayoutParams(lp);
         costo.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setText("TOTAL A VALIDAR");
-       costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.##").format(sumacosto));
-      //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
-     //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
-
+       costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("0.00").format(sumacosto));
+        concepto.setLayoutParams(lp1);
+        costo.setLayoutParams(lp2);
         tableRow.addView(concepto);
         tableRow.addView(costo);
         mBinding.tblgaresconcep.addView(tableRow);

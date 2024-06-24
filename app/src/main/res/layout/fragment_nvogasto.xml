@@ -192,7 +192,7 @@
                     style="@style/formlabel2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/costo" />
+                    android:text="@string/costogas" />
 
                 <EditText
                     android:id="@+id/txtgascosto"
@@ -326,7 +326,7 @@
                             android:id="@+id/textView45"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="0.7"
                             android:background="@drawable/valuecellborder"
                             android:text="@string/concepto" />
 
@@ -334,7 +334,7 @@
                             android:id="@+id/textView35"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="0.3"
                             android:background="@drawable/valuecellborder"
                             android:text="@string/costogas" />
                     </TableRow>

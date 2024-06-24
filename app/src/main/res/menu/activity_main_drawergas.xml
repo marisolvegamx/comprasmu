@@ -35,7 +35,7 @@
             android:title="@string/menu_lista_gas" />
         <item
             android:id="@+id/nav_revrecibo"
-            android:icon="?attr/actionModePasteDrawable"
+            android:icon="@drawable/ic_baseline_receipt_long_24"
             android:title="@string/menu_revrecibo" />
 
         <item

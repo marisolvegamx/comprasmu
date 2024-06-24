@@ -69,7 +69,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public LiveData<List<ListaCompra>> getAllByIndiceCiudad(String indice,String idCiudad) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre like ? group by plantasId";
+                "and ciudadNombre like ?";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idCiudad});
@@ -88,7 +88,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public List<ListaCompra> getAllByIndiceCiudadSimpl(String indice,String idCiudad) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre like ? group by plantasId";
+                "and ciudadNombre like ?";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idCiudad});
@@ -98,7 +98,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public List<ListaCompra> getAllByIndiceCiudadEtaSimpl(String indice,String idCiudad,String etapa) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre like ? and lis_etapaactual=? group by plantasId";
+                "and ciudadNombre like ? and lis_etapaactual=?";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idCiudad, etapa});
@@ -108,7 +108,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public List<ListaCompra> getAllByIndiceCiudadEtaSimpl2(String indice,String idCiudad,String etapa) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre like ? and lis_etapaactual=? group by plantasId";
+                "and ciudadNombre like ? and lis_etapaactual=?";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idCiudad, etapa});
@@ -117,7 +117,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public LiveData<List<ListaCompra>> getAllByIndiceCiudadEta(String indice,String idCiudad,String etapa) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre like ? and lis_etapaactual=? group by plantasId";
+                "and ciudadNombre like ? and lis_etapaactual=?";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idCiudad, etapa});
@@ -190,7 +190,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public LiveData<List<ListaCompra>> getAllByIndiceCiudadCliente(String indice,String idCiudad,int idCliente) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre=? and clientesId=? group by plantasId";
+                "and ciudadNombre=? and clientesId=?";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idCiudad,idCliente});
@@ -199,7 +199,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public List<ListaCompra> getAllByIndiceCiudadClienteSim(String indice,String ciudad,int idCliente) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre=? and clientesId=? group by plantasId";
+                "and ciudadNombre=? and clientesId=?";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,ciudad,idCliente});

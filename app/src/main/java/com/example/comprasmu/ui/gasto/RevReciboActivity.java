@@ -1,19 +1,27 @@
 package com.example.comprasmu.ui.gasto;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.PeticionesServidor;
@@ -27,8 +35,10 @@ import com.example.comprasmu.utils.Preguntasino;
 public class RevReciboActivity extends AppCompatActivity {
     Button btndescargar;
     int estatusRecibo; //1- está listo 0 -no
-    LinearLayout llprin;
+    LinearLayout llprin, llpregunta;
     int estatusAceptado;//0 no ,1 -si
+    private Toolbar myChildToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +48,22 @@ public class RevReciboActivity extends AppCompatActivity {
         Button btnenviar=findViewById(R.id.btnrrenviar);
         TextView comentarios=findViewById(R.id.txtrrcomentarios);
         Preguntasino pregunta=findViewById(R.id.rrsinoacuerdo);
+
+        // Enable the Up button
+        myChildToolbar =
+                findViewById(R.id.rrtoolbarinf);
+        setSupportActionBar(myChildToolbar);
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+        myChildToolbar.setTitle("REVISAR RECIBO");
+        // Enable the Up button
+      //  ab.setDisplayHomeAsUpEnabled(true);
         btndescargar=findViewById(R.id.btnrrdescargar);
+        llpregunta=findViewById(R.id.llrrpregunta);
         llprin=findViewById(R.id.llrrweb);
         llprin.setVisibility(View.GONE);
+      //  llpregunta.setVisibility(View.GONE);
+        pregunta.setmLabel(getString(R.string.esta_acuerdo));
         btndescargar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,8 +95,8 @@ public class RevReciboActivity extends AppCompatActivity {
             btndescargar.setVisibility(View.VISIBLE);
             return;
         }
-
-        //busco el estuas recibo
+        llprin.setVisibility(View.VISIBLE);
+        //busco el estatus recibo
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         ListenerRec listener=new ListenerRec();
         ps.getEstatusRecibo(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
@@ -81,12 +104,15 @@ public class RevReciboActivity extends AppCompatActivity {
 
         String urlrecibo= BASE_URL+"/revisarRecibo?indice="+Constantes.INDICEACTUAL+"&cverec="+Constantes.CLAVEUSUARIO+"&cd="+Constantes.CIUDADTRABAJO;
         WebView webView = (WebView)findViewById(R.id.rrwebView);
+        webView.clearCache(true);
+        webView.setWebViewClient(new WebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("http://www.stackoverflow.com");
+        webView.loadUrl(BASE_URL);
 
         btnenviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnenviar.setEnabled(false);
                 enviarResp(comentarios.getText().toString(),pregunta.getRespuesta());
             }
         });
@@ -132,17 +158,56 @@ public class RevReciboActivity extends AppCompatActivity {
         }
 
         public void guardarRes(PostResponse respuesta){
-            if(respuesta!=null&&estatusAceptado==1){
-                //todo guardo acuse o actualizo
-                btndescargar.setVisibility(View.VISIBLE);
-                //todo quito boton aceptar
+            if(respuesta!=null) {
+                AcuseReciboRepositoryImpl acrepo=new AcuseReciboRepositoryImpl(RevReciboActivity.this);
+                // guardo acuse o actualizo
+                AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL);
+                if(acuse!=null){
+                    acuse.setAceptado(estatusAceptado);
+                }else {
+                    AcuseRecibo nvoacuse = new AcuseRecibo();
+                    nvoacuse.setIndice(Constantes.INDICEACTUAL);
+                    nvoacuse.setAceptado(estatusAceptado);
+                    acrepo.insert(nvoacuse);
+                }
 
+                if (estatusAceptado == 1) {
+
+                    btndescargar.setVisibility(View.VISIBLE);
+                    //todo quito boton aceptar
+                    llpregunta.setVisibility(View.GONE);
+                } else {
+                    Toast.makeText(RevReciboActivity.this, "Su comentario ha sido enviado", Toast.LENGTH_LONG);
+                    btndescargar.setVisibility(View.GONE);
+                    llpregunta.setVisibility(View.GONE);
+                }
             }
-            else
-            {
-                Toast.makeText(RevReciboActivity.this,"Su comentario ha sido enviado",Toast.LENGTH_LONG);
-                btndescargar.setVisibility(View.GONE);
-            }
+            //todo quitar despues de la prueba
+           if(estatusAceptado==1){
+
+               btndescargar.setVisibility(View.VISIBLE);
+               //todo quito boton aceptar
+               llpregunta.setVisibility(View.GONE);
+           }
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_continuar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.csalir:
+                finish();
+            break;
+
+        }
+
+      return true;
     }
 }
