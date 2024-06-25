@@ -397,7 +397,7 @@ public class NvoGastoFragment extends Fragment {
 
             cliente.setText(detalle.getCliente());
             cliente.setBackgroundResource(R.drawable.valuecellborder);
-           numuestra.setText(detalle.getNum_muestras()+"");
+           numuestra.setText(detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
             numuestra.setBackgroundResource(R.drawable.valuecellborder);
            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
             costo.setBackgroundResource(R.drawable.valuecellborder);

@@ -27,8 +27,11 @@ import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.SubirInformeGastoTask;
+import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
+import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.ui.correccion.CorreccionWithSol;
@@ -45,6 +48,7 @@ import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.Constantes;
+import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -226,7 +230,13 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 temp.setEstatus(cor.correccion.getEstatus());
                 temp.setEstatusSync(cor.correccion.getEstatusSync());
                 temp.setCreatedAt(cor.correccion.getCreatedAt());
-
+                if(cor.solicitud.getEtapa()==3) //para saber si es de cja
+                {
+                    if(cor.solicitud.getDescripcionId()>11){
+                        //es de caja y lo pongo en el consecutivo -1 es de cja
+                        temp.setConsecutivo(-1);
+                    }
+                }
                 if (cor.solicitud.getEtapa() > 2) {
                     //pongo el motivo
                     temp.setComentarios(cor.solicitud.getDescMostrar());
@@ -247,16 +257,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
         intento1.putExtra(ARG_TIPOCONS, tipocons);
         //Constantes.ETAPAACTUAL=etapa;
-        if(etapainf==3) //para etiquetado calidad caja
-        {
-            if (tipocons.equals("rescor")) { //es correccion
-                intento1.putExtra(ListaInformesEtaFragment.ARG_TIPOCONS, "rescorcaj");
-
-            }
-            intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR); //informe generico
-
-        }
-        else if(etapa==4) {
+       if(etapa==4) {
             if(tipocons.equals("rescor")){ //es correccion
                 intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);
 
@@ -265,6 +266,20 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         }
         else
             intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR); //informe generico
+        startActivity(intento1);
+
+    }
+
+    @Override
+    public void onClickVerCC(int idinforme) {
+        Intent intento1=new Intent(getActivity(), BackActivity.class);
+        intento1.putExtra(INFORMESEL, idinforme);
+
+        intento1.putExtra(ARG_TIPOCONS, tipocons);
+
+        intento1.putExtra(ListaInformesEtaFragment.ARG_TIPOCONS, "rescorcaj");
+
+
         startActivity(intento1);
 
     }
@@ -341,6 +356,29 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             Toast.makeText(getActivity(), getString(R.string.sin_conexion), Toast.LENGTH_LONG).show();
 
     }
+
+    @Override
+    public void onClickSubirCC(int id) {
+
+            //busco la correccion x el id
+        List<CorEtiquetadoCajaDet> nuevasCor= corViewModel.getCorreccionesCDet(id);
+        CorEtiquetadoCaja nvacor=corViewModel.getCorreccionesCxid(id,Constantes.INDICEACTUAL);
+        CorEtiquetaCajaEnvio envio=corViewModel.prepararEnvioCC(nvacor,nuevasCor);
+        SubirCorrEtiqCajaTask miTareaAsincrona = new SubirCorrEtiqCajaTask(envio,getActivity());
+        miTareaAsincrona.execute();
+        //necesito tiempo para no actualizar el estatus
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for(ImagenDetalle cor:envio.getImagenes()) {
+            subirFotosCaj(getActivity(), cor.getId(), cor.getRuta());
+        }
+
+
+    }
+
     public static void subirFotosCor(Activity activity, int id, String ruta){
 
         //subo cada una
@@ -458,6 +496,28 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
 
         }
+
+    }
+    public static void subirFotosCaj(Activity activity, int id, String ruta){
+
+        //subo cada una
+        Intent msgIntent = new Intent(activity, SubirFotoService.class);
+        msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID,id);
+        msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,ruta);
+
+        msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,Constantes.INDICEACTUAL);
+        // Constantes.INDICEACTUAL
+        Log.d(TAG,"subiendo fotos caja"+activity.getLocalClassName());
+
+        msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_COR);
+
+
+        activity.startService(msgIntent);
+
+
+
+
+
 
     }
 }

@@ -9,12 +9,17 @@ import androidx.lifecycle.LiveData;
 
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
+import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 
+import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
+import com.example.comprasmu.data.repositories.CorEtiqCajaDetRepoImpl;
 import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
+import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.utils.Constantes;
 
@@ -34,15 +39,16 @@ public class NvaCorreViewModel extends AndroidViewModel {
     final String TAG="NvaCorreViewModel";
     Application application;
     private CorEtiqCajaRepoImpl cocajaRepo;
-
-
+    private  CorEtiqCajaDetRepoImpl corecdrepository;
+    private  ImagenDetRepositoryImpl imagenDetRepository;
     public NvaCorreViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
         this.correpository = new CorreccionRepoImpl(application);
         this.solRepo=new SolicitudCorRepoImpl(application);
         this.cocajaRepo=new CorEtiqCajaRepoImpl(application);
-
+        this.corecdrepository=new CorEtiqCajaDetRepoImpl(application);
+        this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
     }
 
     public int insertarCorreccion(int solicitudid,String indice,int numFoto,String ruta1, String ruta2,String ruta3,String ruta4){
@@ -249,6 +255,33 @@ public class NvaCorreViewModel extends AndroidViewModel {
         Log.d(TAG,"ESTOY AQUI");
         return cocajaRepo.find(id);
     }
+
+    public  List<CorEtiquetadoCajaDet> getCorreccionesCDet(int idNuevo) {
+        return corecdrepository.getAllByCorId(idNuevo);
+    }
+    public CorEtiquetadoCaja getCorreccionesCxid(int idcor,String indice){
+        return cocajaRepo.findsimple(idcor);
+    }
+
+    public CorEtiquetaCajaEnvio prepararEnvioCC(CorEtiquetadoCaja nvacorreccion, List<CorEtiquetadoCajaDet> correcciones){
+        CorEtiquetaCajaEnvio envio=new CorEtiquetaCajaEnvio();
+
+        envio.setCorreccion(nvacorreccion);
+        envio.setCordetalles(correcciones);
+        //busco las imagenes
+        List<ImagenDetalle> imagenes=new ArrayList<>();
+        for (CorEtiquetadoCajaDet detalle:correcciones
+        ) {
+            ImagenDetalle imagen=imagenDetRepository.findsimple(detalle.getRuta_fotonva());
+            imagenes.add(imagen);
+        }
+        envio.setImagenes(imagenes);
+        envio.setClaveUsuario(Constantes.CLAVEUSUARIO);
+        envio.setIndice(Constantes.INDICEACTUAL);
+        return envio;
+
+    }
+
     public int getIdNuevo() {
         return idNuevo;
     }

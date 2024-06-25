@@ -72,6 +72,10 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
                 @Override
                 public void onClick(View view) {
                    // view.setEnabled(false);
+                    if(binding.liTxtconsecutivo.getText().toString().equals("-1")){
+                        callback.onClickVerCC(Integer.parseInt(binding.liTxtid.getText().toString()));
+
+                    }
                         callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()),Integer.parseInt(binding.liTxtetapainf.getText().toString()));
                 }
             });
@@ -79,6 +83,10 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
                 @Override
                 public void onClick(View view) {
                     view.setEnabled(false);
+                    if(binding.liTxtconsecutivo.getText().toString().equals("-1")){
+                        callback.onClickSubirCC(Integer.parseInt(binding.liTxtid.getText().toString()));
+
+                    }
                     callback.onClickSubir(Integer.parseInt(binding.liTxtid.getText().toString()),tipo);
                 }
             });
@@ -90,8 +98,9 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
     }
     public interface AdapterCallback {
         void onClickVer(int idinforme,int etapainf);
-
+        void onClickVerCC(int idinforme);
         void onClickSubir(int id, String tipo);
+        void onClickSubirCC(int id);
     }
 
 }
