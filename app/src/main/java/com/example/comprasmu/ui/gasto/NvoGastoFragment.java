@@ -428,6 +428,8 @@ public class NvoGastoFragment extends Fragment {
         tableRow.addView(txtgastotmue);
         mBinding.tblnimuestras.addView(tableRow);
         aceptar1.setEnabled(true); //resumen
+        //guardo el total en bd
+        niviewModel.guardarTotalmu(sumacosto);
     }
 
         public void avanzar() {
@@ -622,7 +624,30 @@ public class NvoGastoFragment extends Fragment {
         TableRow.LayoutParams lp1;
         lp1 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, .7f);
         TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, .3f);
+        //pongo suma de muestras
+        tableRow=new TableRow(getContext());
 
+        concepto=new TextView(getContext());
+        costo=new TextView(getContext());
+
+       // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        //   tableRow.setLayoutParams(lp);
+        costo.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setText("TOTAL MUESTRAS");
+        //busco el total
+        String totalmu=niviewModel.getTotalmu();
+        costo.setText(Constantes.SIMBOLOMON+totalmu);
+        concepto.setLayoutParams(lp1);
+        costo.setLayoutParams(lp2);
+        tableRow.addView(concepto);
+        tableRow.addView(costo);
+        mBinding.tblgaresconcep.addView(tableRow);
+        try {
+            sumacosto = Float.parseFloat(totalmu);
+        }catch (NumberFormatException ex){
+            milog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
+        }
         //busco lo capturado
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(mViewModel.getIdNuevo());
         for (InformeGastoDet detalle:detalles
@@ -661,7 +686,7 @@ public class NvoGastoFragment extends Fragment {
         concepto=new TextView(getContext());
         costo=new TextView(getContext());
 
-        tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+       // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
      //   tableRow.setLayoutParams(lp);
         costo.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setBackgroundResource(R.drawable.valuecellborder);
@@ -1160,6 +1185,8 @@ public class NvoGastoFragment extends Fragment {
         public void guardarRes(List<TotalMuestra> respuesta){
             //acomodo en la tabla
             if(respuesta!=null) {
+                //guardo en bd
+
                 llenarTabla(respuesta);
                 mBinding.txtgaalgunerror.setText("");
             }

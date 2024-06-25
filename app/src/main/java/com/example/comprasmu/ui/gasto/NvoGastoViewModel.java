@@ -8,9 +8,11 @@ import androidx.lifecycle.AndroidViewModel;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 
+import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 
+import com.example.comprasmu.data.modelos.Configuracion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 
 import com.example.comprasmu.data.modelos.InformeEtapa;
@@ -177,4 +179,27 @@ public class NvoGastoViewModel extends AndroidViewModel {
         return false;
     }
 
+    public void guardarTotalmu(float respuesta) {
+        ConfiguracionRepositoryImpl confrepo=new ConfiguracionRepositoryImpl(application);
+        Configuracion conf=new Configuracion();
+        conf.setClave("total_muestras");
+        conf.setValor(respuesta+"");
+        //veo si ya existe el campo
+        Configuracion edit=confrepo.findsimple("total_muestras");
+        if(edit!=null) {
+            edit.setValor(respuesta+"");
+            confrepo.insert(edit);
+        }else
+        confrepo.insert(conf);
+    }
+
+    public String getTotalmu() {
+        ConfiguracionRepositoryImpl confrepo=new ConfiguracionRepositoryImpl(application);
+        Configuracion conf=new Configuracion();
+
+        Configuracion edit=confrepo.findsimple("total_muestras");
+       if(edit!=null)
+          return   edit.getValor();
+       return  "";
+    }
 }
