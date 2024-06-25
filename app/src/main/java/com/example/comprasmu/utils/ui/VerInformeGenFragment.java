@@ -22,6 +22,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEnvioDet;
@@ -31,6 +32,7 @@ import com.example.comprasmu.data.modelos.SolicitudCor;
 
 import com.example.comprasmu.databinding.VerInformegenFragmentBinding;
 import com.example.comprasmu.ui.RevisarFotoActivity;
+import com.example.comprasmu.ui.correccion.CorEtiqCajaWithSol;
 import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
@@ -57,6 +59,7 @@ public class VerInformeGenFragment extends Fragment {
     private int informeSel;
     InformeEtapa informeEtapa;
     CorreccionWithSol correccion;
+    CorEtiqCajaWithSol correCaja;
     private CreadorFormulario cf1;
     private CreadorFormulario cf2;
     CampoForm campo2;
@@ -183,6 +186,34 @@ public class VerInformeGenFragment extends Fragment {
                 });
 
             }
+
+        }else
+        if(tipo.equals("rescorcaj")) { //resumen correccion caja
+            corViewModel.getCorreccionCaja(informeSel).observe(getViewLifecycleOwner(), new Observer<CorEtiquetadoCaja>() {
+                @Override
+                public void onChanged(CorEtiquetadoCaja vcorreccion) {
+                    //  Log.d(TAG,"---"+vcorreccion.correccion.getSolicitudId()+"--"+vcorreccion.solicitud.getId()+"--"+vcorreccion.correccion.getNumfoto()+"--"+vcorreccion.solicitud.getNumFoto());
+                    //busco la solicitud
+                    SolicitudCor solicitudCor=corViewModel.getSolicitud(vcorreccion.getSolicitudId(),vcorreccion.getNumfoto());
+                    correCaja=new CorEtiqCajaWithSol();
+                    correCaja.correccion=vcorreccion;
+                    correCaja.solicitud=solicitudCor;
+
+                        crearFormularioCorCaja();
+                    textoboton= getString(R.string.ver_fotos);
+                    mBinding.btnverdet.setText(textoboton);
+
+                        mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                verFotos();
+                            }
+                        });
+
+
+
+                }
+            });
 
         }
         else    //para ver informes etapa
@@ -327,6 +358,70 @@ public class VerInformeGenFragment extends Fragment {
 
 
         cf1 = new CreadorFormulario(camposTienda, getActivity());
+
+    }
+
+    public void crearFormularioCorCaja() {
+        String directorio=getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" ;
+
+
+        List<CampoForm> camposTienda = new ArrayList<CampoForm>();
+        CampoForm campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.label = getString(R.string.indice);
+        campo.type = "label";
+        campo.value = correCaja.solicitud.getIndice();
+
+      /*  camposTienda.add(campo);
+        campo = new CampoForm();
+        campo.label = getString(R.string.consecutivo);
+        campo.style = R.style.verinforme2;
+        campo.type = "label";
+        campo.value = correccion.solicitud.;
+        camposTienda.add(campo);*/
+
+        campo = new CampoForm();
+        campo.label = getString(R.string.cliente);
+        campo.style = R.style.verinforme2;
+        campo.type = "label";
+        campo.value = correCaja.solicitud.getClienteNombre();
+
+        camposTienda.add(campo);
+        campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.label = getString(R.string.planta);
+        campo.type = "label";
+        campo.value = correCaja.solicitud.getPlantaNombre();
+
+        camposTienda.add(campo);
+        campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.label = getString(R.string.fecha);
+        campo.type = "label";
+        campo.value = Constantes.vistasdf.format(correCaja.correccion.getCreatedAt());
+        camposTienda.add(campo);
+
+        campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.nombre_campo = "descripcion";
+        campo.label = getString(R.string.descripcion);
+        campo.type = "label";
+        campo.value =correCaja.solicitud.getDescMostrar();
+        camposTienda.add(campo);
+
+        campo = new CampoForm();
+        campo.style = R.style.verinforme2;
+        campo.nombre_campo = "tiendaNombre";
+        campo.label = getString(R.string.estatus_envio);
+        campo.type = "label";
+        campo.value = Constantes.ESTATUSSYNC[correCaja.correccion.getEstatusSync()];
+        camposTienda.add(campo);
+
+
+
+        cf1 = new CreadorFormulario(camposTienda, getActivity());
+        mBinding.igdatosgen.addView(cf1.crearTabla());
+
 
     }
     //para las correcciones de varias fotos busco por el idsol cuando me llega uno
@@ -597,7 +692,30 @@ public class VerInformeGenFragment extends Fragment {
 
         lp1 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, .65f);
         TableRow.LayoutParams  lp2 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, .35f);
+        //pongo suma de muestras
+        tableRow=new TableRow(getContext());
 
+        concepto=new TextView(getContext());
+        costo=new TextView(getContext());
+
+        // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        //   tableRow.setLayoutParams(lp);
+        costo.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setText("TOTAL MUESTRAS");
+        //busco el total
+        String totalmu=niviewModel.getTotalmu();
+        costo.setText(Constantes.SIMBOLOMON+totalmu);
+        concepto.setLayoutParams(lp1);
+        costo.setLayoutParams(lp2);
+        tableRow.addView(concepto);
+        tableRow.addView(costo);
+        mBinding.tblvigastos.addView(tableRow);
+        try {
+            sumacosto = Float.parseFloat(totalmu);
+        }catch (NumberFormatException ex){
+            milog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
+        }
         //busco lo capturado
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(infsel);
         for (InformeGastoDet detalle:detalles

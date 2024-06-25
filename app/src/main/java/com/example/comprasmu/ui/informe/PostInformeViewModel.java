@@ -483,7 +483,7 @@ public class PostInformeViewModel {
     }
     public void actEstatusCorreccionECD(CorEtiquetadoCajaDet correccion){
         corecdRepo=new CorEtiqCajaDetRepoImpl(context);
-        correccionRepo.actualizarEstatusSync(correccion.getId(),2);
+        corecdRepo.actualizarEstatusSync(correccion.getId(),2);
     }
     public void actEstatusNotifEtiq(int iddet){
 
