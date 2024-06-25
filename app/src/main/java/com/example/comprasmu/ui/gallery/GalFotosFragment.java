@@ -85,13 +85,20 @@ public class GalFotosFragment extends Fragment {
 
         // Inflate the layout for this fragment
         Bundle params = getArguments();
-        Log.d(TAG,"--"+Constantes.ETAPAACTUAL);
+
         if(params!=null) {
               tipoinf= params.getString(VerInformeGenFragment.ARG_TIPOINF);
+            Log.d(TAG,"--"+tipoinf);
             int idmuestra = params.getInt(VerInformeFragment.ARG_IDMUESTRA);
             if(tipoinf!=null&&tipoinf.equals("action_selclitocor2")) {
             }
             else
+                if(tipoinf!=null&&tipoinf.equals("rescorcaj")){
+                  //  int infsel = params.getInt(VerEmpaqueFragment.ARG_INFSEL);
+
+                        fotos=igViewModel.getfotosCorEtiq(idmuestra);
+                    startuiCorEti();
+                }else
               if(tipoinf!=null&&tipoinf.equals("e")){
                   //es etapa
                   if(Constantes.ETAPAACTUAL==1){
@@ -302,7 +309,26 @@ public class GalFotosFragment extends Fragment {
 
 
     }
+    public void startuiCorEti(){
 
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,
+                false);
+        RecyclerView recyclerView = root.findViewById(R.id.rv_viimagenes);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+        ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext());
+
+        recyclerView.setAdapter(adapter);
+        //paso los detalle a imagenes
+
+
+                adapter.setmSpacePhotos(fotos);
+                adapter.notifyDataSetChanged();
+                //  recyclerView.setAdapter(adapter);
+
+
+    }
     public void ponerDatosDet(InformeCompraDetalle informe) {
 
         fotos= new ArrayList<ImagenDetalle>();

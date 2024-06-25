@@ -149,8 +149,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         if(tipocons.equals("rescor")||tipocons.equals("action_selclitocor2")){ //CORRECCIONES
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.correcciones);
 
-            etapa=Constantes.ETAPAACTUAL;
-            Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
+
+            Log.e(TAG,"--"+indice+"--"+plantasel);
             List<CorreccionWithSol> listacor=null;
             if(etapa==2)
                  listacor = corViewModel.getCorreccionesxEta(etapa, indice, plantasel);
@@ -226,6 +226,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 temp.setEstatus(cor.correccion.getEstatus());
                 temp.setEstatusSync(cor.correccion.getEstatusSync());
                 temp.setCreatedAt(cor.correccion.getCreatedAt());
+
                 if (cor.solicitud.getEtapa() > 2) {
                     //pongo el motivo
                     temp.setComentarios(cor.solicitud.getDescMostrar());
@@ -240,13 +241,22 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     }
     @Override
-    public void onClickVer(int informe) {
+    public void onClickVer(int informe, int etapainf) {
         Intent intento1=new Intent(getActivity(), BackActivity.class);
         intento1.putExtra(INFORMESEL, informe);
-      //  intento1.putExtra(NuevoInfEtapaActivity.NUMFOTO, numFoto);
+
         intento1.putExtra(ARG_TIPOCONS, tipocons);
-        Constantes.ETAPAACTUAL=etapa;
-        if(etapa==4) {
+        //Constantes.ETAPAACTUAL=etapa;
+        if(etapainf==3) //para etiquetado calidad caja
+        {
+            if (tipocons.equals("rescor")) { //es correccion
+                intento1.putExtra(ListaInformesEtaFragment.ARG_TIPOCONS, "rescorcaj");
+
+            }
+            intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR); //informe generico
+
+        }
+        else if(etapa==4) {
             if(tipocons.equals("rescor")){ //es correccion
                 intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);
 
@@ -254,7 +264,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                  intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_VEREMPQ);
         }
         else
-            intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);
+            intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR); //informe generico
         startActivity(intento1);
 
     }

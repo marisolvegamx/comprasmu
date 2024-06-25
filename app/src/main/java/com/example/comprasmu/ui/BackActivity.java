@@ -252,6 +252,10 @@ public class BackActivity extends AppCompatActivity {
 
 
     }
+
+    public void setTitulo(String titulo){
+        myChildToolbar.setTitle(titulo);
+    }
    /* @Override
     public void onBackPressed(){
         if(opcionSel.equals(OP_DETALLE_PRODUCTO)||opcionSel.equals(OP_PRODUCTOEX)) {

@@ -72,7 +72,7 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
                 @Override
                 public void onClick(View view) {
                    // view.setEnabled(false);
-                        callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()));
+                        callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()),Integer.parseInt(binding.liTxtetapainf.getText().toString()));
                 }
             });
             binding.liBtnsubir.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +89,7 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
 
     }
     public interface AdapterCallback {
-        void onClickVer(int idinforme);
+        void onClickVer(int idinforme,int etapainf);
 
         void onClickSubir(int id, String tipo);
     }

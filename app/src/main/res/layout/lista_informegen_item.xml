@@ -50,6 +50,14 @@
 
                 android:text='@{detalle.consecutivo+""}'
                 android:visibility="gone" />
+            <TextView
+                android:id="@+id/li_txtetapainf"
+                style="@style/textolista2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text='@{detalle.etapa+""}'
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/li_txtid"

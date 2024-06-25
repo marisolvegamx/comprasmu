@@ -59,14 +59,14 @@ public class Constantes {
     public static List<DescripcionGenerica> clientesAsignados;
     public static String URLSERV="https://muesmerc.com/comprasv1/";
     //local
-  //  public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
+  //  public static String URLPRUEBAS1="https://muesmerc.com/comprasv1/";
 
      public static String URLPRUEBAS1="http://192.168.1.170/comprasv1/";
     //muesmerc
     //public static String URLPRUEBAS1="http://192.168.1.95/comprasv1/";
    // public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
 //nva
-  //  public static String URLPRUEBAS1="http://192.168.1.68/comprasv1/";
+  // public static String URLPRUEBAS1="http://192.168.1.68/comprasv1/";
    // public static String URLPRUEBAS2="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
     public static String ni_clientesel;
     public static int ni_plantasel;

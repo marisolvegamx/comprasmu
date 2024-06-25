@@ -4,6 +4,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -11,6 +12,7 @@ import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
+import com.example.comprasmu.data.repositories.CorEtiqCajaDetRepoImpl;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
@@ -19,6 +21,7 @@ import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InformesGenViewModel extends AndroidViewModel {
@@ -29,7 +32,7 @@ public class InformesGenViewModel extends AndroidViewModel {
     private final CorreccionRepoImpl correpo;
     private final ImagenDetRepositoryImpl imagenDetRepository;
     private final DetalleCajaRepoImpl detCajaRepo;
-
+    CorEtiqCajaDetRepoImpl cocrepo;
     private InfGastoDetRepositoryImpl infGastoDetRepo;
     public InformesGenViewModel(Application application) {
         super(application);
@@ -40,6 +43,8 @@ public class InformesGenViewModel extends AndroidViewModel {
         this.detCajaRepo=new DetalleCajaRepoImpl(application);
         infEnvioRepo = new InformeEnvioRepositoryImpl(application);
         infGastoDetRepo=new InfGastoDetRepositoryImpl(application);
+        cocrepo=new CorEtiqCajaDetRepoImpl(application);
+
     }
 
 
@@ -88,6 +93,18 @@ public class InformesGenViewModel extends AndroidViewModel {
     public LiveData<List<InformeGastoDet>> getfotosGasto(int id){
 
         return infGastoDetRepo.getAll(id);
+
+    }
+    public List<ImagenDetalle> getfotosCorEtiq(int id){
+     List<ImagenDetalle>fotos= new ArrayList<>();
+       List<CorEtiquetadoCajaDet>detalles=cocrepo.getAllByCorId(id);
+       ImagenDetalle imagen;
+        for (CorEtiquetadoCajaDet detalle:detalles
+             ) {
+            imagen=imagenDetRepository.findsimple(detalle.getRuta_fotonva());
+            fotos.add(imagen);
+        }
+        return fotos;
 
     }
 }
