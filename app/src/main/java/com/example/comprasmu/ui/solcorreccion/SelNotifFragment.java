@@ -106,41 +106,45 @@ public class SelNotifFragment extends ListaSelecFragment{
 
         List<InformeCompraDetalle> informesCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
 
-                if(informesCancel!=null)
+        if(informesCancel!=null)
 
                 totCancel=informesCancel.size();
+        else {
+            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            if(listacomp!=null&&listacomp.size()>0)
+                 setEtiquetadoCancel(3, 6);
+           else {
+                //veo si ya puedo hacer empaque
+                listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                InformeEtapa nvoinf = new InformeEtapa();
+                List<InformeEtapa> listageneral = new ArrayList<>();
+                if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
+                    //veo que no haya hecho informe para no esperar a la supervisión
+                    ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+                    InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
+                    if (informesEtapa != null) {
+                        nvoinf.setIndice(listacomp.get(0).getIndice());
+                        // nvoinf.set = listacomp.get(0).getId();
+                        nvoinf.setEstatus(listacomp.get(0).getEstatus());
+                        nvoinf.setEtapa(4);
 
-        setEtiquetadoCancel(3,6);
-        //veo si ya puedo hacer empaque
-        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-        InformeEtapa nvoinf=new InformeEtapa();
-        List<InformeEtapa> listageneral=new ArrayList<>();
-        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()==1) {
-            //veo que no haya hecho informe para no esperar a la supervisión
-            ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-            InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL,4);
-            if(informesEtapa!=null) {
-                nvoinf.setIndice(listacomp.get(0).getIndice());
-                // nvoinf.set = listacomp.get(0).getId();
-                nvoinf.setEstatus(listacomp.get(0).getEstatus());
-                nvoinf.setEtapa(4);
+                        nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
+                        nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
 
-                nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
-                nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
+                        // nvoinf.mo
+                        listageneral.add(nvoinf);
+                    }
+                }
 
-                // nvoinf.mo
-                listageneral.add(nvoinf);
+                totCancel = listageneral.size();
             }
         }
-
-        totCancel=listageneral.size();
-
     }
     private void contarMuestraAdic(){
 
         // lista de compra pendiente
         List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReac(Constantes.CIUDADTRABAJO, 2,2);
-        if(listacomp.size()>0){
+            if(listacomp.size()>0){
 
             int informesdetList=0;
             InformeCompraDao.InformeCompravisita informetemp=new InformeCompraDao.InformeCompravisita();
@@ -163,40 +167,42 @@ public class SelNotifFragment extends ListaSelecFragment{
             }
             totMuestraAdic=informesdetList;
 
-        }
+        }else {
+                listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                if (listacomp != null && listacomp.size() > 0) {
+                    //busco etiquetado
+                    List<InformeEtapa> informes = scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
+                    int informesfinal = 0;//contador para saber cuantos informes hay
+                    Log.d(TAG, "YA CARGÓ " + informes.size());
 
-        //busco etiquetado
-        List<InformeEtapa> informes= scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
-        int informesfinal=0;//contador para saber cuantos informes hay
-        Log.d(TAG, "YA CARGÓ " + informes.size());
+                    for (InformeEtapa infeta : informes
+                    ) {
+                        //reviso que ya pueda hacer esa etapa
+                        //busco los clientes x ciudad
+                        listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
 
-        for (InformeEtapa infeta:informes
-        ) {
-            //reviso que ya pueda hacer esa etapa
-            //busco los clientes x ciudad
-            listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
-            if(listacomp!=null&&listacomp.size()>0&&listacomp.get(0).getClientesId()==infeta.getClientesId()) {
+                            informesfinal++;
+                        }
+                    }
 
-                informesfinal++;
+                    totMuestraAdic = informesfinal;
+                } else { //veo si ya puedo hacer empaque
+                    listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+
+                    int listageneral = 0; //para contar los informes
+                    if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 2) {
+                        ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+                        InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
+                        if (informesEtapa == null) {
+
+                            listageneral++;
+                        }
+                    }
+
+                    totMuestraAdic = listageneral;
+                }
             }
-        }
-
-        totMuestraAdic=informesfinal;
-
-        //veo si ya puedo hacer empaque
-        listacomp =scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-
-        int listageneral=0; //para contar los informes
-        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()==2) {
-            ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-            InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL,4);
-            if(informesEtapa==null) {
-
-                listageneral++;
-            }
-        }
-
-        totMuestraAdic=listageneral;
 
     }
     private void setEtiquetadoCancel(int etapa, int estatus) {

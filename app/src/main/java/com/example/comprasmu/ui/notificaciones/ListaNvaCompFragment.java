@@ -98,8 +98,8 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
 
                         detalleTemp=new InformeCompraDetalle();
                         detalleTemp.setProducto(detalle.getProductoNombre());
-                        //detalleTemp.setEmpaque(detalle.getEmpaque());
-                        detalleTemp.setPresentacion(detalle.getPresentacion());
+                        detalleTemp.setEmpaque(detalle.getEmpaque());
+                        detalleTemp.setPresentacion(detalle.getTamanio());
                         detalleTemp.setNombreAnalisis(detalle.getTipoAnalisis());
                         detalleTemp.setTipoMuestra(0);
                         detalleTemp.setMotivoCancel("MUESTRA ADICIONAL");
@@ -165,7 +165,7 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
          listacomp = mViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
         InformeEtapa nvoinf=new InformeEtapa();
         List<InformeEtapa> listageneral=new ArrayList<>();
-        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()==2) {
+        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()!=null&&listacomp.get(0).getLis_reactivado()==2) {
             ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
             InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL,4);
             if(informesEtapa==null) {

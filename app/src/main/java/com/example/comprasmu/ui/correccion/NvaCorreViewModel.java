@@ -230,6 +230,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
                 corTemp.setIndice(cor.getIndice());
                 corTemp.setNumfoto(cor.getNumfoto());
                 corTemp.setSolicitudId(cor.getSolicitudId());
+
                 solwcor.correccion=corTemp;
                 resp.add(solwcor);
             }
@@ -239,9 +240,14 @@ public class NvaCorreViewModel extends AndroidViewModel {
         Log.d(TAG,"ESTOY AQUI");
         return correpository.find(id);
     }
+
     public SolicitudCor getSolicitud(int id, int numfoto){
 
         return solRepo.findsimple(id,numfoto);
+    }
+    public LiveData<CorEtiquetadoCaja> getCorreccionCaja(int id){
+        Log.d(TAG,"ESTOY AQUI");
+        return cocajaRepo.find(id);
     }
     public int getIdNuevo() {
         return idNuevo;

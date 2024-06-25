@@ -133,7 +133,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         List<ListaCompra> listacomp = notViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
         InformeEtapa nvoinf=new InformeEtapa();
         List<InformeEtapa> listageneral=new ArrayList<>();
-        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()==1) {
+        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()!=null&&listacomp.get(0).getLis_reactivado()==1) {
             //veo que no haya hecho informe para no esperar a la supervisión
             ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
             InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL,4);
