@@ -167,12 +167,12 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             listacor.addAll(corViewModel.getCorCajaAll(indice));
 
             if(listacor.size()<1){
-                        mBinding.emptyStateText.setVisibility(View.VISIBLE);
-                    }
+                mBinding.emptyStateText.setVisibility(View.VISIBLE);
+            }
                     //paso la correccion a informeetapa
 
-                    mListAdapter.setInformeCompraList(correccionAInforme(listacor));
-                    mListAdapter.notifyDataSetChanged();
+            mListAdapter.setInformeCompraList(correccionAInforme(listacor));
+            mListAdapter.notifyDataSetChanged();
 
         }
 
@@ -232,7 +232,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 temp.setCreatedAt(cor.correccion.getCreatedAt());
                 if(cor.solicitud.getEtapa()==3) //para saber si es de cja
                 {
-                    if(cor.solicitud.getDescripcionId()>11){
+                    if(cor.tipo!=null&&cor.tipo.equals("etiq")){
                         //es de caja y lo pongo en el consecutivo -1 es de cja
                         temp.setConsecutivo(-1);
                     }
@@ -242,7 +242,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     temp.setComentarios(cor.solicitud.getDescMostrar());
                 } else
                     temp.setComentarios(cor.solicitud.getNombreTienda());
-                temp.setConsecutivo(cor.solicitud.getNumFoto());
+              //  temp.setConsecutivo(cor.solicitud.getNumFoto());
                 informes.add(temp);
 
 
@@ -254,6 +254,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     public void onClickVer(int informe, int etapainf) {
         Intent intento1=new Intent(getActivity(), BackActivity.class);
         intento1.putExtra(INFORMESEL, informe);
+        Log.e(TAG, "no manches");
 
         intento1.putExtra(ARG_TIPOCONS, tipocons);
         //Constantes.ETAPAACTUAL=etapa;
@@ -275,10 +276,13 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         Intent intento1=new Intent(getActivity(), BackActivity.class);
         intento1.putExtra(INFORMESEL, idinforme);
 
-        intento1.putExtra(ARG_TIPOCONS, tipocons);
 
-        intento1.putExtra(ListaInformesEtaFragment.ARG_TIPOCONS, "rescorcaj");
+        intento1.putExtra(ARG_TIPOCONS, "rescorcaj");
 
+        intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);
+     //   Bundle datosRecuperados = intento1.getExtras();
+     //   Log.d(TAG, "en ver"+datosRecuperados.getString(ListaInformesEtaFragment.ARG_TIPOCONS));
+     //   Log.d(TAG, "en ver"+datosRecuperados.getString(INFORMESEL));
 
         startActivity(intento1);
 

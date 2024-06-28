@@ -14,6 +14,8 @@ import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 
+import com.example.comprasmu.data.modelos.InformeEnvioDet;
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
@@ -30,8 +32,10 @@ import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
@@ -763,7 +767,9 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
                 InfEtapaDetRepoImpl edrepo = new InfEtapaDetRepoImpl(act);
 
                 DetalleCajaRepoImpl cajrepo = new DetalleCajaRepoImpl(act);
+                InformeEnvioRepositoryImpl envRepo=new InformeEnvioRepositoryImpl(act);
 
+                InfGastoDetRepositoryImpl gasRepo=new InfGastoDetRepositoryImpl(act);
 
                 if (response.getInformeEtapa() != null) {
                     Log.d(TAG, "actualizarInfEtapa " + response.getInformeEtapa().size());
@@ -774,6 +780,15 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
                 }
                 if (response.getDetalleCaja() != null) {
                     cajrepo.insertAll(response.getDetalleCaja());
+                }
+                //envio
+                if (response.getEnviodetalle() != null) {
+
+                    envRepo.insertAll(response.getEnviodetalle());
+                }
+                //gastos
+                if (response.getGastodetalle()!= null) {
+                    gasRepo.insertAll(response.getGastodetalle());
                 }
             }
             listenprin.finalizar();

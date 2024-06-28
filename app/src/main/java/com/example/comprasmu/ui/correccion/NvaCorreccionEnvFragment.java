@@ -128,6 +128,8 @@ public class NvaCorreccionEnvFragment extends Fragment {
                     ((NuevoInfEtapaActivity)getActivity()).actBarraCorreEnvio(solicitud);
 
                     if(informe!=null&&informe.infEnvioDet!=null){
+                        Log.e(TAG,"estatus "+informe.infEnvioDet.getFotoSello());
+
                         crearFormulario();
 
                         //BUSCO LA FOTO ORIGINAL

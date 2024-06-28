@@ -238,6 +238,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
                 corTemp.setSolicitudId(cor.getSolicitudId());
 
                 solwcor.correccion=corTemp;
+                solwcor.tipo="etiq";
                 resp.add(solwcor);
             }
         return resp;

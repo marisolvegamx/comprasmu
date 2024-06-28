@@ -8,5 +8,6 @@ public class CorreccionWithSol {
 
     public Correccion correccion;
     public SolicitudCor solicitud;
+    public String tipo;//etiq= es de calidad caja
 
 }

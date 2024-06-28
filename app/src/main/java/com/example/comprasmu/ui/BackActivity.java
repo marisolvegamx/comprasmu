@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
@@ -86,7 +87,8 @@ public class BackActivity extends AppCompatActivity {
             //no debería estar aqui
             opcionSel = datosRecuperados.getString(ARG_FRAGMENT);
         }
-            switch (opcionSel){
+
+        switch (opcionSel){
                 case OP_DETALLE_PRODUCTO:
                     myChildToolbar.setTitle(R.string.nuevo_informe);
                   //  ft.add(R.id.back_fragment, new DetalleProductoFragment1());
@@ -214,14 +216,12 @@ public class BackActivity extends AppCompatActivity {
                     ft.add(R.id.back_fragment, detailFragment6);
                     break;
                 case OP_INFORMECOR:
-
                     myChildToolbar.setTitle(R.string.informe);
                     VerInformeGenFragment detailFragment7 = new VerInformeGenFragment();
                     bundle6.putString(ListaInformesEtaFragment.ARG_TIPOCONS, datosRecuperados.getString(ListaInformesEtaFragment.ARG_TIPOCONS));
                     bundle6.putInt(ListaInformesEtaFragment.INFORMESEL,datosRecuperados.getInt(ListaInformesEtaFragment.INFORMESEL));
                    // bundle6.putInt(NuevoInfEtapaActivity.NUMFOTO,datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO));
-
-                    detailFragment7.setArguments(bundle6);
+                     detailFragment7.setArguments(bundle6);
                     ft.add(R.id.back_fragment, detailFragment7);
                     break;
                 case OP_VEREMPQ:

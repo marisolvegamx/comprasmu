@@ -1,5 +1,6 @@
 package com.example.comprasmu.utils.ui;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,10 +74,12 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
                 public void onClick(View view) {
                    // view.setEnabled(false);
                     if(binding.liTxtconsecutivo.getText().toString().equals("-1")){
+                      Log.e("InformeGenAdapter","aqui");
                         callback.onClickVerCC(Integer.parseInt(binding.liTxtid.getText().toString()));
 
+                    }else {
+                        callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()), Integer.parseInt(binding.liTxtetapainf.getText().toString()));
                     }
-                        callback.onClickVer(Integer.parseInt(binding.liTxtid.getText().toString()),Integer.parseInt(binding.liTxtetapainf.getText().toString()));
                 }
             });
             binding.liBtnsubir.setOnClickListener(new View.OnClickListener() {
@@ -86,8 +89,9 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
                     if(binding.liTxtconsecutivo.getText().toString().equals("-1")){
                         callback.onClickSubirCC(Integer.parseInt(binding.liTxtid.getText().toString()));
 
+                    }else {
+                        callback.onClickSubir(Integer.parseInt(binding.liTxtid.getText().toString()), tipo);
                     }
-                    callback.onClickSubir(Integer.parseInt(binding.liTxtid.getText().toString()),tipo);
                 }
             });
 
