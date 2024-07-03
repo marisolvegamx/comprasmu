@@ -179,7 +179,7 @@ public class MiCamaraActivity extends AppCompatActivity {
                 .addUseCase(imageCapture)
                 .setViewPort(viewPort)
                 .build();*/
-            preview.setSurfaceProvider(mPreviewView.createSurfaceProvider());
+            preview.setSurfaceProvider(mPreviewView.getSurfaceProvider());
             cameraProvider.unbindAll();
             camera = cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageAnalysis, imageCapture);
             camera.getCameraControl().enableTorch(enableTorch);
@@ -211,7 +211,7 @@ public class MiCamaraActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_DOWN:
                         return true;
                     case MotionEvent.ACTION_UP:
-                        MeteringPoint point = mPreviewView.createMeteringPointFactory(cameraSelector).createPoint(event.getX(), event.getY());
+                        MeteringPoint point = mPreviewView.getMeteringPointFactory().createPoint(event.getX(), event.getY());
                         FocusMeteringAction action = new FocusMeteringAction.Builder(point).build();
 
                         camera.getCameraControl().startFocusAndMetering(action);
