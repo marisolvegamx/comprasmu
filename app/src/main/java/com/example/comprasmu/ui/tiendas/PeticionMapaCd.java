@@ -143,6 +143,39 @@ public class PeticionMapaCd {
 
     }
 
+    public  void getTiendasRadio(String pais, String ciudad, String fechaini,String fechafin ) {
+
+      //  final Call<TiendasResponse> batch = ServiceGenerator.getApiService().getTiendas(pais, ciudad, planta, cliente, fechaini,fechafin,tipo,nombre,usuario);
+
+      /*  batch.enqueue(new Callback<TiendasResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<TiendasResponse> call, @Nullable Response<TiendasResponse> response) {
+//               Log.d(TAG,"llego algo"+response.body().toString());
+                if (response.isSuccessful() && response.body() != null) {
+                    TiendasResponse respuestaTiendas = response.body();
+                    if(respuestaTiendas!=null) {
+                        //  Log.d(TAG,"llego algo"+respuestaTiendas.getTiendas().size());
+
+                        listatiendas.setValue(respuestaTiendas.getTiendas());
+                        listageocercas.setValue(respuestaTiendas.getGeocercas());
+
+                    }
+                    //  return lista;
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<TiendasResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(TAG, t.getMessage());
+
+                }
+            }
+        });*/
+
+    }
 
     public MutableLiveData<List<Tienda>> getListatiendas() {
         return listatiendas;

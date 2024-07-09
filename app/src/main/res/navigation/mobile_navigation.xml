@@ -107,6 +107,20 @@
 
 
     </fragment>
+    <fragment
+        android:id="@+id/nav_mapasug"
+        android:name="com.example.comprasmu.ui.tiendas.MapaSugFragment"
+        android:label="@string/tiendas_cerca"
+        tools:layout="@layout/fragment_abririnforme">
+        <action android:id="@+id/action_mapatonuevo"
+            app:popUpTo="@+id/nav_nuevoinforme"
+            app:popUpToInclusive="true"
+            app:destination="@id/nav_nuevoinforme"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
     <activity
         android:id="@+id/nav_abririnf"
         android:name="com.example.comprasmu.ui.informedetalle.ContinuarInformeActivity"
@@ -197,6 +211,14 @@
             app:popUpTo="@+id/nav_ciudad_trabajo"
             app:popUpToInclusive="true"
             app:destination="@id/nav_ciudad_trabajo"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_buscartosuge"
+            app:popUpTo="@+id/nav_mapasug"
+            app:popUpToInclusive="true"
+            app:destination="@id/nav_mapasug"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
