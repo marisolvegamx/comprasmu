@@ -189,11 +189,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                     bundle.putBoolean("nuevatienda",true);
                   //  bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
                     NavController nav= NavHostFragment.findNavController(MapaCdFragment.this);
-                 //   Log.d(TAG,nav.getCurrentDestination().getId() +"--"+R.id.nav_tiendas);
+                    Log.d(TAG,nav.getCurrentDestination().getId() +"--"+R.id.nav_tiendas);
                     if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
 
-                      //  nav.navigate(R.id.action_buscartonuevo, bundle);
-                        nav.navigate(R.id.action_buscartosuge, bundle);
+                        nav.navigate(R.id.action_buscartonuevo, bundle);
                         //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
                     }
                 }
@@ -431,7 +430,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             mMap.clear();
             if(listiendas!=null)
             for(Tienda tienda: listiendas){
-               //  Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
+                 Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
 
                 if(cliente==4&&tienda.getEstpep()>0) {
                     color = tienda.getEstpep() + "";

@@ -869,9 +869,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Log.d(TAG, "4");
         } else
                 Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
-       //todo quitar era para pruebas
-      //  mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, Local);
-      //  provedorgps = LocationManager.GPS_PROVIDER;
+
         Log.d(TAG,"quedo esta "+ provedorgps);
        // }
 
@@ -2207,7 +2205,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                 //Local.desactivar();
                 mostrarPosicion(loc);
-                //desactivar();
+
             }
             //desactivar();
              //this.mainActivity.setLocation(loc);

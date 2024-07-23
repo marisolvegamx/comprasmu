@@ -94,9 +94,6 @@ public interface APIService {
 
     @GET("tiendas")
     Call<TiendasResponse> getTiendas(@Query("pais") String pais,@Query("ciudad") String ciudad, @Query("plan") int planta,  @Query("cli") int cliente,@Query("fini") String fechaini,@Query("ffin") String fechafin,@Query("tipo") String tipo, @Query("nombre") String nombre, @Query("usuario") String usuario);
-   //todo hacer un nuevo servicio para buscar tiendas en el radio
-   // @GET("tiendas")
-  //  Call<TiendasResponse> getTiendas(@Query("pais") String pais,@Query("ciudad") String ciudad, @Query("plan") int planta,  @Query("cli") int cliente,@Query("fini") String fechaini,@Query("ffin") String fechafin,@Query("tipo") String tipo, @Query("nombre") String nombre, @Query("usuario") String usuario);
 
     @GET("tienda/cancel")
     Call<PostResponse> tiendaCancel(@Query("id") int idtienda, @Query("usuario") String usuario);
