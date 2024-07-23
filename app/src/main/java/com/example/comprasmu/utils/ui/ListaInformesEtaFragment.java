@@ -123,7 +123,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         coordinator=view.findViewById(R.id.coordinator3);
 
         setupListAdapter();
-
+        Constantes.SINCRONIZANDO=0;
        cargarLista();
     }
 
@@ -291,6 +291,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     @Override
     public void onClickSubir(int informe, String tipo) {
         if(NavigationDrawerActivity.isOnlineNet(getContext())) {
+            Constantes.SINCRONIZANDO=1;
             if(tipo.equals("e")) {
                 if(this.etapa==5) {
                     InformeEnvPaqEnv envio=npViewModel.prepararInformeEnvPaq(informe);
@@ -363,7 +364,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     @Override
     public void onClickSubirCC(int id) {
-
+        Constantes.SINCRONIZANDO=1;
             //busco la correccion x el id
         List<CorEtiquetadoCajaDet> nuevasCor= corViewModel.getCorreccionesCDet(id);
         CorEtiquetadoCaja nvacor=corViewModel.getCorreccionesCxid(id,Constantes.INDICEACTUAL);

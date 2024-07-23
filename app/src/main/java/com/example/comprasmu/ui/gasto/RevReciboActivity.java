@@ -103,11 +103,13 @@ public class RevReciboActivity extends AppCompatActivity {
 
 
         String urlrecibo= BASE_URL+"/revisarRecibo?indice="+Constantes.INDICEACTUAL+"&cverec="+Constantes.CLAVEUSUARIO+"&cd="+Constantes.CIUDADTRABAJO;
+
+        urlrecibo=Constantes.URLPRUEBAS1+"imprimirReporte.php?tipo_consulta=d&indicelis=5.2024&cli=4&ciu=28&rec=41";
         WebView webView = (WebView)findViewById(R.id.rrwebView);
         webView.clearCache(true);
         webView.setWebViewClient(new WebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl(BASE_URL);
+        webView.loadUrl(urlrecibo);
 
         btnenviar.setOnClickListener(new View.OnClickListener() {
             @Override

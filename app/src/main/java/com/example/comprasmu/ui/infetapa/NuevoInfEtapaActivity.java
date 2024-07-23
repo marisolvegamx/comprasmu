@@ -45,7 +45,6 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
 
-
 public class NuevoInfEtapaActivity extends AppCompatActivity  {
     Toolbar myChildToolbar;
     private ActivityNuevoInfetapaBinding mBinding;
@@ -445,7 +444,8 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             isCor = datosRecuperados.getBoolean(CORRECCION);
             plantaSel = datosRecuperados.getInt( NuevoInfEtapaActivity.PLANTASEL);
             numfoto = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
-            Log.d(TAG,"es correccion"+isCor);
+            ComprasLog flog=ComprasLog.getSingleton();
+            flog.grabarError(TAG,"es correccion",isCor+"--etapa"+etapa);
             if(!isCor&&idinformeSel>0) {
                 isEdicion = true;
 

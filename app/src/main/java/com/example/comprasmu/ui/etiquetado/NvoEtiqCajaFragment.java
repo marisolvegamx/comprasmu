@@ -73,7 +73,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-
 //las cajas se numeran x ciudad cliente
 //ciudad x cajas 1,2,3 no importa el cliente
 //ciudad y 1,2,3 no importa el cliente
@@ -525,7 +524,7 @@ public void iraReubicar(){
                  numcaja = Integer.parseInt(txtcajaact.getText().toString());
                  descripfotoid=Integer.parseInt(txtdescidfoto.getText().toString());
             }catch (NumberFormatException ex){
-                milog.grabarError(TAG+" guardarDetCaja"+ex.getMessage());
+                milog.grabarError(TAG+" guardarDetCaja NumberFormatException"+ex.getMessage());
             }
 
             if(isEdicion&&detalleEdit!=null){

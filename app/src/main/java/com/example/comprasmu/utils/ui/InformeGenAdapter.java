@@ -48,7 +48,10 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
         holder.binding.setSdf(Constantes.vistasdf);
       //  holder.binding.setVisita();
       //  holder.binding.executePendingBindings();
-
+        if(Constantes.SINCRONIZANDO==1){
+         //   subiendoInf=true;
+            holder.binding.liBtnsubir.setEnabled(false);
+        }
     }
 
 
@@ -85,7 +88,8 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
             binding.liBtnsubir.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    view.setEnabled(false);
+                   /// view.setEnabled(false);
+                    binding.liBtnsubir.setEnabled(false);
                     if(binding.liTxtconsecutivo.getText().toString().equals("-1")){
                         callback.onClickSubirCC(Integer.parseInt(binding.liTxtid.getText().toString()));
 
