@@ -725,7 +725,7 @@ if(correccionDet!=null)
     public void actualizarSolicitud() {
         try {
 
-            Log.d(TAG,"actualizar estatus "+ numfotosel);
+            compraslog.grabarError(TAG,"actualizar estatus ","numfoto"+ numfotosel);
 
             List<CorEtiquetadoCajaDet> nuevasCor= mViewModel.getCorreccionesDet(mViewModel.getIdNuevo());
             CorEtiquetadoCaja nvacor=mViewModel.getCorreccionesxid(mViewModel.getIdNuevo(),Constantes.INDICEACTUAL);
@@ -746,6 +746,8 @@ if(correccionDet!=null)
             mViewModel.setIdNuevo(0);
             mViewModel.setNvocoreticaja(null);
             solViewModel.actualizarEstSolicitud(solicitudSel, numfotosel,4);
+            Toast.makeText(getContext(),"La corrección se guradó correctamente",Toast.LENGTH_SHORT).show();
+
             salir();
 
 

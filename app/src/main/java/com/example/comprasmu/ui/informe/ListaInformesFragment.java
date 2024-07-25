@@ -101,7 +101,7 @@ public class    ListaInformesFragment extends Fragment implements InformeCompraA
         mBinding.setLcviewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
         coordinator = view.findViewById(R.id.coordinator3);
-
+        Constantes.SINCRONIZANDO=0;
         setupListAdapter();
         setupSnackbar();
         cargarLista();

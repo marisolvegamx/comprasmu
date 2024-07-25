@@ -45,7 +45,6 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
 
-
 public class NuevoInfEtapaActivity extends AppCompatActivity  {
     Toolbar myChildToolbar;
     private ActivityNuevoInfetapaBinding mBinding;
@@ -65,7 +64,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     private int etapa;
     private int plantaSel;
     private boolean isCor; //para saber si es correccion
-
+    ComprasLog flog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +79,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 // add
+        flog=ComprasLog.getSingleton();
         infvm =
                 new ViewModelProvider(this).get(NuevoInfEtapaViewModel.class);
         dViewModel = new ViewModelProvider(this).get(NvaPreparacionViewModel.class);
@@ -98,7 +98,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         // if(Constantes.NM_TOTALISTA>=16)
         loadData();
 
-        Log.d(TAG,"WWWWWW"+isEdicion+"++"+idinformeSel+"--"+etapa+"--"+isCor);
+        flog.grabarError(TAG,"oncreate",isEdicion+"++"+idinformeSel+"--"+etapa+"--"+isCor);
 
         if(isEdicion) //es edicion
         {
@@ -285,7 +285,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
         }
     }catch(Exception ex) {
-            ComprasLog flog=ComprasLog.getSingleton();
+
             flog.grabarError("NuevoInfEtapaAct","oncreate etapa"+etapa,ex.getMessage());
         }
 
@@ -445,12 +445,13 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
             isCor = datosRecuperados.getBoolean(CORRECCION);
             plantaSel = datosRecuperados.getInt( NuevoInfEtapaActivity.PLANTASEL);
             numfoto = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
-            Log.d(TAG,"es correccion"+isCor);
+            ComprasLog flog=ComprasLog.getSingleton();
+            flog.grabarError(TAG,"es correccion",isCor+"--etapa"+etapa+"--idinformeSel"+idinformeSel);
             if(!isCor&&idinformeSel>0) {
                 isEdicion = true;
 
             }
-
+            Log.d(TAG,"is edicion "+isEdicion);
         }
 
 
