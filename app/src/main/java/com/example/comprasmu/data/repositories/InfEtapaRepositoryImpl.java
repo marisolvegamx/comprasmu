@@ -220,4 +220,8 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
         int tot=(int) icDao.getTotalCajxCli(indiceactual,cd,clienteSel,4);
       return tot;
     }
+
+    public LiveData<List<InformeEtapa>> getAllsp(int etapa, String indice, int estatus) {
+        return icDao.getInformesAll(etapa, indice, estatus);
+    }
 }
