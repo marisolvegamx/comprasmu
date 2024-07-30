@@ -107,4 +107,9 @@ public class InformesGenViewModel extends AndroidViewModel {
         return fotos;
 
     }
+
+    public LiveData<List<InformeEtapa>> cargarEtapaAll(int etapa, String indice, int estatus){
+        return ierepository.getAllsp(etapa, indice, estatus);
+
+    }
 }

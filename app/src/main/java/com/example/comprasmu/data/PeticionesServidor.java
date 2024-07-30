@@ -991,16 +991,19 @@ public class PeticionesServidor {
 
     public void acuseRecibo(String indiceactual, String ciudadInf,String comentarios,int resp, RevReciboActivity.ListenerRec listener) {
         final Call<PostResponse> batch = ServiceGenerator.getApiService().acuseRecibo(indiceactual,usuario,ciudadInf,comentarios,resp+"");
+        Log.e("PeticionesServidor", "enviando acuse");
 
         batch.enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     PostResponse respuestaCats = response.body();
+                    Log.e("PeticionesServidor", respuestaCats.getData());
+
                     listener.guardarRes(respuestaCats);
 
                 }else {
-                    Log.e("PeticionesServidor", "algo salio mal en peticion getTotalMuestras");
+                    Log.e("PeticionesServidor", "algo salio mal en peticion acuseRecibo");
                     listener.guardarRes(null);
 
                 }
@@ -1010,7 +1013,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e("PeticionesServidor", "algo salio mal en peticio getTotalMuestras"+t.getMessage());
+                    Log.e("PeticionesServidor", "algo salio mal en peticio acuseRecibo"+t.getMessage());
                     listener.guardarRes(null);
                 }
             }

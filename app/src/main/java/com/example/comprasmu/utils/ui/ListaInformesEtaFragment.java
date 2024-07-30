@@ -47,6 +47,7 @@ import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
 import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 
@@ -72,6 +73,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     String tipocons; //e para etapa, action_selclitocor2 para correccion
     private NvaCorreViewModel corViewModel;
     NvaPreparacionViewModel npViewModel;
+    ComprasLog milog;
     public ListaInformesEtaFragment() {
 
     }
@@ -108,7 +110,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         mViewModel = new ViewModelProvider(this).get(InformesGenViewModel.class);
         corViewModel=new ViewModelProvider(this).get(NvaCorreViewModel.class);
          npViewModel = new ViewModelProvider(this).get(NvaPreparacionViewModel.class);
-
+        milog=ComprasLog.getSingleton();
         setHasOptionsMenu(true);
         return    mBinding.getRoot();
     }
@@ -136,7 +138,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
              ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("RESUMEN INFORMES");
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             if(etapa==3)
-                listainfs=mViewModel.cargarEtapaAll(etapa,indice);
+                listainfs=mViewModel.cargarEtapaAll(etapa,indice, 2);
             else
                 listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
@@ -388,7 +390,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
         msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,Constantes.INDICEACTUAL);
         // Constantes.INDICEACTUAL
-        Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+        ComprasLog milog2=ComprasLog.getSingleton();
+        milog2.grabarError(TAG,"subiendo fotos",ruta);
 
         msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_COR);
 

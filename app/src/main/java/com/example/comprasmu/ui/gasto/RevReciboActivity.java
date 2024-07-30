@@ -12,9 +12,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -28,6 +30,7 @@ import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.AcuseRecibo;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Preguntasino;
@@ -38,16 +41,20 @@ public class RevReciboActivity extends AppCompatActivity {
     LinearLayout llprin, llpregunta;
     int estatusAceptado;//0 no ,1 -si
     private Toolbar myChildToolbar;
+    TextView txtmensaje;
+    ComprasLog milog;
+    private String TAG="RevReciboActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rev_recibo);
         String BASE_URL;
-        //todo necesito saber si ya está aceptado para que no lo vuelva a pedir
+
         Button btnenviar=findViewById(R.id.btnrrenviar);
         TextView comentarios=findViewById(R.id.txtrrcomentarios);
         Preguntasino pregunta=findViewById(R.id.rrsinoacuerdo);
+        txtmensaje=findViewById(R.id.txtrrmensaje);
 
         // Enable the Up button
         myChildToolbar =
@@ -62,6 +69,8 @@ public class RevReciboActivity extends AppCompatActivity {
         llpregunta=findViewById(R.id.llrrpregunta);
         llprin=findViewById(R.id.llrrweb);
         llprin.setVisibility(View.GONE);
+        milog=ComprasLog.getSingleton();
+
       //  llpregunta.setVisibility(View.GONE);
         pregunta.setmLabel(getString(R.string.esta_acuerdo));
         btndescargar.setOnClickListener(new View.OnClickListener() {
@@ -73,11 +82,11 @@ public class RevReciboActivity extends AppCompatActivity {
         if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
             //nam
             BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
-            BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";
+            BASE_URL = Constantes.URLPRUEBAS1;
 
         }else
         {
-            BASE_URL = Constantes.URLSERV+"api/public/";
+            BASE_URL = Constantes.URLSERV;
 
             //  BASE_URL = "http://192.168.1.84/comprasv1/pruebas/public/";
             //   BASE_URL = "https://muesmerc.mx/comprasv1/pruebas/public/";
@@ -90,24 +99,29 @@ public class RevReciboActivity extends AppCompatActivity {
         //reviso si ya aceptó
         AcuseReciboRepositoryImpl acrepo=new AcuseReciboRepositoryImpl(this);
         AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL);
+        Log.d(TAG,"acuse"+acuse);
         if(acuse!=null&&acuse.getAceptado()==1){
             //solo muestro boton descargar
             btndescargar.setVisibility(View.VISIBLE);
             return;
         }
-        llprin.setVisibility(View.VISIBLE);
+        llprin.setVisibility(View.GONE);
         //busco el estatus recibo
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         ListenerRec listener=new ListenerRec();
         ps.getEstatusRecibo(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
 
 
-        String urlrecibo= BASE_URL+"/revisarRecibo?indice="+Constantes.INDICEACTUAL+"&cverec="+Constantes.CLAVEUSUARIO+"&cd="+Constantes.CIUDADTRABAJO;
+        String urlrecibo= BASE_URL+"Views/modulos/cue_reciboprev.php?idrec="+Constantes.CLAVEUSUARIO+"&idmes="+Constantes.INDICEACTUAL+"&idciu="+Constantes.CIUDADTRABAJO+"&eta=6&estatus=1&numc=0";
         WebView webView = (WebView)findViewById(R.id.rrwebView);
         webView.clearCache(true);
+        WebSettings mWebSettings = webView.getSettings();
+        mWebSettings.setBuiltInZoomControls(true);
         webView.setWebViewClient(new WebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl(BASE_URL);
+        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        webView.setScrollbarFadingEnabled(false);
+        webView.loadUrl(urlrecibo);
 
         btnenviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,14 +161,18 @@ public class RevReciboActivity extends AppCompatActivity {
         //para terminar cuando envia la respuesta
         //muestro boton para descargar y guardo en la app
         public void guardarEstatus(PostResponse response){
-            if(response!=null&&response.getData().equals("si")) {
+            if(response!=null&&response.getData()!=null&&response.getData().equals("2")) {
                 estatusRecibo = 1;
                 llprin.setVisibility(View.VISIBLE);
 
             }else
             {
-                //todo anuncio de no está listo
+                //anuncio de no está listo
+                txtmensaje.setVisibility(View.VISIBLE);
+                txtmensaje.setText("Tu recibo aún no está listo");
             }
+
+
         }
 
         public void guardarRes(PostResponse respuesta){
@@ -164,6 +182,7 @@ public class RevReciboActivity extends AppCompatActivity {
                 AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL);
                 if(acuse!=null){
                     acuse.setAceptado(estatusAceptado);
+                    acrepo.insert(acuse);
                 }else {
                     AcuseRecibo nvoacuse = new AcuseRecibo();
                     nvoacuse.setIndice(Constantes.INDICEACTUAL);
@@ -174,9 +193,10 @@ public class RevReciboActivity extends AppCompatActivity {
                 if (estatusAceptado == 1) {
 
                     btndescargar.setVisibility(View.VISIBLE);
-                    //todo quito boton aceptar
+
                     llpregunta.setVisibility(View.GONE);
                 } else {
+                    milog.grabarError(TAG,"guardarRes","Su comentario ha sido enviado");
                     Toast.makeText(RevReciboActivity.this, "Su comentario ha sido enviado", Toast.LENGTH_LONG);
                     btndescargar.setVisibility(View.GONE);
                     llpregunta.setVisibility(View.GONE);

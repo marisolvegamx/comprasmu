@@ -115,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:visibility="@{detalle.estatusSync==0?View.VISIBLE:View.GONE}"
+                    android:visibility='@{(Constantes.CLAVEUSUARIO.equals("41")&amp;&amp;detalle.id==99)||detalle.estatusSync==0?View.VISIBLE:View.GONE}'
                     app:srcCompat="@drawable/ic_baseline_white_close_24" />
 
                 <androidx.appcompat.widget.AppCompatButton

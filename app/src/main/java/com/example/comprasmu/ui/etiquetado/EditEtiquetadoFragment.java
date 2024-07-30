@@ -248,7 +248,7 @@ public class EditEtiquetadoFragment extends Fragment {
 
             return root; //todavía no puede hacer etiquetado
         }
-        //primero elimino la muestra de ivan
+
 
         totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, ciudadInf);
         //busco total muestras
