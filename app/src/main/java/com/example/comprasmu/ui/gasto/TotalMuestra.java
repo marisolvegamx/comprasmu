@@ -6,6 +6,7 @@ public class TotalMuestra {
    private int clientesId;
     private int num_muestras;
     private int mues_solicitadas;
+    private int mues_reembolsadas;
     private float costo;
 
     public String getCliente() {
@@ -46,5 +47,13 @@ public class TotalMuestra {
 
     public void setMues_solicitadas(int mues_solicitadas) {
         this.mues_solicitadas = mues_solicitadas;
+    }
+
+    public int getMues_reembolsadas() {
+        return mues_reembolsadas;
+    }
+
+    public void setMues_reembolsadas(int mues_reembolsadas) {
+        this.mues_reembolsadas = mues_reembolsadas;
     }
 }
