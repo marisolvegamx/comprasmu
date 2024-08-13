@@ -52,6 +52,7 @@ import com.example.comprasmu.ui.informe.DetalleCancelado;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.mantenimiento.ConfiguracionCamFragment;
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
+import com.example.comprasmu.ui.notificaciones.ListaNotifEtiqViewModel;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
@@ -130,7 +131,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     LiveData<Integer> totCorrecciones;
 
-    MutableLiveData<Integer> totCancel;
+
     MutableLiveData<Integer> totMuestraAdic;
     SolicitudCorRepoImpl solRepo;
     TablaVersionesRepImpl tvRepo;
@@ -139,6 +140,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     NavigationView navigationView;
     private ComprasLog flog;
+    private LiveData<Integer> totCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,20 +160,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             }
             //  FloatingActionButton fab = findViewById(R.id.fab);
             //busco el mes actual y le agrego 1
+
             mViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
             scViewModel = new ViewModelProvider(this).get(ListaSolsViewModel.class);
-
-
-
-     /*   fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //ir a nuevo informe
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
 
             Bundle extras = getIntent().getExtras(); // Aquí es null
             String inicio = "";
@@ -287,49 +278,19 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
             if (Constantes.CLAVEUSUARIO.equals("")) {
                 graph.setStartDestination(R.id.nav_configurar);
-                //cargo todos o le digo que la configure?
-//            AlertDialog.Builder builder=new AlertDialog.Builder(this);
-//            builder.setCancelable(false);
-//
-//            builder.setTitle("IMPORTANTE");
-//            builder.setMessage("Es necesario configurar su clave de usuario");
-//            //builder.setInverseBackgroundForced(true);
-//            builder.setNegativeButton(R.string.aceptar, new DialogInterface.OnClickListener() {
-//                public void onClick(DialogInterface builder, int id) {
-//                    //  dialogo1.cancel();
-//                    //envio a la lista
-//                   // FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//                    //HomeFragment fragconfig=new HomeFragment();
-//                    //ft.add(R.id.nav_host_fragment, fragconfig);
-//                    //ft.commit();
-//                    graph.setStartDestination(R.id.nav_host_fragment);
-//
-//                }
-//            });
-//            AlertDialog alert=builder.create();
-//
-//            alert.show();
+
 
 
             } else if (inicio != null && inicio.equals("listainforme")) {
-            /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment fragment = new BuscarInformeFragment();
-            ft.add(R.id., fragment);
-            ft.commit();*/
+
                 graph.setStartDestination(R.id.nav_listar);
             }
             if (inicio != null && inicio.equals("continuarinf")) {
-            /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment fragment = new BuscarInformeFragment();
-            ft.add(R.id., fragment);
-            ft.commit();*/
+
                 graph.setStartDestination(R.id.nav_listarvisitas);
             }
             if (inicio != null && inicio.equals("nav_reubicetiq")) {
-            /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment fragment = new BuscarInformeFragment();
-            ft.add(R.id., fragment);
-            ft.commit();*/
+
                 graph.setStartDestination(R.id.nav_reubicetiq);
             } else {
                 //descargasIniciales();
@@ -734,40 +695,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
 
-    private void contarCanceladas(){
 
-        totCancel=scViewModel.getTotalCancell(Constantes.INDICEACTUAL);
-
-        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
-        if(listacomp!=null&&listacomp.size()>0)
-         setEtiquetadoCancel(3,6);
-        else {
-            //veo si ya puedo hacer empaque
-            listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-            InformeEtapa nvoinf = new InformeEtapa();
-            List<InformeEtapa> listageneral = new ArrayList<>();
-            if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
-                //veo que no haya hecho informe para no esperar a la supervisión
-                ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-                InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
-                if (informesEtapa != null) {
-                    nvoinf.setIndice(listacomp.get(0).getIndice());
-                    // nvoinf.set = listacomp.get(0).getId();
-                    nvoinf.setEstatus(listacomp.get(0).getEstatus());
-                    nvoinf.setEtapa(4);
-
-                    nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
-                    nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
-
-                    // nvoinf.mo
-                    listageneral.add(nvoinf);
-                }
-            }
-            if (listageneral.size() > 0)
-                totCancel.setValue(listageneral.size());
-        }
-
-    }
     private void contarMuestraAdic(){
 
         // lista de compra pendiente
@@ -831,35 +759,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             totMuestraAdic.setValue(listageneral);
         }
     }
-    private void setEtiquetadoCancel(int etapa, int estatus) {
-        List<InformeEtapa> listageneral=new ArrayList<>();
-        //para ver si sigue etiquetado y empaque
-        List<InformeEtapa> informes=scViewModel.getInfEtapaxEstatusSim(Constantes.INDICEACTUAL,etapa,estatus);
 
-        //paso de informe etapa ainforme compra
-
-        for (InformeEtapa infeta : informes
-        ) {
-
-            //reviso si ya estoy en etapa 3
-            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
-            if (listacomp != null && listacomp.size() > 0 && listacomp.get(0)!=null&&listacomp.get(0).getClientesId() == infeta.getClientesId()) {
-
-                listageneral.add(infeta);
-
-
-            }
-
-        }
-        totCancel.setValue(listageneral.size());
-
-    }
     private void initializeCountDrawer(){
-        totCancel=new MutableLiveData<>();
+
+
         totMuestraAdic=new MutableLiveData<>();
         contarCorrecc();
 
-        contarCanceladas();
+        scViewModel.contarCanceladas();
+        totCancel=new MutableLiveData<>();
+        totCancel=scViewModel.getTotCancel();
+
         contarMuestraAdic();
 
         if(gallery!=null) {

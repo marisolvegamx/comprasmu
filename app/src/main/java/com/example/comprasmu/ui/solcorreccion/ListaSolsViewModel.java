@@ -1,12 +1,15 @@
 package com.example.comprasmu.ui.solcorreccion;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
@@ -31,12 +34,14 @@ import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
+import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
 import com.example.comprasmu.utils.Constantes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListaSolsViewModel extends AndroidViewModel {
-    private final SolicitudCorRepoImpl repository;
+    private  SolicitudCorRepoImpl repository;
     private  LiveData<Integer> size;
     private  LiveData<Boolean> empty;
     private final static String TAG="ListaSolsViewModel";
@@ -48,11 +53,14 @@ public class ListaSolsViewModel extends AndroidViewModel {
     InformeEnvioRepositoryImpl infenvrepo;
     ListaCompraRepositoryImpl lcrepo;
     ListaCompraDetRepositoryImpl lcdrepo;
+    Context context;
 
-    private final InfGastoDetRepositoryImpl gasdetrepo;
+    private  InfGastoDetRepositoryImpl gasdetrepo;
+    MutableLiveData<Integer> totCancel;
 
     public ListaSolsViewModel(Application application) {
         super(application);
+      this.context=application;
         repository = new SolicitudCorRepoImpl(application);
         infcrepo=new InformeComDetRepositoryImpl(application);
         infetarepo=new InfEtapaRepositoryImpl(application);
@@ -153,21 +161,21 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     }
     public LiveData<ImagenDetalle> buscarImagenCom(int numfoto){
-        imrepo=new ImagenDetRepositoryImpl(getApplication());
+        imrepo=new ImagenDetRepositoryImpl(context);
         return imrepo.find(numfoto);
     }
 
     public LiveData<InformeEtapaDet> buscarEtapaDet(int iddet){
-        etadetRepo=new InfEtapaDetRepoImpl(getApplication());
+        etadetRepo=new InfEtapaDetRepoImpl(context);
         return etadetRepo.find(iddet);
     }
 
     public LiveData<InformeEtapaDet> buscarFotoEta(int numfoto,int idinf, int etapa){
-        etadetRepo=new InfEtapaDetRepoImpl(getApplication());
+        etadetRepo=new InfEtapaDetRepoImpl(context);
         return etadetRepo.getBynumfoto(idinf,etapa,numfoto);
     }
     public LiveData<List<ImagenDetalle>> buscarFotosEta(int idinf, int etapa){
-        etadetRepo=new InfEtapaDetRepoImpl(getApplication());
+        etadetRepo=new InfEtapaDetRepoImpl(context);
         return etadetRepo.getImagenxInf(idinf,etapa);
     }
 
@@ -193,7 +201,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
             if (det.getEstatus() != 2&&det.getEstatus()!=4)//no está cancelada
             {
                 String codigo=Constantes.sdfcaducidad.format(det.getCaducidad());
-                ListaCompraDetRepositoryImpl lcdrepo = new ListaCompraDetRepositoryImpl(getApplication());
+                ListaCompraDetRepositoryImpl lcdrepo = new ListaCompraDetRepositoryImpl(context);
                 ListaCompraDetalle compradet = lcdrepo.findsimple(cancelada.getInd_comprasid(), cancelada.getInd_compraddetid());
                 if (compradet != null) {
                     //quito la comprada
@@ -243,6 +251,74 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
 
         }
+
+
+    }
+    public void contarCanceladas(){
+
+        totCancel=getTotalCancell(Constantes.INDICEACTUAL);
+
+        List<ListaCompra> listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+        if(listacomp!=null&&listacomp.size()>0)
+            setEtiquetadoCancel(3,6);
+        else {
+            //veo si ya puedo hacer empaque
+            listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+            InformeEtapa nvoinf = new InformeEtapa();
+            List<InformeEtapa> listageneral = new ArrayList<>();
+            if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
+                //veo que no haya hecho informe para no esperar a la supervisión
+                 InformeEtapa informesEtapa = getInformeNoCancel(Constantes.INDICEACTUAL, 4);
+                if (informesEtapa != null) {
+                    nvoinf.setIndice(listacomp.get(0).getIndice());
+                    // nvoinf.set = listacomp.get(0).getId();
+                    nvoinf.setEstatus(listacomp.get(0).getEstatus());
+                    nvoinf.setEtapa(4);
+
+                    nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
+                    nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
+
+                    // nvoinf.mo
+                    listageneral.add(nvoinf);
+                }
+            }
+            if (listageneral.size() > 0)
+                totCancel.setValue(listageneral.size());
+        }
+
+    }
+
+    private void setEtiquetadoCancel(int etapa, int estatus) {
+        List<InformeEtapa> listageneral=new ArrayList<>();
+        //para ver si sigue etiquetado y empaque
+        List<InformeEtapa> informes=getInfEtapaxEstatusSim(Constantes.INDICEACTUAL,etapa,estatus);
+
+        //paso de informe etapa ainforme compra
+
+        for (InformeEtapa infeta : informes
+        ) {
+
+            //reviso si ya estoy en etapa 3
+            List<ListaCompra> listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            if (listacomp != null && listacomp.size() > 0 && listacomp.get(0)!=null&&listacomp.get(0).getClientesId() == infeta.getClientesId()) {
+
+                listageneral.add(infeta);
+
+
+            }
+
+        }
+        totCancel.setValue(listageneral.size());
+
+    }
+
+    public MutableLiveData<Integer> getTotCancel() {
+        return totCancel;
+    }
+
+    public InformeEtapa getInformeNoCancel(String indice, int etapa){
+
+        return   infetarepo.getInformeNoCancel(indice, etapa);
 
 
     }

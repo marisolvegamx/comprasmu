@@ -99,7 +99,7 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
                         detalleTemp=new InformeCompraDetalle();
                         detalleTemp.setProducto(detalle.getProductoNombre());
                         detalleTemp.setEmpaque(detalle.getEmpaque());
-                        detalleTemp.setPresentacion(detalle.getTamanio());
+                        detalleTemp.setPresentacion(detalle.getPresentacion());
                         detalleTemp.setNombreAnalisis(detalle.getTipoAnalisis());
                         detalleTemp.setTipoMuestra(0);
                         detalleTemp.setMotivoCancel("MUESTRA ADICIONAL");
