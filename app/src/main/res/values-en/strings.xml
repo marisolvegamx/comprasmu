@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Compras</string>
+    <string name="app_name">App Muesmerc</string>
     <string name="empty_state_text">NO DATA TO SHOW</string>
     <string name="producto">PRODUCT</string>
     <string name="cancelar">CANCEL</string>

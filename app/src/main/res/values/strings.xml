@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Compras</string>
+    <string name="app_name">App Muesmerc </string>
     <string name="empty_state_text">NO HAY DATOS QUE MOSTRAR</string>
     <string name="codigos_no_per">CÓDIGOS NO PERMITIDOS</string>
     <string name="producto">PRODUCTO</string>
