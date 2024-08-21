@@ -307,8 +307,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     long currentClickTime= SystemClock.elapsedRealtime();
                     Log.d(TAG,"di click :("+currentClickTime+"--"+lastClickTime);
                     // preventing double, using threshold of 1000 ms
-                    if(preguntaAct.getSigId()==88&&currentClickTime - lastClickTime < 7000)
-                        return;
+                  //  if(preguntaAct.getSigId()==88&&currentClickTime - lastClickTime < 7000)
+                 //       return;
                     if (currentClickTime - lastClickTime < 5500){
                         return;
                     }
