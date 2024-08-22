@@ -106,7 +106,7 @@ public class SelNotifFragment extends ListaSelecFragment{
 
         List<InformeCompraDetalle> informesCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
 
-        if(informesCancel!=null)
+        if(informesCancel!=null&&informesCancel.size()>0)
 
                 totCancel=informesCancel.size();
         else {
@@ -225,6 +225,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                         }
 
                     }
+            //totCancel=new MutableLiveData<>();
             totCancel=listageneral.size();
 
         }
