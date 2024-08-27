@@ -99,11 +99,8 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public  LiveData<List<ListaCompra>>  cargarPestañasEta(String ciudadSel,int clienteSel){
-        if(clienteSel>0){
-            //ya elegi cliente vengo de muestra
-            return repository.getAllByIndiceCiudadCliente(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
-        }else
+    public  LiveData<List<ListaCompra>>  cargarPestañasEta(String ciudadSel){
+
             return repository.getAllByIndiceCiudadEta(Constantes.INDICEACTUAL,ciudadSel,Constantes.ETAPAACTUAL+"");
 
 

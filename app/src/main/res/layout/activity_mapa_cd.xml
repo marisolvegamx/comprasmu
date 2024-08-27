@@ -103,6 +103,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/gray_light"
             android:text="@string/buscar" />
+
     </LinearLayout>
 
 

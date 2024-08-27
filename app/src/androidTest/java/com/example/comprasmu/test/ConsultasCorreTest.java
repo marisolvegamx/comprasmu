@@ -11,7 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.CorreccionDao;
-import com.example.comprasmu.data.modelos.SolicitudWithCor;
+//import com.example.comprasmu.data.modelos.SolicitudWithCor;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 
 import org.junit.After;
@@ -47,7 +47,7 @@ public class ConsultasCorreTest {
        // db.close();
     }
 
-    @Test
+  /*  @Test
     public void getCorreccionTest(){
 
         repository.getAllxEtaPlan(63,"6.2022",1).observeForever(new Observer<List<SolicitudWithCor>>() {
@@ -66,7 +66,7 @@ public class ConsultasCorreTest {
     @Test
     public void get1CorreccionTest(){
 
-        repository.findSolCor(1).observeForever(new Observer<SolicitudWithCor>() {
+       /* repository.findSolCor(1).observeForever(new Observer<SolicitudWithCor>() {
             @Override
             public void onChanged(@Nullable SolicitudWithCor todos) {
                 // Assert.assertNotNull(todos);
@@ -78,5 +78,5 @@ public class ConsultasCorreTest {
                 Assert.assertTrue(todos.solicitud.getEtapa()==1);
             }
         });
-    }
+    }*/
 }

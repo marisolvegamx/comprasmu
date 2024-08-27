@@ -117,7 +117,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public LiveData<List<ListaCompra>> getAllByIndiceCiudadEta(String indice,String idCiudad,String etapa) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre like ? and lis_etapaactual=?";
+                "and ciudadNombre like ? and lis_etapaactual=? order by clientesId ";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idCiudad, etapa});

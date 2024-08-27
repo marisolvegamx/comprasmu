@@ -74,8 +74,11 @@ import com.example.comprasmu.utils.CurrencyTextWatcher;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import com.example.comprasmu.utils.ui.DatePickerFragment;
 import com.google.common.collect.Table;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -386,6 +389,8 @@ public class NvoGastoFragment extends Fragment {
         TextView costo;
         float sumacosto=0;
         int sumamuestras=0;
+        int sumasol=0;
+        int sumaremb=0;
         for (TotalMuestra detalle:totales
              ) {
              tableRow=new TableRow(getContext());
@@ -397,7 +402,7 @@ public class NvoGastoFragment extends Fragment {
 
             cliente.setText(detalle.getCliente());
             cliente.setBackgroundResource(R.drawable.valuecellborder);
-           numuestra.setText(detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
+           numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
             numuestra.setBackgroundResource(R.drawable.valuecellborder);
            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
@@ -407,6 +412,8 @@ public class NvoGastoFragment extends Fragment {
             mBinding.tblnimuestras.addView(tableRow);
             sumacosto+=detalle.getCosto();
             sumamuestras+=detalle.getNum_muestras();
+            sumasol+=detalle.getMues_solicitadas();
+            sumaremb+=detalle.getMues_reembolsadas();
         }
          tableRow=null;
          cliente=null;
@@ -414,7 +421,7 @@ public class NvoGastoFragment extends Fragment {
          costo=null;
         TextView txtgatotnum=new TextView(getContext());
         TextView txttotal=new TextView(getContext());
-        txtgatotnum.setText(sumamuestras+"");
+        txtgatotnum.setText(sumaremb+"/"+sumasol+"/"+sumamuestras+"");
         TextView txtgastotmue=new TextView(getContext());
         txtgastotmue.setText(Constantes.SIMBOLOMON+sumacosto);
         txttotal.setBackgroundResource(R.drawable.valuecellborder);
@@ -630,24 +637,38 @@ public class NvoGastoFragment extends Fragment {
         concepto=new TextView(getContext());
         costo=new TextView(getContext());
 
-       // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-        //   tableRow.setLayoutParams(lp);
-        costo.setBackgroundResource(R.drawable.valuecellborder);
-        concepto.setBackgroundResource(R.drawable.valuecellborder);
-        concepto.setText("TOTAL MUESTRAS");
-        //busco el total
-        String totalmu=niviewModel.getTotalmu();
-        costo.setText(Constantes.SIMBOLOMON+totalmu);
-        concepto.setLayoutParams(lp1);
-        costo.setLayoutParams(lp2);
-        tableRow.addView(concepto);
-        tableRow.addView(costo);
-        mBinding.tblgaresconcep.addView(tableRow);
-        try {
-            sumacosto = Float.parseFloat(totalmu);
-        }catch (NumberFormatException ex){
-            milog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
+        TextView cliente;
+        TextView numuestra;
+        String json=niviewModel.getDetalleMu();
+        final Type tipoLista = new TypeToken<List<TotalMuestra>>(){}.getType();
+        List<TotalMuestra> totales= new Gson().fromJson(json, tipoLista);
+        int sumamuestras=0;
+        for (TotalMuestra detalle:totales
+        ) {
+            tableRow=new TableRow(getContext());
+            cliente=new TextView(getContext());
+            numuestra=new TextView(getContext());
+            costo=new TextView(getContext());
+            //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+            cliente.setText(detalle.getCliente());
+            cliente.setBackgroundResource(R.drawable.valuecellborder);
+            numuestra.setText(detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
+            numuestra.setBackgroundResource(R.drawable.valuecellborder);
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
+            costo.setBackgroundResource(R.drawable.valuecellborder);
+            cliente.setLayoutParams(lp1);
+            costo.setLayoutParams(lp2);
+            tableRow.addView(cliente);
+            //tableRow.addView(numuestra);
+            tableRow.addView(costo);
+           // mBinding.tblnimuestras.addView(tableRow);
+            sumacosto+=detalle.getCosto();
+            sumamuestras+=detalle.getNum_muestras();
+            mBinding.tblgaresconcep.addView(tableRow);
         }
+
         //busco lo capturado
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(mViewModel.getIdNuevo());
         for (InformeGastoDet detalle:detalles
@@ -1180,6 +1201,11 @@ public class NvoGastoFragment extends Fragment {
         }
 
     }
+    public void guardarDet(List<TotalMuestra> respuesta){
+            niviewModel.guardarDetalleMues(respuesta);
+    }
+
+
     public class ListenerM{
         //todo
         public void guardarRes(List<TotalMuestra> respuesta){
@@ -1188,6 +1214,7 @@ public class NvoGastoFragment extends Fragment {
                 //guardo en bd
 
                 llenarTabla(respuesta);
+                guardarDet(respuesta);
                 mBinding.txtgaalgunerror.setText("");
             }
             else

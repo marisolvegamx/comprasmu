@@ -2,12 +2,20 @@ package com.example.comprasmu.ui.tiendas;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +56,14 @@ import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -58,6 +74,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,8 +87,9 @@ import java.util.Map;
 public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,GoogleMap.OnInfoWindowCloseListener,GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
     public static final String EXTRA_LATITUD = "extra_latitud";
     public static final String EXTRA_LONGITUD ="extra_longitud" ;
-    private MapaCdFragment mFirstMapFragment;
+
     private static final int LOCATION_REQUEST_CODE = 1;
+    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
     private NuevoDetalleViewModel dViewModel;
     private GoogleMap mMap;
     String[] coloreszon={"#1E90FF","#FF1493", "#32CD32", "#FF8C00", "#4B0082"};
@@ -76,6 +97,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     private  final String TAG="MapaCdFragment";
     private ArrayList<DescripcionGenerica> listaPlantasEnv;
     MutableLiveData<List<Tienda>> listatiendas;
+    List<Tienda> nollistatiendas;
     Button btnverfil;
     MutableLiveData<List<Geocerca>> listageocercas;
     List<Polygon> regionPolygon;
@@ -87,28 +109,48 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     Marker markerSel;
     LinearLayout llfiltros, llcancel;
     private final long lastClickTime = 0;
-
+    private static final int DEFAULT_ZOOM = 4;
         Spinner spplantas;
     List<DescripcionGenerica>clientesAsignados;
 
+    private boolean locationPermissionGranted;
+    private final LatLng defaultLocation = new LatLng(19.36884,  -99.16410);
 
+    // The geographical location where the device is currently located. That is, the last-known
+    // location retrieved by the Fused Location Provider.
+    private Location lastKnownLocation;
+    private boolean requestingLocationUpdates;
+    // Keys for storing activity state.
+    private static final String KEY_CAMERA_POSITION = "camera_position";
+    private static final String KEY_LOCATION = "location";
     View view;
     private int cliente;
     private Spinner sptipoti, spcadena;
     private String indiceini;
+    private boolean verfiltros;
+    LoadingAlert alert;
+    private LocationCallback locationCallback;
+    private LocationManager fusedLocationClient;
+    private miLocationListener locallis;
 
+    public MapaCdFragment() {
+    }
+
+    public static MapaCdFragment newInstance() {
+        return new MapaCdFragment();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.activity_mapa_cd, parent, false);
             SupportMapFragment supportMapFragment = SupportMapFragment.newInstance();
-
-
-
             SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapcd_container);
             lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-
+            if (savedInstanceState != null) {
+                lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+             //   cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+            }
             mapFragment.getMapAsync(this);
-
+            verfiltros=false;
             spplantas=view.findViewById(R.id.spmcdplanta);
             spcadena=view.findViewById(R.id.spmccadenati);
             sptipoti=view.findViewById(R.id.spmctipoti);
@@ -120,7 +162,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             btnverfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    verFiltros(true);
+
+                    verFiltros();
 
                 }
             });
@@ -143,14 +186,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                                              petmap.cancelTienda(tiendaSel.getUne_id());
                                              //  martiendas.remove(markerSel);
                                              markerSel.remove();
-                                       /*  DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
-                                         if(plantasel!=null) {
-                                             int planta = plantasel.id;
-                                             //  String indiceini = (String) spindiceini.getSelectedItem();
-                                             //  String indicefin = (String) spindicefin.getSelectedItem();
-                                             String indiceini = Constantes.INDICEACTUAL;
-                                             buscarTiendas(planta, indiceini);
-                                         }*/
+
                                          }
                                      })
                                      .setNegativeButton(R.string.no, null)
@@ -161,7 +197,18 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
              });
             buscarClientes();
 
-            buscarPlantas(Constantes.CIUDADTRABAJO,0);
+        if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+            getDeviceLocation();
+        } else {
+            Log.d(TAG, "no tengo  "+LOCATION_REQUEST_CODE);
+            // Solicitar permiso
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_REQUEST_CODE);
+
+        }
+
             cargarCatalogos();
             indiceini=Constantes.INDICEACTUAL;
           //  cargarIndices();
@@ -172,8 +219,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                     DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
                     if(plantasel!=null) {
                         int planta = plantasel.id;
-                      //  String indiceini = (String) spindiceini.getSelectedItem();
-                      //  String indicefin = (String) spindicefin.getSelectedItem();
 
                         //calculo indice fin
                         buscarTiendas(planta, indiceini);
@@ -187,21 +232,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             btnvatienda.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                   /* FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-                    AbririnformeFragment fragconfig=new AbririnformeFragment();
-                    ft.add(R.id.nav_host_fragment, fragconfig);
-
-                    ft.commit();*/
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean("nuevatienda",true);
-                  //  bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
-                    NavController nav= NavHostFragment.findNavController(MapaCdFragment.this);
-                    Log.d(TAG,nav.getCurrentDestination().getId() +"--"+R.id.nav_tiendas);
-                    if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
-
-                        nav.navigate(R.id.action_buscartonuevo, bundle);
-                        //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
-                    }
+                   nuevaTienda();
                 }
             });
 
@@ -215,53 +246,148 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             return  view;
 
         }
+    /**
+     * Saves the state of the map when the activity is paused.
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mMap != null) {
+            outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
+            outState.putParcelable(KEY_LOCATION, lastKnownLocation);
+        }
+        super.onSaveInstanceState(outState);
+    }
 
-        @Override
+    private void nuevaTienda2() {
+        Intent intent = new Intent(getActivity(), MapaSugFragment.class);
+
+
+        startActivity(intent);
+    }
+
+
+    @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng mex = new LatLng(19.36884,  -99.16410);
 
+        Log.d(TAG, "mapa listo ");
             mMap = googleMap;
-            mMap.setOnMarkerClickListener(this);
-            mMap.setOnInfoWindowClickListener(this);
-            if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true);
-            } else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                        Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    // Mostrar diálogo explicativo
-                } else {
-                    // Solicitar permiso
-                    ActivityCompat.requestPermissions(
-                            getActivity(),
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            LOCATION_REQUEST_CODE);
-                }
-            }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mex, 4));
-
-            mMap.getUiSettings().setZoomControlsEnabled(true);
+        if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+            mMap.setMyLocationEnabled(true);
+            getDeviceLocation();
+            buscarPlantas(Constantes.CIUDADTRABAJO);
+        } else {
+            Log.d(TAG, "no tengo  "+LOCATION_REQUEST_CODE);
+            // Solicitar permiso
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_REQUEST_CODE);
 
         }
 
 
+
+            mMap.setOnMarkerClickListener(this);
+            mMap.setOnInfoWindowClickListener(this);
+
+           // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 4));
+
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            // Get the current location of the device and set the position of the map.
+
+        }
+
+
+
         @SuppressLint("MissingPermission")
-        @Override
-        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-        @NonNull int[] grantResults) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            if (requestCode == LOCATION_REQUEST_CODE) {
+        public void onRequestPermissionsRes(int requestCode, @NonNull String[] permissions,
+                                               @NonNull int[] grantResults) {
+           // super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+          //  if (requestCode == LOCATION_REQUEST_CODE) {
                 // ¿Permisos asignados?
                 if (permissions.length > 0 &&
                         permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mMap.setMyLocationEnabled(true);
+                    getDeviceLocation();
                 } else {
-                    Toast.makeText(getContext(), "Error de permisos", Toast.LENGTH_LONG).show();
+                //    Toast.makeText(getContext(), "Error de permisos", Toast.LENGTH_LONG).show();
+               cerrar();
                 }
 
-            }
+           // }
         }
+
+
+
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        Log.d(TAG, "buscando ");
+        try {
+            if (locationPermissionGranted) {
+
+
+                fusedLocationClient=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                locallis=new miLocationListener();
+                this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+
+                final boolean gpsEnabled = fusedLocationClient.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                if (!gpsEnabled) {
+                    Log.d(TAG, "1");
+                    Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(settingsIntent);
+                    return;
+                }
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+                    Log.d(TAG, "2");
+                    return;
+                }
+                if (fusedLocationClient.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locallis);
+
+                    Log.d(TAG, "3");
+
+                } else  if (fusedLocationClient.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+                    //  if (Local == null) { //Validación que evita NullPointerException
+                    //Requiere actualización
+                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locallis);
+
+                    // }
+                    Log.d(TAG, "4");
+                } else
+                    Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
+
+
+
+
+
+
+
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage(), e);
+
+        }
+    }
+
+    public void guardarPosicion(Location loc)
+
+    {
+        lastKnownLocation=loc;
+        if (lastKnownLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(lastKnownLocation.getLatitude(),
+                            lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+            Log.d(TAG, "Current location is "+lastKnownLocation.getLatitude()+","+
+                    lastKnownLocation.getLongitude());
+        }
+    }
 
         @Override
         public boolean onMarkerClick(final Marker marker) {
@@ -289,19 +415,74 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             return false;
         }
 
+    public void nuevaTienda(){
+        BuscadorTiendas bt=new BuscadorTiendas();
+        if(lastKnownLocation!=null) {
+            if (bt.hayTiendas(nollistatiendas, lastKnownLocation.getLatitude(),
+                    lastKnownLocation.getLongitude())) {
+                //solo informativo te recomendamos visitar una tienda existente
+                new AlertDialog.Builder(getActivity())
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle(R.string.importante)
+                        .setMessage(getString(R.string.recomend_tienda))
+                        .setPositiveButton(R.string.nueva_tienda, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Bundle bundle = new Bundle();
+                                bundle.putBoolean("nuevatienda", true);
+                                //  bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
+                                NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
+                                Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
+                                if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
 
+                                    nav.navigate(R.id.action_buscartonuevo, bundle);
+                                    //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
+                                }
 
-    public void verFiltros(boolean valor){
-        if(valor){
-            btnverfil.setEnabled(false);
-            llfiltros.setVisibility(View.VISIBLE);
+                            }
+                        })
+                        .setNegativeButton(R.string.regresar, null)
+                        .show();
+            }else{
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("nuevatienda", true);
+                NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
+                Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
+                if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
 
-        }else {
-            btnverfil.setEnabled(false);
-            llfiltros.setVisibility(View.GONE);
+                    nav.navigate(R.id.action_buscartonuevo, bundle);
+                    //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
+                }
+
+            }
+
+        }else{
+            Toast.makeText(getActivity(),"Espere para registrar su ubicación",Toast.LENGTH_LONG).show();
 
         }
     }
+        public void cerrar(){
+            Toast.makeText(getActivity(),"Es necesario dar permiso para utilizar esta opción",Toast.LENGTH_LONG).show();
+            NavHostFragment navHostFragment =
+                    (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            NavController navController = navHostFragment.getNavController();
+            if(navController!=null)
+                navController.popBackStack();
+        }
+    public void verFiltros(){
+        if(!verfiltros){
+            btnverfil.setText("OCULTAR FILTROS");
+            llfiltros.setVisibility(View.VISIBLE);
+            verfiltros=true;
+        }else {
+            btnverfil.setText("VER FILTROS");
+            llfiltros.setVisibility(View.GONE);
+            verfiltros=false;
+        }
+    }
+    protected void createLocationRequest() {
+
+    }
+
     public void dibujarZonas(List<Geocerca> zonas){
             regionPolygon=new ArrayList<Polygon>();
 
@@ -338,6 +519,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         public void buscarTiendas( int planta,String indicefin){
             //peticion al servidor
             //cambio el inice
+            alert=new LoadingAlert(getActivity());
+            alert.startAlert();
             PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
             //usaria la ciudad de trabajo
 
@@ -357,7 +540,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             int[] aux =lcviewModel.buscarClienCdxPlan(planta);
              cliente=aux[0];
             String ciudad=Constantes.CIUDADTRABAJO;
-            Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);
+         //   Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);
             int tipo=((CatalogoDetalle)sptipoti.getSelectedItem()).getCad_idopcion();
             int cadena=((CatalogoDetalle)spcadena.getSelectedItem()).getCad_idopcion();
             petmap.getTiendas("0",ciudad,planta,cliente,fini,ffin,tipo+"",cadena+""); //se agregarian filtros despues
@@ -369,9 +552,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             this.listatiendas.observe(getViewLifecycleOwner(), new Observer<List<Tienda>>() {
                 @Override
                 public void onChanged(List<Tienda> tiendas) {
-
-                        dibujarTiendas(tiendas);
-
+                    nollistatiendas=tiendas;
+                    dibujarTiendas(tiendas);
+                     alert.closeAlertDialog();
                 }
             });
             this.listageocercas.observe(getViewLifecycleOwner(), new Observer<List<Geocerca>>() {
@@ -393,7 +576,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             mMap.clear();
             if(listiendas!=null)
             for(Tienda tienda: listiendas){
-                 Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
+               //  Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
 
                 if(cliente==4&&tienda.getEstpep()>0) {
                     color = tienda.getEstpep() + "";
@@ -494,11 +677,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 }
             return mapa;
         }
-        public void buscarPlantas(String ciudadNombre,int clienteSel){
+        public void buscarPlantas(String ciudadNombre){
             //para buscar las plantas
-            LoadingAlert alert=new LoadingAlert(getActivity());
-            alert.startAlert();
-            LiveData<List<ListaCompra>> listacomp = lcviewModel.cargarPestañasEta(ciudadNombre, clienteSel);
+
+
+            LiveData<List<ListaCompra>> listacomp = lcviewModel.cargarPestañasEta(ciudadNombre);
 
             // Create the observer which updates the UI.
             final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
@@ -527,7 +710,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                     }
                     else
                         Log.d(TAG,"algo salió mal con la consulta de listas");
-                    alert.closeAlertDialog();
+
                 }
             };
 
@@ -604,11 +787,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
 
 
-    public MapaCdFragment() {
-    }
 
-    public static MapaCdFragment newInstance() {
-        return new MapaCdFragment();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(lastKnownLocation==null&&this.locationPermissionGranted){
+            getDeviceLocation();
+        }
     }
 
 
@@ -645,5 +831,53 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             Log.d(TAG,"ocultando++"+btncancel.getVisibility());
         btncancel.setVisibility(View.GONE);
         markerSel=null;
+    }
+
+    @Override
+    public void onDestroy() {
+            if(alert!=null) {
+                alert.closeAlertDialog();
+            }
+        super.onDestroy();
+    }
+
+    public class miLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location loc) {
+            // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
+            // debido a la deteccion de un cambio de ubicacion
+
+                guardarPosicion(loc);
+
+
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+            // Este metodo se ejecuta cuando el GPS es desactivado
+            //  Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+            // Este metodo se ejecuta cuando el GPS es activado
+            Log.d(TAG, "---------------gps activado");
+        }
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            switch (status) {
+                case LocationProvider.AVAILABLE:
+                    Log.d("debug", "LocationProvider.AVAILABLE");
+                    break;
+                case LocationProvider.OUT_OF_SERVICE:
+                    Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
+                    break;
+                case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                    Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
+                    break;
+            }
+        }
+
+
     }
 }

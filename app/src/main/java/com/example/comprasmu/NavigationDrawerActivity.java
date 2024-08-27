@@ -45,6 +45,7 @@ import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
+import com.example.comprasmu.ui.etiquetado.EditEtiquetadoFragment;
 import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.home.MasPruebasActivity;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
@@ -113,6 +114,7 @@ import java.util.concurrent.TimeUnit;
 public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String ETAPA = "comprasmu.ndetapa";
+    private static final int LOCATION_REQUEST_CODE = 1;
     private AppBarConfiguration mAppBarConfiguration;
     SubirFotoProgressReceiver rcv;
     String TAG="NavigationDrawerActivity";
@@ -458,7 +460,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
                // NavHostFragment.findNavController(ConfiguracionCamFragment.this);
 
-
                 navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
                 navController.navigate(R.id.nav_configurar);
@@ -533,10 +534,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG, "en el act"+requestCode);
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                  //  Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+                    //  Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
 
                     // main logic
                 } else {
@@ -556,8 +558,26 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                         }
                     }
                 }
-                break;
+                return;
+
         }
+        if (permissions.length > 0 &&
+                permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) 
+                {
+
+                }else{
+                    // If request is cancelled, the result arrays are empty.
+                    Toast.makeText(this, "Es necesario dar permiso para utilizar esta opción", Toast.LENGTH_LONG).show();
+
+                    // permission was granted, do your work....
+                    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+                    navController.navigate(R.id.nav_home);
+                }
+
+            }
+
     }
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(this)
@@ -1094,4 +1114,5 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         navController.navigate(R.id.nav_borrarind);
     }
+
 }

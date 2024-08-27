@@ -255,8 +255,50 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     }
     public void contarCanceladas(){
+        int itotCancel=0;
+        List<InformeCompraDetalle> informesCancel=getTotalCancel(Constantes.INDICEACTUAL);
+        totCancel=new MutableLiveData<>();
+        if(informesCancel!=null&&informesCancel.size()>0) {
+            itotCancel = informesCancel.size();
+            totCancel = new MutableLiveData<>();
+            totCancel.setValue(itotCancel);
+        }
+        else {
+            List<ListaCompra> listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            if(listacomp!=null&&listacomp.size()>0)
+                setEtiquetadoCancel(3, 6);
+            else {
+                //veo si ya puedo hacer empaque
+                listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                InformeEtapa nvoinf = new InformeEtapa();
+                List<InformeEtapa> listageneral = new ArrayList<>();
+                if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
+                    //veo que no haya hecho informe para no esperar a la supervisión
+                   // ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+                    InformeEtapa informesEtapa = getInformeNoCancel(Constantes.INDICEACTUAL, 4);
+                    if (informesEtapa != null) {
+                        nvoinf.setIndice(listacomp.get(0).getIndice());
+                        // nvoinf.set = listacomp.get(0).getId();
+                        nvoinf.setEstatus(listacomp.get(0).getEstatus());
+                        nvoinf.setEtapa(4);
 
-        totCancel=getTotalCancell(Constantes.INDICEACTUAL);
+                        nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
+                        nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
+
+                        // nvoinf.mo
+                        listageneral.add(nvoinf);
+                    }
+                }
+
+                itotCancel = listageneral.size();
+
+                totCancel.setValue(itotCancel);
+            }
+        }
+
+
+        /*
+        itotCancel=getTotalCancell(Constantes.INDICEACTUAL);
 
         List<ListaCompra> listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
         if(listacomp!=null&&listacomp.size()>0)
@@ -284,7 +326,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
             }
             if (listageneral.size() > 0)
                 totCancel.setValue(listageneral.size());
-        }
+        }*/
 
     }
 
@@ -308,6 +350,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
             }
 
         }
+        totCancel=new MutableLiveData<>();
         totCancel.setValue(listageneral.size());
 
     }

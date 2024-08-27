@@ -30,6 +30,7 @@ import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -193,13 +194,37 @@ public class NvoGastoViewModel extends AndroidViewModel {
         confrepo.insert(conf);
     }
 
-    public String getTotalmu() {
+    public void guardarDetalleMues(List<TotalMuestra> lista) {
         ConfiguracionRepositoryImpl confrepo=new ConfiguracionRepositoryImpl(application);
         Configuracion conf=new Configuracion();
+        conf.setClave("detalle_muestra");
+        String json = new Gson().toJson(lista );
+        conf.setValor(json);
+        //veo si ya existe el campo
+        Configuracion edit=confrepo.findsimple("detalle_muestra");
+        if(edit!=null) {
+            edit.setValor(json);
+            confrepo.insert(edit);
+        }else
+            confrepo.insert(conf);
+    }
+
+    public String getTotalmu() {
+        ConfiguracionRepositoryImpl confrepo=new ConfiguracionRepositoryImpl(application);
+
 
         Configuracion edit=confrepo.findsimple("total_muestras");
        if(edit!=null)
           return   edit.getValor();
        return  "";
+    }
+    public String getDetalleMu() {
+        ConfiguracionRepositoryImpl confrepo=new ConfiguracionRepositoryImpl(application);
+
+
+        Configuracion edit=confrepo.findsimple("detalle_muestra");
+        if(edit!=null)
+            return   edit.getValor();
+        return  "";
     }
 }

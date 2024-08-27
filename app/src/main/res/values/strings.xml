@@ -374,5 +374,6 @@
     <string name="continuar_inf">CONTINUAR EL INFORME EN EL MODULO CORRESPONDIENTE</string>
     <string name="esta_acuerdo">¿ESTÁ DE ACUERDO CON LA CANTIDAD FINAL DE LOS HONORARIOS?</string>
     <string name="cargando">CARGANDO</string>
+    <string name="recomend_tienda">TE RECOMENDAMOS SELECCIONAR UNA TIENDA EXISTENTE</string>
 
 </resources>
