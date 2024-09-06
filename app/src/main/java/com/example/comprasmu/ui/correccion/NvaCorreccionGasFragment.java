@@ -57,7 +57,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/****correccion envio***/
+/****correccion gasto***/
 public class NvaCorreccionGasFragment extends Fragment {
 
 
@@ -126,7 +126,10 @@ public class NvaCorreccionGasFragment extends Fragment {
 
                 if(solicitudCor.getInformesId()>0) {
                     InformeEtapa informe= preViewModel.getInformexId(solicitudCor.getInformesId());
-
+                    if(informe==null){
+                        Toast.makeText(getActivity(),"Hubo un problema",Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     ((NuevoInfEtapaActivity)getActivity()).actualizarBarraGas(informe.getCiudadNombre());
                     List<InformeGastoDet> detalles=solViewModel.getGastoDetalles(solicitudCor.getInformesId());
 

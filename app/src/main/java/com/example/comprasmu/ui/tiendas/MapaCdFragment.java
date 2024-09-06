@@ -837,13 +837,25 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     public void onDestroy() {
             if(alert!=null) {
                 alert.closeAlertDialog();
+
             }
+        if (this.locallis != null)
+            locallis.desactivar();
         super.onDestroy();
+
+
+
     }
 
     public class miLocationListener implements LocationListener {
-
-        @Override
+        public void desactivar() {
+            if ( fusedLocationClient!=null) {
+                Log.d(TAG,"desactivando");
+                fusedLocationClient.removeUpdates(locallis);
+            }
+            fusedLocationClient=null;
+        }
+@Override
         public void onLocationChanged(Location loc) {
             // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
             // debido a la deteccion de un cambio de ubicacion
