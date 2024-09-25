@@ -224,4 +224,8 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     public LiveData<List<InformeEtapa>> getAllsp(int etapa, String indice, int estatus) {
         return icDao.getInformesAll(etapa, indice, estatus);
     }
+
+    public List<InformeEtapa> getInformesxEstatusAllSim(String indiceSel, int estatus) {
+        return icDao.getInformesxEstatusAllSim(indiceSel,estatus);
+    }
 }

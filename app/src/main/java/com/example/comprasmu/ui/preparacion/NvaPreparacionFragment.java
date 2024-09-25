@@ -625,13 +625,19 @@ public class NvaPreparacionFragment extends Fragment {
             subirFotos(getActivity(),informe);}
             //necesito ver que sea una correccion
             //busco informe de la misma planta cancelado
-            InformeEtapa inf=mViewModel.getInformexPlantaEtaEst(informe.getInformeEtapa().getPlantasId(),1,Constantes.INDICEACTUAL,0);
+           /* InformeEtapa inf=mViewModel.getInformexPlantaEtaEst(informe.getInformeEtapa().getPlantasId(),1,Constantes.INDICEACTUAL,0);
             if(inf!=null){
                 //actualizo a 4 //corregido
                 inf.setEstatus(4);
                 mViewModel.actualizarInfEtapa(inf);
             }
-        }catch(Exception ex){
+            InformeEtapa inf2=mViewModel.getInformexPlantaEtaEst(informe.getInformeEtapa().getPlantasId(),1,Constantes.INDICEACTUAL,4);
+            if(inf2!=null) {
+                //actualizo a 4 //corregido
+             Log.d(TAG,">>>>cambie estatus "+inf2.getEstatus());
+            }*/
+
+            }catch(Exception ex){
             ex.getStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();

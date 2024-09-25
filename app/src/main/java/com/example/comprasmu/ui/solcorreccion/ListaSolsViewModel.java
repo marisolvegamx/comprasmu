@@ -2,6 +2,7 @@ package com.example.comprasmu.ui.solcorreccion;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
@@ -35,6 +36,7 @@ import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
     ListaCompraRepositoryImpl lcrepo;
     ListaCompraDetRepositoryImpl lcdrepo;
     Context context;
-
+    ComprasLog milog;
     private  InfGastoDetRepositoryImpl gasdetrepo;
     MutableLiveData<Integer> totCancel;
 
@@ -70,6 +72,9 @@ public class ListaSolsViewModel extends AndroidViewModel {
         lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         this.gasdetrepo = new InfGastoDetRepositoryImpl(application);
         lcdrepo=new ListaCompraDetRepositoryImpl(application);
+        milog=ComprasLog.getSingleton();
+        milog.crearLog(application.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
+
     }
 
     public LiveData<List<SolicitudCor>>  cargarDetalles(int etapa,String indiceSel, int estatus){
@@ -200,24 +205,28 @@ public class ListaSolsViewModel extends AndroidViewModel {
         if(det!=null) {
             if (det.getEstatus() != 2&&det.getEstatus()!=4)//no está cancelada
             {
+                Log.d(TAG,"procesando canceladas"+det.getId());
                 String codigo=Constantes.sdfcaducidad.format(det.getCaducidad());
                 ListaCompraDetRepositoryImpl lcdrepo = new ListaCompraDetRepositoryImpl(context);
                 ListaCompraDetalle compradet = lcdrepo.findsimple(cancelada.getInd_comprasid(), cancelada.getInd_compraddetid());
                 if (compradet != null) {
                     //quito la comprada
                     if (compradet.getComprados() > 0) {
+                         milog.grabarError(TAG,"procesarCanceladas",det.getId()+"--"+det.getInformesId()+"--"+codigo);
                         int cantidad = compradet.getComprados() - 1;
                         lcdrepo.actualizarComprados(compradet.getId(), compradet.getListaId(), cantidad);
                     }
+                  Log.d(TAG,"quitando el codigo"+compradet.getNvoCodigo());
+
                     //quito en nuevo codigo
                     if (compradet.getNvoCodigo()!=null&&compradet.getNvoCodigo() != "") {
-                       // Log.d(TAG,"quitando el codigo"+compradet.getNvoCodigo());
-                       // Log.d(TAG,det.getId()+"--"+det.getInformesId()+"--"+codigo);
+                       milog.grabarError(TAG,"procesarCanceladas","quitando el codigo"+compradet.getNvoCodigo());
+
 
                         String nuevoscods = compradet.getNvoCodigo().replace(codigo + ";", "");//elimino elcodigo
                         nuevoscods = compradet.getNvoCodigo().replace(codigo, "");//elimino elcodigo
 
-                       // Log.d(TAG,compradet.getId()+"--"+compradet.getListaId()+"--"+nuevoscods);
+                       //Log.d(TAG,compradet.getId()+"--"+compradet.getListaId()+"--"+nuevoscods);
                         lcdrepo.actualizarNvosCodigos(compradet.getId(), compradet.getListaId(), nuevoscods);
                     }
                 }
@@ -355,6 +364,12 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     }
 
+    public InformeEtapa getInformexPlantaEtaEst(int plantasId, int etapa, String indice,int estatus) {
+        return infetarepo.getInformexPlantEst(indice,etapa,plantasId,0);
+    }
+    public List<InformeEtapa> getTotalCancelEtaSim(String indiceSel ) {
+        return infetarepo.getInformesxEstatusAllSim(indiceSel,0);
+    }
     public MutableLiveData<Integer> getTotCancel() {
         return totCancel;
     }
@@ -401,4 +416,5 @@ public class ListaSolsViewModel extends AndroidViewModel {
     public List<InformeGastoDet> getGastoDetalles(int id){
         return gasdetrepo.getAllSencillo(id);
     }
+
 }

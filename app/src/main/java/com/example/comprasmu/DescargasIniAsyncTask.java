@@ -227,7 +227,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
         return false;
     }
     private void listacompras(){
-        Log.d("DescargasIniAsyncTask", "descargando listas");
+        Log.d("DescargasIniAsyncTask", "descargando listas"+actualiza);
 
         procesos_lev++; //para verificar que ya terminó
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);

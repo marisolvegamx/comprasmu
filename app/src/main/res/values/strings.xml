@@ -373,5 +373,12 @@
     <string name="muestra_adicional">MUESTRA ADICIONAL</string>
     <string name="continuar_inf">CONTINUAR EL INFORME EN EL MODULO CORRESPONDIENTE</string>
     <string name="esta_acuerdo">¿ESTÁ DE ACUERDO CON LA CANTIDAD FINAL DE LOS HONORARIOS?</string>
+    <string name="bpreparacion">1. PREPARACION</string>
+    <string name="hpreparacion">1. PREPARACION</string>
+    <string name="hcompra">2. COMPRA</string>
+    <string name="hgastos">6. GASTOS</string>
+    <string name="henvio">5. ENVIO</string>
+    <string name="hempaque">4. EMPAQUE</string>
+    <string name="hetiquetado">3. ETIQUETADO</string>
 
 </resources>

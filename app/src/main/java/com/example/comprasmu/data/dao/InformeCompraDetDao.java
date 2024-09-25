@@ -123,7 +123,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
             " inner join visitas on visitas.id=informe_compras.visitasId" +
             " inner join lista_compras_detalle ld on ld.id=comprasDetId and ld.listaId=comprasId and ld.comprados<ld.cantidad " +
-            " where visitas.indice=:indice and informe_detalle.estatus=:estatus" )
+            " where visitas.indice=:indice and (informe_detalle.estatus=:estatus or informe_detalle.estatus=5)" )
     public abstract LiveData<List<InformeCompraDetalle>> getByEstatus2(String indice,  int estatus);
 
     @Query("SELECT informe_detalle.* " +
@@ -133,6 +133,14 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " inner join lista_compras_detalle ld on ld.id=comprasDetId and ld.listaId=comprasId and ld.comprados<ld.cantidad " +
             " where visitas.indice=:indice and informe_detalle.estatus=:estatus" )
     public abstract List<InformeCompraDetalle> getByEstatussimpl(String indice,  int estatus);
+
+    @Query("SELECT informe_detalle.* " +
+            "FROM informe_detalle " +
+            " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
+            " inner join visitas on visitas.id=informe_compras.visitasId" +
+            " inner join lista_compras_detalle ld on ld.id=comprasDetId and ld.listaId=comprasId and ld.comprados<ld.cantidad " +
+            " where visitas.indice=:indice and (informe_detalle.estatus=:estatus or informe_detalle.estatus=5)" )
+    public abstract List<InformeCompraDetalle> getDetalleCancel(String indice,  int estatus);
 
     @Query("SELECT informecompravisita.* " +
             "FROM informe_detalle " +

@@ -306,6 +306,7 @@ public class PeticionesServidor {
 
         PeticionLista peticion = new PeticionLista();
         if (comp != null && comp.getVersion() != null) {
+            Log.d(TAG, "mando version");
              peticion.version_detalle = sdf.format(version2.getVersion());
              peticion.version_lista = sdf.format(comp.getVersion());
             peticion.indice = indice;
@@ -315,6 +316,7 @@ public class PeticionesServidor {
 
         }else //es la 1a vez
         {
+            Log.d(TAG, "es primera vez lista compra");
             peticion.version_detalle ="1999-09-09"; //una fecha muy antigua
 
             peticion.version_lista = "1999-09-09";

@@ -52,9 +52,12 @@ public class SelNotifFragment extends ListaSelecFragment{
     public static String ARG_TIPOCONS="comprasmu.correselcli.tipocons";
     int totCorrecciones;
     int totCancel;
+    int itotCanceleta;
     int totMuestraAdic;
 
     ListaSolsViewModel scViewModel;
+    private List<InformeEtapa> totCanceleta;
+
     public SelNotifFragment() {
         super();
     }
@@ -74,6 +77,7 @@ public class SelNotifFragment extends ListaSelecFragment{
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.menu_notificaciones);
         totCancel=0;
+        itotCanceleta=0;
         totCorrecciones=0;
         totMuestraAdic=0;
         initializeCountDrawer();
@@ -96,31 +100,53 @@ public class SelNotifFragment extends ListaSelecFragment{
         contarCorrecc();
         contarCanceladas();
         contarMuestraAdic();
-      convertirListaCor();
+        convertirListaCor();
 
 
     }
 
 
     private void contarCanceladas(){
+        ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+        totCanceleta=scViewModel.getTotalCancelEtaSim(Constantes.INDICEACTUAL);
+        if(totCanceleta!=null){
+            List<InformeEtapa> listageneral=new ArrayList<>();
+
+                //para informes etapa cancelados
+                for (InformeEtapa informe:totCanceleta
+                ) { //busco si no se ha vuelto a elaborar
+                    InformeEtapa inf=scViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,2);
+                    if(inf!=null){
+                        //corregido
+                        continue;
+                    }
+                    else
+                        listageneral.add(informe);
+
+                }
+
+            itotCanceleta=listageneral.size();
+        }
+
 
         List<InformeCompraDetalle> informesCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
 
         if(informesCancel!=null&&informesCancel.size()>0)
 
-                totCancel=informesCancel.size();
-        else {
-            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
-            if(listacomp!=null&&listacomp.size()>0)
-                 setEtiquetadoCancel(3, 6);
-           else {
-                //veo si ya puedo hacer empaque
-                listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-                InformeEtapa nvoinf = new InformeEtapa();
-                List<InformeEtapa> listageneral = new ArrayList<>();
-                if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
+            totCancel=informesCancel.size();
+        totCancel=totCancel+itotCanceleta;
+        if(totCancel==0){
+                    List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                    if(listacomp!=null&&listacomp.size()>0)
+                         setEtiquetadoCancel(3, 6);
+                   else {
+                        //veo si ya puedo hacer empaque
+                        listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                        InformeEtapa nvoinf = new InformeEtapa();
+                        List<InformeEtapa> listageneral = new ArrayList<>();
+                        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
                     //veo que no haya hecho informe para no esperar a la supervisión
-                    ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+
                     InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
                     if (informesEtapa != null) {
                         nvoinf.setIndice(listacomp.get(0).getIndice());
@@ -139,6 +165,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                 totCancel = listageneral.size();
             }
         }
+
     }
     private void contarMuestraAdic(){
 

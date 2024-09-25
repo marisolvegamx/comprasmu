@@ -110,19 +110,19 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                     @Override
                     public void onChanged(List<InformeCompraDao.InformeCompravisita> informeCompravisitas) {
 
-                        if (informeCompravisitas.size() < 1&&informeCompraDetalles.size()<1) {
+                                if (informeCompravisitas.size() < 1 && informeCompraDetalles.size() < 1) {
 
-                            //busco las demas etapas
-                            mBinding.lismuestras.setVisibility(View.GONE);
-                        }else
-                        {
-                            mBinding.lismuestras.setVisibility(View.VISIBLE);
-                        }
-                        Log.d(TAG, "YA CARGÓxx " + informeCompravisitas.size());
+                                    //busco las demas etapas
+                                    mBinding.lismuestras.setVisibility(View.GONE);
+                                } else {
+                                    mBinding.lismuestras.setVisibility(View.VISIBLE);
+                                }
+                                Log.d(TAG, "YA CARGÓxx " + informeCompravisitas.size());
 
-                        mListAdapter.setInformeCompraList(informeCompravisitas);
-                        mListAdapter.setProductoList(informeCompraDetalles);
-                        mListAdapter.notifyDataSetChanged();
+                                mListAdapter.setInformeCompraList(informeCompravisitas);
+                                mListAdapter.setProductoList(informeCompraDetalles);
+                                mListAdapter.notifyDataSetChanged();
+
                     }
                 });
             }
@@ -153,17 +153,46 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
 
 
         nvoinf = null;
+        if (listageneral.size() >0) {
 
-                if (listageneral.size() >0) {
 
+            Log.d(TAG, "emp YA CARGÓ" + listageneral.size());
 
-        Log.d(TAG, "emp YA CARGÓ" + listageneral.size());
+            mEtaAdapter.setInformeCompraList(listageneral);
 
-        mEtaAdapter.setInformeCompraList(listageneral);
+            mEtaAdapter.notifyDataSetChanged();
+            mBinding.lisinfeta.setVisibility(View.VISIBLE);
+        }else //busco de la etapa 1
+        {
+            mViewModel.cargarCanceladosEta(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+                @Override
+                public void onChanged(List<InformeEtapa> informes) {
 
-        mEtaAdapter.notifyDataSetChanged();
-        mBinding.lisinfeta.setVisibility(View.VISIBLE);
-    }
+                    List<InformeEtapa> listageneral=new ArrayList<>();
+                    Log.d(TAG, "YA CARGÓ " + informes.size());
+                    if (informes != null && informes.size() > 0) {
+                        for (InformeEtapa informe:informes
+                             ) { //busco si no se ha vuelto a elaborar
+                             InformeEtapa inf=mViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,2);
+                            if(inf!=null){
+                                //corregido
+                             continue;
+                            }
+                            else
+                                listageneral.add(informe);
+
+                        }
+                        Log.d(TAG, "emp YA CARGÓ" + listageneral.size());
+
+                        mEtaAdapter.setInformeCompraList(listageneral);
+
+                        mEtaAdapter.notifyDataSetChanged();
+                        mBinding.lisinfeta.setVisibility(View.VISIBLE);
+
+                    }
+                }
+            });
+        }
 
 
     }
