@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.comprasmu.DescRespInformes;
 import com.example.comprasmu.DescRespInformesEta;
 import com.example.comprasmu.DescargasIniAsyncTask;
+import com.example.comprasmu.IDescargaIniListener;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.SimpleTask;
 import com.example.comprasmu.data.modelos.Atributo;
@@ -76,7 +77,7 @@ public class PeticionesServidor {
         lista=new MutableLiveData<>();
     }
 
-    public void getCatalogos(CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atRepo,DescargasIniAsyncTask.DescargaIniListener listener) {
+    public void getCatalogos(CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atRepo,IDescargaIniListener listener) {
 
         final Call<CatalogosResponse> batch = ServiceGenerator.getApiService().getCatalogosNuevoInforme(usuario);
 
@@ -130,7 +131,7 @@ public class PeticionesServidor {
     }
 
 
-    public void getSustitucion(String indice,TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo, DescargasIniAsyncTask.DescargaIniListener listener) {
+    public void getSustitucion(String indice,TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo, IDescargaIniListener listener) {
 
         final Call<List<Sustitucion>> batch = ServiceGenerator.getApiService().getSustitucion(usuario,indice);
         Log.d("PeticionesServidor","enviando sustitucion ");
@@ -299,7 +300,7 @@ public class PeticionesServidor {
     }
 
 
-    public void getListasdeCompra(TablaVersiones comp, TablaVersiones version2, String indice, DescargasIniAsyncTask.DescargaIniListener listener){
+    public void getListasdeCompra(TablaVersiones comp, TablaVersiones version2, String indice, IDescargaIniListener listener){
 
         //busco la version de la app
          SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
@@ -331,7 +332,7 @@ public class PeticionesServidor {
 
     }
 
-    public void pedirLista(PeticionLista peticion, DescargasIniAsyncTask.DescargaIniListener listener){
+    public void pedirLista(PeticionLista peticion, IDescargaIniListener listener){
 
         Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
 
@@ -660,7 +661,7 @@ public class PeticionesServidor {
         });
     }
 
-    public void insertarCatalogos(CatalogosResponse respuestaCats, CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atrRepo, DescargasIniAsyncTask.DescargaIniListener listener){
+    public void insertarCatalogos(CatalogosResponse respuestaCats, CatalogoDetalleRepositoryImpl catRep, TablaVersionesRepImpl trepo, AtributoRepositoryImpl atrRepo, IDescargaIniListener listener){
         List<CatalogoDetalle> lista=respuestaCats.getCatalogos();
         //borro los catalogos que traigo
         catRep.deletexIdCat(2);
@@ -711,7 +712,7 @@ public class PeticionesServidor {
 
     }
 
-    public void insertarSustitucion(List<Sustitucion> respuestaCats,TablaVersionesRepImpl trepo,  SustitucionRepositoryImpl sustRepo,DescargasIniAsyncTask.DescargaIniListener listener){
+    public void insertarSustitucion(List<Sustitucion> respuestaCats, TablaVersionesRepImpl trepo, SustitucionRepositoryImpl sustRepo, IDescargaIniListener listener){
 
         sustRepo.deleteAll();
         sustRepo.insertAll(respuestaCats);

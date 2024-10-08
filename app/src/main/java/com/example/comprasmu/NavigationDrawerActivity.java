@@ -58,6 +58,7 @@ import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
+import com.example.comprasmu.workmanager.NotificacionesWork;
 import com.example.comprasmu.workmanager.SyncWork;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
@@ -346,22 +347,32 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .setRequiresBatteryNotLow(true)
                     .build();
-        }catch(Exception ex){
 
-
-            flog.grabarError(TAG,"oncreate",ex.getMessage());
-        }
-       /* PeriodicWorkRequest simpleRequest =
+     /*   PeriodicWorkRequest simpleRequest =
                 new PeriodicWorkRequest.Builder(SyncWork.class, 30, TimeUnit.MINUTES)
                         .setConstraints(constraints)
                         .addTag("comprassync_worker")
-                        .build();*/
-      /*  WorkManager
+                        .build();
+        WorkManager
                 .getInstance(this)
                 .enqueueUniquePeriodicWork(
                 "comprassync_worker",
                 ExistingPeriodicWorkPolicy.KEEP,
                 simpleRequest);*/
+
+        PeriodicWorkRequest simpleRequest =
+                new PeriodicWorkRequest.Builder(NotificacionesWork.class, 10, TimeUnit.MINUTES)
+                        .setConstraints(constraints)
+                        .addTag("comprassync_worker")
+                        .build();
+        WorkManager
+                .getInstance(this)
+                .enqueue(simpleRequest);
+        }catch(Exception ex){
+
+
+            flog.grabarError(TAG,"oncreate",ex.getMessage());
+        }
        // flog.grabarError("archivo creado");
        /* ServicioCompras sbt = new ServicioCompras();
 

@@ -229,14 +229,15 @@ public class ListaSolsViewModel extends AndroidViewModel {
                        //Log.d(TAG,compradet.getId()+"--"+compradet.getListaId()+"--"+nuevoscods);
                         lcdrepo.actualizarNvosCodigos(compradet.getId(), compradet.getListaId(), nuevoscods);
                     }
+                    det.setMotivoCancel(cancelada.getVas_observaciones());
+                    det.setFechaCancel(cancelada.getVas_fecha());
+                    det.setEstatus(2);
+
+                    infcrepo.insert(det);
+                    infcrepo.actualizarEstatus(det.getId(), 2);
                 }
             }
-                det.setMotivoCancel(cancelada.getVas_observaciones());
-                det.setFechaCancel(cancelada.getVas_fecha());
-                det.setEstatus(2);
 
-                infcrepo.insert(det);
-                infcrepo.actualizarEstatus(det.getId(), 2);
 
 
 
