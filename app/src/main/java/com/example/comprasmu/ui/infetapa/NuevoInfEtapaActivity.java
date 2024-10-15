@@ -69,6 +69,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try{
+            flog=ComprasLog.getSingleton();
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_nuevo_infetapa);
         // get fragment manager
         myChildToolbar =
@@ -79,7 +80,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 // add
-        flog=ComprasLog.getSingleton();
+
         infvm =
                 new ViewModelProvider(this).get(NuevoInfEtapaViewModel.class);
         dViewModel = new ViewModelProvider(this).get(NvaPreparacionViewModel.class);

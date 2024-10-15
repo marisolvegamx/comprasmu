@@ -157,15 +157,15 @@ public class HomeActivity extends AppCompatActivity {
     public void iraEtiq(){
         Log.d("HomeActivity","mivar "+mivar);
         Constantes.ETAPAACTUAL=3;
-        Intent intento=new Intent(this, DescInfSupActivity.class);
-        startActivity(intento);
-        finish();
+      //  Intent intento=new Intent(this, DescInfSupActivity.class);
+     //   startActivity(intento);
+      //  finish();
 
-       /* Constantes.ETAPAACTUAL=3;
+       /*Constantes.ETAPAACTUAL=3;*/
         Intent intento=new Intent(this, NavigationDrawerActivity.class);
         intento.putExtra(NavigationDrawerActivity.ETAPA, 3);
         startActivity(intento);
-        finish();*/
+        finish();
     }
 
 

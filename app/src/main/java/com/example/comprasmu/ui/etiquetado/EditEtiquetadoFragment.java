@@ -800,17 +800,17 @@ public void iraReubicar(){
 
     public void rotar(int idcampo){
         EditText txtruta = root.findViewById(idcampo);
-        String foto=txtruta.getText().toString();
-        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
-        {
-            Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+        if(txtruta!=null) {
+            String foto = txtruta.getText().toString();
+            if (ComprasUtils.getAvailableMemory(getActivity()).lowMemory) {
+                Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
 
-            return;
-        }else
-        {
+                return;
+            } else {
 
-            RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" +foto,fotomos);
+                RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto, fotomos);
 
+            }
         }
     }
 

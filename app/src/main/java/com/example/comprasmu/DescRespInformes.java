@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
@@ -87,6 +88,25 @@ public class DescRespInformes {
                 }
                 if (infoResp.getInformeCompraDetalles() != null && infoResp.getInformeCompraDetalles().size() > 0) {
                     //como puede que ya existan reviso primero e inserto unoxuno
+                    //todo no actualizar el estatus porque se contrapone con los cancelados
+                   InformeCompraDetalle edit=null;
+                    for (InformeCompraDetalle det:infoResp.getInformeCompraDetalles()
+                         ) {
+                        //lo busco y lo actualizo
+                        edit=infdrepo.findsimple(det.getId());
+                        if(edit!=null){
+                            edit.setQr(det.getQr());
+                            edit.setOrigen(det.getOrigen());
+                            edit.setCaducidad(det.getCaducidad());
+                            edit.setCodigo(det.getCodigo());
+                            edit.setCosto(det.getCosto());
+                            edit.setAtributoa(det.getAtributoa());
+                            edit.setAtributob(det.getAtributob());
+                            edit.setAtributoc(det.getAtributoc());
+                            edit.setAtributod(det.getAtributod());
+                        }
+                    }
+
                     infdrepo.insertAll(infoResp.getInformeCompraDetalles());
                 }
             }

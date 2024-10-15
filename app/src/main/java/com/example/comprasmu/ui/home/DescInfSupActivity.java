@@ -69,8 +69,8 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
         //reviso primero en que etapa estoy
 
         DescRespInformes desc=new DescRespInformes(this,this,tvRepo);
-
-        desc.getInformes();
+        //oct-2024 se quita porque ya no encuentro el uso, ademas que choca con la descarga de cancelados
+       // desc.getInformes();
         //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
         DescRespInformesEta desetiq=new DescRespInformesEta(this,this,tvRepo);
        //todo falta esta actualizacion
