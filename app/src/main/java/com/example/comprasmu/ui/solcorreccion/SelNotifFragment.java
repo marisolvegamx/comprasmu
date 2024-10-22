@@ -1,43 +1,33 @@
 package com.example.comprasmu.ui.solcorreccion;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
+
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.InformeCompraDao;
-import com.example.comprasmu.data.dao.ListaCompraDao;
+
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
-import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+
+import com.example.comprasmu.data.remote.PostResponse;
+import com.example.comprasmu.ui.gasto.IListenerRevRec;
+import com.example.comprasmu.ui.gasto.RevReciboActivity;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
 import com.example.comprasmu.ui.informe.DetalleCancelado;
-import com.example.comprasmu.ui.informe.ListaCancelFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
-import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
-import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.ui.ListaSelScrollFragment;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 
 import java.util.ArrayList;
@@ -54,6 +44,7 @@ public class SelNotifFragment extends ListaSelecFragment{
     int totCancel;
     int itotCanceleta;
     int totMuestraAdic;
+    MutableLiveData<Integer> revRecibo;
 
     ListaSolsViewModel scViewModel;
     private List<InformeEtapa> totCanceleta;
@@ -80,6 +71,7 @@ public class SelNotifFragment extends ListaSelecFragment{
         itotCanceleta=0;
         totCorrecciones=0;
         totMuestraAdic=0;
+
         initializeCountDrawer();
         getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -100,9 +92,23 @@ public class SelNotifFragment extends ListaSelecFragment{
         contarCorrecc();
         contarCanceladas();
         contarMuestraAdic();
-        convertirListaCor();
+        revisarRecibo();
 
 
+    }
+
+    private void revisarRecibo() {
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        ListenerNotRevRec listener=new ListenerNotRevRec();
+        ps.getEstatusRecibo(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
+        revRecibo=new MutableLiveData<>();
+        revRecibo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer valor) {
+                convertirListaCor(valor);
+                revRecibo.removeObservers(getViewLifecycleOwner());
+            }
+        });
     }
 
 
@@ -233,29 +239,29 @@ public class SelNotifFragment extends ListaSelecFragment{
 
     }
     private void setEtiquetadoCancel(int etapa, int estatus) {
-            List<InformeEtapa> listageneral=new ArrayList<>();
+        List<InformeEtapa> listageneral=new ArrayList<>();
             //para ver si sigue etiquetado y empaque
         List<InformeEtapa> informes=scViewModel.getInfEtapaxEstatusSim(Constantes.INDICEACTUAL,etapa,estatus);
 
-                    //paso de informe etapa ainforme compra
-                    DetalleCancelado nvoinf = new DetalleCancelado();
-                    for (InformeEtapa infeta : informes
-                    ) {
+        //paso de informe etapa ainforme compra
+        DetalleCancelado nvoinf = new DetalleCancelado();
+        for (InformeEtapa infeta : informes
+        ) {
 
-                        //reviso si ya estoy en etapa 3
-                        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
-                        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
+            //reviso si ya estoy en etapa 3
+            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
 
-                            listageneral.add(infeta);
+                listageneral.add(infeta);
 
 
-                        }
-
-                    }
-            //totCancel=new MutableLiveData<>();
-            totCancel=listageneral.size();
+            }
 
         }
+            //totCancel=new MutableLiveData<>();
+        totCancel=listageneral.size();
+
+    }
     public void siguiente(int i){
        // Log.d(TAG,"una planta "+tipoconsulta+"--"+listaSeleccionable.get(i).getId());
         int opcion=listaSeleccionable.get(i).getId();
@@ -284,13 +290,16 @@ public class SelNotifFragment extends ListaSelecFragment{
             case 3:
                 NavHostFragment.findNavController(this).navigate(R.id.action_notiftomu, bundle);
                 break;
+            case 4:
+                NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
+                break;
 
         }
 
     }
 
 
-    private  void convertirListaCor() {
+    private  void convertirListaCor(int valrevRecibo) {
         listaClientesEnv = new ArrayList<DescripcionGenerica>();
         //primero las generales
 
@@ -301,6 +310,9 @@ public class SelNotifFragment extends ListaSelecFragment{
          listaClientesEnv.add(new DescripcionGenerica(2, "CANCELADAS", "0",totCancel+""));
 
          listaClientesEnv.add(new DescripcionGenerica(3, "MUESTRA ADICIONAL", "0",totMuestraAdic+""));
+
+        listaClientesEnv.add(new DescripcionGenerica(4, "REVISAR RECIBO", "0",valrevRecibo+""));
+
         // totCorrecciones.removeObservers(getViewLifecycleOwner());
          //totMuestraAdic.removeObservers(getViewLifecycleOwner());
          //totCancel.removeObservers(getViewLifecycleOwner());
@@ -310,6 +322,25 @@ public class SelNotifFragment extends ListaSelecFragment{
 
     }
 
+
+    public class ListenerNotRevRec implements IListenerRevRec{
+
+        @Override
+        public void guardarEstatus(PostResponse response) {
+            int estatusRecibo=0;
+            if(response!=null&&response.getData()!=null&&response.getData().equals("2")) {
+                estatusRecibo = 1;
+
+
+            }
+            revRecibo.setValue(estatusRecibo);
+        }
+
+        @Override
+        public void guardarRes(PostResponse respuesta) {
+
+        }
+    }
 /*
     @Override
     public void onClickVer(int position) {

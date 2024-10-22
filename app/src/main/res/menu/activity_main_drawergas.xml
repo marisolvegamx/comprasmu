@@ -33,10 +33,6 @@
             android:id="@+id/nav_resumengas"
             android:icon="?attr/actionModePasteDrawable"
             android:title="@string/menu_lista_gas" />
-        <item
-            android:id="@+id/nav_revrecibo"
-            android:icon="@drawable/ic_baseline_receipt_long_24"
-            android:title="@string/menu_revrecibo" />
 
         <item
             android:id="@+id/nav_notificaciongen"

@@ -173,7 +173,7 @@ public class NvoGastoFragment extends Fragment {
             btntomarf = root.findViewById(R.id.btngasfoto);
             fotomos=root.findViewById(R.id.ivgasfoto);
 
-             milog = ComprasLog.getSingleton();
+            milog = ComprasLog.getSingleton();
 
             llresumen.setVisibility(View.GONE);
             llpreg1.setVisibility(View.GONE);
@@ -233,6 +233,7 @@ public class NvoGastoFragment extends Fragment {
                 }
             });
             mBinding.txtgascomentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+
             mBinding.txtgasdescrip.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         //    mBinding.txtgasdescrip.addTextChangedListener(new BotonTextWatcher(aceptar4));
             mBinding.txtgascosto.addTextChangedListener(new BotonTextWatcher(aceptar5));
@@ -395,9 +396,9 @@ public class NvoGastoFragment extends Fragment {
          //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
             tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-            cliente.setText(detalle.getCliente());
+            cliente.setText(detalle.getCliente()+" "+detalle.getPlanta());
             cliente.setBackgroundResource(R.drawable.valuecellborder);
-           numuestra.setText(detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
+           numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
             numuestra.setBackgroundResource(R.drawable.valuecellborder);
            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
@@ -626,7 +627,22 @@ public class NvoGastoFragment extends Fragment {
         TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, .3f);
         //pongo suma de muestras
         tableRow=new TableRow(getContext());
+        concepto=new TextView(getContext());
+        costo=new TextView(getContext());
 
+        // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        //   tableRow.setLayoutParams(lp);
+        costo.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setText("CONCEPTO");
+
+        costo.setText("COSTO");
+        concepto.setLayoutParams(lp1);
+        costo.setLayoutParams(lp2);
+        tableRow.addView(concepto);
+        tableRow.addView(costo);
+        mBinding.tblgaresconcep.addView(tableRow);
+        tableRow=new TableRow(getContext());
         concepto=new TextView(getContext());
         costo=new TextView(getContext());
 
@@ -642,6 +658,8 @@ public class NvoGastoFragment extends Fragment {
         costo.setLayoutParams(lp2);
         tableRow.addView(concepto);
         tableRow.addView(costo);
+
+
         mBinding.tblgaresconcep.addView(tableRow);
         try {
             sumacosto = Float.parseFloat(totalmu);

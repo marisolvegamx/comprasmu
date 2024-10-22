@@ -37,6 +37,7 @@ import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.MuestraCancelada;
+import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
@@ -45,6 +46,7 @@ import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
+import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.home.MasPruebasActivity;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
@@ -54,6 +56,7 @@ import com.example.comprasmu.ui.mantenimiento.ConfiguracionCamFragment;
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
 import com.example.comprasmu.ui.notificaciones.ListaNotifEtiqViewModel;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
+import com.example.comprasmu.ui.solcorreccion.SelNotifFragment;
 import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasLog;
@@ -142,6 +145,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     NavigationView navigationView;
     private ComprasLog flog;
     private LiveData<Integer> totCancel;
+    private MutableLiveData<Integer> revRecibo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -361,7 +365,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 simpleRequest);*/
 
         PeriodicWorkRequest simpleRequest =
-                new PeriodicWorkRequest.Builder(NotificacionesWork.class, 10, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(NotificacionesWork.class, 5, TimeUnit.MINUTES)
                         .setConstraints(constraints)
                         .addTag("comprassync_worker")
                         .build();
@@ -776,7 +780,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         totCancel=new MutableLiveData<>();
         totMuestraAdic=new MutableLiveData<>();
         contarCorrecc();
-
+        revisarRecibo();
 
 
         if(gallery!=null) {
@@ -826,12 +830,21 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                                 totalcan2 = listageneral.size();
 
                                 contarMuestraAdic();
+
+                                revRecibo.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
+                                    @Override
+                                    public void onChanged(Integer valor) {
+
+                                      //  revRecibo.removeObservers(NavigationDrawerActivity.this);
+
                                 totMuestraAdic.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                                     @Override
                                     public void onChanged(Integer totma) {
-                                        int totalnotif = totcor + totcan + totma + totalcan2;
+                                        int totalnotif = totcor + totcan + totma + totalcan2+valor;
 
                                         gallery.setText(totalnotif + "");
+                                    }
+                                });
                                     }
                                 });
                             }
@@ -1133,5 +1146,31 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
         navController.navigate(R.id.nav_borrarind);
+    }
+    private void revisarRecibo() {
+        revRecibo=new MutableLiveData<>();
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        ListenerNavRevRec listener=new ListenerNavRevRec();
+        ps.getEstatusRecibo(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
+
+    }
+
+    public class ListenerNavRevRec implements IListenerRevRec{
+
+        @Override
+        public void guardarEstatus(PostResponse response) {
+            int estatusRecibo=0;
+            if(response!=null&&response.getData()!=null&&response.getData().equals("2")) {
+                estatusRecibo = 1;
+
+
+            }
+            revRecibo.setValue(estatusRecibo);
+        }
+
+        @Override
+        public void guardarRes(PostResponse respuesta) {
+
+        }
     }
 }

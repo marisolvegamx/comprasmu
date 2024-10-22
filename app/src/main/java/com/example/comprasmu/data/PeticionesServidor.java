@@ -42,6 +42,7 @@ import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.envio.DescargarFragment;
 import com.example.comprasmu.ui.envio.DocumentosEnvio;
+import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.gasto.NvoGastoFragment;
 import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
 import com.example.comprasmu.ui.gasto.RevReciboActivity;
@@ -1023,7 +1024,7 @@ public class PeticionesServidor {
         });
     }
 
-    public void getEstatusRecibo(String indiceactual, String ciudadInf, RevReciboActivity.ListenerRec listener) {
+    public void getEstatusRecibo(String indiceactual, String ciudadInf, IListenerRevRec listener) {
         final Call<PostResponse> batch = ServiceGenerator.getApiService().getEstatusRecibo(indiceactual,usuario,ciudadInf);
 
         batch.enqueue(new Callback<PostResponse>() {

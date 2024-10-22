@@ -157,7 +157,7 @@ public class RevReciboActivity extends AppCompatActivity {
 
     }
 
-    public class ListenerRec {
+    public class ListenerRec implements IListenerRevRec{
         //para terminar cuando envia la respuesta
         //muestro boton para descargar y guardo en la app
         public void guardarEstatus(PostResponse response){

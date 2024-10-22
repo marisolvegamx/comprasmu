@@ -1,9 +1,11 @@
 package com.example.comprasmu.ui.gasto;
 
-//clase para consultar en el servisor los totales de muestra para gastos
+//clase para consultar en el servidor los totales de muestra para gastos
 public class TotalMuestra {
    private String cliente;
    private int clientesId;
+   private int plantasId;
+   private String planta;
     private int num_muestras;
     private int mues_solicitadas;
     private int mues_reembolsadas;
@@ -55,5 +57,21 @@ public class TotalMuestra {
 
     public void setMues_reembolsadas(int mues_reembolsadas) {
         this.mues_reembolsadas = mues_reembolsadas;
+    }
+
+    public int getPlantasId() {
+        return plantasId;
+    }
+
+    public void setPlantasId(int plantasId) {
+        this.plantasId = plantasId;
+    }
+
+    public String getPlanta() {
+        return planta;
+    }
+
+    public void setPlanta(String planta) {
+        this.planta = planta;
     }
 }
