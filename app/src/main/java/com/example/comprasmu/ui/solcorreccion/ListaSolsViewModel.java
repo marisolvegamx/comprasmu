@@ -417,5 +417,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
     public List<InformeGastoDet> getGastoDetalles(int id){
         return gasdetrepo.getAllSencillo(id);
     }
-
+    public InformeGastoDet getByNumfoto(int idInforme, int numfoto) {
+        return gasdetrepo.getByNumfoto(idInforme, numfoto);
+    }
 }

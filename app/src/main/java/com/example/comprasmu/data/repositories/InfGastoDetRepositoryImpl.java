@@ -92,6 +92,9 @@ public class InfGastoDetRepositoryImpl extends BaseRepository<InformeGastoDet> {
         }
         return null;
     }
+    public InformeGastoDet getByNumfoto(int idInforme, int numfoto) {
+        return dao.getByFoto(idInforme, numfoto);
+    }
 
     public void actEstatusSyncxInfo(int idinforme, int estatus) {
         dao.actEstatusSyncLis(idinforme, estatus);

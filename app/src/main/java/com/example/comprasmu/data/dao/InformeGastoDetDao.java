@@ -20,6 +20,8 @@ public abstract class InformeGastoDetDao extends  BaseDao<InformeGastoDet> {
     
     @Query("SELECT * FROM informe_gasto_det where informeEtapaId=:informe")
     public  abstract List<InformeGastoDet> getAllSencillo(int informe);
+    @Query("SELECT * FROM informe_gasto_det where informeEtapaId=:informe and fotocomprob=:numfoto")
+    public  abstract InformeGastoDet getByFoto(int informe, int numfoto);
 
     @Query("DELETE FROM informe_gasto_det where informeEtapaId=:informe and estatusSync=0")
     public  abstract void deleteByInforme(int informe);

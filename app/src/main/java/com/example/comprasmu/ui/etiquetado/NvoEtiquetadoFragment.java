@@ -312,7 +312,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             //busco si tengo varias plantas
             ciudadInf = Constantes.CIUDADTRABAJO;
             //busco los clientes x ciudad
-            listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, this.etapa);
+            listacomp = lcViewModel.getTodosCliByIndiceCdSimplxet(Constantes.CIUDADTRABAJO, this.etapa);
             Log.d(TAG, "PLANTA" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
 
             //veo si ya tengo informes

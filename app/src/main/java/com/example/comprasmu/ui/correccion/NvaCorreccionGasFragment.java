@@ -46,6 +46,7 @@ import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.utils.CampoForm;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
@@ -87,7 +88,7 @@ public class NvaCorreccionGasFragment extends Fragment {
     TextView txtmotivo;
     int numfoto;
     private NvaPreparacionViewModel preViewModel;
-
+    ComprasLog clog;
     public static NvaCorreccionGasFragment newInstance() {
         return new NvaCorreccionGasFragment();
     }
@@ -116,6 +117,7 @@ public class NvaCorreccionGasFragment extends Fragment {
             numfoto = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
 
         }
+        clog=ComprasLog.getSingleton();
         fotoori1=root.findViewById(R.id.ivcoriginal);
 
         solViewModel.getSolicitud(solicitudSel,numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
@@ -128,30 +130,35 @@ public class NvaCorreccionGasFragment extends Fragment {
                     InformeEtapa informe= preViewModel.getInformexId(solicitudCor.getInformesId());
 
                     ((NuevoInfEtapaActivity)getActivity()).actualizarBarraGas(informe.getCiudadNombre());
-                    List<InformeGastoDet> detalles=solViewModel.getGastoDetalles(solicitudCor.getInformesId());
+                    InformeGastoDet detallesInf=solViewModel.getByNumfoto(solicitudCor.getInformesId(), numfoto);
+                  //  txtmotivo.setText(solicitud.getMotivo());
+                    if(informe!=null&&detallesInf!=null){
 
-                    if(informe!=null&&detalles!=null){
-                        InformeGastoDet informeDet=detalles.get(0);
                         crearFormulario();
 
                         //BUSCO LA FOTO ORIGINAL
                         //en donde la busco
 
-                        LiveData<ImagenDetalle> imagen=solViewModel.buscarImagenCom(informeDet.getFotocomprob());
+                        LiveData<ImagenDetalle> imagen=solViewModel.buscarImagenCom(detallesInf.getFotocomprob());
+                        clog.grabarError(TAG,"onCreateView ","buscando correccion"+detallesInf.getFotocomprob());
+
                         imagen.observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
                             @Override
                             public void onChanged(ImagenDetalle imagenDetalle) {
 
+                                if(imagenDetalle!=null) {
+                                    rutafotoo = imagenDetalle.getRuta();
 
-                                rutafotoo=imagenDetalle.getRuta();
+                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
 
-                                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+                                    fotoori1.setImageBitmap(bitmap1);
 
-                                fotoori1.setImageBitmap(bitmap1);
-
-                                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                                //fotoori1.setVisibility(View.VISIBLE);
-
+                                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                                    //fotoori1.setVisibility(View.VISIBLE);
+                                }
+                                else{
+                                    clog.grabarError(TAG,"onCreateView ","Hubo un error al buscar la imagen de correccion"+detallesInf.getFotocomprob());
+                                }
                             }
                         });
                     }

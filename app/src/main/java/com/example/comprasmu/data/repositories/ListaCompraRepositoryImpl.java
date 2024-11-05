@@ -223,6 +223,24 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         Log.d("ListaCompraRepositoryImpl","clientes "+query);
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
+    public List<ListaCompra> getTodosCliByIndiceCdSimplxet(String indice,String idCiudad,int etapa) {
+        List<String> params= new ArrayList<>();
+        params.add(indice);
+        String query="Select * from lista_compras where indice=?";
+
+        if(idCiudad!=null&&!idCiudad.equals("")) {
+            query = query + " and ciudadNombre like ?";
+            params.add(idCiudad);
+        }
+        query=query+ " group by clientesId HAVING MIN(lis_etapaactual) ="+etapa+" AND MAX(lis_etapaactual) ="+etapa+" ;";
+        //params.add(etapa+"");
+      //  params.add(etapa+"");
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,params.toArray()
+        );
+        Log.d("ListaCompraRepositoryImpl","getTodosCliByIndiceCdSimplxet "+query+"--"+params.toString());
+        return dao.getListaCompraByFiltrosSimple( sqlquery);
+    }
     public LiveData<List<ListaWithDetalle>> getListaWithDetalleByFiltros(String indice, int idPlanta, int idCliente ) {
       /*  String query="Select " +
                 "lc.id," +

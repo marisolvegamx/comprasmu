@@ -1119,7 +1119,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
     }
-  /*  public boolean onNavigationMenuEmp(MenuItem item) {
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initializeCountDrawer();
+    }
+    /*  public boolean onNavigationMenuEmp(MenuItem item) {
         // Handle navigation view item clicks here.
         Log.d(TAG,"SI DI CLICK");
         int id = item.getItemId();

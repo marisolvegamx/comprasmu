@@ -164,6 +164,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
+    public  List<ListaCompra>  getTodosCliByIndiceCdSimplxet(String ciudadSel, int etapa){
+        Log.d(TAG,"xxxx"+etapa);
+        return repository.getTodosCliByIndiceCdSimplxet(Constantes.INDICEACTUAL,ciudadSel,etapa);
+
+
+    }
     //trae la lsta menos el cliente enviado
     public  List<ListaCompra>  cargarClientesSimplsp(String ciudadSel, int cliente){
 

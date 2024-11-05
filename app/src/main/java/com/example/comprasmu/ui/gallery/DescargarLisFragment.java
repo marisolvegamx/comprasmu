@@ -100,6 +100,8 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
             textView.setText(getString(R.string.listas_actualiz));
         }
         pb.setVisibility(View.GONE);
+        //redibujo el menu por las correcciones y cancelaciones que son x ciudad de trabajo
+        ((NavigationDrawerActivity)getActivity()).reInflateMenu();
     }
     @Override
     public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
