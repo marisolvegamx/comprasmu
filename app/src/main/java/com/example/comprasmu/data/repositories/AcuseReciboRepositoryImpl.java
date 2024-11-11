@@ -44,13 +44,13 @@ public class AcuseReciboRepositoryImpl extends BaseRepository<AcuseRecibo> {
     }
 
 
-    public AcuseRecibo findsimple(String indice) {
-        return dao.findsimple(indice);
+    public AcuseRecibo findsimple(String indice, String cd) {
+        return dao.findsimple(indice,cd);
     }
 
 
-    public LiveData<AcuseRecibo> findByindice(String indice) {
-        return dao.findByindice(indice);
+    public LiveData<AcuseRecibo> findByindice(String indice, String cd) {
+        return dao.findByindice(indice,cd);
     }
 
 
