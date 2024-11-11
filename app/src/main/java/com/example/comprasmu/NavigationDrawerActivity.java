@@ -352,12 +352,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     .setRequiresBatteryNotLow(true)
                     .build();
 
-     /*   PeriodicWorkRequest simpleRequest =
+     /*    PeriodicWorkRequest simpleRequest =
                 new PeriodicWorkRequest.Builder(SyncWork.class, 30, TimeUnit.MINUTES)
                         .setConstraints(constraints)
                         .addTag("comprassync_worker")
                         .build();
-        WorkManager
+           WorkManager
                 .getInstance(this)
                 .enqueueUniquePeriodicWork(
                 "comprassync_worker",
@@ -365,13 +365,16 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 simpleRequest);*/
 
         PeriodicWorkRequest simpleRequest =
-                new PeriodicWorkRequest.Builder(NotificacionesWork.class, 5, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(NotificacionesWork.class, 10, TimeUnit.MINUTES)
                         .setConstraints(constraints)
-                        .addTag("comprassync_worker")
+                        .addTag("comprassync_worker2")
                         .build();
-        WorkManager
-                .getInstance(this)
-                .enqueue(simpleRequest);
+            WorkManager
+                    .getInstance(this)
+                    .enqueueUniquePeriodicWork("comprassync_worker2", ExistingPeriodicWorkPolicy.KEEP,simpleRequest);
+         //elimino todos los procesos que se hayan iniciado
+            WorkManager
+                    .getInstance(this).cancelAllWorkByTag("comprassync_worker");
         }catch(Exception ex){
 
 
@@ -837,7 +840,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
                                       //  revRecibo.removeObservers(NavigationDrawerActivity.this);
 
-                                totMuestraAdic.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
+                                    totMuestraAdic.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                                     @Override
                                     public void onChanged(Integer totma) {
                                         int totalnotif = totcor + totcan + totma + totalcan2+valor;
@@ -1120,11 +1123,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
 
-    @Override
+  /*  @Override
     protected void onResume() {
         super.onResume();
         initializeCountDrawer();
-    }
+    }*/
     /*  public boolean onNavigationMenuEmp(MenuItem item) {
         // Handle navigation view item clicks here.
         Log.d(TAG,"SI DI CLICK");
