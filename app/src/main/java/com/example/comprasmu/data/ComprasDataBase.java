@@ -78,7 +78,7 @@ import java.util.List;
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class,
         Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class, InformeGastoDet.class, AcuseRecibo.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=31, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=32, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -123,7 +123,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
                                     ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
-                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29,MIGRATION_29_30,MIGRATION_30_31)
+                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29,MIGRATION_29_30,MIGRATION_30_31,MIGRATION_31_32)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -333,16 +333,16 @@ public abstract class ComprasDataBase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("drop TABLE if exists solicitud_cor ");
             database.execSQL("create  TABLE solicitud_cor ( id integer not null, " +
-                    " informesId INTEGER not null," +
-                    "   plantasId INTEGER not null," +
-                    " plantaNombre TEXT," +
-                    "   clientesId INTEGER not null," +
-                    "    clienteNombre TEXT," +
-                    "   indice TEXt," +
-                    "  nombreTienda TEXT," +
-                    "  descripcionFoto TEXT," +
-                    "    descripcionId INTEGER not null," +
-                    " descMostrar TEXT," +
+                    "informesId INTEGER not null," +
+                    "plantasId INTEGER not null," +
+                    "plantaNombre TEXT," +
+                    "clientesId INTEGER not null," +
+                    "clienteNombre TEXT," +
+                    "indice TEXt," +
+                    "nombreTienda TEXT," +
+                    "descripcionFoto TEXT," +
+                    "descripcionId INTEGER not null," +
+                    "descMostrar TEXT," +
                     "numFoto INTEGER not null," +
                     "numFoto2 INTEGER not null," +
                     "numfoto3 INTEGER not null," +
@@ -352,7 +352,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     "etapa INTEGER not null," +
                     "estatus INTEGER not null," +
                     "estatusSync INTEGER not null," +
-                    " contador INTEGER not null," +
+                    "contador INTEGER not null," +
                     "createdAt INTEGER DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY(id,numFoto )) ");
 
         }
@@ -387,11 +387,11 @@ public abstract class ComprasDataBase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
 
             database.execSQL("create  TABLE IF NOT EXISTS siglas ( id integer not null, " +
-                    "    siglas TEXT," +
-                    " planta TEXT," +
-                    "    plantasId INTEGER not null," +
-                    "   clientesId INTEGER not null," +
-                    " PRIMARY KEY(id )) ");
+                    "siglas TEXT," +
+                    "planta TEXT," +
+                    "plantasId INTEGER not null," +
+                    "clientesId INTEGER not null," +
+                    "PRIMARY KEY(id )) ");
 
         }
     };
@@ -411,7 +411,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
 
             database.execSQL("ALTER TABLE correccion ADD COLUMN dato1 TEXT");
-              database.execSQL(" ALTER TABLE correccion ADD COLUMN dato2 TEXT");
+            database.execSQL(" ALTER TABLE correccion ADD COLUMN dato2 TEXT");
             database.execSQL("ALTER TABLE correccion ADD COLUMN dato3 TEXT");
         }
     };
@@ -420,8 +420,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("CREATE TABLE IF NOT EXISTS `configuracion` (`id` INTEGER NOT NULL," +
-                    " clave TEXT , "
-                    + "valor TEXT, "+
+                    "clave TEXT , "
+                    +"valor TEXT, "+
                     " PRIMARY KEY(`id`));");
 
         }
@@ -441,18 +441,18 @@ public abstract class ComprasDataBase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("drop TABLE if exists sustitucion ");
             database.execSQL("CREATE TABLE IF NOT EXISTS `sustitucion` (`id_sustitucion` INTEGER NOT NULL, " +
-                            "clientesId INTEGER NOT NULL, "+
+                    "clientesId INTEGER NOT NULL, "+
                     "su_tipoempaque INTEGER NOT NULL, "
-                            + "`nomempaque` TEXT," +
-                    " su_producto INTEGER NOT NULL, " +
+                    + "`nomempaque` TEXT," +
+                    "su_producto INTEGER NOT NULL, " +
                     "su_tamanio INTEGER NOT NULL," +
-                    " nomproducto TEXT, " +
+                    "nomproducto TEXT, " +
                     "nomtamanio TEXT," +
-                            "categoriasId INTEGER NOT NULL," +
+                    "categoriasId INTEGER NOT NULL," +
                     "nomcategoria TEXT, " +
 
-                            "plantasId INTEGER NOT NULL, "+
-                            "PRIMARY KEY(`id_sustitucion`, plantasId));");
+                    "plantasId INTEGER NOT NULL, "+
+                    "PRIMARY KEY(`id_sustitucion`, plantasId));");
 
 
         }
@@ -597,7 +597,15 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         }
     };
+    static final Migration MIGRATION_31_32 = new Migration(31,32) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "ALTER TABLE acuse_recibo ADD COLUMN ciudad TEXT; " );
 
+
+        }
+    };
     private void cargandodatos(){
 
         runInTransaction(new Runnable() {
@@ -609,10 +617,10 @@ public abstract class ComprasDataBase extends RoomDatabase {
                         //no tengo datos
                      //   prepopulatelc();
                     //    prepopulatedetc();
-                        prepopulateder();
+                prepopulateder();
                 prepopulatederpeni();
                 prepopulatederele();
-                       // catalogos();
+                //catalogos();
 
                    // }
                 List<Reactivo> myProductsP=dao.findByCliente(5);
