@@ -17,6 +17,7 @@ import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.InformeCancelar;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
@@ -44,9 +45,9 @@ import com.example.comprasmu.ui.envio.DescargarFragment;
 import com.example.comprasmu.ui.envio.DocumentosEnvio;
 import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.gasto.NvoGastoFragment;
-import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
 import com.example.comprasmu.ui.gasto.RevReciboActivity;
 import com.example.comprasmu.ui.gasto.TotalMuestra;
+import com.example.comprasmu.ui.gasto.VerInformeGasFragment;
 import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
@@ -669,7 +670,7 @@ public class PeticionesServidor {
         catRep.deletexIdCat(8);
         catRep.deletexIdCat(15);
         catRep.deletexIdCat(100); //causas
-
+        catRep.deletexIdCat(27); //tipo gastos
         catRep.insertAll(lista);
 
         catRep.insertAll(respuestaCats.getCausas());
@@ -915,6 +916,50 @@ public class PeticionesServidor {
             }
         });
     }
+    /****pido informe gasto para ver los cambios***/
+    public void getCambiosGastos(String indice, String cd, VerInformeGasFragment.ListenerResumen listener){
+
+        Log.d("PeticionesServidor","getCambiosGastos "+usuario);
+
+        final Call<List<InformeGastoDet>> batch = ServiceGenerator.getApiService().getReciboGasto(indice,usuario,cd);
+
+        batch.enqueue(new Callback<List<InformeGastoDet>>() {
+            @Override
+            public void onResponse(@Nullable Call<List<InformeGastoDet>> call, @Nullable Response<List<InformeGastoDet>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<InformeGastoDet> etapasResp = response.body();
+                    //reviso si está actualizado
+                    if(etapasResp!=null) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","getCambiosGastos llego algo"+etapasResp);
+
+                        listener.guardarRes(etapasResp);
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista vacia");
+                        listener.guardarRes(null);
+                    }
+
+                }else //aviso al usuario //solo si esta desde descargar lista
+                {
+
+                    listener.guardarRes(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<List<InformeGastoDet>> call, @Nullable Throwable t) {
+                if (t != null) {
+
+                    Log.e(Constantes.TAG, t.getMessage());
+                    listener.guardarRes(null);
+                }
+            }
+        });
+    }
+
     public MutableLiveData<List<Tienda>> getLista() {
         return lista;
     }
