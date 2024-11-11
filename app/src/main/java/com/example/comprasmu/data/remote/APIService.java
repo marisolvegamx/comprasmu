@@ -5,6 +5,7 @@ import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
@@ -204,6 +205,9 @@ public interface APIService {
 
     @GET("reciboListo") //devuelve si si ya puedo no si no en data
     Call<PostResponse> getEstatusRecibo(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
+
+    @GET("recibogasto")
+    Call<List<InformeGastoDet>> getReciboGasto(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
 
 
 }
