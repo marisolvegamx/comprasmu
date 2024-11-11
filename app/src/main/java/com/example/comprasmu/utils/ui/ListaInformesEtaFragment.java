@@ -27,6 +27,7 @@ import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.SubirInformeGastoTask;
+import com.example.comprasmu.data.modelos.AcuseRecibo;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
@@ -34,6 +35,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeGastoEnv;
+import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
 import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
@@ -43,6 +45,7 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
+import com.example.comprasmu.ui.gasto.RevReciboActivity;
 import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
 import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
@@ -54,7 +57,7 @@ import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 import java.util.ArrayList;
 import java.util.List;
 
-/*******para informes x etapa y correcciones******/
+/*******para lista de informes x etapa y correcciones******/
 public class ListaInformesEtaFragment extends Fragment implements InformeGenAdapter.AdapterCallback {
     public static final String INFORMESEL ="comprasmu.lie.informesel" ;
     public static final String ARG_TIPOCONS ="comprasmu.lie.tipocons" ;
@@ -99,7 +102,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
           //  indice=getArguments().getString(Constantes.INDICEACTUAL);
 
         }
-            indice = Constantes.INDICEACTUAL;
+        indice = Constantes.INDICEACTUAL;
 
 
      //   Log.d(Constantes.TAG,"cliente y planta sel"+clienteid+"--"+plantaid);
@@ -126,7 +129,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
         setupListAdapter();
         Constantes.SINCRONIZANDO=0;
-       cargarLista();
+        cargarLista();
     }
 
     public void cargarLista(){
@@ -256,8 +259,6 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     public void onClickVer(int informe, int etapainf) {
         Intent intento1=new Intent(getActivity(), BackActivity.class);
         intento1.putExtra(INFORMESEL, informe);
-        Log.e(TAG, "no manches");
-
         intento1.putExtra(ARG_TIPOCONS, tipocons);
         //Constantes.ETAPAACTUAL=etapa;
        if(etapa==4) {
@@ -268,7 +269,26 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                  intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_VEREMPQ);
         }
         else
-            intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR); //informe generico
+            if(etapa==6){
+                intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_RESUMENGASTO);
+
+                // Veo el estatus del acuse recibo
+               /* AcuseReciboRepositoryImpl acrepo=new AcuseReciboRepositoryImpl(getActivity());
+
+                AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+                if(acuse!=null) {
+                    //ya tengo acuse, por lo tanto ya se modificó en la supervision
+                    //muestro version del servidor
+                    intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_RESUMENGASTO);
+
+                }
+                else {
+                    intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_INFORMECOR);
+                }*/
+
+            }
+            else
+                 intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR); //informe generico
         startActivity(intento1);
 
     }

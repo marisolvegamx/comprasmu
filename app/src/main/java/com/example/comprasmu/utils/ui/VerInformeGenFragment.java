@@ -1,6 +1,8 @@
 package com.example.comprasmu.utils.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -37,6 +39,7 @@ import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
 import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
+import com.example.comprasmu.ui.gasto.TotalMuestra;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
@@ -45,7 +48,10 @@ import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -217,10 +223,12 @@ public class VerInformeGenFragment extends Fragment {
 
         }
         else    //para ver informes etapa
-            mViewModel.getInforme(informeSel,Constantes.INDICEACTUAL).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
+        {
+
+                mViewModel.getInforme(informeSel, Constantes.INDICEACTUAL).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
                 @Override
                 public void onChanged(InformeEtapa informeEtapax) {
-                    informeEtapa=informeEtapax;
+                    informeEtapa = informeEtapax;
                     crearFormularioEta();
                     mBinding.igdatosgen.addView(cf1.crearTabla());
                     mBinding.btnverdet.setText(textoboton);
@@ -232,6 +240,7 @@ public class VerInformeGenFragment extends Fragment {
                     });
                 }
             });
+        }
 
     }
 
@@ -627,7 +636,17 @@ public class VerInformeGenFragment extends Fragment {
         Log.d(TAG,"CAMPOS TOT"+camposTienda);
         cf1 = new CreadorFormulario(camposTienda, getActivity());
         if(Constantes.ETAPAACTUAL==6){
-            llenarTablaConcep(informeEtapa.getId());
+            //busco las muestras es preferences
+            Gson gson = new Gson();
+            String jsonlis=buscarMuestras();
+            if(!jsonlis.equals("")) {
+                Type listType = new TypeToken<List<String>>() {}.getType();
+
+                List<TotalMuestra> nameList = gson.fromJson(jsonlis,  listType);
+
+
+                llenarTablaConcep(informeEtapa.getId(),nameList);
+            }
             mBinding.tblvigastos.setVisibility(View.VISIBLE);
         }
     }
@@ -680,7 +699,7 @@ public class VerInformeGenFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
-    public void llenarTablaConcep(int infsel){
+    public void llenarTablaConcep(int infsel,List<TotalMuestra> totales){
         TableRow tableRow;
         NvoGastoViewModel niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
 
@@ -697,25 +716,41 @@ public class VerInformeGenFragment extends Fragment {
 
         concepto=new TextView(getContext());
         costo=new TextView(getContext());
+        TextView cliente;
+        TextView numuestra;
+        int sumamuestras=0;
+        for (TotalMuestra detalle:totales
+        ) {
+            tableRow=new TableRow(getContext());
+            cliente=new TextView(getContext());
+            numuestra=new TextView(getContext());
+            costo=new TextView(getContext());
+            //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-        // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-        //   tableRow.setLayoutParams(lp);
-        costo.setBackgroundResource(R.drawable.valuecellborder);
-        concepto.setBackgroundResource(R.drawable.valuecellborder);
-        concepto.setText("TOTAL MUESTRAS");
-        //busco el total
-        String totalmu=niviewModel.getTotalmu();
-        costo.setText(Constantes.SIMBOLOMON+totalmu);
-        concepto.setLayoutParams(lp1);
-        costo.setLayoutParams(lp2);
-        tableRow.addView(concepto);
-        tableRow.addView(costo);
-        mBinding.tblvigastos.addView(tableRow);
-        try {
-            sumacosto = Float.parseFloat(totalmu);
+            cliente.setText(detalle.getCliente()+" "+detalle.getPlanta());
+            cliente.setBackgroundResource(R.drawable.valuecellborder);
+            numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
+            numuestra.setBackgroundResource(R.drawable.valuecellborder);
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
+            costo.setBackgroundResource(R.drawable.valuecellborder);
+            tableRow.addView(cliente);
+            tableRow.addView(numuestra);
+            tableRow.addView(costo);
+            mBinding.tblvigastos.addView(tableRow);
+            sumacosto+=detalle.getCosto();
+            sumamuestras+=detalle.getNum_muestras();
+        }
+        tableRow=null;
+        cliente=null;
+        numuestra=null;
+        costo=null;
+       // mBinding.tblvigastos.addView(tableRow);
+     /*   try {
+            sumacosto = Float.parseFloat(sumacosto);
         }catch (NumberFormatException ex){
             milog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
-        }
+        }*/
         //busco lo capturado
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(infsel);
         for (InformeGastoDet detalle:detalles
@@ -732,7 +767,7 @@ public class VerInformeGenFragment extends Fragment {
             concepto.setLayoutParams(lp1);
             costo.setLayoutParams(lp2);
 
-            concepto.setText(detalle.getConcepto()+"");
+            concepto.setText(detalle.getConcepto()+"xx");
             concepto.setBackgroundResource(R.drawable.valuecellborder);
             costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.##").format(detalle.getImporte()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
@@ -775,6 +810,12 @@ public class VerInformeGenFragment extends Fragment {
         //  concepto=null;
 
         //  costo=null;
+    }
+    public String buscarMuestras() {
+
+        SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        String listamuestras = prefe.getString("totalmuestras", "");
+        return listamuestras;
     }
 
     @Override

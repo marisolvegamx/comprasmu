@@ -4,8 +4,8 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
-import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEnvioDet;
@@ -20,6 +20,8 @@ import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
+import com.example.comprasmu.ui.gasto.VerInformeGasFragment;
+import com.example.comprasmu.utils.Constantes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +112,11 @@ public class InformesGenViewModel extends AndroidViewModel {
 
     public LiveData<List<InformeEtapa>> cargarEtapaAll(int etapa, String indice, int estatus){
         return ierepository.getAllsp(etapa, indice, estatus);
+
+    }
+    public void getReciboGasto(String ciudadInf, VerInformeGasFragment.ListenerResumen listenerM){
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        ps.getCambiosGastos(Constantes.INDICEACTUAL,ciudadInf,listenerM);
 
     }
 }
