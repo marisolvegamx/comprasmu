@@ -9,7 +9,7 @@ public class AcuseRecibo {
     private int id;
     private String indice;
     private int aceptado; //0- no aceptado 1-aceptado
-
+    private String ciudad;
     public int getId() {
         return id;
     }
@@ -32,5 +32,13 @@ public class AcuseRecibo {
 
     public void setAceptado(int aceptado) {
         this.aceptado = aceptado;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
     }
 }
