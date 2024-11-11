@@ -35,12 +35,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-//para preparacion, etiquetado y empaque
+
 public class NvoGastoViewModel extends AndroidViewModel {
 
     final String TAG="NvoGastoViewModel";
     Application application;
-      private final InfGastoDetRepositoryImpl gasdetrepo;
+    private final InfGastoDetRepositoryImpl gasdetrepo;
     private final ImagenDetRepositoryImpl imagenDetRepository;
     private final InfEtapaRepositoryImpl infEtaRepository;
     ComprasLog compraslog;
@@ -175,7 +175,7 @@ public class NvoGastoViewModel extends AndroidViewModel {
             }
         }
         if(listacomp!=null)
-        return true;
+            return true;
         return false;
     }
 
@@ -201,5 +201,11 @@ public class NvoGastoViewModel extends AndroidViewModel {
        if(edit!=null)
           return   edit.getValor();
        return  "";
+    }
+    //para buscar si hay un inf
+    public List<InformeEtapa> getInfGasto(String indiceSel){
+
+        return infEtaRepository.getInformesxEstatusSim(indiceSel,6,2);
+
     }
 }

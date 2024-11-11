@@ -4,8 +4,10 @@ import static android.app.Activity.RESULT_OK;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -15,6 +17,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -74,6 +77,7 @@ import com.example.comprasmu.utils.CurrencyTextWatcher;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import com.example.comprasmu.utils.ui.DatePickerFragment;
 import com.google.common.collect.Table;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -83,7 +87,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+/****nuevo informe de gastos****/
 public class NvoGastoFragment extends Fragment {
 
     private int preguntaAct;
@@ -141,7 +145,7 @@ public class NvoGastoFragment extends Fragment {
         //   mBinding.setMviewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
         try {
-//son 8 preguntas
+            //son 8 preguntas
             root=mBinding.getRoot();
             mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
             niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
@@ -258,6 +262,14 @@ public class NvoGastoFragment extends Fragment {
             mViewModel.preguntaAct = preguntaAct;
             if (!isEdicion && preguntaAct < 2 && mViewModel.getIdNuevo() == 0) {
                 //es nuevo
+                //reviso si ya tengo informe
+                List<InformeEtapa> informes = niviewModel.getInfGasto(Constantes.INDICEACTUAL);
+               if(informes!=null&&informes.size()>0){
+                   //no puede hacer más de 1
+                   Toast.makeText(getContext(),"Ya capturó su informe de gastos",Toast.LENGTH_SHORT).show();
+                   salir();
+                   return root;
+               }
                 //reviso si ya tengo uno abierto
                 InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL, etapa);
 
@@ -287,7 +299,6 @@ public class NvoGastoFragment extends Fragment {
 
                 //busco el informe y el detalle
                 mViewModel.setIdNuevo(informeSel);
-
                 editarInforme();
             }
 
@@ -300,13 +311,13 @@ public class NvoGastoFragment extends Fragment {
 
                 }
             });
-      aceptar2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            aceptar2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                avanzar();
-            }
-        });
+                    avanzar();
+                }
+            });
             aceptar3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -390,29 +401,29 @@ public class NvoGastoFragment extends Fragment {
         for (TotalMuestra detalle:totales
              ) {
              tableRow=new TableRow(getContext());
-            cliente=new TextView(getContext());
-           numuestra=new TextView(getContext());
-           costo=new TextView(getContext());
-         //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+             cliente=new TextView(getContext());
+             numuestra=new TextView(getContext());
+             costo=new TextView(getContext());
+             //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+             tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-            cliente.setText(detalle.getCliente()+" "+detalle.getPlanta());
-            cliente.setBackgroundResource(R.drawable.valuecellborder);
-           numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
-            numuestra.setBackgroundResource(R.drawable.valuecellborder);
-           costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
-            costo.setBackgroundResource(R.drawable.valuecellborder);
-            tableRow.addView(cliente);
-            tableRow.addView(numuestra);
-            tableRow.addView(costo);
-            mBinding.tblnimuestras.addView(tableRow);
-            sumacosto+=detalle.getCosto();
-            sumamuestras+=detalle.getNum_muestras();
+             cliente.setText(detalle.getCliente()+" "+detalle.getPlanta());
+             cliente.setBackgroundResource(R.drawable.valuecellborder);
+             numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
+             numuestra.setBackgroundResource(R.drawable.valuecellborder);
+             costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
+             costo.setBackgroundResource(R.drawable.valuecellborder);
+             tableRow.addView(cliente);
+             tableRow.addView(numuestra);
+             tableRow.addView(costo);
+             mBinding.tblnimuestras.addView(tableRow);
+             sumacosto+=detalle.getCosto();
+             sumamuestras+=detalle.getNum_muestras();
         }
-         tableRow=null;
-         cliente=null;
-         numuestra=null;
-         costo=null;
+        tableRow=null;
+        cliente=null;
+        numuestra=null;
+        costo=null;
         TextView txtgatotnum=new TextView(getContext());
         TextView txttotal=new TextView(getContext());
         txtgatotnum.setText(sumamuestras+"");
@@ -433,10 +444,10 @@ public class NvoGastoFragment extends Fragment {
         niviewModel.guardarTotalmu(sumacosto);
     }
 
-        public void avanzar() {
-            Log.d(TAG, "++" + preguntaAct);
+    public void avanzar() {
+        //Log.d(TAG, "++" + preguntaAct);
 
-            switch (preguntaAct) {
+        switch (preguntaAct) {
                 case 1: //pregunta
 
                     // txtcajaact.setVisibility(View.VISIBLE)
@@ -548,14 +559,13 @@ public class NvoGastoFragment extends Fragment {
         }
 
 
-
         public void limpiarForm() {
             mBinding.singasto.clearCheck();
 
             mBinding.sincomprobante.clearCheck();
             aceptar2.setEnabled(false);//pregunta gasto
             aceptar3.setEnabled(true); //concepto
-          //  aceptar4.setEnabled(false);//descripcion
+            //  aceptar4.setEnabled(false);//descripcion
             aceptar5.setEnabled(false); //costo
             aceptar6.setEnabled(false); //comprobante
             aceptar7.setEnabled(false); //foto
@@ -565,17 +575,16 @@ public class NvoGastoFragment extends Fragment {
 
             mBinding.txtgascosto.setText("");
 
-
-
             mBinding.spgasconcep.setSelection(-1);
             mBinding.txtgasrutafoto.setText("");
-          fotomos.setImageBitmap(null);
+            fotomos.setImageBitmap(null);
             btnrotar.setVisibility(View.GONE);
-          nombre_foto=null;
-          archivofoto=null;
+            nombre_foto=null;
+            archivofoto=null;
             // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
             fotomos.setVisibility(View.GONE);
         }
+
     public void getConceptos(){
         //  Log.d(TAG,"buscando atributos"+dViewModel.productoSel.empaque+"--"+dViewModel.productoSel.idempaque+"--"+dViewModel.productoSel.clienteSel);
         conceptos=niviewModel.cargarConceptos();
@@ -646,7 +655,7 @@ public class NvoGastoFragment extends Fragment {
         concepto=new TextView(getContext());
         costo=new TextView(getContext());
 
-       // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
         //   tableRow.setLayoutParams(lp);
         costo.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setBackgroundResource(R.drawable.valuecellborder);
@@ -704,32 +713,32 @@ public class NvoGastoFragment extends Fragment {
         concepto=new TextView(getContext());
         costo=new TextView(getContext());
 
-       // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-     //   tableRow.setLayoutParams(lp);
+        // tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        //   tableRow.setLayoutParams(lp);
         costo.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setText("TOTAL A VALIDAR");
-       costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("0.00").format(sumacosto));
+        costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("0.00").format(sumacosto));
         concepto.setLayoutParams(lp1);
         costo.setLayoutParams(lp2);
         tableRow.addView(concepto);
         tableRow.addView(costo);
         mBinding.tblgaresconcep.addView(tableRow);
 
-      //  tableRow=null;
-      //  concepto=null;
+        //  tableRow=null;
+        //  concepto=null;
 
-      //  costo=null;
+        //  costo=null;
     }
     public void editarInforme() {
 
 
-            ImagenDetalle foto;
-            //para saber si ya tego detalle
-            List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
+        ImagenDetalle foto;
+        //para saber si ya tego detalle
+        List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
 
-            if(detalles!=null&&detalles.size()>0) //ya tengo algo
-            {
+        if(detalles!=null&&detalles.size()>0) //ya tengo algo
+             {
                 totalgastos= detalles.size();
                 //muestro el ultimo
                 detalleEdit=null;
@@ -1120,7 +1129,6 @@ public class NvoGastoFragment extends Fragment {
 
         }
 
-        //ya se puede varios informes de etiquetado para la reactivacion
 
         class BotonTextWatcher implements TextWatcher {
 
@@ -1203,8 +1211,8 @@ public class NvoGastoFragment extends Fragment {
         public void guardarRes(List<TotalMuestra> respuesta){
             //acomodo en la tabla
             if(respuesta!=null) {
-                //guardo en bd
-
+                //guardo en preferencesd como json
+                guardarMuestras(respuesta);
                 llenarTabla(respuesta);
                 mBinding.txtgaalgunerror.setText("");
             }
@@ -1231,7 +1239,24 @@ public class NvoGastoFragment extends Fragment {
         }
 
 
+    public void guardarMuestras(List<TotalMuestra> lista) {
 
 
+        SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefe.edit();
+        // editor.putString("claveusuario",cveusr);
+        String json = new Gson().toJson(lista );
+        editor.putString("totalmuestras", json);
+       // editor.putString("password", Base64.encodeToString(passwordEditText.getText().toString().getBytes(), Base64.DEFAULT));
+        editor.commit();
+
+
+    }
+    public String buscarMuestras() {
+
+        SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        String listamuestras = prefe.getString("totalmuestras", "");
+        return listamuestras;
+    }
 }
 
