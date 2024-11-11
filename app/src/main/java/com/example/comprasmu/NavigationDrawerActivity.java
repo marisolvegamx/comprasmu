@@ -760,9 +760,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     }
                 }
                 totMuestraAdic.setValue(informesfinal);
-        }else
+             }else
             //veo si ya puedo hacer empaque
-            listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                   listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
 
             int listageneral = 0; //para contar los informes
             if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 2) {
