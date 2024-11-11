@@ -113,12 +113,12 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
     protected Void doInBackground(String... indice) {
     //son 7 peticiones al servidor desde pruebasct siempre son las 7 menos si no puede descargar listas
 
-      //  if(NavigationDrawerActivity.isOnlineNet()) {
-            Log.d("DescargasIniAsyncTask","iniciando descarga"+descargarListas);
-            if (indice[1].equals("act")) //vengo del fragment de actualizar lista
+        //  if(NavigationDrawerActivity.isOnlineNet()) {
+        //Log.d("DescargasIniAsyncTask","iniciando descarga"+descargarListas);
+        if (indice[1].equals("act")) //vengo del fragment de actualizar lista
                 actualiza=1;
            // if (indice[0].equals("cat")) //descargo cats tmb
-           listenprin=new DescargaIniListener();
+        listenprin=new DescargaIniListener();
         if(!ComprasUtils.isOnlineNet(act)) {
             miproglis.notificarSinConexion();
           //  miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
