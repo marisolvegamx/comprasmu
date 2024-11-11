@@ -14,6 +14,7 @@ import android.util.Log;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.ui.empaque.VerEmpaqueFragment;
+import com.example.comprasmu.ui.gasto.VerInformeGasFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaInformesEtaFragment;
@@ -40,7 +41,7 @@ public class BackActivity extends AppCompatActivity {
 
     public static final String OP_INFORMECOR="informecor";
     public static final String OP_VEREMPQ="verempq";
-
+    public static final String OP_RESUMENGASTO="resumengasto";
     public static final String TAG="BackActivity";
 
     public static final int REQUEST_CODE=1003;
@@ -217,6 +218,7 @@ public class BackActivity extends AppCompatActivity {
                     break;
                 case OP_INFORMECOR:
                     myChildToolbar.setTitle(R.string.informe);
+
                     VerInformeGenFragment detailFragment7 = new VerInformeGenFragment();
                     bundle6.putString(ListaInformesEtaFragment.ARG_TIPOCONS, datosRecuperados.getString(ListaInformesEtaFragment.ARG_TIPOCONS));
                     bundle6.putInt(ListaInformesEtaFragment.INFORMESEL,datosRecuperados.getInt(ListaInformesEtaFragment.INFORMESEL));
@@ -234,6 +236,15 @@ public class BackActivity extends AppCompatActivity {
                     detailFragment8.setArguments(bundle6);
                     ft.add(R.id.back_fragment, detailFragment8);
                     break;
+            case OP_RESUMENGASTO:  //veo resumen de gastos desde el servidor
+                myChildToolbar.setTitle(R.string.informe);
+
+                VerInformeGasFragment detailFragment9 = new VerInformeGasFragment();
+                bundle6.putString(ListaInformesEtaFragment.ARG_TIPOCONS, datosRecuperados.getString(ListaInformesEtaFragment.ARG_TIPOCONS));
+                bundle6.putInt(ListaInformesEtaFragment.INFORMESEL,datosRecuperados.getInt(ListaInformesEtaFragment.INFORMESEL));
+                detailFragment9.setArguments(bundle6);
+                ft.add(R.id.back_fragment, detailFragment9);
+                break;
                 default:
                     break;
             }
