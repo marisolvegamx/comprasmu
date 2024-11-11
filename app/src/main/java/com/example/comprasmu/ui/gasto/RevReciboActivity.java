@@ -98,7 +98,7 @@ public class RevReciboActivity extends AppCompatActivity {
         }
         //reviso si ya aceptó
         AcuseReciboRepositoryImpl acrepo=new AcuseReciboRepositoryImpl(this);
-        AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL);
+        AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
         Log.d(TAG,"acuse"+acuse);
         if(acuse!=null&&acuse.getAceptado()==1){
             //solo muestro boton descargar
@@ -179,7 +179,7 @@ public class RevReciboActivity extends AppCompatActivity {
             if(respuesta!=null) {
                 AcuseReciboRepositoryImpl acrepo=new AcuseReciboRepositoryImpl(RevReciboActivity.this);
                 // guardo acuse o actualizo
-                AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL);
+                AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
                 if(acuse!=null){
                     acuse.setAceptado(estatusAceptado);
                     acrepo.insert(acuse);
