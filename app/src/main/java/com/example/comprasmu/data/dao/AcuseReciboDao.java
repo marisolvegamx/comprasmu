@@ -26,17 +26,17 @@ public abstract class AcuseReciboDao extends  BaseDao<AcuseRecibo> {
     @Query("SELECT * FROM acuse_recibo")
     public  abstract List<AcuseRecibo> getAllSencillo();
 
-    @Query("delete from acuse_recibo where indice=:indice")
-    public  abstract  void deleteByindice(String indice);
+    @Query("delete from acuse_recibo where indice=:indice and ciudad=:cd")
+    public  abstract  void deleteByindice(String indice, String cd);
 
     @Query("delete from acuse_recibo")
     public  abstract  void deleteAll();
 
-    @Query("SELECT * FROM acuse_recibo where indice=:indice")
-    public abstract LiveData<AcuseRecibo> findByindice(String indice);
+    @Query("SELECT * FROM acuse_recibo where indice=:indice  and ciudad=:cd")
+    public abstract LiveData<AcuseRecibo> findByindice(String indice,String cd);
 
-    @Query("SELECT * FROM acuse_recibo where indice=:indice")
-    public abstract AcuseRecibo findsimple( String indice);
+    @Query("SELECT * FROM acuse_recibo where indice=:indice  and ciudad=:cd")
+    public abstract AcuseRecibo findsimple( String indice,String cd);
 
 
 
