@@ -1693,11 +1693,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         }
 
-     /*   if (txtaiultubic.getText().toString().equals("")) {
+        if (txtaiultubic.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
             return false;
-        }*/
+        }
         if (fotofachada.getText().toString().equals("")&&!cbfotofac.isChecked()) {
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
