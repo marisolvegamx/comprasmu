@@ -166,7 +166,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
                     }
                      if (preguntaAct.getTabla().equals("DC")) {//veo si ya está
-                         Log.d(TAG,"num caja"+mViewModel.cajaAct.consCaja);
+                         //Log.d(TAG,"num caja"+mViewModel.cajaAct.consCaja);
                         ultimarescaja = mViewModel.getDetalleCajaxCaja(mViewModel.getIdNuevo(), mViewModel.cajaAct.consCaja);
                         if(ultimarescaja!=null) {
 
@@ -326,7 +326,7 @@ public class NvoEmpaqueFragment extends Fragment {
             } else {
                     //es nuevo nuevito
                     //es nuevo pregunta 91
-  //reviso si ya tengo uno abierto
+            //reviso si ya tengo uno abierto
             InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,4);
 
             if (informeEtapa != null) {

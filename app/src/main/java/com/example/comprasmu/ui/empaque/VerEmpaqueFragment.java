@@ -88,7 +88,7 @@ public class VerEmpaqueFragment extends Fragment implements DetalleCajaAdapter.A
             Log.d(TAG,"informesel"+informeSel);
             //busco el informe
             informeetapa=mViewModel.getInforme (informeSel,Constantes.INDICEACTUAL);
-          informeetapa.observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<InformeEtapa>() {
+            informeetapa.observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<InformeEtapa>() {
               @Override
               public void onChanged(InformeEtapa informeEtapa) {
                   if(informeEtapa!=null)
@@ -209,15 +209,12 @@ public class VerEmpaqueFragment extends Fragment implements DetalleCajaAdapter.A
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         mViewModel=null;
         informeetapa=null;
         cf1=null;
-
-         mBinding=null;
-         mListAdapter=null;
-
-         directorio=null;
+        mBinding=null;
+        mListAdapter=null;
+        directorio=null;
 
     }
 
