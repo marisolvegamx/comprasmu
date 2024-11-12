@@ -186,6 +186,7 @@ public class RevReciboActivity extends AppCompatActivity {
                 }else {
                     AcuseRecibo nvoacuse = new AcuseRecibo();
                     nvoacuse.setIndice(Constantes.INDICEACTUAL);
+                    nvoacuse.setCiudad(Constantes.CIUDADTRABAJO);
                     nvoacuse.setAceptado(estatusAceptado);
                     acrepo.insert(nvoacuse);
                 }
