@@ -17,6 +17,7 @@ import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 
 import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
@@ -818,7 +819,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
                 }
                 //gastos
                 if (response.getGastodetalle()!= null) {
-                    gasRepo.insertAll(response.getGastodetalle());
+                  //  for(InformeGastoDet detalle:response.getGastodetalle()){
+                  //      if(detalle)
+                        gasRepo.insertAll(response.getGastodetalle());
+                   // }
                 }
             }
             listenprin.finalizar();
