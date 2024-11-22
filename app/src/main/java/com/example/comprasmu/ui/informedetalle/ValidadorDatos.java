@@ -28,6 +28,7 @@ public class ValidadorDatos {
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
     SimpleDateFormat sdfcod = new SimpleDateFormat("dd-MM-yy");
 
+    /*valido el formato de la fecha y si ya caducó o caducará en menos de 30 dias**/
     public void validarFechaPep(String fecha, int tipoTienda){
         Date hoy=new Date();
         Date fechacad;

@@ -1451,6 +1451,8 @@ public class DetalleProductoFragment extends Fragment {
         }
 
     }
+    /*valido el formato de la fecha y si ya caducó o caducará en menos de 30 dias**/
+
     public boolean validarFecha(){
         ValidadorDatos valdat=new ValidadorDatos();
         Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
