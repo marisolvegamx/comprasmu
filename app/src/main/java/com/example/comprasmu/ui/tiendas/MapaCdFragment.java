@@ -418,6 +418,12 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
     public void nuevaTienda(){
         BuscadorTiendas bt=new BuscadorTiendas();
+        //lastKnownLocation = new Location("dummyprovider");
+
+
+     //   lastKnownLocation.setLatitude(19.5325179);
+     //   lastKnownLocation.setLongitude(-99.2026932);
+
         if(lastKnownLocation!=null) {
             if (bt.hayTiendas(nollistatiendas, lastKnownLocation.getLatitude(),
                     lastKnownLocation.getLongitude())) {
@@ -621,6 +627,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 if(estatusClientes.length()>0){
                     estatusClientes=estatusClientes.substring(0,estatusClientes.length()-2);
                 }
+                //latitud es x longitud es y
                     // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
                     if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
                         String[] aux = tienda.getUne_coordenadasxy().split(",");
