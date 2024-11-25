@@ -80,6 +80,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -543,6 +544,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
          //   Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);
             int tipo=((CatalogoDetalle)sptipoti.getSelectedItem()).getCad_idopcion();
             int cadena=((CatalogoDetalle)spcadena.getSelectedItem()).getCad_idopcion();
+            Log.d(TAG,"pidiendo tiendas"+(new Date()));
             petmap.getTiendas("0",ciudad,planta,cliente,fini,ffin,tipo+"",cadena+""); //se agregarian filtros despues
             // Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
             //petmap.getTiendas("1","1",25,4,"2022-01-01","2022-04-01","",""); //se agregarian filtros despues
@@ -553,6 +555,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 @Override
                 public void onChanged(List<Tienda> tiendas) {
                     nollistatiendas=tiendas;
+                    Log.d(TAG," antes de dibujar"+(new Date()));
                     dibujarTiendas(tiendas);
                      alert.closeAlertDialog();
                 }

@@ -1,5 +1,7 @@
 package com.example.comprasmu.ui.tiendas;
 
+import android.database.DatabaseErrorHandler;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -13,6 +15,7 @@ import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TiendasResponse;
 
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -37,14 +40,17 @@ public class PeticionMapaCd {
 
 
     public  void getTiendas(String pais, String ciudad,int planta,int cliente, String fechaini,String fechafin, String tipo, String nombre ) {
-        Log.d(TAG,"haciendo petición "+nombre+"--"+tipo);
-
+        Log.d(TAG,"haciendo petición tiendas "+nombre+"--"+tipo);
+        long currentClickTime= SystemClock.elapsedRealtime();
+        long lastClickTime = 0;
         final Call<TiendasResponse> batch = ServiceGenerator.getApiService().getTiendas(pais, ciudad, planta, cliente, fechaini,fechafin,tipo,nombre,usuario);
 
         batch.enqueue(new Callback<TiendasResponse>() {
             @Override
             public void onResponse(@Nullable Call<TiendasResponse> call, @Nullable Response<TiendasResponse> response) {
-//               Log.d(TAG,"llego algo"+response.body().toString());
+                long lastClickTime= SystemClock.elapsedRealtime();
+                Log.d(TAG,"llego algo tiempo"+(new Date()));
+              Log.d(TAG,"llego algo tiempo"+(lastClickTime-currentClickTime));
                 if (response.isSuccessful() && response.body() != null) {
                     TiendasResponse respuestaTiendas = response.body();
                     if(respuestaTiendas!=null) {
