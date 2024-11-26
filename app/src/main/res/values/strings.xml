@@ -380,5 +380,6 @@
     <string name="henvio">5. ENVIO</string>
     <string name="hempaque">4. EMPAQUE</string>
     <string name="hetiquetado">3. ETIQUETADO</string>
+    <string name="informe_enviado">El informe se envió correctamente</string>
 
 </resources>

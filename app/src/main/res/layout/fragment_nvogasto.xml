@@ -43,7 +43,12 @@
                     android:layout_height="wrap_content"
                     android:text="TextView"
                     android:visibility="gone" />
-
+                <HorizontalScrollView
+                    android:id="@+id/horizontalView"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="horizontal|vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="5dip">
                 <TableLayout
                     android:id="@+id/tblnimuestras"
                     android:layout_width="match_parent"
@@ -80,7 +85,7 @@
                     </TableRow>
 
                 </TableLayout>
-
+                </HorizontalScrollView>
                 <Button
                     android:id="@+id/btngasacep1"
                     android:layout_width="match_parent"

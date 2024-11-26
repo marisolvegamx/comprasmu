@@ -238,7 +238,8 @@ public class NvoGastoFragment extends Fragment {
             });
             mBinding.txtgascomentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-            mBinding.txtgasdescrip.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+            mBinding.txtgasdescrip.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(50)});
+         //   mBinding.txtgasdescrip.setMaxLengthFilters(80);
         //    mBinding.txtgasdescrip.addTextChangedListener(new BotonTextWatcher(aceptar4));
             mBinding.txtgascosto.addTextChangedListener(new BotonTextWatcher(aceptar5));
             mBinding.txtgascosto.setRawInputType(Configuration.KEYBOARD_12KEY);
@@ -1169,7 +1170,7 @@ public class NvoGastoFragment extends Fragment {
             SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity());
             miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
-            Toast.makeText(getContext(),"El informe se envió correctamente",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),getString(R.string.informe_enviado),Toast.LENGTH_SHORT).show();
 
             salir();
 
