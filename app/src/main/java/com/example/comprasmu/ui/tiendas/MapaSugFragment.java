@@ -1,666 +1,414 @@
 package com.example.comprasmu.ui.tiendas;
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
+
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.modelos.CatalogoDetalle;
-import com.example.comprasmu.data.modelos.Contrato;
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.data.modelos.Geocerca;
-import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.modelos.Tienda;
-import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
-import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
-import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
-import com.example.comprasmu.utils.ComprasUtils;
-import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.CreadorFormulario;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+//import com.google.android.libraries.places.api.net.PlacesClient;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-public class MapaSugFragment extends Fragment implements OnMapReadyCallback ,GoogleMap.OnInfoWindowCloseListener,GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
-    public static final String EXTRA_LATITUD = "extra_latitud";
-    public static final String EXTRA_LONGITUD ="extra_longitud" ;
-    private MapaSugFragment mFirstMapFragment;
-    private static final int LOCATION_REQUEST_CODE = 1;
-    private NuevoDetalleViewModel dViewModel;
-    private GoogleMap mMap;
-    String[] coloreszon={"#1E90FF","#FF1493", "#32CD32", "#FF8C00", "#4B0082"};
-    Map<String,Float> coloresTienda;
-    private  final String TAG="MapaCdFragment";
-    private ArrayList<DescripcionGenerica> listaPlantasEnv;
-    MutableLiveData<List<Tienda>> listatiendas;
-    //  MutableLiveData<List<Tienda>> listatiendasRojas;
-    //  MutableLiveData<List<Tienda>> listatiendasAmarillas;
-    MutableLiveData<List<Geocerca>> listageocercas;
-    List<Polygon> regionPolygon;
-    List<Marker> martiendas;
-    int cdId;
-    boolean doubleBackToExitPressedOnce = false;
-    ListaDetalleViewModel lcviewModel;
-    Button btncancel;
-    Marker markerSel;
+/**
+ * An activity that displays a map showing the place at the device's current location.
+ */
+public class MapaSugFragment extends AppCompatActivity
+        implements OnMapReadyCallback {
 
-    private final long lastClickTime = 0;
+    private static final String TAG = MapaSugFragment.class.getSimpleName();
+    private GoogleMap map;
+    private CameraPosition cameraPosition;
 
-        Spinner spplantas;
-    List<DescripcionGenerica>clientesAsignados;
+    // The entry point to the Places API.
+    //  private PlacesClient placesClient;
 
-      //  Spinner spindiceini;
-      //  Spinner spindicefin;
-    View view;
-    private int cliente;
-    private Spinner sptipoti, spcadena;
+    // The entry point to the Fused Location Provider.
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
+    // A default location (Sydney, Australia) and default zoom to use when location permission is
+    // not granted.
+    private final LatLng defaultLocation = new LatLng(-33.8523341, 151.2106085);
+    private static final int DEFAULT_ZOOM = 15;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private boolean locationPermissionGranted;
+
+    // The geographical location where the device is currently located. That is, the last-known
+    // location retrieved by the Fused Location Provider.
+    private Location lastKnownLocation;
+
+    // Keys for storing activity state.
+    private static final String KEY_CAMERA_POSITION = "camera_position";
+    private static final String KEY_LOCATION = "location";
+
+    // Used for selecting the current place.
+    private static final int M_MAX_ENTRIES = 5;
+    private String[] likelyPlaceNames;
+    private String[] likelyPlaceAddresses;
+    private List[] likelyPlaceAttributions;
+    private LatLng[] likelyPlaceLatLngs;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.activity_mapa_cd, parent, false);
-            SupportMapFragment supportMapFragment = SupportMapFragment.newInstance();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    /*    getChildFragmentManager()
-                .beginTransaction()
-                .add(R.id.mapContainer, supportMapFragment)
-                .commit();
-
-        supportMapFragment.getMapAsync(this::onMapReady);*/
-
-            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapcd_container);
-            lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-
-            mapFragment.getMapAsync(this);
-           // spclientes=view.findViewById(R.id.spmcdcliente);
-            spplantas=view.findViewById(R.id.spmcdplanta);
-            spcadena=view.findViewById(R.id.spmccadenati);
-            sptipoti=view.findViewById(R.id.spmctipoti);
-        //    spindicefin=view.findViewById(R.id.spmcdindicefin);
-        //    spindiceini=view.findViewById(R.id.spmcdindiceini);
-             btncancel=view.findViewById(R.id.btnmccancel);
-             btncancel.setOnClickListener(new View.OnClickListener() {
-                 @Override
-                 public void onClick(View view) {
-                     if(markerSel!=null) {
-                         Tienda tiendaSel=(Tienda)markerSel.getTag();
-                         if(tiendaSel!=null) {
-                             new AlertDialog.Builder(getActivity())
-                                     .setIcon(android.R.drawable.ic_dialog_alert)
-                                     .setTitle(R.string.importante)
-                                     .setMessage(getString(R.string.cancelar_tienda) + " " + tiendaSel.getUne_descripcion() + "?")
-                                     .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-                                         public void onClick(DialogInterface dialog, int which) {
-                                             //hago la peticion en el servidor y recargo
-                                             //getActivity().finish();
-                                             PeticionMapaCd petmap = new PeticionMapaCd(Constantes.CLAVEUSUARIO);
-                                             petmap.cancelTienda(tiendaSel.getUne_id());
-                                             //  martiendas.remove(markerSel);
-                                             markerSel.remove();
-                                       /*  DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
-                                         if(plantasel!=null) {
-                                             int planta = plantasel.id;
-                                             //  String indiceini = (String) spindiceini.getSelectedItem();
-                                             //  String indicefin = (String) spindicefin.getSelectedItem();
-                                             String indiceini = Constantes.INDICEACTUAL;
-                                             buscarTiendas(planta, indiceini);
-                                         }*/
-                                         }
-                                     })
-                                     .setNegativeButton(R.string.no, null)
-                                     .show();
-                         }
-                     }
-                 }
-             });
-            buscarClientes();
-            buscarPlantas(Constantes.CIUDADTRABAJO,0);
-            cargarCatalogos();
-          //  cargarIndices();
-            Button btnbuscar=view.findViewById(R.id.btnmcdbuscar);
-            btnbuscar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
-                    if(plantasel!=null) {
-                        int planta = plantasel.id;
-                      //  String indiceini = (String) spindiceini.getSelectedItem();
-                      //  String indicefin = (String) spindicefin.getSelectedItem();
-                        String indiceini=Constantes.INDICEACTUAL;
-                        //calculo indice fin
-                        buscarTiendas(planta, indiceini);
-                    }
-                    else
-                        irAcdSel();
-
-                }
-            });
-            Button btnvatienda=view.findViewById(R.id.btnmcdnvati);
-            btnvatienda.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                   /* FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-                    AbririnformeFragment fragconfig=new AbririnformeFragment();
-                    ft.add(R.id.nav_host_fragment, fragconfig);
-
-                    ft.commit();*/
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean("nuevatienda",true);
-                  //  bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
-                    NavController nav= NavHostFragment.findNavController(MapaSugFragment.this);
-                    Log.d(TAG,nav.getCurrentDestination().getId() +"--"+R.id.nav_tiendas);
-                    if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
-
-                        nav.navigate(R.id.action_buscartonuevo, bundle);
-                        //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
-                    }
-                }
-            });
-            //inicio colores tienda
-            coloresTienda=new HashMap<>();
-        coloresTienda.put("3",BitmapDescriptorFactory.HUE_GREEN);//verde
-        coloresTienda.put("2",BitmapDescriptorFactory.HUE_YELLOW);//amarillo
-        coloresTienda.put("1",BitmapDescriptorFactory.HUE_RED);
-            return  view;
-
+        // Retrieve location and camera position from saved instance state.
+        if (savedInstanceState != null) {
+            lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
-            LatLng mex = new LatLng(19.36884,  -99.16410);
+        // Retrieve the content view that renders the map.
+        setContentView(R.layout.activity_maps);
 
-            mMap = googleMap;
-            mMap.setOnMarkerClickListener(this);
-            mMap.setOnInfoWindowClickListener(this);
-            if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true);
-            } else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                        Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    // Mostrar diálogo explicativo
-                } else {
-                    // Solicitar permiso
-                    ActivityCompat.requestPermissions(
-                            getActivity(),
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            LOCATION_REQUEST_CODE);
-                }
-            }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mex, 4));
+        // Construct a PlacesClient
+        // Places.initialize(getApplicationContext(), BuildConfig.PLACES_API_KEY);
+        //  placesClient = Places.createClient(this);
 
-            mMap.getUiSettings().setZoomControlsEnabled(true);
+        // Construct a FusedLocationProviderClient.
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Build the map.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    /**
+     * Saves the state of the map when the activity is paused.
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (map != null) {
+            outState.putParcelable(KEY_CAMERA_POSITION, map.getCameraPosition());
+            outState.putParcelable(KEY_LOCATION, lastKnownLocation);
         }
+        super.onSaveInstanceState(outState);
+    }
 
+    /**
+     * Sets up the options menu.
+     * @param menu The options menu.
+     * @return Boolean.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //  getMenuInflater().inflate(R.menu.current_place_menu, menu);
+        return true;
+    }
 
-        @SuppressLint("MissingPermission")
-        @Override
-        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-        @NonNull int[] grantResults) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            if (requestCode == LOCATION_REQUEST_CODE) {
-                // ¿Permisos asignados?
-                if (permissions.length > 0 &&
-                        permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mMap.setMyLocationEnabled(true);
-                } else {
-                    Toast.makeText(getContext(), "Error de permisos", Toast.LENGTH_LONG).show();
-                }
+    /**
+     * Handles a click on the menu option to get a place.
+     * @param item The menu item to handle.
+     * @return Boolean.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //   if (item.getItemId() == R.id.option_get_place) {
+        //    showCurrentPlace();
+        // }
+        return true;
+    }
 
-            }
-        }
+    /**
+     * Manipulates the map when it's available.
+     * This callback is triggered when the map is ready to be used.
+     */
+    @Override
+    public void onMapReady(GoogleMap map) {
+        this.map = map;
 
-        @Override
-        public boolean onMarkerClick(final Marker marker) {
-       // if (marker.equals(markerPais)) {
-           /* FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-            AbririnformeFragment fragconfig=new AbririnformeFragment();
-            ft.add(R.id.nav_host_fragment, fragconfig);
+        // Use a custom info window adapter to handle multiple lines of text in the
+        // info window contents.
+        this.map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
-            ft.commit();*/
-
-       // }
-            btncancel.setVisibility(View.VISIBLE);
-            markerSel=marker;
-          /*  long currentClickTime= SystemClock.elapsedRealtime();
-            // preventing double, using threshold of 1000 ms
-            if (currentClickTime - lastClickTime < 3000){
-             return false;
+            @Override
+            // Return null here, so that getInfoContents() is called next.
+            public View getInfoWindow(Marker arg0) {
+                return null;
             }
 
-            lastClickTime = currentClickTime;
-            Log.d(TAG,"di click :("+lastClickTime);*/
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Inflate the layouts for the info window, title and snippet.
+            /*    View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
+                        (FrameLayout) findViewById(R.id.map), false);
 
+                TextView title = infoWindow.findViewById(R.id.title);
+                title.setText(marker.getTitle());
 
+                TextView snippet = infoWindow.findViewById(R.id.snippet);
+                snippet.setText(marker.getSnippet());*/
 
-            return false;
-        }
-
-   /* @Override
-    public boolean onMarkerClick(final Marker marker) {
-        //if (marker.equals(markerPais)) {
-           /* FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-            AbririnformeFragment fragconfig=new AbririnformeFragment();
-            ft.add(R.id.nav_host_fragment, fragconfig);
-
-            ft.commit();*/
-
-       /* if (doubleBackToExitPressedOnce) {
-            Tienda tienda=(Tienda)marker.getTag();
-
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("nuevatienda",false);
-            bundle.putInt("idtienda", tienda.getUne_id());
-            bundle.putString("nombretienda", tienda.getUne_descripcion());
-            bundle.putInt("tipotienda", tienda.getUne_tipotienda());
-            bundle.putString("direccion", tienda.getUne_direccion());
-            bundle.putString("color", tienda.getColor());
-            this.doubleBackToExitPressedOnce = false;
-            NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo,bundle);
-        } else {
-            this.doubleBackToExitPressedOnce = true;
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    doubleBackToExitPressedOnce = false;
-                }
-            }, 2000);
-        }*/
-
-       /*     mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), new GoogleMap.CancelableCallback() {
-                @Override
-                public void onFinish() {
-                    Intent intent = new Intent(MapaCdActivity.this, MarkerDetailActivity.class);
-                    intent.putExtra(EXTRA_LATITUD, marker.getPosition().latitude);
-                    intent.putExtra(EXTRA_LONGITUD, marker.getPosition().longitude);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onCancel() {
-
-                }
-            });
-
-            return true;
-        }*/
-       /* return false;
-    }*/
-
-
-    public void dibujarZonas(List<Geocerca> zonas){
-            regionPolygon=new ArrayList<Polygon>();
-
-
-
-            //guardar zonas
-            GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getActivity());
-
-            for(Geocerca geo:zonas){
-                //georep.insert(geo);
-                String[] aux =geo.getGeo_p1().split(",");
-                LatLng p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-                String[] aux2 =geo.getGeo_p2().split(",");
-                LatLng p2 =new LatLng(Double.parseDouble(aux2[0]), Double.parseDouble(aux2[1]));
-                String[] aux3 =geo.getGeo_p3().split(",");
-                LatLng p3 =new LatLng(Double.parseDouble(aux3[0]), Double.parseDouble(aux3[1]));
-                String[] aux4 =geo.getGeo_p4().split(",");
-                LatLng p4 =new LatLng(Double.parseDouble(aux4[0]), Double.parseDouble(aux4[1]));
-
-                regionPolygon.add( mMap.addPolygon(new PolygonOptions()
-                        .add(p1,p2,p3,p4)
-                        .strokeColor(Color.parseColor(coloreszon[geo.getGeo_region()-1]))
-                        .strokeWidth(5)
-                ));
-                //busco el centro para poner la camara
-                if(geo.getGeo_region()==5){
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(p4, 12));
-
-
-                }
+                return null;
             }
+        });
 
-        }
-        public void buscarTiendas( int planta,String indicefin){
-            //peticion al servidor
-            //cambio el inice
-            PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
-            //usaria la ciudad de trabajo
-            //25guadalajara
-            markerSel=null;
-          //  Log.d(TAG,"ocultando"+btncancel.getVisibility());
-            btncancel.setVisibility(View.GONE);
-            String ffin= "";
-            ffin= ComprasUtils.indiceaFecha2(indicefin);
-            String fini="";
-            //calculo el fin
-            String[] aux1=indicefin.replace(".","-").split("-");
-            String anio=aux1[1];
-            int anioant=Integer.parseInt(anio)-1;
-            String indiceini=aux1[0]+"."+anioant;
-            fini=ComprasUtils.indiceaFecha2(indiceini);
-            //busco el pais y cd de la planta
-            int[] aux =lcviewModel.buscarClienCdxPlan(planta);
-             cliente=aux[0];
-            int ciudad=aux[1];
-          //  Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);
-            int tipo=((CatalogoDetalle)sptipoti.getSelectedItem()).getCad_idopcion();
-            int cadena=((CatalogoDetalle)spcadena.getSelectedItem()).getCad_idopcion();
-            petmap.getTiendas("0",ciudad+"",planta,cliente,fini,ffin,tipo+"",cadena+""); //se agregarian filtros despues
-            // Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
-            //petmap.getTiendas("1","1",25,4,"2022-01-01","2022-04-01","",""); //se agregarian filtros despues
-            this.listatiendas=petmap.getListatiendas();
-            this.listageocercas=petmap.getListageocercas();
-            //observo
-            this.listatiendas.observe(this, new Observer<List<Tienda>>() {
-                @Override
-                public void onChanged(List<Tienda> tiendas) {
-                   // if(tiendas!=null&&tiendas.size()>0) {
+        // Prompt the user for permission.
+        getLocationPermission();
 
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI();
 
-                        dibujarTiendas(tiendas);
-                    //}
-                    //else
-                    //pongo anuncio sin tiendas
-                    //{
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
+    }
 
-                    //}
-                }
-            });
-            this.listageocercas.observe(this, new Observer<List<Geocerca>>() {
-                @Override
-                public void onChanged(List<Geocerca> zonas) {
-                    if(zonas!=null&&zonas.size()>0) {
-
-                        dibujarZonas(zonas);
-                    }
-                }
-            });
-
-        }
-
-        public void dibujarTiendas(List<Tienda> listiendas){
-            martiendas=new ArrayList<>();
-            LatLng japon2 = null;
-            String color="1";
-            mMap.clear();
-            if(listiendas!=null)
-            for(Tienda tienda: listiendas){
-                 Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
-
-                if(cliente==4&&tienda.getEstpep()>0) {
-                    color = tienda.getEstpep() + "";
-                    tienda.setColor(color);
-                }else
-                    if(cliente==5&&tienda.getEstpen()>0) {
-
-                        color = tienda.getEstpen() + "";
-                        tienda.setColor(color);
-                    }
-                    else
-                    if(cliente==6&&tienda.getEstele()>0) {
-                        color = tienda.getEstele()+"";
-                        tienda.setColor(color);
-                        // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
-
-                    } else if(cliente==7&&tienda.getEstjum()>0) {
-
-                        color = tienda.getEstjum() + "";
-                        tienda.setColor(color);
-                    }
-                    //para poner en que tiendas puedo comprar
-                String estatusClientes="";
-                    //el estatus es 1-rojo, 2 amarillo, 3.verde solo en verde puedo comprar
-                if(tienda.getEstpep()==3) {
-                    estatusClientes=estatusClientes+"PEPSI, ";
-                }
-                if(tienda.getEstpen()==3) {
-
-                    estatusClientes=estatusClientes+"PEÑAFIEL, ";
-                }
-
-                if(tienda.getEstele()==3) {
-                    estatusClientes=estatusClientes+"ELECTROPURA, ";
-                }  if(tienda.getEstjum()==3) {
-
-                    estatusClientes=estatusClientes+"JUMEX, ";
-                }
-                if(estatusClientes.length()>0){
-                    estatusClientes=estatusClientes.substring(0,estatusClientes.length()-2);
-                }
-                    // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
-                    if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
-                        String[] aux = tienda.getUne_coordenadasxy().split(",");
-                        //todo es aqui meter un catch
-                        try {
-                            japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-                            MarkerOptions moptions = new MarkerOptions();
-                            moptions.position(japon2)
-                                    .title(tienda.getUne_descripcion())
-                                    .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color)));
-                            if (estatusClientes.length() > 0) {
-                                moptions.snippet(estatusClientes);
+    /**
+     * Gets the current location of the device, and positions the map's camera.
+     */
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (locationPermissionGranted) {
+                Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            lastKnownLocation = task.getResult();
+                            if (lastKnownLocation != null) {
+                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(lastKnownLocation.getLatitude(),
+                                                lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                Log.d(TAG, "Current location is "+lastKnownLocation.getLatitude()+","+
+                                        lastKnownLocation.getLongitude());
                             }
-                            Marker marker = mMap.addMarker(moptions
-                            );
-                            marker.setTag(tienda);
-
-                            martiendas.add(marker);
-                        }catch(NumberFormatException ex){
-                            Log.e(TAG,"error de formato "+ex.getMessage()+"  "+tienda.getUne_descripcion());
+                        } else {
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                            map.moveCamera(CameraUpdateFactory
+                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
+                            map.getUiSettings().setMyLocationButtonEnabled(false);
                         }
-
-                }
-
-                }
-            if(japon2!=null)
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,10));
-        }
-        public void buscarClientes(){
-         //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
-           // Constantes.CIUDADTRABAJO=null;
-            if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
-
-               // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
-                irAcdSel();
-                return;
-            }
-            List<ListaCompra> data=lcviewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 2);
-
-            Log.d(TAG, "regresó de la consulta de clientes " + data.size()+"--"+Constantes.CIUDADTRABAJO);
-           clientesAsignados = convertirListaaClientes(data);
-           // CreadorFormulario.cargarSpinnerDescr(getContext(),spclientes,clientesAsignados);
-        }
-
-        public  List<DescripcionGenerica> convertirListaaClientes(List<ListaCompra> lista){
-            int i=0;
-            List<DescripcionGenerica> mapa=new ArrayList<>();
-
-            if(lista!=null)
-                for (ListaCompra listaCompra: lista ) {
-                    DescripcionGenerica item=new DescripcionGenerica();
-                    //  Log.d(TAG,"-estoy aqui"+listaCompra.getClientesId());
-                    item.setId(listaCompra.getClientesId());
-                    item.setNombre(listaCompra.getClienteNombre());
-                    mapa.add(item);
-
-                }
-            return mapa;
-        }
-        public void buscarPlantas(String ciudadNombre,int clienteSel){
-            //para buscar las plantas
-
-            LiveData<List<ListaCompra>> listacomp = lcviewModel.cargarPestañasEta(ciudadNombre, clienteSel);
-
-            // Create the observer which updates the UI.
-            final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
-                @Override
-                public void onChanged(@Nullable List<ListaCompra> lista) {
-
-                    convertirLista(lista);
-                    // setLista(listaClientesEnv);
-                    // siguiente(0);
-                    //  Log.d(TAG,"------- "+lista.size());
-                    if(lista.size()>0) {
-                        //cargo el spinner
-                        CreadorFormulario.cargarSpinnerDescr(getActivity(),spplantas,listaPlantasEnv);
                     }
-                    else
-                        Log.d(TAG,"algo salió mal con la consulta de listas");
-                }
-            };
-
-            // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-            //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
-            listacomp.observe(getViewLifecycleOwner(),nameObserver);
-
-        }
-
-        public void cargarCatalogos(){
-            CatalogoDetalle ins=new CatalogoDetalle();
-            ins.setCad_idopcion(0);
-            ins.setCad_idcatalogo(1);
-            ins.setCad_descripcionesp("TODAS");
-        List<CatalogoDetalle> listacadena=new ArrayList<>();
-            listacadena.add(ins);
-
-            listacadena.addAll(lcviewModel.buscarCadenaComer());
-
-        if(listacadena.size()>0) {
-            //cargo el spinner
-
-            CreadorFormulario.cargarSpinnerCat(getActivity(),spcadena,listacadena);
-        }
-        List<CatalogoDetalle> listatipo=new ArrayList<>();
-                ins.setCad_idcatalogo(Contrato.CatalogosId.CADENACOMER);
-            listatipo.add(ins);
-            listatipo.addAll(lcviewModel.buscarTipoTienda());
-        if(listatipo.size()>0) {
-            //cargo el spinner
-
-            CreadorFormulario.cargarSpinnerCat(getActivity(),sptipoti,listatipo);
-        }
-    }
-
-   /* public void setupListAdapter() {
-        adaptadorLista = new ListaSelecFragment.AdaptadorListas((AppCompatActivity) getActivity(),mViewModel);
-
-        objetosLV.setAdapter(adaptadorLista);
-
-    }*/
-        public void irAcdSel(){
-            NavHostFragment navHostFragment =
-                    (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-            NavController navController = navHostFragment.getNavController();
-            if(navController!=null)
-                navController.navigate(R.id.action_buscartocdtrab);
-
-        }
-        private  void convertirLista(List<ListaCompra>lista){
-            listaPlantasEnv=new ArrayList<DescripcionGenerica>();
-            for (ListaCompra listaCompra: lista ) {
-          /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
-          listaCompra.getPlantaNombre();*/
-
-                listaPlantasEnv.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClienteNombre()));
-
+                });
             }
-
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage(), e);
         }
-
-        public void cargarIndices(){
-            String[] indiceslist={"SEPTIEMBRE 2021","OCTUBRE 2021","NOVIEMBRE 2021","DICIEMBRE 2021","ENERO 2022","FEBRERO 2022","MARZO 2022","ABRIL 2022","MAYO 2022","JUNIO 2022","JULIO 2022","AGOSTO 2022"};
-            ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,indiceslist);
-            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            ArrayAdapter aa2 = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,indiceslist);
-            aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            //Setting the ArrayAdapter data on the Spinner
-          //  spindiceini.setAdapter(aa);
-           // spindicefin.setAdapter(aa);
-            //spindiceini.setSelection(0);
-            //spindicefin.setSelection(7);
-        }
-
-
-
-    public MapaSugFragment() {
     }
 
-    public static MapaSugFragment newInstance() {
-        return new MapaSugFragment();
+    /**
+     * Prompts the user for permission to use the device location.
+     */
+    private void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
     }
 
-
+    /**
+     * Handles the result of the request for location permissions.
+     */
     @Override
-    public void onInfoWindowClick(@NonNull Marker marker) {
-            //reviso si hay mas clientes si no no tiene caso
-        Tienda tienda=(Tienda)marker.getTag();
-        if(tienda.getColor()=="2"&&clientesAsignados.size()==0){
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        locationPermissionGranted = false;
+        if (requestCode
+                == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationPermissionGranted = true;
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        updateLocationUI();
+    }
+
+    /**
+     * Prompts the user to select the current place from a list of likely places, and shows the
+     * current place on the map - provided the user has granted location permission.
+     */
+   /* private void showCurrentPlace() {
+        if (map == null) {
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("nuevatienda",false);
-        bundle.putInt("idtienda", tienda.getUne_id());
-        bundle.putString("nombretienda", tienda.getUne_descripcion());
-        bundle.putInt("tipotienda", tienda.getUne_tipotienda());
-        bundle.putString("direccion", tienda.getUne_direccion());
-        bundle.putString("color", tienda.getColor());
-        bundle.putInt("estpep", tienda.getEstpep());
-        bundle.putInt("estpen", tienda.getEstpen());
-        bundle.putInt("estele", tienda.getEstele());
-        bundle.putInt("estjum", tienda.getEstjum());
-        this.doubleBackToExitPressedOnce = false;
-        NavHostFragment.findNavController(MapaSugFragment.this).navigate(R.id.action_buscartonuevo,bundle);
-        //return false;
+
+        if (locationPermissionGranted) {
+            // Use fields to define the data types to return.
+            List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS,
+                    Place.Field.LAT_LNG);
+
+            // Use the builder to create a FindCurrentPlaceRequest.
+            FindCurrentPlaceRequest request =
+                    FindCurrentPlaceRequest.newInstance(placeFields);
+
+            // Get the likely places - that is, the businesses and other points of interest that
+            // are the best match for the device's current location.
+            @SuppressWarnings("MissingPermission") final
+            Task<FindCurrentPlaceResponse> placeResult =
+                    placesClient.findCurrentPlace(request);
+            placeResult.addOnCompleteListener (new OnCompleteListener<FindCurrentPlaceResponse>() {
+                @Override
+                public void onComplete(@NonNull Task<FindCurrentPlaceResponse> task) {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        FindCurrentPlaceResponse likelyPlaces = task.getResult();
+
+                        // Set the count, handling cases where less than 5 entries are returned.
+                        int count;
+                        if (likelyPlaces.getPlaceLikelihoods().size() < M_MAX_ENTRIES) {
+                            count = likelyPlaces.getPlaceLikelihoods().size();
+                        } else {
+                            count = M_MAX_ENTRIES;
+                        }
+
+                        int i = 0;
+                        likelyPlaceNames = new String[count];
+                        likelyPlaceAddresses = new String[count];
+                        likelyPlaceAttributions = new List[count];
+                        likelyPlaceLatLngs = new LatLng[count];
+
+                        for (PlaceLikelihood placeLikelihood : likelyPlaces.getPlaceLikelihoods()) {
+                            // Build a list of likely places to show the user.
+                            likelyPlaceNames[i] = placeLikelihood.getPlace().getName();
+                            likelyPlaceAddresses[i] = placeLikelihood.getPlace().getAddress();
+                            likelyPlaceAttributions[i] = placeLikelihood.getPlace()
+                                    .getAttributions();
+                            likelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
+
+                            i++;
+                            if (i > (count - 1)) {
+                                break;
+                            }
+                        }
+
+                        // Show a dialog offering the user the list of likely places, and add a
+                        // marker at the selected place.
+                        MapsActivityCurrentPlace.this.openPlacesDialog();
+                    }
+                    else {
+                        Log.e(TAG, "Exception: %s", task.getException());
+                    }
+                }
+            });
+        } else {
+            // The user has not granted permission.
+            Log.i(TAG, "The user did not grant location permission.");
+
+            // Add a default marker, because the user hasn't selected a place.
+            map.addMarker(new MarkerOptions()
+                    .title(getString(R.string.default_info_title))
+                    .position(defaultLocation)
+                    .snippet(getString(R.string.default_info_snippet)));
+
+            // Prompt the user for permission.
+            getLocationPermission();
+        }
+    }*/
+
+    /**
+     * Displays a form allowing the user to select a place from a list of likely places.
+     */
+    private void openPlacesDialog() {
+        // Ask the user to choose the place where they are now.
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // The "which" argument contains the position of the selected item.
+                LatLng markerLatLng = likelyPlaceLatLngs[which];
+                String markerSnippet = likelyPlaceAddresses[which];
+                if (likelyPlaceAttributions[which] != null) {
+                    markerSnippet = markerSnippet + "\n" + likelyPlaceAttributions[which];
+                }
+
+                // Add a marker for the selected place, with an info window
+                // showing information about that place.
+                map.addMarker(new MarkerOptions()
+                        .title(likelyPlaceNames[which])
+                        .position(markerLatLng)
+                        .snippet(markerSnippet));
+
+                // Position the map's camera at the location of the marker.
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
+                        DEFAULT_ZOOM));
+            }
+        };
+
+        // Display the dialog.
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Hola hola")
+                .setItems(likelyPlaceNames, listener)
+                .show();
     }
 
-    @Override
-    public void onInfoWindowClose(@NonNull Marker marker) {
-        Log.d(TAG,"eto cuando es???????");
-    }
-
-    @Override
-    public void onMapClick(@NonNull LatLng latLng) {
-            Log.d(TAG,"ocultando++"+btncancel.getVisibility());
-        btncancel.setVisibility(View.GONE);
-        markerSel=null;
+    /**
+     * Updates the map's UI settings based on whether the user has granted location permission.
+     */
+    private void updateLocationUI() {
+        if (map == null) {
+            return;
+        }
+        try {
+            if (locationPermissionGranted) {
+                map.setMyLocationEnabled(true);
+                map.getUiSettings().setMyLocationButtonEnabled(true);
+            } else {
+                map.setMyLocationEnabled(false);
+                map.getUiSettings().setMyLocationButtonEnabled(false);
+                lastKnownLocation = null;
+                getLocationPermission();
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
     }
 }
+

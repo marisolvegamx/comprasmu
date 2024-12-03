@@ -117,7 +117,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public LiveData<List<ListaCompra>> getAllByIndiceCiudadEta(String indice,String idCiudad,String etapa) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre like ? and lis_etapaactual=?";
+                "and ciudadNombre like ? and lis_etapaactual=? order by clientesId";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idCiudad, etapa});
@@ -132,7 +132,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
             query = query + " and ciudadNombre like ?";
             params.add(idCiudad);
         }
-         query=query+               " group by clientesId";
+         query=query+               " group by clientesId order by clientesId ";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
                );
@@ -146,7 +146,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
             query = query + " and ciudadNombre like ?";
             params.add(idCiudad);
         }
-        query=query+ " group by clientesId";
+        query=query+ " group by clientesId order by clientesId";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
@@ -162,7 +162,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
             query = query + " and ciudadNombre like ?";
             params.add(idCiudad);
         }
-        query=query+ " group by clientesId";
+        query=query+ " group by clientesId order by clientesId";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
@@ -180,7 +180,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
             params.add(idCiudad);
         }
 
-        query=query+" group by clientesId";
+        query=query+" group by clientesId order by clientesId";
       //  Log.d("ListaComrep",query+"--"+indice+"--"+idCiudad+"--"+cliente);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
@@ -190,7 +190,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public LiveData<List<ListaCompra>> getAllByIndiceCiudadCliente(String indice,String idCiudad,int idCliente) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre=? and clientesId=?";
+                "and ciudadNombre=? and clientesId=? order by clientesId";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,idCiudad,idCliente});
@@ -199,7 +199,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public List<ListaCompra> getAllByIndiceCiudadClienteSim(String indice,String ciudad,int idCliente) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre=? and clientesId=?";
+                "and ciudadNombre=? and clientesId=? order by clientesId";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,ciudad,idCliente});
@@ -216,7 +216,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
             query = query + " and ciudadNombre like ?";
             params.add(idCiudad);
         }
-        query=query+ " group by clientesId";
+        query=query+ " group by clientesId order by clientesId";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );

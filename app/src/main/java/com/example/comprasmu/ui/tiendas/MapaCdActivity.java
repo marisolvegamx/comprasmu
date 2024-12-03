@@ -288,7 +288,7 @@ public class MapaCdActivity extends FragmentActivity implements OnMapReadyCallba
         int pais=aux[0];
         int ciudad=aux[1];
         Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
-
+        int tiempo=0;
        petmap.getTiendas(pais+"",ciudad+"",planta,0,fini,ffin,"",""); //se agregarian filtros despues
        // Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
         //petmap.getTiendas("1","1",25,4,"2022-01-01","2022-04-01","",""); //se agregarian filtros despues

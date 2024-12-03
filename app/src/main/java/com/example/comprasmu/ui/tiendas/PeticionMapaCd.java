@@ -36,7 +36,7 @@ public class PeticionMapaCd {
     }
 
 
-    public  void getTiendas(String pais, String ciudad,int planta,int cliente, String fechaini,String fechafin, String tipo, String nombre ) {
+    public  void getTiendas(String pais, String ciudad,int planta,int cliente, String fechaini,String fechafin, String tipo, String nombre) {
         Log.d(TAG,"haciendo petición "+nombre+"--"+tipo);
 
         final Call<TiendasResponse> batch = ServiceGenerator.getApiService().getTiendas(pais, ciudad, planta, cliente, fechaini,fechafin,tipo,nombre,usuario);

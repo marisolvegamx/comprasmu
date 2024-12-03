@@ -381,5 +381,8 @@
     <string name="hempaque">4. EMPAQUE</string>
     <string name="hetiquetado">3. ETIQUETADO</string>
     <string name="informe_enviado">El informe se envió correctamente</string>
+    <string name="cargando">CARGANDO</string>
+    <string name="recomend_tienda">YA HAY UNA TIENDA REGISTRADA EN ESTA AREA, ASEGURATE QUE NO SEA LA MISMA</string>
+    <string name="anio">AÑO</string>
 
 </resources>

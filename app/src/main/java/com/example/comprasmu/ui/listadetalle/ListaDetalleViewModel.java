@@ -99,11 +99,8 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public  LiveData<List<ListaCompra>>  cargarPestañasEta(String ciudadSel,int clienteSel){
-        if(clienteSel>0){
-            //ya elegi cliente vengo de muestra
-            return repository.getAllByIndiceCiudadCliente(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
-        }else
+    public  LiveData<List<ListaCompra>>  cargarPestañasEta(String ciudadSel){
+
             return repository.getAllByIndiceCiudadEta(Constantes.INDICEACTUAL,ciudadSel,Constantes.ETAPAACTUAL+"");
 
 
@@ -134,7 +131,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
     public  List<ListaCompra>  cargarPestanasxEtaSimp(String ciudadSel){
-        Log.d(TAG,"etapa act"+Constantes.ETAPAACTUAL);
+     //   Log.d(TAG,"etapa act"+Constantes.ETAPAACTUAL);
         return repository.getAllByIndiceCiudadEtaSimpl(Constantes.INDICEACTUAL,ciudadSel, Constantes.ETAPAACTUAL+"");
 
 
@@ -159,13 +156,13 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     }
 
     public  List<ListaCompra>  cargarClientesSimplxet(String ciudadSel, int etapa){
-        Log.d(TAG,"xxxx"+etapa);
+       // Log.d(TAG,"xxxx"+etapa);
         return repository.getClientesByIndiceCiudadSimplxet(Constantes.INDICEACTUAL,ciudadSel,etapa);
 
 
     }
     public  List<ListaCompra>  getTodosCliByIndiceCdSimplxet(String ciudadSel, int etapa){
-        Log.d(TAG,"xxxx"+etapa);
+      //  Log.d(TAG,"xxxx"+etapa);
         return repository.getTodosCliByIndiceCdSimplxet(Constantes.INDICEACTUAL,ciudadSel,etapa);
 
 
