@@ -39,11 +39,11 @@ public class ListaCompraDetRepositoryImpl {
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                " codigosNoPermitidos  codfis" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
 
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
-        //filtros.add(analisisid+"");
+        filtros.add(analisisid+"");
         filtros.add(idlista+"");
         if(categoria!=null&&!categoria.equals("")) {
             query =query+ " and categoria=?";
@@ -104,7 +104,7 @@ public class ListaCompraDetRepositoryImpl {
             filtros.add(empaque);
         }
 
-      //  query=query+" )  prin group by productoNombre,empaque,tamanioId ";
+        //  query=query+" )  prin group by productoNombre,empaque,tamanioId ";
 
         Object[] params=filtros.toArray();
 
@@ -130,10 +130,10 @@ public class ListaCompraDetRepositoryImpl {
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                "codigosNoPermitidos codfis" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
-       // filtros.add(analisisid+"");
+        filtros.add(analisisid+"");
 
         filtros.add(idlista+"");
 
@@ -152,7 +152,7 @@ public class ListaCompraDetRepositoryImpl {
         if(tamanio>0) {
             query = query + " and tamanioId=?))";
             filtros.add(tamanio+"");
-          //  filtros.add(categoria+"");
+            //  filtros.add(categoria+"");
         }
 
         query=query+" )  prin group by productoNombre,empaque,tamanioId ";
@@ -182,11 +182,11 @@ public class ListaCompraDetRepositoryImpl {
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                " codigosNoPermitidos codfis" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
 
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
-        //filtros.add(analisis+"");
+        filtros.add(analisis+"");
         filtros.add(idlista+"");
 
 
@@ -201,9 +201,9 @@ public class ListaCompraDetRepositoryImpl {
         }
         if(empaque==null||empaque.equals("")) //prdo es el ultimo y es diferente
         {   if(productoNombre!=null&&!productoNombre.equals("")) {
-                query = query + " and productoNombre!=?";
-                filtros.add(productoNombre);
-            }}
+            query = query + " and productoNombre!=?";
+            filtros.add(productoNombre);
+        }}
         else
         if(productoNombre!=null&&!productoNombre.equals("")) {
             query = query + " and productoNombre=?";
@@ -228,8 +228,8 @@ public class ListaCompraDetRepositoryImpl {
         query=query+" )  prin group by productoNombre,empaque,tamanioId ";
         Object[] params=filtros.toArray();
 
-         for(int i=0;i<params.length;i++)
-          Log.d("InformeCompraRepo","***"+params[i]);
+        for(int i=0;i<params.length;i++)
+            Log.d("InformeCompraRepo","***"+params[i]);
         Log.d("InformeCompraRepo","****"+query);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
@@ -251,10 +251,10 @@ public class ListaCompraDetRepositoryImpl {
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                " codigosNoPermitidos  codfis" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
-      //  filtros.add(analisisid+"");
+        filtros.add(analisisid+"");
 
         filtros.add(idlista+"");
 
@@ -262,7 +262,7 @@ public class ListaCompraDetRepositoryImpl {
             query =query+ " and categoria=?";
             filtros.add(categoria);
         }
-       if(productoNombre!=null&&!productoNombre.equals("")) {
+        if(productoNombre!=null&&!productoNombre.equals("")) {
             query = query + " and productoNombre!=?";
             filtros.add(productoNombre);
         }
@@ -271,7 +271,7 @@ public class ListaCompraDetRepositoryImpl {
             filtros.add(empaque);
         }
         query=query+" )  prin group by productoNombre,empaque,tamanioId ";
-         Object[] params=filtros.toArray();
+        Object[] params=filtros.toArray();
 
         for(int i=0;i<params.length;i++)
             Log.d("InformeCompraRepo","***"+params[i]);
@@ -301,9 +301,9 @@ public class ListaCompraDetRepositoryImpl {
 
         Object[] params=filtros.toArray();
 
-     //   for(int i=0;i<params.length;i++)
-      //      Log.d("InformeCompraRepo","***"+params[i]);
-             Log.d("InformeCompraRepo","****"+query);
+        //   for(int i=0;i<params.length;i++)
+        //      Log.d("InformeCompraRepo","***"+params[i]);
+        Log.d("InformeCompraRepo","****"+query);
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,filtros.toArray()
         );
@@ -388,11 +388,11 @@ public class ListaCompraDetRepositoryImpl {
                 "analisisId, cantidad,  codigosNoPermitidos,  nvoCodigo,estatus, " +
                 "     comprados,  tipoMuestra, nombreTipoMuestra, categoriaid,categoria," +
                 "  lid_fechapermitida,     lid_fecharestringida,  lid_orden,   lid_backup," +
-                " codigosNoPermitidos  codfis" +
+                "case analisisId when ? then codigosNoPermitidos else '' end  codfis" +
 
                 " from lista_compras_detalle where listaId=?";
         ArrayList<String> filtros=new ArrayList<String>();
-       // filtros.add(analisisid+"");
+        filtros.add(analisisid+"");
         filtros.add(idlista+"");
         if(analisis==0) //catego es el ultimo y es diferente
         { if(categoria!=null&&!categoria.equals("")) {
@@ -454,7 +454,7 @@ public class ListaCompraDetRepositoryImpl {
     }
 
     public LiveData<List<ListaCompraDetalle>> getAll() {
-      return dao.findAll();
+        return dao.findAll();
     }
 
     public List<ListaCompraDetalle> getAllSimpl() {
