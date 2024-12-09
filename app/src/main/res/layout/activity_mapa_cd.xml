@@ -40,15 +40,35 @@
                 android:id="@+id/spmcdplanta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".6" />
+                android:layout_weight=".7" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout6"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView37"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:text="@string/tienda" />
+
+            <Spinner
+                android:id="@+id/spmcdseltienda"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".7" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llmcdtipotienda"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:visibility="gone"
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintHorizontal_bias="0.0"
             map:layout_constraintStart_toStartOf="parent"
@@ -67,17 +87,18 @@
                 android:id="@+id/spmctipoti"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".6" />
+                android:layout_weight=".7" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout9"
+            android:id="@+id/llmcdcadena"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:visibility="gone"
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintStart_toStartOf="parent"
-            map:layout_constraintTop_toBottomOf="@id/linearLayout6"
+            map:layout_constraintTop_toBottomOf="@id/llmcdtipotienda"
             tools:layout_conversion_absoluteHeight="40dp"
             tools:layout_conversion_absoluteWidth="379dp">
 
@@ -92,7 +113,7 @@
                 android:id="@+id/spmccadenati"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".6" />
+                android:layout_weight=".7" />
         </LinearLayout>
 
         <LinearLayout
@@ -110,7 +131,7 @@
                 android:id="@+id/spmctiempo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".6" />
+                android:layout_weight=".7" />
         </LinearLayout>
 
         <Button

@@ -22,9 +22,7 @@ public abstract class CatalogoDetalleDao {
     public abstract void deleteCatalogoByTipo(int cat);
 
 
-
-
-    @Query("SELECT * FROM catalogos_detalle where cad_idcatalogo=:cat")
+    @Query("SELECT * FROM catalogos_detalle where cad_idcatalogo=:cat order by cad_descripcionesp")
     public  abstract List<CatalogoDetalle> findAll(int cat);
 
     @Query("SELECT * FROM catalogos_detalle where cad_idcatalogo=:cat and cad_idopcion=:id")
@@ -44,10 +42,4 @@ public abstract class CatalogoDetalleDao {
     @Query("DELETE  FROM catalogos_detalle where cad_idcatalogo=:idcat")
     public abstract void deletexIdCat(int idcat);
 
-
-
-
-  /*  @Query("DELETE FROM catalogos_detalle where cad_idcatalogo=:cat and cad_idopcion=:id")
-    public abstract void delete( int id,int cat);
-*/
 }

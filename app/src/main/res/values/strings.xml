@@ -384,5 +384,6 @@
     <string name="cargando">CARGANDO</string>
     <string name="recomend_tienda">YA HAY UNA TIENDA REGISTRADA EN ESTA AREA, ASEGURATE QUE NO SEA LA MISMA</string>
     <string name="anio">AÑO</string>
+    <string name="tienda">TIENDA</string>
 
 </resources>

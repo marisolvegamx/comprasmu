@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -97,7 +98,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     ListaDetalleViewModel lcviewModel;
     Button btncancel;
     Marker markerSel;
-    LinearLayout llfiltros, llcancel;
+    LinearLayout llfiltros, llcancel,lltipotienda,llcadena;
     private final long lastClickTime = 0;
     private static final int DEFAULT_ZOOM = 4;
     Spinner spplantas;
@@ -115,7 +116,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     private static final String KEY_LOCATION = "location";
     View view;
     private int cliente;
-    private Spinner sptipoti, spcadena, spfecha;
+    private Spinner sptipoti, spcadena, spfecha,spseleccion;
     private String indiceini;
     private boolean verfiltros;
     LoadingAlert alert;
@@ -145,8 +146,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         spcadena=view.findViewById(R.id.spmccadenati);
         sptipoti=view.findViewById(R.id.spmctipoti);
         spfecha=view.findViewById(R.id.spmctiempo);
+        spseleccion=view.findViewById(R.id.spmcdseltienda);
         llfiltros=view.findViewById(R.id.llmfiltros);
         llcancel=view.findViewById(R.id.llmcancel);
+        lltipotienda=view.findViewById(R.id.llmcdtipotienda);
+        llcadena=view.findViewById(R.id.llmcdcadena);
         llfiltros.setVisibility(View.GONE);
         llcancel.setVisibility(View.GONE);
         btnverfil=view.findViewById(R.id.btnmfiltros);
@@ -240,6 +244,48 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         listaFecha.add(new DescripcionGenerica(3,"3 "+getString(R.string.anio)+"S"));
 
         CreadorFormulario.cargarSpinnerDescr(getContext(),spfecha,listaFecha);
+
+        ArrayList<DescripcionGenerica> listaop;
+        listaop=new ArrayList<DescripcionGenerica>();
+        listaop.add(new DescripcionGenerica(0,"SELECCIONAR OPCION"));
+        listaop.add(new DescripcionGenerica(1,"POR TIPO TIENDA"));
+        listaop.add(new DescripcionGenerica(2,"POR CADENA"));
+
+
+        CreadorFormulario.cargarSpinnerDescr(getContext(),spseleccion,listaop);
+        spseleccion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Get the value selected by the user
+                // e.g. to store it as a field or immediately call a method
+                DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
+                if(opcion.getId()==1){
+                    //muestro lista de tipo tiendas
+                    lltipotienda.setVisibility(View.VISIBLE);
+
+                }
+                else
+                {
+                    lltipotienda.setVisibility(View.GONE);
+                    sptipoti.setSelection(0);
+                }
+                if(opcion.getId()==2){
+                    //muestro lista de tipo tiendas
+                    llcadena.setVisibility(View.VISIBLE);
+
+                }
+                else
+                {
+                    llcadena.setVisibility(View.GONE);
+                    spcadena.setSelection(0);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
 
         return  view;
@@ -379,7 +425,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
     {
         lastKnownLocation=loc;
-        if (lastKnownLocation != null) {
+        if (lastKnownLocation != null&&mMap!=null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(lastKnownLocation.getLatitude(),
                             lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
@@ -552,7 +598,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
         Log.d(TAG,"pidiendo tiendas"+(new Date()));
         petmap.getTiendas("0",ciudad,planta,cliente,fini,ffin,tipo+"",cadena+""); //se agregarian filtros despues
-        // Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);
+         Log.d(TAG,"--zzzzzzzzzzzzz"+tipo+"--"+cadena);
         //petmap.getTiendas("1","1",25,4,"2022-01-01","2022-04-01","",""); //se agregarian filtros despues
         this.listatiendas=petmap.getListatiendas();
         this.listageocercas=petmap.getListageocercas();
