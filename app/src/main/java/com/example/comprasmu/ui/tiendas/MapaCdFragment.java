@@ -426,9 +426,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     {
         lastKnownLocation=loc;
         if (lastKnownLocation != null&&mMap!=null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+           /* mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(lastKnownLocation.getLatitude(),
-                            lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            lastKnownLocation.getLongitude()), DEFAULT_ZOOM));*/
             Log.d(TAG, "Current location is "+lastKnownLocation.getLatitude()+","+
                     lastKnownLocation.getLongitude());
         }
@@ -560,7 +560,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             ));
             //busco el centro para poner la camara
             if(geo.getGeo_region()==5){
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(p4, 12));
+               // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(p4, 12));
 
 
             }
@@ -610,6 +610,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 Log.d(TAG," antes de dibujar"+(new Date()));
                 dibujarTiendas(tiendas);
                 alert.closeAlertDialog();
+                listatiendas.removeObservers(getViewLifecycleOwner());
             }
         });
         this.listageocercas.observe(getViewLifecycleOwner(), new Observer<List<Geocerca>>() {
@@ -619,6 +620,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
                     dibujarZonas(zonas);
                 }
+                listageocercas.removeObservers(getViewLifecycleOwner());
             }
         });
 
@@ -701,6 +703,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             }
         if(japon2!=null)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,10));
+        else
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 4));
     }
     public void buscarClientes(){
         //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
@@ -773,6 +777,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
         listacomp.observe(getViewLifecycleOwner(),nameObserver);
+
 
     }
 

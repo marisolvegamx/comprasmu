@@ -33,4 +33,10 @@
     <style name="Theme.Comprasmu.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Comprasmu.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="colTabla" parent="android:Widget.TextView">
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
 </resources>

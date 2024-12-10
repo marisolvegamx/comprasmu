@@ -41,6 +41,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -402,7 +403,8 @@ public class NvoGastoFragment extends Fragment {
         for (TotalMuestra detalle:totales
              ) {
              tableRow=new TableRow(getContext());
-             cliente=new TextView(getContext());
+            cliente=new TextView(getContext());
+          //   cliente=new TextView( new ContextThemeWrapper(getContext(), R.style.colTabla), null, buttonStyle);
              numuestra=new TextView(getContext());
              costo=new TextView(getContext());
              //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -414,6 +416,7 @@ public class NvoGastoFragment extends Fragment {
              numuestra.setBackgroundResource(R.drawable.valuecellborder);
              costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
              costo.setBackgroundResource(R.drawable.valuecellborder);
+           //  cliente.setTextAppearance(context, R.style.mystyle);
              tableRow.addView(cliente);
              tableRow.addView(numuestra);
              tableRow.addView(costo);
