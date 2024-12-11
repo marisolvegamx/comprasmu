@@ -135,4 +135,9 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("SELECT * FROM informe_etapa WHERE   indice=:indiceSel and (estatus=:estatus) order by id desc")
     public abstract List<InformeEtapa> getInformesxEstatusAllSim(String indiceSel, int estatus);
+
+    @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) and etapa=:etapa and ciudadNombre=:ciudad order by id desc")
+    public abstract List<InformeEtapa>  getInfxEstatusCiuSim(String indice, int etapa, int estatus, String ciudad);
+
+
 }

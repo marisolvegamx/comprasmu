@@ -265,7 +265,7 @@ public class NvoGastoFragment extends Fragment {
             if (!isEdicion && preguntaAct < 2 && mViewModel.getIdNuevo() == 0) {
                 //es nuevo
                 //reviso si ya tengo informe
-                List<InformeEtapa> informes = niviewModel.getInfGasto(Constantes.INDICEACTUAL);
+                List<InformeEtapa> informes = niviewModel.getInfGasto(Constantes.INDICEACTUAL,ciudadInf);
                if(informes!=null&&informes.size()>0){
                    //no puede hacer más de 1
                    Toast.makeText(getContext(),"Ya capturó su informe de gastos",Toast.LENGTH_SHORT).show();

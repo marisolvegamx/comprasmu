@@ -203,9 +203,9 @@ public class NvoGastoViewModel extends AndroidViewModel {
        return  "";
     }
     //para buscar si hay un inf
-    public List<InformeEtapa> getInfGasto(String indiceSel){
+    public List<InformeEtapa> getInfGasto(String indiceSel, String ciudad){
 
-        return infEtaRepository.getInformesxEstatusSim(indiceSel,6,2);
+        return infEtaRepository.getInfxEstatusCiuSim(indiceSel,6,2,ciudad);
 
     }
 }

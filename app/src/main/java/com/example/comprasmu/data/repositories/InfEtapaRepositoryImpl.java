@@ -228,4 +228,11 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     public List<InformeEtapa> getInformesxEstatusAllSim(String indiceSel, int estatus) {
         return icDao.getInformesxEstatusAllSim(indiceSel,estatus);
     }
+
+    public List<InformeEtapa> getInfxEstatusCiuSim(String indice,int etapa, int estatus,String ciudad) {
+        return icDao.getInfxEstatusCiuSim(indice,etapa,estatus,ciudad);
+
+
+    }
+
 }

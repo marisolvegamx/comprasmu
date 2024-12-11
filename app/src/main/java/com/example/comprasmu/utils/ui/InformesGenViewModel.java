@@ -114,6 +114,7 @@ public class InformesGenViewModel extends AndroidViewModel {
         return ierepository.getAllsp(etapa, indice, estatus);
 
     }
+
     public void getReciboGasto(String ciudadInf, VerInformeGasFragment.ListenerResumen listenerM){
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         ps.getCambiosGastos(Constantes.INDICEACTUAL,ciudadInf,listenerM);

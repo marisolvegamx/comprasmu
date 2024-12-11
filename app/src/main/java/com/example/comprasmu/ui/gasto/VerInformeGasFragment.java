@@ -105,9 +105,10 @@ public class VerInformeGasFragment extends Fragment {
                 @Override
                 public void onChanged(InformeEtapa informeEtapax) {
                     informeEtapa = informeEtapax;
+                    if(informeEtapa!=null){
                     PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-                    ps.getCambiosGastos(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,new ListenerResumen());
-                }
+                    ps.getCambiosGastos(Constantes.INDICEACTUAL,informeEtapa.getCiudadNombre(),new ListenerResumen());
+                }}
             });
 
 
