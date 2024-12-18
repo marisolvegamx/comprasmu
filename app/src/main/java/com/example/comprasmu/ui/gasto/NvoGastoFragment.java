@@ -1216,9 +1216,12 @@ public class NvoGastoFragment extends Fragment {
             //acomodo en la tabla
             if(respuesta!=null) {
                 //guardo en preferencesd como json
-                guardarMuestras(respuesta);
-                llenarTabla(respuesta);
-                mBinding.txtgaalgunerror.setText("");
+                Activity estaActividad=getActivity();
+                if( estaActividad!=null) {
+                    guardarMuestras(respuesta);
+                    llenarTabla(respuesta);
+                    mBinding.txtgaalgunerror.setText("");
+                }
             }
             else
                 mBinding.txtgaalgunerror.setText("No se pudo obtener la información del servidor");
@@ -1246,13 +1249,14 @@ public class NvoGastoFragment extends Fragment {
     public void guardarMuestras(List<TotalMuestra> lista) {
 
 
-        SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefe.edit();
-        // editor.putString("claveusuario",cveusr);
-        String json = new Gson().toJson(lista );
-        editor.putString("totalmuestras", json);
-       // editor.putString("password", Base64.encodeToString(passwordEditText.getText().toString().getBytes(), Base64.DEFAULT));
-        editor.commit();
+            SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefe.edit();
+            // editor.putString("claveusuario",cveusr);
+            String json = new Gson().toJson(lista);
+            editor.putString("totalmuestras", json);
+            // editor.putString("password", Base64.encodeToString(passwordEditText.getText().toString().getBytes(), Base64.DEFAULT));
+            editor.commit();
+
 
 
     }
