@@ -445,6 +445,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
         // }
         btncancel.setVisibility(View.VISIBLE);
+        llcancel.setVisibility(View.VISIBLE);
         markerSel=marker;
           /*  long currentClickTime= SystemClock.elapsedRealtime();
             // preventing double, using threshold of 1000 ms
@@ -468,7 +469,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         //   lastKnownLocation.setLatitude(19.5325179);
         //   lastKnownLocation.setLongitude(-99.2026932);
 
-        if(lastKnownLocation!=null&&nollistatiendas!=null) {
+        if(lastKnownLocation!=null) {
+            if(nollistatiendas!=null)
             if (bt.hayTiendas(nollistatiendas, lastKnownLocation.getLatitude(),
                     lastKnownLocation.getLongitude())) {
                 //solo informativo te recomendamos visitar una tienda existente
@@ -493,6 +495,17 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                         })
                         .setNegativeButton(R.string.regresar, null)
                         .show();
+            }else{
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("nuevatienda", true);
+                NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
+                Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
+                if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
+
+                    nav.navigate(R.id.action_buscartonuevo, bundle);
+                    //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
+                }
+
             }else{
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("nuevatienda", true);
@@ -577,7 +590,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
         markerSel=null;
 
-        btncancel.setVisibility(View.GONE);
+        llcancel.setVisibility(View.GONE);
         String ffin= "";
         ffin= ComprasUtils.indiceaFecha2(indicefin);
         String fini="";
@@ -679,7 +692,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
                 if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
                     String[] aux = tienda.getUne_coordenadasxy().split(",");
-                    //todo es aqui meter un catch
+
                     try {
                         japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
                         MarkerOptions moptions = new MarkerOptions();
@@ -890,7 +903,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     @Override
     public void onMapClick(@NonNull LatLng latLng) {
         Log.d(TAG,"ocultando++"+btncancel.getVisibility());
-        btncancel.setVisibility(View.GONE);
+        llcancel.setVisibility(View.GONE);
         markerSel=null;
     }
 

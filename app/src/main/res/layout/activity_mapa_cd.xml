@@ -146,10 +146,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        map:layout_constraintBottom_toTopOf="@+id/linearLayout8"
+        map:layout_constraintBottom_toTopOf="@+id/llmcancel"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintHorizontal_bias="0.0"
         map:layout_constraintStart_toStartOf="parent"
@@ -204,6 +204,7 @@
 
         map:layout_constraintBottom_toTopOf="@+id/linearLayout8"
         map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintHorizontal_bias="0.0"
         map:layout_constraintStart_toStartOf="parent"
         tools:layout_conversion_absoluteHeight="48dp"
         tools:layout_conversion_absoluteWidth="379dp">
@@ -215,7 +216,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:text="@string/cancelar"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:visibility="visible" />
     </LinearLayout>
 
