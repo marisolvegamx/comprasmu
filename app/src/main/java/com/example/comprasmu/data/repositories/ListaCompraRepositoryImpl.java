@@ -166,7 +166,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
-        Log.d("ListaCompraRepositoryImpl","clientes "+query);
+     //   Log.d("ListaCompraRepositoryImpl","clientes "+query);
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
 
@@ -220,7 +220,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
-        Log.d("ListaCompraRepositoryImpl","clientes "+query);
+        //Log.d("ListaCompraRepositoryImpl","clientes "+query);
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
     public List<ListaCompra> getTodosCliByIndiceCdSimplxet(String indice,String idCiudad,int etapa) {
@@ -238,7 +238,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
-        Log.d("ListaCompraRepositoryImpl","getTodosCliByIndiceCdSimplxet "+query+"--"+params.toString());
+      //  Log.d("ListaCompraRepositoryImpl","getTodosCliByIndiceCdSimplxet "+query+"--"+params.toString());
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
     public LiveData<List<ListaWithDetalle>> getListaWithDetalleByFiltros(String indice, int idPlanta, int idCliente ) {

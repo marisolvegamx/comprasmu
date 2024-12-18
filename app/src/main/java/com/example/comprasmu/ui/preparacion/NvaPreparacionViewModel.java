@@ -927,14 +927,14 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         infEnvioRepo.insert(nvoDet);
     }
 
-    public void quitarMuestra(String claveusuario) {
+  /*  public void quitarMuestra(String claveusuario) {
         if(claveusuario=="41"&&Constantes.INDICEACTUAL=="5.2024"){
             InformeEtapaDet borrar=infDetRepo.findxNumMuestra(69,11);
             if(borrar!=null){
                 infDetRepo.delete(borrar);
             }
         }
-    }
+    }*/
     //busco el ultimo detalle informe
     public InformeEtapaDet getUltimonocan(int idinf, int etapa){
 
