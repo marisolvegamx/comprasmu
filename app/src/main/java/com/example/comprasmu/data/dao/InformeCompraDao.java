@@ -108,13 +108,8 @@ public interface InformeCompraDao {
     @Query("SELECT * FROM informe_compras WHERE id = :id ")
     InformeWithDetalle getInformeWithDetalleByIdsimple(int id);
 
-
-
-   /* @Query("SELECT indice, createdAt as fecha,clienteNombre, plantaNombre, " +
-            "informe_compras.estatus as estatusinforme, informe_compras.id as idinforme  " +
-            "FROM informe_compras, visitas " +
-            "WHERE informe_compras.visitasId = visitas.id")
-    public LiveData<List<InformeCompravisita>> getInformesWithVisita();*/
+    @Query("SELECT * FROM informe_compras WHERE visitasId=:visita and estatusSync=:estatussyn")
+    List<InformeCompra> getByVisitaPend(int visita, int estatussyn);
 
 
     @DatabaseView("SELECT informe_compras.id as idinforme, " +

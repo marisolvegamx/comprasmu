@@ -301,7 +301,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         Intent intento1=new Intent(getActivity(), BackActivity.class);
         intento1.putExtra(INFORMESEL, idinforme);
 
-
+        //voy a resumen correccion calidad caja etiquetado
         intento1.putExtra(ARG_TIPOCONS, "rescorcaj");
 
         intento1.putExtra(BackActivity.ARG_FRAGMENT,BackActivity.OP_INFORMECOR);

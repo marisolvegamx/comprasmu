@@ -9,9 +9,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
+
+import com.example.comprasmu.data.dao.ReactivoDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
@@ -20,6 +23,7 @@ import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
@@ -167,7 +171,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
             idrepo.delete(infd);
         }
     }
-    public Visita tieneInforme(Visita visita, LifecycleOwner owner){
+    public Visita tieneInforme(Visita visita){
 
         InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(application);
         List<InformeCompra> informeCompras=infoRepo.getAllByVisitasimple(visita.getId());
@@ -186,7 +190,22 @@ public class ListaVisitasViewModel extends AndroidViewModel {
        return prods;
 
     }
+    public List<InformeCompra> tieneInformePend(int idvisita){
 
+        InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(application);
+        return infoRepo.getByVisPend(idvisita,0);
+
+
+    }
+    public boolean hayInfDetalleTemp(){
+        //reivos si hay respuestas temporales si no devuelvo null
+        InformeTempRepositoryImpl itemprepo=new InformeTempRepositoryImpl(application);
+        List<InformeTemp> temps=itemprepo.getAllByTabla("ID");
+        if(temps!=null&&temps.size()>0){
+            return true;
+        }
+        return false;
+    }
     public LiveData<List<Visita>> getListas() {
         return listas;
     }

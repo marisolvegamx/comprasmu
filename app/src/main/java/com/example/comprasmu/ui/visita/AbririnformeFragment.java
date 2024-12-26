@@ -1693,7 +1693,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         }
 
-        if (txtaiultubic.getText().toString().equals("")) {
+      /*  if (txtaiultubic.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
             return false;
@@ -1702,7 +1702,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
             return false;
-        }
+        }*/
         //Log.d(TAG,"xxxxxx"+txtfotoex1.getText().toString());
         if(estatusPepsi==0)//no puedo comprar pepsi{
         {
@@ -2402,112 +2402,117 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
-         if ((requestCode == REQUEST_CODE_TAKE_PHOTO||requestCode==REQUEST_CODE_PROD1||requestCode == REQUEST_CODE_PROD2||requestCode==REQUEST_CODE_PROD3||requestCode==REQUEST_CODE_PROD4) && resultCode == RESULT_OK) {
-          //  super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if ((requestCode == REQUEST_CODE_TAKE_PHOTO || requestCode == REQUEST_CODE_PROD1 || requestCode == REQUEST_CODE_PROD2 || requestCode == REQUEST_CODE_PROD3 || requestCode == REQUEST_CODE_PROD4) && resultCode == RESULT_OK) {
+                //  super.onActivityResult(requestCode, resultCode, data);
 
-             String state = Environment.getExternalStorageState();
-             String baseDir;
-             if(Environment.MEDIA_MOUNTED.equals(state)) {
-                 File baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                 if(baseDirFile == null) {
-                     baseDir = getActivity().getFilesDir().getAbsolutePath();
-                 } else {
-                     baseDir = baseDirFile.getAbsolutePath();
-                 }
-             } else {
-                 baseDir = getActivity().getFilesDir().getAbsolutePath();
-             }
-             if(baseDir!=null&&nombre_foto!=null) {
-                 File file = new File(baseDir, nombre_foto);
-                 if (file.exists()) {
+                String state = Environment.getExternalStorageState();
+                String baseDir;
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    File baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                    if (baseDirFile == null) {
+                        baseDir = getActivity().getFilesDir().getAbsolutePath();
+                    } else {
+                        baseDir = baseDirFile.getAbsolutePath();
+                    }
+                } else {
+                    baseDir = getActivity().getFilesDir().getAbsolutePath();
+                }
+                if (baseDir != null && nombre_foto != null) {
+                    File file = new File(baseDir, nombre_foto);
+                    if (file.exists()) {
 
-                 if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
-                         //es la de fachada
-                         //envio a la actividad dos para ver la foto
+                        if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
+                            //es la de fachada
+                            //envio a la actividad dos para ver la foto
 
-                     Log.d(TAG,"*****"+file.exists()+"--"+file.getAbsolutePath());
-                  //  startActivity(intento1);*/
-                     yaTengoFoto = false;
-                       //  probarUbicacion();
-                     txtfotofachada.setText(nombre_foto);
-                      //   txtfotofachada.setVisibility(View.VISIBLE);
-                  //       Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                     ComprasUtils cu = new ComprasUtils();
-                     Bitmap bitmap1= cu.comprimirImagen(file.getAbsolutePath());
-                       bitmap1= ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(), 100, 100);
+                            Log.d(TAG, "*****" + file.exists() + "--" + file.getAbsolutePath());
+                            //  startActivity(intento1);*/
+                            yaTengoFoto = false;
+                            //  probarUbicacion();
+                            txtfotofachada.setText(nombre_foto);
+                            //   txtfotofachada.setVisibility(View.VISIBLE);
+                            //       Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                            ComprasUtils cu = new ComprasUtils();
+                            Bitmap bitmap1 = cu.comprimirImagen(file.getAbsolutePath());
+                            bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(), 100, 100);
 
-                     fotofac.setImageBitmap(bitmap1);
-                     fotofac.setVisibility(View.VISIBLE);
-                     rotar.setVisibility(View.VISIBLE);
-                         //  agregarImagen();
-                     aifotofacgroup.setVisibility(View.VISIBLE);
-                     guardarUbicacion();
-                     yaTengoFoto = true;
-                     nombre_foto=null;
-                     file=null;
-                         //
-                     }
-                     if (requestCode == REQUEST_CODE_PROD1) {
-                         txtfotoex1.setText(nombre_foto);
-                         // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                         ComprasUtils cu = new ComprasUtils();
-                         Bitmap bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
-                         //Bitmap bitmap1 =  ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto,100,100);
+                            fotofac.setImageBitmap(bitmap1);
+                            fotofac.setVisibility(View.VISIBLE);
+                            rotar.setVisibility(View.VISIBLE);
+                            //  agregarImagen();
+                            aifotofacgroup.setVisibility(View.VISIBLE);
+                            guardarUbicacion();
+                            yaTengoFoto = true;
+                            nombre_foto = null;
+                            file = null;
+                            //
+                        }
+                        if (requestCode == REQUEST_CODE_PROD1) {
+                            txtfotoex1.setText(nombre_foto);
+                            // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                            ComprasUtils cu = new ComprasUtils();
+                            Bitmap bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+                            //Bitmap bitmap1 =  ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto,100,100);
 
-                         fotoex1.setImageBitmap(bitmap1);
-                         btnrotar1.setVisibility(View.VISIBLE);
-                         aiex1group.setVisibility(View.VISIBLE);
-                         //  agregarImagen();
-                     }
-                     if (requestCode == REQUEST_CODE_PROD2) {
-                         txtfotoex2.setText(nombre_foto);
-                         //  Bitmap bitmap2 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                         ComprasUtils cu = new ComprasUtils();
-                         Bitmap bitmap2 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+                            fotoex1.setImageBitmap(bitmap1);
+                            btnrotar1.setVisibility(View.VISIBLE);
+                            aiex1group.setVisibility(View.VISIBLE);
+                            //  agregarImagen();
+                        }
+                        if (requestCode == REQUEST_CODE_PROD2) {
+                            txtfotoex2.setText(nombre_foto);
+                            //  Bitmap bitmap2 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                            ComprasUtils cu = new ComprasUtils();
+                            Bitmap bitmap2 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
 
-                         fotoex2.setImageBitmap(bitmap2);
-                         btnrotar2.setVisibility(View.VISIBLE);
-                         //  agregarImagen();
-                     }
+                            fotoex2.setImageBitmap(bitmap2);
+                            btnrotar2.setVisibility(View.VISIBLE);
+                            //  agregarImagen();
+                        }
 
-                     if (requestCode == REQUEST_CODE_PROD3) {
-                         txtfotoex3.setText(nombre_foto);
-                         // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                         ComprasUtils cu = new ComprasUtils();
-                         Bitmap bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+                        if (requestCode == REQUEST_CODE_PROD3) {
+                            txtfotoex3.setText(nombre_foto);
+                            // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                            ComprasUtils cu = new ComprasUtils();
+                            Bitmap bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
 
-                         fotoex3.setImageBitmap(bitmap1);
-                         btnrotar3.setVisibility(View.VISIBLE);
-                         //   agregarImagen();
-                     }
-                     if (requestCode == REQUEST_CODE_PROD4) {
-                         txtfotoex4.setText(nombre_foto);
-                         // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                         ComprasUtils cu = new ComprasUtils();
-                         Bitmap bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
+                            fotoex3.setImageBitmap(bitmap1);
+                            btnrotar3.setVisibility(View.VISIBLE);
+                            //   agregarImagen();
+                        }
+                        if (requestCode == REQUEST_CODE_PROD4) {
+                            txtfotoex4.setText(nombre_foto);
+                            // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                            ComprasUtils cu = new ComprasUtils();
+                            Bitmap bitmap1 = cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + nombre_foto);
 
-                         fotoex4.setImageBitmap(bitmap1);
-                         btnrotar4.setVisibility(View.VISIBLE);
-                         //   agregarImagen();
-                     }
+                            fotoex4.setImageBitmap(bitmap1);
+                            btnrotar4.setVisibility(View.VISIBLE);
+                            //   agregarImagen();
+                        }
 
 
-                 }
-                 else
-                     Toast.makeText(getContext(),"No se encontró el archivo intente de nuevo" , Toast.LENGTH_LONG).show();
+                    } else
+                        Toast.makeText(getContext(), "No se encontró el archivo intente de nuevo", Toast.LENGTH_LONG).show();
 
-             }
-            else{
-                 Toast.makeText(getContext(),"No se encontró la ruta del archivo intente de nuevo" , Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getContext(), "No se encontró la ruta del archivo intente de nuevo", Toast.LENGTH_LONG).show();
 
-                milog.grabarError(TAG+"Algo salió mal???"+baseDir+"--"+nombre_foto);
-                 Log.d(TAG,"Algo salió mal???"+baseDir+"--"+nombre_foto);
+                    milog.grabarError(TAG + " onActivityResult Algo salió mal???" + baseDir + "--" + nombre_foto);
+                    Log.d(TAG, "Algo salió mal???" + baseDir + "--" + nombre_foto);
+                }
+
+
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+                Log.d(TAG, "Algo salió muy mal");
             }
 
-
-        }else{
-            super.onActivityResult(requestCode, resultCode, data);
-            Log.d(TAG,"Algo salió muy mal");
+        }catch (Exception ex){
+            Toast.makeText(getActivity(), "Hubo un error, intente de nuevo", Toast.LENGTH_LONG).show();
+            milog.grabarError(TAG ,"onActivityResult", ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

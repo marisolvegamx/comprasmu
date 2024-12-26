@@ -96,6 +96,11 @@ public class InformeTempRepositoryImpl  extends BaseRepository<InformeTemp> {
             return resp.get(1);
         else return null;
     }
+    public List<InformeTemp> getAllByTabla(String tabla) {
+
+            return icDao.getInformesByTablaI(tabla);
+
+    }
 
     @Override
     public long insert(InformeTemp object) {

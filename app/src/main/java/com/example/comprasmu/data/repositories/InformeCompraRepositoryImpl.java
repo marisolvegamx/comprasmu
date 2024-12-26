@@ -230,7 +230,10 @@ public class InformeCompraRepositoryImpl   {
        return icDao.getInformesWithVisita(sqlquery);
     }
 
+    public List<InformeCompra> getByVisPend(int visitaId, int estatusSyn) {
+        return  icDao.getByVisitaPend(visitaId, estatusSyn);
 
+    }
 
 
    /* public LiveData<List<InformeCompraDao.InformeCompravisita>> getInformesVisitas (String indice, String nombretienda, String ciudad, int planta, int cliente) {

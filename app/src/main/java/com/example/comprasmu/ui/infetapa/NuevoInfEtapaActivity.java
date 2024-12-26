@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -65,6 +66,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     private int plantaSel;
     private boolean isCor; //para saber si es correccion
     ComprasLog flog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -378,29 +380,34 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
     //para acomodar barra de titulos de correcciones de otra etapas menos compras
     public void actualizarBarraCorEta(SolicitudCor sol, int numcaja) {
-        //convierto la solicitud en informeEtapa
-        InformeEtapa temp=new InformeEtapa();
-        temp.setIndice(sol.getIndice());
-        temp.setPlantaNombre(sol.getPlantaNombre());
-        temp.setClienteNombre(sol.getClienteNombre());
-      //  temp.setConsecutivo(constienda);
-        actualizarBarra(temp);
-        //oculto fila 2 y 3
-        mBinding.row3.setVisibility(View.GONE);
-        mBinding.row2.setVisibility(View.GONE);
+        try {
+            //convierto la solicitud en informeEtapa
+            InformeEtapa temp = new InformeEtapa();
+            temp.setIndice(sol.getIndice());
+            temp.setPlantaNombre(sol.getPlantaNombre());
+            temp.setClienteNombre(sol.getClienteNombre());
+            //  temp.setConsecutivo(constienda);
+            actualizarBarra(temp);
+            //oculto fila 2 y 3
+            mBinding.row3.setVisibility(View.GONE);
+            mBinding.row2.setVisibility(View.GONE);
 
-        if(sol.getEtapa()==3&&numcaja>0) {
-            mBinding.txtnieatr5.setText("CAJA NUM. " + numcaja);
-            mBinding.row5.setVisibility(View.VISIBLE);
-            mBinding.txtnieatr5.setVisibility(View.VISIBLE);
+            if (sol.getEtapa() == 3 && numcaja > 0) {
+                mBinding.txtnieatr5.setText("CAJA NUM. " + numcaja);
+                mBinding.row5.setVisibility(View.VISIBLE);
+                mBinding.txtnieatr5.setVisibility(View.VISIBLE);
+            }
+            //  actualizarAtributo1(sol.getNombreTienda());
+            SimpleDateFormat sdf = Constantes.sdfsolofecha;
+            if (sol.getCreatedAt() != null)
+                // actualizarAtributo2(sdf.format(sol.getCreatedAt()));
+                actualizarAtributo4(sdf.format(sol.getCreatedAt()));
+            if (sol.getIndice() != null)
+                actualizarAtributo3(ComprasUtils.indiceLetra(sol.getIndice()));
+        }catch(Exception ex){
+            flog.grabarError(TAG,"actualizarBarraCorEta",ex.getMessage());
+            Toast.makeText(this, "Hubo un error intente de nuevo",Toast.LENGTH_LONG);
         }
-      //  actualizarAtributo1(sol.getNombreTienda());
-        SimpleDateFormat sdf=Constantes.sdfsolofecha;
-        if(sol.getCreatedAt()!=null)
-           // actualizarAtributo2(sdf.format(sol.getCreatedAt()));
-        actualizarAtributo4(sdf.format(sol.getCreatedAt()));
-        if(sol.getIndice()!=null)
-            actualizarAtributo3(ComprasUtils.indiceLetra(sol.getIndice()));
 
     }
 

@@ -272,8 +272,8 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
             icdNuevo.setFoto_atributod(idet);
         }
 
-
-       int id=(int) detalleRepo.insert(icdNuevo);
+        //int id=0;
+        int id=(int) detalleRepo.insert(icdNuevo);
         Log.d("NuevoDetalleViewModel","El informe se creo correctamente");
 
         return id;
@@ -538,7 +538,6 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         //this.fotoazucares = crearImagendeTmp( Contrato.TablaInformeDet.AZUCARES);
        this.foto_atributod = crearImagendeTmp(Contrato.TablaInformeDet.FOTO_ATRIBUTOD);
         int nuevoid = this.saveDetalle2();
-
 
         return nuevoid;
     }

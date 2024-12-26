@@ -396,6 +396,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
 
     }
+    //guarda en tabla temporal
     public boolean guardarResp(int informeid, int informedet,String resp,String nombrecampo,String tabla,int consecutivo, boolean isPregunta){
         InformeTemp temporal=new InformeTemp();
         temporal.setNombre_campo(nombrecampo);
@@ -646,14 +647,14 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
     }
     MutableLiveData<Integer> nvoid;
-
+    //el id no es por planta es general
      public MutableLiveData<Integer> getNvoIdInforme(Activity actividad, int planta) {
 
 
         int nvoid2 = (int) repository.getUltimo();
         if (nvoid2 == 0) {
         //busco en pref
-             recuperarIds(actividad);
+             recuperarIds(actividad); //siempre es 0
 
              if (prefinf == 0){
         //busco id
@@ -719,14 +720,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             nuevo.setCausa_nocompra(inft.getValor());
         }
         for(InformeTemp info:temps){
-         /*   Class claseCargada = InformeCompra.class;
-            Class params[] = new Class[1];
-            params[0] = String.class;
 
-            try {
-                if(info.getNombre_campo().equals("segundaMuestra")) {
-                    params[0] = Boolean.class;
-                }*/
             nuevo.setVisitasId(info.getVisitasId());
             if(info.getNombre_campo().equals("plantasId")) {
                 Log.d(TAG, "******otro cons" + info.getConsecutivo() + info.getNombre_campo());
@@ -766,26 +760,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
                     continue;
                 }
-         /*   } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                params[0] = Integer.class;
-                Method metodo  = null;
-                try {
-                    metodo = claseCargada.getDeclaredMethod("set" + ComprasUtils.upperCaseFirst(info.getNombre_campo()),params);
 
-
-                metodo.invoke(nuevo, info.getValor());
-                } catch (NoSuchMethodException noSuchMethodException) {
-                    noSuchMethodException.printStackTrace();
-                } catch (IllegalAccessException illegalAccessException) {
-                    illegalAccessException.printStackTrace();
-                } catch (InvocationTargetException invocationTargetException) {
-                    invocationTargetException.printStackTrace();
-                }
-            }*/
 
         }
         return nuevo;
@@ -794,7 +769,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public void actualizarInforme() throws Exception { //inserta el informe desde temporal
         //conservo el id
         InformeCompra compra2=tempToIC();
-        //Log.d(TAG,"dddddddddddddddddddd ya existe el informe"+compra2.getId());
+
         if(compra2.getId()==0)
         {
             //algo salio mal
@@ -802,7 +777,9 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         }
         //recupero el informe
         informe=repository.findSimple(compra2.getId());
-
+        if(informe==null){
+            throw new Exception("no tengo informe");
+        }
         //recupero los comentarios
 
         informe.setComentarios(compra2.getComentarios());
@@ -810,7 +787,6 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         {
 
                 int idt = (int) imagenDetRepository.insertImg(ticket_compra);
-
                 informe.setTicket_compra(idt);
 
         }
@@ -823,19 +799,14 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
         informe.setEstatus(1);
         informe.setEstatusSync(0);
-
-
         repository.insertInformeCompra(informe);
-
-//        mSnackbarText.setValue(new Event<>(R.string.added_informe_message));
-
 
     }
 
     public void finalizarInforme() {
 
        repository.actualizarEstatus(informe.getId(),2);
-
+      //  repository.actualizarEstatus(id,2);
 //        mSnackbarText.setValue(new Event<>(R.string.informe_finalizado));
         //aqui se enviará
      }

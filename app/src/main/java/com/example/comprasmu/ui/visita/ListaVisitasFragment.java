@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.R;
 
+import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
@@ -111,7 +112,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                 Log.d(TAG,"YA CARGÓ "+visitas.size());
                 //primero reviso si ya tiene informe para no mostrar el finalizar
                 for(Visita visit:visitas){
-                    visit=mViewModel.tieneInforme(visit,getViewLifecycleOwner());
+                    visit=mViewModel.tieneInforme(visit);
                     Log.d(TAG,"qqqqqqqqqq"+visit.getCiudad());
                 }
                 mListAdapter.setVisitaList(visitas);
@@ -257,6 +258,18 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
             mListAdapter.notifyDataSetChanged();
             return;
         }*/
+        //reviso si ya se enviaron los informes
+        List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);
+        if(informes!=null&&informes.size()>0) //no puede finalizar
+        {
+            Toast.makeText(getActivity(), getString(R.string.no_finalizar),Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //puede que no esté guardado reviso si hay algo en la tabla temporal
+        if(mViewModel.hayInfDetalleTemp()){
+            Toast.makeText(getActivity(), getString(R.string.no_finalizar),Toast.LENGTH_SHORT).show();
+            return;
+        }
         //pregunto si habrá más clientes
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
         dialogo1.setTitle(R.string.importante);

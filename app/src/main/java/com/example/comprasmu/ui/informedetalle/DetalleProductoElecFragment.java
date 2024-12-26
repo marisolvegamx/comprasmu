@@ -343,6 +343,9 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
         } catch (Exception e) {
             e.printStackTrace();
+            compraslog.grabarError(TAG, "onCreateView", e.getMessage());
+            Toast.makeText(getActivity(),"Hubo un error inesperado",Toast.LENGTH_LONG).show();
+
         }
 
         return root;
@@ -557,8 +560,10 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 }
                 try{
 
-                    //guarda informe
+                    //actualiza informe con comentarios ticket
                     this.actualizarInforme();
+                    //busco el informe
+
                     this.finalizar();
                     //limpiar tabla
                     limpiarTablTemp();
@@ -727,6 +732,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             intento1.putExtras(bundle);
             requireActivity().finish();
             startActivity(intento1);
+            return;
         }
         nvoReac.observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
             @Override
@@ -773,7 +779,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
             //   super.onActivityResult(requestCode, resultCode, data);
-            if (archivofoto != null && archivofoto.exists()) {
+            try {
+                if (archivofoto != null && archivofoto.exists()) {
 
 
                     //envio a la actividad dos para ver la foto
@@ -782,12 +789,12 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
                     textoint.setText(nombre_foto);
 
-                    if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
-                    {
+                    if (ComprasUtils.getAvailableMemory(getActivity()).lowMemory) {
                         Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-
+                        compraslog.grabarError(TAG, "onActivityResult", "No hay memoria suficiente para esta accion");
+                        aceptar.setEnabled(false);
                         return;
-                    }else {
+                    } else {
                         // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                         ComprasUtils cu = new ComprasUtils();
                         cu.comprimirImagen(archivofoto.getAbsolutePath());
@@ -799,19 +806,25 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                         btnrotar.setVisibility(View.VISIBLE);
                         btnrotar.setFocusableInTouchMode(true);
                         btnrotar.requestFocus();
-                        nombre_foto=null;
-                        archivofoto=null;
-                        if(nopermiso!=null) {
+                        nombre_foto = null;
+                        archivofoto = null;
+                        if (nopermiso != null) {
                             nopermiso.setChecked(false);
                         }
                     }
 
-            }
-            else{
-                Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+                    compraslog.grabarError(TAG,"onActivityResult", "No hay memoria suficiente para esta accion");
+                    aceptar.setEnabled(false);
 
 
-                Log.e(TAG,"Algo salió mal???");
+                }
+            }catch (Exception ex){
+                compraslog.grabarError(TAG,"onActivityResult", "No hay memoria suficiente para esta accion");
+                aceptar.setEnabled(false);
+                Toast.makeText(getActivity(), "Hubo un error al guardar la foto, intente de nuevo", Toast.LENGTH_LONG).show();
+
             }
 
 

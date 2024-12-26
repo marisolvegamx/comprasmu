@@ -186,6 +186,9 @@ public class DetalleProductoFragment extends Fragment {
 
         } catch (Exception e) {
             e.printStackTrace();
+            compraslog.grabarError(TAG, "onCreateView", e.getMessage());
+            Toast.makeText(getActivity(),"Hubo un error inesperado",Toast.LENGTH_LONG).show();
+
         }
 
         return root;
@@ -1772,6 +1775,7 @@ public class DetalleProductoFragment extends Fragment {
         if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
         {
             Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+            compraslog.grabarError(TAG,"tomarFoto","No hay memoria suficiente para esta accion");
 
             return;
         }else {
@@ -1787,10 +1791,13 @@ public class DetalleProductoFragment extends Fragment {
                 baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                 if (baseDirFile == null) {
                     Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+                    compraslog.grabarError(TAG,"tomarFoto","No se encontró almacenamiento externo");
                     return;
                 }
             } else {
                 Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+                compraslog.grabarError(TAG,"tomarFoto","No se encontró almacenamiento externo");
+
                 return;
             }
             //  baseDir = baseDirFile.getAbsolutePath();
@@ -1832,10 +1839,24 @@ public class DetalleProductoFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //    super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
+        //Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
+        compraslog.grabarError(TAG,"onActivityResult","vars"+requestCode +"--"+ nombre_foto);
+        //para toma de foto
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
             //   super.onActivityResult(requestCode, resultCode, data);
+            File baseDirFile;
+            String state = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
+                archivofoto = new File(baseDirFile, nombre_foto);
+            }else{
+                compraslog.grabarError(TAG,"onActivityResult","Hubo un error al guardar la foto");
+
+                Toast.makeText(getActivity(), "Hubo un error al guardar la foto", Toast.LENGTH_SHORT).show();
+                preguntaview.aceptarSetEnabled(false);
+                return;
+            }
             if (archivofoto!=null&&archivofoto.exists()) {
                 if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
                     //envio a la actividad dos para ver la foto
@@ -1846,8 +1867,10 @@ public class DetalleProductoFragment extends Fragment {
 
                     if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
                     {
-                        Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+                        compraslog.grabarError(TAG,"onActivityResult","No hay memoria suficiente para esta accion");
 
+                        Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+                        preguntaview.aceptarSetEnabled(false);
                         return;
                     }else {
                         // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
@@ -1871,7 +1894,11 @@ public class DetalleProductoFragment extends Fragment {
 
             }
             else{
-                Log.e(TAG,"Algo salió mal???");
+                compraslog.grabarError(TAG,"onActivityResult","Hubo un error al guardar la foto");
+
+                Toast.makeText(getActivity(), "Hubo un error al guardar la foto", Toast.LENGTH_LONG).show();
+                preguntaview.aceptarSetEnabled(false);
+                return;
             }
 
 

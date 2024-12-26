@@ -77,7 +77,7 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
                 public void onClick(View view) {
                    // view.setEnabled(false);
                     if(binding.liTxtconsecutivo.getText().toString().equals("-1")){
-                      Log.e("InformeGenAdapter","aqui");
+                      Log.e("InformeGenAdapter","aqui"); //es calidad de caja etapa 3 etiquetado
                         callback.onClickVerCC(Integer.parseInt(binding.liTxtid.getText().toString()));
 
                     }else {
