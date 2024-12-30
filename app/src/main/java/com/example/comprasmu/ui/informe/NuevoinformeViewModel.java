@@ -206,23 +206,19 @@ public class NuevoinformeViewModel extends AndroidViewModel {
 
     }
 
-    public MutableLiveData<Boolean> informesAbiertos(LifecycleOwner observer){
-        MutableLiveData<Boolean> abiertos=new MutableLiveData<>();
-        visitaRepository.getInformesByIndice(Constantes.INDICEACTUAL).observe(observer, new Observer<List<Visita>>() {
-                    @Override
-                    public void onChanged(List<Visita> visitas) {
-                        if(visitas!=null)
-                            for(Visita revvis:visitas){
-                                if(Constantes.ESTATUSINFORME[revvis.getEstatus()].equals("ABIERTO")||revvis.getEstatus()==3){
+    public boolean informesAbiertos(){
+       boolean abiertos=false;
+        List<Visita> visitas= visitaRepository.getVisitasxIndice(Constantes.INDICEACTUAL);
+        if(visitas!=null)
+            for(Visita revvis:visitas){
+                if(Constantes.ESTATUSINFORME[revvis.getEstatus()].equals("ABIERTO")||revvis.getEstatus()==3){
                                     //ya tengo uno abierto mando aviso
-                                    abiertos.setValue(true);
-                                    break;
-                                }
-                            }
-                    }
+                    abiertos=true;
+                    break;
                 }
+            }
 
-        );
+
         return  abiertos;
     }
     /**para envio***/

@@ -250,14 +250,16 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     public void onClickFinalizar(int idvisita, Visita visitaCont) {
         ValidadorDatos valdat=new ValidadorDatos();
         //si se creo antes de hoy
-      /* if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
+       if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
             //elimino
             mViewModel.eliminarVisita(idvisita, 1);
 
             //actualizo la lista
             mListAdapter.notifyDataSetChanged();
-            return;
-        }*/
+           Toast.makeText(getActivity(), "El informe se eliminó por ser de una fecha posterior",Toast.LENGTH_SHORT).show();
+
+           return;
+        }
         //reviso si ya se enviaron los informes
         List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);
         if(informes!=null&&informes.size()>0) //no puede finalizar
