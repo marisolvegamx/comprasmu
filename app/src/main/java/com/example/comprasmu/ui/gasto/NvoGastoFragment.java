@@ -125,7 +125,7 @@ public class NvoGastoFragment extends Fragment {
     float totalval;
     private ImageButton btntomarf;
     NvoGastoViewModel niviewModel;
-    ComprasLog milog;
+
     private ArrayAdapter<CatalogoDetalle> catAdapter;
 
     public NvoGastoFragment() {
@@ -177,8 +177,6 @@ public class NvoGastoFragment extends Fragment {
 
             btntomarf = root.findViewById(R.id.btngasfoto);
             fotomos=root.findViewById(R.id.ivgasfoto);
-
-            milog = ComprasLog.getSingleton();
 
             llresumen.setVisibility(View.GONE);
             llpreg1.setVisibility(View.GONE);
@@ -293,7 +291,7 @@ public class NvoGastoFragment extends Fragment {
                 }
                 llresumen.setVisibility(View.VISIBLE);
             }
-            milog.grabarError(TAG + " iniciando nvo informe gastos");
+            compraslog.grabarError(TAG + " iniciando nvo informe gastos");
 
             ((NuevoInfEtapaActivity) getActivity()).actualizarBarraGas(ciudadInf);
 
@@ -384,7 +382,7 @@ public class NvoGastoFragment extends Fragment {
 
         }catch(Exception ex){
             ex.printStackTrace();
-            milog.grabarError(TAG,"oncreateview",ex.getMessage());
+            compraslog.grabarError(TAG,"oncreateview",ex.getMessage());
         }
         return root;
     }
@@ -677,7 +675,7 @@ public class NvoGastoFragment extends Fragment {
         try {
             sumacosto = Float.parseFloat(totalmu);
         }catch (NumberFormatException ex){
-            milog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
+            compraslog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
         }
         //busco lo capturado
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(mViewModel.getIdNuevo());
@@ -991,7 +989,7 @@ public class NvoGastoFragment extends Fragment {
                 avanzar();
             }catch (Exception ex){
                 ex.printStackTrace();
-                milog.grabarError(TAG,"guardarDet",ex.getMessage());
+                compraslog.grabarError(TAG,"guardarDet",ex.getMessage());
                 Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
             }
@@ -1179,7 +1177,7 @@ public class NvoGastoFragment extends Fragment {
 
         }catch(Exception ex){
             ex.printStackTrace();
-            milog.grabarError(TAG,"finalizarInf","Algo salió mal al finalizar"+ex.getMessage());
+            compraslog.grabarError(TAG,"finalizarInf","Algo salió mal al finalizar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar intente de nuevo desde el resumen",Toast.LENGTH_SHORT).show();
         }
         // limpio variables de sesion
@@ -1221,6 +1219,10 @@ public class NvoGastoFragment extends Fragment {
                     guardarMuestras(respuesta);
                     llenarTabla(respuesta);
                     mBinding.txtgaalgunerror.setText("");
+                }
+               else{
+                    mBinding.txtgaalgunerror.setText("Hubo un error al hacer el informe de gastos");
+                    compraslog.grabarError(TAG,"ListenerM","error al regresar de la peticion getTotalMuestras");
                 }
             }
             else
