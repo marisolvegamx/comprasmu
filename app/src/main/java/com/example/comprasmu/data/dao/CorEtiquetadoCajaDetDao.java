@@ -20,6 +20,9 @@ public abstract class CorEtiquetadoCajaDetDao extends  BaseDao<CorEtiquetadoCaja
     @Query("SELECT * FROM coretiquetado_cajadet where  coretiquetadocId=:corEtiId and descripcionId=:descripcionId and numcaja=:numcaja")
     public abstract List<CorEtiquetadoCajaDet> getCorrecxdescSimple(int corEtiId,int descripcionId,int numcaja);
 
+    @Query("SELECT * FROM coretiquetado_cajadet where  coretiquetadocId=:corEtiId and descripcionId=:descripcionId and numcaja=:numcaja and estatusSync=0")
+    public abstract List<CorEtiquetadoCajaDet> getCorrecxdescSimple2(int corEtiId,int descripcionId,int numcaja);
+
     @Query("DELETE FROM coretiquetado_cajadet where id=:id")
     public abstract void deleteCorEtiquetadoCajaDet(int id);
 

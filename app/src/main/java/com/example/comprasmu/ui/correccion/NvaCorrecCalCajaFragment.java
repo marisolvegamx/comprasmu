@@ -233,11 +233,12 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                     correccion = mViewModel.getUltCorrecionxSolSimple(solicitudSel, numfotosel, Constantes.INDICEACTUAL);
                     correccionDet=null;
                     //busco el detalle
-                    if(correccion!=null) {
-                        correccionDet = mViewModel.getUltCorDetSimple(correccion.getId(), descripcionId,cajaAct);
+                    if(correccion!=null) { //no se ha enviado porque puedo tener mas de 1
+                        correccionDet = mViewModel.getUltCorDetSimple2(correccion.getId(), descripcionId,cajaAct);
                         mViewModel.setIdNuevo(correccion.getId());
                         mViewModel.setNvocoreticaja(correccion);
                     }
+
 
 
             }

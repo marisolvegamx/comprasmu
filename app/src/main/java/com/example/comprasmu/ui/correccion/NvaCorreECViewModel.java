@@ -139,6 +139,14 @@ public class NvaCorreECViewModel extends AndroidViewModel {
                 return lista.get(lista.size()-1);
         return null;
     }
+    //con estatussyn 0=no ha sido enviada
+    public CorEtiquetadoCajaDet getUltCorDetSimple2(int corId,int descripcionId, int numcaja){
+        List<CorEtiquetadoCajaDet> lista=corecdrepository.getCorrecxdescSimple2(corId,descripcionId, numcaja);
+        if(lista!=null&&lista.size()>0)
+            //   if( lista.get(lista.size()-1).getEstatus()==3) //devuelvo el ultimo pend
+            return lista.get(lista.size()-1);
+        return null;
+    }
    /* public LiveData<List<CorEtiquetadoCaja>> getCorreccionesxsol(int idsol,String indice){
         return corecrepository.getxsol(idsol,indice);
     }

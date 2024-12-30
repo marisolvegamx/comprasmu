@@ -16,7 +16,7 @@ public abstract class CorEtiquetadoCajaDao extends  BaseDao<CorEtiquetadoCaja>{
     @Query("SELECT * FROM coretiquetado_caja where   solicitudId=:solicitudId and indice=:indice ")
     public abstract LiveData<List<CorEtiquetadoCaja>> getCoretiquetadoCajas( int solicitudId, String indice);
 
-    @Query("SELECT * FROM coretiquetado_caja where   solicitudId=:solicitudId and indice=:indice and numfoto=:numfoto ")
+    @Query("SELECT * FROM coretiquetado_caja where   solicitudId=:solicitudId and indice=:indice and numfoto=:numfoto and estatusSync=0 ")
     public abstract List<CorEtiquetadoCaja> getCorEtiquetadoCajasSimp(int solicitudId, String indice,int numfoto);
 
     @RawQuery(observedEntities = CorEtiquetadoCaja.class)

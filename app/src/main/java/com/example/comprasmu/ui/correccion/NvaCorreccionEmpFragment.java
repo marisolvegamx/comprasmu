@@ -189,16 +189,16 @@ public class NvaCorreccionEmpFragment extends Fragment {
             //segun la descripcion
             if(fotoEdit.getDescripcionId()>14&&fotoEdit.getDescripcionId()<20)
                 num_pregact=fotoEdit.getDescripcionId()+78;
-            if(fotoEdit.getDescripcionId()==23){
+            if(fotoEdit.getDescripcionId()==23){ //foto peso
                 num_pregact=113;
             }
-            if(fotoEdit.getDescripcionId()==22){
+            if(fotoEdit.getDescripcionId()==20){ //foto largo
                 num_pregact=99;
             }
-            if(fotoEdit.getDescripcionId()==21){
+            if(fotoEdit.getDescripcionId()==21){ //foto ancho
             num_pregact=101;
             }
-            if(fotoEdit.getDescripcionId()==22){
+            if(fotoEdit.getDescripcionId()==22){ //foto alto
                 num_pregact=103;
             }
             //busco si ya tengo alguna correccion
