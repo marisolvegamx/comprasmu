@@ -226,7 +226,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         List<InformeEtapa> informes=new ArrayList<>();
         InformeEtapa temp;
         for(CorreccionWithSol cor:correccs){
-             //   Log.d(TAG,"correccion a inf idcor"+cor.correccion.getId());
+                Log.d(TAG,"correccion a inf idcor"+cor.correccion.getId()+"--"+cor.solicitud.getPlantaNombre());
                 temp = new InformeEtapa();
                 temp.setId(cor.correccion.getId());
                 temp.setEtapa(cor.solicitud.getEtapa());

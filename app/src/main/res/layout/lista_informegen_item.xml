@@ -12,6 +12,9 @@
         <variable
             name="sdf"
             type="java.text.SimpleDateFormat" />
+        <variable
+            name="tipocons"
+            type="String" />
 
     </data>
 
@@ -96,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@{detalle.clienteNombre}" />
+                    android:text='@{detalle.clienteNombre}' />
 
                 <TextView
                     android:id="@+id/txtliciudad"
@@ -106,7 +109,7 @@
                     android:layout_span="2"
                     android:layout_weight="1"
                     android:text="@{detalle.ciudadNombre}"
-                    android:visibility='@{detalle.etapa>2?View.VISIBLE:View.GONE}' />
+                    android:visibility='@{tipocons.equals("rescor")&amp;&amp;detalle.etapa>4?View.VISIBLE:tipocons.equals("e")&amp;&amp;detalle.etapa>2?View.VISIBLE:View.GONE}' />
                 <TextView
                     android:id="@+id/txtliplanta"
                     style="@style/textolista2"
@@ -114,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_span="2"
                     android:layout_weight="1"
-                    android:visibility='@{detalle.etapa>2?View.GONE:View.VISIBLE}'
+                    android:visibility='@{tipocons.equals("rescor")&amp;&amp;detalle.etapa>4?View.GONE:tipocons.equals("e")&amp;&amp;detalle.etapa>2?View.GONE:View.VISIBLE}'
                     android:text="@{detalle.plantaNombre}" />
             </LinearLayout>
 

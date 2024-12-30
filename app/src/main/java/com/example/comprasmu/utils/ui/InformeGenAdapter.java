@@ -46,6 +46,7 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
 
         holder.binding.setDetalle(mInformesList.get(position));
         holder.binding.setSdf(Constantes.vistasdf);
+        holder.binding.setTipocons(tipo);
       //  holder.binding.setVisita();
       //  holder.binding.executePendingBindings();
         if(Constantes.SINCRONIZANDO==1){
