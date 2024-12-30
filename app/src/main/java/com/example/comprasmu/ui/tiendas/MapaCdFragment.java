@@ -671,17 +671,18 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 //para poner en que tiendas puedo comprar
                 String estatusClientes="";
                 //el estatus es 1-rojo, 2 amarillo, 3.verde solo en verde puedo comprar
-                if(tienda.getEstpep()==3) {
+                if(tienda.getEstpep()==3&&existeCliente(4)) {
                     estatusClientes=estatusClientes+"PEPSI, ";
                 }
-                if(tienda.getEstpen()==3) {
+                if(tienda.getEstpen()==3&&existeCliente(5)) {
 
                     estatusClientes=estatusClientes+"PEÑAFIEL, ";
                 }
 
-                if(tienda.getEstele()==3) {
+                if(tienda.getEstele()==3&&existeCliente(6)) {
                     estatusClientes=estatusClientes+"ELECTROPURA, ";
-                }  if(tienda.getEstjum()==3) {
+                }
+                if(tienda.getEstjum()==3&&existeCliente(7)) {
 
                     estatusClientes=estatusClientes+"JUMEX, ";
                 }
@@ -783,7 +784,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 }
                 else
                     Log.d(TAG,"algo salió mal con la consulta de listas");
-
+                listacomp.removeObservers(getViewLifecycleOwner());
             }
         };
 
@@ -845,7 +846,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         }
 
     }
-
+    public boolean existeCliente(int id){
+        for (DescripcionGenerica des: clientesAsignados
+             ) {
+            if(des.getId()==id)
+                return true;
+        }
+        return false;
+    }
     public void cargarIndices(){
         String[] indiceslist={"SEPTIEMBRE 2021","OCTUBRE 2021","NOVIEMBRE 2021","DICIEMBRE 2021","ENERO 2022","FEBRERO 2022","MARZO 2022","ABRIL 2022","MAYO 2022","JUNIO 2022","JULIO 2022","AGOSTO 2022"};
         ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,indiceslist);
