@@ -208,7 +208,7 @@ public class NvoGastoFragment extends Fragment {
 
             //busco los clientes x ciudad
            if(!niviewModel.validarEtapa(ciudadInf)){
-               Toast.makeText(getContext(),"No puede hacer gastos",Toast.LENGTH_SHORT).show();
+               Toast.makeText(getActivity(),"No puede hacer gastos",Toast.LENGTH_SHORT).show();
                 return root;
            }
             //deshabilito botones de aceptar
@@ -266,7 +266,7 @@ public class NvoGastoFragment extends Fragment {
                 List<InformeEtapa> informes = niviewModel.getInfGasto(Constantes.INDICEACTUAL,ciudadInf);
                if(informes!=null&&informes.size()>0){
                    //no puede hacer más de 1
-                   Toast.makeText(getContext(),"Ya capturó su informe de gastos",Toast.LENGTH_SHORT).show();
+                   Toast.makeText(getActivity(),"Ya capturó su informe de gastos",Toast.LENGTH_SHORT).show();
                    salir();
                    return root;
                }
@@ -389,6 +389,8 @@ public class NvoGastoFragment extends Fragment {
 
     public void buscarTotalesMuestra(){
         //voy al servidor por ellos
+        compraslog.grabarError(TAG,"buscarTotalesMuestra","buscando totales");
+
         niviewModel.getTotalMuestras(ciudadInf,new ListenerM());
     }
     public void llenarTabla(List<TotalMuestra> totales){
@@ -420,7 +422,7 @@ public class NvoGastoFragment extends Fragment {
              tableRow.addView(costo);
              mBinding.tblnimuestras.addView(tableRow);
              sumacosto+=detalle.getCosto();
-             sumamuestras+=detalle.getNum_muestras();
+             sumamuestras+=detalle.getMues_reembolsadas();
         }
         tableRow=null;
         cliente=null;
@@ -448,6 +450,7 @@ public class NvoGastoFragment extends Fragment {
 
     public void avanzar() {
         //Log.d(TAG, "++" + preguntaAct);
+        compraslog.grabarError(TAG ,"avanzar","preguntaact="+preguntaAct);
 
         switch (preguntaAct) {
                 case 1: //pregunta
@@ -553,15 +556,21 @@ public class NvoGastoFragment extends Fragment {
                     //todo limpio variables
                     limpiarForm();
                     break;
+            default:
+                compraslog.grabarError(TAG ,"avanzar","preguntaact="+preguntaAct);
+                Toast.makeText(getActivity(), "Hubo un error intente de nuevo", Toast.LENGTH_SHORT).show();
 
+                break;
 
-            }
+        }
 
             mViewModel.preguntaAct = preguntaAct;
         }
 
 
         public void limpiarForm() {
+            compraslog.grabarError(TAG ,"limpiarForm","limpiando formulario");
+
             mBinding.singasto.clearCheck();
 
             mBinding.sincomprobante.clearCheck();
@@ -628,6 +637,8 @@ public class NvoGastoFragment extends Fragment {
         mBinding.spgasconcep.setAdapter(catAdapter);
     }
     public void llenarTablaConcep(){
+        compraslog.grabarError(TAG ,"llenarTablaConcep","llenando ultima tabla");
+
         TableRow tableRow;
 
         TextView concepto;
@@ -734,6 +745,7 @@ public class NvoGastoFragment extends Fragment {
     }
     public void editarInforme() {
 
+        compraslog.grabarError(TAG ,"editarInforme","editando informe"+informeSel);
 
         ImagenDetalle foto;
         //para saber si ya tego detalle
@@ -784,7 +796,9 @@ public class NvoGastoFragment extends Fragment {
 
 
         public void atras(){
-            Log.d(TAG, "--" + preguntaAct);
+
+            compraslog.grabarError(TAG ,"atras","preguntaact="+preguntaAct);
+
             isEdicion=true; //siempre es edicion
             switch (preguntaAct){
 
@@ -885,6 +899,8 @@ public class NvoGastoFragment extends Fragment {
 
                 if (preguntaAct == 1 && !isEdicion&&mViewModel.getNvoinforme()==null) {
                     Log.d(TAG, "creando nvo inf");
+                    compraslog.grabarError(TAG ,"guardarInf","creando nuevo informe");
+
                     //creo el informe
                     mViewModel.setIdNuevo(mViewModel.insertarGasto(Constantes.INDICEACTUAL, 0,ciudadInf));
                    informeSel=mViewModel.getIdNuevo();
@@ -894,18 +910,16 @@ public class NvoGastoFragment extends Fragment {
 
             }catch (Exception ex){
                 ex.printStackTrace();
-                Log.e(TAG,"Algo salió mal al guardarInf"+ex.getMessage());
-                Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
-
+                compraslog.grabarError(TAG,"guardarInf","Algo salió mal al guardarInf"+ex.getMessage());
+                Toast.makeText(getActivity(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
             }
-
             aceptar1.setEnabled(true);
 
         }
         public void guardarDet(){
             try{
                 String rutafoto = null;
-               CatalogoDetalle consel=(CatalogoDetalle) mBinding.spgasconcep.getSelectedItem();
+                CatalogoDetalle consel=(CatalogoDetalle) mBinding.spgasconcep.getSelectedItem();
                 int conceptoid= consel.getCad_idopcion();
                 String concepto=consel.getCad_descripcionesp();
                 String descripcion=mBinding.txtgasdescrip.getText().toString();
@@ -915,12 +929,14 @@ public class NvoGastoFragment extends Fragment {
                     tienecom = true;
                     rutafoto = mBinding.txtgasrutafoto.getText().toString();
                 }
+                compraslog.grabarError(TAG,"guardarDet","id nuevo inf "+mViewModel.getIdNuevo());
 
                 Log.d(TAG,"preg act "+preguntaAct);
                 //es un nuevo registro
 
 
                 if(detalleEdit==null) { //es 1a vez
+                    compraslog.grabarError(TAG,"guardarDet","es edicion ");
 
                         InformeGastoDet nvoDet = new InformeGastoDet();
                         nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
@@ -934,7 +950,10 @@ public class NvoGastoFragment extends Fragment {
                                 float importe=Float.valueOf(costo);
                                 nvoDet.setImporte(importe);
                             }catch (NumberFormatException ex) {
-                                Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_SHORT);
+                                Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_LONG);
+                                compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
+
+
                                 return;
                             }
 
@@ -954,6 +973,7 @@ public class NvoGastoFragment extends Fragment {
                         totalgastos++;
                         }
                 else {
+                    compraslog.grabarError(TAG,"guardarDet","es nuevo ");
 
                         //busco si ya tiene detalle
 
@@ -969,6 +989,8 @@ public class NvoGastoFragment extends Fragment {
                                 detalleEdit.setImporte(importe);
                             } catch (NumberFormatException ex) {
                                 Toast.makeText(getActivity(), "El costo es incorrecto verifique", Toast.LENGTH_SHORT);
+                                compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
+
                                 return;
                             }
 
@@ -985,12 +1007,14 @@ public class NvoGastoFragment extends Fragment {
                         //es actualizacion
                         niviewModel.actualizarDet(detalleEdit);
                 }
+                compraslog.grabarError(TAG,"guardarDet","avanza");
+
                 mBinding.txtgaconceptosel.setText("");
                 avanzar();
             }catch (Exception ex){
                 ex.printStackTrace();
                 compraslog.grabarError(TAG,"guardarDet",ex.getMessage());
-                Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
             }
 
@@ -1045,9 +1069,11 @@ public class NvoGastoFragment extends Fragment {
                 try {
                     nombre_foto = "img_" + Constantes.CLAVEUSUARIO + "_" + dateString + ".jpg";
                     archivofoto = new File(baseDirFile, nombre_foto);
-                    Log.e(TAG, "****" + archivofoto.getAbsolutePath());
+                    compraslog.grabarError(TAG,"tomarFoto",archivofoto.getAbsolutePath());
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    compraslog.grabarError(TAG,"tomarFoto","No se encontró almacenamiento externo");
+
                     Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
                     return;
 
@@ -1067,6 +1093,8 @@ public class NvoGastoFragment extends Fragment {
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
+            compraslog.grabarError(TAG,"onActivityResult","vars"+requestCode +"--"+ nombre_foto);
+
             if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == RESULT_OK) {
                 //   super.onActivityResult(requestCode, resultCode, data);
 
@@ -1081,19 +1109,22 @@ public class NvoGastoFragment extends Fragment {
                 }
                 else{
                     Log.e(TAG,"Algo salió mal???");
+                    compraslog.grabarError(TAG,"tomarFoto","Algo salió mal???");
+
                 }
 
 
             }else
 
             {
+                compraslog.grabarError(TAG,"tomarFoto","Algo salió mal");
+
                 Log.e(TAG,"Algo salió muy mal**");
             }
 
         }
 
         public void mostrarFoto( EditText textorut,ImageView xfotomos, ImageButton xbtnrotar){
-
 
             textorut.setText(nombre_foto);
             if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
@@ -1102,6 +1133,8 @@ public class NvoGastoFragment extends Fragment {
 
                 return;
             }else {
+                compraslog.grabarError(TAG,"mostrarFoto","mostrado foto");
+
                 // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 ComprasUtils cu = new ComprasUtils();
                 cu.comprimirImagen(archivofoto.getAbsolutePath());
@@ -1162,6 +1195,8 @@ public class NvoGastoFragment extends Fragment {
     public void finalizarInf() {
         try {
             Log.d(TAG,"total gastos="+totalgastos);
+            compraslog.grabarError(TAG,"finalizarInf","total gastos="+totalgastos);
+
             String comentarios=mBinding.txtgascomentarios.getText().toString();
             if(!comentarios.equals(""))
                 mViewModel.actualizarComentarios(mViewModel.getIdNuevo(),comentarios);
@@ -1171,14 +1206,14 @@ public class NvoGastoFragment extends Fragment {
             SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity());
             miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
-            Toast.makeText(getContext(),getString(R.string.informe_enviado),Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),getString(R.string.informe_enviado),Toast.LENGTH_SHORT).show();
 
             salir();
 
         }catch(Exception ex){
             ex.printStackTrace();
             compraslog.grabarError(TAG,"finalizarInf","Algo salió mal al finalizar"+ex.getMessage());
-            Toast.makeText(getContext(),"Algo salio mal al enviar intente de nuevo desde el resumen",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),"Algo salio mal al enviar intente de nuevo desde el resumen",Toast.LENGTH_SHORT).show();
         }
         // limpio variables de sesion
 
@@ -1250,6 +1285,7 @@ public class NvoGastoFragment extends Fragment {
 
     public void guardarMuestras(List<TotalMuestra> lista) {
 
+            compraslog.grabarError(TAG,"guardarMuestras","guardar muestras");
 
             SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefe.edit();
