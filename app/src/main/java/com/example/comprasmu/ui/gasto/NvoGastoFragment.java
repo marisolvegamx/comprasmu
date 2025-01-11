@@ -936,59 +936,63 @@ public class NvoGastoFragment extends Fragment {
 
 
                 if(detalleEdit==null) { //es 1a vez
-                    compraslog.grabarError(TAG,"guardarDet","es edicion ");
+                    compraslog.grabarError(TAG,"guardarDet","no es edicion ");
 
-                        InformeGastoDet nvoDet = new InformeGastoDet();
-                        nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
-                        nvoDet.setConcepto(concepto);
-                        nvoDet.setConceptoId(conceptoid);
-                        nvoDet.setDescripcion(descripcion);
+                    InformeGastoDet nvoDet = new InformeGastoDet();
+                    nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
+                    nvoDet.setConcepto(concepto);
+                    nvoDet.setConceptoId(conceptoid);
+                    nvoDet.setDescripcion(descripcion);
                         //cambio el importe
-                        if(!costo.equals("")) {
-                            costo=costo.substring(1);
+                    if(!costo.equals("")) {
+                            costo=costo.substring(1).replaceAll(",","");
+                           // costo=costo.substring(1);
                             try {
                                 float importe=Float.valueOf(costo);
                                 nvoDet.setImporte(importe);
                             }catch (NumberFormatException ex) {
-                                Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_LONG);
+                                Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_LONG).show();
                                 compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
 
 
                                 return;
                             }
 
-                        }
+                    }
 
-                        nvoDet.setComprobante(tienecom);
-                        if(rutafoto!=null&&!rutafoto.equals("")){
+                    nvoDet.setComprobante(tienecom);
+                    if(rutafoto!=null&&!rutafoto.equals("")){
 
                                 int numfoto=mViewModel.insertarImagen("foto_comprobante",rutafoto, Constantes.INDICEACTUAL);
                                 if(numfoto>0){
                                     nvoDet.setFotocomprob(numfoto);
 
                                 }
-                        }
-                            nvoDet.setEstatus(1);
-                            niviewModel.insertarGastoDet(nvoDet);
-                        totalgastos++;
-                        }
+                    }
+                    nvoDet.setEstatus(1);
+                    niviewModel.insertarGastoDet(nvoDet);
+                    totalgastos++;
+                }
                 else {
-                    compraslog.grabarError(TAG,"guardarDet","es nuevo ");
+                    compraslog.grabarError(TAG,"guardarDet","es " +
+                            "edicion ");
 
-                        //busco si ya tiene detalle
+                    //busco si ya tiene detalle
 
 
-                        detalleEdit.setConcepto(concepto);
-                        detalleEdit.setConceptoId(conceptoid);
-                        detalleEdit.setDescripcion(descripcion);
-                        //cambio el importe
+                    detalleEdit.setConcepto(concepto);
+                    detalleEdit.setConceptoId(conceptoid);
+                    detalleEdit.setDescripcion(descripcion);
+                    //cambio el importe
                         if (!costo.equals("")) {
-                            costo = costo.substring(1);
+                            //le quito $ y la ,
+                            costo = costo.substring(1).replaceAll(",","");
+                          //  costo = costo.substring(1);
                             try {
                                 float importe = Float.valueOf(costo);
                                 detalleEdit.setImporte(importe);
                             } catch (NumberFormatException ex) {
-                                Toast.makeText(getActivity(), "El costo es incorrecto verifique", Toast.LENGTH_SHORT);
+                                Toast.makeText(getActivity(), "El costo es incorrecto verifique", Toast.LENGTH_SHORT).show();
                                 compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
 
                                 return;
@@ -998,8 +1002,6 @@ public class NvoGastoFragment extends Fragment {
 
                         detalleEdit.setComprobante(tienecom);
                         if (!rutafoto.equals("")) {
-
-
                             niviewModel.actualizarImagen(detalleEdit, rutafoto);
                         }
 
@@ -1026,7 +1028,6 @@ public class NvoGastoFragment extends Fragment {
             if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
             {
                 Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-
                 return;
             }else
             {
@@ -1043,7 +1044,6 @@ public class NvoGastoFragment extends Fragment {
             if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
             {
                 Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-
                 return;
             }else {
                 Activity activity = this.getActivity();
