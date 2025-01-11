@@ -205,7 +205,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     //para recolectores foraneos cuando todas las listas están en 1 porque voy a iniciar traigo etapanva y hay que borrar
     //para los locales la etapa se cambia en la tabla del recolector cuando se supervise su ultima etapa
     public void validarBorrar(String indicenvo, int etapanva,int etapafin, int tiporec){
-     // Log.d(TAG,"en valdar borrar"+indicepref);
+      Log.d(TAG,"en valdar borrar"+indicepref);
        if(indicepref!=null&&!indicepref.equals("")) {
            if (!indicenvo.equals(indicepref)) {
                //cambie de indice
@@ -216,7 +216,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
                    //por si no quiere borrar
                    Constantes.INDICEACTUAL = indicepref;
                    Constantes.ETAPAMENU =etapapref ;
-                   irABorrar(); // necesito ir a una actividad donde pregunte al usuario
+                   irABorrar(indicepref); // necesito ir a una actividad donde pregunte al usuario
                } else {
                  //  Log.d(TAG,"****entre aqui");
                    //descargar y sigo en el mismo indice
@@ -265,11 +265,12 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
     }
     //todo
-    private void irABorrar(){
+    private void irABorrar(String  indiceborr){
         Log.d(TAG,"aqui borro");
+
         Intent intento=new Intent(this, BorrarActivity.class);
         intento.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intento.putExtra(BorrarActivity.INDICEACT,indicepref);
+        intento.putExtra(BorrarActivity.INDICEACT,indiceborr);
         startActivity(intento);
         finish();
     }
@@ -294,7 +295,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
                 //cambie de indice, tengo que borrar
                 if(etapanva>0&&etapanva==etapafin){
                     //voy a borrar datos
-                    irABorrar(); //todo necesito ir a una actividad donde pregunte al usuario
+                    irABorrar(indicelis); //todo necesito ir a una actividad donde pregunte al usuario
                     return;
                 }else
                 {

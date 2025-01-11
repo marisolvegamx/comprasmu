@@ -59,6 +59,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     DetalleCajaRepoImpl dcRepo;
     Context context;
     ComprasLog complog;
+    String TAG="BorrarDatosViewModel";
     public BorrarDatosViewModel(Application application) {
         super(application);
         this.context = application;
@@ -211,7 +212,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         ListaCompraDao dao = ComprasDataBase.getInstance(context).getListaCompraDao();
         lcrepo = ListaCompraRepositoryImpl.getInstance(dao);
 
-
+        complog.grabarError(TAG,"borrarListasCompra","borrando de "+indice);
         lcdrepo=new ListaCompraDetRepositoryImpl(context);
         List<ListaCompra> listaCompras= lcrepo.getAllByIndicesimple(indice);
 

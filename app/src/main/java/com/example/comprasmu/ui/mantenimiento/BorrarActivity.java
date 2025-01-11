@@ -2,6 +2,7 @@ package com.example.comprasmu.ui.mantenimiento;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.WorkManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ public class BorrarActivity extends AppCompatActivity {
     TextView aviso;
     private BorrarDatosViewModel mViewModel;
     String indiceact;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,13 +74,16 @@ public class BorrarActivity extends AppCompatActivity {
         finish();
     }
     public void borrarautomatico(){
-
+        //cancelo workmanager donde descargo listas de compra, porque llega a descargar mientras borro
+        //elimino todos los procesos que se hayan iniciado
+        WorkManager.getInstance(this).cancelAllWorkByTag("comprassync_worker2");
         String indice_anterior=indiceact;
         EliminadorIndice ei=new EliminadorIndice(this,indice_anterior);
         ei.eliminarVisitas();
         aviso.setVisibility(View.VISIBLE);
 
         // mViewModel.borrarInformes(indice_anterior);
+
         mViewModel.borrarListasCompra(indice_anterior);
         // Log.d("Comprasmu.BorrarDatosFragment","Se eliminaron las listas");
         // borrar informes etapa
@@ -87,8 +92,8 @@ public class BorrarActivity extends AppCompatActivity {
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
         ei.eliminarTablaVers();
-      mViewModel.borrarEnvio(indice_anterior);
-      mViewModel.borrarGasto(indice_anterior);
+        mViewModel.borrarEnvio(indice_anterior);
+        mViewModel.borrarGasto(indice_anterior);
         //inicializo constantes
         Constantes.CIUDADTRABAJO ="" ;
         Constantes.IDCIUDADTRABAJO=0;
