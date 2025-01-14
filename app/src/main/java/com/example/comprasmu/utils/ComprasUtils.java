@@ -514,10 +514,7 @@ public class ComprasUtils {
               ex.printStackTrace();
           }
       }
-        if(rotar==1){
-            return true;
-        }
-        return false;
+        return rotar == 1;
     }
 
 

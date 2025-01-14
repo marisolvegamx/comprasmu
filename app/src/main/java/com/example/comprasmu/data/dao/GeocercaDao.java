@@ -3,11 +3,8 @@ package com.example.comprasmu.data.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
-import androidx.room.RawQuery;
-import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.comprasmu.data.modelos.Geocerca;
-import com.example.comprasmu.data.modelos.Reactivo;
 
 import java.util.List;
 

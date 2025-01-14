@@ -5,7 +5,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
-import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.services.SubirLogService;
 import com.example.comprasmu.utils.Constantes;
 
@@ -15,7 +14,6 @@ import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadStatusDelegate;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 
 public class SubirLog {
@@ -51,11 +49,10 @@ public class SubirLog {
 //filenameGaleria=getFilename();
 
         try {
-            this.idrepo=idrepo;
 
             String uploadFileArrayList=arch;
             Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList+"  "+Constantes.URLSERV+URL_SUBIRPICTURE);
-           String serverurl="";
+            String serverurl="";
             if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")) {//pruebas y el lenovo
                 serverurl=Constantes.URLPRUEBAS1;
 

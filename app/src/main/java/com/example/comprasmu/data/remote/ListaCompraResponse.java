@@ -4,7 +4,6 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListaCompraResponse {

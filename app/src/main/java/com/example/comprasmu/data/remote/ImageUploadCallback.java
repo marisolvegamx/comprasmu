@@ -1,7 +1,5 @@
 package com.example.comprasmu.data.remote;
 
-import com.example.comprasmu.data.modelos.ImagenDetalle;
-
 import retrofit2.Response;
 
 public interface ImageUploadCallback {

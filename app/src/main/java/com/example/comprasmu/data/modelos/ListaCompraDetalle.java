@@ -1,10 +1,7 @@
 package com.example.comprasmu.data.modelos;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 @Entity(tableName = "lista_compras_detalle",primaryKeys = {"id", "listaId"})
 public class ListaCompraDetalle {

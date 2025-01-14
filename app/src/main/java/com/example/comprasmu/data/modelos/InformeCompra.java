@@ -1,13 +1,7 @@
 package com.example.comprasmu.data.modelos;
 
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-import com.example.comprasmu.data.Converters;
-
-import java.util.Date;
 
 @Entity(tableName = "informe_compras")
 public class InformeCompra {

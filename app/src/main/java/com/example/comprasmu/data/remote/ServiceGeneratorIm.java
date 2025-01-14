@@ -13,15 +13,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGeneratorIm {
-    private static  String BASE_URL ;
 
-  //  private static final String BASE_URL = "http://192.168.1.79/comprasv1/api/public/";
+    //  private static final String BASE_URL = "http://192.168.1.79/comprasv1/api/public/";
 
     private static APIService servicio;
 
     public static APIService getApiService() {
 
 
+        String BASE_URL;
         if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("2006C3MG2")){//pruebas y el lenovo
             //nam
             BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";

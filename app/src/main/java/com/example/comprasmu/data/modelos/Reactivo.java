@@ -1,14 +1,7 @@
 package com.example.comprasmu.data.modelos;
 
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-import com.example.comprasmu.data.Converters;
-
-import java.util.HashMap;
-import java.util.List;
 
 @Entity(tableName = "reactivos")
 public class Reactivo {

@@ -208,7 +208,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                         else
                             aceptar.setEnabled(true);
 
-                        preguntarBorrarFoto(view,textoint,fotomos,btnrotar,null);
+                        preguntarBorrarFoto(view,textoint,fotomos,btnrotar);
                     }
                 });
             }

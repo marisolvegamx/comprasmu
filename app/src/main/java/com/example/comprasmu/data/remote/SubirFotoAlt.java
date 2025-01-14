@@ -8,12 +8,10 @@ import android.util.Log;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
-import com.example.comprasmu.utils.Constantes;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -184,7 +182,7 @@ public class SubirFotoAlt {
             addFileToUploadRequest(uploadFileArrayList,1);
 
             upload.startUpload();
-        } catch (Exception e) {
+        } catch (@SuppressWarnings("CaughtExceptionImmediatelyRethrown") Exception e) {
             throw e;
         }
 
@@ -195,7 +193,7 @@ public class SubirFotoAlt {
 //filenameGaleria=getFilename();
 
         try {
-            this.idrepo=idrepo;
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String uploadFileArrayList=dir + imagen.getRuta();
             Log.d(TAG,"ahora si voy a subir"+uploadFileArrayList);
@@ -253,7 +251,7 @@ public class SubirFotoAlt {
             addFileToUploadRequest(uploadFileArrayList,1);
 
             upload.startUpload();
-        } catch (Exception e) {
+        } catch (@SuppressWarnings("CaughtExceptionImmediatelyRethrown") Exception e) {
             throw e;
         }
 

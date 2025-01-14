@@ -2,7 +2,9 @@ package com.example.comprasmu.data.modelos;
 
 /**
  * A generic class that holds a result success w/ data or an error exception.
+ * no se usa
  */
+@SuppressWarnings("ALL")
 public class Result<T> {
     // hide the private constructor to limit subclass types (Success, Error)
     private Result() {

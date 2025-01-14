@@ -2,18 +2,14 @@ package com.example.comprasmu.data.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.PrimaryKey;
 import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.room.Transaction;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 
 
-import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -227,7 +223,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " WHERE lista_compras.ciudadNombre = :cd and informe_compras.clientesId=:cliente and (informe_detalle.estatus=1 or informe_detalle.estatus=3 ) and visitas.indice=:indice " )
     public abstract List<InformeCompraDetalle>   getInformesxCliCd(String cd,int cliente, String indice);
 
-    public class InformeDetalleImagenes {
+  /*  public class InformeDetalleImagenes {
 
         public int id;
         public int foto_codigo_produccion;
@@ -241,5 +237,5 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
         public int foto_atributoc;
         public int etiqueta_evaluacion;
 
-    }
+    }*/
 }

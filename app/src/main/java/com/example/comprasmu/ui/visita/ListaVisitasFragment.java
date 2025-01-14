@@ -93,7 +93,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-         mViewModel.setCiudadSel(ciudadid);
+        mViewModel.setCiudadSel(ciudadid);
         mViewModel.setIndiceSel(indice);
         mViewModel.setNombreTienda(tienda);
         mViewModel.cargarDetalles();
@@ -248,9 +248,9 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
 
     @Override
     public void onClickFinalizar(int idvisita, Visita visitaCont) {
-        ValidadorDatos valdat=new ValidadorDatos();
+     //   ValidadorDatos valdat=new ValidadorDatos();
         //si se creo antes de hoy
-       if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
+      /* if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
             //elimino
             mViewModel.eliminarVisita(idvisita, 1);
 
@@ -259,8 +259,9 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
            Toast.makeText(getActivity(), "El informe se eliminó por ser de una fecha posterior",Toast.LENGTH_SHORT).show();
 
            return;
-        }
+        }*/
         //reviso si ya se enviaron los informes
+        //todo como va a enviarlo sin finalizar
         List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);
         if(informes!=null&&informes.size()>0) //no puede finalizar
         {

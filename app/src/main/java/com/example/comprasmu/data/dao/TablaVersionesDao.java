@@ -5,9 +5,6 @@ import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeCompra;
-import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 
 import java.util.List;

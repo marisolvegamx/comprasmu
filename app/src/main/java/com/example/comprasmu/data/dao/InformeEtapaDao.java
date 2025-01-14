@@ -2,16 +2,12 @@ package com.example.comprasmu.data.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.room.Transaction;
 import androidx.sqlite.db.SupportSQLiteQuery;
 import com.example.comprasmu.data.modelos.InfEtapaWithDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
-import com.example.comprasmu.data.modelos.InformeEtapaDet;
-import com.example.comprasmu.data.modelos.Visita;
 
 import java.util.List;
 

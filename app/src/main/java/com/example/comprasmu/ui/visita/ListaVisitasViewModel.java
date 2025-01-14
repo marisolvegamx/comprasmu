@@ -201,10 +201,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         //reivos si hay respuestas temporales si no devuelvo null
         InformeTempRepositoryImpl itemprepo=new InformeTempRepositoryImpl(application);
         List<InformeTemp> temps=itemprepo.getAllByTabla("ID");
-        if(temps!=null&&temps.size()>0){
-            return true;
-        }
-        return false;
+        return temps != null && temps.size() > 0;
     }
     public LiveData<List<Visita>> getListas() {
         return listas;

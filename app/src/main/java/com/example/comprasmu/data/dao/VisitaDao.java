@@ -35,10 +35,13 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
 
     @Query("SELECT * FROM visitas where indice=:indice")
     public  abstract LiveData<List<Visita>> findAllByIndice(String indice);
+
     @Query("SELECT * FROM visitas where id=:id")
     public abstract LiveData<Visita> find( int id);
+
     @Query("update visitas set estatus=:estatus where id=:id")
     public abstract void actualizarEstatus(int id, int estatus) ;
+
     @Query("DELETE FROM visitas where indice=:indice")
     public abstract void deleteVisitaByIndice(String indice);
 
@@ -47,6 +50,7 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
 
     @Query("SELECT * FROM visitas WHERE indice=:indice")
     public abstract List<Visita> getVisitasxIndice(String indice);
+
     @Transaction
     @Query("SELECT * FROM visitas WHERE indice=:indice")
     public abstract List<VisitaWithInformes> getVisitasWithInformesByIndice2(String indice);
@@ -65,7 +69,5 @@ public abstract class VisitaDao extends  BaseDao<Visita> {
 
     @Query("update visitas set estatusSync=:estatus WHERE id=:id")
     public abstract void actualizarEstatusSync(int id, int estatus);
-
-
 
 }

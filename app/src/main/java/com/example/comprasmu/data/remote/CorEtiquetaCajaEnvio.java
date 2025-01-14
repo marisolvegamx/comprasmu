@@ -2,7 +2,6 @@ package com.example.comprasmu.data.remote;
 
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
-import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

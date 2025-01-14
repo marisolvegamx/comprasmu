@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.Nullable;
-import androidx.work.ProgressUpdater;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,17 +1,6 @@
 package com.example.comprasmu.data.modelos;
 
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-import com.example.comprasmu.data.Converters;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Date;
-
-import javax.annotation.Nullable;
 
 @Entity(tableName = "sustitucion",primaryKeys = {"id_sustitucion", "plantasId"})
 public class Sustitucion {

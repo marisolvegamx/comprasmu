@@ -2,8 +2,6 @@ package com.example.comprasmu.data.modelos;
 
 import com.google.gson.Gson;
 
-import java.util.Date;
-
 public class InformeToJson {
 
   /*  public int inf_consecutivo;

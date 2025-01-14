@@ -1,17 +1,13 @@
 package com.example.comprasmu.data.dao;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.modelos.Configuracion;
-import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.repositories.BaseRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConfiguracionRepositoryImpl extends BaseRepository<Configuracion> {

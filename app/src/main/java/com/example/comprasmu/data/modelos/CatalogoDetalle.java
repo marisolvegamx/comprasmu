@@ -1,9 +1,7 @@
 package com.example.comprasmu.data.modelos;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 @Entity(tableName="catalogos_detalle",primaryKeys = {"cad_idcatalogo", "cad_idopcion"})
 public class CatalogoDetalle {

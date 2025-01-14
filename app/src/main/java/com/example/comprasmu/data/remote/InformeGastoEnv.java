@@ -1,6 +1,5 @@
 package com.example.comprasmu.data.remote;
 
-import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
@@ -64,9 +63,7 @@ public class InformeGastoEnv {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
 
-
-        String JSON = gson.toJson(informe);
-        return  JSON;
+        return gson.toJson(informe);
 
     }
 }

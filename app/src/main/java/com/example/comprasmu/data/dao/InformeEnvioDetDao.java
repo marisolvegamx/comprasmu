@@ -6,7 +6,6 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
-import com.example.comprasmu.data.modelos.InformeWithDetalle;
 
 @Dao
 public abstract class InformeEnvioDetDao extends  BaseDao<InformeEnvioDet> {

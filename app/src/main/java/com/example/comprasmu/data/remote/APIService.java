@@ -1,7 +1,6 @@
 package com.example.comprasmu.data.remote;
 
 import com.example.comprasmu.data.modelos.Correccion;
-import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -9,12 +8,9 @@ import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
-import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.ui.envio.DocumentosEnvio;
 import com.example.comprasmu.ui.gasto.TotalMuestra;
-import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;

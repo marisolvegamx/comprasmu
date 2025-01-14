@@ -1,7 +1,6 @@
 package com.example.comprasmu.data.dao;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.DatabaseView;
 import androidx.room.Insert;
@@ -13,7 +12,6 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
-import com.example.comprasmu.data.modelos.Visita;
 
 
 import java.util.Date;

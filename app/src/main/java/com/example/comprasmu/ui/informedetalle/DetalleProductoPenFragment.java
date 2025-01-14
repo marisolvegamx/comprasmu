@@ -307,7 +307,7 @@ public class DetalleProductoPenFragment extends Fragment {
                         else
                             aceptar.setEnabled(true);
 
-                        preguntarBorrarFoto(view,textoint,fotomos,btnrotar,null);
+                        preguntarBorrarFoto(view,textoint,fotomos,btnrotar);
                     }
                 });
             }
@@ -1951,7 +1951,7 @@ public class DetalleProductoPenFragment extends Fragment {
     public InformeTemp getUltimares() {
         return ultimares;
     }
-    protected void preguntarBorrarFoto(View cb,EditText txtruta,ImageView foto,ImageButton btnrotar,LinearLayout group) {
+    protected void preguntarBorrarFoto(View cb,EditText txtruta,ImageView foto,ImageButton btnrotar) {
         if(((CheckBox)cb).isChecked()) {
             //veo si ya hay foto
             if(txtruta.getText()!=null&&!txtruta.getText().toString().equals("")) {

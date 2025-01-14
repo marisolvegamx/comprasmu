@@ -38,7 +38,7 @@ public class CampoForm {
     public CampoForm() {
     }
 
-    public CampoForm(String label, String nombre_campo, int id, String type, String value, String required, HashMap select, String readonly, String disabled) {
+    public CampoForm(String label, String nombre_campo, int id, String type, String value, String required, HashMap<Integer,String> select, String readonly, String disabled) {
         this.label = label;
         this.nombre_campo = nombre_campo;
         this.id = id;

@@ -1,14 +1,10 @@
 package com.example.comprasmu.data.remote;
 
-import android.util.Log;
-
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -92,8 +88,7 @@ public class TodoEnvio {
 
       //  Gson gson = new Gson();
         String informejson=gson.toJson(informe.informeCompra);
-        String JSON = gson.toJson(informe);
-        return  JSON;
+        return gson.toJson(informe);
       /*  ObjectMapper mapper=new ObjectMapper();
         mapper.setDateFormat(sdf);
         String json = null;

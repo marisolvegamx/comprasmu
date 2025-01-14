@@ -169,6 +169,8 @@ public class PostInformeViewModel {
        // infoRepo.actualizarEstatusSync(informe.getInformeCompra().getId(),Constantes.ENVIADO);
         //actualizo detalles
         infoDetRepo.actualizarEstatusSyncxInfo(informe.getInformeCompra().getId(),Constantes.ENVIADO);
+        infoRepo.actualizarEstatusSync(informe.getInformeCompra().getId(),Constantes.ENVIADO);
+
         //imagenes se actualiza en enviar foto
        /* if(informe.getImagenDetalles()!=null)
         for(ImagenDetalle imagen: informe.getImagenDetalles())

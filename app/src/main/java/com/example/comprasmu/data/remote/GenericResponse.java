@@ -1,7 +1,5 @@
 package com.example.comprasmu.data.remote;
 
-import androidx.lifecycle.LiveData;
-
 import java.util.ArrayList;
 
 public class GenericResponse<T> {

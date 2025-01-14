@@ -1,7 +1,6 @@
 package com.example.comprasmu.data.remote;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 
 
@@ -230,7 +229,7 @@ public class SubirFoto implements ImageUploadCallback {
             }
         }else { //hubo un error
             notificarObservadoresIm(null);
-            Log.d("SubirFoto","Hubo un error al subir imagen "+response.body());
+          //  Log.d("SubirFoto","Hubo un error al subir imagen "+response.body());
         }
     }
 

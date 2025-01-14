@@ -1,29 +1,23 @@
 package com.example.comprasmu.data.remote;
 
 import android.os.Build;
-import android.util.Log;
 
 import com.example.comprasmu.utils.Constantes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
-    private static  String BASE_URL ;
 
-  //  private static final String BASE_URL = "http://192.168.1.79/comprasv1/api/public/";
-
-    private static APIService servicio;
+    //  private static final String BASE_URL = "http://192.168.1.79/comprasv1/api/public/";
 
     public static APIService getApiService() {
-        servicio=null;
+        APIService servicio = null;
         // Creamos un interceptor y le indicamos el log level a usar
        /* HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -37,6 +31,7 @@ public class ServiceGenerator {
                         .addConverterFactory(GsonConverterFactory.create());*/
 
        // Log.e("mi disp ",Build.PRODUCT);
+        String BASE_URL;
         if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
             //nam
            BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
