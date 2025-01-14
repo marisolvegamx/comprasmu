@@ -4,9 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,28 +14,23 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -197,13 +190,14 @@ public class DetalleProductoFragment extends Fragment {
     public void crearPregunta(){
         int num_pregact=0;
         Log.d(TAG,"creando preg"+mViewModel.numMuestra);
+        compraslog.grabarError(TAG,"crearPregunta","nummuestras="+mViewModel.numMuestra);
         if(preguntaAct==null)
 
         if (getArguments() != null) {
 
             num_pregact = getArguments().getInt(ARG_PREGACT);
             this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
-            Log.d("que onda",num_pregact+"--");
+
             preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
         }
 
@@ -217,8 +211,10 @@ public class DetalleProductoFragment extends Fragment {
                 return ;
             }
 
-        Log.d(TAG,"creando fragment "+preguntaAct.getNombreCampo());
-        dViewModel.reactivoAct=preguntaAct.getId();
+            Log.d(TAG,"creando fragment "+preguntaAct.getNombreCampo());
+            compraslog.grabarError(TAG,"crearPregunta ","preguntaact="+preguntaAct.getId());
+
+            dViewModel.reactivoAct=preguntaAct.getId();
 
         //si es la misma
         //reviso si es edicion o es nueva
@@ -253,9 +249,10 @@ public class DetalleProductoFragment extends Fragment {
             //if(this.preguntaAct.getId()==2||this.preguntaAct.getId()==3||this.preguntaAct.getId()==5)
             isEdicion=false;
 
-        Log.d(TAG,"mmmmmmmmmmm"+isEdicion);
+            Log.d(TAG,"mmmmmmmmmmm"+isEdicion);
+            compraslog.grabarError(TAG,"crearPregunta ","es edicion="+isEdicion);
 
-        if(isEdicion) {
+            if(isEdicion) {
             //aceptar.setEnabled(true);
 
             mViewModel.consecutivo=ultimares.getConsecutivo();
@@ -660,21 +657,10 @@ public class DetalleProductoFragment extends Fragment {
     public void cargarClientes() {
         Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
         //ahora son plantas
-        //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
-        //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-        List<ListaCompra> listacomp= lcviewModel.cargarPestanasxEtaSimp(Constantes.CIUDADTRABAJO);
+         List<ListaCompra> listacomp= lcviewModel.cargarPestanasxEtaSimp(Constantes.CIUDADTRABAJO);
         clientesAsignados = convertirListaaPlantas(listacomp, clientesprev);
-        Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsignados.size());
+        compraslog.grabarError(TAG,"cargarClientes ","*regresó de la consulta de clientes " + clientesAsignados.size());
 
-
-        // if(clientesprev!=null)
-        //      Log.d(TAG, "regresó de la consulta de clientes " + clientesprev.length + "--" + data.size());
-
-
-
-        //  }
-        //  else
-        //    campo.selectdes= Constantes.clientesAsignados;
     }
 
 
@@ -877,6 +863,8 @@ public class DetalleProductoFragment extends Fragment {
         mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),nombreCliente+"","clienteNombre","I",mViewModel.consecutivo,false);
         mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),clienteid+"","clientesId","I",mViewModel.consecutivo,true);
         Log.d(TAG,preguntaAct.getNombreCampo()+"guardando cliente "+preguntaAct.getSigId());
+        compraslog.grabarError(TAG,"guardarcliente",preguntaAct.getNombreCampo()+"--"+preguntaAct.getSigId()+"guardando cliente "+mViewModel.clienteSel);
+
         //dependiendo el cliente avanzo
         if(mViewModel.clienteSel==4)
             avanzarPregunta(preguntaAct.getSigId());
@@ -899,6 +887,7 @@ public class DetalleProductoFragment extends Fragment {
            }
 
         }*/
+        compraslog.grabarError(TAG,"siguiente","preg "+preguntaAct.getId());
 
         switch (preguntaAct.getNombreCampo()){
             case Contrato.TablaInformeDet.COSTO:
@@ -1035,6 +1024,8 @@ public class DetalleProductoFragment extends Fragment {
                         //la muestra la guarde en la 42
 
                         Log.d(TAG, "NO MAS CLIENTES");
+                        compraslog.grabarError(TAG,"siguiente","NO MAS CLIENTES");
+                        compraslog.grabarError(TAG,"siguinete","finalizando visita");
                         //es la 43 //finalizo preinforme
                         mViewModel.finalizarVisita(mViewModel.visita.getId());
                         //  mViewModel.eliminarTblTemp();
@@ -1103,7 +1094,8 @@ public class DetalleProductoFragment extends Fragment {
 
                         Log.d(TAG,"*genere cons="+consecutivo);
 
-                        Log.d(TAG,"genere cons="+consecutivo);
+
+                        compraslog.grabarError(TAG,"siguiente","genere cons="+consecutivo);
 
                         mViewModel.informe.setConsecutivo(consecutivo);
                         Constantes.DP_CONSECUTIVO = consecutivo;
@@ -1159,7 +1151,8 @@ public class DetalleProductoFragment extends Fragment {
                 //la muestra la guarde en la 42
                 if(!preguntaview.getPregSiNoResp()) //se selecciono no
                 {
-                    Log.d(TAG,"dice que no");
+                    compraslog.grabarError(TAG,"sigueinte","dice que no");
+
                     //es la 43 //finalizo preinforme
                     finalizarPreinforme();
                     return;
@@ -1179,7 +1172,7 @@ public class DetalleProductoFragment extends Fragment {
     public void finalizar() {
 
         //validar que si hay producto realmente tenga un producto capturado
-
+        compraslog.grabarError(TAG,"finalizar","finalizando inf");
         mViewModel.eliminarTblTemp();
         mViewModel.finalizarInforme();
 
@@ -1217,6 +1210,8 @@ public class DetalleProductoFragment extends Fragment {
 
 
     public void finalizarPreinforme(){
+        compraslog.grabarError(TAG,"finalizarPreinforme","preguntando");
+
         //Es hora de cerrar el preinforme
         //pregunto si habrá más clientes
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
@@ -1226,6 +1221,8 @@ public class DetalleProductoFragment extends Fragment {
         dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogo1, int id) {
                 //Es hora de cerrar el preinforme
+                compraslog.grabarError(TAG,"finalizarPreinforme","finalizando visita");
+
                 mViewModel.finalizarVisita(mViewModel.visita.getId());
                 // mViewModel.eliminarTblTemp();
 
@@ -1267,6 +1264,8 @@ public class DetalleProductoFragment extends Fragment {
             //   exit(0);
             if (mViewModel.numMuestra == 1 || mViewModel.getIdInformeNuevo() <= 0) {
                 Log.d(TAG, "guardando informe");
+                compraslog.grabarError(TAG,"guardarMuestra","guardando informe");
+
                 //busco el consecutivo
                 MutableLiveData<Integer> idInformeNuevo = guardarInforme();
                 //   Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
@@ -1275,6 +1274,8 @@ public class DetalleProductoFragment extends Fragment {
                     @Override
                     public void onChanged(Integer idnvo) {
                         Log.d(TAG, "se creo el informe" + idnvo);
+                        compraslog.grabarError(TAG,"guardarMuestra","se creo el informe"+idnvo);
+
                         mViewModel.informe.setId(idnvo);
                         mViewModel.setIdInformeNuevo(idnvo);
                         int numues=mViewModel.numMuestra;
@@ -1282,6 +1283,7 @@ public class DetalleProductoFragment extends Fragment {
                         if(!mViewModel.informe.isSinproducto()) {
                             //si tengo detalle
                             Log.d(TAG,"guardando  muestras "+mViewModel.numMuestra+"--"+Constantes.NM_TOTALISTA);
+                            compraslog.grabarError(TAG,"guardarMuestra","guardando  muestras "+mViewModel.numMuestra+"--"+Constantes.NM_TOTALISTA);
 
                             //    List<Integer> muestras= dViewModel.muestrasTotales();
                             //  for(int x:muestras) {
@@ -1306,13 +1308,15 @@ public class DetalleProductoFragment extends Fragment {
                             else{
                                 //algo salio mal
                                 Toast.makeText(getActivity(), "No se pudo guardar la muestra", Toast.LENGTH_LONG).show();
+                                compraslog.grabarError(TAG,"guardarMuestra","No se pudo guardar la muestra ");
+
                                 yaestoyProcesando=false;
                                 return;
                             }
                             yaestoyProcesando=false;
                             if(Constantes.NM_TOTALISTA>=16&&numues==3||Constantes.NM_TOTALISTA<16&&numues==2) //ya terminé
                             {
-                                Log.d(TAG,"terminé debo guardar y salir"+Constantes.NM_TOTALISTA+"--"+numues);
+                                compraslog.grabarError(TAG+"terminé debo guardar y salir"+Constantes.NM_TOTALISTA+"--"+numues);
                                 //   limpiarTablTemp();
 
                                 avanzarPregunta(5);
@@ -1347,7 +1351,7 @@ public class DetalleProductoFragment extends Fragment {
             }else
             if(!mViewModel.informe.isSinproducto()) {
                 //si tengo detalle
-                Log.d(TAG,"guardando  muestras");
+                compraslog.grabarError(TAG,"GuardarMuestra","guardando  muestras");
 
                 //    List<Integer> muestras= dViewModel.muestrasTotales();
                 //  for(int x:muestras) {
@@ -1368,7 +1372,7 @@ public class DetalleProductoFragment extends Fragment {
                     yaestoyProcesando=false;
                     if(numues==3||Constantes.NM_TOTALISTA<17&&numues==2) //ya terminé
                     {
-                        Log.d(TAG,"terminé debo guardar y salir"+Constantes.NM_TOTALISTA+"--"+numues);
+                        compraslog.grabarError(TAG,"GuardarMuestra","terminé debo guardar y salir"+Constantes.NM_TOTALISTA+"--"+numues);
                         //   limpiarTablTemp();
                         avanzarPregunta(5);
 
@@ -1414,7 +1418,7 @@ public class DetalleProductoFragment extends Fragment {
     }
     public InformeEnvio preparaInforme(){
         InformeEnvio envio=new InformeEnvio();
-        Log.d(TAG,"estatus informe"+mViewModel.visita.getEstatus());
+        compraslog.grabarError(TAG,"preparaInforme","estatus informe"+mViewModel.visita.getEstatus());
         if(mViewModel.visita.getEstatusSync()==0)
             envio.setVisita(mViewModel.visita);
         envio.setInformeCompra(mViewModel.informe);
@@ -1516,10 +1520,11 @@ public class DetalleProductoFragment extends Fragment {
         return mViewModel.insertarInfdeTemp(getActivity(), getViewLifecycleOwner());
     }
     public void actualizarInforme() throws Exception {
+        compraslog.grabarError(TAG,"actualizarInforme","actualizando Informe");
         mViewModel.actualizarInforme();
     }
     public void limpiarTablTemp(){
-        Log.d(TAG,"limpiando tabla");
+        compraslog.grabarError(TAG+"limpiando tabla");
 
         mViewModel.eliminarTblTemp();
     }
@@ -1530,6 +1535,7 @@ public class DetalleProductoFragment extends Fragment {
     }
 
     public void avanzarPregunta(int sig){
+        compraslog.grabarError(TAG,"avanzarpregunta","sig"+sig);
         if(sig==0)
             guardarResp();//vuelvo a guardar
         if(sig==1){
@@ -1712,7 +1718,7 @@ public class DetalleProductoFragment extends Fragment {
     //        int consecutivo =1;
     //guardo en tabla temp
     public void guardarResp() {
-        Log.d(TAG, "guardando en temp*****" + preguntaAct.getId());
+        compraslog.grabarError(TAG,"guardarResp", "guardando en temp*****" + preguntaAct.getId());
 
 
         String valor = null;
@@ -1749,7 +1755,7 @@ public class DetalleProductoFragment extends Fragment {
 
             }
         }
-        Log.d(TAG, "guardando en temp" + preguntaAct.getId() + "val" + mViewModel.consecutivo);
+        compraslog.grabarError(TAG,"guardarResp", "guardando en temp" + preguntaAct.getId() + "val" + mViewModel.consecutivo);
         if(preguntaAct.getId()==5&& preguntaview.getNopermiso().isChecked())//es ticket
         {
             mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "0", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
@@ -1759,7 +1765,7 @@ public class DetalleProductoFragment extends Fragment {
             //  if(!preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN))
             //paso a mayusculas
 
-            if (preguntaAct.getId() > 0 && valor != null && valor.length() > 0) {
+            if(preguntaAct.getId() > 0 && valor != null && valor.length() > 0) {
                 //actualizo la visita
                 if(mViewModel.visita.getEstatus()!=3)
                     mViewModel.actualizarVisita(mViewModel.visita.getId(),3);
@@ -2104,8 +2110,8 @@ public class DetalleProductoFragment extends Fragment {
         Intent intento1 = new Intent(getActivity(), BackActivity.class);
 
         opcion = BackActivity.OP_LISTACOMPRA;
-
-        // }
+        compraslog.grabarError(TAG,"verListaCompra","voy a ver lista");
+                // }
         //  }else{
         //ya tengo la planta
         InformeTemp inf= dViewModel.buscarxNombreCam("plantasId");
@@ -2257,6 +2263,7 @@ public class DetalleProductoFragment extends Fragment {
             resact = getUltimares();
             idreact = resact.getId();
         }
+        compraslog.grabarError(TAG,"atras","reactivo act"+idreact);
 
         //busco el ant
         Reactivo reactivo = dViewModel.buscarReactivoAnterior(idreact,isEdicion);
