@@ -47,8 +47,6 @@ import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.DetalleInfView;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

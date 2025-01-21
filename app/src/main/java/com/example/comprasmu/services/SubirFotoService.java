@@ -9,26 +9,20 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.comprasmu.MainActivity;
 import com.example.comprasmu.NavigationDrawerActivity;
-import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.SubirFoto;
 import com.example.comprasmu.data.remote.SubirFotoAlt;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
-import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
-import com.example.comprasmu.ui.informe.PostInformeViewModel;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;

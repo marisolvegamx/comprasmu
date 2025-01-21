@@ -1,25 +1,10 @@
 package com.example.comprasmu.services;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.example.comprasmu.NavigationDrawerActivity;
-import com.example.comprasmu.data.remote.TodoEnvio;
-import com.example.comprasmu.ui.informe.PostInformeViewModel;
-import com.example.comprasmu.utils.ComprasUtils;
-
-import java.util.Random;
 
 //hará dos cosas
 //buscará notificaciones

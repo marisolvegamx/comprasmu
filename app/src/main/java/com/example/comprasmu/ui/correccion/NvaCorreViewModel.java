@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;

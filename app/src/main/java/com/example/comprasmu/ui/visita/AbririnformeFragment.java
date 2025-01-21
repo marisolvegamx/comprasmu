@@ -1690,7 +1690,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         }
 
-        if (txtaiultubic.getText().toString().equals("")) {
+       /* if (txtaiultubic.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
             return false;
@@ -1699,7 +1699,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
             return false;
-        }
+        }*/
         //Log.d(TAG,"xxxxxx"+txtfotoex1.getText().toString());
         if(estatusPepsi==0)//no puedo comprar pepsi{
         {
@@ -1738,7 +1738,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         }
 
-   /*     if(txtfotoex1.getText().toString().equals("")&&!cbfotoex.isChecked()){
+        if(txtfotoex1.getText().toString().equals("")&&!cbfotoex.isChecked()){
             Toast.makeText(getActivity(), "Falta foto de producto exhibido o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             return false;
         }if(snmascli1.getRespuesta())//veo que tenga foto etc
@@ -1750,7 +1750,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             if(txtfotoex3.getText().toString().equals("")&&!cbfotoex3.isChecked()){
                 Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
                 return false;
-            }*/
+            }
             if(nuevaTienda){
                 input1 = root.findViewById(1001);
                 EditText input2 = root.findViewById(1002);
@@ -2568,41 +2568,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
     }
 
-    class MayusTextWatcher implements TextWatcher {
 
-        boolean mEditing;
-
-        public MayusTextWatcher() {
-            mEditing = false;
-        }
-
-        public synchronized void afterTextChanged(Editable s) {
-            if(!mEditing) {
-                mEditing = true;
-                 try{
-                    if(s.length()>0) {
-                        String s2=s.toString();
-                        String nueva="";
-                        if(!s2.equals(s2.toUpperCase()))
-                        {
-                            nueva=s2.toUpperCase();
-
-                        }
-                        s.replace(0, nueva.length(), s.toString().toUpperCase());
-                    }
-                } catch (NumberFormatException nfe) {
-                    s.clear();
-                }
-
-                mEditing = false;
-            }
-        }
-
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-        public void onTextChanged(CharSequence s, int start, int before, int count) { }
-
-    }
 
 
 }

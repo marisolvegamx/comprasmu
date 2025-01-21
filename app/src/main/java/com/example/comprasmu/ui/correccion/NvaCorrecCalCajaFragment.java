@@ -29,11 +29,9 @@ import android.widget.Toast;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
-import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -41,7 +39,6 @@ import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
-import com.example.comprasmu.data.remote.CorreccionEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
@@ -473,7 +470,7 @@ if(correccionDet!=null)
                 // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 //ComprasUtils cu=new ComprasUtils();
                 // bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
-                if(inftemp.getValor().equals("0")){
+                if(inftemp.getValor()!=null&&inftemp.getValor().equals("0")){
                     //lo manejo en el view
                 }else {
                     Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + inftemp.getValor(), 100, 100);
@@ -590,7 +587,7 @@ if(correccionDet!=null)
 
         }
 
-        if(qr.equals("")) {
+        if(qr!=null&&qr.equals("")) {
             return;
         }
         muestraEdit =preViewModel.buscarDetxQr(qr);

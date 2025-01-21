@@ -35,7 +35,6 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;

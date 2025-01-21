@@ -1,24 +1,12 @@
 package com.example.comprasmu.services;
 
 import android.app.IntentService;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
-import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.data.remote.SubirLog;
 import com.example.comprasmu.utils.Constantes;
-
-import java.text.SimpleDateFormat;
-import java.util.Random;
 
 
 public class SubirLogService extends IntentService

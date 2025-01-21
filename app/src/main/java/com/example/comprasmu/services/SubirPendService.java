@@ -10,21 +10,14 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
-import androidx.databinding.Observable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.remote.SubirFoto;
 import com.example.comprasmu.data.remote.TodoEnvio;
-import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
-import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informe.PostInformeViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.Random;
 
 /****un servicio para subir lo pendiente****/
