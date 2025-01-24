@@ -61,7 +61,7 @@ public class Constantes {
     //local
   //  public static String URLPRUEBAS1="https://muesmerc.com/comprasv1/";
 
-     public static String URLPRUEBAS1="http://192.168.1.170/comprasv1/";
+     public static String URLPRUEBAS1="http://192.168.1.75/comprasv1/";
     //muesmerc
   //  public static String URLPRUEBAS1="http://192.168.1.195/comprasv1/";
    // public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";

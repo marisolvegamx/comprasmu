@@ -117,6 +117,9 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
     public List<Correccion> getCorrecxSolSim(int solid, int numfoto,String indice) {
         return icDao.getCorreccxsolSimple(solid,numfoto, indice);
     }
+    public List<Correccion> getCorrecxSolSimPend(int solid, int numfoto,String indice) {
+        return icDao.getCorreccxsolSimpPend(solid,numfoto, indice);
+    }
 
     @Override
     public LiveData<Correccion> find(int id) {

@@ -158,8 +158,9 @@ public class NvaCorreViewModel extends AndroidViewModel {
                 return lista.get(lista.size()-1);
         return null;
     }
+    /**buscar si hay una correccion pendiente de enviar para que se muestre al recolector y no empiece de 0***/
     public Correccion getCorrecionxSolSimple(int idsol,int numfoto,String indice){
-        List<Correccion> lista=correpository.getCorrecxSolSim(idsol,numfoto,indice);
+        List<Correccion> lista=correpository.getCorrecxSolSimPend(idsol,numfoto,indice);
         if(lista!=null&&lista.size()>0)
             return lista.get(lista.size()-1);
         return null;

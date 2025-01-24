@@ -27,6 +27,9 @@ public abstract class CorreccionDao extends  BaseDao<Correccion>{
     @Query("SELECT * FROM correccion where  solicitudId=:solicitudId and numfoto=:numfoto and indice=:indice")
     public abstract List<Correccion> getCorreccxsolSimple(int solicitudId,int numfoto, String indice);
 
+    @Query("SELECT * FROM correccion where  solicitudId=:solicitudId and numfoto=:numfoto and indice=:indice and estatusSync=0")
+    public abstract List<Correccion> getCorreccxsolSimpPend(int solicitudId,int numfoto, String indice);
+
     @Query("SELECT * FROM correccion WHERE id = :uuid")
     public abstract LiveData<Correccion>  getCorreccion(int uuid);
 
