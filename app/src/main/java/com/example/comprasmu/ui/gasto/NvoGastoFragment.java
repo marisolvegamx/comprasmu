@@ -521,12 +521,12 @@ public class NvoGastoFragment extends Fragment {
                     }catch(Exception ex){
 
                     }
-                    preguntaAct = preguntaAct + 1;
+                    preguntaAct = preguntaAct + 2; //la foto se hace obligatoria ya no pregunta si hay comprobante
 
                     break;
                 case 5: //preg comprob
                     llcosto.setVisibility(View.GONE);
-                    llcompr.setVisibility(View.VISIBLE);
+                   // llcompr.setVisibility(View.VISIBLE);
 
                     preguntaAct = preguntaAct + 1;
 
@@ -858,10 +858,11 @@ public class NvoGastoFragment extends Fragment {
                     mViewModel.preguntaAct=preguntaAct;
                     break;
                 case 7:
-                    llcompr.setVisibility(View.VISIBLE);
+                    llcosto.setVisibility(View.VISIBLE);
+                  //  llcompr.setVisibility(View.VISIBLE);
                     llfoto.setVisibility(View.GONE);
 
-                    preguntaAct=preguntaAct-1;
+                    preguntaAct=preguntaAct-2; //foto comprobante se hace obligatoria
                     mViewModel.preguntaAct=preguntaAct;
                     break;
                 case 8:
