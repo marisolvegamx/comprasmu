@@ -403,7 +403,7 @@ public class NvoGastoFragment extends Fragment {
         for (TotalMuestra detalle:totales
              ) {
              tableRow=new TableRow(getContext());
-            cliente=new TextView(getContext());
+             cliente=new TextView(getContext());
           //   cliente=new TextView( new ContextThemeWrapper(getContext(), R.style.colTabla), null, buttonStyle);
              numuestra=new TextView(getContext());
              costo=new TextView(getContext());
@@ -417,6 +417,9 @@ public class NvoGastoFragment extends Fragment {
              costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
              costo.setBackgroundResource(R.drawable.valuecellborder);
            //  cliente.setTextAppearance(context, R.style.mystyle);
+             cliente.setPadding(30,10,30,10);
+             numuestra.setPadding(30,10,30,10);
+             costo.setPadding(30,10,30,10);
              tableRow.addView(cliente);
              tableRow.addView(numuestra);
              tableRow.addView(costo);
@@ -439,6 +442,10 @@ public class NvoGastoFragment extends Fragment {
         tableRow=new TableRow(getContext());
         tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
         txttotal.setText("TOTAL");
+        txttotal.setPadding(30,10,30,10);
+        txtgatotnum.setPadding(30,10,30,10);
+        txtgastotmue.setPadding(30,10,30,10);
+
         tableRow.addView(txttotal);
         tableRow.addView(txtgatotnum);
         tableRow.addView(txtgastotmue);
@@ -449,7 +456,7 @@ public class NvoGastoFragment extends Fragment {
     }
 
     public void avanzar() {
-        //Log.d(TAG, "++" + preguntaAct);
+        Log.d(TAG, "++" + preguntaAct);
         compraslog.grabarError(TAG ,"avanzar","preguntaact="+preguntaAct);
 
         switch (preguntaAct) {
@@ -532,9 +539,9 @@ public class NvoGastoFragment extends Fragment {
 
                     break;
                 case 6: //foto
+                    llcosto.setVisibility(View.GONE);
 
-                    llcompr.setVisibility(View.GONE);
-                    if(mBinding.sincomprobante.getRespuesta()) {
+                  /*  if(mBinding.sincomprobante.getRespuesta()) {
                         llfoto.setVisibility(View.VISIBLE);
                         preguntaAct = preguntaAct + 1;
                     }
@@ -543,9 +550,10 @@ public class NvoGastoFragment extends Fragment {
                         //todo limpio variables
                         limpiarForm();
                         preguntaAct = 2;
-                    }
+                    }*/
 
-
+                    llfoto.setVisibility(View.VISIBLE);
+                    preguntaAct = preguntaAct + 1;
 
                     break;
                 case 7:
@@ -639,8 +647,8 @@ public class NvoGastoFragment extends Fragment {
     public void llenarTablaConcep(){
         compraslog.grabarError(TAG ,"llenarTablaConcep","llenando ultima tabla");
 
-        TableRow tableRow;
-
+        TableRow tableRow=null;
+        mBinding.tblgaresconcep.removeAllViews();
         TextView concepto;
         TextView costo;
         float sumacosto=0;
@@ -661,6 +669,9 @@ public class NvoGastoFragment extends Fragment {
         costo.setText("COSTO");
         concepto.setLayoutParams(lp1);
         costo.setLayoutParams(lp2);
+
+        concepto.setPadding(30,10,30,10);
+        costo.setPadding(30,10,30,10);
         tableRow.addView(concepto);
         tableRow.addView(costo);
         mBinding.tblgaresconcep.addView(tableRow);
@@ -675,9 +686,11 @@ public class NvoGastoFragment extends Fragment {
         concepto.setText("TOTAL MUESTRAS");
         //busco el total
         String totalmu=niviewModel.getTotalmu();
-        costo.setText(Constantes.SIMBOLOMON+totalmu);
+        costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("0.00").format(totalmu));
         concepto.setLayoutParams(lp1);
         costo.setLayoutParams(lp2);
+        concepto.setPadding(30,10,30,10);
+        costo.setPadding(30,10,30,10);
         tableRow.addView(concepto);
         tableRow.addView(costo);
 
@@ -707,7 +720,8 @@ public class NvoGastoFragment extends Fragment {
             costo.setBackgroundResource(R.drawable.valuecellborder);
             concepto.setLayoutParams(lp1);
             costo.setLayoutParams(lp2);
-
+            concepto.setPadding(30,10,30,10);
+            costo.setPadding(30,10,30,10);
             tableRow.addView(concepto);
             tableRow.addView(costo);
             mBinding.tblgaresconcep.addView(tableRow);
@@ -734,6 +748,8 @@ public class NvoGastoFragment extends Fragment {
         costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("0.00").format(sumacosto));
         concepto.setLayoutParams(lp1);
         costo.setLayoutParams(lp2);
+        concepto.setPadding(30,10,30,10);
+        costo.setPadding(30,10,30,10);
         tableRow.addView(concepto);
         tableRow.addView(costo);
         mBinding.tblgaresconcep.addView(tableRow);
@@ -796,7 +812,7 @@ public class NvoGastoFragment extends Fragment {
 
 
         public void atras(){
-
+            Log.d(TAG,"atras**"+preguntaAct);
             compraslog.grabarError(TAG ,"atras","preguntaact="+preguntaAct);
 
             isEdicion=true; //siempre es edicion
@@ -827,7 +843,7 @@ public class NvoGastoFragment extends Fragment {
                         mViewModel.preguntaAct = preguntaAct;
 
                     break;
-                case 3:
+                case 3: //concepto
                     llpreg1.setVisibility(View.VISIBLE);
                     llconce.setVisibility(View.GONE);
 
@@ -836,7 +852,7 @@ public class NvoGastoFragment extends Fragment {
                     break;
 
 
-                case 4:
+                case 4://descripcion
                     llconce.setVisibility(View.VISIBLE);
                     lldescripcion.setVisibility(View.GONE);
 
@@ -851,24 +867,28 @@ public class NvoGastoFragment extends Fragment {
                     mViewModel.preguntaAct=preguntaAct;
                     break;
                 case 6:
-                    llcosto.setVisibility(View.VISIBLE);
-                    llcompr.setVisibility(View.GONE);
+                    lldescripcion.setVisibility(View.VISIBLE);
+                    llcosto.setVisibility(View.GONE);
 
-                    preguntaAct=preguntaAct-1;
+                    preguntaAct=preguntaAct-2;
                     mViewModel.preguntaAct=preguntaAct;
+
                     break;
                 case 7:
                     llcosto.setVisibility(View.VISIBLE);
-                  //  llcompr.setVisibility(View.VISIBLE);
                     llfoto.setVisibility(View.GONE);
 
-                    preguntaAct=preguntaAct-2; //foto comprobante se hace obligatoria
+                    preguntaAct=preguntaAct-1;
                     mViewModel.preguntaAct=preguntaAct;
+
                     break;
                 case 8:
                     llcomentarios.setVisibility(View.GONE);
                     if(mBinding.singasto.getRespuesta())
-                        if(mBinding.sincomprobante.getRespuesta()) {
+                    {
+                        llfoto.setVisibility(View.VISIBLE);
+                    preguntaAct = preguntaAct - 1;}
+                      /*  if(mBinding.sincomprobante.getRespuesta()) {
                             llfoto.setVisibility(View.VISIBLE);
                             preguntaAct = preguntaAct - 1;
                         }
@@ -876,7 +896,7 @@ public class NvoGastoFragment extends Fragment {
                     else {
                             llcompr.setVisibility(View.VISIBLE);
                             preguntaAct=6;
-                        }
+                        }*/
                    else {
                         llpreg1.setVisibility(View.VISIBLE);
                         preguntaAct=2;
