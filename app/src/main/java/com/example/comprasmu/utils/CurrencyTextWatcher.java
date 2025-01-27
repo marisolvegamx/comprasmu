@@ -3,7 +3,10 @@ package com.example.comprasmu.utils;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 public class CurrencyTextWatcher implements TextWatcher {
 
@@ -19,9 +22,16 @@ public class CurrencyTextWatcher implements TextWatcher {
 
                 String digits = s.toString().replaceAll("\\D", "");
                 NumberFormat nf = NumberFormat.getCurrencyInstance();
+                DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+                dfs.setCurrencySymbol("$");
+                ((DecimalFormat) nf).setDecimalFormatSymbols(dfs);
+                // new DecimalFormat("#.00")
+               // ((DecimalFormat) nf).setDecimalFormatSymbols(dfs);
+               // DecimalFormat myFormatter = new DecimalFormat("$.");
                 try{
                     String formatted = nf.format(Double.parseDouble(digits)/100);
                     s.replace(0, s.length(), formatted);
+                    //myFormatter.format(s);
                 } catch (NumberFormatException nfe) {
                     s.clear();
                 }

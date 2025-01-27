@@ -335,7 +335,34 @@ public class NvoGastoFragment extends Fragment {
             aceptar5.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    avanzar();
+                    String costo=mBinding.txtgascosto.getText().toString();
+
+                    if(!costo.equals("")) {
+                        if(costo.equals("$0.00")){
+                            Toast.makeText(getActivity(),"Costo inválido, verifique",Toast.LENGTH_LONG).show();
+
+                            return;
+                        }
+                        try {  //valido el csto
+
+                            costo = costo.substring(1).replaceAll(",", "");
+                            float importe = Float.valueOf(costo);
+
+                        } catch (NumberFormatException ex) {
+                            Toast.makeText(getActivity(), "El costo es incorrecto verifique", Toast.LENGTH_LONG).show();
+                            compraslog.grabarError(TAG, "guardarDet", " costo incorrecto");
+
+
+                            return;
+                        }
+                        avanzar();
+                    }else
+                    {
+                        Toast.makeText(getActivity(),"Costo inválido, verifique",Toast.LENGTH_LONG).show();
+
+                        return;
+                    }
+
 
                 }
             });
@@ -524,7 +551,7 @@ public class NvoGastoFragment extends Fragment {
 
                     try {
                         String conceptosel = ((CatalogoDetalle) mBinding.spgasconcep.getSelectedItem()).getCad_descripcionesp();
-                        mBinding.txtgascosto.setText("COSTO " +conceptosel);
+                      //  mBinding.txtgascosto.setText("COSTO " +conceptosel);
                     }catch(Exception ex){
 
                     }
@@ -539,6 +566,8 @@ public class NvoGastoFragment extends Fragment {
 
                     break;
                 case 6: //foto
+
+
                     llcosto.setVisibility(View.GONE);
 
                   /*  if(mBinding.sincomprobante.getRespuesta()) {
@@ -651,7 +680,7 @@ public class NvoGastoFragment extends Fragment {
         mBinding.tblgaresconcep.removeAllViews();
         TextView concepto;
         TextView costo;
-        float sumacosto=0;
+        double sumacosto=0;
         TableRow.LayoutParams lp1;
         lp1 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, .7f);
         TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, .3f);
@@ -685,8 +714,14 @@ public class NvoGastoFragment extends Fragment {
         concepto.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setText("TOTAL MUESTRAS");
         //busco el total
-        String totalmu=niviewModel.getTotalmu();
-        costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("0.00").format(totalmu));
+        Double totalmu=Double.parseDouble(niviewModel.getTotalmu());
+        try {
+            costo.setText(Constantes.SIMBOLOMON + new DecimalFormat("#.00").format(totalmu));
+        }catch(Exception ex){
+
+            ex.printStackTrace();
+            compraslog.grabarError(TAG,"llenarTablaConcep","Hubo un error al dar formato a "+totalmu);
+        }
         concepto.setLayoutParams(lp1);
         costo.setLayoutParams(lp2);
         concepto.setPadding(30,10,30,10);
@@ -697,7 +732,7 @@ public class NvoGastoFragment extends Fragment {
 
         mBinding.tblgaresconcep.addView(tableRow);
         try {
-            sumacosto = Float.parseFloat(totalmu);
+            sumacosto = totalmu;
         }catch (NumberFormatException ex){
             compraslog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
         }
@@ -716,7 +751,7 @@ public class NvoGastoFragment extends Fragment {
 
             concepto.setText(detalle.getConcepto()+"");
             concepto.setBackgroundResource(R.drawable.valuecellborder);
-            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("0.00").format(detalle.getImporte()));
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getImporte()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
             concepto.setLayoutParams(lp1);
             costo.setLayoutParams(lp2);
