@@ -200,10 +200,16 @@ public interface APIService {
 
 
     @GET("reciboListo") //devuelve si si ya puedo no si no en data
-    Call<PostResponse> getEstatusRecibo(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
+    Call<PostResponse> getReciboListo(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
 
     @GET("recibogasto")
     Call<List<InformeGastoDet>> getReciboGasto(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
+
+    @GET("estatusEnvio") //
+    Call<PostResponse> getEstatusEnvio(@Query("indice") String indice, @Query("cvereco") String usuario);
+
+    @GET("estatusRecibo") //devuelve si si ya puedo no si no en data
+    Call<PostResponse> getEstatusRecibo(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
 
 
 }
