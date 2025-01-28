@@ -416,26 +416,28 @@ public void iraReubicar(){
         //busco la foto anterior
         InformeEtapaDet informeEtapaDet= mViewModel.getDetallexDescCajaSim(informeSel,numdescr,cajainif);
         Log.d(TAG,"-----"+informeEtapaDet);
-                 if(informeEtapaDet!=null) {
-                     detalleEdit=informeEtapaDet;
-                     isEdicion=true;
+         if(informeEtapaDet!=null) {
+             detalleEdit=informeEtapaDet;
+             isEdicion=true;
 
-                     txtdescfotocaj.setText(detalleEdit.getDescripcion());
-                     txtdescidfoto.setText(detalleEdit.getDescripcionId() + "");
-                     //busco la foto
-                     ImagenDetalle foto = mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));
-                    Log.d(TAG,"aqui esta "+foto.getRuta());
-                     txtrutacaja.setText(foto.getRuta());
+             txtdescfotocaj.setText(detalleEdit.getDescripcion());
+             txtdescidfoto.setText(detalleEdit.getDescripcionId() + "");
+             //busco la foto
+             ImagenDetalle foto = mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));
+             if(foto!=null) {
+                 Log.d(TAG, "aqui esta " + foto.getRuta());
+                 txtrutacaja.setText(foto.getRuta());
 
-                     Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 80, 80);
-                     fotomoscaj.setImageBitmap(bitmap1);
-                     fotomoscaj.setVisibility(View.VISIBLE);
-                     btnrotar2.setVisibility(View.VISIBLE);
-                     btnneacfotocaj.setEnabled(true);
-                 }
-                 txtcajafoto.setText("CAJA " + cajainif);//la caja actual
-                 txtcajaact.setText(cajainif + "");
-                // lddetalle.removeObservers(getViewLifecycleOwner());
+                 Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 80, 80);
+                 fotomoscaj.setImageBitmap(bitmap1);
+                 fotomoscaj.setVisibility(View.VISIBLE);
+                 btnrotar2.setVisibility(View.VISIBLE);
+                 btnneacfotocaj.setEnabled(true);
+             }
+         }
+         txtcajafoto.setText("CAJA " + cajainif);//la caja actual
+         txtcajaact.setText(cajainif + "");
+        // lddetalle.removeObservers(getViewLifecycleOwner());
 
 
 

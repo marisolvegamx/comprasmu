@@ -1070,6 +1070,56 @@ public class PeticionesServidor {
     }
 
     public void getEstatusRecibo(String indiceactual, String ciudadInf, IListenerRevRec listener) {
+        final Call<PostResponse> batch = ServiceGenerator.getApiService().getReciboListo(indiceactual,usuario,ciudadInf);
+
+        batch.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    PostResponse respuestaCats = response.body();
+                    listener.guardarEstatus(respuestaCats);
+
+                }else
+                    Log.e("PeticionesServidor", "algo salio mal en peticion getEstatusRecibo");
+
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio getEstatusRecibo"+t.getMessage());
+                    listener.guardarEstatus(null);
+                }
+            }
+        });
+    }
+
+    public void getEstatusEnvio(String indiceactual, IListenerRevRec listener) {
+        final Call<PostResponse> batch = ServiceGenerator.getApiService().getEstatusEnvio(indiceactual,usuario);
+
+        batch.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    PostResponse respuestaCats = response.body();
+                    listener.guardarEstatus(respuestaCats);
+
+                }else
+                    Log.e("PeticionesServidor", "algo salio mal en peticion getEstatusEnvio");
+
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio getEstatusEnvio"+t.getMessage());
+                    listener.guardarEstatus(null);
+                }
+            }
+        });
+    }
+
+    public void getEstatusRecibo2(String indiceactual, String ciudadInf, IListenerRevRec listener) {
         final Call<PostResponse> batch = ServiceGenerator.getApiService().getEstatusRecibo(indiceactual,usuario,ciudadInf);
 
         batch.enqueue(new Callback<PostResponse>() {

@@ -1690,7 +1690,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         }
 
-       /* if (txtaiultubic.getText().toString().equals("")) {
+        if (txtaiultubic.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
             return false;
@@ -1699,7 +1699,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
             return false;
-        }*/
+        }
         //Log.d(TAG,"xxxxxx"+txtfotoex1.getText().toString());
         if(estatusPepsi==0)//no puedo comprar pepsi{
         {

@@ -702,7 +702,12 @@ public void iraReubicar(){
             case 4: //numcaja
 
                 sv6.setVisibility(View.GONE);
-                guardarDet();
+                try {
+                    guardarDet();
+                }catch (Exception ex){
+                    sv6.setVisibility(View.VISIBLE);
+                  return;
+                }
                 Log.d(TAG, contmuestra + "--" + totmuestras);
                 isEdicion = false;
                 if (contmuestra <= totmuestras) {
@@ -968,6 +973,7 @@ public void iraReubicar(){
             milog.grabarError(TAG,"guardar inf variables: ",preguntaAct+"--"+isEdicion+"--"+mViewModel.getNvoinforme()+"--"+contmuestra);
             if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null&&contmuestra==1) {
                 Log.d(TAG, "creando nvo inf");
+                milog.grabarError(TAG,"guardar inf ", "creando nvo inf");
                 //creo el informe
                 mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL, clienteNombreSel,clienteSel,0,totmuestras,ciudadInf));
               //  ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEtiq(mViewModel.getNvoinforme());
@@ -975,23 +981,31 @@ public void iraReubicar(){
             }else
             if (preguntaAct == 2 && !isEdicion&&mViewModel.getNvoinforme()==null&&issegundoinf&&contmuestra==1) {
                 Log.d(TAG, "creando segundo inf");
+                milog.grabarError(TAG,"guardar inf ","creando segundo inf");
                 //creo el informe
                 mViewModel.setIdNuevo(mViewModel.insertarEtiq(Constantes.INDICEACTUAL, clienteNombreSel,clienteSel,0,totmuestras,ciudadInf));
                 //  ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEtiq(mViewModel.getNvoinforme());
 
             }
+            if(mViewModel.getIdNuevo()<1)
+            {
+
+                Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_LONG).show();
+                return;
+            }
+
         }catch (Exception ex){
             ex.printStackTrace();
             Log.e(TAG,"Algo salió mal al guardarInf"+ex.getMessage());
             milog.grabarError(TAG,"guardar inf ",ex.getMessage());
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
-
+            return;
         }
 
         aceptar1.setEnabled(true);
         avanzar();
     }
-    public void guardarDet(){
+    public void guardarDet() throws Exception {
         try{
             String rutafoto = null;
             String qr = null;
@@ -1002,6 +1016,11 @@ public void iraReubicar(){
 
             String opcionsel = (String) spcaja.getSelectedItem();
             int numcaja = Integer.parseInt(opcionsel);
+
+
+          //  mViewModel.setIdNuevo(0);
+
+
             if(isEdicion&&detalleEdit!=null){
                 mViewModel.actualizarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,detalleEdit.getId(),numcaja,qr,contmuestra,detalleEdit.getRuta_foto(),Constantes.INDICEACTUAL);
                 isEdicion=false;
@@ -1011,11 +1030,11 @@ public void iraReubicar(){
                 //guardo el detalle
                 mViewModel.insertarEtiqDet(mViewModel.getIdNuevo(),11,"foto_etiqueta",rutafoto,0,numcaja,qr,contmuestra,Constantes.INDICEACTUAL);
            else{
-               if(informeSel<1){
-                   milog.grabarError(TAG ,"guardarDet","Algo salió mal al guardarDet informe sel se perdió");
 
-               }
-                milog.grabarError(TAG ,"guardarDet","Algo salió mal al guardarDet no se guardo el informe o no se encontró bien para edición");
+                   milog.grabarError(TAG ,"guardarDet","Hubo un error al guardarDet informe sel se perdió");
+
+                   Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_LONG).show();
+                   throw new Exception("Hubo un error al guardar intente de nuevo");
 
             }
             //limpio campos
@@ -1037,7 +1056,7 @@ public void iraReubicar(){
             milog.grabarError(TAG ,"guardarDet","Algo salió mal al guardarDet"+ex.getMessage());
             Log.e(TAG,"Algo salió mal al guardarDet"+ex.getMessage());
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
-
+            throw new Exception("Hubo un error al guardar intente de nuevo");
         }
 
     }
