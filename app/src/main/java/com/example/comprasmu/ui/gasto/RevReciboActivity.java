@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -122,6 +123,7 @@ public class RevReciboActivity extends AppCompatActivity {
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(false);
         webView.loadUrl(urlrecibo);
+        comentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         btnenviar.setOnClickListener(new View.OnClickListener() {
             @Override

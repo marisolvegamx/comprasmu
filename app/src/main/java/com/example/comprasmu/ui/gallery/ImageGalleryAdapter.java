@@ -72,7 +72,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         holder.txtdesc.setText(descripcion);
         holder.txtruta.setText(spacePhoto.getRuta());
         if(Constantes.ETAPAACTUAL==3) {
-            holder.txtdesc.setText("MUESTRA "+(position+1));
+            holder.txtdesc.setVisibility(View.GONE);
             holder.atr1.setText(spacePhoto.getDescripcion()); //qr
             holder.atr1.setVisibility(View.VISIBLE);
           //  holder.atr2.setText("CAJA: "+spacePhoto.getRuta());//caja

@@ -240,7 +240,11 @@ public class GalFotosFragment extends Fragment {
 
                                 //  id.setDescripcion(inf.getDescripcion());
                                 if(inf.getDescripcionId()==11) //son de etiqueta
-                                     id.setDescripcion(inf.getQr()+"\r\nCAJA:"+inf.getNum_caja());
+                                {
+                                    String texto1="MUESTRA "+(inf.getNum_muestra());
+                                    id.setDescripcion(texto1+"\r\n"+inf.getQr() + "\r\nCAJA:" + inf.getNum_caja());
+                                }
+
                                else
                                    //son de muestra
                                     id.setDescripcion(inf.getDescripcion()+"\r\nCAJA:"+inf.getNum_caja());

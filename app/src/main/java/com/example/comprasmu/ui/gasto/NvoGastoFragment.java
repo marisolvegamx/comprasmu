@@ -307,7 +307,7 @@ public class NvoGastoFragment extends Fragment {
                 public void onClick(View view) {
                     //todo guaradr unforme etapa
                     guardarInf();
-                    avanzar();
+
 
                 }
             });
@@ -959,8 +959,11 @@ public class NvoGastoFragment extends Fragment {
 
                     //creo el informe
                     mViewModel.setIdNuevo(mViewModel.insertarGasto(Constantes.INDICEACTUAL, 0,ciudadInf));
-                   informeSel=mViewModel.getIdNuevo();
+                    informeSel=mViewModel.getIdNuevo();
                     informeEdit = mViewModel.getInformexId(informeSel);
+                    if(mViewModel.getIdNuevo()<1){
+                        throw new Exception();
+                    }
                 }
 
 
@@ -968,9 +971,10 @@ public class NvoGastoFragment extends Fragment {
                 ex.printStackTrace();
                 compraslog.grabarError(TAG,"guardarInf","Algo salió mal al guardarInf"+ex.getMessage());
                 Toast.makeText(getActivity(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
+                return;
             }
             aceptar1.setEnabled(true);
-
+            avanzar();
         }
         public void guardarDet(){
             try{
@@ -994,6 +998,11 @@ public class NvoGastoFragment extends Fragment {
                 if(detalleEdit==null) { //es 1a vez
                     compraslog.grabarError(TAG,"guardarDet","no es edicion ");
 
+
+
+                    if(mViewModel.getIdNuevo()<1){
+                        throw new Exception("Se perdió el valor del idinforme");
+                    }
                     InformeGastoDet nvoDet = new InformeGastoDet();
                     nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
                     nvoDet.setConcepto(concepto);
@@ -1034,8 +1043,6 @@ public class NvoGastoFragment extends Fragment {
                             "edicion ");
 
                     //busco si ya tiene detalle
-
-
                     detalleEdit.setConcepto(concepto);
                     detalleEdit.setConceptoId(conceptoid);
                     detalleEdit.setDescripcion(descripcion);
@@ -1254,6 +1261,10 @@ public class NvoGastoFragment extends Fragment {
             compraslog.grabarError(TAG,"finalizarInf","total gastos="+totalgastos);
 
             String comentarios=mBinding.txtgascomentarios.getText().toString();
+
+            if(mViewModel.getIdNuevo()<1){
+                throw new Exception("Se perdió el valor del idinforme");
+            }
             if(!comentarios.equals(""))
                 mViewModel.actualizarComentarios(mViewModel.getIdNuevo(),comentarios);
             mViewModel.finalizarInf();
