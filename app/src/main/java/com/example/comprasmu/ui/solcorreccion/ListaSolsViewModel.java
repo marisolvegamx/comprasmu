@@ -346,16 +346,13 @@ public class ListaSolsViewModel extends AndroidViewModel {
         List<InformeEtapa> informes=getInfEtapaxEstatusSim(Constantes.INDICEACTUAL,etapa,estatus);
 
         //paso de informe etapa ainforme compra
-
         for (InformeEtapa infeta : informes
         ) {
-
             //reviso si ya estoy en etapa 3
             List<ListaCompra> listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
             if (listacomp != null && listacomp.size() > 0 && listacomp.get(0)!=null&&listacomp.get(0).getClientesId() == infeta.getClientesId()) {
 
                 listageneral.add(infeta);
-
 
             }
 
