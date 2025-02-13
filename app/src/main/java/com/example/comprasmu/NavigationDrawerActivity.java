@@ -777,7 +777,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             totMuestraAdic.setValue(listageneral);
         }
     }
-    int totalcan2 = 0;
+
     private void initializeCountDrawer(){
 
         totCancel=new MutableLiveData<>();
@@ -807,30 +807,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 totCancel.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                     @Override
                     public void onChanged(Integer totcan) {
-                        totCanceleta=scViewModel.getTotalCancelEta(Constantes.INDICEACTUAL);
 
-                        //para informes etapa cancelados
-                        totCanceleta.observe(NavigationDrawerActivity.this, new Observer<List<InformeEtapa>>() {
-                            @Override
-                            public void onChanged(List<InformeEtapa> informeCompraDetalles2) {
-                                Log.d(TAG, "wwww" + informeCompraDetalles2.size() + "--" + Constantes.ETAPAACTUAL + "," + Constantes.INDICEACTUAL);
-                                List<InformeEtapa> listageneral=new ArrayList<>();
-                                if (informeCompraDetalles2 != null){
-                                    //para informes etapa cancelados
-                                    for (InformeEtapa informe:informeCompraDetalles2
-                                    ) { //busco si no se ha vuelto a elaborar
-                                        InformeEtapa inf=scViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,2);
-                                        if(inf!=null){
-                                            //corregido
-                                            continue;
-                                        }
-                                        else
-                                            listageneral.add(informe);
 
-                                    }
-                                }
-                           //     informeCompraDetalles2=listageneral;
-                                totalcan2 = listageneral.size();
 
                                 contarMuestraAdic();
 
@@ -843,7 +821,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                                     totMuestraAdic.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                                     @Override
                                     public void onChanged(Integer totma) {
-                                        int totalnotif = totcor + totcan + totma + totalcan2+valor;
+                                        int totalnotif = totcor + totcan + totma +valor;
 
                                         gallery.setText(totalnotif + "");
                                     }
@@ -851,8 +829,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                                     }
                                 });
                             }
-                        });
-                    }
+
+
                 });
 
 
@@ -1120,12 +1098,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
     }
-
-  /*  @Override
+      @Override
     protected void onResume() {
         super.onResume();
         initializeCountDrawer();
-    }*/
+    }
     /*  public boolean onNavigationMenuEmp(MenuItem item) {
         // Handle navigation view item clicks here.
         Log.d(TAG,"SI DI CLICK");

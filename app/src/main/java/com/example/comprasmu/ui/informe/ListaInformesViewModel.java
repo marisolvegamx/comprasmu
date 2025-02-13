@@ -213,6 +213,9 @@ public class ListaInformesViewModel extends AndroidViewModel {
 
         repository.actualizarEstatusSync(id,estatusSync);
     }
+    public List<InformeEtapa> getInformesxEstatusSim( int etapa, String indice,int estatus) {
+        return inferepo.getInformesxEstatusSim(indice,etapa,estatus);
+    }
    /* public  LiveData<List<InformeCompra>>  cargarPestañas(){
         return repository.getClientesByIndice(Constantes.INDICEACTUAL, nombreTienda,ciudadSel,plantaSel,clienteSel);
 

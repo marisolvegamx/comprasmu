@@ -125,7 +125,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
             //busco el nombre
             nummuestra=bundle.getInt(DetalleProductoFragment.NUMMUESTRA);
-            nombreCliente =mViewModel.buscarClientexPlan(plantaSel);
+            nombreCliente =mViewModel.buscarClientexPlan(plantaSel, Constantes.INDICEACTUAL);
             int  consecutivo = niViewModel.getConsecutivo(plantaSel, getActivity(), this);
             //  Log.d(TAG, "*genere cons=" + consecutivo);
 

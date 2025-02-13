@@ -1738,19 +1738,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         }
 
-        if(txtfotoex1.getText().toString().equals("")&&!cbfotoex.isChecked()){
-            Toast.makeText(getActivity(), "Falta foto de producto exhibido o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
-            return false;
-        }if(snmascli1.getRespuesta())//veo que tenga foto etc
-            if(txtfotoex2.getText().toString().equals("")&&!cbfotoex2.isChecked()){
-                Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        if(snmascli2!=null&&snmascli2.getRespuesta())//veo que tenga foto etc
-            if(txtfotoex3.getText().toString().equals("")&&!cbfotoex3.isChecked()){
-                Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
-                return false;
-            }
+
             if(nuevaTienda){
                 input1 = root.findViewById(1001);
                 EditText input2 = root.findViewById(1002);
@@ -1837,9 +1825,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             mViewModel.visita.setCreatedAt(new Date());
             mViewModel.visita.setGeolocalizacion(txtaiultubic.getText().toString());
 
-
             MutableLiveData<Integer> resv=mViewModel.guardarVisita(getActivity(),this);
-           resv.observe(this, new Observer<Integer>() {
+            resv.observe(this, new Observer<Integer>() {
                @Override
                public void onChanged(Integer integer) {
                    mViewModel.eliminarTblTemp();

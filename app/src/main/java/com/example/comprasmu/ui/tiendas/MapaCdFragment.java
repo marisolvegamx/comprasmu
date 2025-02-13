@@ -602,7 +602,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         String indiceini=aux1[0]+"."+anioant;
         fini=ComprasUtils.indiceaFecha2(indiceini);
         //busco el pais y cd de la planta
-        int[] aux =lcviewModel.buscarClienCdxPlan(planta);
+        int[] aux =lcviewModel.buscarClienCdxPlan(planta, Constantes.INDICEACTUAL);
         cliente=aux[0];
         String ciudad=Constantes.CIUDADTRABAJO;
         //   Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);

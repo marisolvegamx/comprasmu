@@ -204,9 +204,9 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         return  opciones;
     }
 
-    public int[] buscarClienCdxPlan(int planta){
+    public int[] buscarClienCdxPlan(int planta,String indice){
         int[] devolver = new int[2];
-        List<ListaCompra> res=repository.getByPlanta(planta);
+        List<ListaCompra> res=repository.getByPlanta(planta, indice);
         if(res!=null&&res.size()>0){
             devolver[0]=res.get(0).getClientesId();
             devolver[1]=res.get(0).getCiudadesId();
@@ -214,9 +214,9 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         }
         return devolver;
     }
-    public String buscarClientexPlan(int planta){
+    public String buscarClientexPlan(int planta, String indice){
 
-        List<ListaCompra> res=repository.getByPlanta(planta);
+        List<ListaCompra> res=repository.getByPlanta(planta, indice);
         if(res!=null&&res.size()>0){
             return res.get(0).getClienteNombre();
 

@@ -129,8 +129,9 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         });
 
         setEtiquetado(3,6);
+
         //veo si ya puedo hacer empaque
-        List<ListaCompra> listacomp = notViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+        List<ListaCompra> listacomp = notViewModel.cargarClientesSimplxet("", 4); //para todas las ciudades
         InformeEtapa nvoinf=new InformeEtapa();
         List<InformeEtapa> listageneral=new ArrayList<>();
         if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()!=null&&listacomp.get(0).getLis_reactivado()==1) {
@@ -164,7 +165,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
             mBinding.lisinfeta.setVisibility(View.VISIBLE);
         }else //busco de la etapa 1
         {
-            mViewModel.cargarCanceladosEta(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+            mViewModel.getInfEtapaxEstatus(indice,1,0).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
                 @Override
                 public void onChanged(List<InformeEtapa> informes) {
 
@@ -219,7 +220,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
 
     private void setEtiquetado(int etapa, int estatus) {
         List<InformeEtapa> listageneral=new ArrayList<>();
-        //para ver si sigue etiquetado y empaque
+        //para ver si sigue etiquetado
         mViewModel.getInfEtapaxEstatus(indice,etapa,estatus).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
             @Override
             public void onChanged(List<InformeEtapa> informes) {
@@ -231,23 +232,16 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                 ) {
 
                     //reviso si ya estoy en etapa 3
-                    List<ListaCompra> listacomp = notViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                    List<ListaCompra> listacomp = notViewModel.buscarListaCompxPlan(infeta.getPlantasId(),infeta.getIndice());
                     if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
 
-                     /*   nvoinf.indice = infeta.getIndice();
-                        nvoinf.idinforme = infeta.getId();
-                        nvoinf.estatus = infeta.getEstatus();
-                        nvoinf.nombreEtapa = Constantes.ETAPAS[infeta.getEtapa()];
-                        if (infeta.getClienteNombre().equals("")) {
-                            nvoinf.plancdNombre = infeta.getCiudadNombre();
-                            nvoinf.clienteNombre = infeta.getClienteNombre();
-                        }*/
-                            // nvoinf.mo
+
+                        if (listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1)
                             listageneral.add(infeta);
 
 
                     }
-                    nvoinf = null;
+
                 }
                 if (listageneral.size() < 1) {
 

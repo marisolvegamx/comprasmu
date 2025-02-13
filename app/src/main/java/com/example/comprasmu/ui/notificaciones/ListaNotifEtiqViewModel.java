@@ -89,8 +89,12 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
         return cancelados;
     }
 
-    public LiveData<List<InformeEtapa>> getInfcancelados() {
-        return infcancelados;
+    public List<ListaCompra> buscarListaCompxPlan(int planta, String indice){
+
+        List<ListaCompra> res=lcrepo.getByPlanta(planta, indice);
+
+        return res;
+
     }
 
     public List<ListaCompraDetalle> getAllByListasimple(int idlista) {

@@ -284,7 +284,7 @@ public class MapaCdActivity extends FragmentActivity implements OnMapReadyCallba
         String ffin="";
         ffin=ComprasUtils.indiceaFecha(indicefin);
         //busco el pais y cd de la planta
-        int[] aux =lcviewModel.buscarClienCdxPlan(planta);
+        int[] aux =lcviewModel.buscarClienCdxPlan(planta, Constantes.INDICEACTUAL);
         int pais=aux[0];
         int ciudad=aux[1];
         Log.d(TAG,"--"+pais+"--"+ciudad+"..."+planta+".."+cliente);

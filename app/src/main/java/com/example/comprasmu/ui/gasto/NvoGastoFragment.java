@@ -714,13 +714,22 @@ public class NvoGastoFragment extends Fragment {
         concepto.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setText("TOTAL MUESTRAS");
         //busco el total
-        Double totalmu=Double.parseDouble(niviewModel.getTotalmu());
+        Double totalmu=0.0;
+        String total=null;
         try {
+             total=niviewModel.getTotalmu();
+             if(total.equals("")) {
+                 Toast.makeText(getActivity(), "Hubo un error al guardar intente de nuevo", Toast.LENGTH_SHORT).show();
+                return;
+             }
+            totalmu=Double.parseDouble(total);
             costo.setText(Constantes.SIMBOLOMON + new DecimalFormat("#.00").format(totalmu));
         }catch(Exception ex){
 
             ex.printStackTrace();
-            compraslog.grabarError(TAG,"llenarTablaConcep","Hubo un error al dar formato a "+totalmu);
+            compraslog.grabarError(TAG,"llenarTablaConcep","Hubo un error al dar formato a "+total);
+            Toast.makeText(getActivity(), "Hubo un error al guardar intente de nuevo", Toast.LENGTH_SHORT).show();
+            return;
         }
         concepto.setLayoutParams(lp1);
         costo.setLayoutParams(lp2);
@@ -735,6 +744,8 @@ public class NvoGastoFragment extends Fragment {
             sumacosto = totalmu;
         }catch (NumberFormatException ex){
             compraslog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
+            Toast.makeText(getActivity(), "Hubo un error al guardar intente de nuevo", Toast.LENGTH_SHORT).show();
+            return;
         }
         //busco lo capturado
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(mViewModel.getIdNuevo());
@@ -765,6 +776,8 @@ public class NvoGastoFragment extends Fragment {
 
             }catch(NumberFormatException ex){
                 compraslog.grabarError(TAG+" "+ex.getMessage());
+                Toast.makeText(getActivity(), "Hubo un error al guardar intente de nuevo", Toast.LENGTH_SHORT).show();
+                return;
             }
 
 

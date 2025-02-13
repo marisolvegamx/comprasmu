@@ -59,6 +59,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
     ComprasLog milog;
     private  InfGastoDetRepositoryImpl gasdetrepo;
     MutableLiveData<Integer> totCancel;
+    private int itotCancel;
 
     public ListaSolsViewModel(Application application) {
         super(application);
@@ -265,13 +266,28 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     }
     public void contarCanceladas(){
-        int itotCancel=0;
+        int itotCanceleta=0;
+        //busco si hay cancelacion de preparacion
+        List<InformeEtapa> totCanceleta=getTotalCancelEtaSim(Constantes.INDICEACTUAL,1);
+        for (InformeEtapa informe:totCanceleta
+        ) { //busco si no se ha vuelto a elaborar
+            InformeEtapa inf=getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,0);
+            if(inf!=null){
+                //corregido
+                continue;
+            }
+            else
+                itotCanceleta++;
+
+        }
+
         List<InformeCompraDetalle> informesCancel=getTotalCancel(Constantes.INDICEACTUAL);
         totCancel=new MutableLiveData<>();
+
         if(informesCancel!=null&&informesCancel.size()>0) {
             itotCancel = informesCancel.size();
-            totCancel = new MutableLiveData<>();
-            totCancel.setValue(itotCancel);
+
+
         }
         else {
             List<ListaCompra> listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
@@ -302,41 +318,10 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
                 itotCancel = listageneral.size();
 
-                totCancel.setValue(itotCancel);
+               
             }
         }
-
-
-        /*
-        itotCancel=getTotalCancell(Constantes.INDICEACTUAL);
-
-        List<ListaCompra> listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
-        if(listacomp!=null&&listacomp.size()>0)
-            setEtiquetadoCancel(3,6);
-        else {
-            //veo si ya puedo hacer empaque
-            listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-            InformeEtapa nvoinf = new InformeEtapa();
-            List<InformeEtapa> listageneral = new ArrayList<>();
-            if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
-                //veo que no haya hecho informe para no esperar a la supervisión
-                 InformeEtapa informesEtapa = getInformeNoCancel(Constantes.INDICEACTUAL, 4);
-                if (informesEtapa != null) {
-                    nvoinf.setIndice(listacomp.get(0).getIndice());
-                    // nvoinf.set = listacomp.get(0).getId();
-                    nvoinf.setEstatus(listacomp.get(0).getEstatus());
-                    nvoinf.setEtapa(4);
-
-                    nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
-                    nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
-
-                    // nvoinf.mo
-                    listageneral.add(nvoinf);
-                }
-            }
-            if (listageneral.size() > 0)
-                totCancel.setValue(listageneral.size());
-        }*/
+        totCancel.setValue(itotCancel+itotCanceleta);
 
     }
 
@@ -357,17 +342,17 @@ public class ListaSolsViewModel extends AndroidViewModel {
             }
 
         }
-        totCancel=new MutableLiveData<>();
-        totCancel.setValue(listageneral.size());
+       itotCancel=listageneral.size();
 
     }
 
     public InformeEtapa getInformexPlantaEtaEst(int plantasId, int etapa, String indice,int estatus) {
         return infetarepo.getInformexPlantEst(indice,etapa,plantasId,0);
     }
-    public List<InformeEtapa> getTotalCancelEtaSim(String indiceSel ) {
-        return infetarepo.getInformesxEstatusAllSim(indiceSel,0);
+    public List<InformeEtapa> getTotalCancelEtaSim(String indiceSel, int etapa ) {
+        return infetarepo.getInformesxEstatusSim(indiceSel, etapa,0);
     }
+
     public MutableLiveData<Integer> getTotCancel() {
         return totCancel;
     }
@@ -417,4 +402,12 @@ public class ListaSolsViewModel extends AndroidViewModel {
     public InformeGastoDet getByNumfoto(int idInforme, int numfoto) {
         return gasdetrepo.getByNumfoto(idInforme, numfoto);
     }
+
+    public  List<ListaCompra>  getClientesByIndiceCiudadSimplsp(String ciudadSel, int clienteId){
+
+        return lcrepo.getClientesByIndiceCiudadSimplsp(Constantes.INDICEACTUAL,ciudadSel,clienteId);
+
+
+    }
+
 }

@@ -171,6 +171,10 @@ public class NvaPreparacionFragment extends Fragment {
                     Log.e(TAG, "algo salió mal con la consulta de listas");
 
         }
+        else{
+            Toast.makeText(getActivity(), "No puede hay datos que mostrar", Toast.LENGTH_SHORT).show();
+            return root;
+        }
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
         if(!isEdicion&&preguntaAct<2&&mViewModel.getIdNuevo()==0) {
@@ -281,9 +285,9 @@ public class NvaPreparacionFragment extends Fragment {
                     public void onChanged(InformeEtapaDet informeEtapaDet) {
                         Log.d(TAG,"edicion detalledit"+informeEtapaDet.getRuta_foto());
                        if(informeEtapaDet!=null)
-                        ultimares=informeEtapaDet.getRuta_foto();
-                        detalleEdit = informeEtapaDet;
-                        crearFormulario();
+                            ultimares=informeEtapaDet.getRuta_foto();
+                       detalleEdit = informeEtapaDet;
+                       crearFormulario();
                     }
                 });
             }
@@ -528,6 +532,10 @@ public class NvaPreparacionFragment extends Fragment {
             clienteNombre = aux[1];
             plantaSel = opcionsel.getId();
             nombrePlantaSel = opcionsel.getDescripcion2();
+        }
+        else{
+            Toast.makeText(getActivity(), "Seleccione el cliente", Toast.LENGTH_SHORT).show();
+            return ;
         }
 
        //creo el informe

@@ -114,27 +114,23 @@ public class SelNotifFragment extends ListaSelecFragment{
 
     private void contarCanceladas(){
         ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-        totCanceleta=scViewModel.getTotalCancelEtaSim(Constantes.INDICEACTUAL);
-        if(totCanceleta!=null){
-            List<InformeEtapa> listageneral=new ArrayList<>();
 
-                //para informes etapa cancelados
-                for (InformeEtapa informe:totCanceleta
-                ) { //busco si no se ha vuelto a elaborar
-                    InformeEtapa inf=scViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,2);
-                    if(inf!=null){
-                        //corregido
-                        continue;
-                    }
-                    else
-                        listageneral.add(informe);
+        //busco cancelados de preparacion
 
-                }
+        totCanceleta=scViewModel.getTotalCancelEtaSim(Constantes.INDICEACTUAL,1);
+        for (InformeEtapa informe:totCanceleta
+        ) { //busco si no se ha vuelto a elaborar
+            InformeEtapa inf=scViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,0);
+            if(inf!=null){
+                //corregido
+                continue;
+            }
+            else
+                itotCanceleta++;
 
-            itotCanceleta=listageneral.size();
         }
 
-
+        //busco cancelados compra
         List<InformeCompraDetalle> informesCancel=scViewModel.getTotalCancel(Constantes.INDICEACTUAL);
 
         if(informesCancel!=null&&informesCancel.size()>0)
@@ -142,17 +138,17 @@ public class SelNotifFragment extends ListaSelecFragment{
             totCancel=informesCancel.size();
         totCancel=totCancel+itotCanceleta;
         if(totCancel==0){
-                    List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
-                    if(listacomp!=null&&listacomp.size()>0)
+            //busco etiquetado por reactivacion
+            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            if(listacomp!=null&&listacomp.size()>0)
                          setEtiquetadoCancel(3, 6);
-                   else {
+            else {
                         //veo si ya puedo hacer empaque
-                        listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-                        InformeEtapa nvoinf = new InformeEtapa();
-                        List<InformeEtapa> listageneral = new ArrayList<>();
-                        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
+                listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                InformeEtapa nvoinf = new InformeEtapa();
+                List<InformeEtapa> listageneral = new ArrayList<>();
+                if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
                     //veo que no haya hecho informe para no esperar a la supervisión
-
                     InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
                     if (informesEtapa != null) {
                         nvoinf.setIndice(listacomp.get(0).getIndice());
@@ -177,7 +173,7 @@ public class SelNotifFragment extends ListaSelecFragment{
 
         // lista de compra pendiente
         List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReac(Constantes.CIUDADTRABAJO, 2,2);
-            if(listacomp.size()>0){
+        if(listacomp.size()>0){
 
             int informesdetList=0;
             InformeCompraDao.InformeCompravisita informetemp=new InformeCompraDao.InformeCompravisita();
