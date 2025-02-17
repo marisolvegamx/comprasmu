@@ -105,35 +105,16 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
 
 
     private void setupListAdapter() {
-      /*  mBinding.detalleList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mBinding.detalleList.setHasFixedSize(true);
-
-        mEtaAdapter = new NotifEtiqAdapter(this);
-        mBinding.detalleList.setAdapter(mEtaAdapter);*/
 
         cargarLista();
-
 
     }
 
 
 
-   /* @Override
-    public void onClickAgregar(int idinforme) {
-        Log.d(TAG,"di click en continua inf");
-       // NavHostFragment.findNavController(this).navigate(R.id.action_nottoact);
-        Intent intento1 = new Intent(getActivity(), EditInfEtapaActivity.class);
-        intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,idinforme );
-        intento1.putExtra(ContInfEtapaFragment.ETAPA,3 );
-        startActivity(intento1);
-    }*/
-
     @Override
     public void onClickContinuar(int idinforme) {
-       /* Intent intento1 = new Intent(getActivity(), NuevoInfEtapaActivity.class);
-        intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,idinforme );
-        intento1.putExtra(ContInfEtapaFragment.ETAPA,3 );
-        startActivity(intento1);*/
+    
 
         Intent intento1 = new Intent(getActivity(), EditInfEtapaActivity.class);
         intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL,idinforme );

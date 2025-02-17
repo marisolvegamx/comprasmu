@@ -26,6 +26,7 @@ import com.example.comprasmu.data.remote.CatalogosResponse;
 import com.example.comprasmu.data.remote.EtapaResponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 
+import com.example.comprasmu.data.remote.NotificacionResponse;
 import com.example.comprasmu.data.remote.PlantaResponse;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
@@ -43,6 +44,7 @@ import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.envio.DescargarFragment;
 import com.example.comprasmu.ui.envio.DocumentosEnvio;
+import com.example.comprasmu.ui.gasto.IListenerResumen;
 import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.gasto.NvoGastoFragment;
 import com.example.comprasmu.ui.gasto.RevReciboActivity;
@@ -917,7 +919,7 @@ public class PeticionesServidor {
         });
     }
     /****pido informe gasto para ver los cambios***/
-    public void getCambiosGastos(String indice, String cd, VerInformeGasFragment.ListenerResumen listener){
+    public void getCambiosGastos(String indice, String cd, IListenerResumen listener){
 
         Log.d("PeticionesServidor","getCambiosGastos "+usuario);
 
@@ -1069,6 +1071,33 @@ public class PeticionesServidor {
         });
     }
 
+    /***traigo todas las notificaciones en una consulta****/
+    public void getNotificacionesGen(String indiceactual, String ciudad, IListenerRevRec listener) {
+        final Call<NotificacionResponse> batch = ServiceGenerator.getApiService().getNotificacionesGen(indiceactual,usuario,ciudad);
+
+        batch.enqueue(new Callback<NotificacionResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<NotificacionResponse> call, @Nullable Response<NotificacionResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    NotificacionResponse respuestaCats = response.body();
+                    listener.guardarResNotif(respuestaCats);
+
+                }else {
+                    Log.e("PeticionesServidor", "algo salio mal en peticion getEstatusEnvio");
+                    listener.guardarResNotif(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<NotificacionResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e("PeticionesServidor", "algo salio mal en peticio getEstatusEnvio"+t.getMessage());
+                    listener.guardarResNotif(null);
+                }
+            }
+        });
+    }
+
     public void getEstatusRecibo(String indiceactual, String ciudadInf, IListenerRevRec listener) {
         final Call<PostResponse> batch = ServiceGenerator.getApiService().getReciboListo(indiceactual,usuario,ciudadInf);
 
@@ -1094,53 +1123,4 @@ public class PeticionesServidor {
         });
     }
 
-    public void getEstatusEnvio(String indiceactual, IListenerRevRec listener) {
-        final Call<PostResponse> batch = ServiceGenerator.getApiService().getEstatusEnvio(indiceactual,usuario);
-
-        batch.enqueue(new Callback<PostResponse>() {
-            @Override
-            public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    PostResponse respuestaCats = response.body();
-                    listener.guardarEstatus(respuestaCats);
-
-                }else
-                    Log.e("PeticionesServidor", "algo salio mal en peticion getEstatusEnvio");
-
-            }
-
-            @Override
-            public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
-                if (t != null) {
-                    Log.e("PeticionesServidor", "algo salio mal en peticio getEstatusEnvio"+t.getMessage());
-                    listener.guardarEstatus(null);
-                }
-            }
-        });
-    }
-
-    public void getEstatusRecibo2(String indiceactual, String ciudadInf, IListenerRevRec listener) {
-        final Call<PostResponse> batch = ServiceGenerator.getApiService().getEstatusRecibo(indiceactual,usuario,ciudadInf);
-
-        batch.enqueue(new Callback<PostResponse>() {
-            @Override
-            public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    PostResponse respuestaCats = response.body();
-                    listener.guardarEstatus(respuestaCats);
-
-                }else
-                    Log.e("PeticionesServidor", "algo salio mal en peticion getEstatusRecibo");
-
-            }
-
-            @Override
-            public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
-                if (t != null) {
-                    Log.e("PeticionesServidor", "algo salio mal en peticio getEstatusRecibo"+t.getMessage());
-                    listener.guardarEstatus(null);
-                }
-            }
-        });
-    }
 }

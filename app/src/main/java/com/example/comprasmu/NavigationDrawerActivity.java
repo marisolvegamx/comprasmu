@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
@@ -37,6 +38,7 @@ import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.MuestraCancelada;
+import com.example.comprasmu.data.remote.NotificacionResponse;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.SolCorreResponse;
@@ -55,6 +57,7 @@ import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.mantenimiento.ConfiguracionCamFragment;
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
 import com.example.comprasmu.ui.notificaciones.ListaNotifEtiqViewModel;
+import com.example.comprasmu.ui.notificaciones.NotificacionGen;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.ui.solcorreccion.SelNotifFragment;
 import com.example.comprasmu.ui.tiendas.MapaCdFragment;
@@ -145,7 +148,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     NavigationView navigationView;
     private ComprasLog flog;
     private LiveData<Integer> totCancel;
-    private MutableLiveData<Integer> revRecibo;
+    private MutableLiveData<Integer> totalNotifGen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -783,7 +786,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         totCancel=new MutableLiveData<>();
         totMuestraAdic=new MutableLiveData<>();
         contarCorrecc();
-        revisarRecibo();
+        notificacionesGenerales();
 
 
         if(gallery!=null) {
@@ -812,7 +815,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
                                 contarMuestraAdic();
 
-                                revRecibo.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
+                                totalNotifGen.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                                     @Override
                                     public void onChanged(Integer valor) {
 
@@ -1131,30 +1134,46 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         navController.navigate(R.id.nav_borrarind);
     }
-    private void revisarRecibo() {
-        revRecibo=new MutableLiveData<>();
+    private void notificacionesGenerales() {
+        totalNotifGen=new MutableLiveData<>();
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         ListenerNavRevRec listener=new ListenerNavRevRec();
-        ps.getEstatusRecibo(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
+        ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
 
+    }
+
+    //la lista de notificaciones la cuento
+    private  void convertirListaNotif(List<NotificacionGen> lista) {
+        int totalnotif=0;
+         for (NotificacionGen noti:
+                lista) {
+           totalnotif+=noti.getTotal();
+
+        }
+        totalNotifGen.setValue(totalnotif);
     }
 
     public class ListenerNavRevRec implements IListenerRevRec{
 
         @Override
         public void guardarEstatus(PostResponse response) {
-            int estatusRecibo=0;
-            if(response!=null&&response.getData()!=null&&response.getData().equals("2")) {
-                estatusRecibo = 1;
 
-
-            }
-            revRecibo.setValue(estatusRecibo);
         }
 
         @Override
         public void guardarRes(PostResponse respuesta) {
 
         }
+
+        @Override
+        public void guardarResNotif(NotificacionResponse response) {
+            if(response!=null&&response.getData()!=null) {
+                convertirListaNotif(response.getData());
+
+            }
+
+        }
+
+
     }
 }

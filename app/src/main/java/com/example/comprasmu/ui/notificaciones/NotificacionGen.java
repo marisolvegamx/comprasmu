@@ -11,7 +11,8 @@ public class NotificacionGen {
     private int idCliente;
     private String descripcion1;
     private String descripcion2;
-    private int tipo;
+    private int total; //total de notificaciones a mostrar
+    private int tipo;//opcion en la tabla para la sig pantalla
 
     public String getIndice() {
         return indice;
@@ -91,5 +92,13 @@ public class NotificacionGen {
 
     public void setTipo(int tipo) {
         this.tipo = tipo;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
     }
 }
