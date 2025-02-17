@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.AcuseRecibo;
+import com.example.comprasmu.data.remote.NotificacionResponse;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
 import com.example.comprasmu.utils.ComprasLog;
@@ -213,7 +214,15 @@ public class RevReciboActivity extends AppCompatActivity {
                llpregunta.setVisibility(View.GONE);
            }
         }
+
+        @Override
+        public void guardarResNotif(NotificacionResponse response) {
+
+        }
+
+
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

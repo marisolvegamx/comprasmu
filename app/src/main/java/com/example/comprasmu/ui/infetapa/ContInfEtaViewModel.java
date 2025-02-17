@@ -32,6 +32,12 @@ public class ContInfEtaViewModel extends AndroidViewModel {
             return   infEtaRepository.getInformesPendRe(indice, etapa);
     }
 
+    public LiveData<List<InformeEtapa>> getInformesGasPend(String indice){
+
+            return   infEtaRepository.getInformesPendGas(indice);
+
+    }
+
     public void eliminarInformeEta(int id){
 
         infEtaDetRepository.deleteByInf(id);

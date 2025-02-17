@@ -348,8 +348,8 @@ public class VerInformeGasFragment extends Fragment {
          directorio=null;
 
     }
-    public class ListenerResumen{
-        //todo
+    public class ListenerResumen implements IListenerResumen{
+        @Override
         public void guardarRes(List<InformeGastoDet> respuesta){
             //acomodo en la tabla
             if(respuesta!=null) {

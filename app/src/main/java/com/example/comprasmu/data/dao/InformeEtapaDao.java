@@ -134,6 +134,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus) and etapa=:etapa and ciudadNombre=:ciudad order by id desc")
     public abstract List<InformeEtapa>  getInfxEstatusCiuSim(String indice, int etapa, int estatus, String ciudad);
-
+    /****muestro informes gastos abiertos o para agregar gastos nvo estatus 5****/
+    @Query("SELECT * FROM informe_etapa WHERE  indice=:indice and (estatus=1 or estatus=5) and etapa=:etapa order by id desc")
+    public abstract LiveData<List<InformeEtapa>>  getInformePendGas(String indice, int etapa);
 
 }

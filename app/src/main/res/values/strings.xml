@@ -363,7 +363,7 @@
     <string name="tiene_comp">¿TIENE COMPROBANTE?</string>
     <string name="foto_compr">FOTO COMPROBANTE</string>
     <string name="total_validar">TOTAL A VALIDAR</string>
-    <string name="menu_revrecibo">Revisar recibo</string>
+    <string name="menu_revrecibo">Descargar recibo</string>
     <string name="realizo_otro">¿REALIZO OTRO GASTO?</string>
     <string name="costo_m">COSTO</string>
     <string name="num_muestras">N. MUESTRAS</string>

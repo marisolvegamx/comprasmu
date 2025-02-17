@@ -198,18 +198,21 @@ public interface APIService {
     @POST("acuseRecibo")
     Call<PostResponse> acuseRecibo(@Field("indice") String indice, @Field("cvereco") String usuario, @Field("cd") String cd, @Field("coment") String comentarios, @Field("resp") String resp);
 
+    @GET("recibogasto")
+    Call<List<InformeGastoDet>> getReciboGasto(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
 
     @GET("reciboListo") //devuelve si si ya puedo no si no en data
     Call<PostResponse> getReciboListo(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
 
-    @GET("recibogasto")
-    Call<List<InformeGastoDet>> getReciboGasto(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
+    @GET("notificacionesgen") //
+    Call<NotificacionResponse> getNotificacionesGen(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
 
-    @GET("estatusEnvio") //
-    Call<PostResponse> getEstatusEnvio(@Query("indice") String indice, @Query("cvereco") String usuario);
 
-    @GET("estatusRecibo") //devuelve si si ya puedo no si no en data
-    Call<PostResponse> getEstatusRecibo(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
-
+    @POST("infgasto/edit")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    Call<PostResponse> editInformeGasto(@Body InformeGastoEnv item);
 
 }

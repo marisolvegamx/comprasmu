@@ -30,8 +30,6 @@
         </item>
 
 
-
-
         <item
             android:id="@+id/nav_sel_planta"
             android:icon="@drawable/ic_baseline_checklist_rtl_24"

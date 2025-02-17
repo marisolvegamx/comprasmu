@@ -19,6 +19,52 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <LinearLayout
+                android:id="@+id/llgasresumenedi"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TableLayout
+                    android:id="@+id/tblvigastos"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="visible">
+
+                    <TableRow
+                        android:id="@+id/trowvigastos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/textView34"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".65"
+                            android:background="@drawable/valuecellborder"
+                            android:text="@string/concepto" />
+
+                        <TextView
+                            android:id="@+id/textView33"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.35"
+                            android:background="@drawable/valuecellborder"
+                            android:text="@string/costogas" />
+
+                    </TableRow>
+
+                </TableLayout>
+
+                <Button
+                    android:id="@+id/btngasacepresedi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/aceptar" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/txtgaconceptosel"
                 android:layout_width="match_parent"

@@ -29,6 +29,7 @@ import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
 
+import com.example.comprasmu.ui.gasto.EditGastoActivity;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.Constantes;
 
@@ -63,16 +64,18 @@ public class ContInfEtapaFragment extends Fragment implements ContInfEtaAdapter.
 
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-           // clientesel = getArguments().getInt(BuscarInformeFragment.ARG_CLIENTE);
-           // plantasel=getArguments().getInt(ListaCompraFragment.ARG_PLANTASEL);
-            //  ciudad=getArguments().getString(BuscarInformeFragment.CIUDAD);
-           // tienda=getArguments().getString(BuscarInformeFragment.NOMBRETIENDA);
+
             etapa=getArguments().getInt(ETAPA);
 
             indice = Constantes.INDICEACTUAL;
-            //busco el ultimo informe para continuar
-          informesEtapa = mViewModel.getInformesPend(Constantes.INDICEACTUAL,etapa);
+            if(etapa==6){
+                //para gasto puede ser abierto o ajustar
+                informesEtapa = mViewModel.getInformesGasPend(Constantes.INDICEACTUAL);
 
+            }else {
+                //busco el ultimo informe para continuar
+                informesEtapa = mViewModel.getInformesPend(Constantes.INDICEACTUAL, etapa);
+            }
         }
 
         //   Log.d(Constantes.TAG,"cliente y planta sel"+clienteid+"--"+plantaid);
@@ -119,6 +122,20 @@ public class ContInfEtapaFragment extends Fragment implements ContInfEtaAdapter.
     @Override
     public void onClickContinuar(int informe, int estatus) {
         Intent intento1;
+        Log.d(TAG,"mmmmm"+etapa+"--"+estatus);
+        if(etapa==6){
+            if(estatus==5) { //se abre el informe para agregar mas conceptos
+                intento1 = new Intent(getActivity(), EditGastoActivity.class);
+                intento1.putExtra(EditGastoActivity.INFORMESEL, informe);
+                intento1.putExtra(EditGastoActivity.ETAPA, 6);
+            }
+            else{
+                intento1 = new Intent(getActivity(), NuevoInfEtapaActivity.class);
+                intento1.putExtra(NuevoInfEtapaActivity.INFORMESEL, informe);
+                intento1.putExtra(ETAPA, etapa);
+            }
+        }
+        else
         if(etapa==3&&(estatus==4 || estatus==6) ) {
             intento1 = new Intent(getActivity(), EditInfEtapaActivity.class);
             intento1.putExtra(EditInfEtapaActivity.INFORMESEL, informe);

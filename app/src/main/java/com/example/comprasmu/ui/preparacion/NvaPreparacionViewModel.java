@@ -674,6 +674,9 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public void finalizarInf(){
         infEtaRepository.actualizarEstatus(idNuevo,2);
     }
+    public void finalizarInfGasAjuste(){
+        infEtaRepository.actualizarEstatus(idNuevo,6);
+    }
 
     public void actualizarEstatusInf(int idinf){
         infEtaRepository.actualizarEstatus(idinf,1);

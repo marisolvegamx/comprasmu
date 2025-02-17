@@ -35,6 +35,10 @@
             android:title="@string/menu_lista_gas" />
 
         <item
+            android:id="@+id/nav_revrecibo"
+            android:icon="@drawable/ic_baseline_download_24"
+            android:title="@string/menu_revrecibo" />
+        <item
             android:id="@+id/nav_notificaciongen"
             android:icon="@drawable/ic_baseline_notifications_active_24"
             android:title="@string/menu_notificaciones"

@@ -13,17 +13,18 @@ public class SubirInformeGastoTask extends AsyncTask<String, Float, Integer> {
     public static String TAG = "SubirInformeGastoTask";
     InformeGastoEnv envio;
     Context context;
+    int tipo;
 
     /**
      * Contructor de ejemplo que podemos crear en el AsyncTask
      *
      * @param en este ejemplo le pasamos un booleano que indica si hay más de 100 archivos o no. Si le pasas true se cancela por la mitad del progreso, si le pasas false seguirá hasta el final sin cancelar la descarga simulada
      */
-    public SubirInformeGastoTask(InformeGastoEnv envio, Context context) {
+    public SubirInformeGastoTask(InformeGastoEnv envio, Context context, int tipo) {
 
         this.envio=envio;
         this.context=context;
-
+        this.tipo=tipo; // si es 2 es ajuste
     }
 
     /**
@@ -41,14 +42,14 @@ public class SubirInformeGastoTask extends AsyncTask<String, Float, Integer> {
      *
      * Se ejecuta en el hilo: EN SEGUNDO PLANO
      *
-     * @param array con los valores pasados en "execute"
+     * @param variableNoUsada con los valores pasados en "execute"
      * @return devuelve un valor al terminar de ejecutar este segundo plano. Se lo envía y ejecuta "onPostExecute" si ha termiado, o a "onCancelled" si se ha cancelado con "cancel"
      */
     @Override
     protected Integer doInBackground(String... variableNoUsada) {
-       //  envio=mviemodel.preparaInforme();
+
         enviarReporte();
-      //  subirFotos(envio);
+
         return 0;
     }
 
@@ -57,7 +58,7 @@ public class SubirInformeGastoTask extends AsyncTask<String, Float, Integer> {
      *
      * Se ejecuta en el hilo: PRINCIPAL
      *
-     * @param array con los valores pasados en "publishProgress"
+     * @param porcentajeProgreso con los valores pasados en "publishProgress"
      */
     @Override
     protected void onProgressUpdate(Float... porcentajeProgreso) {
@@ -72,7 +73,7 @@ public class SubirInformeGastoTask extends AsyncTask<String, Float, Integer> {
      *
      * Se ejecuta en el hilo: PRINCIPAL
      *
-     * @param array con los valores pasados por el return de "doInBackground".
+     * @param cantidadProcesados con los valores pasados por el return de "doInBackground".
      */
     @Override
     protected void onPostExecute(Integer cantidadProcesados) {
@@ -88,23 +89,22 @@ public class SubirInformeGastoTask extends AsyncTask<String, Float, Integer> {
      *
      * Se ejecuta en el hilo: PRINCIPAL
      *
-     * @param array con los valores pasados por el return de "doInBackground".
+     * @param cantidadProcesados con los valores pasados por el return de "doInBackground".
      */
     @Override
     protected void onCancelled (Integer cantidadProcesados) {
-        //   TV_mensaje.setText("DESPUÉS de CANCELAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
-        Log.v(TAG, "DESPUÉS de CANCELAR envio. "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
+     Log.v(TAG, "DESPUÉS de CANCELAR envio. "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
 
-        // TV_mensaje.setTextColor(Color.RED);
+
     }
     public void enviarReporte() {
         //reviso si tengo conexion
         if(NavigationDrawerActivity.isOnlineNet(context)) {
             PostInformeViewModel postviewModel = new PostInformeViewModel(context);
-
+           if(tipo==2)// es edicion
+               postviewModel.sendAjusteInformeGasto(envio);
+           else
             postviewModel.sendInformeGasto(envio);
-
-          //  String result = postviewModel.getMensaje();
 
         }
     }

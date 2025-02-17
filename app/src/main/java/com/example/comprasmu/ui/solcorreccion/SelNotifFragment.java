@@ -8,7 +8,6 @@ import android.widget.AdapterView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -22,11 +21,12 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 
+import com.example.comprasmu.data.remote.NotificacionResponse;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.ui.gasto.IListenerRevRec;
-import com.example.comprasmu.ui.gasto.RevReciboActivity;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
 import com.example.comprasmu.ui.informe.DetalleCancelado;
+import com.example.comprasmu.ui.notificaciones.NotificacionGen;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 
@@ -44,7 +44,7 @@ public class SelNotifFragment extends ListaSelecFragment{
     int totCancel;
     int itotCanceleta;
     int totMuestraAdic;
-    MutableLiveData<Integer> revRecibo;
+    MutableLiveData<Integer> contNotif;
 
     ListaSolsViewModel scViewModel;
     private List<InformeEtapa> totCanceleta;
@@ -92,23 +92,16 @@ public class SelNotifFragment extends ListaSelecFragment{
         contarCorrecc();
         contarCanceladas();
         contarMuestraAdic();
-        revisarRecibo();
+        notificacionesGenerales();
 
 
     }
 
-    private void revisarRecibo() {
+    private void notificacionesGenerales() {
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         ListenerNotRevRec listener=new ListenerNotRevRec();
-        ps.getEstatusRecibo(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
-        revRecibo=new MutableLiveData<>();
-        revRecibo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer valor) {
-                convertirListaCor(valor);
-                revRecibo.removeObservers(getViewLifecycleOwner());
-            }
-        });
+        ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
+
     }
 
 
@@ -286,7 +279,13 @@ public class SelNotifFragment extends ListaSelecFragment{
             case 3:
                 NavHostFragment.findNavController(this).navigate(R.id.action_notiftomu, bundle);
                 break;
-            case 4:
+            case 4: //revisar recibo
+                NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
+                break;
+            case 5: //ajustar recibo
+                NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
+                break;
+            case 6: //estatus envio
                 NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
                 break;
 
@@ -295,7 +294,7 @@ public class SelNotifFragment extends ListaSelecFragment{
     }
 
 
-    private  void convertirListaCor(int valrevRecibo) {
+    private  void convertirListaCor(List<NotificacionGen> lista) {
         listaClientesEnv = new ArrayList<DescripcionGenerica>();
         //primero las generales
 
@@ -306,12 +305,13 @@ public class SelNotifFragment extends ListaSelecFragment{
          listaClientesEnv.add(new DescripcionGenerica(2, "CANCELADAS", "0",totCancel+""));
 
          listaClientesEnv.add(new DescripcionGenerica(3, "MUESTRA ADICIONAL", "0",totMuestraAdic+""));
+        for (NotificacionGen noti:
+             lista) {
+            listaClientesEnv.add(new DescripcionGenerica(noti.getTipo(), noti.getDescripcion1(), "0",noti.getTotal()+""));
 
-        listaClientesEnv.add(new DescripcionGenerica(4, "REVISAR RECIBO", "0",valrevRecibo+""));
 
-        // totCorrecciones.removeObservers(getViewLifecycleOwner());
-         //totMuestraAdic.removeObservers(getViewLifecycleOwner());
-         //totCancel.removeObservers(getViewLifecycleOwner());
+        }
+
          setLista(listaClientesEnv);
          setupListAdapter();
          adaptadorLista.setDesc2(true);
@@ -319,23 +319,33 @@ public class SelNotifFragment extends ListaSelecFragment{
     }
 
 
+
+
     public class ListenerNotRevRec implements IListenerRevRec{
 
         @Override
         public void guardarEstatus(PostResponse response) {
-            int estatusRecibo=0;
-            if(response!=null&&response.getData()!=null&&response.getData().equals("2")) {
-                estatusRecibo = 1;
 
-
-            }
-            revRecibo.setValue(estatusRecibo);
         }
 
         @Override
         public void guardarRes(PostResponse respuesta) {
 
         }
+
+        /***para estatus envio****/
+        @Override
+        public void guardarResNotif(NotificacionResponse response) {
+
+            if(response!=null&&response.getData()!=null) {
+                convertirListaCor(response.getData());
+
+
+            }
+
+        }
+
+
     }
 /*
     @Override

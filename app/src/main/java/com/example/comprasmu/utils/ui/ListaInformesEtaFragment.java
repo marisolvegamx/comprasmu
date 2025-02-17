@@ -329,7 +329,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
                     InformeGastoEnv envio=niviewModel.prepararInformeEnv(informe);
 
-                    SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity());
+                    SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity(),0);
                     miTareaAsincrona.execute();
 
                     subirFotosGasto(getActivity(),envio);

@@ -579,4 +579,34 @@ public class PostInformeViewModel {
         }
 
     }
+
+    public  void sendAjusteInformeGasto(InformeGastoEnv informeEnvio) {
+        Log.d("sendAjusteInformeGasto", informeEnvio.toJson(informeEnvio));
+
+        ServiceGenerator.getApiService().editInformeGasto(informeEnvio).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
+                //  { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+
+                    mensaje=response.body().getData();
+                    Log.d("sendAjusteInformeGasto", ""+mensaje);
+                    //actualizo el estatus
+                    iniciarBDgasto();
+                    actEstatusInfGasto(informeEnvio);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
+                Log.e(TAG, "Unable to submit post to API.");
+            }
+
+
+        });
+    }
 }

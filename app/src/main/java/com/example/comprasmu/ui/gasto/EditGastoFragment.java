@@ -3,9 +3,7 @@ package com.example.comprasmu.ui.gasto;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -17,7 +15,6 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,79 +23,60 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeGastoTask;
-import com.example.comprasmu.data.modelos.Atributo;
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeEnvioDet;
-import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
-import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
-import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.databinding.FragmentNvogastoBinding;
-import com.example.comprasmu.databinding.VerEmpaqueFragmentBinding;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
-import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
-import com.example.comprasmu.ui.infetapa.NuevoInfEtapaViewModel;
-import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.CurrencyTextWatcher;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
-import com.example.comprasmu.utils.ui.DatePickerFragment;
-import com.google.common.collect.Table;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 
-/****nuevo informe de gastos****/
-public class NvoGastoFragment extends Fragment {
+/****para agregar nuevos conceptos al inf. de gastos****/
+public class EditGastoFragment extends Fragment {
 
     private int preguntaAct;
-    LinearLayout llresumen,llpreg1,llconce, lldescripcion,llcosto,llcompr,llfoto,lltotal, llcomentarios;
-    private static final String TAG = "NvoGastoFragment";
+    LinearLayout llresumenedi, llresumen,llpreg1,llconce, lldescripcion,llcosto,llcompr,llfoto,lltotal, llcomentarios;
+    private static final String TAG = "EditGastoFragment";
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
     ImageView fotomos;
 
-    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5, aceptar6, aceptar7, aceptar8,guardar;
+    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5, aceptar6, aceptar7, aceptar8,guardar,acepresedi;
     private ImageButton btnrotar;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
     private View root;
@@ -106,33 +84,27 @@ public class NvoGastoFragment extends Fragment {
     private int  informeSel;
     private String ciudadInf;
     ComprasLog compraslog;
-
-
-    List<ListaCompra> listacomp;
-    private  ArrayList<DescripcionGenerica> listaClientes; //otra vez lista clientes
-    public final static String ARG_PREGACT="comprasmu.nga_pregact";
-    public final static String ARG_ESEDI="comprasmu.nga_esedi";
-    public final static String ARG_INFORMESEL = "comprasmu.ngainfsel";
+    public final static String ARG_PREGACT="comprasmu.ega_pregact";
+    public final static String ARG_INFORMESEL = "comprasmu.egainfsel";
 
     private FragmentNvogastoBinding mBinding;
-    private boolean isEdicion;
+
     List<CatalogoDetalle> conceptos;
     InformeEtapa informeEdit;
-    InformeGastoDet detalleEdit;
     int totalgastos;
     int totalotros; //solo puede capturar 5
-    int etapa=6;
     float totalval;
     private ImageButton btntomarf;
     NvoGastoViewModel niviewModel;
 
     private ArrayAdapter<CatalogoDetalle> catAdapter;
+    private Button aceptarresedi;
 
-    public NvoGastoFragment() {
+    public EditGastoFragment() {
 
     }
-    public static NvoGastoFragment newInstance() {
-        return new NvoGastoFragment();
+    public static EditGastoFragment newInstance() {
+        return new EditGastoFragment();
     }
 
 
@@ -148,11 +120,17 @@ public class NvoGastoFragment extends Fragment {
         try {
             //son 8 preguntas
             root=mBinding.getRoot();
+            if (savedInstanceState != null) {    // Restore value of members from saved state
+                Intent intento1 = new Intent(getActivity(), NavigationDrawerActivity.class);
+                startActivity(intento1);
+                getActivity().finish();
+                return root;
+            }
             mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
             niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
 
             //reviso si es edicion y ya tengo info en temp
-
+            llresumenedi = root.findViewById(R.id.llgasresumenedi);
             llresumen = root.findViewById(R.id.llgasresumen);
             llpreg1 = root.findViewById(R.id.llgaspreg1);
             llconce = root.findViewById(R.id.llgasselconce);
@@ -160,9 +138,7 @@ public class NvoGastoFragment extends Fragment {
             llcosto = root.findViewById(R.id.llgaspregcos);
             llcompr = root.findViewById(R.id.llgaspregcomp);
             llfoto = root.findViewById(R.id.llgaspregfoto);
-
             llcomentarios = root.findViewById(R.id.llgasprecomen);
-
             aceptar1 = root.findViewById(R.id.btngasacep1);
 
             aceptar2 = root.findViewById(R.id.btngaspreg1);
@@ -171,6 +147,7 @@ public class NvoGastoFragment extends Fragment {
             aceptar5 = root.findViewById(R.id.btngasacepcos);
             aceptar6 = root.findViewById(R.id.btngasacepcomp);
             aceptar7 = root.findViewById(R.id.btngasacepfoto);
+            aceptarresedi = root.findViewById(R.id.btngasacepresedi);
             guardar = root.findViewById(R.id.btnnvguardar);
             compraslog=ComprasLog.getSingleton();
             btnrotar = root.findViewById(R.id.btngasrotar);
@@ -187,7 +164,7 @@ public class NvoGastoFragment extends Fragment {
             llfoto.setVisibility(View.GONE);
 
             llcomentarios.setVisibility(View.GONE);
-            getConceptos();
+
             ciudadInf=Constantes.CIUDADTRABAJO;
             if (getArguments() != null) {
                 // Log.d(TAG,"aqui");
@@ -196,23 +173,19 @@ public class NvoGastoFragment extends Fragment {
                 // mViewModel.setIdNuevo(this.informeSel);
                 //BUSCo si viene de continuar
                 InformeEtapa informeEtapa =mViewModel.getInformexId(informeSel);
-                if (informeEtapa != null)
-                    this.informeEdit = informeEtapa;
 
+                this.informeEdit = informeEtapa;
 
-                this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
             }
-            this.buscarTotalesMuestra();
+          //todo codigo de revisar recibo
+            PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+            ps.getCambiosGastos(Constantes.INDICEACTUAL,informeEdit.getCiudadNombre(),new ListenerEdiGas());
+
             totalgastos=totalotros=0;
             totalval=0;
-
-            //busco los clientes x ciudad
-           if(!niviewModel.validarEtapa(ciudadInf)){
-               Toast.makeText(getActivity(),"No puede hacer gastos",Toast.LENGTH_SHORT).show();
-                return root;
-           }
+            getConceptos();
             //deshabilito botones de aceptar
-            aceptar1.setEnabled(true); //resumen
+          //  aceptar1.setEnabled(true); //resumen
 
             aceptar2.setEnabled(false);//pregunta gasto
             aceptar3.setEnabled(true); //concepto
@@ -220,6 +193,7 @@ public class NvoGastoFragment extends Fragment {
             aceptar5.setEnabled(false); //costo
             aceptar6.setEnabled(false); //comprobante
             aceptar7.setEnabled(false); //foto
+            aceptarresedi.setEnabled(false);
             guardar.setEnabled(true);
             mBinding.singasto.setmLabel(getString(R.string.realizo_otro));
             mBinding.singasto.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -238,8 +212,6 @@ public class NvoGastoFragment extends Fragment {
             mBinding.txtgascomentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
             mBinding.txtgasdescrip.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(50)});
-         //   mBinding.txtgasdescrip.setMaxLengthFilters(80);
-        //    mBinding.txtgasdescrip.addTextChangedListener(new BotonTextWatcher(aceptar4));
             mBinding.txtgascosto.addTextChangedListener(new BotonTextWatcher(aceptar5));
             mBinding.txtgascosto.setRawInputType(Configuration.KEYBOARD_12KEY);
             mBinding.txtgascosto.addTextChangedListener(new CurrencyTextWatcher());
@@ -257,56 +229,24 @@ public class NvoGastoFragment extends Fragment {
 
             });
 
-            if (preguntaAct == 0)
-                preguntaAct = 1;
+
+            preguntaAct = 1;
             mViewModel.preguntaAct = preguntaAct;
-            if (!isEdicion && preguntaAct < 2 && mViewModel.getIdNuevo() == 0) {
-                //es nuevo
-                //reviso si ya tengo informe
-                List<InformeEtapa> informes = niviewModel.getInfGasto(Constantes.INDICEACTUAL,ciudadInf);
-               if(informes!=null&&informes.size()>0){
-                   //no puede hacer más de 1
-                   Toast.makeText(getActivity(),"Ya capturó su informe de gastos",Toast.LENGTH_SHORT).show();
-                   salir();
-                   return root;
-               }
-                //reviso si ya tengo uno abierto
-                InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL, etapa);
 
-                if (informeEtapa != null) {
+            compraslog.grabarError(TAG + " agregar informe gastos");
 
-                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
-                    dialogo1.setTitle(R.string.atencion);
-                    dialogo1.setMessage(R.string.informe_abierto);
-                    dialogo1.setCancelable(false);
-                    dialogo1.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialogo1, int id) {
-                            //lo mando a continuar
-                            getActivity().finish();
-
-                        }
-                    });
-
-                    dialogo1.show();
-                }
-                llresumen.setVisibility(View.VISIBLE);
-            }
-            compraslog.grabarError(TAG + " iniciando nvo informe gastos");
-
-            ((NuevoInfEtapaActivity) getActivity()).actualizarBarraGas(ciudadInf);
-
-            if (isEdicion) { //busco el informe
+            ((EditGastoActivity) getActivity()).actualizarBarra(ciudadInf);
 
                 //busco el informe y el detalle
-                mViewModel.setIdNuevo(informeSel);
-                editarInforme();
-            }
+            mViewModel.setIdNuevo(informeSel);
+            editarInforme();
 
-            aceptar1.setOnClickListener(new View.OnClickListener() {
+
+            aceptarresedi.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //todo guaradr unforme etapa
-                    guardarInf();
+                    aceptarresedi.setEnabled(true);
+                    avanzar();
 
 
                 }
@@ -414,96 +354,15 @@ public class NvoGastoFragment extends Fragment {
         return root;
     }
 
-    public void buscarTotalesMuestra(){
-        //voy al servidor por ellos
-        compraslog.grabarError(TAG,"buscarTotalesMuestra","buscando totales");
-
-        niviewModel.getTotalMuestras(ciudadInf,new ListenerM());
-    }
-    public void llenarTabla(List<TotalMuestra> totales){
-        TableRow tableRow;
-        TextView cliente;
-        TextView numuestra;
-        TextView costo;
-        float sumacosto=0;
-        int sumamuestras=0;
-        for (TotalMuestra detalle:totales
-             ) {
-             tableRow=new TableRow(getContext());
-             cliente=new TextView(getContext());
-          //   cliente=new TextView( new ContextThemeWrapper(getContext(), R.style.colTabla), null, buttonStyle);
-             numuestra=new TextView(getContext());
-             costo=new TextView(getContext());
-             //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-             tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-             cliente.setText(detalle.getCliente()+" "+detalle.getPlanta());
-             cliente.setBackgroundResource(R.drawable.valuecellborder);
-             numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
-             numuestra.setBackgroundResource(R.drawable.valuecellborder);
-             costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
-             costo.setBackgroundResource(R.drawable.valuecellborder);
-           //  cliente.setTextAppearance(context, R.style.mystyle);
-             cliente.setPadding(30,10,30,10);
-             numuestra.setPadding(30,10,30,10);
-             costo.setPadding(30,10,30,10);
-             tableRow.addView(cliente);
-             tableRow.addView(numuestra);
-             tableRow.addView(costo);
-             mBinding.tblnimuestras.addView(tableRow);
-             sumacosto+=detalle.getCosto();
-             sumamuestras+=detalle.getMues_reembolsadas();
-        }
-        tableRow=null;
-        cliente=null;
-        numuestra=null;
-        costo=null;
-        TextView txtgatotnum=new TextView(getContext());
-        TextView txttotal=new TextView(getContext());
-        txtgatotnum.setText(sumamuestras+"");
-        TextView txtgastotmue=new TextView(getContext());
-        txtgastotmue.setText(Constantes.SIMBOLOMON+sumacosto);
-        txttotal.setBackgroundResource(R.drawable.valuecellborder);
-        txtgastotmue.setBackgroundResource(R.drawable.valuecellborder);
-        txtgatotnum.setBackgroundResource(R.drawable.valuecellborder);
-        tableRow=new TableRow(getContext());
-        tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-        txttotal.setText("TOTAL");
-        txttotal.setPadding(30,10,30,10);
-        txtgatotnum.setPadding(30,10,30,10);
-        txtgastotmue.setPadding(30,10,30,10);
-
-        tableRow.addView(txttotal);
-        tableRow.addView(txtgatotnum);
-        tableRow.addView(txtgastotmue);
-        mBinding.tblnimuestras.addView(tableRow);
-        aceptar1.setEnabled(true); //resumen
-        //guardo el total en bd
-        niviewModel.guardarTotalmu(sumacosto);
-    }
-
     public void avanzar() {
         Log.d(TAG, "++" + preguntaAct);
         compraslog.grabarError(TAG ,"avanzar","preguntaact="+preguntaAct);
 
         switch (preguntaAct) {
                 case 1: //pregunta
-
-                    // txtcajaact.setVisibility(View.VISIBLE)
-                    llresumen.setVisibility(View.GONE);
-                    // txttotmues.setVisibility(View.VISIBLE);
-
+                    llresumenedi.setVisibility(View.GONE);
                     llpreg1.setVisibility(View.VISIBLE);
                     preguntaAct = preguntaAct + 1;
-                        //veo si ya tengo un informe
-                        // InformeEtapa primero=mViewModel.tieneInforme(this.etapa,Constantes.CIUDADTRABAJO,clienteId);
-                        // if(primero!=null){
-
-                        //busco la ultima muestra
-                        //     InformeEtapaDet ultima = mViewModel.getUltimaMuestraEtiq(primero.getId());
-
-                        // }
-
                     break;
                 case 2: //concepto
                     llpreg1.setVisibility(View.GONE);
@@ -548,13 +407,6 @@ public class NvoGastoFragment extends Fragment {
                 case 4: //costo
                     lldescripcion.setVisibility(View.GONE);
                     llcosto.setVisibility(View.VISIBLE);
-
-                    try {
-                        String conceptosel = ((CatalogoDetalle) mBinding.spgasconcep.getSelectedItem()).getCad_descripcionesp();
-                      //  mBinding.txtgascosto.setText("COSTO " +conceptosel);
-                    }catch(Exception ex){
-
-                    }
                     preguntaAct = preguntaAct + 2; //la foto se hace obligatoria ya no pregunta si hay comprobante
 
                     break;
@@ -567,20 +419,7 @@ public class NvoGastoFragment extends Fragment {
                     break;
                 case 6: //foto
 
-
                     llcosto.setVisibility(View.GONE);
-
-                  /*  if(mBinding.sincomprobante.getRespuesta()) {
-                        llfoto.setVisibility(View.VISIBLE);
-                        preguntaAct = preguntaAct + 1;
-                    }
-                    else {
-                        llpreg1.setVisibility(View.VISIBLE);
-                        //todo limpio variables
-                        limpiarForm();
-                        preguntaAct = 2;
-                    }*/
-
                     llfoto.setVisibility(View.VISIBLE);
                     preguntaAct = preguntaAct + 1;
 
@@ -636,11 +475,22 @@ public class NvoGastoFragment extends Fragment {
     public void getConceptos(){
         //  Log.d(TAG,"buscando atributos"+dViewModel.productoSel.empaque+"--"+dViewModel.productoSel.idempaque+"--"+dViewModel.productoSel.clienteSel);
         conceptos=niviewModel.cargarConceptos();
+        //busco los que ya seleccionó
+        List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
+        for (int i=0;i<conceptos.size();i++
+        ){
+            for (InformeGastoDet det:
+                    detalles) {
+
+                if (conceptos.get(i).getCad_idopcion() == det.getConceptoId()) {
+                    conceptos.remove(i);
+
+                }
+
+            }
+        }
         catAdapter = new ArrayAdapter<CatalogoDetalle>(getContext(), android.R.layout.simple_spinner_dropdown_item, conceptos) {
 
-
-            // And the "magic" goes here
-            // This is for the "passive" state of the spinner
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
@@ -755,10 +605,6 @@ public class NvoGastoFragment extends Fragment {
 
             concepto=new TextView(getContext());
             costo=new TextView(getContext());
-          //  tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-
-         //   tableRow.setLayoutParams(lp);
-
 
             concepto.setText(detalle.getConcepto()+"");
             concepto.setBackgroundResource(R.drawable.valuecellborder);
@@ -802,11 +648,8 @@ public class NvoGastoFragment extends Fragment {
         tableRow.addView(costo);
         mBinding.tblgaresconcep.addView(tableRow);
 
-        //  tableRow=null;
-        //  concepto=null;
-
-        //  costo=null;
     }
+
     public void editarInforme() {
 
         compraslog.grabarError(TAG ,"editarInforme","editando informe"+informeSel);
@@ -816,44 +659,15 @@ public class NvoGastoFragment extends Fragment {
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
 
         if(detalles!=null&&detalles.size()>0) //ya tengo algo
-             {
+        {
                 totalgastos= detalles.size();
                 //muestro el ultimo
-                detalleEdit=null;
+
                 totalval=niviewModel.calcularTotal(informeSel);
-                preguntaAct=2;
-                llpreg1.setVisibility(View.VISIBLE);
-            }else
-                //solo hice informe
-            {
-                preguntaAct = 1;
-                llresumen.setVisibility(View.VISIBLE);
-            }
-            mViewModel.preguntaAct = preguntaAct;
-            if (detalleEdit!=null) {
-                //busco en la bd la imagen
-                if(detalleEdit.getFotocomprob()>0) {
-                    foto = mViewModel.getFoto(detalleEdit.getFotocomprob());
-                    mBinding.txtgasrutafoto.setText(foto.getRuta());
-                    mBinding.sincomprobante.setSi(true);
-                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 80, 80);
-                    fotomos.setImageBitmap(bitmap1);
-                    fotomos.setVisibility(View.VISIBLE);
-                    btnrotar.setVisibility(View.VISIBLE);
-                    aceptar7.setEnabled(true);
-                }else
-                    mBinding.sincomprobante.setNo(true);
-                //lleno campos
-                mBinding.spgasconcep.setSelection(detalleEdit.getConceptoId());
-                aceptar3.setEnabled(true);
 
-                mBinding.txtgasdescrip.setText(detalleEdit.getDescripcion());
-                aceptar4.setEnabled(true);
-                mBinding.txtgascosto.setText(detalleEdit.getImporte()+"");
-                aceptar5.setEnabled(true);
-                aceptar6.setEnabled(true);
 
-            }
+        }
+
 
         }
 
@@ -863,7 +677,7 @@ public class NvoGastoFragment extends Fragment {
             Log.d(TAG,"atras**"+preguntaAct);
             compraslog.grabarError(TAG ,"atras","preguntaact="+preguntaAct);
 
-            isEdicion=true; //siempre es edicion
+
             switch (preguntaAct){
 
                 case 2:
@@ -871,18 +685,11 @@ public class NvoGastoFragment extends Fragment {
                     if(totalgastos>0) //ya no vuelvo
                     {
 
-                      /*  if (mBinding.sincomprobante.getRespuesta()) {
-                            llfoto.setVisibility(View.VISIBLE);
-                            preguntaAct=7;
-                        }else
-                        {
-                            llcompr.setVisibility(View.VISIBLE);
-                            preguntaAct=6;
-                        }*/
+
                         break;
                     }else {
                         llpreg1.setVisibility(View.GONE);
-                        llresumen.setVisibility(View.VISIBLE);
+                        llresumenedi.setVisibility(View.VISIBLE);
                         preguntaAct = preguntaAct - 1;
                     }
 
@@ -936,15 +743,7 @@ public class NvoGastoFragment extends Fragment {
                     {
                         llfoto.setVisibility(View.VISIBLE);
                     preguntaAct = preguntaAct - 1;}
-                      /*  if(mBinding.sincomprobante.getRespuesta()) {
-                            llfoto.setVisibility(View.VISIBLE);
-                            preguntaAct = preguntaAct - 1;
-                        }
 
-                    else {
-                            llcompr.setVisibility(View.VISIBLE);
-                            preguntaAct=6;
-                        }*/
                    else {
                         llpreg1.setVisibility(View.VISIBLE);
                         preguntaAct=2;
@@ -960,35 +759,6 @@ public class NvoGastoFragment extends Fragment {
         }
 
 
-        public void guardarInf(){
-            try {
-                lastClickTime = 0;
-
-                //valido fecha
-
-                if (preguntaAct == 1 && !isEdicion&&mViewModel.getNvoinforme()==null) {
-                    Log.d(TAG, "creando nvo inf");
-                    compraslog.grabarError(TAG ,"guardarInf","creando nuevo informe");
-
-                    //creo el informe
-                    mViewModel.setIdNuevo(mViewModel.insertarGasto(Constantes.INDICEACTUAL, 0,ciudadInf));
-                    informeSel=mViewModel.getIdNuevo();
-                    informeEdit = mViewModel.getInformexId(informeSel);
-                    if(mViewModel.getIdNuevo()<1){
-                        throw new Exception();
-                    }
-                }
-
-
-            }catch (Exception ex){
-                ex.printStackTrace();
-                compraslog.grabarError(TAG,"guardarInf","Algo salió mal al guardarInf"+ex.getMessage());
-                Toast.makeText(getActivity(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
-                return;
-            }
-            aceptar1.setEnabled(true);
-            avanzar();
-        }
         public void guardarDet(){
             try{
                 String rutafoto = null;
@@ -997,94 +767,56 @@ public class NvoGastoFragment extends Fragment {
                 String concepto=consel.getCad_descripcionesp();
                 String descripcion=mBinding.txtgasdescrip.getText().toString();
                 String costo=mBinding.txtgascosto.getText().toString();
-                boolean tienecom=false;
-                if(mBinding.sincomprobante.getRespuesta()) {
-                    tienecom = true;
-                    rutafoto = mBinding.txtgasrutafoto.getText().toString();
-                }
+                boolean tienecom= true;
+                rutafoto = mBinding.txtgasrutafoto.getText().toString();
+
                 compraslog.grabarError(TAG,"guardarDet","id nuevo inf "+mViewModel.getIdNuevo());
 
                 Log.d(TAG,"preg act "+preguntaAct);
                 //es un nuevo registro
 
-
-                if(detalleEdit==null) { //es 1a vez
-                    compraslog.grabarError(TAG,"guardarDet","no es edicion ");
+                compraslog.grabarError(TAG,"guardarDet","no es edicion ");
 
 
 
-                    if(mViewModel.getIdNuevo()<1){
+                if(mViewModel.getIdNuevo()<1){
                         throw new Exception("Se perdió el valor del idinforme");
-                    }
-                    InformeGastoDet nvoDet = new InformeGastoDet();
-                    nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
-                    nvoDet.setConcepto(concepto);
-                    nvoDet.setConceptoId(conceptoid);
-                    nvoDet.setDescripcion(descripcion);
+                }
+                InformeGastoDet nvoDet = new InformeGastoDet();
+                nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
+                nvoDet.setConcepto(concepto);
+                nvoDet.setConceptoId(conceptoid);
+                nvoDet.setDescripcion(descripcion);
                         //cambio el importe
-                    if(!costo.equals("")) {
-                            costo=costo.substring(1).replaceAll(",","");
+                if(!costo.equals("")) {
+                    costo=costo.substring(1).replaceAll(",","");
                            // costo=costo.substring(1);
-                            try {
-                                float importe=Float.valueOf(costo);
-                                nvoDet.setImporte(importe);
-                            }catch (NumberFormatException ex) {
-                                Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_LONG).show();
-                                compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
+                    try {
+                        float importe=Float.valueOf(costo);
+                        nvoDet.setImporte(importe);
+                    }catch (NumberFormatException ex) {
+                        Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_LONG).show();
+                        compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
 
 
-                                return;
-                            }
-
+                        return;
                     }
 
-                    nvoDet.setComprobante(tienecom);
-                    if(rutafoto!=null&&!rutafoto.equals("")){
+                }
 
-                                int numfoto=mViewModel.insertarImagen("foto_comprobante",rutafoto, Constantes.INDICEACTUAL);
-                                if(numfoto>0){
-                                    nvoDet.setFotocomprob(numfoto);
+                nvoDet.setComprobante(tienecom);
+                if(rutafoto!=null&&!rutafoto.equals("")){
 
-                                }
+                    int numfoto=mViewModel.insertarImagen("foto_comprobante",rutafoto, Constantes.INDICEACTUAL);
+                    if(numfoto>0){
+                        nvoDet.setFotocomprob(numfoto);
+
                     }
+                }
                     nvoDet.setEstatus(1);
                     niviewModel.insertarGastoDet(nvoDet);
                     totalgastos++;
-                }
-                else {
-                    compraslog.grabarError(TAG,"guardarDet","es " +
-                            "edicion ");
 
-                    //busco si ya tiene detalle
-                    detalleEdit.setConcepto(concepto);
-                    detalleEdit.setConceptoId(conceptoid);
-                    detalleEdit.setDescripcion(descripcion);
-                    //cambio el importe
-                        if (!costo.equals("")) {
-                            //le quito $ y la ,
-                            costo = costo.substring(1).replaceAll(",","");
-                          //  costo = costo.substring(1);
-                            try {
-                                float importe = Float.valueOf(costo);
-                                detalleEdit.setImporte(importe);
-                            } catch (NumberFormatException ex) {
-                                Toast.makeText(getActivity(), "El costo es incorrecto verifique", Toast.LENGTH_SHORT).show();
-                                compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
-
-                                return;
-                            }
-
-                        }
-
-                        detalleEdit.setComprobante(tienecom);
-                        if (!rutafoto.equals("")) {
-                            niviewModel.actualizarImagen(detalleEdit, rutafoto);
-                        }
-
-
-                        //es actualizacion
-                        niviewModel.actualizarDet(detalleEdit);
-                }
                 compraslog.grabarError(TAG,"guardarDet","avanza");
 
                 mBinding.txtgaconceptosel.setText("");
@@ -1165,6 +897,7 @@ public class NvoGastoFragment extends Fragment {
             }
 
         }
+
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
@@ -1199,6 +932,7 @@ public class NvoGastoFragment extends Fragment {
             }
 
         }
+
 
         public void mostrarFoto( EditText textorut,ImageView xfotomos, ImageButton xbtnrotar){
 
@@ -1278,12 +1012,19 @@ public class NvoGastoFragment extends Fragment {
             if(mViewModel.getIdNuevo()<1){
                 throw new Exception("Se perdió el valor del idinforme");
             }
-            if(!comentarios.equals(""))
-                mViewModel.actualizarComentarios(mViewModel.getIdNuevo(),comentarios);
-            mViewModel.finalizarInf();
+            //busco los comentarios
+
+            if(!comentarios.equals("")) {
+
+                mViewModel.actualizarComentarios(mViewModel.getIdNuevo(), informeEdit.getComentarios()+";"+comentarios);
+
+            }
+            mViewModel.finalizarInfGasAjuste();
+            //espero un poco para enviarlo
+
             InformeGastoEnv envio=niviewModel.prepararInformeEnv(mViewModel.getIdNuevo());
 
-            SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity(),0);
+            SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity(),2);
             miTareaAsincrona.execute();
             subirFotos(getActivity(),envio);
             Toast.makeText(getActivity(),getString(R.string.informe_enviado),Toast.LENGTH_SHORT).show();
@@ -1323,28 +1064,143 @@ public class NvoGastoFragment extends Fragment {
         }
 
     }
-    public class ListenerM{
-        //todo
-        public void guardarRes(List<TotalMuestra> respuesta){
-            //acomodo en la tabla
-            if(respuesta!=null) {
-                //guardo en preferencesd como json
-                Activity estaActividad=getActivity();
-                if( estaActividad!=null) {
-                    guardarMuestras(respuesta);
-                    llenarTabla(respuesta);
-                    mBinding.txtgaalgunerror.setText("");
+
+    public void llenarTablaConcepIni( List<InformeGastoDet> detalles){
+        TableRow tableRow;
+        NvoGastoViewModel niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
+
+        TextView concepto;
+        TextView costo;
+        float sumacosto=0;
+        float sumacostomuestra=0;
+        int sumamuestras=0;
+        TableRow.LayoutParams lp1;
+
+
+        lp1 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, .65f);
+        TableRow.LayoutParams  lp2 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, .35f);
+        //pongo suma de muestras
+        tableRow=new TableRow(getContext());
+
+        concepto=new TextView(getContext());
+        costo=new TextView(getContext());
+        TextView cliente;
+        TextView numuestra;
+
+       /* for (TotalMuestra detalle:totales
+        ) {
+            tableRow=new TableRow(getContext());
+            cliente=new TextView(getContext());
+            numuestra=new TextView(getContext());
+            costo=new TextView(getContext());
+            //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+            cliente.setText(detalle.getCliente()+" "+detalle.getPlanta());
+            cliente.setBackgroundResource(R.drawable.valuecellborder);
+            numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
+            numuestra.setBackgroundResource(R.drawable.valuecellborder);
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
+            costo.setBackgroundResource(R.drawable.valuecellborder);
+            tableRow.addView(cliente);
+            tableRow.addView(numuestra);
+            tableRow.addView(costo);
+            mBinding.tblvigastos.addView(tableRow);
+            sumacosto+=detalle.getCosto();
+            sumamuestras+=detalle.getNum_muestras();
+        }*/
+        tableRow=null;
+        cliente=null;
+        numuestra=null;
+        costo=null;
+        // mBinding.tblvigastos.addView(tableRow);
+     /*   try {
+            sumacosto = Float.parseFloat(sumacosto);
+        }catch (NumberFormatException ex){
+            milog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
+        }*/
+
+        Log.d(TAG, detalles.size()+"--"+detalles.toString());
+        for (InformeGastoDet detalle:detalles
+        ) {
+            tableRow=new TableRow(getContext());
+
+            Log.d(TAG,detalle.getId()+"--"+detalle.getConceptoId()+"--"+detalle.getConcepto()+"--"+detalle.getImporte());
+            TextView tv1 = new TextView(getActivity());
+
+            concepto=new TextView(getContext());
+            costo=new TextView(getContext());
+            //  tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+            concepto.setLayoutParams(lp1);
+            costo.setLayoutParams(lp2);
+
+            concepto.setText(detalle.getConcepto());
+            concepto.setBackgroundResource(R.drawable.valuecellborder);
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.##").format(detalle.getImporte()));
+            costo.setBackgroundResource(R.drawable.valuecellborder);
+            //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
+            //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
+
+            tableRow.addView(concepto);
+            tableRow.addView(costo);
+            mBinding.tblvigastos.addView(tableRow);
+            try {
+                sumacosto =sumacosto+ detalle.getImporte();
+                if(detalle.getId()==0){
+                    sumacostomuestra+=detalle.getImporte();
                 }
-               else{
-                    mBinding.txtgaalgunerror.setText("Hubo un error al hacer el informe de gastos");
-                    compraslog.grabarError(TAG,"ListenerM","error al regresar de la peticion getTotalMuestras");
-                }
+            }catch(NumberFormatException ex){
+                compraslog.grabarError(TAG+" "+ex.getMessage());
+                ex.printStackTrace();
             }
-            else
-                mBinding.txtgaalgunerror.setText("No se pudo obtener la información del servidor");
+
+
         }
 
+        tableRow=new TableRow(getContext());
 
+        concepto=new TextView(getContext());
+        costo=new TextView(getContext());
+
+        tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        costo.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setText("TOTAL A VALIDAR");
+        costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.##").format(sumacosto));
+        //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+        //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+        concepto.setLayoutParams(lp1);
+        costo.setLayoutParams(lp2);
+        tableRow.addView(concepto);
+        tableRow.addView(costo);
+        mBinding.tblvigastos.addView(tableRow);
+        niviewModel.guardarTotalmu(sumacostomuestra);
+        //  tableRow=null;
+        //  concepto=null;
+
+        //  costo=null;
+    }
+
+    public class ListenerEdiGas implements  IListenerResumen{
+            @Override
+        public void guardarRes(List<InformeGastoDet> respuesta) {
+            //acomodo en la tabla
+            if (respuesta != null) {
+
+
+                llenarTablaConcepIni(respuesta);
+                mBinding.txtgaalgunerror.setText("");
+                mBinding.llgasresumenedi.setVisibility(View.VISIBLE);
+                aceptarresedi.setEnabled(true);
+            } else {
+                mBinding.txtgaalgunerror.setText("Hubo un error al hacer el informe de gastos");
+                compraslog.grabarError(TAG, "ListenerM", "error al regresar de la peticion getTotalMuestras");
+            }
+
+
+        }
     }
 
         @Override

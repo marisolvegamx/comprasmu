@@ -170,8 +170,13 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     public LiveData<List<InformeEtapa>> getInformesPend(String indice,int etapa) {
        return icDao.getInformePend(indice,etapa);
 
+    }
+
+    public LiveData<List<InformeEtapa>> getInformesPendGas(String indice) {
+        return icDao.getInformePendGas(indice,6);
 
     }
+
     //para reactivacion ahora puedo continuar informes en estatus 4-muestra adicional o 6 muestra cancelada
     public LiveData<List<InformeEtapa>> getInformesPendRe(String indice,int etapa) {
         return icDao.getInformePendRe(indice,etapa);

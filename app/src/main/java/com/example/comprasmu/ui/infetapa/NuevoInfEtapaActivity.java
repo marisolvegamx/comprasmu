@@ -194,15 +194,18 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
 
             }
             if (etapa == 6) {
+
+
                 mBinding.row1.setVisibility(View.GONE);
                 Bundle args = new Bundle();
 
-                args.putBoolean(NvoGastoFragment.ARG_ESEDI,true);
+                args.putBoolean(NvoGastoFragment.ARG_ESEDI, true);
 
-                args.putInt(NvoGastoFragment.ARG_INFORMESEL,idinformeSel);
+                args.putInt(NvoGastoFragment.ARG_INFORMESEL, idinformeSel);
                 NvoGastoFragment nvofrag = new NvoGastoFragment();
                 nvofrag.setArguments(args);
-                ft.add(R.id.continfeta_fragment,nvofrag);
+                ft.add(R.id.continfeta_fragment, nvofrag);
+
 
             }
 
