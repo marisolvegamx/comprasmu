@@ -23,7 +23,9 @@
                 android:id="@+id/llgasresumenedi"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TableLayout
                     android:id="@+id/tblvigastos"
@@ -31,32 +33,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
-                    android:visibility="visible">
-
-                    <TableRow
-                        android:id="@+id/trowvigastos"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/textView34"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".65"
-                            android:background="@drawable/valuecellborder"
-                            android:text="@string/concepto" />
-
-                        <TextView
-                            android:id="@+id/textView33"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.35"
-                            android:background="@drawable/valuecellborder"
-                            android:text="@string/costogas" />
-
-                    </TableRow>
-
-                </TableLayout>
+                    android:visibility="visible"/>
 
                 <Button
                     android:id="@+id/btngasacepresedi"

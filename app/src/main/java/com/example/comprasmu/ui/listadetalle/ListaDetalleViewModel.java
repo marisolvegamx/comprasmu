@@ -7,7 +7,6 @@ import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 
 import com.example.comprasmu.data.ComprasDataBase;
@@ -15,15 +14,15 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaDetalleBu;
-import com.example.comprasmu.data.modelos.ListaWithDetalle;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
@@ -31,7 +30,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -61,10 +59,11 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     private static final String TAG=ListaDetalleViewModel.class.getCanonicalName();
     private boolean nuevaMuestra=false;  //indica si se agregará muestra
     Context context;
+    private final InfEtapaRepositoryImpl infEtaRepository;
 
-
-    public ListaDetalleViewModel(Application application) {
+    public ListaDetalleViewModel(Application application ) {
         super(application);
+        this.infEtaRepository = new InfEtapaRepositoryImpl(application);
         ListaCompraDao dao=ComprasDataBase.getInstance(application).getListaCompraDao();
         repository = ListaCompraRepositoryImpl.getInstance(dao);
         detRepo=new ListaCompraDetRepositoryImpl(application);
@@ -565,7 +564,15 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public void setDetallebu(LiveData<List<ListaCompraDetalle>> detallebu) {
         this.detallebu = detallebu;
     }
+    //para buscar si hay un inf
+    public List<InformeEtapa> getInfGastoxCiudad(String indiceSel, String ciudad){
 
+        return infEtaRepository.getInfxEstatusCiuSim(indiceSel,6,2,ciudad);
+
+    }
+    public void actualizarEstatusGas(int idInf){
+        infEtaRepository.actualizarEstatus(idInf,5);
+    }
     class SortItems implements Comparator<Date> {
         // @Override
 

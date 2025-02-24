@@ -144,7 +144,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 listainfs=mViewModel.cargarEtapaAll(etapa,indice, 2);
             else
                 if(etapa==6)
-                    listainfs=mViewModel.cargarEtapaAll(etapa,indice, 2);
+                    listainfs=mViewModel.cargarGastos(etapa,indice, 2);
                 else
                     listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
@@ -328,11 +328,17 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     NvoGastoViewModel niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
 
                     InformeGastoEnv envio=niviewModel.prepararInformeEnv(informe);
+                    if(envio.getInformeEtapa().getEstatus()==6){ //es ajuste
+                        SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity(),2);
+                        miTareaAsincrona.execute();
+                        subirFotosGasto(getActivity(), envio);
 
-                    SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity(),0);
-                    miTareaAsincrona.execute();
+                    }else {
+                        SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio, getActivity(), 0);
+                        miTareaAsincrona.execute();
 
-                    subirFotosGasto(getActivity(),envio);
+                        subirFotosGasto(getActivity(), envio);
+                    }
                 }else {
                     InformeEtapaEnv informeEta = this.preparaInforme(informe);
 

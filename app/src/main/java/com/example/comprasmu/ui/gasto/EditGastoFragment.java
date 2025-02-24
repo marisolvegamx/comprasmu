@@ -1075,10 +1075,10 @@ public class EditGastoFragment extends Fragment {
         float sumacostomuestra=0;
         int sumamuestras=0;
         TableRow.LayoutParams lp1;
+        lp1 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, .7f);
+        TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, .3f);
 
 
-        lp1 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, .65f);
-        TableRow.LayoutParams  lp2 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, .35f);
         //pongo suma de muestras
         tableRow=new TableRow(getContext());
 
@@ -1087,39 +1087,19 @@ public class EditGastoFragment extends Fragment {
         TextView cliente;
         TextView numuestra;
 
-       /* for (TotalMuestra detalle:totales
-        ) {
-            tableRow=new TableRow(getContext());
-            cliente=new TextView(getContext());
-            numuestra=new TextView(getContext());
-            costo=new TextView(getContext());
-            //   tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
-            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        concepto.setText("CONCEPTO");
 
-            cliente.setText(detalle.getCliente()+" "+detalle.getPlanta());
-            cliente.setBackgroundResource(R.drawable.valuecellborder);
-            numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
-            numuestra.setBackgroundResource(R.drawable.valuecellborder);
-            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
-            costo.setBackgroundResource(R.drawable.valuecellborder);
-            tableRow.addView(cliente);
-            tableRow.addView(numuestra);
-            tableRow.addView(costo);
-            mBinding.tblvigastos.addView(tableRow);
-            sumacosto+=detalle.getCosto();
-            sumamuestras+=detalle.getNum_muestras();
-        }*/
-        tableRow=null;
-        cliente=null;
-        numuestra=null;
-        costo=null;
-        // mBinding.tblvigastos.addView(tableRow);
-     /*   try {
-            sumacosto = Float.parseFloat(sumacosto);
-        }catch (NumberFormatException ex){
-            milog.grabarError(TAG,"llenarTablaConcep","error al convertir total muestras a float");
-        }*/
+        costo.setText("COSTO");
+        concepto.setLayoutParams(lp1);
+        costo.setLayoutParams(lp2);
 
+        concepto.setPadding(30,10,30,10);
+        costo.setPadding(30,10,30,10);
+        costo.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setBackgroundResource(R.drawable.valuecellborder);
+        tableRow.addView(concepto);
+        tableRow.addView(costo);
+        mBinding.tblvigastos.addView(tableRow);
         Log.d(TAG, detalles.size()+"--"+detalles.toString());
         for (InformeGastoDet detalle:detalles
         ) {
@@ -1141,7 +1121,10 @@ public class EditGastoFragment extends Fragment {
             costo.setBackgroundResource(R.drawable.valuecellborder);
             //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
             //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
-
+            concepto.setLayoutParams(lp1);
+            costo.setLayoutParams(lp2);
+            concepto.setPadding(30,10,30,10);
+            costo.setPadding(30,10,30,10);
             tableRow.addView(concepto);
             tableRow.addView(costo);
             mBinding.tblvigastos.addView(tableRow);
@@ -1173,6 +1156,8 @@ public class EditGastoFragment extends Fragment {
         //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
         concepto.setLayoutParams(lp1);
         costo.setLayoutParams(lp2);
+        concepto.setPadding(30,10,30,10);
+        costo.setPadding(30,10,30,10);
         tableRow.addView(concepto);
         tableRow.addView(costo);
         mBinding.tblvigastos.addView(tableRow);
