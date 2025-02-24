@@ -46,6 +46,8 @@ import com.santalu.maskara.MaskStyle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 
 import java.util.Collection;
@@ -434,12 +436,7 @@ public class CreadorFormulario {
     }
 
     public TextInputEditText decimalMask(){
-/*        Mask mask = new Mask(
-                "___.__",
-                '_',
-                MaskStyle.PERSISTENT
-        );
-        MaskChangedListener listener2 =new  MaskChangedListener(mask);*/
+
         TextInputEditText textField=new TextInputEditText(context);
        // textField.addTextChangedListener(listener2);
         String valor="";
@@ -455,38 +452,7 @@ public class CreadorFormulario {
         textField.setRawInputType(Configuration.KEYBOARD_12KEY);
         textField.addTextChangedListener(new CurrencyTextWatcher());
 
-      /*  textField.addTextChangedListener(new TextWatcher(){
-            DecimalFormat dec = new DecimalFormat("0.00");
-            @Override
-            public void afterTextChanged(Editable arg0) {
-            }
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-            private String current = "";
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!s.toString().equals(current)){
-                    textField.removeTextChangedListener(this);
 
-                    String cleanString = s.toString().replaceAll("[$,\\.]", "");
-
-                    double parsed = Double.parseDouble(cleanString);
-                    NumberFormat format=NumberFormat.getCurrencyInstance();
-                    format.setCurrency(Currency.getInstance("MXN"));
-
-                    String formatted =format.format((parsed/100));
-
-                    current = formatted;
-                    textField.setText(formatted);
-                    textField.setSelection(formatted.length());
-
-                    textField.addTextChangedListener(this);
-                }
-            }
-        });*/
-        //   textField.setInputType(TYPE_NUMBER_FLAG_DECIMAL);
         return  textField;
 
     }
@@ -963,7 +929,7 @@ public class CreadorFormulario {
 
     }
 
-    public class CurrencyTextWatcher implements TextWatcher {
+   /* public class CurrencyTextWatcher implements TextWatcher {
 
         boolean mEditing;
 
@@ -977,6 +943,10 @@ public class CreadorFormulario {
 
                 String digits = s.toString().replaceAll("\\D", "");
                 NumberFormat nf = NumberFormat.getCurrencyInstance();
+                DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+                dfs.setCurrencySymbol("$");
+                ((DecimalFormat) nf).setDecimalFormatSymbols(dfs);
+
                 try{
                     String formatted = nf.format(Double.parseDouble(digits)/100);
                     s.replace(0, s.length(), formatted);
@@ -992,7 +962,7 @@ public class CreadorFormulario {
 
         public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
-    }
+    }*/
     class MayusTextWatcher implements TextWatcher {
 
         boolean mEditing;

@@ -376,7 +376,7 @@ public class DetalleInfView extends LinearLayout {
 
       textoint.addTextChangedListener(new
 
-    TextWatcher() {
+      TextWatcher() {
         @Override
         public void beforeTextChanged (CharSequence charSequence,int i, int i1, int i2){
 

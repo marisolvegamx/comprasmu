@@ -955,100 +955,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
         CreadorFormulario.cargarSpinnerDescr(getContext(), spinn, clientesAsignados);
 
-            /* spinn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                    @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    // Get the value selected by the user
-                    // e.g. to store it as a field or immediately call a method
-                    DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
-                    int pos=buscarEnClientes(opcion.id,clientesAsignados2);
-                    if(pos>-1)
-                        {
-                            clientesAsignados2.remove(pos);
-
-                        }
-                    pos=buscarEnClientes(opcion.id,clientesAsignados3);
-                    if(pos>-1)
-                            {
-                                clientesAsignados3.remove(pos);
-
-                            }
-                      //  Log.d(TAG, "CLIENTES ASIG QUITÉ UNO " + clientesAsignados2.size());
-                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
-
-                        CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
-
-                |}
-
-
-
-                  /*   @Override
-                     public void onNothingSelected(AdapterView<?> parent) {
-                     }
-                 });*/
-           /* spinn2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Get the value selected by the user
-                // e.g. to store it as a field or immediately call a method
-                DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
-                int pos=buscarEnClientes(opcion.id,clientesAsignados);
-                if(pos>-1) {
-                    {
-                        clientesAsignados.remove(pos);
-
-                    }
-                    int pos=buscarEnClientes(opcion.id,clientesAsignados3);
-                    if(pos>-1) {
-                        {
-                            clientesAsignados.remove(pos);
-                            clientesAsignados3.remove(pos);
-                        }
-                    Log.d(TAG, "CLIENTES ASIG QUITÉ UNO " + clientesAsignados2.size());
-                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
-
-                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
-                }
-                |}
-
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        spinn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Get the value selected by the user
-                // e.g. to store it as a field or immediately call a method
-                DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
-                int pos=buscarEnClientes(opcion.id,clientesAsignados2);
-                if(pos>-1) {
-                    {
-                        clientesAsignados2.remove(pos);
-                        clientesAsignados3.remove(pos);
-                    }
-                    Log.d(TAG, "CLIENTES ASIG QUITÉ UNO " + clientesAsignados2.size());
-                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn2, clientesAsignados2);
-
-                    CreadorFormulario.cargarSpinnerDescr(getContext(), spinn3, clientesAsignados3);
-                }
-                |}
-
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });*/
-
-        //  else
-        //     CreadorFormulario.cargarSpinnerDescr(getContext(),spinn,Constantes.clientesAsignados);
-
     }
 
     public void saliendoSinguardar() {
@@ -1293,21 +1199,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         /***finaliza campos de tienda***/
         camposForm = new ArrayList<CampoForm>();
         //  CampoForm campo2 = new CampoForm();
-      /*  campo2.label=getString(R.string.ciudad);
-        campo2.nombre_campo = "ciudad";
-        campo2.type = "inputtext";
-        campo2.value = null;
-        campo2.required = "required";
-        campo2.id = 1007;
-        camposForm.add(campo2);
-        campo2 = new CampoForm();
 
-        campo2.nombre_campo = "pais";
-        campo2.type = "inputtext";
-        campo2.value = null;
-        campo2.required = "required";
-        campo2.id = 1008;
-        camposForm.add(campo2);*/
         /***hago preguntas si no**/
 
         CampoForm campo = new CampoForm();
@@ -1906,18 +1798,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
         }
     }
-   /* public void guardarContinuar(){
-        if(guardar()) {
 
-            Bundle bundle = new Bundle();
-            bundle.putInt(NuevoinformeFragment.INFORMESEL, mViewModel.idVisita);
-            /* bundle.putString("plantaNombre", listaSeleccionable.get(i).getNombre());*/
-            /*   NavHostFragment.findNavController(this).navigate(R.id.action_selclientetolistacompras,bundle);
-             */
-     /*       NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
-
-        }
-    }*/
     //con la geolocalizacion de la tienda se busca la zona en la que esta
     //devuelve el id de la zona de acuerdo al catalogo
     //se puede consultar el catalogo en MapdaCDFragment
@@ -1940,7 +1821,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         LatLng p3;
         LatLng p4;
         if(zonas!=null)
-        for(Geocerca geo:zonas){
+          for(Geocerca geo:zonas){
             Log.d(TAG,"probando "+geo.getGeo_region());
 
             milog.grabarError("probando geocercas buscar zona"+geo.getGeo_region());
