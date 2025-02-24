@@ -1148,6 +1148,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
          for (NotificacionGen noti:
                 lista) {
            totalnotif+=noti.getTotal();
+           //modifico el estatus del informe
+             if(noti.getTipo()==5){    //4-revisar recibo
+                      //5-ajustar recibo
+                     //6-estatus envio
+                //busco el informe
+                 List<InformeEtapa> listaInf=mViewModel.getInfGastoxCiudad(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
+                if(listaInf!=null&&listaInf.size()>0){
+                    mViewModel.actualizarEstatusGas(listaInf.get(0).getId());
+                    flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
+                }
+             }
 
         }
         totalNotifGen.setValue(totalnotif);

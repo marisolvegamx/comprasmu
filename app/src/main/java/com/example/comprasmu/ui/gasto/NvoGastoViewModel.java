@@ -190,7 +190,7 @@ public class NvoGastoViewModel extends AndroidViewModel {
             edit.setValor(respuesta+"");
             confrepo.insert(edit);
         }else
-        confrepo.insert(conf);
+         confrepo.insert(conf);
     }
 
     public String getTotalmu() {
@@ -205,7 +205,7 @@ public class NvoGastoViewModel extends AndroidViewModel {
     //para buscar si hay un inf
     public List<InformeEtapa> getInfGasto(String indiceSel, String ciudad){
 
-        return infEtaRepository.getInfxEstatusCiuSim(indiceSel,6,2,ciudad);
+        return infEtaRepository.getInfGasxEstatusCiu(indiceSel,6,2,ciudad);
 
     }
 }

@@ -409,11 +409,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                     Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
 
 
-
-
-
-
-
             }
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage(), e);
@@ -436,25 +431,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        // if (marker.equals(markerPais)) {
-           /* FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-            AbririnformeFragment fragconfig=new AbririnformeFragment();
-            ft.add(R.id.nav_host_fragment, fragconfig);
-
-            ft.commit();*/
-
-        // }
         btncancel.setVisibility(View.VISIBLE);
         llcancel.setVisibility(View.VISIBLE);
         markerSel=marker;
-          /*  long currentClickTime= SystemClock.elapsedRealtime();
-            // preventing double, using threshold of 1000 ms
-            if (currentClickTime - lastClickTime < 3000){
-             return false;
-            }
-
-            lastClickTime = currentClickTime;
-            Log.d(TAG,"di click :("+lastClickTime);*/
 
 
 
@@ -463,11 +442,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
     public void nuevaTienda(){
         BuscadorTiendas bt=new BuscadorTiendas();
-        //lastKnownLocation = new Location("dummyprovider");
-
-
-        //   lastKnownLocation.setLatitude(19.5325179);
-        //   lastKnownLocation.setLongitude(-99.2026932);
 
         if(lastKnownLocation!=null) {
             if(nollistatiendas!=null)
@@ -549,8 +523,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
     public void dibujarZonas(List<Geocerca> zonas){
         regionPolygon=new ArrayList<Polygon>();
-
-
 
         //guardar zonas
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getActivity());

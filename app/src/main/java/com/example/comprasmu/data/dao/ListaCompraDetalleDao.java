@@ -12,8 +12,8 @@ import java.util.List;
 @Dao
 public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> {
 
-    @Query("SELECT * FROM lista_compras_detalle WHERE listaId =:uuid")
-     public abstract LiveData<List<ListaCompraDetalle>> getListaDetallesByLista(int uuid);
+    @Query("SELECT * FROM lista_compras_detalle WHERE listaId =:listaId")
+     public abstract LiveData<List<ListaCompraDetalle>> getListaDetallesByLista(int listaId);
 
     @Query("SELECT * FROM lista_compras_detalle WHERE listaId =:uuid")
     public abstract List<ListaCompraDetalle> getListaDetallesByListasimple(int uuid);

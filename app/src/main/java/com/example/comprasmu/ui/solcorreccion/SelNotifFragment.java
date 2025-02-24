@@ -283,10 +283,11 @@ public class SelNotifFragment extends ListaSelecFragment{
                 NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
                 break;
             case 5: //ajustar recibo
-                NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
+                NavHostFragment.findNavController(this).navigate(R.id.nav_continuargas, bundle);
                 break;
             case 6: //estatus envio
-                NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
+               // if(listaClientesEnv.get)
+                NavHostFragment.findNavController(this).navigate(R.id.nav_envdescargas, bundle);
                 break;
 
         }
@@ -305,12 +306,12 @@ public class SelNotifFragment extends ListaSelecFragment{
          listaClientesEnv.add(new DescripcionGenerica(2, "CANCELADAS", "0",totCancel+""));
 
          listaClientesEnv.add(new DescripcionGenerica(3, "MUESTRA ADICIONAL", "0",totMuestraAdic+""));
-        for (NotificacionGen noti:
+         for (NotificacionGen noti:
              lista) {
             listaClientesEnv.add(new DescripcionGenerica(noti.getTipo(), noti.getDescripcion1(), "0",noti.getTotal()+""));
 
 
-        }
+         }
 
          setLista(listaClientesEnv);
          setupListAdapter();
