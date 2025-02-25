@@ -24,6 +24,7 @@ import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.remote.CatalogosResponse;
 import com.example.comprasmu.data.remote.EtapaResponse;
+import com.example.comprasmu.data.remote.IActualListener;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 
 import com.example.comprasmu.data.remote.NotificacionResponse;
@@ -728,7 +729,7 @@ public class PeticionesServidor {
         trepo.insertUpdate(tv3);
         listener.finalizar();
     }
-    public void pedirSolicitudesCorr(String indice, int etapa, String version, NavigationDrawerActivity.ActualListener petsocor){
+    public void pedirSolicitudesCorr(String indice, int etapa, String version, IActualListener petsocor){
         Log.d(TAG,"pidiendo correcciones");
         final Call<SolCorreResponse> batch = ServiceGenerator.getApiService().getSolicitudCorre(indice,usuario,etapa,version);
 

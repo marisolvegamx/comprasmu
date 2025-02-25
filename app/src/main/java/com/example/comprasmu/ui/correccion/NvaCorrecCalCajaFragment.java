@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.WorkManager;
 
 import android.os.Environment;
 import android.os.SystemClock;
@@ -743,6 +744,8 @@ if(correccionDet!=null)
             //todo limpio variables de sesion
             mViewModel.setIdNuevo(0);
             mViewModel.setNvocoreticaja(null);
+            //cancelo las actualizaciones
+            WorkManager.getInstance(getContext()).cancelAllWorkByTag("comprassync_worker2");
             solViewModel.actualizarEstSolicitud(solicitudSel, numfotosel,4);
             Toast.makeText(getContext(),"La corrección se guradó correctamente",Toast.LENGTH_SHORT).show();
 

@@ -997,22 +997,14 @@ public class NvoGastoFragment extends Fragment {
                 String concepto=consel.getCad_descripcionesp();
                 String descripcion=mBinding.txtgasdescrip.getText().toString();
                 String costo=mBinding.txtgascosto.getText().toString();
-                boolean tienecom=false;
-                if(mBinding.sincomprobante.getRespuesta()) {
-                    tienecom = true;
-                    rutafoto = mBinding.txtgasrutafoto.getText().toString();
-                }
+                boolean tienecom= true;
+                rutafoto = mBinding.txtgasrutafoto.getText().toString();
                 compraslog.grabarError(TAG,"guardarDet","id nuevo inf "+mViewModel.getIdNuevo());
-
                 Log.d(TAG,"preg act "+preguntaAct);
                 //es un nuevo registro
 
-
                 if(detalleEdit==null) { //es 1a vez
                     compraslog.grabarError(TAG,"guardarDet","no es edicion ");
-
-
-
                     if(mViewModel.getIdNuevo()<1){
                         throw new Exception("Se perdió el valor del idinforme");
                     }

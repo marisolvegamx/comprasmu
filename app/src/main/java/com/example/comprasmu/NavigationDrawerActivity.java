@@ -37,6 +37,7 @@ import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
+import com.example.comprasmu.data.remote.IActualListener;
 import com.example.comprasmu.data.remote.MuestraCancelada;
 import com.example.comprasmu.data.remote.NotificacionResponse;
 import com.example.comprasmu.data.remote.PostResponse;
@@ -135,16 +136,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     public static final String PROGRESS_PEND = "progress_pend";
     public static final String NAVINICIAL="nd_navinicial";
     TextView txtcancel,gallery;
-
     LiveData<Integer> totCorrecciones;
-    LiveData<List<InformeEtapa>> totCanceleta;
-
     MutableLiveData<Integer> totMuestraAdic;
     SolicitudCorRepoImpl solRepo;
     TablaVersionesRepImpl tvRepo;
     boolean notificar=false;
-    int desclis; int descinf; int descfoto;
-
     NavigationView navigationView;
     private ComprasLog flog;
     private LiveData<Integer> totCancel;
@@ -368,7 +364,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 simpleRequest);*/
 
         PeriodicWorkRequest simpleRequest =
-                new PeriodicWorkRequest.Builder(NotificacionesWork.class, 10, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(NotificacionesWork.class, 6, TimeUnit.MINUTES)
                         .setConstraints(constraints)
                         .addTag("comprassync_worker2")
                         .build();
@@ -978,7 +974,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
     }*/
-    public class ActualListener {
+    public class ActualListener implements IActualListener {
 
         public int actualizarCorre(SolCorreResponse corrResp, int etapa) {
 

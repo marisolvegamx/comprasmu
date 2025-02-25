@@ -1,87 +1,71 @@
 package com.example.comprasmu;
 
-import android.app.Activity;
 
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.Contrato;
-import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
+import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
-
+import com.example.comprasmu.data.modelos.Visita;
+import com.example.comprasmu.data.remote.IActualListener;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
-import com.example.comprasmu.data.remote.RespInfEtapaResponse;
+import com.example.comprasmu.data.remote.MuestraCancelada;
 import com.example.comprasmu.data.remote.RespInformesResponse;
-import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
-import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
-
+import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
-import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
-
+import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
-
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
-import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
-
-import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
+import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
-
+import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/*****proceso para descargar de forma automatica y periodica los datos desde el servidor***/
 public class DescargasIniciales {
 
         TablaVersionesRepImpl tvRepo;
-
         SimpleDateFormat sdfdias;
         ListaCompraDetRepositoryImpl lcdrepo;
         ListaCompraRepositoryImpl lcrepo;
-
-
         InformeComDetRepositoryImpl infdrepo;
-
         GeocercaRepositoryImpl georep;
-
-
+        SolicitudCorRepoImpl solRepo;
+        InfEtapaRepositoryImpl  infetarepo;
+        VisitaRepositoryImpl visRepo;
+        InformeCompraRepositoryImpl infrepo;
         Context act;
         int actualiza;
         int procesos=0;
         int procesos_lev=0; //para saber cuantos si se corrieron
         private ComprasLog flog;
         DescargaIniListener listenprin;
-
         final String TAG="DescargasIniciales";
-
-
+        boolean notificar=false;
         public DescargasIniciales(Context act) {
-
-
             this.act=act;
-
             sdfdias=new SimpleDateFormat("dd-MM-yyyy");
-
-
-
             flog = ComprasLog.getSingleton();
             flog.crearLog(act.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
-
         }
-
 
         public void ejecutar() {
 
@@ -91,14 +75,13 @@ public class DescargasIniciales {
             ListaCompraDao dao= ComprasDataBase.getInstance(this.act).getListaCompraDao();
             lcdrepo=new ListaCompraDetRepositoryImpl(this.act);
             lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
-
             georep=new GeocercaRepositoryImpl(this.act);
-
             listenprin=new DescargaIniListener();
-
-
+            solRepo=new SolicitudCorRepoImpl(this.act);
+            infetarepo=new InfEtapaRepositoryImpl(this.act);
+            visRepo=new VisitaRepositoryImpl(this.act);
+            infrepo=new InformeCompraRepositoryImpl(this.act);
             listacompras();
-
 
         }
 
@@ -106,18 +89,14 @@ public class DescargasIniciales {
         private void listacompras(){
             Log.d(TAG, "descargando listas"+actualiza);
             flog.grabarError(TAG,"listacompras","descargando listas actualiza="+actualiza);
-
             PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
            //por ahora no tiene caso la fecha de actualizacion porque no se registra en la tabla, falta mejorar esto en la app web
             // TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
            // TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
             DescargaIniListener listener=new DescargaIniListener();
-
             //siempre actualizo
-
             ps.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
             flog.grabarError(TAG,"listacompras"," siempre actualizo"+actualiza);
-
 
         }
 
@@ -126,7 +105,6 @@ public class DescargasIniciales {
         for (ListaCompraDetalle jcompra: json) {
             if(jcompra.getId()==compra.getId()&&compra.getListaId()==jcompra.getListaId()){
                 // Log.d(TAG,compra.getProductoNombre()+"--"+jcompra.getProductoNombre()+".."+compra.getListaId()+"--"+ compra.getId());
-
                 return;
             }
         }
@@ -140,14 +118,43 @@ public class DescargasIniciales {
             lcdrepo.delete(compra);
 
     }
-public class DescargaIniListener implements  IDescargaIniListener{
+    public void pedirCorrecciones(int actualiza, int etapa) {
+        PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLSOLCORRECCIONES, Constantes.INDICEACTUAL);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String version;
+        if (comp != null && comp.getVersion() != null) {
+            version = sdf.format(comp.getVersion());
+        } else //es la 1a vez
+        {
+            version = "1999-09-09"; //una fecha muy antigua
+        }
+        if (actualiza == 1) {
+            version = "1999-09-09"; //una fecha muy antigua
+        }
+        //siempre actualizo
+        if (NavigationDrawerActivity.isOnlineNet(this.act))
+            ps.pedirSolicitudesCorr(Constantes.INDICEACTUAL, etapa, version, new DescargaIniListener());
+        else
+            notificar = true;
+                  /*  act.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("DescargasIniAsyncTask","estas al dia*");
+
+                            proglist.cerrarAlerta();
+                            proglist.todoBien();
+                        }
+                    });*/
+
+    }
+public class DescargaIniListener implements  IDescargaIniListener, IActualListener {
     public DescargaIniListener(){
 
 
     }
     public void finalizar(){
         Log.d(TAG,"finalizo descarga"+procesos+"--"+procesos_lev);
-
 
     }
 
@@ -173,9 +180,10 @@ public class DescargaIniListener implements  IDescargaIniListener{
 
         finalizar();
     }
+
+
     public void actualizar(ListaCompraResponse compraResp) {
         //primero los inserts
-
         if(compraResp!=null) {
             if (compraResp.getInserts() != null) {
                 if (compraResp.getInserts().getListaCompra() != null) {
@@ -184,7 +192,6 @@ public class DescargaIniListener implements  IDescargaIniListener{
 
                     lcrepo.insertAll(compraResp.getInserts().getListaCompra()); //inserto blblbl
                 }
-                // Log.d("Descargaini","resp3>>"+compraResp.getInserts().getListaCompraDetalle());
 
                 if (compraResp.getInserts().getListaCompraDetalle() != null) {
                     //como puede que ya existan reviso primero e inserto unoxuno
@@ -198,11 +205,7 @@ public class DescargaIniListener implements  IDescargaIniListener{
                             detalle.setNvoCodigo(existe.getNvoCodigo());
                             //lcrepo.updateSC(compra);
                         }
-                        // Log.d(TAG,"insertando"+detalle.getListaId()+"--"+detalle.getId());
-                        long id=lcdrepo.insert(detalle);
-                        //Log.d(TAG,"**insertando"+id);
-
-
+                       long id=lcdrepo.insert(detalle);
 
                     }
                     //reviso los que se eliminaron
@@ -217,7 +220,6 @@ public class DescargaIniListener implements  IDescargaIniListener{
                         }
                     }
                 }
-
                 // lcdrepo.insertAll(compraResp.getInserts().getListaCompraDetalle());
             }
             //los updates
@@ -271,13 +273,181 @@ public class DescargaIniListener implements  IDescargaIniListener{
 
         }
 
-
-
         finalizar();
+
+    }
+    public int actualizarCorre(SolCorreResponse corrResp, int etapa) {
+
+
+        //primero los inserts
+        if (corrResp != null) {
+
+            if (corrResp != null && corrResp.getInserts() != null) {
+                for (SolicitudCor sol : corrResp.getInserts()) {
+                    //veo si ya existe
+                    // Log.d(TAG,"solcorreccion"+sol.getId()+"--"+ sol.getNumFoto());
+                    SolicitudCor solt = solRepo.findsimple(sol.getId(), sol.getNumFoto());
+                    if (solt != null) {
+                        if (solt.getEstatus() !=4||solt.getEstatus()!=5) {
+                            //actualizo
+                            solRepo.actualizarEst(sol.getMotivo(), sol.getContador(), sol.getCreatedAt(), sol.getEstatus(), sol.getId(), sol.getNumFoto());
+                        } else if (sol.getContador() > 1)
+                            solRepo.actualizarEst(sol.getMotivo(), sol.getContador(), sol.getCreatedAt(), sol.getEstatus(), sol.getId(), sol.getNumFoto());
+                        else
+                            solRepo.actualizar(sol.getMotivo(), sol.getContador(), sol.getCreatedAt(), sol.getId(), sol.getNumFoto());
+
+                    } else
+                        solRepo.insert(sol);
+
+                }
+
+
+            }
+
+            //los updates
+            if (corrResp != null && corrResp.getUpdates() != null) {
+
+                if (corrResp.getUpdates() != null)
+                    solRepo.insertAll(corrResp.getUpdates()); //inserto blblbl
+            }
+
+            //actualizar version en tabla
+            TablaVersiones tinfo = new TablaVersiones();
+            tinfo.setNombreTabla(Contrato.TBLSOLCORRECCIONES);
+            Date fecha1 = new Date();
+
+            tinfo.setVersion(fecha1);
+            tinfo.setIndice(Constantes.INDICEACTUAL);
+            tinfo.setTipo("I");
+
+            tvRepo.insertUpdate(tinfo);
+            //  Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
+            //veo las muestras canceladas
+            if (corrResp.getCanceladas() != null)
+                if (etapa == 2)//solo para compra
+                    for (MuestraCancelada cancel :
+                            corrResp.getCanceladas()) {
+                        //busco el informedetalle y actualizo el estatus
+                        this.procesarCanceladas(cancel);
+
+                    }
+                else
+                    for (MuestraCancelada cancel :
+                            corrResp.getCanceladas()) {
+                        // Log.d(TAG,"dddddd"+cancel.getInf_id());
+                        //busco el informedetalle y actualizo el estatus
+                        this.procesarCanceladasEta(cancel); //canceladas será 0
+
+                    }
+
+        }
+        return 1;
 
     }
 
 
 
-}
+    //el estatus viene como 2 pero en la app 0 es cancelado y 2 es finalizado
+    public void procesarCanceladasEta(MuestraCancelada cancelada) {
+        InformeEtapa det = infetarepo.findsimple(cancelada.getInf_id());
+
+        if (det != null) {
+            Log.e(TAG, "cancele");
+            det.setMotivoCancel(cancelada.getVas_observaciones());
+            det.setFechaCancel(cancelada.getVas_fecha());
+            det.setEstatus(0);
+
+            infetarepo.insert(det);
+            infetarepo.actualizarEstatus(det.getId(), 0);
+
+
+        }
+    }
+
+        public void procesarCanceladas(MuestraCancelada cancelada){
+
+            InformeCompraDetalle det=infdrepo.findsimple(cancelada.getInd_id());
+
+            if(det!=null) {
+                if (det.getEstatus() != 2&&det.getEstatus()!=4)//no está cancelada
+                {
+                    Log.d(TAG,"procesando canceladas"+det.getId());
+                    String codigo=Constantes.sdfcaducidad.format(det.getCaducidad());
+                     ListaCompraDetalle compradet = lcdrepo.findsimple(cancelada.getInd_comprasid(), cancelada.getInd_compraddetid());
+                    if (compradet != null) {
+                        //quito la comprada
+                        if (compradet.getComprados() > 0) {
+                            flog.grabarError(TAG,"procesarCanceladas",det.getId()+"--"+det.getInformesId()+"--"+codigo);
+                            int cantidad = compradet.getComprados() - 1;
+                            lcdrepo.actualizarComprados(compradet.getId(), compradet.getListaId(), cantidad);
+                        }
+                        Log.d(TAG,"quitando el codigo"+compradet.getNvoCodigo());
+
+                        //quito en nuevo codigo
+                        if (compradet.getNvoCodigo()!=null&&compradet.getNvoCodigo() != "") {
+                            flog.grabarError(TAG,"procesarCanceladas","quitando el codigo"+compradet.getNvoCodigo());
+
+
+                            String nuevoscods = compradet.getNvoCodigo().replace(codigo + ";", "");//elimino elcodigo
+                            nuevoscods = compradet.getNvoCodigo().replace(codigo, "");//elimino elcodigo
+
+                            //Log.d(TAG,compradet.getId()+"--"+compradet.getListaId()+"--"+nuevoscods);
+                            lcdrepo.actualizarNvosCodigos(compradet.getId(), compradet.getListaId(), nuevoscods);
+                        }
+                        det.setMotivoCancel(cancelada.getVas_observaciones());
+                        det.setFechaCancel(cancelada.getVas_fecha());
+                        det.setEstatus(2);
+
+                        infdrepo.insert(det);
+                        infdrepo.actualizarEstatus(det.getId(), 2);
+                    }
+                }
+
+
+
+
+            }
+
+
+        }
+
+    @Override
+    public void actualizarInformes(RespInformesResponse infoResp) {
+        // Log.d(TAG, "actualizando bd informes");
+        //primero los inserts
+        if (infoResp != null) {
+
+            if (infoResp.getVisita() != null) {
+                //reviso cada uno y las inserto
+                for (Visita vis : infoResp.getVisita()) {
+                    visRepo.insert(vis); //inserto blblbl
+                }
+            }
+            if (infoResp.getInformeCompra() != null && infoResp.getInformeCompra().size() > 0) {
+                //como puede que ya existan reviso primero e inserto unoxuno
+                infrepo.insertAll(infoResp.getInformeCompra());
+            }
+            if (infoResp.getInformeCompraDetalles() != null && infoResp.getInformeCompraDetalles().size() > 0) {
+                //como puede que ya existan reviso primero e inserto unoxuno
+                infdrepo.insertAll(infoResp.getInformeCompraDetalles());
+            }
+
+        }
+        //actualizar version en tabla
+        TablaVersiones tinfo = new TablaVersiones();
+        tinfo.setNombreTabla(Contrato.TBLINFORMESCOMP);
+        Date fecha1 = new Date();
+        Log.d("DescargasAsyncTask", "insertando fecha version 1" + fecha1);
+
+        tinfo.setVersion(fecha1);
+        tinfo.setIndice(Constantes.INDICEACTUAL);
+        tinfo.setTipo("I");
+
+        tvRepo.insertUpdate(tinfo);
+
+    }
+
+
+
+  }
 }

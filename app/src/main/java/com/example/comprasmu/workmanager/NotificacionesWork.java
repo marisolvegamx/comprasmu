@@ -16,6 +16,7 @@ public class NotificacionesWork extends Worker {
 
     final String TAG="NotificacionesWork";
     ComprasLog flog;
+
     public NotificacionesWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
 
