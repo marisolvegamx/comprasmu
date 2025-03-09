@@ -26,14 +26,36 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 tools:visibility="visible">
-
-                <TableLayout
-                    android:id="@+id/tblvigastos"
+                <TextView
+                    android:id="@+id/textView28"
+                    style="@style/formlabel"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:visibility="visible"/>
+                    android:layout_height="wrap_content"
+                    android:text="@string/agregar_gasto" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip"
+                    android:scrollbars="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/scroll_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:isScrollContainer="true"
+                        android:orientation="vertical">
+
+                        <TableLayout
+                            android:id="@+id/tblvigastos"
+                            android:layout_width="450dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginBottom="20dp"
+                            android:visibility="visible" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+
 
                 <Button
                     android:id="@+id/btngasacepresedi"
@@ -41,6 +63,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/aceptar" />
             </LinearLayout>
+
 
             <TextView
                 android:id="@+id/txtgaconceptosel"
@@ -346,10 +369,24 @@
                     android:text="@string/total_validar"
                     android:visibility="gone" />
 
-                <TableLayout
-                    android:id="@+id/tblgaresconcep"
+                <HorizontalScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip"
+                    android:scrollbars="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/scroll_layout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:isScrollContainer="true"
+                        android:orientation="vertical">
+                    <TableLayout
+                        android:id="@+id/tblgaresconcep"
+                        android:layout_width="450dp"
+                        android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </HorizontalScrollView>
 
                 <TextView
                     android:id="@+id/txtgastotal"

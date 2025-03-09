@@ -410,4 +410,15 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     }
 
+    //para buscar si hay un inf
+    public List<InformeEtapa> getInfGastoxCiudad(String indiceSel, String ciudad){
+
+        return infetarepo.getInfxEstatusCiuSim(indiceSel,6,2,ciudad);
+
+    }
+    public void actualizarEstatusGas(int idInf){
+
+        infetarepo.actualizarEstatus(idInf,5);
+    }
+
 }

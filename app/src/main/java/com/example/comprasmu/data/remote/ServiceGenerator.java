@@ -32,7 +32,7 @@ public class ServiceGenerator {
 
        // Log.e("mi disp ",Build.PRODUCT);
         String BASE_URL;
-        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
+        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)){//pruebas y el lenovo
             //nam
            BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
            BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";
@@ -41,8 +41,6 @@ public class ServiceGenerator {
         {
             BASE_URL = Constantes.URLSERV+"api/public/";
 
-          //  BASE_URL = "http://192.168.1.84/comprasv1/pruebas/public/";
-         //   BASE_URL = "https://muesmerc.mx/comprasv1/pruebas/public/";
         }
 
         OkHttpClient.Builder okbuilder=new OkHttpClient.Builder();

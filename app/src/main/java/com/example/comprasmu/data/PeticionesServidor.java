@@ -1075,6 +1075,7 @@ public class PeticionesServidor {
     /***traigo todas las notificaciones en una consulta****/
     public void getNotificacionesGen(String indiceactual, String ciudad, IListenerRevRec listener) {
         final Call<NotificacionResponse> batch = ServiceGenerator.getApiService().getNotificacionesGen(indiceactual,usuario,ciudad);
+        Log.d("PeticionesServidor","getNotificacionesGen "+indiceactual+"--"+ciudad);
 
         batch.enqueue(new Callback<NotificacionResponse>() {
             @Override
@@ -1084,7 +1085,7 @@ public class PeticionesServidor {
                     listener.guardarResNotif(respuestaCats);
 
                 }else {
-                    Log.e("PeticionesServidor", "algo salio mal en peticion getEstatusEnvio");
+                    Log.e("PeticionesServidor", "*algo salio mal en peticion getNotificacionesGen");
                     listener.guardarResNotif(null);
                 }
             }
@@ -1092,7 +1093,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<NotificacionResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e("PeticionesServidor", "algo salio mal en peticio getEstatusEnvio"+t.getMessage());
+                    Log.e("PeticionesServidor", "algo salio mal en peticio getNotificacionesGen"+t.getMessage());
                     listener.guardarResNotif(null);
                 }
             }

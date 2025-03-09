@@ -570,9 +570,18 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         return infEtaRepository.getInfxEstatusCiuSim(indiceSel,6,2,ciudad);
 
     }
-    public void actualizarEstatusGas(int idInf){
-        infEtaRepository.actualizarEstatus(idInf,5);
+
+   public void actualizarEstatusGas(int idInf,int  estatus){
+        infEtaRepository.actualizarEstatus(idInf,estatus);
     }
+
+    //para buscar si hay un inf
+    public List<InformeEtapa> getInfGasxCiudad(String indiceSel, String ciudad){
+
+        return infEtaRepository.getInfGasxCiudad(indiceSel,6,ciudad);
+
+    }
+
     class SortItems implements Comparator<Date> {
         // @Override
 

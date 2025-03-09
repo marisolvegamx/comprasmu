@@ -210,24 +210,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         feviewModel =
                 new ViewModelProvider(this).get(NuevaFotoExhibViewModel.class);
         lViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
-
-        /*inicio databinding
-        mBinding = DataBindingUtil.setContentView(getActivity(), R.layout.fragment_abririnforme);
-        mBinding.setInfviewModel(mViewModel);
-        mBinding.setLifecycleOwner(this);*/
-
         root = inflater.inflate(R.layout.fragment_abririnforme, container, false);
 
         TextView indice = root.findViewById(R.id.txtaiindice);
         indice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
         milog=ComprasLog.getSingleton();
         milog.crearLog(getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
-        //camposFotosProd();
-        //  LinearLayout sv2 = root.findViewById(R.id.content_main2);
-        //  sv2.addView(cf3.crearFormulario());
-        //   createLocationRequest();
-        //  validator = new Validator(this);
-        //  validator.setValidationListener(this);
+
         guardar = root.findViewById(R.id.aibtnguardar);
         rotar = root.findViewById(R.id.btnairotar1);
         fotofac = root.findViewById(R.id.ivaifachada);
@@ -351,15 +340,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //   initUi();
         txtubicacion = root.findViewById(R.id.txtaiubicacion);
         txtaiultubic= root.findViewById(R.id.txtaiultubic);
-        // This callback will only be called when MyFragment is at least Started.
-        /*  OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default *//*) {
-         /*   @Override
-            public void handleOnBackPressed() {
-                // Handle the back button event
-                onBackPressed();
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);*/
         txtcomplemento = root.findViewById(R.id.txtaicomplementodir);
         txtcomplemento.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         btnrotar1 = root.findViewById(R.id.btnairotarfe1);
@@ -464,29 +444,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         return root;
     }
 
-    /*public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //Handle the back button
-        if(keyCode == KeyEvent.KEYCODE_BACK && getActivity().isTaskRoot()) {
-            //Ask the user if they want to quit
-            new AlertDialog.Builder(getActivity())
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle(R.string.importante)
-                    .setMessage(R.string.cerrar_app)
-                    .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            //Stop the activity
-                            getActivity().finish();
-                        }
-                    })
-                    .setNegativeButton(R.string.no, null)
-                    .show();
 
-            return true;
-        }
-        else {
-            return getActivity().onKeyDown(keyCode, event);
-        }
-    }*/
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         if (Constantes.CIUDADTRABAJO == null || Constantes.CIUDADTRABAJO.equals("")) {

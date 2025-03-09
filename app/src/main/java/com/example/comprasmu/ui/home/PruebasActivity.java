@@ -295,7 +295,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
                 //cambie de indice, tengo que borrar
                 if(etapanva>0&&etapanva==etapafin){
                     //voy a borrar datos
-                    irABorrar(indicelis); //todo necesito ir a una actividad donde pregunte al usuario
+                    irABorrar(indicelis); //una actividad donde pregunte al usuario
                     return;
                 }else
                 {

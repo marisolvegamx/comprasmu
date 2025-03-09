@@ -114,7 +114,7 @@ public class InformesGenViewModel extends AndroidViewModel {
         return ierepository.getAllsp(etapa, indice, estatus);
 
     }
-    //estatus gastos puede estar en 2 p 5
+    //estatus gastos puede estar en 2 o 6
     public LiveData<List<InformeEtapa>> cargarGastos(int etapa, String indice, int estatus){
         return ierepository.getAllGastos(etapa, indice, estatus);
 

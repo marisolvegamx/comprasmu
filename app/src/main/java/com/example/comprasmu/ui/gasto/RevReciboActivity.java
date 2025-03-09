@@ -59,8 +59,7 @@ public class RevReciboActivity extends AppCompatActivity {
         txtmensaje=findViewById(R.id.txtrrmensaje);
 
         // Enable the Up button
-        myChildToolbar =
-                findViewById(R.id.rrtoolbarinf);
+        myChildToolbar = findViewById(R.id.rrtoolbarinf);
         setSupportActionBar(myChildToolbar);
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
@@ -81,7 +80,7 @@ public class RevReciboActivity extends AppCompatActivity {
                 descargar();
             }
         });
-        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
+        if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)){//pruebas y el lenovo
             //nam
             BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
             BASE_URL = Constantes.URLPRUEBAS1;
@@ -99,14 +98,15 @@ public class RevReciboActivity extends AppCompatActivity {
             return;
         }
         //reviso si ya aceptó
-        AcuseReciboRepositoryImpl acrepo=new AcuseReciboRepositoryImpl(this);
+        //se quita siempre consulto el estatus en es servidor porque ya no es el ultimo estatus
+    /*    AcuseReciboRepositoryImpl acrepo=new AcuseReciboRepositoryImpl(this);
         AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
         Log.d(TAG,"acuse"+acuse);
         if(acuse!=null&&acuse.getAceptado()==1){
             //solo muestro boton descargar
             btndescargar.setVisibility(View.VISIBLE);
             return;
-        }
+        }*/
         llprin.setVisibility(View.GONE);
         //busco el estatus recibo
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
@@ -124,6 +124,7 @@ public class RevReciboActivity extends AppCompatActivity {
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(false);
         webView.loadUrl(urlrecibo);
+        milog.informacion(TAG,"create",urlrecibo);
         comentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         btnenviar.setOnClickListener(new View.OnClickListener() {
@@ -168,6 +169,11 @@ public class RevReciboActivity extends AppCompatActivity {
                 estatusRecibo = 1;
                 llprin.setVisibility(View.VISIBLE);
 
+            }else
+            if(response!=null&&response.getData()!=null&&response.getData().equals("3")) { //ya esta aceptado
+                //solo muestro boton descargar
+                btndescargar.setVisibility(View.VISIBLE);
+             //    llprin.setVisibility(View.GONE);
             }else
             {
                 //anuncio de no está listo

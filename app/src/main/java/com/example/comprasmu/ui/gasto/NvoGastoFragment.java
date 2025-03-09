@@ -271,9 +271,9 @@ public class NvoGastoFragment extends Fragment {
                    return root;
                }
                 //reviso si ya tengo uno abierto
-                InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL, etapa);
+                List<InformeEtapa> informeEtapa = mViewModel.getInformesGasPend(Constantes.INDICEACTUAL);
 
-                if (informeEtapa != null) {
+                if (informeEtapa != null&&informeEtapa.size()>0) {
 
                     AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                     dialogo1.setTitle(R.string.atencion);

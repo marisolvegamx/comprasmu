@@ -70,7 +70,7 @@ public class ContInfEtapaFragment extends Fragment implements ContInfEtaAdapter.
             indice = Constantes.INDICEACTUAL;
             if(etapa==6){
                 //para gasto puede ser abierto o ajustar
-                informesEtapa = mViewModel.getInformesGasPend(Constantes.INDICEACTUAL);
+                informesEtapa = mViewModel.getInformesGasPend(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
 
             }else {
                 //busco el ultimo informe para continuar

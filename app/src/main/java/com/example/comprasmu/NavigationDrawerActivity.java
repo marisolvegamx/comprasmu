@@ -1102,27 +1102,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         super.onResume();
         initializeCountDrawer();
     }
-    /*  public boolean onNavigationMenuEmp(MenuItem item) {
-        // Handle navigation view item clicks here.
-        Log.d(TAG,"SI DI CLICK");
-        int id = item.getItemId();
-        navigationView.getMenu().setGroupVisible(R.id.HelpGroup,false);
-       // navigationView.getMenu().setGroupVisible(R.id.SetupGroup,false);
-        switch (item.getItemId()){
-            case R.id.nav_etiqmen:
-                Log.d(TAG,"SI DI CLICK");
-                navigationView.getMenu().setGroupVisible(R.id.HelpGroup,true);
-             //   navigationView.getMenu().setGroupVisible(R.id.SetupGroup,false);
-                return true;
-            /*case R.id.SetupGr:
-                navigationView.getMenu().setGroupVisible(R.id.SetupGroup,true);
-               // navigationView.getMenu().setGroupVisible(R.id.HelpGroup,false);
-                return true;*/
 
-     //   }
-      //  base.closeDrawer(GravityCompat.START);
-      /*  return true;
-    }*/
 
     public void subirImagenes(){
         NavController navController;
@@ -1144,17 +1124,33 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
          for (NotificacionGen noti:
                 lista) {
            totalnotif+=noti.getTotal();
-           //modifico el estatus del informe
+             //todo quitar despues
              if(noti.getTipo()==5){    //4-revisar recibo
+                 //5-ajustar recibo
+                 //6-estatus envio
+                 //busco el informe
+                 List<InformeEtapa> listaInformes=mViewModel.getInfGasxCiudad(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
+                 if(listaInformes!=null&&listaInformes.size()>0){
+                     for (InformeEtapa info:listaInformes
+                          ) {
+
+                         mViewModel.actualizarEstatusGas(info.getId(),2);
+                         flog.grabarError(TAG, "convertirListaNotif", "actualizando informe gastos ajuste" + info.getId());
+                     }
+                 }
+             }
+           //modifico el estatus del informe
+             if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
                       //5-ajustar recibo
                      //6-estatus envio
-                //busco el informe
+                //busco el informe finalizado con estatus 2
                  List<InformeEtapa> listaInf=mViewModel.getInfGastoxCiudad(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
                 if(listaInf!=null&&listaInf.size()>0){
-                    mViewModel.actualizarEstatusGas(listaInf.get(0).getId());
+                    mViewModel.actualizarEstatusGas(listaInf.get(0).getId(),5);
                     flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
                 }
              }
+
 
         }
         totalNotifGen.setValue(totalnotif);

@@ -36,15 +36,12 @@ public class EditGastoActivity extends AppCompatActivity {
     public final static String INFORMESEL = "comprasmu.edig.informesel";
     public final static String ETAPA = "comprasmu.edig.etapa";
     private static final String TAG = "EditGastoActivity";
-
     boolean noSalir;
     boolean isEdicion;
     int idinformeSel;
     private NvaPreparacionViewModel dViewModel;
     private NvoGastoViewModel infvm;
     private int etapa;
-    private int plantaSel;
-    private boolean isCor; //para saber si es correccion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +65,8 @@ public class EditGastoActivity extends AppCompatActivity {
         }
 
         loadData();
-
         Log.d(TAG,"WWWWWW"+"++"+idinformeSel+"--"+etapa);
-
-
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
         mBinding.row1.setVisibility(View.GONE);
         Bundle args = new Bundle();
         args.putInt(EditGastoFragment.ARG_PREGACT,3 );

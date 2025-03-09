@@ -57,7 +57,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:text='@{detalle.clienteNombre}' />
+                android:text='@{detalle.clienteNombre}'
+                android:visibility="@{detalle.etapa==6?View.GONE:View.VISIBLE}" />
 
             <TextView
                 android:id="@+id/txtcigplanta"
@@ -66,7 +67,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:text="@{detalle.plantaNombre}"
-                android:visibility="@{detalle.etapa==4?View.GONE:View.VISIBLE}" />
+                android:visibility="@{detalle.etapa==4||detalle.etapa==6?View.GONE:View.VISIBLE}" />
+
+            <TextView
+                android:id="@+id/txtcigciudad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{detalle.etapa==6?View.VISIBLE:View.GONE}"
+                android:text="@{detalle.ciudadNombre}"
+                />
 
             <TextView
                 android:id="@+id/txtcigfecha"

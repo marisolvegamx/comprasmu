@@ -354,16 +354,17 @@ public class VerInformeGasFragment extends Fragment {
             //acomodo en la tabla
             if(respuesta!=null) {
 
-
-                crearFormularioEta(respuesta);
-                mBinding.igdatosgen.addView(cf1.crearTabla());
-                mBinding.btnverdet.setText(textoboton);
-                mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        verFotos();
-                    }
-                });
+                if(VerInformeGasFragment.this.isAdded()) {
+                    crearFormularioEta(respuesta);
+                    mBinding.igdatosgen.addView(cf1.crearTabla());
+                    mBinding.btnverdet.setText(textoboton);
+                    mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            verFotos();
+                        }
+                    });
+                }
             }
             else{
                 TextView txtaviso=new TextView(getContext());

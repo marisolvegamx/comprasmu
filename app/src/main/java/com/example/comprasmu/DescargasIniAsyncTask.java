@@ -118,6 +118,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
         //Log.d("DescargasIniAsyncTask","iniciando descarga"+descargarListas);
         if (indice[1].equals("act")) //vengo del fragment de actualizar lista
                 actualiza=1;
+
            // if (indice[0].equals("cat")) //descargo cats tmb
         listenprin=new DescargaIniListener();
         if(!ComprasUtils.isOnlineNet(act)) {

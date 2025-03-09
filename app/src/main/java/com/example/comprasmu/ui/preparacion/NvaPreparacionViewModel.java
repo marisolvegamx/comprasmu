@@ -674,8 +674,8 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public void finalizarInf(){
         infEtaRepository.actualizarEstatus(idNuevo,2);
     }
-    public void finalizarInfGasAjuste(){
-        infEtaRepository.actualizarEstatus(idNuevo,6);
+    public void finalizarInfGasAjuste(int idInf){
+        infEtaRepository.actualizarEstatus(idInf,2);
     }
 
     public void actualizarEstatusInf(int idinf){
@@ -969,5 +969,11 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
             detalle.setId(iddet);
         iddetalle=(int)infDetRepo.insert(detalle);
         return iddetalle;
+    }
+
+    public List<InformeEtapa> getInformesGasPend(String indice){
+
+        return   infEtaRepository.getInformesPendGasSim(indice);
+
     }
 }

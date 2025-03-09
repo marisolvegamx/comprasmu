@@ -32,9 +32,9 @@ public class ContInfEtaViewModel extends AndroidViewModel {
             return   infEtaRepository.getInformesPendRe(indice, etapa);
     }
 
-    public LiveData<List<InformeEtapa>> getInformesGasPend(String indice){
+    public LiveData<List<InformeEtapa>> getInformesGasPend(String indice, String ciudad){
 
-            return   infEtaRepository.getInformesPendGas(indice);
+            return   infEtaRepository.getInformesPendGas(indice, ciudad);
 
     }
 

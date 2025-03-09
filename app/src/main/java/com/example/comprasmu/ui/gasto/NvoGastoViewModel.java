@@ -195,7 +195,6 @@ public class NvoGastoViewModel extends AndroidViewModel {
 
     public String getTotalmu() {
         ConfiguracionRepositoryImpl confrepo=new ConfiguracionRepositoryImpl(application);
-        Configuracion conf=new Configuracion();
 
         Configuracion edit=confrepo.findsimple("total_muestras");
        if(edit!=null)

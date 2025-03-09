@@ -172,8 +172,12 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
     }
 
-    public LiveData<List<InformeEtapa>> getInformesPendGas(String indice) {
-        return icDao.getInformePendGas(indice,6);
+    public LiveData<List<InformeEtapa>> getInformesPendGas(String indice, String ciudad) {
+        return icDao.getInformePendGas(indice,6, ciudad);
+
+    }
+    public List<InformeEtapa> getInformesPendGasSim(String indice) {
+        return icDao.getInformePendGasSim(indice,6);
 
     }
 
@@ -242,6 +246,12 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     }
     public List<InformeEtapa> getInfGasxEstatusCiu(String indice,int etapa, int estatus,String ciudad) {
         return icDao.getInfGasxEstatusCiu(indice,etapa,estatus,ciudad);
+
+
+    }
+
+    public List<InformeEtapa> getInfGasxCiudad(String indice,int etapa,String ciudad) {
+        return icDao.getInfxCiudadSim(indice,etapa,ciudad);
 
 
     }

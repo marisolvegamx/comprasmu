@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -240,10 +242,7 @@ public class SelNotifFragment extends ListaSelecFragment{
             //reviso si ya estoy en etapa 3
             List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
             if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
-
                 listageneral.add(infeta);
-
-
             }
 
         }
@@ -280,14 +279,28 @@ public class SelNotifFragment extends ListaSelecFragment{
                 NavHostFragment.findNavController(this).navigate(R.id.action_notiftomu, bundle);
                 break;
             case 4: //revisar recibo
-                NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
-                break;
+                if(Constantes.ETAPAACTUAL==6) {
+                    NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
+                }
+                else
+                    Toast.makeText(getContext(),"Capturar en el módulo de Gastos", Toast.LENGTH_LONG).show();
+
+                    break;
             case 5: //ajustar recibo
-                NavHostFragment.findNavController(this).navigate(R.id.nav_continuargas, bundle);
+                if(Constantes.ETAPAACTUAL==6) {
+                    NavHostFragment.findNavController(this).navigate(R.id.nav_continuargas, bundle);
+
+                } else
+                    Toast.makeText(getContext(),"Capturar en el módulo de Gastos", Toast.LENGTH_LONG).show();
+
                 break;
             case 6: //estatus envio
                // if(listaClientesEnv.get)
-                NavHostFragment.findNavController(this).navigate(R.id.nav_envdescargas, bundle);
+                if(Constantes.ETAPAACTUAL==5) {
+                    NavHostFragment.findNavController(this).navigate(R.id.nav_envdescargas, bundle);
+                } else
+                    Toast.makeText(getContext(),"Capturar en el módulo de Envio", Toast.LENGTH_LONG).show();
+
                 break;
 
         }
@@ -309,7 +322,19 @@ public class SelNotifFragment extends ListaSelecFragment{
          for (NotificacionGen noti:
              lista) {
             listaClientesEnv.add(new DescripcionGenerica(noti.getTipo(), noti.getDescripcion1(), "0",noti.getTotal()+""));
+             //modifico el estatus del informe
+             if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
+                 //5-ajustar recibo
+                 //6-estatus envio
+                 //busco el informe
+                 List<InformeEtapa> listaInf=scViewModel.getInfGastoxCiudad(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
+                 if(listaInf!=null&&listaInf.size()>0){
+                     scViewModel.actualizarEstatusGas(listaInf.get(0).getId());
+                     Log.d(TAG,"convertirListaNotif "+"actualizando informe gastos ajuste"+listaInf.get(0).getId());
 
+                     // flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
+                 }
+             }
 
          }
 

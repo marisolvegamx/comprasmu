@@ -233,7 +233,7 @@ public class EditGastoFragment extends Fragment {
             preguntaAct = 1;
             mViewModel.preguntaAct = preguntaAct;
 
-            compraslog.grabarError(TAG + " agregar informe gastos");
+            compraslog.grabarError(TAG ,"create", " agregar informe gastos");
 
             ((EditGastoActivity) getActivity()).actualizarBarra(ciudadInf);
 
@@ -653,11 +653,9 @@ public class EditGastoFragment extends Fragment {
     public void editarInforme() {
 
         compraslog.grabarError(TAG ,"editarInforme","editando informe"+informeSel);
-
         ImagenDetalle foto;
         //para saber si ya tego detalle
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
-
         if(detalles!=null&&detalles.size()>0) //ya tengo algo
         {
                 totalgastos= detalles.size();
@@ -669,11 +667,10 @@ public class EditGastoFragment extends Fragment {
         }
 
 
-        }
+    }
 
 
-
-        public void atras(){
+    public void atras(){
             Log.d(TAG,"atras**"+preguntaAct);
             compraslog.grabarError(TAG ,"atras","preguntaact="+preguntaAct);
 
@@ -1019,9 +1016,15 @@ public class EditGastoFragment extends Fragment {
                 mViewModel.actualizarComentarios(mViewModel.getIdNuevo(), informeEdit.getComentarios()+";"+comentarios);
 
             }
-            mViewModel.finalizarInfGasAjuste();
-            //espero un poco para enviarlo
+            mViewModel.finalizarInfGasAjuste(mViewModel.getIdNuevo());
+            compraslog.informacion(TAG,"finalizarInf","inf "+mViewModel.getIdNuevo());
 
+            //espero un poco para enviarlo
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             InformeGastoEnv envio=niviewModel.prepararInformeEnv(mViewModel.getIdNuevo());
 
             SubirInformeGastoTask miTareaAsincrona = new SubirInformeGastoTask(envio,getActivity(),2);
@@ -1090,13 +1093,13 @@ public class EditGastoFragment extends Fragment {
         concepto.setText("CONCEPTO");
 
         costo.setText("COSTO");
-        concepto.setLayoutParams(lp1);
-        costo.setLayoutParams(lp2);
-
-        concepto.setPadding(30,10,30,10);
-        costo.setPadding(30,10,30,10);
         costo.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setBackgroundResource(R.drawable.valuecellborder);
+        concepto.setLayoutParams(lp1);
+        costo.setLayoutParams(lp2);
+        concepto.setPadding(30,10,30,10);
+        costo.setPadding(30,10,30,10);
+
         tableRow.addView(concepto);
         tableRow.addView(costo);
         mBinding.tblvigastos.addView(tableRow);
@@ -1130,7 +1133,7 @@ public class EditGastoFragment extends Fragment {
             mBinding.tblvigastos.addView(tableRow);
             try {
                 sumacosto =sumacosto+ detalle.getImporte();
-                if(detalle.getId()==0){
+                if(detalle.getConceptoId()==0){
                     sumacostomuestra+=detalle.getImporte();
                 }
             }catch(NumberFormatException ex){

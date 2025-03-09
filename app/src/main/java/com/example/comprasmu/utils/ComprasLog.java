@@ -70,7 +70,7 @@ public class ComprasLog {
         return false;
     }
 
-    public void grabarError(String error) {
+    public void escribirError(String error) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
         try {
@@ -89,8 +89,15 @@ public class ComprasLog {
 
 
     }
+    public void grabarError( String mensaje){
+        this.escribirError(" ERRROR:"+mensaje);
+    }
     public void grabarError(String tag, String metodo, String mensaje){
-        this.grabarError(tag+"."+metodo+" "+mensaje);
+        this.escribirError(" ERRROR:"+tag+"."+metodo+mensaje);
+    }
+
+    public void informacion(String tag, String metodo, String mensaje){
+        this.escribirError(tag+"."+metodo+" "+mensaje);
     }
 
     public String leerArch() {

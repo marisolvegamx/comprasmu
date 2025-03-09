@@ -104,16 +104,6 @@ public class LoginActivity extends AppCompatActivity
         };
         usernameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
-       /* passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                  //  comprobacion();
-                }
-                return false;
-            }
-        });*/
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,8 +117,9 @@ public class LoginActivity extends AppCompatActivity
                 }
 
                 lastClickTime = currentClickTime;
-                if (Build.PRODUCT.contains ("sdk")||Build.PRODUCT.contains ("A2016b30")) {//pruebas y el lenovo//entro rapido
-              //  new LoginListener().iniciar(); return;
+                Log.d(TAG,"model"+Build.MODEL+"-"+Constantes.modelo);
+                if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)) {//pruebas y el lenovo//entro rapido
+                  //  new LoginListener().iniciar(); return;
                 }
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 //hago validaciones
