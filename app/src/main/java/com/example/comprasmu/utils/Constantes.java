@@ -57,7 +57,7 @@ public class Constantes {
    public static String[] ETAPAS={"0","PREPARACION","COMPRA","ETIQUETADO","EMPAQUE"};
     public static boolean varciudades;
     public static List<DescripcionGenerica> clientesAsignados;
-    public static String modelo="M2006C3MG";
+    public static String modelo="xxx2006C3MG";
     public static String URLSERV="https://muesmerc.com/comprasv1/";
     //local
   //  public static String URLPRUEBAS1="https://muesmerc.com/comprasv1/";

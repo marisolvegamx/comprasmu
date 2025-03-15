@@ -353,13 +353,8 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
-
                         listener.actualizar(compraResp);
-                        /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
-                        lcdrepo.insertAll(compraResp.getDetalles());
-                        //actualizar version en tabla
-                        tvrepo.insertAll(compraResp.getVersiones());
-*/
+
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {

@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_home);
         milog=ComprasLog.getSingleton();
         milog.crearLog(this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
-    mivar=5;
+        mivar=5;
         final TextView textView = findViewById(R.id.text_home);
         Constantes.ETAPAACTUAL=0;
         getTipoRec();
@@ -90,7 +90,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
             //veo que tipo de recolector es
-            if(tiporec==1) { //es forenaeo
+        if(tiporec==1) { //es forenaeo
                 if(Constantes.ETAPAMENU==0){
                 //no puede empezar
                 mensaje.setText("No puede empezar");
