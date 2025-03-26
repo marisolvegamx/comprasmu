@@ -111,27 +111,38 @@ public class DescRespInformesEta {
 
                 if (infoResp.getEtiq_cancel() != null && infoResp.getEtiq_cancel().size() > 0) {
                     for(InformeEtapaDet det:infoResp.getEtiq_cancel()){
+                        //todo revisar si ya fue actualizada para no veolver a actualizar
+                        //busco el informe
+                        InformeEtapa informeapp=infrepo.findsimple(det.getInformeEtapaId());
+                        if(det.getEstatus()==2&&(informeapp==null||informeapp.getEstatusSync()==2)) //no se subió, pero ya se completó
+                        {
+                            infdrepo.actEstatus(det.getId(), 0);
 
-                        infdrepo.actEstatus(det.getId(),0);
-
-                        //elimino las fotos de las cajas
-                        infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
-                        //vuelvo a abrir
-                        infrepo.actualizarEstatus(det.getInformeEtapaId(), 6);
-
+                            //elimino las fotos de las cajas
+                            infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
+                            //vuelvo a abrir
+                            infrepo.actualizarEstatus(det.getInformeEtapaId(), 6);
+                            infrepo.actualizarEstatusSync(det.getInformeEtapaId(),0);
+                        }
                     }
 
                 }
                 //por si se agregaron muestras
                 if (infoResp.getEtiq_comp()!= null && infoResp.getEtiq_comp().size() > 0) {
-                    for (InformeEtapa infemp : infoResp.getEtiq_comp()
+                    for (InformeEtapa infetiq : infoResp.getEtiq_comp()
                     ) {
+                        //busco el informe
+                        InformeEtapa informeapp=infrepo.findsimple(infetiq.getId());
+                        if(informeapp==null||informeapp.getEstatusSync()==2) //no se subió, pero ya se completó
+                        {
+                            //ahora si cambio estatus
 
-                        //ahora si cambio estatus
+                            infrepo.actualizarEstatus(infetiq.getId(), 4);
+                            infrepo.actualizarEstatusSync(infetiq.getId(),0);
 
-                        infrepo.actualizarEstatus(infemp.getId(), 4);
-                        //elimino las fotos de las cajas
-                        infdrepo.deleteCajaEtiq(infemp.getId());
+                            //elimino las fotos de las cajas
+                            infdrepo.deleteCajaEtiq(infetiq.getId());
+                        }
                     }
                 }
                 if (infoResp.getEmp_elim() != null && infoResp.getEmp_elim().size() > 0) {

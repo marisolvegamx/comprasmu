@@ -106,7 +106,7 @@ public class EditEtiquetadoFragment extends Fragment {
     int totmuestrascan;
     private ArrayList<DescripcionGenerica> listaClientes;
     private boolean isEdicion;
-    Spinner spcliente, spcaja;
+    Spinner spcaja;
     RecyclerView listaqr;
     ComprasLog milog;
     List<String> spinnerValues;
@@ -754,7 +754,6 @@ public void iraReubicar(){
             String rutafoto = null;
             String qr = null;
 
-
             rutafoto=txtrutaim.getText().toString();
             qr=txtqr.getText().toString();
 
@@ -963,21 +962,6 @@ public void iraReubicar(){
     }
 
 
-
-    private  void convertirLista(List<ListaCompra>lista, Integer[] clientesprev){
-        listaClientes =new ArrayList<DescripcionGenerica>();
-        for (ListaCompra listaCompra: lista ) {
-            Log.d(TAG,listaCompra.getPlantaNombre());
-            if( clientesprev!=null)
-                if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
-                {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
-                    Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
-                    continue;}
-            listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
-
-        }
-
-    }
     public void iniciarLecQR(){
         IntentIntegrator integrator  =new  IntentIntegrator ( getActivity() ).forSupportFragment(EditEtiquetadoFragment.this);
         integrator.setRequestCode(REQUEST_CODEQR);
@@ -1012,87 +996,19 @@ public void iraReubicar(){
 
 
     }
-    private void cargarPlantas(List<DescripcionGenerica> selectdes,String value){
-        ArrayAdapter catAdapter = new ArrayAdapter<DescripcionGenerica>(getContext(), android.R.layout.simple_spinner_dropdown_item, selectdes) {
 
-
-            // And the "magic" goes here
-            // This is for the "passive" state of the spinner
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
-                TextView label = (TextView) super.getView(position, convertView, parent);
-                label.setTextColor(Color.BLACK);
-                // Then you can get the current item using the values array (Users array) and the current position
-                // You can NOW reference each method you has created in your bean object (User class)
-                DescripcionGenerica item = getItem(position);
-                label.setText(item.getNombre());
-                //TODO elegir idioma
-
-                // And finally return your dynamic (or custom) view for each spinner item
-                return label;
-            }
-
-            // And here is when the "chooser" is popped up
-            // Normally is the same view, but you can customize it if you want
-            @Override
-            public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
-                TextView label = (TextView) super.getDropDownView(position, convertView, parent);
-                label.setTextColor(Color.BLACK);
-                DescripcionGenerica item = getItem(position);
-                label.setText(item.getNombre());
-
-                return label;
-            }
-        };
-
-
-        spcliente.setAdapter(catAdapter);
-        spcliente.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Get the value selected by the user
-                // e.g. to store it as a field or immediately call a method
-                DescripcionGenerica opcion = (DescripcionGenerica) parent.getSelectedItem();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        if(value!=null&&value.length()>0){
-            //busco el valor en la lista
-            for(DescripcionGenerica cat:selectdes){
-                Log.d("CreadorForm","val"+value+" cat"+cat.getId());
-                if(value.equals(cat.getId()+"")){
-                    // Log.d("CreadorForm","val"+infocampo.value+" cat"+cat.getId());
-                    spcliente.setSelection(catAdapter.getPosition(cat),true);
-                    break;
-                }
-                if(value.equals(cat.getNombre())){
-                    Log.d("CreadorForm",catAdapter.getPosition(cat)+"");
-
-                    spcliente.setSelection(catAdapter.getPosition(cat),true);
-                    break;
-                }
-            }
-        }
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mViewModel = null;
-
         root=null;
         txtrutaim=null;
 
         fotomos=null;
         sv6 =sv3=sv4=null;
         btnrotar=null;
-      //  aceptar1=null;
+
         nombre_foto=null;
         archivofoto=null;
     }

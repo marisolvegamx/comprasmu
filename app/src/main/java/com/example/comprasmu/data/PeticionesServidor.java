@@ -353,6 +353,8 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
+                        Log.d("PeticionesServidor","regresó lista");
+
                         listener.actualizar(compraResp);
 
                     }
@@ -615,8 +617,6 @@ public class PeticionesServidor {
 
         final Call<PostResponse>  batch = ServiceGenerator.getApiService().autenticarUser(new String(android.util.Base64.encode(username.getBytes(), Base64.NO_WRAP)), new String(Base64.encode(password.getBytes(),Base64.NO_WRAP)));
        // final Call<PostResponse>  batch = apiClient.getApiService().autenticarUser(username, password);
-
-
         batch.enqueue(new Callback<PostResponse>() {
             @Override
             public void onResponse(@Nullable Call<PostResponse> call, @Nullable Response<PostResponse> response) {
@@ -626,7 +626,6 @@ public class PeticionesServidor {
                 }else
 
                 if (response.isSuccessful() && response.body() != null) {
-
 
                     PostResponse logResp = response.body();
                     Log.i(TAG,"respuesta"+logResp.getData());

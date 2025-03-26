@@ -1017,7 +1017,7 @@ public class EditGastoFragment extends Fragment {
 
             }
             mViewModel.finalizarInfGasAjuste(mViewModel.getIdNuevo());
-            compraslog.informacion(TAG,"finalizarInf","inf "+mViewModel.getIdNuevo());
+            compraslog.info(TAG,"finalizarInf","inf "+mViewModel.getIdNuevo());
 
             //espero un poco para enviarlo
             try {

@@ -596,6 +596,12 @@ public void iraReubicar(){
 
                 mViewModel.actualizarEstatusDet(iddet.getId(),1);
             }
+            //necesito tiempo para no actualizar el estatus
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }catch(Exception ex){
             ex.printStackTrace();
             Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());

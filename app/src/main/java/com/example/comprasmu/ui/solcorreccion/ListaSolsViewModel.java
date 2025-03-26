@@ -302,7 +302,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
                     //veo que no haya hecho informe para no esperar a la supervisión
                    // ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
                     InformeEtapa informesEtapa = getInformeNoCancel(Constantes.INDICEACTUAL, 4);
-                    if (informesEtapa != null) {
+                    if (informesEtapa == null) {
                         nvoinf.setIndice(listacomp.get(0).getIndice());
                         // nvoinf.set = listacomp.get(0).getId();
                         nvoinf.setEstatus(listacomp.get(0).getEstatus());
@@ -360,6 +360,16 @@ public class ListaSolsViewModel extends AndroidViewModel {
     public InformeEtapa getInformeNoCancel(String indice, int etapa){
 
         return   infetarepo.getInformeNoCancel(indice, etapa);
+
+
+    }
+    public InformeEtapa getInformeCancel(String indice,int etapa){
+
+        List<InformeEtapa> respuesta=infetarepo.getCancelados(indice, etapa);
+        if(respuesta!=null&&respuesta.size()>0){
+            return respuesta.get(0);
+        }
+        return null;
 
 
     }

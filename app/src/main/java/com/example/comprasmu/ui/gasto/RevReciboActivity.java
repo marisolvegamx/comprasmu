@@ -124,7 +124,7 @@ public class RevReciboActivity extends AppCompatActivity {
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(false);
         webView.loadUrl(urlrecibo);
-        milog.informacion(TAG,"create",urlrecibo);
+        milog.info(TAG,"create",urlrecibo);
         comentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         btnenviar.setOnClickListener(new View.OnClickListener() {

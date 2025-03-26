@@ -218,7 +218,7 @@ public class NvaCorrecCalCajaFragment extends Fragment {
                 txtmotivo.setVisibility(View.VISIBLE);
             }
             if(preguntaAct.getId()>122) {
-                //todo saber en que pregunta voy primero veo si ya tiene una correccion iniciada es edicion
+                // saber en que pregunta voy primero veo si ya tiene una correccion iniciada es edicion
                 int descripcionId=12;
                 if(preguntaAct.getId()==124){
                     descripcionId=13;
@@ -551,7 +551,7 @@ if(correccionDet!=null)
                    }
                        if(mViewModel.getIdNuevo()>0)//todo bien
                        {
-                           //todo inserto detalle
+                           // inserto detalle
                            mViewModel.insertarCorEtiqCajDet(mViewModel.getIdNuevo(), "", valor, cajaAct, descripfoto, descripcionId,Constantes.INDICEACTUAL);
                        }
 
@@ -1069,7 +1069,7 @@ if(correccionDet!=null)
         sv2.removeAllViewsInLayout();
         int idreact=preguntaAct.getId()-1;
         if (preguntaAct.getId()==123) { //son fotos de caja y tengo que buscar la foto
-            //todo revisar si hay cajas anteriores
+            // revisar si hay cajas anteriores
             if(contCajas>1)//es caja de enmedio
             {
                 idreact = 125;

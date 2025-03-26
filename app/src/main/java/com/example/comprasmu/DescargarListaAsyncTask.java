@@ -48,61 +48,39 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void> implements  DescRespInformesEta.ProgresoRespIEListener {
+public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
 
-    CatalogoDetalleRepositoryImpl cdrepo;
-    SustitucionRepositoryImpl sustRepo;
+
     TablaVersionesRepImpl tvRepo;
-    AtributoRepositoryImpl atRepo;
     SimpleDateFormat sdfdias;
     ListaCompraDetRepositoryImpl lcdrepo;
     ListaCompraRepositoryImpl lcrepo;
-    SiglaRepositoryImpl sigRepo;
-    VisitaRepositoryImpl visRepo;
     InformeComDetRepositoryImpl infdrepo;
-    ImagenDetRepositoryImpl imagenDetRepo;
-    ProductoExhibidoRepositoryImpl prodrepo;
-    GeocercaRepositoryImpl georep;
-    InformeCompraRepositoryImpl infrepo;
-    boolean notificar=false;
     Activity act;
-    int actualiza;
-    int procesos=0;
-    int procesos_lev=0; //para saber cuantos si se corrieron
     private ComprasLog flog;
     DescargaIniListener listenprin;
-   // DescargaRespAsyncTask.ProgresoRespListener proglist;
+
     final String TAG="DescargarListaAsyncTask";
-   // private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
-  //  private   String DESTINATION_PATH ;
     private final ProgresoDLListener miproglis;
     RespInfEtapaResponse maininfoetaResp;
     RespInformesResponse maininfoResp; //para bajar las fotos desde la actividad
     List<Correccion> mainRespcor;
-    private boolean descargarListas;
+
     PeticionesServidor peticionesServidor;
 
 
-    public DescargarListaAsyncTask(Activity act, CatalogoDetalleRepositoryImpl cdrepo,
+    public DescargarListaAsyncTask(Activity act,
                                    TablaVersionesRepImpl tvRepo,
-                                   AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo,
+                                   ListaCompraDetRepositoryImpl lcdrepo,
                                    ListaCompraRepositoryImpl lcrepo, ProgresoDLListener miproglis,
-                                   SustitucionRepositoryImpl sustRepo, GeocercaRepositoryImpl georep,
-                                   SiglaRepositoryImpl sigRepo, boolean descargarListas,PeticionesServidor peticionServ ) {
+                                   PeticionesServidor peticionServ ) {
 
-        this.cdrepo=cdrepo;
-        this.atRepo=atRepo;
         this.tvRepo=tvRepo;
         this.lcdrepo=lcdrepo;
         this.lcrepo=lcrepo;
-        this.sustRepo=sustRepo;
         this.act=act;
-        this.sigRepo=sigRepo;
         sdfdias=new SimpleDateFormat("dd-MM-yyyy");
-       // this.proglist=proglist;
-        this.georep=georep;
         this.miproglis=miproglis;
-        this.descargarListas=descargarListas;
         flog = ComprasLog.getSingleton();
         flog.crearLog(act.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
         this.peticionesServidor=peticionServ;
@@ -115,13 +93,10 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void> imple
         listenprin=new DescargaIniListener();
         if(!ComprasUtils.isOnlineNet(act)) {
             miproglis.notificarSinConexion();
-          //  miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
-
             return null;
         }
 
         listacompras();
-
         return null;
 
     }
@@ -143,9 +118,8 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void> imple
         return false;
     }
     private void listacompras(){
-        Log.d("DescargarListaAsyncTask", "descargando listas"+actualiza);
-        flog.grabarError(TAG,"listacompras","descargando listas actualiza=");
-        procesos_lev++; //para verificar que ya terminó
+        Log.d("DescargarListaAsyncTask", "descargando listas");
+        flog.grabarError(TAG,"listacompras","descargando listas =");
         TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
         TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
         DescargarListaAsyncTask.DescargaIniListener listener=new DescargaIniListener();
@@ -154,12 +128,12 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void> imple
         if(comp!=null){
 
             //siempre actualizo
-            procesos_lev++;
+
             peticionesServidor.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
 
         }else {
                  if (!sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))) {
-                        procesos_lev++;
+
                      peticionesServidor.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
 
 
@@ -181,19 +155,7 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void> imple
 
     }
 
-    @Override
-    public void finalizarrespie() {
-        Log.d(TAG,"DescargaIniListener procesos "+procesos+"--"+procesos_lev);
-        procesos++;
-        if(procesos==procesos_lev){ //llama 2 veces al home etra 2 vece
 
-
-            miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
-
-            //para que no vuelva a entrar
-
-        }
-    }
 
 
     public class DescargaIniListener implements  IDescargaIniListener{
@@ -201,13 +163,10 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void> imple
 
         }
        public void finalizar(){
-            Log.d(TAG,"DescargaIniListener procesos "+procesos+"--"+procesos_lev);
-           procesos++;
-           if(procesos==procesos_lev){ //llama 2 veces al home etra 2 vece
+            Log.d(TAG,"DescargaIniListener finalizando ");
 
                miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
 
-            }
 
        }
 
@@ -219,8 +178,9 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void> imple
 
         public void actualizar(ListaCompraResponse compraResp) {
                 //primero los inserts
+            Log.d(TAG,"actualizar lista");
 
-                if(compraResp!=null) {
+            if(compraResp!=null) {
                     if (compraResp.getInserts() != null) {
                         if (compraResp.getInserts().getListaCompra() != null) {
                              Log.d(TAG,"listacomp<"+compraResp.getInserts().getListaCompra());
@@ -322,8 +282,6 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void> imple
 
 
 
-
-
     public void buscarListaDet(ListaCompraDetalle compra, List<ListaCompraDetalle> json){
         for (ListaCompraDetalle jcompra: json) {
             if(jcompra.getId()==compra.getId()&&compra.getListaId()==jcompra.getListaId()){
@@ -337,7 +295,7 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void> imple
         //busco que no tenga informe
         infdrepo=new InformeComDetRepositoryImpl(act);
         List<InformeCompraDetalle> prods=infdrepo.findByCompra(compra.getListaId(), compra.getId());
-        Log.d(TAG,"prbabbl elimine "+compra.getProductoNombre()+"--"+compra.getListaId()+"--"+ compra.getId());
+        Log.d(TAG,"eliminar? "+compra.getProductoNombre()+"--"+compra.getListaId()+"--"+ compra.getId());
         if(prods==null||prods.size()<1)
             lcdrepo.delete(compra);
 

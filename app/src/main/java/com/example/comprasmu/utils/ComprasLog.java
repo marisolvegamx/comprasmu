@@ -96,7 +96,7 @@ public class ComprasLog {
         this.escribirError(" ERRROR:"+tag+"."+metodo+mensaje);
     }
 
-    public void informacion(String tag, String metodo, String mensaje){
+    public void info(String tag, String metodo, String mensaje){
         this.escribirError(tag+"."+metodo+" "+mensaje);
     }
 

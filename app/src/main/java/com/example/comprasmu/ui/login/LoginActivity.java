@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("LoginActivity"," regrese");
+        Log.i("LoginActivity"," regreso");
         if(Constantes.LOGGEADO){ //ya inicié sesión no pido iniciar
             entrar();
           //  finish();
@@ -160,7 +160,6 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("LoginActivity"," mori");
        // unregisterReceiver(onDownloadComplete);
     }
 
@@ -171,24 +170,13 @@ public class LoginActivity extends AppCompatActivity
     }
 
     public void comprobacion(){
-        //reviso si ya tengo el dato en preferencias
-        LoggedInUser luser=tengoUsuario();
-        //siempre checa el internet
-        //luser=null;
-         //   Log.i("LoginActivity","primera vez");
-        if(ComprasUtils.isOnlineNet(getApplicationContext())) {
-      //  if(true){
-            if(luser!=null) {
-                //veo que sea el mismo correo
-                if(!luser.getUserId().equals(usernameEditText.getText().toString())){
-                    new LoginListener().incorrecto("Usuario o contraseña incorrectos");
-                     return;
-                }
 
-            }
-                loginViewModel.login(usernameEditText.getText().toString(),
+        LoggedInUser luser=tengoUsuario();
+
+        if(ComprasUtils.isOnlineNet(getApplicationContext())) {
+            loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString(), new LoginListener());
-                //     new LoginListener().correcto();
+
         }else
         {
 
@@ -229,34 +217,32 @@ public class LoginActivity extends AppCompatActivity
     }
     public void guardarUsuario(String cveusr){
 
-
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=prefe.edit();
-       // editor.putString("claveusuario",cveusr);
         editor.putString("usuario", android.util.Base64.encodeToString( usernameEditText.getText().toString().getBytes(), Base64.DEFAULT));
         editor.putString("password", Base64.encodeToString(passwordEditText.getText().toString().getBytes(),Base64.DEFAULT));
         editor.commit();
-
-
 
     }
     public void guardarClave(String clave){
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=prefe.edit();
-
         editor.putString("claveusuario",clave);
         editor.commit();
         Constantes.CLAVEUSUARIO=clave;
 
+    }
+
+    public String buscarClaveUsuario()
+    {
+        SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        return prefe.getString("claveusuario", "");
 
     }
 
 
-
-
     private void updateUiWithUser(String model) {
         String welcome = getString(R.string.welcome) +" "+ model;
-
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 
@@ -266,8 +252,6 @@ public class LoginActivity extends AppCompatActivity
     }
     public void entrar() {
         Constantes.LOGGEADO = true;
-
-
         Log.d("LoginActivity","entre");
         //mando a la siguiente actividad
         Intent intento=new Intent(this, PruebasActivity.class);
@@ -281,13 +265,7 @@ public class LoginActivity extends AppCompatActivity
         Constantes.CIUDADTRABAJO = prefe.getString("ciudadtrabajo", "");
         Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
         Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
-        //  prefe.getString("ciudadtrabajo","");
-    /*    Constantes.PAISTRABAJO=     prefe.getString("paistrabajo","");
-        Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
-        Constantes.IDPAISTRABAJO=     prefe.getInt("idpaistrabajo",0);
-        Constantes.CLAVEUSUARIO=prefe.getString("claveusuario","");
-*/
-        Log.d("LoginActivity", "***** indice " + Constantes.CLAVEUSUARIO );
+         Log.d("LoginActivity", "***** indice " + Constantes.CLAVEUSUARIO );
 
         SimpleDateFormat sdfparaindice=new SimpleDateFormat("M-yyyy");
         //obtengo solo mes
@@ -318,12 +296,6 @@ public class LoginActivity extends AppCompatActivity
         }
 
         Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
-        // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-      //  Constantes.INDICEACTUAL = "6.2022";
-      //  if(Constantes.CLAVEUSUARIO.equals("4")){
-      //      Constantes.INDICEACTUAL = "6.2022";
-      //  }
-
      //
         //TODO falta pais trabajo
         //  Constantes.CIUDADTRABAJO="Cd Juarez";
@@ -332,7 +304,7 @@ public class LoginActivity extends AppCompatActivity
         //Inicio un servicio que se encargue de descargar
 
         desclis=1;
-       CatalogoDetalleRepositoryImpl cdrepo=new CatalogoDetalleRepositoryImpl(getApplicationContext());
+        CatalogoDetalleRepositoryImpl cdrepo=new CatalogoDetalleRepositoryImpl(getApplicationContext());
         TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getApplicationContext());
 
         AtributoRepositoryImpl atRepo=new AtributoRepositoryImpl(getApplicationContext());
@@ -343,92 +315,17 @@ public class LoginActivity extends AppCompatActivity
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
       //  DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep);
 
-     //   task.execute("cat","");
-
-
-      /*  AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setIcon(android.R.drawable.stat_sys_download);
-        builder.setTitle("Descargando");
-        builder.setMessage("Por favor mantengase en la aplicación hasta que termine la descarga");
-        builder.setInverseBackgroundForced(true);
-
-        AlertDialog alert=builder.create();
-        alert.show();*/
-
-      /*  Dialog builder = new Dialog(act);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.setCancelable(false);
-*/
-    }
-
-    /*@Override
-    public void cerrarAlerta(boolean res) {
-        Log.d("LoginAct","quiero descargar "+desclis+"--"+descinf+"--"+descfoto);
-        if(desclis==0&&descinf==0&&descfoto==0)
-         entrar();
-    }
-
-    @Override
-    public void todoBien( RespInformesResponse infoResp) {
-        if (infoResp.getImagenDetalles() != null && infoResp.getImagenDetalles().size() > 0) {
-
-            descargarImagenes(infoResp.getImagenDetalles());
-
-        }
 
     }
 
-    @Override
-    public void estatusInf(int es) {
-        descinf=es;
-    }
-
-    @Override
-    public void estatusLis(int es) {
-        desclis=es;
-    }*/
-
-   /* private void descargarImagenes(List<ImagenDetalle> imagenes){
-        for(ImagenDetalle img:imagenes){
-            startDownload(DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta(), DESTINATION_PATH);
-            Log.d("LOginAct"," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
-        }
-       // cerrarAlerta(true);
-    }*/
-    private long startDownload(String downloadPath, String destinationPath) {
-        Uri uri = Uri.parse(downloadPath); // Path where you want to download file.
-        // registrer receiver in order to verify when download is complete
-      //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  // This will show notification on top when downloading the file.
-        request.setTitle("Downloading a file"); // Title for notification.
-        request.setVisibleInDownloadsUi(true);
-
-        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
-        long id=((DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
-        return id;
-
-    }
 
 
     public class LoginListener{
 
         public void incorrecto(String response){
-          //muestro error
-
+            //muestro error
             loadingProgressBar.setVisibility(View.GONE);
-
             showLoginFailed(response);
-
-
-
-            //setResult(Activity.RESULT_OK);
-
-            //Complete and destroy login activity once successful
-
         }
         public void correcto(String cveusr) {
 
@@ -440,15 +337,21 @@ public class LoginActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(),getString(R.string.error_sesion) , Toast.LENGTH_LONG).show();
                 return;
             }
+
             String clave=aux[1];
-            guardarClave(clave);
-            Log.d(TAG,"correcto"+clave);
-            Log.d(TAG,"correcto"+Constantes.CLAVEUSUARIO);
-            updateUiWithUser(usernameEditText.getText().toString());
-            //hago actualizacion y cuando termine envio a la sig actividad
-         //   descargasIniciales();
-            entrar();
-         //   finish();
+            String cveguardada= buscarClaveUsuario();
+            if(!cveguardada.equals("")&&cveguardada.equals(clave)) {
+                guardarClave(clave);
+                Log.d(TAG, "correcto" + clave);
+                Log.d(TAG, "correcto" + Constantes.CLAVEUSUARIO);
+                updateUiWithUser(usernameEditText.getText().toString());
+                //hago actualizacion y cuando termine envio a la sig actividad
+                //   descargasIniciales();
+                entrar();
+            }
+            else {
+                showLoginFailed("Usuario incorrecto");
+            }
 
         }
         public void iniciar() {
@@ -464,17 +367,6 @@ public class LoginActivity extends AppCompatActivity
         }
 
     }
-  /*  private BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if(DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)){
-                Toast.makeText(context,"Download completed", Toast.LENGTH_LONG).show();
-                // DO SOMETHING WITH THIS FILE
-                descfoto=0;
-            }
-        }
-    };*/
 
 }

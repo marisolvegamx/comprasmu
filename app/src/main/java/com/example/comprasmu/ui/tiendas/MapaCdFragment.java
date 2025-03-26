@@ -2,6 +2,7 @@ package com.example.comprasmu.ui.tiendas;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,18 +42,34 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.comprasmu.DescargarListaAsyncTask;
+import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
+import com.example.comprasmu.data.remote.RespInformesResponse;
+import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
+import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
+import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
@@ -75,7 +92,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,GoogleMap.OnInfoWindowCloseListener,GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
+public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
+        GoogleMap.OnInfoWindowCloseListener,
+        GoogleMap.OnMapClickListener,
+        GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnInfoWindowClickListener,
+        DescargarListaAsyncTask.ProgresoDLListener{
     public static final String EXTRA_LATITUD = "extra_latitud";
     public static final String EXTRA_LONGITUD ="extra_longitud" ;
 
@@ -123,7 +145,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     private LocationCallback locationCallback;
     private LocationManager fusedLocationClient;
     private miLocationListener locallis;
-
+    ComprasLog compraslog;
     public MapaCdFragment() {
     }
 
@@ -142,6 +164,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         }
         mapFragment.getMapAsync(this);
         verfiltros=false;
+        compraslog=ComprasLog.getSingleton();
         spplantas=view.findViewById(R.id.spmcdplanta);
         spcadena=view.findViewById(R.id.spmccadenati);
         sptipoti=view.findViewById(R.id.spmctipoti);
@@ -190,14 +213,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 }
             }
         });
-        buscarClientes();
+        //actualizo la lista de compra
 
+     //   actualizarListaCompra();
+        buscarClientes();
         if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
             getDeviceLocation();
         } else {
-            Log.d(TAG, "no tengo  "+LOCATION_REQUEST_CODE);
+           compraslog.info(TAG, "create","no hay permiso para gps "+LOCATION_REQUEST_CODE);
             // Solicitar permiso
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_REQUEST_CODE);
@@ -214,7 +239,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
                 if(plantasel!=null) {
                     int planta = plantasel.id;
-
                     //calculo indice fin
                     buscarTiendas(planta, indiceini);
                 }
@@ -238,20 +262,15 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         coloresTienda.put("1",BitmapDescriptorFactory.HUE_RED);
          ArrayList<DescripcionGenerica> listaFecha;
         listaFecha=new ArrayList<DescripcionGenerica>();
-
         listaFecha.add(new DescripcionGenerica(1,"1 "+getString(R.string.anio)));
         listaFecha.add(new DescripcionGenerica(2,"2 "+getString(R.string.anio)+"S"));
         listaFecha.add(new DescripcionGenerica(3,"3 "+getString(R.string.anio)+"S"));
-
         CreadorFormulario.cargarSpinnerDescr(getContext(),spfecha,listaFecha);
-
         ArrayList<DescripcionGenerica> listaop;
         listaop=new ArrayList<DescripcionGenerica>();
         listaop.add(new DescripcionGenerica(0,"SELECCIONAR OPCION"));
         listaop.add(new DescripcionGenerica(1,"POR TIPO TIENDA"));
         listaop.add(new DescripcionGenerica(2,"POR CADENA"));
-
-
         CreadorFormulario.cargarSpinnerDescr(getContext(),spseleccion,listaop);
         spseleccion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -263,7 +282,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 if(opcion.getId()==1){
                     //muestro lista de tipo tiendas
                     lltipotienda.setVisibility(View.VISIBLE);
-
                 }
                 else
                 {
@@ -273,7 +291,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
                 if(opcion.getId()==2){
                     //muestro lista de tipo tiendas
                     llcadena.setVisibility(View.VISIBLE);
-
                 }
                 else
                 {
@@ -287,10 +304,22 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             }
         });
 
-
         return  view;
 
     }
+
+    private void actualizarListaCompra() {
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getContext());
+        ListaCompraDao dao= ComprasDataBase.getInstance(getContext()).getListaCompraDao();
+        ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getContext());
+        ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO) ;
+        DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(),tvRepo,lcdrepo,lcrepo,this,ps);
+        task.execute("");
+    }
+
     /**
      * Saves the state of the map when the activity is paused.
      */
@@ -301,13 +330,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             outState.putParcelable(KEY_LOCATION, lastKnownLocation);
         }
         super.onSaveInstanceState(outState);
-    }
-
-    private void nuevaTienda2() {
-        Intent intent = new Intent(getActivity(), MapaSugFragment.class);
-
-
-        startActivity(intent);
     }
 
 
@@ -330,13 +352,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
 
         }
 
-
-
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
-
-        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 4));
-
         mMap.getUiSettings().setZoomControlsEnabled(true);
         // Get the current location of the device and set the position of the map.
 
@@ -434,9 +451,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         btncancel.setVisibility(View.VISIBLE);
         llcancel.setVisibility(View.VISIBLE);
         markerSel=marker;
-
-
-
         return false;
     }
 
@@ -524,11 +538,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
     public void dibujarZonas(List<Geocerca> zonas){
         regionPolygon=new ArrayList<Polygon>();
 
-        //guardar zonas
-        GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getActivity());
-
         for(Geocerca geo:zonas){
-            //georep.insert(geo);
             String[] aux =geo.getGeo_p1().split(",");
             LatLng p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
             String[] aux2 =geo.getGeo_p2().split(",");
@@ -698,6 +708,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
         if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
 
             // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
+
+            alert.closeAlertDialog();
             irAcdSel();
             return;
         }
@@ -897,8 +909,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,Goog
             locallis.desactivar();
         super.onDestroy();
 
+    }
 
+    @Override
+    public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
+        alert.closeAlertDialog();
+    }
 
+    @Override
+    public void notificarSinConexion() {
+        //puede seguir trabajando
     }
 
     public class miLocationListener implements LocationListener {

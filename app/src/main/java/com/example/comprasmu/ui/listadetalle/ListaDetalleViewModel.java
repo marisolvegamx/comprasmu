@@ -135,7 +135,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
 
     }
-    public  List<ListaCompra>  cargarPlantas(String ciudadSel,int clienteSel){
+    public  List<ListaCompra>  getAllByIndiceCiudadClienteSim(String ciudadSel,int clienteSel){
 
             return repository.getAllByIndiceCiudadClienteSim(Constantes.INDICEACTUAL,ciudadSel,clienteSel);
 

@@ -10,19 +10,34 @@ public class LoadingAlert {
 
     Activity activity;
     AlertDialog dialog;
+    boolean mostrando=false;
     public LoadingAlert(Activity activity){
         this.activity=activity;
     }
-    void startAlert(){
-        AlertDialog.Builder builder=new AlertDialog.Builder(activity);
-        LayoutInflater inflater=activity.getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.dialog_layout,null));
-        builder.setCancelable(false);
-        dialog=builder.create();
-        dialog.show();
+    public void startAlert(){
+        if(!mostrando){
+            AlertDialog.Builder builder=new AlertDialog.Builder(activity);
+            LayoutInflater inflater=activity.getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.dialog_layout,null));
+            builder.setCancelable(false);
+            dialog=builder.create();
+            dialog.show();
+        }
+        mostrando=true;
+
     }
-    void closeAlertDialog(){
-        dialog.dismiss();
+    public void closeAlertDialog(){
+        if(mostrando) {
+            mostrando = false;
+            dialog.dismiss();
+        }
     }
 
+    public boolean isMostrando() {
+        return mostrando;
+    }
+
+    public void setMostrando(boolean mostrando) {
+        this.mostrando = mostrando;
+    }
 }

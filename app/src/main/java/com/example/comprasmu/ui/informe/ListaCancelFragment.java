@@ -46,16 +46,10 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
 
 
     public static final String TAG = "ListaCancelFragment";
-   private ListaCancelFragmentBinding mBinding;
+    private ListaCancelFragmentBinding mBinding;
     private CancelAdapter mListAdapter;
     private NotifEtiqAdapter mEtaAdapter;
-    private int clienteid;
-    private String ciudad;
-    private int plantaid;
-    private String tienda;
     private String indice;
-    String clientesel;
-    int plantasel;
     CoordinatorLayout coordinator;
     ListaNotifEtiqViewModel notViewModel;
     public ListaCancelFragment() {
@@ -69,17 +63,10 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
 
 
         indice = Constantes.INDICEACTUAL;
-
-
-
-     //   Log.d(Constantes.TAG,"cliente y planta sel"+clienteid+"--"+plantaid);
-
         mBinding= DataBindingUtil.inflate(inflater,
                 R.layout.lista_cancel_fragment, container, false);
         mViewModel = new ViewModelProvider(this).get(ListaInformesViewModel.class);
         notViewModel = new ViewModelProvider(this).get(ListaNotifEtiqViewModel.class);
-        //
-       // setHasOptionsMenu(true);
         return    mBinding.getRoot();
     }
 
@@ -92,9 +79,6 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         mBinding.lisinfeta.setVisibility(View.GONE);
         mBinding.lismuestras.setVisibility(View.GONE);
         setupListAdapters();
-
-
-
         setupSnackbar();
     }
 
@@ -138,7 +122,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
             //veo que no haya hecho informe para no esperar a la supervisión
             ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
             InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL,4);
-            if(informesEtapa!=null) {
+            if(informesEtapa==null) {
               nvoinf.setIndice(listacomp.get(0).getIndice());
               // nvoinf.set = listacomp.get(0).getId();
               nvoinf.setEstatus(listacomp.get(0).getEstatus());
@@ -232,7 +216,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                 ) {
 
                     //reviso si ya estoy en etapa 3
-                    List<ListaCompra> listacomp = notViewModel.buscarListaCompxPlan(infeta.getPlantasId(),infeta.getIndice());
+                    List<ListaCompra> listacomp = notViewModel.buscarListaCompxPlan(infeta.getClientesId(),infeta.getCiudadNombre(),infeta.getIndice());
                     if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
 
 

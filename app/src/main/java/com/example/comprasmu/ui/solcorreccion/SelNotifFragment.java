@@ -145,7 +145,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                 if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
                     //veo que no haya hecho informe para no esperar a la supervisión
                     InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
-                    if (informesEtapa != null) {
+                    if (informesEtapa == null) {
                         nvoinf.setIndice(listacomp.get(0).getIndice());
                         // nvoinf.set = listacomp.get(0).getId();
                         nvoinf.setEstatus(listacomp.get(0).getEstatus());

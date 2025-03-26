@@ -41,11 +41,16 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 
 import com.example.comprasmu.SubirInformeEtaTask;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ListaCompraDao;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -55,6 +60,11 @@ import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
 
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
+import com.example.comprasmu.data.remote.RespInformesResponse;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -63,6 +73,7 @@ import com.example.comprasmu.ui.infetapa.NuevoInfEtapaViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -83,7 +94,7 @@ import static android.app.Activity.RESULT_OK;
 //las cajas se numeran x ciudad cliente
 //ciudad x cajas 1,2,3 no importa el cliente
 //ciudad y 1,2,3 no importa el cliente
-public class NvoEtiquetadoFragment extends Fragment {
+public class NvoEtiquetadoFragment extends Fragment implements   DescargarListaAsyncTask.ProgresoDLListener {
 
     private InformeEtapaDet detalleEdit;
     LinearLayout sv1, sv6, sv3, sv4, svotra;
@@ -134,6 +145,8 @@ public class NvoEtiquetadoFragment extends Fragment {
     private int cajainif;
     private Button btnreubicar;
     int etapa=3;
+    private LoadingAlert alert;
+
     public NvoEtiquetadoFragment() {
 
     }
@@ -311,6 +324,8 @@ public class NvoEtiquetadoFragment extends Fragment {
             milog.grabarError(TAG + " o x aca");
             //busco si tengo varias plantas
             ciudadInf = Constantes.CIUDADTRABAJO;
+            //actualizo lista de compra
+        //    actualizarListaCompra();
             //busco los clientes x ciudad
             listacomp = lcViewModel.getTodosCliByIndiceCdSimplxet(Constantes.CIUDADTRABAJO, this.etapa);
             Log.d(TAG, "PLANTA" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
@@ -1251,6 +1266,16 @@ public void iraReubicar(){
         integrator.initiateScan();
     }
 
+    @Override
+    public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
+        alert.closeAlertDialog();
+    }
+
+    @Override
+    public void notificarSinConexion() {
+        //puede continuar sin conexion
+    }
+
     class BotonTextWatcher implements TextWatcher {
 
         boolean mEditing;
@@ -1346,6 +1371,17 @@ public void iraReubicar(){
         }
     }
 
+    private void actualizarListaCompra() {
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getContext());
+        ListaCompraDao dao= ComprasDataBase.getInstance(getContext()).getListaCompraDao();
+        ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getContext());
+        ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO) ;
+        DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(),tvRepo,lcdrepo,lcrepo,this,ps);
+        task.execute("");
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
