@@ -256,8 +256,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     v.setEnabled(false);
                 long currentClickTime= SystemClock.elapsedRealtime();
                 // preventing double, using threshold of 1000 ms
-                if (currentClickTime - lastClickTime < 5500){
-                    //  Log.d(TAG,"doble click :("+lastClickTime);
+                if (currentClickTime - lastClickTime < 5000){
+                    v.setEnabled(false);
                     return;
                 }
 

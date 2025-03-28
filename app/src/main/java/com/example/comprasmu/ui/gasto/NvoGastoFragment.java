@@ -511,16 +511,14 @@ public class NvoGastoFragment extends Fragment {
                         //reviso los conceptos que ya están utilizados
 
                         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
-                        for (int i=0;i<conceptos.size();i++
-                             ){
-                            for (InformeGastoDet det:
-                                 detalles) {
-
+                        for (InformeGastoDet det:
+                                detalles) {
+                            for (int i=0;i<conceptos.size();i++
+                                 ){
                                 if (conceptos.get(i).getCad_idopcion() == det.getConceptoId()) {
                                     conceptos.remove(i);
                                     catAdapter.notifyDataSetChanged();
                                 }
-
                             }
                         }
                             llconce.setVisibility(View.VISIBLE);

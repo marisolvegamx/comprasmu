@@ -1,61 +1,30 @@
 package com.example.comprasmu.ui.login;
 
 import androidx.lifecycle.ViewModelProvider;
-
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Environment;
 import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.ComprasDataBase;
-import com.example.comprasmu.data.dao.ListaCompraDao;
-import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.LoggedInUser;
-import com.example.comprasmu.data.remote.InformeEnvio;
-import com.example.comprasmu.data.remote.RespInformesResponse;
-import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
-import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
-import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
-import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
-import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-
-
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+
 
 public class LoginActivity extends AppCompatActivity
 //        implements DescargasIniAsyncTask.ProgresoListener
@@ -111,8 +80,8 @@ public class LoginActivity extends AppCompatActivity
                 loginButton.setEnabled(false);
                 long currentClickTime= SystemClock.elapsedRealtime();
                 // preventing double, using threshold of 1000 ms
-                if (currentClickTime - lastClickTime < 5500){
-                    //  Log.d(TAG,"doble click :("+lastClickTime);
+                if (currentClickTime - lastClickTime < 2000){
+                    loginButton.setEnabled(false);
                     return;
                 }
 
@@ -121,7 +90,7 @@ public class LoginActivity extends AppCompatActivity
                 if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)) {//pruebas y el lenovo//entro rapido
                   //  new LoginListener().iniciar(); return;
                 }
-                loadingProgressBar.setVisibility(View.VISIBLE);
+             //   loadingProgressBar.setVisibility(View.VISIBLE);
                 //hago validaciones
                 loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
@@ -133,15 +102,17 @@ public class LoginActivity extends AppCompatActivity
                 }
                 loginButton.setEnabled(loginFormState.isDataValid());
                 if (loginFormState.getUsernameError() != null) {
+
                     usernameEditText.setError(getString(loginFormState.getUsernameError()));
+                    loginButton.setEnabled(true);
                 }
                 if (loginFormState.getPasswordError() != null) {
                     passwordEditText.setError(getString(loginFormState.getPasswordError()));
+                    loginButton.setEnabled(true);
                 }
+
                 if(loginFormState.isDataValid())
                     comprobacion();
-
-                loadingProgressBar.setVisibility(View.GONE);
 
             }
         });
@@ -170,7 +141,7 @@ public class LoginActivity extends AppCompatActivity
     }
 
     public void comprobacion(){
-
+        loadingProgressBar.setVisibility(View.VISIBLE);
         LoggedInUser luser=tengoUsuario();
 
         if(ComprasUtils.isOnlineNet(getApplicationContext())) {
@@ -259,66 +230,6 @@ public class LoginActivity extends AppCompatActivity
         finish();
     }
 
-    public void descargasIniciales(){
-
-        SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
-        Constantes.CIUDADTRABAJO = prefe.getString("ciudadtrabajo", "");
-        Constantes.IDCIUDADTRABAJO=prefe.getInt("idciudadtrabajo",0);
-        Constantes.CLAVEUSUARIO = prefe.getString("claveusuario", "");
-         Log.d("LoginActivity", "***** indice " + Constantes.CLAVEUSUARIO );
-
-        SimpleDateFormat sdfparaindice=new SimpleDateFormat("M-yyyy");
-        //obtengo solo mes
-
-        Calendar cal = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
-        Date hoy=new Date();
-        cal.setTime(hoy);
-        cal.add(Calendar.MONTH, +1);
-        String mesactual = sdfparaindice.format(cal.getTime());
-
-        String[] aux = mesactual.split("-");
-        int mes = Integer.parseInt(aux[0])+1;
-        int anio = Integer.parseInt(aux[1]);
-
-        Constantes.listaindices = new String[4];
-        int j = 3;
-        int nuevomes = mes;
-        for (int i = 1; i < 5; i++) {
-            Constantes.listaindices[j] = ComprasUtils.mesaLetra(nuevomes + "") + " " + anio + "";
-
-            nuevomes = nuevomes - 1;
-            if (nuevomes == 0) //empezo en 1
-            {
-                nuevomes = 12;
-                anio = anio - 1;
-            }
-            j--;
-        }
-
-        Constantes.INDICEACTUAL=ComprasUtils.indiceLetra(mesactual);
-     //
-        //TODO falta pais trabajo
-        //  Constantes.CIUDADTRABAJO="Cd Juarez";
-        //  Constantes.PAISTRABAJO = "Mexico";
-        //pueda descargar
-        //Inicio un servicio que se encargue de descargar
-
-        desclis=1;
-        CatalogoDetalleRepositoryImpl cdrepo=new CatalogoDetalleRepositoryImpl(getApplicationContext());
-        TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getApplicationContext());
-
-        AtributoRepositoryImpl atRepo=new AtributoRepositoryImpl(getApplicationContext());
-        ListaCompraDao dao= ComprasDataBase.getInstance(getApplicationContext()).getListaCompraDao();
-        ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
-        ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
-        SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
-        GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
-      //  DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep);
-
-
-    }
-
-
 
     public class LoginListener{
 
@@ -337,7 +248,6 @@ public class LoginActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(),getString(R.string.error_sesion) , Toast.LENGTH_LONG).show();
                 return;
             }
-
             String clave=aux[1];
             String cveguardada= buscarClaveUsuario();
             if(!cveguardada.equals("")&&cveguardada.equals(clave)) {
@@ -362,7 +272,6 @@ public class LoginActivity extends AppCompatActivity
             //hago actualizacion y cuando termine envio a la sig actividad
            // descargasIniciales();
             entrar();
-           // finish();
 
         }
 

@@ -1124,8 +1124,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
          for (NotificacionGen noti:
                 lista) {
            totalnotif+=noti.getTotal();
-             //todo quitar despues
-             if(noti.getTipo()==5){    //4-revisar recibo
+
+          /*   if(noti.getTipo()==5&&Constantes.CIUDADTRABAJO.equals("TUXTLA GUTIERREZ")){    //4-revisar recibo
                  //5-ajustar recibo
                  //6-estatus envio
                  //busco el informe
@@ -1138,7 +1138,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                          flog.grabarError(TAG, "convertirListaNotif", "actualizando informe gastos ajuste" + info.getId());
                      }
                  }
-             }
+             }*/
            //modifico el estatus del informe
              if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
                       //5-ajustar recibo
