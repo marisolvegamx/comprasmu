@@ -370,20 +370,20 @@ public class EditGastoFragment extends Fragment {
                         //reviso los conceptos que ya están utilizados
 
                         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
-                        for (int i=0;i<conceptos.size();i++
-                             ){
-                            for (InformeGastoDet det:
-                                 detalles) {
-
+                        for (InformeGastoDet det:
+                                detalles) {
+                            for (int i=0;i<conceptos.size();i++
+                                 ){
                                 if (conceptos.get(i).getCad_idopcion() == det.getConceptoId()) {
                                     conceptos.remove(i);
-                                    catAdapter.notifyDataSetChanged();
+                                    break;
                                 }
 
                             }
                         }
-                            llconce.setVisibility(View.VISIBLE);
-                            preguntaAct = preguntaAct + 1;
+                        catAdapter.notifyDataSetChanged();
+                        llconce.setVisibility(View.VISIBLE);
+                        preguntaAct = preguntaAct + 1;
                     }else
                     {
                         //nos vamos a comentarios
