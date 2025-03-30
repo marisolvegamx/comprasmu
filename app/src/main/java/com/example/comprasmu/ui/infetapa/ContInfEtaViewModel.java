@@ -50,5 +50,15 @@ public class ContInfEtaViewModel extends AndroidViewModel {
 
 
     }
+    public InformeEtapa getInformeCancel(String indice,int etapa){
+
+        List<InformeEtapa> respuesta=infEtaRepository.getCancelados(indice, etapa);
+        if(respuesta!=null&&respuesta.size()>0){
+            return respuesta.get(0);
+        }
+        return null;
+
+
+    }
 
 }
