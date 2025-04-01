@@ -303,18 +303,16 @@ public class PeticionesServidor {
         });
         return resp;
     }
-
-
-    public void getListasdeCompra(TablaVersiones comp, TablaVersiones version2, String indice, IDescargaIniListener listener){
+    public PeticionLista crearPeticion(TablaVersiones comp, TablaVersiones version2, String indice){
 
         //busco la version de la app
-         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 
         PeticionLista peticion = new PeticionLista();
         if (comp != null && comp.getVersion() != null) {
             Log.d(TAG, "mando version");
-             peticion.version_detalle = sdf.format(version2.getVersion());
-             peticion.version_lista = sdf.format(comp.getVersion());
+            peticion.version_detalle = sdf.format(version2.getVersion());
+            peticion.version_lista = sdf.format(comp.getVersion());
             peticion.indice = indice;
             peticion.usuario = usuario;
             //
@@ -330,8 +328,15 @@ public class PeticionesServidor {
             peticion.usuario = usuario;
 
         }
+
+        return peticion;
+
+
+    }
+
+    public void getListasdeCompra(TablaVersiones comp, TablaVersiones version2, String indice, IDescargaIniListener listener){
        // hago la peticion
-        pedirLista(peticion, listener);
+        pedirLista(crearPeticion(comp, version2,indice), listener);
 
 
 
@@ -349,6 +354,44 @@ public class PeticionesServidor {
                 if (response.isSuccessful() && response.body() != null) {
 
 
+                    ListaCompraResponse compraResp = response.body();
+                    //reviso si está actualizado
+                    if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","regresó lista");
+
+                        listener.actualizar(compraResp);
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
+                        listener.actualizar(null);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<ListaCompraResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+                    listener.actualizar(null);
+                }
+            }
+        });
+    }
+    /**trae la lista de compra solo de la ciudad seleccionada***/
+    public void pedirListaCiu(PeticionLista peticion,String ciudad, IDescargaIniListener listener){
+
+        Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
+
+        final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompraCiu(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle,ciudad);
+
+        batch.enqueue(new Callback<ListaCompraResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<ListaCompraResponse> call, @Nullable Response<ListaCompraResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
                     ListaCompraResponse compraResp = response.body();
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
@@ -731,16 +774,12 @@ public class PeticionesServidor {
             @Override
             public void onResponse(@Nullable Call<SolCorreResponse> call, @Nullable Response<SolCorreResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
-
                     SolCorreResponse solicitudes = response.body();
                     //reviso si está actualizado
                     if(solicitudes.getStatus()==null||!solicitudes.getStatus().equals("error")) //falta actualizar
                     {
                         Log.i(TAG,"respuesta sols"+solicitudes);
-
                         petsocor.actualizarCorre(solicitudes,etapa);
-
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista

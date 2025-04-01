@@ -206,7 +206,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         if(det!=null) {
             if (det.getEstatus() != 2&&det.getEstatus()!=4)//no está cancelada
             {
-                Log.d(TAG,"procesando canceladas"+det.getId());
+                Log.i(TAG,"procesando canceladas"+det.getId());
                 String codigo=Constantes.sdfcaducidad.format(det.getCaducidad());
                 ListaCompraDetRepositoryImpl lcdrepo = new ListaCompraDetRepositoryImpl(context);
                 ListaCompraDetalle compradet = lcdrepo.findsimple(cancelada.getInd_comprasid(), cancelada.getInd_compraddetid());

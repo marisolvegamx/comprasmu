@@ -59,6 +59,7 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
     Activity act;
     private ComprasLog flog;
     DescargaIniListener listenprin;
+    String ciudadActual;
 
     final String TAG="DescargarListaAsyncTask";
     private final ProgresoDLListener miproglis;
@@ -73,7 +74,7 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
                                    TablaVersionesRepImpl tvRepo,
                                    ListaCompraDetRepositoryImpl lcdrepo,
                                    ListaCompraRepositoryImpl lcrepo, ProgresoDLListener miproglis,
-                                   PeticionesServidor peticionServ ) {
+                                   PeticionesServidor peticionServ, String ciudadActual ) {
 
         this.tvRepo=tvRepo;
         this.lcdrepo=lcdrepo;
@@ -84,6 +85,7 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
         flog = ComprasLog.getSingleton();
         flog.crearLog(act.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
         this.peticionesServidor=peticionServ;
+        this.ciudadActual=ciudadActual;
 
     }
 
@@ -123,20 +125,14 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
         TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
         TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
         DescargarListaAsyncTask.DescargaIniListener listener=new DescargaIniListener();
-       flog.grabarError(TAG,"listacompras","resultado comp="+comp);
+        flog.grabarError(TAG,"listacompras","resultado comp="+comp);
 
         if(comp!=null){
-
             //siempre actualizo
-
             peticionesServidor.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
-
         }else {
                  if (!sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))) {
-
                      peticionesServidor.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
-
-
                 }
             }
 

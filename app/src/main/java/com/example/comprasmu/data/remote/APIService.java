@@ -69,6 +69,9 @@ public interface APIService {
     @GET("listacompras")
     Call<ListaCompraResponse> getListasCompra( @Query("indice") String indice, @Query("usuario") String usuario, @Query("version_lista") String version_lista, @Query("version_detalle") String version_detalle);
 
+    @GET("listacomprasciu")
+    Call<ListaCompraResponse> getListasCompraCiu( @Query("indice") String indice, @Query("usuario") String usuario, @Query("version_lista") String version_lista, @Query("version_detalle") String version_detalle, @Query("ciu") String ciudad);
+
     @GET("ultids")
     Call<UltimosIdsResponse> getUltimosIdsV( @Query("indice") String indice, @Query("usuario") String usuario);
 

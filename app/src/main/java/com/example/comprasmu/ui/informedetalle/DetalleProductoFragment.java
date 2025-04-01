@@ -793,6 +793,7 @@ public class DetalleProductoFragment extends Fragment {
         mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(),clienteid+"","clientesId","I",mViewModel.consecutivo,true);
         Log.d(TAG,preguntaAct.getNombreCampo()+"guardando cliente "+preguntaAct.getSigId());
         compraslog.grabarError(TAG,"guardarcliente",preguntaAct.getNombreCampo()+"--"+preguntaAct.getSigId()+"guardando cliente "+mViewModel.clienteSel);
+        compraslog.grabarError(TAG,"guardarcliente","guardando planta "+plantaSel);
 
         //dependiendo el cliente avanzo
         if(mViewModel.clienteSel==4)
@@ -819,8 +820,6 @@ public class DetalleProductoFragment extends Fragment {
                 // float val=Float.parseFloat(valor);
                 if(valor.equals("$0.00")){
                     Toast.makeText(getActivity(),"Costo inválido, verifique",Toast.LENGTH_LONG).show();
-
-
                 }
                 else resp=true;
                 break;
@@ -877,8 +876,6 @@ public class DetalleProductoFragment extends Fragment {
             else  if( preguntaAct.getId()==36) {
                 CatalogoDetalle opcionsel = (CatalogoDetalle) preguntaview.getSelectedItem();
                 String valor = opcionsel.getCad_descripcionesp() + "";
-
-
                 //guardo el atributo para mostrarlo despues
                 Constantes.VarDetalleProd.nvoatrb = valor;
                 ((ContinuarInformeActivity)getActivity()).actualizarAtributo2();
@@ -886,7 +883,6 @@ public class DetalleProductoFragment extends Fragment {
             } else  if(preguntaAct.getId()==39){
                 CatalogoDetalle opcionsel = (CatalogoDetalle) preguntaview.getSelectedItem();
                 String valor = opcionsel.getCad_descripcionesp() + "";
-
                 //guardo el atributo para mostrarlo despues
                 Constantes.VarDetalleProd.nvoatrc=valor;
                 ((ContinuarInformeActivity)getActivity()).actualizarAtributo2();
@@ -982,13 +978,10 @@ public class DetalleProductoFragment extends Fragment {
                 int sig=mViewModel.numMuestra+2;
                 int nummuestra=mViewModel.numMuestra;
 
-
                 //quito la info de la barra gris
                 ((ContinuarInformeActivity)getActivity()).reiniciarBarra();
                 compraslog.info(TAG,"siguiente","antes de guardar num muestra"+nummuestra);
                 guardarMuestra(sig);
-
-
 
             }else
             if(preguntaAct.getId()==47)//no hubo producto
@@ -1022,7 +1015,7 @@ public class DetalleProductoFragment extends Fragment {
                         Log.d(TAG,"*genere cons="+consecutivo);
 
 
-                        compraslog.grabarError(TAG,"siguiente","genere cons="+consecutivo);
+                        compraslog.grabarError(TAG,"siguiente","genere cons="+consecutivo+" planta"+plantaSel);
 
                         mViewModel.informe.setConsecutivo(consecutivo);
                         Constantes.DP_CONSECUTIVO = consecutivo;
@@ -1631,7 +1624,7 @@ public class DetalleProductoFragment extends Fragment {
 
             }
         }
-        compraslog.grabarError(TAG,"guardarResp", "guardando en temp" + preguntaAct.getId() + "val" + mViewModel.consecutivo);
+        compraslog.grabarError(TAG,"guardarResp", "guardando en temp" + preguntaAct.getId() + "val:" + valor);
         if(preguntaAct.getId()==5&& preguntaview.getNopermiso().isChecked())//es ticket
         {
             mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "0", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);

@@ -216,7 +216,6 @@ public class ValidadorDatos {
         InformeCompraDetalle comp=infcomrepo.getByqr(qr);
         Log.d("ValidadorDatos","validarqr"+comp);
         if(comp!=null&&comp.getId()>0){
-
                     //ya existe el qr
             return true;
         }
