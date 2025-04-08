@@ -120,27 +120,17 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
         return false;
     }
     private void listacompras(){
-        Log.d("DescargarListaAsyncTask", "descargando listas");
+        Log.i("DescargarListaAsyncTask", "descargando listas"+ciudadActual);
         flog.grabarError(TAG,"listacompras","descargando listas =");
         TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
         TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
         DescargarListaAsyncTask.DescargaIniListener listener=new DescargaIniListener();
         flog.grabarError(TAG,"listacompras","resultado comp="+comp);
-
-        if(comp!=null){
-            //siempre actualizo
-            peticionesServidor.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
-        }else {
-                 if (!sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))) {
-                     peticionesServidor.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
-                }
-            }
+        PeticionesServidor.PeticionLista peticionLista=peticionesServidor.crearPeticion(comp, det,Constantes.INDICEACTUAL);
+        peticionesServidor.pedirListaCiu(peticionLista,ciudadActual,listener);
 
 
     }
-
-
-
 
     @Override
     protected void onPostExecute(Void aVoid) {
@@ -152,14 +142,12 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
     }
 
 
-
-
     public class DescargaIniListener implements  IDescargaIniListener{
         public DescargaIniListener(){
 
         }
        public void finalizar(){
-            Log.d(TAG,"DescargaIniListener finalizando ");
+            Log.i(TAG,"DescargaIniListener finalizando ");
 
                miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
 
@@ -174,9 +162,31 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
 
         public void actualizar(ListaCompraResponse compraResp) {
                 //primero los inserts
-            Log.d(TAG,"actualizar lista");
+            Log.i(TAG,"actualizar lista");
 
             if(compraResp!=null) {
+                //los updates
+                if (compraResp.getUpdates() != null) {
+
+                    if (compraResp.getUpdates().getListaCompra() != null)
+                        lcrepo.insertAll(compraResp.getUpdates().getListaCompra()); //inserto blblbl
+                    if (compraResp.getUpdates().getListaCompraDetalle() != null) {
+                        //como puede que ya existan reviso primero e inserto unoxuno
+                        for (ListaCompraDetalle detalle : compraResp.getInserts().getListaCompraDetalle()) {
+                            ListaCompraDetalle existe = lcdrepo.findsimple(detalle.getListaId(), detalle.getId());
+                            if (existe == null) {
+                                // lcrepo.insert(detalle);
+
+                            } else {   //mantengo los comprados y codigos nevos
+                                detalle.setComprados(existe.getComprados());
+                                detalle.setNvoCodigo(existe.getNvoCodigo());
+                                //lcrepo.updateSC(compra);
+                            }
+                            lcdrepo.insert(detalle);
+
+                        }
+                    }
+                }else
                     if (compraResp.getInserts() != null) {
                         if (compraResp.getInserts().getListaCompra() != null) {
                              Log.d(TAG,"listacomp<"+compraResp.getInserts().getListaCompra());
@@ -220,28 +230,7 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
 
                         // lcdrepo.insertAll(compraResp.getInserts().getListaCompraDetalle());
                     }
-                    //los updates
-                    if (compraResp.getUpdates() != null) {
 
-                        if (compraResp.getUpdates().getListaCompra() != null)
-                            lcrepo.insertAll(compraResp.getUpdates().getListaCompra()); //inserto blblbl
-                        if (compraResp.getUpdates().getListaCompraDetalle() != null) {
-                            //como puede que ya existan reviso primero e inserto unoxuno
-                            for (ListaCompraDetalle detalle : compraResp.getInserts().getListaCompraDetalle()) {
-                                ListaCompraDetalle existe = lcdrepo.findsimple(detalle.getListaId(), detalle.getId());
-                                if (existe == null) {
-                                    // lcrepo.insert(detalle);
-
-                                } else {   //mantengo los comprados y codigos nevos
-                                    detalle.setComprados(existe.getComprados());
-                                    detalle.setNvoCodigo(existe.getNvoCodigo());
-                                    //lcrepo.updateSC(compra);
-                                }
-                                lcdrepo.insert(detalle);
-
-                            }
-                            }
-                    }
 
                     //actualizar version en tabla
                     TablaVersiones tinfo = new TablaVersiones();

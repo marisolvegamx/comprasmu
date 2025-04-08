@@ -869,22 +869,12 @@ public class NvoGastoFragment extends Fragment {
                     if(totalgastos>0) //ya no vuelvo
                     {
 
-                      /*  if (mBinding.sincomprobante.getRespuesta()) {
-                            llfoto.setVisibility(View.VISIBLE);
-                            preguntaAct=7;
-                        }else
-                        {
-                            llcompr.setVisibility(View.VISIBLE);
-                            preguntaAct=6;
-                        }*/
                         break;
                     }else {
                         llpreg1.setVisibility(View.GONE);
                         llresumen.setVisibility(View.VISIBLE);
                         preguntaAct = preguntaAct - 1;
                     }
-
-
 
                         mViewModel.preguntaAct = preguntaAct;
 

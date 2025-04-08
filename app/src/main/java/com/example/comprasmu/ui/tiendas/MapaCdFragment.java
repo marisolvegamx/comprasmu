@@ -2,11 +2,9 @@ package com.example.comprasmu.ui.tiendas;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -14,7 +12,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,17 +30,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.comprasmu.DescargarListaAsyncTask;
-import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
@@ -57,25 +50,16 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
-import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
-import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
-import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
-
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
-import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
-
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
-
 import com.google.android.gms.location.LocationCallback;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -214,8 +198,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             }
         });
         //actualizo la lista de compra
-
-     //   actualizarListaCompra();
+        actualizarListaCompra();
         buscarClientes();
         if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -316,7 +299,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getContext());
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO) ;
-        DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(),tvRepo,lcdrepo,lcrepo,this,ps);
+        DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(),tvRepo,lcdrepo,lcrepo,this,ps,Constantes.CIUDADTRABAJO);
         task.execute("");
     }
 
@@ -565,8 +548,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     public void buscarTiendas( int planta,String indicefin){
         //peticion al servidor
         //cambio el inice
-        alert=new LoadingAlert(getActivity());
-        alert.startAlert();
+       // alert=new LoadingAlert(getActivity());
+      //  alert.startAlert();
         PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
         //usaria la ciudad de trabajo
 
@@ -604,7 +587,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 nollistatiendas=tiendas;
                 Log.d(TAG," antes de dibujar"+(new Date()));
                 dibujarTiendas(tiendas);
-                alert.closeAlertDialog();
+             //   alert.closeAlertDialog();
                 listatiendas.removeObservers(getViewLifecycleOwner());
             }
         });
@@ -704,12 +687,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     }
     public void buscarClientes(){
         //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
-        // Constantes.CIUDADTRABAJO=null;
         if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
 
-            // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
 
-            alert.closeAlertDialog();
+         //   alert.closeAlertDialog();
             irAcdSel();
             return;
         }
@@ -919,6 +900,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     @Override
     public void notificarSinConexion() {
         //puede seguir trabajando
+        alert.closeAlertDialog();
     }
 
     public class miLocationListener implements LocationListener {

@@ -325,7 +325,7 @@ public class NvoEtiquetadoFragment extends Fragment implements   DescargarListaA
             //busco si tengo varias plantas
             ciudadInf = Constantes.CIUDADTRABAJO;
             //actualizo lista de compra
-        //    actualizarListaCompra();
+            actualizarListaCompra();
             //busco los clientes x ciudad
             listacomp = lcViewModel.getTodosCliByIndiceCdSimplxet(Constantes.CIUDADTRABAJO, this.etapa);
             Log.d(TAG, "PLANTA" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
@@ -1274,6 +1274,7 @@ public void iraReubicar(){
     @Override
     public void notificarSinConexion() {
         //puede continuar sin conexion
+        alert.closeAlertDialog();
     }
 
     class BotonTextWatcher implements TextWatcher {
@@ -1379,7 +1380,7 @@ public void iraReubicar(){
         ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getContext());
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO) ;
-        DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(),tvRepo,lcdrepo,lcrepo,this,ps);
+        DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(),tvRepo,lcdrepo,lcrepo,this,ps, Constantes.CIUDADTRABAJO);
         task.execute("");
     }
     @Override

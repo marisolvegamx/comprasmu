@@ -67,24 +67,16 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         setContentView(R.layout.activity_pruebas);
         complog= ComprasLog.getSingleton();
         complog.crearLog(this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
-
         progreso = new ProgressDialog(this);
-
         progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
         progreso.setMessage("Actualizando, por favor permanezca en la aplicación...");
-
         progreso.setCancelable(false);
-
-
         progreso.show();
         Log.d(TAG,"Y MI USER??"+Constantes.CLAVEUSUARIO);
        // mTextView = findViewById(R.id.txtlllog);
         if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
-
            DOWNLOAD_PATH = Constantes.URLPRUEBAS1+"fotografias";
         //    DOWNLOAD_PATH = Constantes.URLPRUEBAS2+"fotografias";
-
 
         }
 
@@ -108,13 +100,6 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         }
 
         buscarEtapa();
-
-
-     //   descargasIniciales();
-     //   previewView = findViewById(R.id.activity_main_previewView);
-
-      //  cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-
 
     }
 
@@ -181,17 +166,6 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
             }
             j--;
         }
-
-
-        // Constantes.INDICEACTUAL=mesactual.replace('-','.');
-     /*   Constantes.INDICEACTUAL = "11.2022";
-        if(Constantes.CLAVEUSUARIO.equals("4")){
-            Constantes.INDICEACTUAL = "11.2022";
-        }*/
-
-
-
-
     }
     public void buscarEtapa(){
 
@@ -205,18 +179,19 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     //para recolectores foraneos cuando todas las listas están en 1 porque voy a iniciar traigo etapanva y hay que borrar
     //para los locales la etapa se cambia en la tabla del recolector cuando se supervise su ultima etapa
     public void validarBorrar(String indicenvo, int etapanva,int etapafin, int tiporec){
-      Log.d(TAG,"en valdar borrar"+indicepref);
+       Log.d(TAG,"en valdar borrar"+indicepref);
        if(indicepref!=null&&!indicepref.equals("")) {
+
            if (!indicenvo.equals(indicepref)) {
                //cambie de indice
                //veo si es la primera etapa y puedo borrar
 
-               if (etapanva>0&&etapanva == etapafin) { //talvez esta haya que actualizarla del servidor
+               if (etapanva>0&&etapanva == etapafin) { // actualizarla del servidor
                    //voy a borrar datos
                    //por si no quiere borrar
                    Constantes.INDICEACTUAL = indicepref;
                    Constantes.ETAPAMENU =etapapref ;
-                   irABorrar(indicepref); // necesito ir a una actividad donde pregunte al usuario
+                   irABorrar(indicepref); // actividad donde pregunte al usuario
                } else {
                  //  Log.d(TAG,"****entre aqui");
                    //descargar y sigo en el mismo indice
@@ -280,7 +255,6 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     public void descargasIniciales(String indicenvo, int etapanva, int etapafin){
         //pueda descargar
         //saber si voy a borrar
-     //   Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
 
         ListaCompraDao dao= ComprasDataBase.getInstance(getApplicationContext()).getListaCompraDao();
 
@@ -314,34 +288,12 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getApplicationContext());
 
         AtributoRepositoryImpl atRepo=new AtributoRepositoryImpl(getApplicationContext());
-         ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
-         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
+        ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
+        SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
         SiglaRepositoryImpl sigRepo=new SiglaRepositoryImpl(getApplicationContext());
         DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep,sigRepo,puedodescargar);
-
         task.execute("cat","");
-
-        //descarga solicitudes correccion
-        //se hace en el navigationdrawer por cada etapa
-        //   SolicitudCorRepoImpl solcorRepo=new SolicitudCorRepoImpl(getApplicationContext());
-
-        //  DescCorrecAsyncTask corTask=new DescCorrecAsyncTask(solcorRepo,tvRepo,this,Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL);
-        //  corTask.execute("");
-      /*  AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setIcon(android.R.drawable.stat_sys_download);
-        builder.setTitle("Descargando");
-        builder.setMessage("Por favor mantengase en la aplicación hasta que termine la descarga");
-        builder.setInverseBackgroundForced(true);
-
-        AlertDialog alert=builder.create();
-        alert.show();*/
-
-      /*  Dialog builder = new Dialog(act);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.setCancelable(false);
-*/
 
     }
 
@@ -444,18 +396,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
             if (response != null) {
                 //etapafin realmente es la incial
                 Log.e(TAG,"devuelve del serv"+response.getIndiceact()+"--"+response.getEtapaact()+"--"+response.getEtapafin());
-               // if (response.getEtapaact() > 0) {
-                    //validar si cambio de indice y borro
-                    validarBorrar(response.getIndiceact(), response.getEtapaact(), response.getEtapafin(),response.getTiporec());
-               // } else {
-                    // es 1a vez descargo pero la validación se hace en el menu
-               //     puedodescargar = true;
-                 //   Constantes.INDICEACTUAL = response.getIndiceact();
-                 //   Constantes.ETAPAMENU = 0;
-                 //   descargasIniciales(response.getIndiceact(), 0, response.getEtapafin());
-
-              //  }
-
+                validarBorrar(response.getIndiceact(), response.getEtapaact(), response.getEtapafin(),response.getTiporec());
             }
             else
                 notificarSinConexion();

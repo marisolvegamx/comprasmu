@@ -355,16 +355,15 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
             }
 
-
             if (spdato1 != null) {
                 valor2 =  (String) spdato1.getSelectedItem();
                 if(!valor2.equals("0"))
-                try {
-                    nucaja = Integer.parseInt(valor2);
-                }catch (NumberFormatException ex){
-                    Log.e(TAG,ex.getMessage());
-                    ex.printStackTrace();
-                }
+                    try {
+                        nucaja = Integer.parseInt(valor2);
+                    }catch (NumberFormatException ex){
+                        Log.e(TAG,ex.getMessage());
+                        ex.printStackTrace();
+                    }
             }
             //paso a
             //creo el informe

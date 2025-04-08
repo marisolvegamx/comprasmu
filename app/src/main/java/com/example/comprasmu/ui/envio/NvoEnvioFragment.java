@@ -269,7 +269,7 @@ public class NvoEnvioFragment extends Fragment {
             //ya puedo tener varios informes
          //   Integer[] clientesprev = mViewModel.tieneInforme(3);
 
-               convertirLista(listacomp);
+            convertirLista(listacomp);
             if (listaClientes.size() > 1) {
                     //tengo varios clientes
                     preguntaAct = 1;

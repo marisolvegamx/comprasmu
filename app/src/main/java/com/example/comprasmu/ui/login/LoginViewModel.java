@@ -41,12 +41,6 @@ public class LoginViewModel extends ViewModel {
         Log.i("LoginVM","??");
         loginRepository.login(username, password,listener);
 
-       /* if (result instanceof Result.Success) {
-            LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }*/
     }
     public void loginLocal( LoggedInUser luser,String username, String password,LoginActivity.LoginListener listener) {
         // can be launched in a separate asynchronous job

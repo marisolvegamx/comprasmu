@@ -25,7 +25,6 @@ import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import java.nio.charset.StandardCharsets;
 
-
 public class LoginActivity extends AppCompatActivity
 //        implements DescargasIniAsyncTask.ProgresoListener
 {
@@ -250,13 +249,11 @@ public class LoginActivity extends AppCompatActivity
             }
             String clave=aux[1];
             String cveguardada= buscarClaveUsuario();
-            if(!cveguardada.equals("")&&cveguardada.equals(clave)) {
+            if(cveguardada.equals("")||cveguardada.equals(clave)) {
                 guardarClave(clave);
-                Log.d(TAG, "correcto" + clave);
-                Log.d(TAG, "correcto" + Constantes.CLAVEUSUARIO);
+                Log.i(TAG, "correcto" + clave);
+                Log.i(TAG, "correcto" + Constantes.CLAVEUSUARIO);
                 updateUiWithUser(usernameEditText.getText().toString());
-                //hago actualizacion y cuando termine envio a la sig actividad
-                //   descargasIniciales();
                 entrar();
             }
             else {
