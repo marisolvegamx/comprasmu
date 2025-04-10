@@ -243,9 +243,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             globrequestcode=savedInstanceState.getInt(CODEREQ);
             ultlatitud=savedInstanceState.getDouble(BLATITUD);
             ultlongitud=savedInstanceState.getDouble(BLONGITUD);
-           Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
-           Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
-           Constantes.INDICEACTUAL = savedInstanceState.getString(KEY_INDICEACT);
+            Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
+            Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
+            Constantes.INDICEACTUAL = savedInstanceState.getString(KEY_INDICEACT);
             Constantes.CIUDADTRABAJO = savedInstanceState.getString(KEY_CDTRAB);
 
         }
@@ -1641,7 +1641,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 milog.grabarError(ex.getMessage());
 
             }
-            Log.d(TAG,"encontré la zona "+punto);
+            Log.i(TAG,"encontré la zona "+punto);
             mViewModel.visita.setPuntoCardinal(punto+"");
 
             mViewModel.visita.setComplementodireccion(txtcomplemento.getText().toString());
@@ -1759,13 +1759,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
     }
 
-    //con la geolocalizacion de la tienda se busca la zona en la que esta
+    //con la geolocalizacion de la tienda se busca la zona en la que está
     //devuelve el id de la zona de acuerdo al catalogo
     //se puede consultar el catalogo en MapdaCDFragment
     public int buscarZona(String puntotxt){
 
-     //   puntotxt="20.698299,-103.336383";
-        Log.d(TAG,"punto "+puntotxt);
+       // puntotxt=" 14.5928099,-90.5060026";
+        milog.info(TAG,"buscarZona","punto "+puntotxt);
         if(puntotxt.equals("")){
             return 0;
         }
@@ -1776,6 +1776,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //busco las zonas de la ciudad de trabajo
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getActivity());
         List<Geocerca> zonas=georep.findsimplexCd(Constantes.CIUDADTRABAJO);
+      //  Log.i(TAG,Constantes.CIUDADTRABAJO+"--"+zonas.size());
         LatLng p1;
         LatLng p2;
         LatLng p3;
@@ -1804,8 +1805,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                return geo.getGeo_region();
         }
         }catch(NumberFormatException ex){
-            Log.d(TAG,"Error de formato "+ex.getMessage());
-            Toast.makeText(getContext(), "Errro de formato", Toast.LENGTH_SHORT).show();
+            Log.e(TAG,"Error de formato "+ex.getMessage());
+            Toast.makeText(getContext(), "Error de formato", Toast.LENGTH_SHORT).show();
         }
         return 0; //no estuvo lol
     }
