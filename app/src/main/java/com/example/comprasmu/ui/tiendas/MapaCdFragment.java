@@ -205,7 +205,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             locationPermissionGranted = true;
             getDeviceLocation();
         } else {
-           compraslog.info(TAG, "create","no hay permiso para gps "+LOCATION_REQUEST_CODE);
+           compraslog.grabarError(TAG, "create","no hay permiso para gps "+LOCATION_REQUEST_CODE);
             // Solicitar permiso
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_REQUEST_CODE);

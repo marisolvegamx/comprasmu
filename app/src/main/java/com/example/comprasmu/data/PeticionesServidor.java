@@ -839,7 +839,7 @@ public class PeticionesServidor {
                    listener.validarEtapa(respuesta);
                 }else {
                     Log.e("PeticionesServidor", "algo salio mal en peticion de etapa");
-
+                    listener.validarEtapa(null);
                       }
             }
 
