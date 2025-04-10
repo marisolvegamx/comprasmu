@@ -462,7 +462,7 @@ public class NvoGastoFragment extends Fragment {
         TextView txttotal=new TextView(getContext());
         txtgatotnum.setText(sumamuestras+"");
         TextView txtgastotmue=new TextView(getContext());
-        txtgastotmue.setText(Constantes.SIMBOLOMON+sumacosto);
+        txtgastotmue.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.00").format(sumacosto));
         txttotal.setBackgroundResource(R.drawable.valuecellborder);
         txtgastotmue.setBackgroundResource(R.drawable.valuecellborder);
         txtgatotnum.setBackgroundResource(R.drawable.valuecellborder);
