@@ -398,11 +398,12 @@ public class ListaCompraDetRepositoryImpl {
         { if(categoria!=null&&!categoria.equals("")) {
             query =query+ " and categoria!=?";
             filtros.add(categoria);
-        }}else
-        if(categoria!=null&&!categoria.equals("")) {
-            query =query+ " and categoria=?";
-            filtros.add(categoria);
-        }
+           }
+        }else
+            if(categoria!=null&&!categoria.equals("")) {
+                query =query+ " and categoria=?";
+                filtros.add(categoria);
+            }
         if(productoNombre==null||productoNombre.equals("")) //analisis es el ultimo y es diferente
         {
             if(analisis>0) {
@@ -410,29 +411,29 @@ public class ListaCompraDetRepositoryImpl {
                 filtros.add(analisis+"");
             }
         }else
-        if(analisis>0) {
-            query = query + " and analisisId=?";
-            filtros.add(analisis+"");
-        }
+            if(analisis>0) {
+                query = query + " and analisisId=?";
+                filtros.add(analisis+"");
+            }
         if(empaque==null||empaque.equals("")) //prdo es el ultimo y es diferente
         {   if(productoNombre!=null&&!productoNombre.equals("")) {
             query = query + " and productoNombre!=?";
             filtros.add(productoNombre);
         }}
         else
-        if(productoNombre!=null&&!productoNombre.equals("")) {
-            query = query + " and productoNombre=?";
-            filtros.add(productoNombre);
-        }
+            if(productoNombre!=null&&!productoNombre.equals("")) {
+                query = query + " and productoNombre=?";
+                filtros.add(productoNombre);
+            }
         if(tamanio==0)
         { if(empaque!=null&&!empaque.equals("")) {
             query = query + " and empaque!=?";
             filtros.add(empaque);
         }}else
-        if(empaque!=null&&!empaque.equals("")) {
-            query = query + " and empaque=?";
-            filtros.add(empaque);
-        }
+            if(empaque!=null&&!empaque.equals("")) {
+                query = query + " and empaque=?";
+                filtros.add(empaque);
+            }
 
         if(tamanio>0) {
             query = query + " and tamanioId!=?";

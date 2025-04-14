@@ -62,12 +62,7 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
     private int numTienda;
 
     public static SustitucionFragment newInstance() {
-        //  ListaCompraFragment fragment = new ListaCompraFragment();
-        //   Log.d(TAG,"planta sel"+planta);
-        // Log.d(TAG,"nombre"+onombrePlanta);
         SustitucionFragment fragment = new SustitucionFragment();
-        // Bundle bundle = new Bundle();
-        //fragment.setArguments(bundle);
         return fragment;
 
     }
@@ -84,7 +79,6 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         if(bundle2!=null)
         {
             categoriaSel=bundle2.getInt(ARG_CATEGORIAID);
-            //  Log.d(TAG,"ZZZ"+bundle2.getString(ARG_CATEGORIA));
             plantaSel = bundle2.getInt(ListaCompraFragment.ARG_PLANTASEL);
             if(Constantes.VarListCompra.detallebuSel!=null)
             {
@@ -93,7 +87,6 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
                 productoId= Constantes.VarListCompra.detallebuSel.getProductosId();
             }
             clienteSel= bundle2.getInt(ListaCompraFragment.ARG_CLIENTESEL);
-
             nombrePlanta = bundle2.getString(ListaCompraFragment.ARG_NOMBREPLANTASEL);
             siglas = bundle2.getString(ARG_SIGLAS);
             ismuestra=bundle2.getString(ListaCompraFragment.ARG_MUESTRA);
@@ -107,8 +100,6 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
         mBinding= DataBindingUtil.inflate(inflater,
                 R.layout.lista_generic_fragment, container, false);
-
-        // mViewModel = new ViewModelProvider(this).get(com.example.comprasmu.ui.Sustitucion.SustitucionViewModel.class);
         mViewModel=new ViewModelProvider(requireActivity()).get(SustitucionViewModel.class);
         ldViewModel=new ViewModelProvider(requireActivity()).get(ListaDetalleViewModel.class);
 
@@ -118,21 +109,19 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG,"planta sel"+plantaSel);
-        Log.d(TAG,"cat"+categoriaSel+"--cli"+clienteSel);
+        Log.i(TAG,"planta sel"+plantaSel);
+        Log.i(TAG,"cat"+categoriaSel+"--cli"+clienteSel);
         mBinding.setLifecycleOwner(this);
         Constantes.VarListCompra.plantaSel=plantaSel;
         setupListAdapter();
-        //Constantes.VarListCompra.detallebuSel.getAnalisisId()
         Bundle bundle2 =getArguments();
         if(bundle2!=null) {
             numTienda = bundle2.getInt(ARG_CONSTIENDA);
         }
-        mViewModel.cargarListas(plantaSel,categoriaSel,clienteSel,empaque,tamanio,numTienda,productoId);
+        mViewModel.cargarListas(categoriaSel,clienteSel);
         mViewModel.getListas().observe(getViewLifecycleOwner(), myProducts -> {
             if (myProducts != null && myProducts.size() > 0) {
-                Log.d(Constantes.TAG, "en la consulta de sust=> " + myProducts.get(0).getId_sustitucion());
-                mListAdapter.setSustitucionList(myProducts,mViewModel);
+               mListAdapter.setSustitucionList(myProducts,mViewModel);
                 mListAdapter.notifyDataSetChanged();
             }
 
@@ -169,25 +158,9 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
         if (view.getId() == R.id.btnldagregar) {
             Log.d(TAG, "agregar muestra"+productoSel.getNomproducto());
          /*  mayo 2024 ya puede comprar el mismo producto como en peñafiel***/
-            /*if(productoSel.getClientesId()==7) { //valido que no exista en la compra
-                if(!productoSel.getNomproducto().equals("")&&productoSel.getNomproducto().contains("FRUTZZO")){
-                    //PUEDO COMPRAR
-                }else
-                if (mViewModel.validarProdJum(Constantes.INDICEACTUAL, plantaSel, productoSel)) {
-                    Toast.makeText(getActivity(), getString(R.string.err_mismo_prod), Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }*/
+
             NuevoDetalleViewModel nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
             String clienteNombre=Constantes.ni_clientesel;//lo pongo hasta que se guarda el informe
-            //para los bu
-            //productoSel.setTipoMuestra(2);
-            //productoSel.setNombreTipoMuestra("BACKUP");
-            //productoSel.setAnalisisId(mViewModel.getDetallebuSel().getAnalisisId());
-            //productoSel.setTipoAnalisis(mViewModel.getDetallebuSel().getTipoAnalisis());
-            //me faltan las siglas
-            //cambio el tipo de muestra y el producto
-            // en detallebusel esta lainfo original
 
             ldViewModel.getDetallebuSel().setTipoMuestra(3);
             ldViewModel.getDetallebuSel().setNombreTipoMuestra("BACKUP");
@@ -199,20 +172,6 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
             ldViewModel.getDetallebuSel().setEmpaquesId(productoSel.getSu_tipoempaque());
             nuevoInf.setProductoSelSust(ldViewModel.getDetallebuSel(),nombrePlanta,plantaSel, ldViewModel.getClienteSel(),clienteNombre,siglas,productoSel);
             Constantes.productoSel=nuevoInf.productoSel;
-            //  Constantes.NM_TOTALISTA=mListAdapter.getItemCount();
-    /*        Fragment fragment = new DetalleProductoFragment1();
-// Obtener el administrador de fragmentos a través de la actividad
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
-            fragmentTransaction.replace(R.id.back_fragment, fragment);
-            fragmentTransaction.addToBackStack(null);
-// Cambiar
-            fragmentTransaction.commit();
-          //  fragmentManager.beginTransaction().remove(this).commitAllowingStateLoss();
-*/
-
             Intent resultIntent = new Intent();
             if(ldViewModel.getClienteSel()==5)
                 // resultIntent.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.informe.getId());

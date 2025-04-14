@@ -293,10 +293,8 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 break;
 
             case 3: default:
-              //  detallebu = detRepo.consultaTorque4(idlista, categoria, empaque);
-                detallebu = detRepo.getDetalleByFiltros(idlista, analisisid,categoria, productoNombre, empaque, tamanio,"",iddetorig);
+                 detallebu = detRepo.getDetalleByFiltros(idlista, analisisid,categoria, productoNombre, empaque, tamanio,"",iddetorig);
 
-                //    detallebu = detRepo.getAllByLista(idlista);
                 break;
         }
 
@@ -315,15 +313,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
               //  detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque,0);
                 break;
-       /*     case 3:
-                detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, "", 0);
-                break;
 
-            case 4: default: //la misma lista
-                detallebu = detRepo.getDetalleByFiltros(idlista, categoria, productoNombre, empaque, tamanio,analisis+"",0);
-
-             //   detallebu = detRepo.getAllByLista(idlista);
-                break;*/
         }
 
     }

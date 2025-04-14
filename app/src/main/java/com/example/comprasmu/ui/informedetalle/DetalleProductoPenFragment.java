@@ -1866,8 +1866,6 @@ public class DetalleProductoPenFragment extends Fragment {
         intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, NOMBREPLANTASEL);
         intento1.putExtra(ListaCompraFragment.ARG_MUESTRA, "true");
 
-        // intento1.putExtra(ListaCompraFragment.ARG_MUESTRA,"true");
-        // spclientes = root.findViewById(1001);
         Log.d(TAG, " antes de ir a listacom nummuestra" + nummuestra);
         intento1.putExtra(ARG_CLIENTESEL, mViewModel.clienteSel);
         //intento1.putExtra(ARG_CLIENTENOMBRE,);
