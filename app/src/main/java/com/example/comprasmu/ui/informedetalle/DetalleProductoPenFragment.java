@@ -1685,10 +1685,7 @@ public class DetalleProductoPenFragment extends Fragment {
     }
 
     protected void enviaraSiglas(){
-        // totalLista=data.getIntExtra(ARG_TOTALLISTA, 0);
-        //muestro el de 3a muestra
-        // if(Constantes.NM_TOTALISTA>=16)
-        //  tercera.setVisible(View.VISIBLE);
+
         if(Constantes.productoSel!=null)
         {
             dViewModel.productoSel = Constantes.productoSel;
@@ -1707,17 +1704,15 @@ public class DetalleProductoPenFragment extends Fragment {
                 Constantes.DP_CONSECUTIVO = consecutivo;
             }
             mViewModel.informe.setConsecutivo(mViewModel.consecutivo);
-                Log.d(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
-                ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
+            Log.i(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
+            ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
                //actualizo barra
             ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
-                mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-           // if(Constantes.productoSel.tipoMuestra==3)
-            //    avanzarPregunta(127); //pregunto motivo
-          //  else
-               avanzarPregunta(58);
+            mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
+
+            avanzarPregunta(58);
 
 
         }else
@@ -1844,34 +1839,8 @@ public class DetalleProductoPenFragment extends Fragment {
 
 
     public void verListaCompra(int nummuestra){
-        /* b2undle.putString("plantaNombre", listaSeleccionable.get(i).getNombre());*/
-        /*   NavHostFragment.findNavController(this).navigate(R.id.action_selclientetolistacompras,bundle);
-         */
-        //NavHostFragment.findNavController(this).navigate(R.id.action_lista compra);
-        String opcion = "";
-        Intent intento1 = new Intent(getActivity(), BackActivity.class);
-        Log.d(TAG,"todavia no se que hacer");
-
-
-        //busco la planta
-      /*  if(nummuestra<2) {
-            List<ListaCompra> listapl = lcviewModel.cargarPlantas(mViewModel.visita.getCiudad(), mViewModel.clienteSel);
-             Log.d(TAG,"todavia no se que hacer"+listapl.size()+"viewmodel cliente"+mViewModel.clienteSel);
-
-            if (listapl.size() > 1) {
-
-                //Log.d(TAG,"todavia no se que hacer");
-                opcion = BackActivity.OP_SELPLANTA;
-                intento1.putExtra(SelClienteFragment.ARG_TIPOCONS, "action_selclitolista");
-                intento1.putExtra(ListaCompraFragment.ARG_CLIENTESEL, mViewModel.clienteSel);
-            } else if (listapl.size() > 0) {
-                //voy directo a la lista
-                plantaSel = listapl.get(0).getPlantasId();
-                NOMBREPLANTASEL = listapl.get(0).getPlantaNombre();
-                opcion = BackActivity.OP_LISTACOMPRA;
-
-            }
-        }else{*/
+         String opcion = "";
+         Intent intento1 = new Intent(getActivity(), BackActivity.class);
             //ya tengo la planta
             InformeTemp inf= dViewModel.buscarxNombreCam("plantasId");
             if(inf!=null) {

@@ -169,21 +169,21 @@ public class SubirFoto implements ImageUploadCallback {
     @Override
     public void onProgressUpdate(int percentage) {
         // set current progress
-        Log.d("SubirFoto","Subiendo foto....."+percentage);
+        Log.i("SubirFoto","Subiendo foto....."+percentage);
 
     }
     @Override
     public void onError(Response<PostResponse> response) {
         if(response!=null) {
             PostResponse compraResp = response.body();
-            Log.d("SubirFoto", "Error al subir" + compraResp.getData());
+            Log.e("SubirFoto", "Error al subir" + compraResp.getData());
         }
         notificarObservadores();
     }
     @Override
     public void onSuccess(Response<PostResponse> response) {
         if (response != null) {
-            Log.d(TAG, "Respuesta->" + response.message());
+            Log.i(TAG, "Respuesta->" + response.message());
             PostResponse compraResp = response.body();
             // do something on upload finished
             //for example, start next uploading at the queue
@@ -195,10 +195,10 @@ public class SubirFoto implements ImageUploadCallback {
             } else { //hubo un error
                 //lo registro en el log
                 if (compraResp != null) {
-                    Log.d("SubirFoto", "Hubo un error al subir imagen " + compraResp.getData());
+                    Log.e("SubirFoto", "Hubo un error al subir imagen " + compraResp.getData());
                 }
             }
-            Log.d("SubirFoto", "terminó de subir");
+            Log.i("SubirFoto", "terminó de subir");
         }
         notificarObservadores();
 

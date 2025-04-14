@@ -334,7 +334,7 @@ public class SubirFotoService extends IntentService
                    etapadetRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
                }
             //  onDownloadComplete(downloadComplete);
-
+            Constantes.SINCRONIZANDO=0;
         }
         public void onSuccessEtapa(ImagenDetalle imagen){
             downloadComplete = true;
