@@ -96,9 +96,6 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
             holder.binding.setMostrarbcu(true);
         }
 
-     // if(listacomprasbu!=null) {
-
-       //    List<InformeCompraDetalle> icd = buscarBU(mListaCompraDetalleList.get(position));
         List<InformeCompraDetalle> icd =mListaCompraDetalleList.get(position).getInfcd();
            if (icd != null) {
                Log.d(TAG, "es bu " + icd.size());
@@ -111,24 +108,9 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                    holder.binding.informebudata.addView(item);
                }
 
-             //  holder.binding.informebudata.setAdapter(adaptadorLista);
-               // holder.binding.setTotalbu(comprabu.size());
-             //  int cantorig = mListaCompraDetalleList.get(position).getCantidad();
-             //  mListaCompraDetalleList.get(position).setCantidad(cantorig - 1);
 
-
-               // if(binding.informebudata.getDetallebu()!=null)
-               //  holder.binding.informebudata.cajatexto.setVisibility(View.VISIBLE);
            }
-      // }
-     //  holder.binding.informebudata.setDetallebu(comprabu);
-     //  Log.d(TAG,"mostar agregar "+mListaCompraDetalleList.get(position).getComprados()+"--"+mListaCompraDetalleList.get(position).getCantidad());
-      /*  if(mListaCompraDetalleList.get(position).getComprados()==mListaCompraDetalleList.get(position).getCantidad()){
-            holder.binding.setMostrarAgregar(false);
-        }
-        else
-            holder.binding.setMostrarAgregar(true);*/
-      //  holder.binding.executePendingBindings();
+
 
     }
     public String getItemCodigos(int index) {
@@ -139,26 +121,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
     public int getItemCount() {
         return mListaCompraDetalleList == null ? 0 : mListaCompraDetalleList.size();
     }
-   /* private List<InformeCompraDetalle> buscarBU(ListaCompraDetalle det){
-        List<InformeCompraDetalle> informes=new ArrayList<>();
-        for(InformeCompraDetalle icd: listacomprasbu) {
-            Log.d(TAG, "--------------Se seleccionó a " + det.getListaId() + "--" + det.getId() + "--" + icd.getComprasId() + "--" + icd.getComprasDetId());
 
-
-            if (icd.getComprasId() == det.getListaId() && icd.getComprasDetId() ==det.getId() )
-            {
-                Log.d(TAG, "2--------------Se seleccionó a " +icd.getComprasId()+ "--" + det.getId()+"--"+ det.getListaId() +"--"+icd.getComprasDetId());
-
-                 informes.add(icd);
-             }
-        }
-        if(informes.size()>0) {
-
-            return informes;
-        }
-        return  null;
-
-    }*/
 
     static class ListaCompraDetalleViewHolder extends RecyclerView.ViewHolder  {
         final ListaDetalleItemBinding binding;
@@ -199,31 +162,11 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                            if(binding.txtcodigos.getVisibility()==View.GONE) {
 
                                binding.txtcodigos.setVisibility(View.VISIBLE);
-                              // int nvoalto= binding.txtcodigos.getHeight();
-
-                               //binding.ldcardview.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 900));
-                               //LinearLayout rLGreen = ((LinearLayout) binding.cajatexto);
-                               //ViewGroup.LayoutParams params = rLGreen.getLayoutParams();
-// Changes the height and width to the specified *pixels*
-                               //params.height = 900;
-                               //params.width = LinearLayout.LayoutParams.MATCH_PARENT;
-                              //  rLGreen.setLayoutParams(params);
-                           //    rLGreen.setLayoutParams(new LinearLayout.LayoutParams(, 900));
-                           //    LinearLayout rLGreen2 = ((LinearLayout) rLGreen.getParent());
-                               //rLGreen.setLayoutParams(new LinearLayout.LayoutParams(, 900));
 
                            }else
                            {
                               // Log.d(TAG,"haciendo chiquito");
                                binding.txtcodigos.setVisibility(View.GONE);
-                           //    binding.ldcardview.setLayoutParams(altoini);
-                            //   LinearLayout rLGreen = ((LinearLayout) binding.btncodigos.getParent());
-                              // ViewGroup.LayoutParams params=rLGreen.getLayoutParams();
-                               //params.width=LinearLayout.LayoutParams.MATCH_PARENT;
-                               //params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
-                               //rLGreen.setLayoutParams(new ViewGroup.LayoutParams(, ));
-                              // LinearLayout rLGreen2 = ((LinearLayout) rLGreen.getParent());
-                               //rLGreen.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
                            }
 
@@ -233,59 +176,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                    }
                }
           });
-         /* SE QUITAN LOS BOTONES QEUDARAN EN LAS NOTAS
-          binding.btncodigosper.setOnClickListener(new View.OnClickListener() {
 
-               @Override
-               public void onClick(View view) {
-                   switch (view.getId()) {
-                       case R.id.btncodigosper:
-                          // Log.d("Se seleccionó a ", binding.txtfecha.getText().toString());
-                           //   Toast.makeText(context, "Se seleccionó a " + txtid.getText().toString(), Toast.LENGTH_SHORT).show();
-                           //amplio el card view
-                           if(binding.txtcodigosper.getVisibility()==View.GONE) {
-
-                               binding.txtcodigosper.setVisibility(View.VISIBLE);
-
-                           }else
-                           {
-                               Log.d(TAG,"haciendo chiquito");
-                               binding.txtcodigosper.setVisibility(View.GONE);
-
-                           }
-
-                           break;
-                       default:
-                           break;
-                   }
-               }
-           });
-           binding.btncodigosex.setOnClickListener(new View.OnClickListener() {
-
-               @Override
-               public void onClick(View view) {
-                   switch (view.getId()) {
-                       case R.id.btncodigosex:
-                          // Log.d("Se seleccionó a ", binding.txtfecha.getText().toString());
-                           //   Toast.makeText(context, "Se seleccionó a " + txtid.getText().toString(), Toast.LENGTH_SHORT).show();
-                           //amplio el card view
-                           if(binding.txtcodigosex.getVisibility()==View.GONE) {
-
-                               binding.txtcodigosex.setVisibility(View.VISIBLE);
-
-                           }else
-                           {
-                               Log.d(TAG,"haciendo chiquito");
-                               binding.txtcodigosex.setVisibility(View.GONE);
-
-                           }
-
-                           break;
-                       default:
-                           break;
-                   }
-               }
-           });*/
             binding.btnldagregar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -299,7 +190,7 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                @Override
                public void onClick(View view) {
                    if (view.getId()==R.id.btnldbackup) {
-//Log.d(TAG, "hice clikkkkkkkkk");
+
                        callback.verBackup(binding.getDetalle());
 
                    }
@@ -309,24 +200,14 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
                @Override
                public void onClick(View view) {
                    if (view.getId()==R.id.btnldbackuppen) {
-//Log.d(TAG, "hice clikkkkkkkkk");
+
                        callback.verBackupPen(binding.getDetalle(),numtienda);
 
                    }
                }
            });
         }
-       /*  public void setOnClickListeners() {
-             btncodigos.setOnClickListener(this);
 
-        }
-
-
-        @Override
-        public void onClick(View view) {
-
-            callback.onClickCallback(view);
-        }*/
     }
     public interface AdapterCallback {
         void onClickCallback(View view);

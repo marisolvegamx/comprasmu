@@ -326,13 +326,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 tomarFoto(txtfotoex4, fotoex4, REQUEST_CODE_PROD4);
             }
         });
-
-       /* ubicar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                probarUbicacion();
-            }
-        });*/
         /*para obtener la onre*/
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         rutaArchivo = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -371,7 +364,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         });
         //llenar lista de clientes
-
         //input3.addTextChangedListener(new MayusTextWatcher());
         cbfotofac = root.findViewById(R.id.cbainpfachada);
         cbfotoex = root.findViewById(R.id.cbainpexhibidor);
@@ -412,7 +404,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             }
         });
-
 
         cbfotoex.setOnClickListener(new View.OnClickListener() {
             @Override

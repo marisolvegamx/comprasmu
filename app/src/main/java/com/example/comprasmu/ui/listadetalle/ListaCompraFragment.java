@@ -136,23 +136,15 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
             if(bundle.getString(ARG_MUESTRA)!=null&&bundle.getString(ARG_MUESTRA).equals("true")) {
                 //vengo de agregar muestra
-                // mViewModel.setClienteSel(Integer.parseInt(clienteSel));
+
                 mViewModel.setNuevaMuestra(true);
-                //busco el consecutivo
-               /* MutableLiveData<Integer> consecutivo = niViewModel.getConsecutivo(plantaSel, getActivity(), this);
-                //  Log.d(TAG, "*genere cons=" + consecutivo);
-                consecutivo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-                    @Override
-                    public void onChanged(Integer cons) {
-                        Log.d(TAG, "genere cons=" + cons);
-                        consecutivoTienda = cons;
-                    }
-                });*/
+
+
             }
 
             Bundle bundle2 =getActivity().getIntent().getExtras(); //vengo del infrome
             if( bundle2!=null&&bundle2.getString(ARG_MUESTRA)!=null) {
-             //   Log.d(TAG,"entre aqui??");
+
                 mViewModel.setNuevaMuestra(true);
                 //busco el consecutivo
             }
@@ -179,12 +171,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         TextView etciudad=mBinding.getRoot().findViewById(R.id.txtlcciudad);
         etciudad.setText(mViewModel.nombreCiudadSel);
         TextView ettotal=mBinding.getRoot().findViewById(R.id.txtlctotal);
-
-        // mBinding.setLcviewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
         setupListAdapter();
-       // TextView spopciones = mBinding.opc;
-       // spopciones.setVisibility(View.GONE);
+
         mBinding.btnlcsigbu.setVisibility(View.GONE);
         mBinding.lllc3.setVisibility(View.GONE);
 

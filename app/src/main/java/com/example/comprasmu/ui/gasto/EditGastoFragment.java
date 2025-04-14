@@ -660,13 +660,8 @@ public class EditGastoFragment extends Fragment {
         {
                 totalgastos= detalles.size();
                 //muestro el ultimo
-
                 totalval=niviewModel.calcularTotal(informeSel);
-
-
         }
-
-
     }
 
 
