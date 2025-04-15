@@ -1028,24 +1028,6 @@ public class DetalleProductoPenFragment extends Fragment {
                 avanzarPregunta(preguntaAct.getSigId());
             }else
             if(preguntaAct.getId()==68){ //hay ootro cliente
-                //avisar
-            /*    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
-                dialogo1.setTitle(R.string.importante);
-                dialogo1.setMessage(R.string.informe_abierto);
-                dialogo1.setCancelable(false);
-
-                dialogo1.setNegativeButton(R.string.cerrar, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogo1, int id) {
-                        //  dialogo1.cancel();
-                        //envio a la lista
-                        NavHostFragment.findNavController(AbririnformeFragment.this).navigate(R.id.action_nuevotolista);
-
-                    }
-                });
-                dialogo1.show();*/
-                //es la 68 //finalizo informe
-
-              //  mViewModel.finalizarInforme();
                 //la muestra la guarde en la 42
                 if(!pregunta.getRespuesta()) //se selecciono no
                 {
@@ -1057,12 +1039,9 @@ public class DetalleProductoPenFragment extends Fragment {
 
                 //avanzarPregunta(1);
                 mViewModel.eliminarTblTemp();
-                //me voy a la lista de informes
-             //   getActivity().finish();
+
                 Bundle bundle = new Bundle();
                 bundle.putInt(ContinuarInformeActivity.INFORMESEL,mViewModel.visita.getId());
-
-                //NavHostFragment.findNavController(this).navigate(R.id.action_visitatonuevo,bundle);
                 Intent intento1=new Intent(getActivity(), ContinuarInformeActivity.class);
                 intento1.putExtras(bundle);
                 requireActivity().finish();
@@ -1167,8 +1146,6 @@ public class DetalleProductoPenFragment extends Fragment {
             //necestio saber si ya habia guardado informe
             //veo si ya existe el informe o hay que crearlo
             Log.d(TAG, "primero guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
-        //   exit(0);
-
             if(mViewModel.numMuestra==2)
                  sigmuestra="terceraMuestra";
             if(mViewModel.numMuestra==3)

@@ -129,9 +129,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             int  consecutivo = niViewModel.getConsecutivo(plantaSel, getActivity(), this);
             //  Log.d(TAG, "*genere cons=" + consecutivo);
 
-            Log.d(TAG, "plantasel " + plantaSel);
+            Log.i(TAG, "plantasel " + plantaSel);
             consecutivoTienda = consecutivo;
-            Log.d(TAG, " nummuestra" + nummuestra);
+            Log.i(TAG, " nummuestra" + nummuestra);
 
 
             if(bundle.getString(ARG_MUESTRA)!=null&&bundle.getString(ARG_MUESTRA).equals("true")) {
@@ -149,7 +149,6 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 //busco el consecutivo
             }
         }
-        Log.d(TAG, "*****"+niViewModel);
 
         return    mBinding.getRoot();
     }
@@ -158,13 +157,11 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-       // Log.d(TAG," plantas"+plantaSel+"--"+nombrePlanta);
+
         mViewModel.setPlantaSel(plantaSel);
         mViewModel.nombrePlantaSel=nombrePlanta;
         Bundle args=getArguments();
-       // if(args!=null)
         ismuestra=mViewModel.isNuevaMuestra();
-     //   Log.d(TAG,"cliente"+ mViewModel.getClienteSel());
         TextView etindice=mBinding.getRoot().findViewById(R.id.txtlcindice);
         etsiglas=mBinding.getRoot().findViewById(R.id.txtlcsiglas);
         etindice.setText(ComprasUtils.indiceLetra(Constantes.INDICEACTUAL));
@@ -178,7 +175,6 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         mBinding.lllc3.setVisibility(View.GONE);
 
         //dependiendo de si es backup
-      //  consecutivoTienda=11;
         if(args!=null&&args.getBoolean(ISBACKUP)){
             isbu=args.getBoolean(ISBACKUP);
             if(isbu) {

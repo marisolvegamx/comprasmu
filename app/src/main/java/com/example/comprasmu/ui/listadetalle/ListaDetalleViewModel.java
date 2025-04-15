@@ -387,30 +387,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         return num;
         //  Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);
     }
-   // List<InformeCompraDetalle> listacomprasbu;
 
-  /*  public void setListacomprasbu(List<InformeCompraDetalle> listacomprasbu) {
-        this.listacomprasbu = listacomprasbu;
-    }*/
-
-   /* public InformeCompraDetalle buscarBU(ListaCompraDetalle det){
-        Log.d(TAG, "listacomprabu " + listacomprasbu.size());
-
-
-        for(InformeCompraDetalle icd: listacomprasbu) {
-            Log.d(TAG, "--------------Se seleccionó a " + det.getListaId() + "--" + det.getId() + "--" + icd.getComprasId() + "--" + icd.getComprasDetId());
-
-
-            if (icd.getComprasId() == det.getListaId() && icd.getComprasDetId() ==det.getId() )
-            {
-                Log.d(TAG, "2--------------Se seleccionó a " +icd.getComprasId()+ "--" + det.getId()+"--"+ det.getListaId() +"--"+icd.getComprasDetId());
-
-                return icd;
-            }
-        }
-        return null;
-
-    }*/
     public String ordenarCodigosNoPermitidos(int numTienda, String nvoCodigos, String noPermitidos, int criterio, int analisis, ListaDetalleBu detalle,int plantasel) {
         SimpleDateFormat sdfcodigo= new SimpleDateFormat("dd-MM-yy");
         List<String> otodo= new ArrayList<String>();

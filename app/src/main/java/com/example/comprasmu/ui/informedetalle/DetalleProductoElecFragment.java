@@ -86,7 +86,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 this.isEdicion = getArguments().getBoolean(ARG_ESEDIE);
             }
             preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
-            Log.d(TAG,"creando fragment "+preguntaAct.getId());
+            Log.i(TAG,"creando fragment "+preguntaAct.getId());
             dViewModel.reactivoAct=preguntaAct.getId();
             //   mViewModel.cargarCatsContinuar();
             //si es la misma
@@ -96,9 +96,6 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             if(this.preguntaAct!=null)
                 ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
             Log.d(TAG,"------"+ Constantes.NM_TOTALISTA+"---"+mViewModel.consecutivo);
-
-            //es edicion
-            //if(this.preguntaAct.getId()==2||this.preguntaAct.getId()==3||this.preguntaAct.getId()==5)
             isEdicion = ultimares != null;
 
 
@@ -172,16 +169,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 aceptar.setEnabled(false);
             }
             iniciarNumMuestra();
-            //}
-            // if(preguntaAct.getId()==2||preguntaAct.getId() == 3||preguntaAct.getId() == 4) //estot en siglas y es una nueva muestra
-            //     mViewModel.numMuestra=mViewModel.numMuestra+1;
-            //reviso que no haya muesmtras guardadas de ese informe :O como se que es uno nuevo
-            //  Log.e(TAG,"-------------nummuestras:"+mViewModel.numMuestra);
-            // }
-            //para saber si el detalle ya existe y el informe
-           /* if( mViewModel.getIdInformeNuevo()==0)
-                InformeTemp inf= dViewModel.buscarxNombreCam("clienteNombre");
-            mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo()*/
+
             crearFormulario();
 
             if(preguntaAct.getType().equals(CreadorFormulario.SELECTCAT)||preguntaAct.getType().equals(CreadorFormulario.SELECTDES)||preguntaAct.getType().equals(CreadorFormulario.PSELECT)) {
@@ -353,8 +341,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
     public void iniciarNumMuestra(){
         //es un nuevo informe o una nueva pregunta
-        //if(mViewModel.numMuestra==0) {
-        // &&preguntaAct.getId()!=5) {
+
         if (preguntaAct.getId() == 72)
             mViewModel.numMuestra = 1;
 
@@ -375,16 +362,12 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         }
         if(preguntaAct.getId()>=78&&preguntaAct.getId()!=89&&preguntaAct.getId() !=128) //ya tengo producto voy en siglas
         {
-            //  Constantes.ni_clientesel=opcionsel.getNombre();
-            //int consecutivo=mViewModel.getConsecutivo(valor);
-            // Log.d(TAG,"genere cons="+consecutivo);
+
             mViewModel.informe=new InformeCompra();
-            // nviewModel.informe.setClienteNombre(opcionsel.getNombre());
-            //  nviewModel.informe.setClientesId(ultimares.getValor());
+
             mViewModel.informe.setConsecutivo(ultimares.getConsecutivo());
             mViewModel.consecutivo=ultimares.getConsecutivo();
             Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
-            //  mViewModel.consecutivo=ultimares.getConsecutivo();
             ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
             dViewModel.fromTemp(); //guardo datos del producto selec
             if(dViewModel.productoSel!=null)
@@ -439,23 +422,13 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
     public void siguiente(){
         boolean resp=false;
         aceptar.setEnabled(false);
-     /*   if (textoint != null) {
-            String valor = textoint.getText().toString();
-            if(valor.length()<=0){
-                return;
-            }
-
-        }*/
-
         switch (preguntaAct.getNombreCampo()){
 
             case Contrato.TablaInformeDet.SIGLAS:
 
                 resp=validarSiglas();
                 break;
-               /* case Contrato.TablaInformeDet.CODIGO:
-                   resp=validarCodigoprod();
-                    break;*/
+
             case Contrato.TablaInformeDet.CADUCIDAD:
 
                 int respf=validarCodigoProd();
@@ -576,7 +549,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     }
                     else{
                         //no hay mas clientes finalizo preinforme e informe
-                      //  mViewModel.finalizarInforme();
+
                         //la muestra la guarde en la 42
 
                         Log.d(TAG,"dice que no");
@@ -600,7 +573,6 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     loadingDialog.dismisDialog();
                     Toast.makeText(getActivity(), "ERROR AL GUARDAR EL INFORME", Toast.LENGTH_LONG).show();
 
-
                 }
 
             }else
@@ -611,16 +583,12 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 yaestoyProcesando=true;
                 aceptar.setEnabled(false);
                 int sig=mViewModel.numMuestra+72;
-
                // int nummuestra=mViewModel.numMuestra;
                 guardarResp();
 
                 //quito la info de la barra gris
                 ((ContinuarInformeActivity)getActivity()).reiniciarBarra();
-
                 guardarMuestra(sig);
-
-
 
             }else
             if(preguntaAct.getId()==89)//no hubo producto, causano compra
@@ -746,14 +714,14 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     args.putBoolean(DetalleProductoFragment.ARG_ESEDI,false);
                     DetalleProductoFragment nvofrag = new DetalleProductoFragment();
                     nvofrag.setArguments(args);
-                 //   DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
+                    //   DetalleProductoFragment nvofrag = new DetalleProductoFragment(reactivo,false);
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
+                    // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
+                    // Remplazar el contenido principal por el fragmento
                     fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-               //     fragmentTransaction.addToBackStack(null);
-// Cambiar
+                    //     fragmentTransaction.addToBackStack(null);
+                    // Cambiar
                     fragmentTransaction.commit();
                 }else {
                     Bundle args = new Bundle();
@@ -766,7 +734,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     // Remplazar el contenido principal por el fragmento
                     fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-                  //  fragmentTransaction.addToBackStack(null);
+                    // fragmentTransaction.addToBackStack(null);
                     // Cambiar
                     fragmentTransaction.commit();
                 }}
@@ -775,17 +743,10 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //    super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
-            //   super.onActivityResult(requestCode, resultCode, data);
             try {
                 if (archivofoto != null && archivofoto.exists()) {
-
-
-                    //envio a la actividad dos para ver la foto
-                    //    Intent intento1 = new Intent(getActivity(), RevisarFotoActivity.class);
-                    //  intento1.putExtra("ei.archivo", nombre_foto);
 
                     textoint.setText(nombre_foto);
 
@@ -795,14 +756,11 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                         aceptar.setEnabled(false);
                         return;
                     } else {
-                        // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                        ComprasUtils cu = new ComprasUtils();
+                         ComprasUtils cu = new ComprasUtils();
                         cu.comprimirImagen(archivofoto.getAbsolutePath());
                         Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
                         fotomos.setImageBitmap(bitmap1);
-                        // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                         fotomos.setVisibility(View.VISIBLE);
-
                         btnrotar.setVisibility(View.VISIBLE);
                         btnrotar.setFocusableInTouchMode(true);
                         btnrotar.requestFocus();
@@ -830,46 +788,33 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
         } else if(requestCode== BackActivity.REQUEST_CODE)
         {
-          //  super.onActivityResult(requestCode, resultCode, data);
             //capturé muestra
             if(resultCode==NUEVO_RESULT_OK) {
-
-                // totalLista=data.getIntExtra(ARG_TOTALLISTA, 0);
-                //muestro el de 3a muestra
-                // if(Constantes.NM_TOTALISTA>=16)
-                //  tercera.setVisible(View.VISIBLE);
                 if(Constantes.productoSel!=null)
                 {
                     dViewModel.productoSel = Constantes.productoSel;
                     //guardo el total de la lista
                     //generar consecutivo tienda
-                    Log.d(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
+                    Log.i(TAG, ">>>> "+  dViewModel.productoSel.clienteNombre);
                     if(mViewModel.consecutivo==0) {
                         int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
                         //  Log.d(TAG, "*genere cons=" + consecutivo);
-                        Log.d(TAG, "genere cons=" + consecutivo);
+                        Log.i(TAG, "genere cons=" + consecutivo);
 
                         mViewModel.consecutivo = consecutivo;
                         Constantes.DP_CONSECUTIVO = consecutivo;
 
                     }
                     mViewModel.informe.setConsecutivo(mViewModel.consecutivo);
-                    Log.d(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
+                    Log.i(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
                     ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
-
-                   //actualizo barra
+                    //actualizo barra
                     ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
-
-                    mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
-                   // if(Constantes.productoSel.tipoMuestra==3)
-                   //     avanzarPregunta(128); //pregunto motivo
-                  //  else
-                        avanzarPregunta(78);
+                    mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false)
+                    avanzarPregunta(78);
 
                 }else
                     Log.e(TAG,"Algo salió muy mal al elegir el producto");
-
-                //lo busco y cargo
 
 
             }
@@ -879,24 +824,21 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
             //  IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
             IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
-
-
-
-                if(result.getContents() == null) {
+            if(result.getContents() == null) {
                     Toast.makeText(getActivity(), "Scan cancelled", Toast.LENGTH_LONG).show();
-                }
-                else
-                {   /* Update the textview with the scanned URL result */
-                    textoint.setText(result.getContents());
-                    //Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
-                }
-
             }
+            else
+            {   /* Update the textview with the scanned URL result */
+                textoint.setText(result.getContents());
+                    //Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
+            }
+
+        }
             else {
             super.onActivityResult(requestCode, resultCode, data);
             Toast.makeText(getActivity(), "hubo un error", Toast.LENGTH_LONG).show();
 
-        }
+            }
 
     }
     public boolean buscarMuestraCodigoElec(Date caducidadnva){
@@ -916,8 +858,6 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
         } catch (ParseException e) {
             e.printStackTrace();
             Toast.makeText(getActivity(), getString(R.string.error_fecha_formato), Toast.LENGTH_LONG).show();
-
-
             return 1;
         }
         //valido fecha cad

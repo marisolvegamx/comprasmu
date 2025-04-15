@@ -1496,12 +1496,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
       //  }
     }
     public boolean guardar(){
-
-        /*AwesomeValidation mAwesomeValidation = new AwesomeValidation(UNDERLABEL);
-        mAwesomeValidation.setContext(this);*/
-     //   AwesomeValidation mAwesomeValidation = new AwesomeValidation(COLORATION);
-      //  mAwesomeValidation.addValidation(this, R.id., RegexTemplate.NOT_EMPTY, R.string.invalid_name);
-        try {
+      try {
         EditText input7 = root.findViewById(1007);
         EditText input8 = root.findViewById(1008);
         EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
@@ -1598,8 +1593,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 mViewModel.visita.setTipoId(idtipo);
                 if(mensajedir!=null)
                     mViewModel.visita.setDireccion(mensajedir.getText().toString());
-
-               // mViewModel.visita.setCadenaComercial(input6.getText().toString());
 
 
             }else
