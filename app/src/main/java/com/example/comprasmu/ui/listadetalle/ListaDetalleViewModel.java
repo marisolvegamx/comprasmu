@@ -130,7 +130,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
     public  List<ListaCompra>  cargarPestanasxEtaSimp(String ciudadSel){
-     //   Log.d(TAG,"etapa act"+Constantes.ETAPAACTUAL);
+
         return repository.getAllByIndiceCiudadEtaSimpl(Constantes.INDICEACTUAL,ciudadSel, Constantes.ETAPAACTUAL+"");
 
 
@@ -177,7 +177,6 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
         return repository.getAllByIndiceCiudad(Constantes.INDICEACTUAL,ciudadSel);
 
-
     }
 
     public  int  getclientexPlanta(int planta){
@@ -218,8 +217,6 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         List<ListaCompra> res=repository.getByPlanta(planta, indice);
         if(res!=null&&res.size()>0){
             return res.get(0).getClienteNombre();
-
-
         }
         return "";
 
@@ -227,7 +224,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     //para las colsultas de bu
     public void consultasBackup(int idlista,int opcionsel,String categoria, String productoNombre, String empaque,int tamanio,int analisisid, String analisis,int iddetorig ){
-      Log.d(TAG,"consuta bu params"+idlista+"--"+ opcionsel+"--"+ categoria+"--"+ productoNombre+"--"+ empaque+"--"+ analisis+"--"+tamanio+"--"+iddetorig+"--"+analisisid);
+      Log.i(TAG,"consuta bu params"+idlista+"--"+ opcionsel+"--"+ categoria+"--"+ productoNombre+"--"+ empaque+"--"+ analisis+"--"+tamanio+"--"+iddetorig+"--"+analisisid);
         switch (analisisid){
           case 1: case 5: //fisico
                 consultaFisico(idlista, opcionsel, categoria, productoNombre, empaque, analisisid,tamanio,iddetorig);
@@ -258,10 +255,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 detallebu = detRepo.getDetalleByFiltrosUD(idlista, analisisid,categoria,productoNombre, "", 0);
                 break;
             case 4: default: //la misma lista
-               // detallebu = detRepo.getDetalleByFiltrosUD(idlista,categoria,"","",0);
                 detallebu = detRepo.consultaFisico4(idlista,analisisid, categoria, productoNombre, empaque, tamanio,"",iddetorig);
-               // detallebu = detRepo.getAllByLista(idlista);
-
                 break;
         }
 
@@ -274,12 +268,10 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 detallebu = detRepo.getDetalleByFiltrosUD(idlista,analisisid, categoria, productoNombre, empaque, tamanio);
                 break;
             case 2: default: //muestro toda la lista
-                 detallebu = detRepo.getDetalleByFiltros(idlista,analisisid, categoria, productoNombre, empaque, tamanio,"",iddetorig);
-              //  detallebu = detRepo.getAllByLista(idlista);
+                detallebu = detRepo.getDetalleByFiltros(idlista,analisisid, categoria, productoNombre, empaque, tamanio,"",iddetorig);
                 break;
 
         }
-
 
 
     }
@@ -299,21 +291,15 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         }
 
 
-
     }
     public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisis,int tamanio,int iddetorig ){
         switch (opcionsel) {
             case 1:
                 detallebu = detRepo.getDetalleByFiltrosUDA2(idlista, analisis,categoria, analisis,productoNombre, "", 0);
-
-               // detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque, tamanio);
                 break;
             case 2: default:
                 detallebu = detRepo.getDetalleByFiltros(idlista,analisis, categoria, productoNombre, empaque, tamanio,analisis+"",0);
-
-              //  detallebu = detRepo.getDetalleByFiltrosUDA(idlista, categoria, analisis,productoNombre, empaque,0);
                 break;
-
         }
 
     }
@@ -331,7 +317,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
         //valido que se pueda comprar y no sea bu
         if(listaCompraDetalle.getCantidad()>=listaCompraDetalle.getComprados()+1){
-          //  detRepo.actualizarComprados(idDetalle,1);
+
             listaCompraDetalle.setComprados(listaCompraDetalle.getComprados()+1);
         }
         String listaCodigos="";
@@ -350,8 +336,6 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             //actualizo
         return num;
 
-
-      //  Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);
     }
 
     public int comprarMuestraPen(int idlista, int idDetalle, String nuevoCodigo, int isbu, InformeCompraDetalle prodsel,int plantaSel,String indice){
@@ -385,7 +369,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         }
         //actualizo
         return num;
-        //  Log.d(TAG,"Se actualizo la lista de compras id="+idDetalle);
+
     }
 
     public String ordenarCodigosNoPermitidos(int numTienda, String nvoCodigos, String noPermitidos, int criterio, int analisis, ListaDetalleBu detalle,int plantasel) {
@@ -437,7 +421,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             else
                 otodo.add(noPermitidos);
         }
-       // Log.d(TAG,otodo.size()+"--"+ otodo);
+
         SimpleDateFormat sdfcaducidad = new SimpleDateFormat("dd-MM-yy");
         for (int i = 0; i < otodo.size(); i++) {
 
