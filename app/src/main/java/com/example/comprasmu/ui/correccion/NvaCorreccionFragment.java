@@ -284,7 +284,7 @@ public class NvaCorreccionFragment extends Fragment {
                                     Log.d(TAG,"buscando "+rutafotoo);
                                     Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
                                     if(bitmap1!=null)
-                                    fotoori1.setImageBitmap(bitmap1);
+                                        fotoori1.setImageBitmap(bitmap1);
                                 }
                                 //como consigo las otras?
                             }
