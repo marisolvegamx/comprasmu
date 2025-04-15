@@ -66,10 +66,8 @@ public class NvaCorreccionFragment extends Fragment {
     LinearLayout sv,sv2,sv3,sv4;
     private static final String TAG = "NvaCorreccionFragment";
     Button aceptar;
-
     private long lastClickTime = 0;
     private final boolean yaestoyProcesando=false;
-
     int solicitudSel;
     EditText textoint,txtrutaim2,txtrutaim3,txtrutaim4;
     ImageView fotomos,fotomos2,fotomos3,fotomos4, fotoori1,fotoori2,fotoori3,fotoori4;
@@ -135,7 +133,7 @@ public class NvaCorreccionFragment extends Fragment {
                         constienda = informe.getConsecutivo();
                     }
                 }
-                    ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud, constienda);
+                ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud, constienda);
                 crearFormulario();
 
                 //BUSCO LA FOTO ORIGINAL
@@ -146,20 +144,13 @@ public class NvaCorreccionFragment extends Fragment {
                             @Override
                             public void onChanged(InformeEtapaDet informeEtapaDet) {
                                 rutafotoo=informeEtapaDet.getRuta_foto();
-
                                 Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-
                                 fotoori1.setImageBitmap(bitmap1);
-
-                                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                                //fotoori1.setVisibility(View.VISIBLE);
-
                             }
                         });
                         break;
-
-                        case 3:
-                            solViewModel.buscarFotoEta(solicitud.getNumFoto(),solicitudCor.getInformesId(),3).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
+                    case 3:
+                        solViewModel.buscarFotoEta(solicitud.getNumFoto(),solicitudCor.getInformesId(),3).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                                 @Override
                                 public void onChanged(InformeEtapaDet informeEtapaDet) {
                                     Log.d(TAG,"buscando"+informeEtapaDet.getId());
@@ -176,7 +167,7 @@ public class NvaCorreccionFragment extends Fragment {
                                 }
                             });
                             break;
-                            case 4:case 5:case 6:
+                    case 4:case 5:case 6:
                         solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
                             @Override
                             public void onChanged(InformeEtapaDet informeEtapaDet) {
@@ -199,7 +190,7 @@ public class NvaCorreccionFragment extends Fragment {
                         if(solicitud.getDescripcionFoto().equals("foto_atributoa")){
                             //busco las otras fotos
                             //busco el informe
-                             corrige=solViewModel.buscarInformeFoto(solicitud.getInformesId(), solicitud.getNumFoto(),Constantes.INDICEACTUAL);
+                            corrige=solViewModel.buscarInformeFoto(solicitud.getInformesId(), solicitud.getNumFoto(),Constantes.INDICEACTUAL);
                             int numfoto2=corrige.getFoto_atributob();
 
                             int numfoto3=corrige.getFoto_atributoc();
