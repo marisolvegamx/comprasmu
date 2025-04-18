@@ -15,14 +15,13 @@ public  class InformeEnvioRepositoryImpl extends BaseRepository<InformeEnvioDet>
 
     private final InformeEnvioDetDao dao;
 
-    private LiveData<List<InformeEnvioPaq>> allInformeEnvio;
 
     public InformeEnvioRepositoryImpl(Context context) {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
         dao=comprasDataBase.getInformeEnvioDetDao();
     }
 
-
+   //todo no está implementado
     @Override
     public LiveData<List<InformeEnvioDet>> getAll() {
         return null;
@@ -30,7 +29,7 @@ public  class InformeEnvioRepositoryImpl extends BaseRepository<InformeEnvioDet>
 
     @Override
     public List<InformeEnvioDet> getAllsimple() {
-        return null;
+        return dao.getAllSimple();
     }
 
     @Override
@@ -44,7 +43,7 @@ public  class InformeEnvioRepositoryImpl extends BaseRepository<InformeEnvioDet>
     }
     public InformeEnvioPaq findInfsimple(int id) {
        return dao.getInformeEnviosimple(id);
-      // return null;
+
     }
 
     @Override
@@ -55,7 +54,7 @@ public  class InformeEnvioRepositoryImpl extends BaseRepository<InformeEnvioDet>
 
     @Override
     public void delete(InformeEnvioDet object) {
-    dao.delete(object);
+         dao.delete(object);
     }
     public void deleteById(int idInforme) {
         dao.deleteById(idInforme);
@@ -75,10 +74,7 @@ public  class InformeEnvioRepositoryImpl extends BaseRepository<InformeEnvioDet>
 
         dao.actualizarEstatus(idinfo, estatus);
     }
-  /*  public LiveData<List<InformeEnvioDet>> getCancelados(String indice) {
 
-        return dao.getByEstatus(indice,2);
-    }*/
 
 
 }

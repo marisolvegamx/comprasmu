@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -326,8 +327,18 @@ public class EditGastoFragment extends Fragment {
             guardar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                  //  guardarDet();
+
+                    view.setEnabled(false);
+                    long currentClickTime= SystemClock.elapsedRealtime();
+                    // preventing double, using threshold of 1000 ms
+                    if (currentClickTime - lastClickTime < 3000){
+                        view.setEnabled(false);
+                        return;
+                    }
+
+                    lastClickTime = currentClickTime;
                     finalizarInf();
+                    view.setEnabled(true);
                 }
             });
 
@@ -1007,8 +1018,9 @@ public class EditGastoFragment extends Fragment {
             //busco los comentarios
 
             if(!comentarios.equals("")) {
-
-                mViewModel.actualizarComentarios(mViewModel.getIdNuevo(), informeEdit.getComentarios()+";"+comentarios);
+                if(informeEdit.getComentarios()!=null&&!informeEdit.getComentarios().equals(""))
+                    comentarios= informeEdit.getComentarios()+";"+comentarios;
+                mViewModel.actualizarComentarios(mViewModel.getIdNuevo(),comentarios );
 
             }
             mViewModel.finalizarInfGasAjuste(mViewModel.getIdNuevo());
@@ -1016,7 +1028,7 @@ public class EditGastoFragment extends Fragment {
 
             //espero un poco para enviarlo
             try {
-                Thread.sleep(4000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

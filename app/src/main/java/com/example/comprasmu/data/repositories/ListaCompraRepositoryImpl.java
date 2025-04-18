@@ -1,18 +1,9 @@
 package com.example.comprasmu.data.repositories;
 
-import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Room;
 import androidx.sqlite.db.SimpleSQLiteQuery;
-
-import com.example.comprasmu.data.ComprasDataBase;
-import com.example.comprasmu.data.dao.BaseDao;
-import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
-import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
 
@@ -22,13 +13,9 @@ import java.util.List;
 public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
 
     private static ListaCompraDao dao;
-
-    private LiveData<List<InformeCompra>> allInformeCompra;
     private static ListaCompraRepositoryImpl INSTANCE;
-    /*public ListaCompraRepositoryImpl(Context context) {
-        ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
-        dao=comprasDataBase.getListaCompraDao();
-    }*/
+
+
 
     public static ListaCompraRepositoryImpl getInstance(ListaCompraDao comprasdao) {
         if (INSTANCE == null) {

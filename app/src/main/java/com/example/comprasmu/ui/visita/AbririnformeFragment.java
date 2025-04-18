@@ -249,7 +249,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             Constantes.CIUDADTRABAJO = savedInstanceState.getString(KEY_CDTRAB);
 
         }
-        // continuar=(Button)root.findViewById(R.id.aibtnguardarcont);
+
         ImageButton fotoexhibido = root.findViewById(R.id.btnaifotoexhibido);
         guardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -270,11 +270,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 //  v.setEnabled(true);
             }
         });
-      /*  continuar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                guardarContinuar();
-            }
-        });*/
         Constantes.TIPOTIENDA=new HashMap<>();
         Constantes.TIPOTIENDA.put(0,getString(R.string.seleccione_opcion));
         Constantes.TIPOTIENDA.put(1,getString(R.string.grande));
@@ -286,14 +281,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 tomarFoto(txtfotoex1, fotoex1, REQUEST_CODE_PROD1);
             }
         });
-        // Button ubicar=(Button)root.findViewById(R.id.btnaiubicar);
         ImageButton fotofachada = root.findViewById(R.id.btnaifotofachada);
 
         fotofachada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              //  probarUbicacion();
-               // txtubicacion.setVisibility(View.VISIBLE);
+
                 if (txtubicacion.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
 
@@ -782,15 +775,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
      }*/
     private void locationStart() {
-        Log.d("wwwwwwwwwww", mViewModel.mIsNew + "--");
-      //  if (mViewModel.mIsNew) {
+
         mlocManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Local = new Localizacion();
 
 
         final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (!gpsEnabled) {
-            Log.d(TAG, "1");
+            Log.i(TAG, "gps inactivo");
                 Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(settingsIntent);
                 return;
@@ -798,25 +790,24 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            Log.d(TAG, "2");
+
                 return;
             }
         if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, Local);
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 8, Local);
                 provedorgps = LocationManager.NETWORK_PROVIDER;
-            Log.d(TAG, "3");
+
 
         } else  if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
             //  if (Local == null) { //Validación que evita NullPointerException
             //Requiere actualización
-            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, Local);
+            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 8, Local);
             provedorgps = LocationManager.GPS_PROVIDER;
-            // }
-            Log.d(TAG, "4");
+
         } else
                 Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
 
-        Log.d(TAG,"quedo esta "+ provedorgps);
+        Log.i(TAG,"quedo esta "+ provedorgps);
        // }
 
     }
@@ -1438,12 +1429,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
       }*/
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current game state
-     /*   savedInstanceState.putString(IMG_PATH1, foto1.getText().toString());
-        savedInstanceState.putString(DESCRIPCION, descripcion1.getText().toString());
-        savedInstanceState.putString(TXTUBICACION, ubicacion.getText().toString());
-       */ // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
+       super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt(KEY_ETAPAACT,Constantes.ETAPAACTUAL );
         savedInstanceState.putString(KEY_USUARIO, Constantes.CLAVEUSUARIO );
         savedInstanceState.putString(KEY_INDICEACT, Constantes.INDICEACTUAL );
@@ -1469,31 +1455,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     }
 
     public void guardarUbicacion() {
-        //
-        //    createLocationRequest();
-        // GPS_ACTIVE = 1;
-        //  obtenerUbicacion();
+
         Log.d("AbrirInformeFragment", "presione boton");
-      /*  if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            //  requestPermissionLauncher.launch(
-            //        Manifest.permission.REQUESTED_PERMISSION);
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            return;
-        } else {*/
-        // rastreoGPS();
 
-        //}
+        txtaiultubic.setText(txtubicacion.getText().toString());
+        buscarDireccion();
 
-       // if (mlocManager != null) {
-          //paso la ultima ubicacion
-           // if(!txtubicacion.getText().toString().equals(""))
-
-           // ultimaLoc=mlocManager.getLastKnownLocation(provedorgps);
-            txtaiultubic.setText(txtubicacion.getText().toString());
-         buscarDireccion();
-      //  }
     }
     public boolean guardar(){
       try {
@@ -1996,15 +1963,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
     public class Localizacion implements LocationListener {
-      /*  public void activar() {
-            if ( mlocManager!=null) activarProveedores();
-        }*/
+
         public void desactivar() {
             if ( mlocManager!=null) {
-                Log.d(TAG,"desactivando");
+                Log.i(TAG,"desactivando");
                 mlocManager.removeUpdates(Local);
             }
             mlocManager=null;
+            Local=null;
         }
 
         @Override
@@ -2013,23 +1979,21 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             // debido a la deteccion de un cambio de ubicacion
             if(getActivity()!=null&&txtubicacion!=null) {
 
-                //Local.desactivar();
                 mostrarPosicion(loc);
 
             }
-            //desactivar();
-             //this.mainActivity.setLocation(loc);
+
         }
         @Override
         public void onProviderDisabled(String provider) {
             // Este metodo se ejecuta cuando el GPS es desactivado
           //  Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
-
+            Log.e(TAG, "---------------gps desactivado");
         }
         @Override
         public void onProviderEnabled(String provider) {
             // Este metodo se ejecuta cuando el GPS es activado
-            Log.d(TAG, "---------------gps activado");
+            Log.i(TAG, "---------------gps activado");
         }
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -2053,15 +2017,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         String longitude = String.valueOf(location.getLongitude());
         txtubicacion.setText(latitude + "," + longitude);
         ultimaLoc=location;
-      //  mViewModel.visita.setGeolocalizacion(latitude + "," + longitude);
         Log.d(TAG,"****Ya tengo la ubicacion" + latitude + "," + longitude);
 
     }
 
     public void buscarDireccion(){
 
-       // String latitude = String.valueOf(location.getLatitude());
-        //String longitude = String.valueOf(location.getLongitude());
 
         //buscar direccion
         try {
@@ -2070,12 +2031,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 ultimaLoc.setLatitude(ultlatitud);
             }
             mensajedir.setText("Ubicación registrada");
-        //    if (Build.PRODUCT.contains ("sdk")) {
 
-
-          //  } else
-
-                if (ComprasUtils.isOnlineNet(getContext())) {
+            if (ComprasUtils.isOnlineNet(getContext())) {
                 Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
                 List<Address> list = new ArrayList<>();
                 if (geocoder != null&&ultimaLoc!=null)
@@ -2094,6 +2051,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e(TAG,"Error en buscarDireccion "+e.getMessage());
         }
 
     }
@@ -2128,28 +2086,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         }
     }
 
-   /* public void irAProductoEx(){
-        Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
-
-        String dateString = format.format(new Date());
-        File foto=null;
-        try{
-            nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
-            foto = new File(getActivity().getExternalFilesDir(null), nombre_foto);
-            Log.e(TAG, "****"+foto.getAbsolutePath());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Toast.makeText(getActivity(), "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
-
-
-        }
-        Uri photoURI = FileProvider.getUriForFile(getActivity(),
-                "com.example.comprasmu.fileprovider",
-                foto);
-        intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
-        startActivityForResult(intento1, REQUEST_CODE_PROD);
-    }*/
 
     public void tomarFoto(EditText origen, ImageView destino, int REQUEST_CODE) {
 
@@ -2175,18 +2111,17 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 foto = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), nombre_foto);
                 Log.d(TAG, "****"+foto.getAbsolutePath());
 
-           // Parcelable state = svprincipal.onSaveInstanceState();
+
             Uri photoURI = FileProvider.getUriForFile(activity,
                     "com.example.comprasmu.fileprovider",
                     foto);
             intento1.putExtra(MediaStore.EXTRA_OUTPUT, foto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
-            //intento1.putExtra("origen", origen);
+
             intento1.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if(destino!=null) {
-              //   imageView = root.findViewById(destino);
+
                  destino.setVisibility(View.VISIBLE);
-                // rotar = root.findViewById(R.id.btnairotar1);
-               //  rotar.setVisibility(View.VISIBLE);
+
                  startActivityForResult(intento1, REQUEST_CODE);
              }
 
@@ -2214,7 +2149,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //super.onActivityResult(requestCode, resultCode, data);
         try {
             if ((requestCode == REQUEST_CODE_TAKE_PHOTO || requestCode == REQUEST_CODE_PROD1 || requestCode == REQUEST_CODE_PROD2 || requestCode == REQUEST_CODE_PROD3 || requestCode == REQUEST_CODE_PROD4) && resultCode == RESULT_OK) {
-                //  super.onActivityResult(requestCode, resultCode, data);
+
 
                 String state = Environment.getExternalStorageState();
                 String baseDir;
@@ -2234,15 +2169,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                         if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
                             //es la de fachada
-                            //envio a la actividad dos para ver la foto
-
                             Log.d(TAG, "*****" + file.exists() + "--" + file.getAbsolutePath());
-                            //  startActivity(intento1);*/
+
                             yaTengoFoto = false;
-                            //  probarUbicacion();
+
                             txtfotofachada.setText(nombre_foto);
-                            //   txtfotofachada.setVisibility(View.VISIBLE);
-                            //       Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                             ComprasUtils cu = new ComprasUtils();
                             Bitmap bitmap1 = cu.comprimirImagen(file.getAbsolutePath());
                             bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(), 100, 100);
@@ -2250,7 +2181,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                             fotofac.setImageBitmap(bitmap1);
                             fotofac.setVisibility(View.VISIBLE);
                             rotar.setVisibility(View.VISIBLE);
-                            //  agregarImagen();
                             aifotofacgroup.setVisibility(View.VISIBLE);
                             guardarUbicacion();
                             yaTengoFoto = true;

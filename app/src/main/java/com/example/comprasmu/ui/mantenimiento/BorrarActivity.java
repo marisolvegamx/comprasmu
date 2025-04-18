@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
+import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -30,7 +33,10 @@ public class BorrarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_borrar);
-        mViewModel = new ViewModelProvider(this).get(BorrarDatosViewModel.class);
+        AcuseReciboRepositoryImpl acuseReciboRepo=new AcuseReciboRepositoryImpl(this);
+        ListaCompraDetRepositoryImpl listaCompraRepo=new ListaCompraDetRepositoryImpl(this);
+        ConfiguracionRepositoryImpl configuracionRepository=new ConfiguracionRepositoryImpl(this);
+        mViewModel = new ViewModelProvider(this, new BorrarViewModelFactory(acuseReciboRepo,getApplication(),listaCompraRepo, configuracionRepository)).get(BorrarDatosViewModel.class);
 
         Button btnborrar=findViewById(R.id.btnboaceptar);
         Button btncancelar=findViewById(R.id.btnbocancelar);
@@ -81,24 +87,21 @@ public class BorrarActivity extends AppCompatActivity {
         EliminadorIndice ei=new EliminadorIndice(this,indice_anterior);
         ei.eliminarVisitas();
         aviso.setVisibility(View.VISIBLE);
-
-        // mViewModel.borrarInformes(indice_anterior);
-
         mViewModel.borrarListasCompra(indice_anterior);
-        // Log.d("Comprasmu.BorrarDatosFragment","Se eliminaron las listas");
         // borrar informes etapa
         mViewModel.borrarInformesetapa(indice_anterior);
         ei.eliminarCorrecciones();
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
         ei.eliminarTablaVers();
-        mViewModel.borrarEnvio(indice_anterior);
+        mViewModel.borrarEnvio();
         mViewModel.borrarGasto(indice_anterior);
+        mViewModel.borrarAcuseRecibo();
+        mViewModel.borrarConfiguracion();
         //inicializo constantes
         Constantes.CIUDADTRABAJO ="" ;
         Constantes.IDCIUDADTRABAJO=0;
-       // Constantes.varciudades=null;
-        guardarCiudadPref();
+        borrarCiudadPref();
 
     }
     public void inicializarEtapaPref(){
@@ -112,7 +115,7 @@ public class BorrarActivity extends AppCompatActivity {
 
     }
 
-    public void guardarCiudadPref(){
+    public void borrarCiudadPref(){
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=prefe.edit();
 

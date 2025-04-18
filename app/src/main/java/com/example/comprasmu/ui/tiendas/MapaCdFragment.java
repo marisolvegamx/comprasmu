@@ -421,9 +421,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     {
         lastKnownLocation=loc;
         if (lastKnownLocation != null&&mMap!=null) {
-           /* mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(lastKnownLocation.getLatitude(),
-                            lastKnownLocation.getLongitude()), DEFAULT_ZOOM));*/
             Log.d(TAG, "Current location is "+lastKnownLocation.getLatitude()+","+
                     lastKnownLocation.getLongitude());
         }

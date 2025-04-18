@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -23,6 +24,7 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
+import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
@@ -57,15 +59,18 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     ProductoExhibidoRepositoryImpl prorepo;
     VisitaRepositoryImpl visitarepo;
     DetalleCajaRepoImpl dcRepo;
+    AcuseReciboRepositoryImpl acuseRepo;
+    ConfiguracionRepositoryImpl configuracionRepo;
     Context context;
     ComprasLog complog;
     String TAG="BorrarDatosViewModel";
-    public BorrarDatosViewModel(Application application) {
+    public BorrarDatosViewModel(Application application, ListaCompraDetRepositoryImpl lcdrepo, AcuseReciboRepositoryImpl acuseRepo, ConfiguracionRepositoryImpl configuracionRepo) {
         super(application);
         this.context = application;
         complog=ComprasLog.getSingleton();
-
-        lcdrepo = new ListaCompraDetRepositoryImpl(application);
+        this.lcdrepo=lcdrepo;
+        this.acuseRepo=acuseRepo;
+        this.configuracionRepo=configuracionRepo;
     }
 
     File carpeta;
@@ -156,16 +161,17 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         ieRepo.delete(inf);
     }
 
-    public void borrarEnvio(String indice) {
+    public void borrarEnvio() {
        ienRepo=new InformeEnvioRepositoryImpl(this.context);
 
-
-        complog.grabarError("borrando informes envio det" + indice);
         //busco el detalle
         List<InformeEnvioDet> infos = ienRepo.getAllsimple();
-        if(infos!=null)
-        for (InformeEnvioDet informe : infos) {
-          ienRepo.delete(informe);
+
+        if(infos!=null) {
+            complog.grabarError("borrando informes envio det"+infos.size());
+            for (InformeEnvioDet informe : infos) {
+                ienRepo.delete(informe);
+            }
         }
     }
 
@@ -230,13 +236,10 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         List<Integer> fotosinfo=new ArrayList<>();
         //la visita
         imrepo.deleteById(visita.getFotoFachada());
-
         //las del informe
         List<Integer> arrFotos=new ArrayList<>();
         imrepo.deleteById(informe.getCondiciones_traslado());
         imrepo.deleteById(informe.getTicket_compra());
-
-
 
     }
 
@@ -257,6 +260,19 @@ public class BorrarDatosViewModel extends AndroidViewModel {
        igasRepo.deleteAll();
 
     }
+    public void borrarAcuseRecibo() {
+        complog.grabarError("borrando acuse_recibo");
+        //busco el detalle
+        acuseRepo.deleteAll();
+
+    }
+    public void borrarConfiguracion() {
+        complog.grabarError("borrando configuracion");
+        //busco el detalle
+        configuracionRepo.deleteAll();
+
+    }
+
 
 
 }

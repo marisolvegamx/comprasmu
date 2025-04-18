@@ -109,12 +109,10 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         //pasaría a otra actividad
        // progreso.dismiss();
         Constantes.ACTUALIZADO=true;
-       // Log.d(TAG,"enviando al home");
-        //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Intent intento=new Intent(this, HomeActivity.class);
         intento.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intento);
-         progreso.dismiss();
+        progreso.dismiss();
         finish();
     }
     public void cerrarSesion(){

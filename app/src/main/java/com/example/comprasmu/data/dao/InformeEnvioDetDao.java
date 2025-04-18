@@ -7,6 +7,8 @@ import androidx.room.Transaction;
 import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 
+import java.util.List;
+
 @Dao
 public abstract class InformeEnvioDetDao extends  BaseDao<InformeEnvioDet> {
 
@@ -16,18 +18,22 @@ public abstract class InformeEnvioDetDao extends  BaseDao<InformeEnvioDet> {
     @Query("DELETE FROM informe_envio_det where informeEtapaId=:informe")
     public  abstract void deleteById(int informe);
 
-  @Query("update informe_envio_det set estatusSync=:estatus WHERE informeEtapaId=:id")
-  public abstract void actualizarEstatusSync(int id, int estatus);
+    @Query("update informe_envio_det set estatusSync=:estatus WHERE informeEtapaId=:id")
+    public abstract void actualizarEstatusSync(int id, int estatus);
 
-  @Query("update informe_envio_det set estatus=:estatus WHERE informeEtapaId=:id")
-  public abstract void actualizarEstatus(int id, int estatus);
+    @Query("update informe_envio_det set estatus=:estatus WHERE informeEtapaId=:id")
+    public abstract void actualizarEstatus(int id, int estatus);
 
-  @Query("SELECT * FROM informe_envio_det where informeEtapaId=:id")
-  public abstract LiveData<InformeEnvioDet> find( int id);
+    @Query("SELECT * FROM informe_envio_det where informeEtapaId=:id")
+    public abstract LiveData<InformeEnvioDet> find( int id);
 
-  @Transaction
-  @Query("SELECT * FROM informe_etapa WHERE id = :id ")
-  public abstract InformeEnvioPaq getInformeEnviosimple(int id);
+    @Transaction
+    @Query("SELECT * FROM informe_etapa WHERE id = :id ")
+    public abstract InformeEnvioPaq getInformeEnviosimple(int id);
+
+    @Query("SELECT * FROM informe_envio_det")
+    public  abstract List<InformeEnvioDet> getAllSimple();
+
 
 
 }

@@ -583,7 +583,6 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 yaestoyProcesando=true;
                 aceptar.setEnabled(false);
                 int sig=mViewModel.numMuestra+72;
-               // int nummuestra=mViewModel.numMuestra;
                 guardarResp();
 
                 //quito la info de la barra gris
@@ -603,9 +602,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 String valor=null;
                 int selectedRadioButtonId = rg.getCheckedRadioButtonId();
                 if (selectedRadioButtonId != -1) {
-                  /*  RadioButton selectedRadioButton = root.findViewById(selectedRadioButtonId);
-                    valor = selectedRadioButton.getText().toString();*/
-                    //  valor=valor.toUpperCase();
+
                     valor = selectedRadioButtonId + "";
                 }
 
@@ -694,8 +691,6 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             //empiezo de 0
             Bundle bundle = new Bundle();
             bundle.putInt(ContinuarInformeActivity.INFORMESEL,mViewModel.visita.getId());
-
-            //NavHostFragment.findNavController(this).navigate(R.id.action_visitatonuevo,bundle);
             Intent intento1=new Intent(getActivity(), ContinuarInformeActivity.class);
             intento1.putExtras(bundle);
             requireActivity().finish();
@@ -810,7 +805,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
                     //actualizo barra
                     ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
-                    mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false)
+                    mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
                     avanzarPregunta(78);
 
                 }else
@@ -820,9 +815,6 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             }
 
         }  else if(requestCode == REQUEST_CODEQR) {
-
-
-            //  IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
             IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
             if(result.getContents() == null) {
                     Toast.makeText(getActivity(), "Scan cancelled", Toast.LENGTH_LONG).show();
@@ -830,7 +822,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             else
             {   /* Update the textview with the scanned URL result */
                 textoint.setText(result.getContents());
-                    //Toast.makeText(getActivity(), "Content: ${result.getContents()}",Toast.LENGTH_LONG ).show();
+
             }
 
         }
