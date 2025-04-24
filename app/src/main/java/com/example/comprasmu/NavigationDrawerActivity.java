@@ -466,18 +466,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         switch (item.getItemId()) {
             case R.id.action_settings:
 
-                //  Log.d(TAG,"hice click en"+item.getItemId());
-            //    pruebadescarga();
-              //  startService(DownloadSongService.getDownloadService(this, IMAGE_DOWNLOAD_PATH, DirectoryHelper.ROOT_DIRECTORY_NAME.concat("/")));
-               // NavHostFragment.findNavController(this).navigate(R.id.nav_nuevoinforme);
-               // Navigation.findNavController( R.id.nav_host_fragment).navigate(action);
-                // NavHostFragment.findNavController(this,R.id.nav_configurar);
-
-               // NavHostFragment.findNavController(ConfiguracionCamFragment.this);
-
-
                 navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
                 navController.navigate(R.id.nav_configurar);
                 return true;
 
@@ -487,21 +476,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 startActivity(homeIntent);
                 return true;
 
-           /* case R.id.action_log:
-              //  Log.d(TAG,"hice click en"+item.getItemId());
-                   subirImagenes();
-                return true;*/
-         /*   case R.id.cerrarsesion: //realmente es borrar datos
-
-              // Intent pruebai =new Intent(this, MasPruebasActivity.class);
-             //   startActivity(pruebai);
-
-
-               /* navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
-                navController.navigate(R.id.nav_borrarind);*/
-
-              /*  return true;*/
 
             default:
                 // If we got here, the user's action was not recognized.
@@ -511,10 +485,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
     }
 
-    public void LoadNavMenu(int iMenu){
-       // navigationView.getMenu().clear();
-        //navigationView.inflateMenu(iMenu);
-       }
 
     public void borrarUsuario(){
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
@@ -592,40 +562,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         return activeNetworkInfo != null;
 
     }
-   //para el envio forzoso pero ya es automatico y es por informe
-    /*
-    public void subirImagenes(){
-        subirPendientes();
-        //busco las imagenes pendientes de subir
-        ImagenDetRepositoryImpl imagenRepo=new ImagenDetRepositoryImpl(this);
-        LiveData<List<ImagenDetalle>> imagenesPend=imagenRepo.getImagenDetallePendientesSync();
-        imagenesPend.observe(this, new Observer<List<ImagenDetalle>>() {
-            @Override
-            public void onChanged(List<ImagenDetalle> imagenDetalles) {
-                if(imagenDetalles!=null&&imagenDetalles.size()>0){
-                    for(ImagenDetalle imagen:imagenDetalles){
-                        Log.d(TAG," subiendo a"+imagen.getDescripcion());
-                        //subo cada una
-                        Intent msgIntent = new Intent(NavigationDrawerActivity.this, SubirFotoService.class);
-                        msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
-                        msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
-                        msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,imagen.getIndice());
-
-                        msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_IMG);
-                        startService(msgIntent);
-                        //cambio su estatus a subiendo
-                        imagen.setEstatusSync(1);
-                        imagenesPend.removeObserver(this);
-                      //  imagenRepo.insert(imagen);
-
-                    }
-
-                }
-            }
-        });
-
-
-    }*/
 
     @Override
     protected void onPause() {
@@ -641,29 +577,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 //esta funcion no funciona nunca se llama
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Log.e(TAG," hola");
         return false;
     }
 
-   /* @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Log.d(TAG,"click en el menu");
-        switch (item.getItemId()) {
-
-            case R.id.nav_cerrarsesion: {
-                //borrarUsuario();
-                cerrarSesion();
-                break;
-            }
-        }
-        if(Constantes.ETAPAACTUAL==4)
-            this.onNavigationMenuEmp(item);
-        //close navigation drawer
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-
-    }*/
 
 
 
@@ -682,29 +598,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
 
-
-
-    /*private BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            //Fetching the download id received with the broadcast
-            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            //Checking if the received broadcast is for our enqueued download by matching download id
-            if (archact == id) {
-
-                 }
-        }
-    };*/
-
     private void contarCorrecc(){
-       // totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
-       /* if(Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==3||Constantes.ETAPAACTUAL==5||Constantes.ETAPAACTUAL==6){
-            //busco x ciudad
-            totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);
-
-        }else
-            totCorrecciones=scViewModel.getTotalSols(Constantes.ETAPAACTUAL,Constantes.INDICEACTUAL,1);*/
-        /***mod marzo-24 ya no importa la etapa trae todas las solicitudes****/
+      /***mod marzo-24 ya no importa la etapa trae todas las solicitudes****/
         totCorrecciones=scViewModel.getTotalSols(Constantes.INDICEACTUAL,1);
 
         //la solicitudes de coreecciones ya no serán por cd sino x indice y etapa
@@ -720,8 +615,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         if(listacomp.size()>0){
 
             int informesdetList=0;
-            InformeCompraDao.InformeCompravisita informetemp=new InformeCompraDao.InformeCompravisita();
-            InformeCompraDetalle detalleTemp=new InformeCompraDetalle();
             //busco el detalle
             for (ListaCompra compra:listacomp
             ) {
@@ -922,58 +815,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             ps.pedirSolicitudesCorr(Constantes.INDICEACTUAL, etapa, version, new ActualListener());
         else
             notificar = true;
-                  /*  act.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("DescargasIniAsyncTask","estas al dia*");
 
-                            proglist.cerrarAlerta();
-                            proglist.todoBien();
-                        }
-                    });*/
 
     }
     public void reInflateMenu(){
-      //  NavigationView navigationView = findViewById(R.id.nav_view);
 
-      //  navigationView.getMenu().clear();
-
-     //   navigationView.inflateMenu(R.menu.activity_main_drawerprep);
         initializeCountDrawer();
     }
-    ///se usaba para etiquetado actualiza visitas e informes ahora quedó en el home
-   /* public void pedirInformes(int actualiza) {
-        tvRepo=new TablaVersionesRepImpl(this);
-        visRepo=new VisitaRepositoryImpl(this);
-        infdrepo=new InformeComDetRepositoryImpl(this);
-         infrepo=new InformeCompraRepositoryImpl(this);
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-         TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLINFORMESCOMP, Constantes.INDICEACTUAL);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String version;
-        if (comp != null && comp.getVersion() != null) {
-            version = sdf.format(comp.getVersion());
-            //
-
-        } else //es la 1a vez
-        {
-            version = "1999-09-09"; //una fecha muy antigua
-
-
-        }
-        if (actualiza == 1) {
-            version = "1999-09-09"; //una fecha muy antigua
-        }
-        //siempre actualizo
-        if (NavigationDrawerActivity.isOnlineNet())
-            ps.pedirInformes(Constantes.INDICEACTUAL,version,new ActualListener());
-
-        else
-            notificar = true;
-
-
-    }*/
     public class ActualListener implements IActualListener {
 
         public int actualizarCorre(SolCorreResponse corrResp, int etapa) {

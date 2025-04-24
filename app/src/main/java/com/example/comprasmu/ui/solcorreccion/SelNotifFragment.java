@@ -168,11 +168,10 @@ public class SelNotifFragment extends ListaSelecFragment{
 
         // lista de compra pendiente
         List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReac(Constantes.CIUDADTRABAJO, 2,2);
+        Log.i(TAG+" contarMuestraAdic", "hay reactivacion muestra adic compra? " + listacomp.size());
         if(listacomp.size()>0){
 
             int informesdetList=0;
-            InformeCompraDao.InformeCompravisita informetemp=new InformeCompraDao.InformeCompravisita();
-            InformeCompraDetalle detalleTemp=new InformeCompraDetalle();
             //busco el detalle
             for (ListaCompra compra:listacomp
             ) {
@@ -182,11 +181,9 @@ public class SelNotifFragment extends ListaSelecFragment{
                     for (ListaCompraDetalle detalle : compraDetalles
                     ) {
 
-
+                        Log.i(TAG, "contarMuestraAdic falta comprar? "+detalle.getId());
                         informesdetList++;
                     }
-
-
                 }
             }
             totMuestraAdic=informesdetList;
@@ -197,7 +194,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                     //busco etiquetado
                     List<InformeEtapa> informes = scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
                     int informesfinal = 0;//contador para saber cuantos informes hay
-                    Log.d(TAG, "YA CARGÓ " + informes.size());
+                    Log.i(TAG, "contarMuestraAdic falta etiquetado" + informes.size());
 
                     for (InformeEtapa infeta : informes
                     ) {
@@ -211,8 +208,10 @@ public class SelNotifFragment extends ListaSelecFragment{
                     }
 
                     totMuestraAdic = informesfinal;
-                } else { //veo si ya puedo hacer empaque
+                } else //veo si ya puedo hacer empaque
+
                     listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                    Log.i(TAG, "puedo hacer empaque?" + listacomp.size());
 
                     int listageneral = 0; //para contar los informes
                     if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 2) {
@@ -225,7 +224,8 @@ public class SelNotifFragment extends ListaSelecFragment{
                     }
 
                     totMuestraAdic = listageneral;
-                }
+
+
             }
 
     }
