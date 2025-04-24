@@ -639,7 +639,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 //busco etiquetado
                 List<InformeEtapa> informes = scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
                 int informesfinal = 0;//contador para saber cuantos informes hay
-                Log.d(TAG, "YA CARGÓ " + informes.size());
+                Log.i(TAG, "YA CARGÓ " + informes.size());
 
                 for (InformeEtapa infeta : informes
                 ) {

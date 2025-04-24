@@ -2,6 +2,7 @@ package com.example.comprasmu.ui.solcorreccion;
 
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,6 +30,7 @@ import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
 import com.example.comprasmu.ui.informe.DetalleCancelado;
 import com.example.comprasmu.ui.notificaciones.NotificacionGen;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 
@@ -50,7 +52,7 @@ public class SelNotifFragment extends ListaSelecFragment{
 
     ListaSolsViewModel scViewModel;
     private List<InformeEtapa> totCanceleta;
-
+    private ComprasLog comprasLog;
     public SelNotifFragment() {
         super();
     }
@@ -59,6 +61,7 @@ public class SelNotifFragment extends ListaSelecFragment{
     public void onCreate(Bundle savedInstanceState) {
         //busco los datos y los convierto al tipo String[]
         super.onCreate(savedInstanceState);
+        comprasLog = ComprasLog.getSingleton();
 
 
     }
@@ -132,19 +135,27 @@ public class SelNotifFragment extends ListaSelecFragment{
 
             totCancel=informesCancel.size();
         totCancel=totCancel+itotCanceleta;
+        comprasLog.info(TAG,"contarCanceladas","totcancel:"+totCancel);
+
         if(totCancel==0){
             //busco etiquetado por reactivacion
+            comprasLog.info(TAG,"contarCanceladas","buscando etiquetado x reactivacion");
             List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
             if(listacomp!=null&&listacomp.size()>0)
-                         setEtiquetadoCancel(3, 6);
+                setEtiquetadoCancel(3, 6);
             else {
                         //veo si ya puedo hacer empaque
                 listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
                 InformeEtapa nvoinf = new InformeEtapa();
                 List<InformeEtapa> listageneral = new ArrayList<>();
+                comprasLog.info(TAG,"contarCanceladas","puedo hacer empaque?:"+listacomp);
+
                 if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
+
                     //veo que no haya hecho informe para no esperar a la supervisión
                     InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
+                    comprasLog.info(TAG,"contarCanceladas","tengo informe?:"+informesEtapa);
+
                     if (informesEtapa == null) {
                         nvoinf.setIndice(listacomp.get(0).getIndice());
                         // nvoinf.set = listacomp.get(0).getId();
@@ -160,15 +171,17 @@ public class SelNotifFragment extends ListaSelecFragment{
                 }
 
                 totCancel = listageneral.size();
+
             }
         }
+        comprasLog.info(TAG,"contarCanceladas","totcancel:"+totCancel);
 
     }
     private void contarMuestraAdic(){
 
         // lista de compra pendiente
         List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReac(Constantes.CIUDADTRABAJO, 2,2);
-        Log.i(TAG+" contarMuestraAdic", "hay reactivacion muestra adic compra? " + listacomp.size());
+        comprasLog.info(TAG,"contarMuestraAdic","hay reactivacion muestra adic compra? " + listacomp.size());
         if(listacomp.size()>0){
 
             int informesdetList=0;
@@ -181,7 +194,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                     for (ListaCompraDetalle detalle : compraDetalles
                     ) {
 
-                        Log.i(TAG, "contarMuestraAdic falta comprar? "+detalle.getId());
+                        comprasLog.info(TAG,"contarMuestraAdic", "contarMuestraAdic falta comprar? "+detalle.getId());
                         informesdetList++;
                     }
                 }
@@ -194,7 +207,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                     //busco etiquetado
                     List<InformeEtapa> informes = scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
                     int informesfinal = 0;//contador para saber cuantos informes hay
-                    Log.i(TAG, "contarMuestraAdic falta etiquetado" + informes.size());
+                    comprasLog.info(TAG,"contarMuestraAdic", "contarMuestraAdic falta etiquetado" + informes.size());
 
                     for (InformeEtapa infeta : informes
                     ) {
@@ -211,7 +224,8 @@ public class SelNotifFragment extends ListaSelecFragment{
                 } else //veo si ya puedo hacer empaque
 
                     listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-                    Log.i(TAG, "puedo hacer empaque?" + listacomp.size());
+                    if(listacomp!=null)
+                        comprasLog.info(TAG,"contarMuestraAdic", "puedo hacer empaque?" + listacomp.size()+"reac"+listacomp.get(0).getLis_reactivado());
 
                     int listageneral = 0; //para contar los informes
                     if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 2) {
@@ -227,24 +241,23 @@ public class SelNotifFragment extends ListaSelecFragment{
 
 
             }
-
+        comprasLog.info(TAG,"contarMuestraAdic","totMuestraAdic:"+totMuestraAdic);
     }
     private void setEtiquetadoCancel(int etapa, int estatus) {
         List<InformeEtapa> listageneral=new ArrayList<>();
-            //para ver si sigue etiquetado y empaque
+        //para ver si sigue etiquetado y empaque
         List<InformeEtapa> informes=scViewModel.getInfEtapaxEstatusSim(Constantes.INDICEACTUAL,etapa,estatus);
+        if(informes!=null) {
+            comprasLog.info(TAG, "setEtiquetadoCancel", "tengo informe etiquetado?" + informes.size());
+            for (InformeEtapa infeta : informes
+            ) {
+                //reviso si ya estoy en etapa 3
+                List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
+                    listageneral.add(infeta);
+                }
 
-        //paso de informe etapa ainforme compra
-        DetalleCancelado nvoinf = new DetalleCancelado();
-        for (InformeEtapa infeta : informes
-        ) {
-
-            //reviso si ya estoy en etapa 3
-            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
-            if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
-                listageneral.add(infeta);
             }
-
         }
             //totCancel=new MutableLiveData<>();
         totCancel=listageneral.size();
