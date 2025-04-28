@@ -34,6 +34,7 @@ public class DescRespInformesEta {
 
     Activity act;
 
+
     private final DescRespInformesEta.ProgresoRespIEListener miproglis;
    // DescargaRespListener listener;
 
@@ -105,7 +106,7 @@ public class DescRespInformesEta {
 
     }
         public void actualizarInformesEtiq(RespNotifEtiqResponse infoResp) {
-            Log.d(TAG, "actualizando bd informes");
+            Log.i(TAG, "actualizando bd informes");
 
             if (infoResp != null) {
 
