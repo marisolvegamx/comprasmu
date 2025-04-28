@@ -855,7 +855,7 @@ public class PeticionesServidor {
     }
 
     /****pedimos muestras canceladas o informes eliminados de etiquetado y empaque
-     * para reactivar compras
+     * para reactivar compras llama a notifetiquetado
      * @param indice
      * @param listener
      */

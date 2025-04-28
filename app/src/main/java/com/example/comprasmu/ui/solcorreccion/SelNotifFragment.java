@@ -1,8 +1,6 @@
 package com.example.comprasmu.ui.solcorreccion;
 
-
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,22 +11,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.PeticionesServidor;
-import com.example.comprasmu.data.dao.InformeCompraDao;
-
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
-
 import com.example.comprasmu.data.remote.NotificacionResponse;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
-import com.example.comprasmu.ui.informe.DetalleCancelado;
 import com.example.comprasmu.ui.notificaciones.NotificacionGen;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
@@ -42,14 +35,12 @@ public class SelNotifFragment extends ListaSelecFragment{
 
     private  ArrayList<DescripcionGenerica> listaClientesEnv;
     private static final String TAG="SelNotifFragment";
-
     public static String ARG_TIPOCONS="comprasmu.correselcli.tipocons";
     int totCorrecciones;
     int totCancel;
     int itotCanceleta;
     int totMuestraAdic;
     MutableLiveData<Integer> contNotif;
-
     ListaSolsViewModel scViewModel;
     private List<InformeEtapa> totCanceleta;
     private ComprasLog comprasLog;
@@ -149,24 +140,24 @@ public class SelNotifFragment extends ListaSelecFragment{
                 InformeEtapa nvoinf = new InformeEtapa();
                 List<InformeEtapa> listageneral = new ArrayList<>();
                 comprasLog.info(TAG,"contarCanceladas","puedo hacer empaque?:"+listacomp);
+                for(ListaCompra listaCompra:listacomp) {
+                    if ( listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
 
-                if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1) {
+                        //veo que no haya hecho informe para no esperar a la supervisión
+                        InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
+                        comprasLog.info(TAG, "contarCanceladas", "tengo informe?:" + informesEtapa);
 
-                    //veo que no haya hecho informe para no esperar a la supervisión
-                    InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
-                    comprasLog.info(TAG,"contarCanceladas","tengo informe?:"+informesEtapa);
+                        if (informesEtapa == null) {
+                            nvoinf.setIndice(listaCompra.getIndice());
+                            nvoinf.setEstatus(listaCompra.getEstatus());
+                            nvoinf.setEtapa(4);
 
-                    if (informesEtapa == null) {
-                        nvoinf.setIndice(listacomp.get(0).getIndice());
-                        // nvoinf.set = listacomp.get(0).getId();
-                        nvoinf.setEstatus(listacomp.get(0).getEstatus());
-                        nvoinf.setEtapa(4);
+                            nvoinf.setCiudadNombre(listaCompra.getCiudadNombre());
+                            nvoinf.setClienteNombre(listaCompra.getClienteNombre());
 
-                        nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
-                        nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
-
-                        // nvoinf.mo
-                        listageneral.add(nvoinf);
+                            // nvoinf.mo
+                            listageneral.add(nvoinf);
+                        }
                     }
                 }
 
@@ -214,6 +205,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                         //reviso que ya pueda hacer esa etapa
                         //busco los clientes x ciudad
                         listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+
                         if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
 
                             informesfinal++;
@@ -222,22 +214,23 @@ public class SelNotifFragment extends ListaSelecFragment{
 
                     totMuestraAdic = informesfinal;
                 } else //veo si ya puedo hacer empaque
-
+                {
                     listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-                    if(listacomp!=null)
-                        comprasLog.info(TAG,"contarMuestraAdic", "puedo hacer empaque?" + listacomp.size()+"reac"+listacomp.get(0).getLis_reactivado());
 
                     int listageneral = 0; //para contar los informes
-                    if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 2) {
-                        ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-                        InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
-                        if (informesEtapa == null) {
+                    for(ListaCompra listaCompra:listacomp) {
+                        if (listaCompra.getLis_reactivado() != null &&listaCompra.getLis_reactivado() == 2) {
+                            ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+                            InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
+                            if (informesEtapa == null) {
 
-                            listageneral++;
+                                listageneral++;
+                            }
                         }
                     }
 
                     totMuestraAdic = listageneral;
+                }
 
 
             }

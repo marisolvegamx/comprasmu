@@ -654,19 +654,24 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 totMuestraAdic.setValue(informesfinal);
              }else
             //veo si ya puedo hacer empaque
-                   listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+            {
+                listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
 
-            int listageneral = 0; //para contar los informes
-            if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 2) {
-                ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-                InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4);
-                if (informesEtapa == null) {
+                int listageneral = 0; //para contar los informes
+                for(ListaCompra listaCompra:listacomp) {
 
-                    listageneral++;
+                    if (listacomp != null && listacomp.size() > 0 && listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 2) {
+                        ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+                        InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
+                        if (informesEtapa == null) {
+
+                            listageneral++;
+                        }
+                    }
                 }
-            }
 
-            totMuestraAdic.setValue(listageneral);
+                totMuestraAdic.setValue(listageneral);
+            }
         }
     }
 

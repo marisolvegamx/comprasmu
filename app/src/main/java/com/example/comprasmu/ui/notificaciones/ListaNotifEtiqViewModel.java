@@ -89,9 +89,9 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
         return cancelados;
     }
 
-    public List<ListaCompra> buscarListaCompxPlan(int cliente,String ciudad, String indice){
+    public List<ListaCompra> buscarListaCompxCiudad(int cliente,String ciudad, String indice, int etapa){
 
-        List<ListaCompra> res=lcrepo.getAllByIndiceCiudadClienteSim(indice,ciudad,cliente);
+        List<ListaCompra> res=lcrepo.getAllByIndiceCiudadClienteSim(indice,ciudad,cliente,etapa);
 
         return res;
 

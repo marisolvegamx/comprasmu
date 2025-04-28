@@ -44,9 +44,9 @@ public class ContInfEtaViewModel extends AndroidViewModel {
         infEtaRepository.deleteInformeEtapa(id);
 
     }
-    public InformeEtapa getInformeNoCancel(String indice,int etapa){
+    public InformeEtapa getInformeNoCancel(String indice,int etapa, String ciudad, int clientesId){
 
-            return   infEtaRepository.getInformeNoCancel(indice, etapa);
+            return   infEtaRepository.getInformeNoCancelxCiudad(indice, etapa, ciudad, clientesId);
 
 
     }

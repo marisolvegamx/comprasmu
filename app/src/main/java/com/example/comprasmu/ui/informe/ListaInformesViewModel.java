@@ -197,7 +197,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
     }
     //para buscar si hay un inf de etiquetado reabierto
     public LiveData<List<InformeEtapa>> getInfEtapaxEstatus(String indiceSel, int etapa, int estatus ){
-
+        Log.i(TAG,"indideSel:"+indiceSel+" etapa:"+etapa+" estatus:"+estatus);
         return inferepo.getInformesxEstatus(indiceSel,etapa,estatus);
 
     }

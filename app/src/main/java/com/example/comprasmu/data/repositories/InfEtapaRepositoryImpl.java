@@ -140,8 +140,8 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
         }
         return null;
     }
-    public InformeEtapa getInformeNoCancel(String indice,int etapa) {
-        List<InformeEtapa> lista=icDao.getInformeNoCancel(indice,etapa);
+    public InformeEtapa getInformeNoCancelxCiudad(String indice,int etapa, String ciudad, int clientesId) {
+        List<InformeEtapa> lista=icDao.getInformeNoCancelxCiudad(indice,etapa, ciudad, clientesId);
         if(lista!=null&&lista.size()>0){
             return lista.get(0);
         }

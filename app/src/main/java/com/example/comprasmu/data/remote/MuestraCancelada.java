@@ -12,6 +12,7 @@ public class MuestraCancelada {
     private int ind_comprasDetIdbu;
     private String vas_observaciones;
     private Date vas_fecha;
+    private int ine_etapa;
 
     public int getInf_id() {
         return inf_id;
@@ -83,5 +84,13 @@ public class MuestraCancelada {
 
     public void setVas_fecha(Date vas_fecha) {
         this.vas_fecha = vas_fecha;
+    }
+
+    public int getIne_etapa() {
+        return ine_etapa;
+    }
+
+    public void setIne_etapa(int ine_etapa) {
+        this.ine_etapa = ine_etapa;
     }
 }

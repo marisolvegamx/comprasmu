@@ -33,6 +33,7 @@ import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.notificaciones.ListaNotifEtiqViewModel;
 import com.example.comprasmu.ui.notificaciones.NotifEtiqAdapter;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -52,6 +53,8 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
     private String indice;
     CoordinatorLayout coordinator;
     ListaNotifEtiqViewModel notViewModel;
+    ComprasLog compraslog;
+    List<InformeEtapa> listageneral;
     public ListaCancelFragment() {
     }
 
@@ -67,6 +70,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                 R.layout.lista_cancel_fragment, container, false);
         mViewModel = new ViewModelProvider(this).get(ListaInformesViewModel.class);
         notViewModel = new ViewModelProvider(this).get(ListaNotifEtiqViewModel.class);
+       compraslog=ComprasLog.getSingleton();
         return    mBinding.getRoot();
     }
 
@@ -89,7 +93,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
             public void onChanged(List<InformeCompraDetalle> informeCompraDetalles) {
 
                 Log.d(TAG, "compra YA CARGÓ " + informeCompraDetalles.size());
-
+               //busca tiendas canceladas
                 mViewModel.cargarCancelados2(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeCompraDao.InformeCompravisita>>() {
                     @Override
                     public void onChanged(List<InformeCompraDao.InformeCompravisita> informeCompravisitas) {
@@ -114,70 +118,6 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
 
         setEtiquetado(3,6);
 
-        //veo si ya puedo hacer empaque
-        List<ListaCompra> listacomp = notViewModel.cargarClientesSimplxet("", 4); //para todas las ciudades
-        InformeEtapa nvoinf=new InformeEtapa();
-        List<InformeEtapa> listageneral=new ArrayList<>();
-        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()!=null&&listacomp.get(0).getLis_reactivado()==1) {
-            //veo que no haya hecho informe para no esperar a la supervisión
-            ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-            InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL,4);
-            if(informesEtapa==null) {
-              nvoinf.setIndice(listacomp.get(0).getIndice());
-              // nvoinf.set = listacomp.get(0).getId();
-              nvoinf.setEstatus(listacomp.get(0).getEstatus());
-              nvoinf.setEtapa(4);
-
-              nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
-              nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
-
-              // nvoinf.mo
-              listageneral.add(nvoinf);
-            }
-        }
-
-
-        nvoinf = null;
-        if (listageneral.size() >0) {
-
-
-            Log.d(TAG, "emp YA CARGÓ" + listageneral.size());
-
-            mEtaAdapter.setInformeCompraList(listageneral);
-
-            mEtaAdapter.notifyDataSetChanged();
-            mBinding.lisinfeta.setVisibility(View.VISIBLE);
-        }else //busco de la etapa 1
-        {
-            mViewModel.getInfEtapaxEstatus(indice,1,0).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
-                @Override
-                public void onChanged(List<InformeEtapa> informes) {
-
-                    List<InformeEtapa> listageneral=new ArrayList<>();
-                    Log.d(TAG, "YA CARGÓ " + informes.size());
-                    if (informes != null && informes.size() > 0) {
-                        for (InformeEtapa informe:informes
-                             ) { //busco si no se ha vuelto a elaborar
-                             InformeEtapa inf=mViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,2);
-                            if(inf!=null){
-                                //corregido
-                             continue;
-                            }
-                            else
-                                listageneral.add(informe);
-
-                        }
-                        Log.d(TAG, "emp YA CARGÓ" + listageneral.size());
-
-                        mEtaAdapter.setInformeCompraList(listageneral);
-
-                        mEtaAdapter.notifyDataSetChanged();
-                        mBinding.lisinfeta.setVisibility(View.VISIBLE);
-
-                    }
-                }
-            });
-        }
 
 
     }
@@ -203,31 +143,76 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
     }
 
     private void setEtiquetado(int etapa, int estatus) {
-        List<InformeEtapa> listageneral=new ArrayList<>();
+        listageneral=new ArrayList<>();
         //para ver si sigue etiquetado
         mViewModel.getInfEtapaxEstatus(indice,etapa,estatus).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
             @Override
             public void onChanged(List<InformeEtapa> informes) {
-
-
+                compraslog.info(TAG,"setEtiquetado", " si hay informe etiquetado"+informes);
                 //paso de informe etapa ainforme compra
                 DetalleCancelado nvoinf = new DetalleCancelado();
                 for (InformeEtapa infeta : informes
                 ) {
 
                     //reviso si ya estoy en etapa 3
-                    List<ListaCompra> listacomp = notViewModel.buscarListaCompxPlan(infeta.getClientesId(),infeta.getCiudadNombre(),infeta.getIndice());
-                    if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
+                    List<ListaCompra> listacomp = notViewModel.buscarListaCompxCiudad(infeta.getClientesId(),infeta.getCiudadNombre(),infeta.getIndice(),3);
+                    compraslog.info(TAG,"setEtiquetado", "si hay lista "+listacomp);
+                   //puedo tener varias plantas
+                    for(ListaCompra listaCompra:listacomp) {
 
-
-                        if (listacomp.get(0).getLis_reactivado() != null && listacomp.get(0).getLis_reactivado() == 1)
-                            listageneral.add(infeta);
-
+                            compraslog.info(TAG, "setEtiquetado", "reactivado" + listaCompra.getLis_reactivado());
+                            if (listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1)
+                                listageneral.add(infeta);
 
                     }
 
                 }
+                compraslog.info(TAG,"setEtiquetado", "listagen "+listageneral.size());
+
                 if (listageneral.size() < 1) {
+                    listageneral=revisarEmpaque();
+
+                    nvoinf = null;
+                    if (listageneral.size() >0) {
+
+
+                        Log.d(TAG, "emp YA CARGÓ" + listageneral.size());
+
+                        mEtaAdapter.setInformeCompraList(listageneral);
+
+                        mEtaAdapter.notifyDataSetChanged();
+                        mBinding.lisinfeta.setVisibility(View.VISIBLE);
+                    }else //busco de la etapa 1
+                    {
+                        mViewModel.getInfEtapaxEstatus(indice,1,0).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+                            @Override
+                            public void onChanged(List<InformeEtapa> informes) {
+
+                                List<InformeEtapa> listageneral=new ArrayList<>();
+                                Log.d(TAG, "informe preparacion cancelado?" + informes.size());
+                                if (informes != null && informes.size() > 0) {
+                                    for (InformeEtapa informe:informes
+                                    ) { //busco si no se ha vuelto a elaborar
+                                        InformeEtapa inf=mViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,2);
+                                        if(inf!=null){
+                                            //corregido
+                                            continue;
+                                        }
+                                        else
+                                            listageneral.add(informe);
+
+                                    }
+                                    Log.d(TAG, "emp YA CARGÓ" + listageneral.size());
+
+                                    mEtaAdapter.setInformeCompraList(listageneral);
+
+                                    mEtaAdapter.notifyDataSetChanged();
+                                    mBinding.lisinfeta.setVisibility(View.VISIBLE);
+
+                                }
+                            }
+                        });
+                    }
 
                 } else {
                     Log.d(TAG, "etiq YA CARGÓ " + listageneral.size());
@@ -242,7 +227,32 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
             }
         });
     }
+    private  List<InformeEtapa> revisarEmpaque(){
+        //veo si ya puedo hacer empaque
+        List<ListaCompra> listacomp = notViewModel.cargarClientesSimplxet("", 4); //para todas las ciudades
+        InformeEtapa nvoinf2=new InformeEtapa();
+        List<InformeEtapa> listageneral=new ArrayList<>();
+        for(ListaCompra listaCompra:listacomp) {
+            if ( listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
+                //veo que no haya hecho informe para no esperar a la supervisión
+                ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+                InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
+                if (informesEtapa == null) {
+                    nvoinf2.setIndice(listaCompra.getIndice());
+                    nvoinf2.setEstatus(listaCompra.getEstatus());
+                    nvoinf2.setEtapa(4);
 
+                    nvoinf2.setCiudadNombre(listaCompra.getCiudadNombre());
+                    nvoinf2.setClienteNombre(listaCompra.getClienteNombre());
+
+                    // nvoinf.mo
+                    listageneral.add(nvoinf2);
+                }
+            }
+        }
+        return listageneral;
+
+    }
     private void setupSnackbar() {
         // Mostrar snackbar en resultados positivos de operaciones (crear, editar y eliminar)
         mViewModel.getSnackbarText().observe(getActivity(), integerEvent -> {

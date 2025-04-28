@@ -108,9 +108,9 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     public abstract   LiveData<InformeEtapa> find(int id);
     @Query("SELECT * FROM informe_etapa WHERE estatusSync =:estatus and indice=:indice")
     public abstract   List<InformeEtapa> getxEstatusSync(String indice,int estatus);
-    @Query("SELECT * FROM informe_etapa WHERE estatus>0 and etapa=:etapa and indice=:indice")
-    public abstract   List<InformeEtapa> getInformeNoCancel(String indice, int etapa);
 
+    @Query("SELECT * FROM informe_etapa WHERE estatus>0 and etapa=:etapa and indice=:indice and ciudadNombre=:ciudadNombre and clientesId=:clientesId")
+    public abstract   List<InformeEtapa> getInformeNoCancelxCiudad(String indice, int etapa, String ciudadNombre,int clientesId );
 
     @Query("select * from informe_etapa where indice=:indice and etapa=3 and estatusSync =2 and ciudadNombre=:ciudad and estatus>0 group by clientesId")
     public abstract   List<InformeEtapa> getClientesconInf(String indice,String ciudad);

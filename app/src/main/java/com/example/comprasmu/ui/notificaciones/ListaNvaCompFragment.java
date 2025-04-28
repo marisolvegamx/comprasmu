@@ -141,9 +141,11 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
                     //reviso que ya pueda hacer esa etapa
                     //busco los clientes x ciudad
                     List<ListaCompra> listacomp = mViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
-                    if(listacomp!=null&&listacomp.size()>0&&listacomp.get(0).getClientesId()==infeta.getClientesId()) {
+                    for(ListaCompra listaCompra:listacomp) {
+                        if (listaCompra.getClientesId() == infeta.getClientesId()) {
 
-                        informesfinal.add(infeta);
+                            informesfinal.add(infeta);
+                        }
                     }
                 }
 
@@ -165,20 +167,21 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
          listacomp = mViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
         InformeEtapa nvoinf=new InformeEtapa();
         List<InformeEtapa> listageneral=new ArrayList<>();
-        if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getLis_reactivado()!=null&&listacomp.get(0).getLis_reactivado()==2) {
-            ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-            InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL,4);
-            if(informesEtapa==null) {
-                nvoinf.setIndice(listacomp.get(0).getIndice());
-                // nvoinf.set = listacomp.get(0).getId();
-                nvoinf.setEstatus(listacomp.get(0).getEstatus());
-                nvoinf.setEtapa(4);
+        for(ListaCompra listaCompra:listacomp) {
+            if (listacomp != null && listacomp.size() > 0 && listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 2) {
+                ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+                InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4,listaCompra.getCiudadNombre(),  listaCompra.getClientesId());
+                if (informesEtapa == null) {
+                    nvoinf.setIndice(listaCompra.getIndice());
+                     nvoinf.setEstatus(listaCompra.getEstatus());
+                    nvoinf.setEtapa(4);
 
-                nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
-                nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
+                    nvoinf.setCiudadNombre(listaCompra.getCiudadNombre());
+                    nvoinf.setClienteNombre(listaCompra.getClienteNombre());
 
-                // nvoinf.mo
-                listageneral.add(nvoinf);
+                    // nvoinf.mo
+                    listageneral.add(nvoinf);
+                }
             }
         }
 
