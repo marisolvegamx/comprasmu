@@ -324,19 +324,14 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
             //  Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
             //veo las muestras canceladas
             if (corrResp.getCanceladas() != null)
-                if (etapa == 2)//solo para compra
-                    for (MuestraCancelada cancel :
-                            corrResp.getCanceladas()) {
-                        //busco el informedetalle y actualizo el estatus
-                        this.procesarCanceladas(cancel);
 
-                    }
-                else
                     for (MuestraCancelada cancel :
                             corrResp.getCanceladas()) {
-                        // Log.d(TAG,"dddddd"+cancel.getInf_id());
                         //busco el informedetalle y actualizo el estatus
-                        this.procesarCanceladasEta(cancel); //canceladas será 0
+                        if(cancel.getIne_etapa()==2)
+                            this.procesarCanceladas(cancel);
+                        else
+                            this.procesarCanceladasEta(cancel); //canceladas será 0
 
                     }
 
