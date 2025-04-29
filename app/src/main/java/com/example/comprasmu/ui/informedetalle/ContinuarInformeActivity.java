@@ -72,33 +72,13 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         nviewModel =new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
         dViewModel = new ViewModelProvider(this).get(NuevoDetalleViewModel.class);
-     /*   if (savedInstanceState != null) {    // Restore value of members from saved state
-            //  idinformeSel = savedInstanceState.getInt("visitasel");
-            //  if(idinformeSel>0) { //se salio y lo devuelvo al inicio
-            this.finish();
-            Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
-           Log.e(TAG,"Regresando a navigation desde continuarinforme");
-            intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"continuarinf");
 
-            startActivity(intento1);
-
-            //mando al inicio
-            //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
-            //  }
-        }*/
-        // if(Constantes.NM_TOTALISTA>=16)
         if (savedInstanceState != null) {    // Restore value of members from saved state
-           // Constantes.definirTrabajo(this);
-         //   Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
-          //  Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
-          //  Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
-            // idinformeSel = savedInstanceState.getInt("visitasel");
-            //if(idinformeSel==0) { //se salio y lo devuelvo al inicio
+
             Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
             startActivity(intento1);
             finish();
-            //mando al inicio
-            //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
+
             return;
         }else {
 
@@ -196,8 +176,6 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 //e uno nuevo
                 buscarPreguntas();
                 nviewModel.numMuestra = 0;
-                // nviewModel.setIdInformeNuevo(ultimares.getInformesId());
-                //  nviewModel.consecutivo=ultimares.getConsecutivo();
                 dViewModel.getReactivos().observe(this, new Observer<List<Reactivo>>() {
                     @Override
                     public void onChanged(List<Reactivo> reactivos) {
@@ -298,23 +276,6 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
             idinformeSel = datosRecuperados.getInt(INFORMESEL); //es la visita id
             Log.d(TAG,"si entro aq "+idinformeSel);
         }
-        /*else { //lo recupero
-            Log.d(TAG,"si entro aqui2");
-            if (savedInstanceState != null) {    // Restore value of members from saved state
-                Constantes.CLAVEUSUARIO = savedInstanceState.getString(KEY_USUARIO);
-                Constantes.ETAPAACTUAL = savedInstanceState.getInt(KEY_ETAPAACT);
-               Constantes.INDICEACTUAL=savedInstanceState.getString(KEY_INDICEACT);
-                // idinformeSel = savedInstanceState.getInt("visitasel");
-                //if(idinformeSel==0) { //se salio y lo devuelvo al inicio
-              /*      Intent intento1 = new Intent(this, NavigationDrawerActivity.class);
-                    startActivity(intento1);
-                    finish();
-                    //mando al inicio
-                  //  NavHostFragment.findNavController(this).navigate(R.id.action_continuar, bundle);
-                    return;
-            }
-
-        }*/
 
         mBinding.setSdf(Constantes.sdfsolofecha);
         //Log.d(TAG, "informe creado=" + idinformeSel);

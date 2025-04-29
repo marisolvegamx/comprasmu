@@ -92,6 +92,8 @@ import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 /***clase para mostrar los campos que faltan de capturar de la muestra uno por pantalla***/
 /******* informe de pepsi ya que los otros tienen otra logica de negocio***/
 // en guardar cliente se envia a los otros informes
+//va creando los campos en crear pregunta y cada que avanza o retrocede elimina los campos
+//guarda en una tabla temporal
 public class DetalleProductoFragment extends Fragment {
 
     private NuevoinformeViewModel mViewModel;
@@ -171,6 +173,14 @@ public class DetalleProductoFragment extends Fragment {
             estatusElec=mViewModel.visita.getEstatusElec();
             estatusJum=mViewModel.visita.getEstatusJum();
             compraslog.info(TAG,"create","estatus "+estatusPepsi+"--"+estatusPen+"--"+estatusElec+"--"+estatusJum);
+            if(preguntaAct==null)
+
+                if (getArguments() != null) {
+
+                    int num_pregact = getArguments().getInt(ARG_PREGACT);
+                    this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
+                    preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
+                }
             crearPregunta();
 
         } catch (Exception e) {
@@ -184,17 +194,9 @@ public class DetalleProductoFragment extends Fragment {
     }
 
     public void crearPregunta(){
-        int num_pregact=0;
+
         compraslog.info(TAG,"crearPregunta","creando preg"+mViewModel.numMuestra);
-        compraslog.grabarError(TAG,"crearPregunta","nummuestras="+mViewModel.numMuestra);
-        if(preguntaAct==null)
 
-            if (getArguments() != null) {
-
-                num_pregact = getArguments().getInt(ARG_PREGACT);
-                this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
-                preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
-            }
 
         try {
 
@@ -212,9 +214,8 @@ public class DetalleProductoFragment extends Fragment {
             if(preguntaAct.getTabla().equals("I"))
                 mViewModel.numMuestra=0;
             ((ContinuarInformeActivity)getActivity()).noSalir(false);
-            if(this.preguntaAct!=null)
-                ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
-            compraslog.info(TAG,"crearPregunta","preg"+preguntaAct.getId());
+
+            ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
             compraslog.info(TAG, "crearPregunta","1--cons" + Constantes.DP_CONSECUTIVO);
             if(ultimares!=null) {    //es edicion
                 isEdicion = true;
@@ -225,8 +226,8 @@ public class DetalleProductoFragment extends Fragment {
                     InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
                     if(inft!=null) {
                         mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
-                        mViewModel.consecutivo = inft.getConsecutivo();
-                        Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
+                        Constantes.DP_CONSECUTIVO = inft.getConsecutivo();
+
                     }
                     //busco el informe
 
@@ -235,18 +236,15 @@ public class DetalleProductoFragment extends Fragment {
 
                 }
             }
-        else
-            //if(this.preguntaAct.getId()==2||this.preguntaAct.getId()==3||this.preguntaAct.getId()==5)
-            isEdicion=false;
+             else
+                 isEdicion=false;
 
             Log.d(TAG,"mmmmmmmmmmm"+isEdicion);
             compraslog.grabarError(TAG,"crearPregunta ","es edicion="+isEdicion);
-
             if(isEdicion) {
 
+                Constantes.DP_CONSECUTIVO=ultimares.getConsecutivo();
 
-                mViewModel.consecutivo=ultimares.getConsecutivo();
-                Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
 
                 //busco el cliente
                 InformeTemp inf= dViewModel.buscarxNombreCam("clientesId");
@@ -281,8 +279,7 @@ public class DetalleProductoFragment extends Fragment {
 
                     mViewModel.informe=new InformeCompra();
                     mViewModel.informe.setConsecutivo(ultimares.getConsecutivo());
-                    mViewModel.consecutivo=ultimares.getConsecutivo();
-                    Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
+
                     dViewModel.fromTemp(); //guardo datos del producto selec
                     ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
                     ((ContinuarInformeActivity)getActivity()).actualizarProdSel(dViewModel.productoSel);
@@ -422,13 +419,13 @@ public class DetalleProductoFragment extends Fragment {
             //  textoint.addTextChangedListener(new MayusTextWatcher());
             //veo si ya tengo informe
             mViewModel.informe=mViewModel.getInformeCompra(mViewModel.getIdInformeNuevo());
-        if( mViewModel.informe!=null) {
-            mViewModel.consecutivo = mViewModel.informe.getConsecutivo();
-            Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
+            if( mViewModel.informe!=null) {
+                mViewModel.consecutivo = mViewModel.informe.getConsecutivo();
+                Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
 
-            ((ContinuarInformeActivity) getActivity()).actualizarCliente(mViewModel.informe);
+                ((ContinuarInformeActivity) getActivity()).actualizarCliente(mViewModel.informe);
 
-        }
+            }
             preguntaview.setMaxLengthFilters(300);
             preguntaview.aceptarSetEnabled(true);
         }
@@ -767,14 +764,14 @@ public class DetalleProductoFragment extends Fragment {
             preguntaview.aceptarSetEnabled(true);
             return;
         }
-        if(clienteid==7&&estatusJum==0)//no puedo comprar electro
+        if(clienteid==7&&estatusJum==0)//no puedo comprar ujumex
         {
             Toast.makeText(getActivity(),"No puede comprar producto de jumex en esta tienda",Toast.LENGTH_LONG).show();
             preguntaview.aceptarSetEnabled(true);
             return;
         }
         mViewModel.clienteSel=clienteid;
-        Constantes.ni_clientesel=nombreCliente;
+        //    Constantes.ni_clientesel=nombreCliente;
         mViewModel.informe=new InformeCompra();
         mViewModel.informe.setClienteNombre(nombreCliente);
         mViewModel.informe.setClientesId(clienteid);
@@ -1003,14 +1000,11 @@ public class DetalleProductoFragment extends Fragment {
                 }
 
 
-
-                plantaSel=mViewModel.informe.getPlantasId();
-                NOMBREPLANTASEL=mViewModel.informe.getPlantaNombre();
                 if(valor!=null)
                     if(valor.equals("7")) //es otras
                     {
                         //generar consecutivo tienda
-                        int consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
+                        int consecutivo=mViewModel.getConsecutivo(Constantes.ni_plantasel,getActivity(), this);
 
                         Log.d(TAG,"*genere cons="+consecutivo);
 
@@ -1020,18 +1014,18 @@ public class DetalleProductoFragment extends Fragment {
                         mViewModel.informe.setConsecutivo(consecutivo);
                         Constantes.DP_CONSECUTIVO = consecutivo;
                         mViewModel.consecutivo=consecutivo;
-                        mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
-                        mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
-                        mViewModel.guardarResp(0,0,mViewModel.informe.getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",mViewModel.consecutivo,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantanombre,"plantaNombre","I",mViewModel.consecutivo,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",mViewModel.consecutivo,false);
                         guardarMuestra(preguntaAct.getSigId());
                         loadingDialog.dismisDialog();
                         //  consecutivo.removeObservers(DetalleProductoFragment.this);
 
 
                     }else {
-                        mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",0,false);
-                        mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",0,false);
-                        mViewModel.guardarResp(0,0,mViewModel.informe.getClienteNombre(),"clienteNombre","I",0,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",0,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantanombre,"plantaNombre","I",0,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",0,false);
 
                         guardarMuestra(preguntaAct.getSigId());
                         loadingDialog.dismisDialog();
@@ -1986,7 +1980,7 @@ public class DetalleProductoFragment extends Fragment {
 
         opcion = BackActivity.OP_LISTACOMPRA;
         //  }
-
+        mViewModel.consecutivo=Constantes.DP_CONSECUTIVO;
         //ya existe el informe
         intento1.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.getIdInformeNuevo());
         intento1.putExtra(BackActivity.ARG_FRAGMENT,opcion);
