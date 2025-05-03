@@ -386,7 +386,7 @@
     <string name="anio">AÑO</string>
     <string name="tienda">TIENDA</string>
     <string name="error_guardar">Hubo un error al guardar el informe, intente de nuevo</string>
-    <string name="no_finalizar">No puede finalizar el informe sin enviarlo</string>
+    <string name="no_finalizar">No puede finalizar el informe sin enviarlo, de click en CONTINUAR</string>
     <string name="agregar_gasto">AGREGAR GASTOS</string>
 
 </resources>

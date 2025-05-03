@@ -336,6 +336,7 @@ public class NvoGastoFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     String costo=mBinding.txtgascosto.getText().toString();
+                    compraslog.grabarError(TAG, "guardarDet", " costo: "+costo);
 
                     if(!costo.equals("")) {
                         if(costo.equals("$0.00")){
@@ -350,7 +351,7 @@ public class NvoGastoFragment extends Fragment {
 
                         } catch (NumberFormatException ex) {
                             Toast.makeText(getActivity(), "El costo es incorrecto verifique", Toast.LENGTH_LONG).show();
-                            compraslog.grabarError(TAG, "guardarDet", " costo incorrecto");
+                            compraslog.grabarError(TAG, "onCreateView", " costo incorrecto "+ex.getMessage());
 
 
                             return;
@@ -1003,14 +1004,16 @@ public class NvoGastoFragment extends Fragment {
                     nvoDet.setDescripcion(descripcion);
                         //cambio el importe
                     if(!costo.equals("")) {
-                            costo=costo.substring(1).replaceAll(",","");
-                           // costo=costo.substring(1);
-                            try {
+                        compraslog.grabarError(TAG,"guardarDet"," costo:"+costo);
+
+                        costo=costo.substring(1).replaceAll(",","");
+
+                        try {
                                 float importe=Float.valueOf(costo);
                                 nvoDet.setImporte(importe);
                             }catch (NumberFormatException ex) {
                                 Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_LONG).show();
-                                compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
+                                compraslog.grabarError(TAG,"guardarDet"," costo incorrecto"+ex.getMessage());
 
 
                                 return;
@@ -1042,20 +1045,19 @@ public class NvoGastoFragment extends Fragment {
                     //cambio el importe
                         if (!costo.equals("")) {
                             //le quito $ y la ,
+                            compraslog.grabarError(TAG, "guardarDet", " costo: "+costo);
                             costo = costo.substring(1).replaceAll(",","");
-                          //  costo = costo.substring(1);
                             try {
                                 float importe = Float.valueOf(costo);
                                 detalleEdit.setImporte(importe);
                             } catch (NumberFormatException ex) {
                                 Toast.makeText(getActivity(), "El costo es incorrecto verifique", Toast.LENGTH_SHORT).show();
-                                compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
+                                compraslog.grabarError(TAG,"guardarDet"," costo incorrecto"+ex.getMessage());
 
                                 return;
                             }
 
                         }
-
                         detalleEdit.setComprobante(tienecom);
                         if (!rutafoto.equals("")) {
                             niviewModel.actualizarImagen(detalleEdit, rutafoto);

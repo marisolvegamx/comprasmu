@@ -98,7 +98,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
             Log.d(TAG,"------"+ Constantes.NM_TOTALISTA+"---"+mViewModel.consecutivo);
             isEdicion = ultimares != null;
 
-
+            buscarDatosGenerales();
             if(isEdicion) {
                 aceptar.setEnabled(true);
 
@@ -107,28 +107,6 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 //  ya lo busco en la actividad
                 //   InformeTemp inf= dViewModel.buscarxNombreCam("numMuestra");
                 //     mViewModel.numMuestra=inf==null?0:Integer.parseInt(inf.getValor());
-                //busco el cliente
-                InformeTemp inf= dViewModel.buscarxNombreCam("clientesId");
-                if(inf!=null) {
-                    int clienteSel = Integer.parseInt(inf.getValor());
-                    mViewModel.clienteSel=clienteSel;
-
-                }
-                inf= dViewModel.buscarxNombreCam("clienteNombre");
-                if(inf!=null) {
-                    Constantes.ni_clientesel=inf.getValor();
-
-                }
-                inf= dViewModel.buscarxNombreCam("plantasId");
-                if(inf!=null) {
-                    Constantes.ni_plantasel=Integer.parseInt(inf.getValor());
-
-                }
-                inf= dViewModel.buscarxNombreCam("plantaNombre");
-                if(inf!=null) {
-                    Constantes.ni_plantanombre=inf.getValor();
-
-                }
 
                 reiniciarDatos();
 
@@ -606,31 +584,28 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                     valor = selectedRadioButtonId + "";
                 }
 
-                //busco planta
-                plantaSel=mViewModel.informe.getPlantasId();
-                NOMBREPLANTASEL=mViewModel.informe.getPlantaNombre();
                     if(valor!=null)
                         if(valor.equals("7")) //es otras
                         {
                             //generar consecutivo tienda
-                            int consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
+                            int consecutivo=mViewModel.getConsecutivo(Constantes.ni_plantasel,getActivity(), this);
                             Log.d(TAG,"*genere cons="+consecutivo);
 
                             mViewModel.informe.setConsecutivo(consecutivo);
                             Constantes.DP_CONSECUTIVO = consecutivo;
                             mViewModel.consecutivo=consecutivo;
-                            mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
-                            mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
-                            mViewModel.guardarResp(0,0,mViewModel.informe.getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
+                            mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",mViewModel.consecutivo,false);
+                            mViewModel.guardarResp(0,0,Constantes.ni_plantanombre+"","plantaNombre","I",mViewModel.consecutivo,false);
+                            mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",mViewModel.consecutivo,false);
                             guardarMuestra(preguntaAct.getSigId());
                             loadingDialog.dismisDialog();
                             //  consecutivo.removeObservers(DetalleProductoFragment.this);
 
 
                         }else { //el consecutivo es 0
-                            mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",0,false);
-                            mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",0,false);
-                            mViewModel.guardarResp(0,0,mViewModel.informe.getClienteNombre(),"clienteNombre","I",0,false);
+                            mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",0,false);
+                            mViewModel.guardarResp(0,0,Constantes.ni_plantanombre+"","plantaNombre","I",0,false);
+                            mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",0,false);
 
                             guardarMuestra(preguntaAct.getSigId());
                             loadingDialog.dismisDialog();

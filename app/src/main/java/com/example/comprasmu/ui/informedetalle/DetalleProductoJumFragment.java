@@ -84,9 +84,9 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                 //si es la misma
                 //reviso si es edicion o es nueva
             if(preguntaAct.getTabla().equals("I"))
-                    mViewModel.numMuestra=0;
+                mViewModel.numMuestra=0;
             if(this.preguntaAct!=null)
-                    ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
+                ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
             Log.d(TAG,"------"+Constantes.NM_TOTALISTA+"---"+mViewModel.consecutivo);
             dViewModel.reactivoAct=preguntaAct.getId();
             if(ultimares!=null) {    //es edicion
@@ -100,34 +100,13 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
             else
                     //if(this.preguntaAct.getId()==2||this.preguntaAct.getId()==3||this.preguntaAct.getId()==5)
                 isEdicion=false;
-
+            buscarDatosGenerales();
             if(isEdicion) {
                 aceptar.setEnabled(true);
                 mViewModel.consecutivo=ultimares.getConsecutivo();
                 Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
                 //  ya lo busco en la actividad
-               //busco el cliente
-                InformeTemp inf= dViewModel.buscarxNombreCam("clientesId");
-                if(inf!=null) {
-                    int clienteSel = Integer.parseInt(inf.getValor());
-                    mViewModel.clienteSel=clienteSel;
 
-                }
-                inf= dViewModel.buscarxNombreCam("clienteNombre");
-                if(inf!=null) {
-                    Constantes.ni_clientesel=inf.getValor();
-
-                }
-                inf= dViewModel.buscarxNombreCam("plantasId");
-                if(inf!=null) {
-                    Constantes.ni_plantasel=Integer.parseInt(inf.getValor());
-
-                }
-                inf= dViewModel.buscarxNombreCam("plantaNombre");
-                if(inf!=null) {
-                    Constantes.ni_plantanombre=inf.getValor();
-
-                }
                 reiniciarDatos();
                     //busco el total de prods en la lista
                 if(Constantes.NM_TOTALISTA==0) {
@@ -165,16 +144,6 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                 aceptar.setEnabled(false);
             }
             iniciarNumMuestra();
-                //}
-                // if(preguntaAct.getId()==2||preguntaAct.getId() == 3||preguntaAct.getId() == 4) //estot en siglas y es una nueva muestra
-                //     mViewModel.numMuestra=mViewModel.numMuestra+1;
-                //reviso que no haya muesmtras guardadas de ese informe :O como se que es uno nuevo
-                //  Log.e(TAG,"-------------nummuestras:"+mViewModel.numMuestra);
-                // }
-                //para saber si el detalle ya existe y el informe
-           /* if( mViewModel.getIdInformeNuevo()==0)
-                InformeTemp inf= dViewModel.buscarxNombreCam("clienteNombre");
-            mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo()*/
             crearFormulario();
 
             if(preguntaAct.getType().equals(CreadorFormulario.SELECTCAT)||preguntaAct.getType().equals(CreadorFormulario.SELECTDES)||preguntaAct.getType().equals(CreadorFormulario.PSELECT)) {
@@ -590,37 +559,30 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                     valor = selectedRadioButtonId + "";
                 }
 
-
-                //busco planta
-                plantaSel=mViewModel.informe.getPlantasId();
-                NOMBREPLANTASEL=mViewModel.informe.getPlantaNombre();
                 if(valor!=null)
                     if(valor.equals("7")) //es otras
                     {
                         //generar consecutivo tienda
-                        int consecutivo=mViewModel.getConsecutivo(plantaSel,getActivity(), this);
+                        int consecutivo=mViewModel.getConsecutivo(Constantes.ni_plantasel,getActivity(), this);
                         Log.d(TAG,"*genere cons="+consecutivo);
                         mViewModel.informe.setConsecutivo(consecutivo);
                         mViewModel.consecutivo=consecutivo;
                         Constantes.DP_CONSECUTIVO = consecutivo;
-                        mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",mViewModel.consecutivo,false);
-                        mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",mViewModel.consecutivo,false);
-                        mViewModel.guardarResp(0,0,mViewModel.informe.getClienteNombre(),"clienteNombre","I",mViewModel.consecutivo,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",mViewModel.consecutivo,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantanombre+"","plantaNombre","I",mViewModel.consecutivo,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",mViewModel.consecutivo,false);
                         guardarMuestra(preguntaAct.getSigId());
                         loadingDialog.dismisDialog();
                         //  consecutivo.removeObservers(DetalleProductoFragment.this);
 
                     }else {
-                        mViewModel.guardarResp(0,0,plantaSel+"","plantasId","I",0,false);
-                        mViewModel.guardarResp(0,0,NOMBREPLANTASEL+"","plantaNombre","I",0,false);
-                        mViewModel.guardarResp(0,0,mViewModel.informe.getClienteNombre(),"clienteNombre","I",0,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",0,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantanombre+"","plantaNombre","I",0,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",0,false);
                         guardarMuestra(preguntaAct.getSigId());
                         loadingDialog.dismisDialog();
                     }
 
-
-
-                // avanzarPregunta(preguntaAct.getSigId());
 
             }else
             if(preguntaAct.getId()==58){ // ya seleccioné producto
@@ -673,9 +635,6 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
             //necestio saber si ya habia guardado informe
             //veo si ya existe el informe o hay que crearlo
             Log.d(TAG, "primero guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
-            //   exit(0);
-
-
 
             if (mViewModel.numMuestra == 1 || mViewModel.getIdInformeNuevo() <= 0) {
 

@@ -239,36 +239,13 @@ public class DetalleProductoFragment extends Fragment {
              else
                  isEdicion=false;
 
-            Log.d(TAG,"mmmmmmmmmmm"+isEdicion);
+            Log.d(TAG,"es edicion:"+isEdicion);
             compraslog.grabarError(TAG,"crearPregunta ","es edicion="+isEdicion);
+           buscarDatosGenerales();
             if(isEdicion) {
 
                 Constantes.DP_CONSECUTIVO=ultimares.getConsecutivo();
 
-
-                //busco el cliente
-                InformeTemp inf= dViewModel.buscarxNombreCam("clientesId");
-                if(inf!=null) {
-                    int clienteSel = Integer.parseInt(inf.getValor());
-                    mViewModel.clienteSel=clienteSel;
-
-
-                }
-                inf= dViewModel.buscarxNombreCam("clienteNombre");
-                if(inf!=null) {
-                    Constantes.ni_clientesel=inf.getValor();
-
-                }
-                inf= dViewModel.buscarxNombreCam("plantasId");
-                if(inf!=null) {
-                    Constantes.ni_plantasel=Integer.parseInt(inf.getValor());
-
-                }
-                inf= dViewModel.buscarxNombreCam("plantaNombre");
-                if(inf!=null) {
-                    Constantes.ni_plantanombre=inf.getValor();
-
-                }
 
                 if(preguntaAct.getId()==5)//ticket de compra
                 {
@@ -2137,7 +2114,31 @@ public class DetalleProductoFragment extends Fragment {
         }
 
     }
+    public void buscarDatosGenerales(){
+        //busco el cliente
+        InformeTemp inf= dViewModel.buscarxNombreCam("clientesId");
+        if(inf!=null) {
+            int clienteSel = Integer.parseInt(inf.getValor());
+            mViewModel.clienteSel=clienteSel;
 
+
+        }
+        inf= dViewModel.buscarxNombreCam("clienteNombre");
+        if(inf!=null) {
+            Constantes.ni_clientesel=inf.getValor();
+
+        }
+        inf= dViewModel.buscarxNombreCam("plantasId");
+        if(inf!=null) {
+            Constantes.ni_plantasel=Integer.parseInt(inf.getValor());
+
+        }
+        inf= dViewModel.buscarxNombreCam("plantaNombre");
+        if(inf!=null) {
+            Constantes.ni_plantanombre=inf.getValor();
+
+        }
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
