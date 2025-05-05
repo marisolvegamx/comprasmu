@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ListaCompraDao;
@@ -74,12 +75,10 @@ public class SelClienteFragment extends ListaSelecFragment {
             isMuestra=bundle.getString(ListaCompraFragment.ARG_MUESTRA);
             clienteSel=bundle.getInt(ListaCompraFragment.ARG_CLIENTESEL);
             Constantes.CIUDADSEL=ciudadSel;
-            Log.d(TAG,"una cd sel  "+ciudadSel+"---"+isMuestra);
 
         }
         listacomp= mViewModel.cargarPestañas(ciudadNombre,clienteSel);
 
-        Log.d(TAG,"otra vezzzzzzz");
 
     }
     @Override
@@ -88,29 +87,27 @@ public class SelClienteFragment extends ListaSelecFragment {
         setIndicacion(getString(R.string.seleccione_planta));
         // Log.d(TAG,"indice..............."+Constantes.INDICEACTUAL);
         // Create the observer which updates the UI.
+        setTitulo();
         final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
             public void onChanged(@Nullable List<ListaCompra> lista) {
 
                 convertirLista(lista);
                 setLista(listaClientesEnv);
-                // siguiente(0);
-                //  Log.d(TAG,"------- "+lista.size());
 
-                    if (lista.size() > 1) {
+                if (lista.size() > 1) {
 
                         setupListAdapter();
-                    } else if (lista.size() > 0) {
+                } else if (lista.size() > 0) {
                         //voy directo a la lista
                         siguiente(0);
-                    } else
+                } else
                         Log.d(TAG, "algo salió mal con la consulta de listas");
 
             }
         };
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
         listacomp.observe(getViewLifecycleOwner(),nameObserver);
 
         getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,7 +118,7 @@ public class SelClienteFragment extends ListaSelecFragment {
 
             }
         });
-        Log.d(TAG,"otra vezzzzzzz*******");
+
     }
 
 
@@ -142,7 +139,7 @@ public class SelClienteFragment extends ListaSelecFragment {
         bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getDescripcion2());
         bundle.putString(SelClienteFragment.ARG_TIPOCONS, tipoconsulta);
         bundle.putInt(DetalleProductoFragment.NUMMUESTRA,numMuestra);
-       bundle.putString(ListaCompraFragment.ARG_MUESTRA, isMuestra);
+        bundle.putString(ListaCompraFragment.ARG_MUESTRA, isMuestra);
         bundle.putInt(ListaCompraFragment.ARG_CLIENTESEL,clienteSel );
    //     bundle.putString(ListaCompraFragment.ARG_CLIENTESEL, isMuestra);
         if(isMuestra!=null&&isMuestra.equals("true")){ //estoy en informe
@@ -157,8 +154,6 @@ public class SelClienteFragment extends ListaSelecFragment {
             ft.commit();
         }else
 
-        //   bundle.putInt(BuscarInformeFragment.ARG_CLIENTE,listaSeleccionable.get(i).getId() );
-      //  bundle.putString(ListaCompraFragment.ARG_NOMBREPLANTASEL, listaSeleccionable.get(i).getNombre());
         if(tipoconsulta.equals("action_selclitolista")) {
             if(i==0) //en automatico lo envié lo puedo cargar en la misma actividad
             {
@@ -177,7 +172,6 @@ public class SelClienteFragment extends ListaSelecFragment {
                 intento1.putExtra(ListaCompraFragment.ARG_CLIENTESEL, clienteSel);
                 startActivity(intento1);
             }
-         //   NavHostFragment.findNavController(this).navigate(R.id.action_selclitolista, bundle);
 
 
         }
@@ -185,7 +179,7 @@ public class SelClienteFragment extends ListaSelecFragment {
             NavHostFragment.findNavController(this).navigate(R.id.action_selclitoinformes,bundle);
 
 
-     //envio al fragment directo
+
     }
 
     private  void convertirLista(List<ListaCompra>lista){
@@ -200,7 +194,16 @@ public class SelClienteFragment extends ListaSelecFragment {
 
     }
 
+    public void setTitulo(){
 
+        if(tipoconsulta.equals("action_selclitoinformes"))
+            ((NavigationDrawerActivity)getActivity()).setTitulo(getString(R.string.menu_lista_informe));
+        else
+            ((NavigationDrawerActivity)getActivity()).setTitulo(getString(R.string.menu_ver_lista));
+
+
+
+    }
 
 
 

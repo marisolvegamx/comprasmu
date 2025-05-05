@@ -145,7 +145,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private ComprasLog flog;
     private LiveData<Integer> totCancel;
     private MutableLiveData<Integer> totalNotifGen;
-
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,7 +156,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             definirTrabajo();
 
             setContentView(R.layout.activity_navigation_darawer);
-            Toolbar toolbar = findViewById(R.id.toolbar);
+            toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
 
             if (savedInstanceState != null) {    // Restore value of members from saved state
@@ -395,6 +395,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     @Override
     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
    //   initializeCountDrawer();
+
         return super.onCreateView(parent, name, context, attrs);
     }
 
@@ -826,6 +827,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     public void reInflateMenu(){
 
         initializeCountDrawer();
+    }
+    public void setTitulo(String titulo){
+        toolbar.setTitle(titulo);
     }
 
     public class ActualListener implements IActualListener {

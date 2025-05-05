@@ -49,8 +49,7 @@ public class ListaSelecFragment extends Fragment {
                R.layout.lista_selec_fragment, container, false);
 
          listaSeleccionable=new ArrayList<DescripcionGenerica>();
-       // mViewModel.setLista( this.listaSeleccionable);
-      //  mBinding.setViewModel(mViewModel);
+
          mBinding.setLifecycleOwner(this);
          objetosLV=mBinding.getRoot().findViewById(R.id.listaobjetos);
 
@@ -60,9 +59,6 @@ public class ListaSelecFragment extends Fragment {
     }
 
     public void setLista(ArrayList<DescripcionGenerica> lista){
-        for(DescripcionGenerica des:lista) {
-            Log.d("ListaSelectFragment",des.getNombre()+"--"+ des.getDescripcion2());
-        }
         this.listaSeleccionable=lista;
         mViewModel.setLista( this.listaSeleccionable);
 
