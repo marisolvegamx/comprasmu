@@ -66,7 +66,6 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         empty = Transformations.map(listas, res->{return listas.getValue().isEmpty();});
     }
 
-    int i;
     public void eliminarVisita(int id, int banpas){ //banpas indica si se elimina por que es de 1 dia anterior
         //solo puedo eliminar si no tiene informes
         InformeCompraRepositoryImpl infrepo=new InformeCompraRepositoryImpl(application);
@@ -78,23 +77,38 @@ public class ListaVisitasViewModel extends AndroidViewModel {
 
 
                 for (InformeCompra inf : informeCompras) {
-                    borrarImagenesxInforme(inf);
-                    //borrar el informe
-                    infrepo.deleteInformeCompra(inf.getId());
+
+                    if (inf.getEstatus() == 2&&inf.getEstatusSync()<2) //ya está finalizado
+                    {
+                        visitaRepository.actualizarEstatus(id, 2);
+                        mSnackbarText.setValue("No se puede eliminar, solo puede finalizar el informe por que ya fue enviado");
+                        return;
+                    }
+
                 }
             }else
                     //no puedo borrar
-            {     mSnackbarText.setValue("No se puede eliminar");
-                    return;}
-        }
-                   /* Visita im=null;
-                    for(i=0;i<listas.getValue().size();i++){
-                        im=listas.getValue().get(i);
-                        if(im.getId()==id){
-                            break;
-                        }
+            {
+                //reviso que no esten finalizados
+                for (InformeCompra inf : informeCompras) {
+                    if (inf.getEstatus() == 2) //ya está finalizado
+                    {
+                        mSnackbarText.setValue("No se puede eliminar");
+                        return;
                     }
-                    Log.d(TAG,"borrando el"+id);*/
+                }
+
+
+            }
+            for (InformeCompra inf : informeCompras) {
+
+                infrepo.deleteInformeCompra(inf.getId());
+                borrarImagenesxInforme(inf);
+            }
+
+        }
+
+        //si llegó hasta aqui no tiene informes y puedo eliminar
 
             Visita eliminar= visitaRepository.findsimple(id);
 
@@ -126,9 +140,9 @@ public class ListaVisitasViewModel extends AndroidViewModel {
                           //  eliminar.removeObserver(this);
                             visitaRepository.delete(eliminar);
                             //eliminar producto exhibido
-                            mSnackbarText.setValue("Se eliminó correctamente");
-                   }
 
+                   }
+           mSnackbarText.setValue("Se eliminó correctamente");
     }
     public void borrarImagenesxInforme(InformeCompra inf){
         ImagenDetalle img1 = imdRepository.findsimple(inf.getTicket_compra());

@@ -133,27 +133,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         mBinding.detalleList.setAdapter(mListAdapter);
 
     }
-   /* private void setupSnackbar() {
-        // Mostrar snackbar en resultados positivos de operaciones (crear, editar y eliminar)
-        mViewModel.getSnackbarText().observe(getActivity(), integerEvent -> {
-            Integer stringId = integerEvent.getContentIfNotHandled();
-            if (stringId != null) {
-                Snackbar.make(coordinator,
-                        stringId, Snackbar.LENGTH_LONG).show();
-            }
-        });
-    }*/
 
-   /* solo saldrá un elemento no se requiere la busqueda
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Do something that differs the Activity's menu here
-        menu.clear();
-        inflater.inflate(R.menu.menu_listainforme, menu);
-        //  super.onCreateOptionsMenu(menu, inflater);
-
-
-    }*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -194,16 +174,24 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     }
 
     @Override
-    public void onClickEliminar(int idVisita) {
-
+    public void onClickEliminar(int idVisita, Visita visitaCont) {
+        //reviso si elimina x fecha
+        ValidadorDatos valdat=new ValidadorDatos();
+        //si se creo antes de hoy
         try{
+
+            if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
+                //elimino
+               eliminar(idVisita, 1);
+               return;
+           }
             AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
             dialogo1.setTitle(R.string.importante);
             dialogo1.setMessage(R.string.pregunta_eliminar_mensaje);
             dialogo1.setCancelable(false);
             dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogo1, int id) {
-                    eliminar(idVisita);
+                    eliminar(idVisita,0);
 
 
                 }
@@ -223,8 +211,9 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         }
 
     }
-    public void eliminar(int idVisita){
-        mViewModel.eliminarVisita(idVisita, 0);
+    public void eliminar(int idVisita, int banAccion){ //0 eliminado x no finalizado
+                                                        //1 eliminado x fecha
+        mViewModel.eliminarVisita(idVisita, banAccion);
 
         mViewModel.getmSnackbarText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -248,18 +237,15 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
 
     @Override
     public void onClickFinalizar(int idvisita, Visita visitaCont) {
-     //   ValidadorDatos valdat=new ValidadorDatos();
+        ValidadorDatos valdat=new ValidadorDatos();
         //si se creo antes de hoy
-      /* if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
-            //elimino
-            mViewModel.eliminarVisita(idvisita, 1);
+       if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
+           if(visitaCont.getEstatusSync()==0) {
+               Toast.makeText(getActivity(), "El informe no se puede finalizar por ser de una fecha posterior, favor de eliminar", Toast.LENGTH_SHORT).show();
 
-            //actualizo la lista
-            mListAdapter.notifyDataSetChanged();
-           Toast.makeText(getActivity(), "El informe se eliminó por ser de una fecha posterior",Toast.LENGTH_SHORT).show();
-
-           return;
-        }*/
+               return;
+           }
+        }
         //reviso si ya se enviaron los informes
         //todo como va a enviarlo sin finalizar
         List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);

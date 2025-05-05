@@ -207,7 +207,7 @@
     <string name="menu_home">INICIO</string>
     <string name="nota">NOTA</string>
     <string name="enviar">ENVIAR</string>
-    <string name="informe_ayer">ESTE INFORME YA NO ES VÁLIDO POR LA FECHA, PARA CONTINUAR FINALICE E INICIE UNO NUEVO, EL REPORTE SE ELIMINARÁ</string>
+    <string name="informe_ayer">ESTE INFORME YA NO ES VÁLIDO POR LA FECHA, PARA CONTINUAR FINALICE O ELIMINE</string>
     <string name="regresar">REGRESAR</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="cerrar_app">¿ESTÁ SEGURO DE SALIR DE LA APLICACIÓN?</string>
