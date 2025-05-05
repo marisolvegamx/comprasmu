@@ -161,19 +161,7 @@ public class SelPlantaFragment extends ListaSelecFragment {
         Log.d(TAG,"una cd "+tipoconsulta);
         NavHostFragment.findNavController(this).navigate(R.id.action_selplantoselcli,bundle);
 
-      /*  FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        // Definir una transacción
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        Fragment fragment = new SelClienteFragment();
-// Obtener el administrador de fragmentos a través de la actividad
-
-        fragment.setArguments(bundle);
-
-        fragmentTransaction.replace(R.id.nav_host_fragment, fragment);
-        fragmentTransaction.addToBackStack(null);
-// Cambiar
-        fragmentTransaction.commit();*/
     }
 
     private  void convertirLista(List<ListaCompra>lista){

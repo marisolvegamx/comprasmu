@@ -117,7 +117,7 @@
         android:name="com.example.comprasmu.ui.SelPlantaFragment"
         android:label="@string/menu_resumencomp"
         tools:layout="@layout/lista_selec_fragment" >
-        <argument
+         <argument
             android:name="comprasmu.selcli.tipocons"
             app:argType="string"
             android:defaultValue="action_selclitoinformes" />
