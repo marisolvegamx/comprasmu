@@ -4,7 +4,9 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -36,6 +38,8 @@ public class InformesGenViewModel extends AndroidViewModel {
     private final DetalleCajaRepoImpl detCajaRepo;
     CorEtiqCajaDetRepoImpl cocrepo;
     private InfGastoDetRepositoryImpl infGastoDetRepo;
+    CorEtiquetadoCajaDetDao corEtiquetadoDao;
+
     public InformesGenViewModel(Application application) {
         super(application);
         ierepository=new InfEtapaRepositoryImpl(application);
@@ -45,7 +49,8 @@ public class InformesGenViewModel extends AndroidViewModel {
         this.detCajaRepo=new DetalleCajaRepoImpl(application);
         infEnvioRepo = new InformeEnvioRepositoryImpl(application);
         infGastoDetRepo=new InfGastoDetRepositoryImpl(application);
-        cocrepo=new CorEtiqCajaDetRepoImpl(application);
+        corEtiquetadoDao= ComprasDataBase.getInstance(application).getCorEtiquetadoCajaDetDao();
+        this.cocrepo=CorEtiqCajaDetRepoImpl.getInstance(corEtiquetadoDao);
 
     }
 

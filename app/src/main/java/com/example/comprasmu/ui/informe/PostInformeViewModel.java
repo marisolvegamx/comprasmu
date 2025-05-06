@@ -5,6 +5,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
@@ -480,11 +483,13 @@ public class PostInformeViewModel {
         correccionRepo.actualizarEstatusSync(correccion.getId(),2);
     }
     public void actEstatusCorreccionEC(CorEtiquetadoCaja correccion){
-        corecRepo=new CorEtiqCajaRepoImpl(context);
+        CorEtiquetadoCajaDao corEtiquetadoDao= ComprasDataBase.getInstance(context).getCorEtiquetadoCajaDao();
+        corecRepo=CorEtiqCajaRepoImpl.getInstance(corEtiquetadoDao);
         corecRepo.actualizarEstatusSync(correccion.getId(),2);
     }
     public void actEstatusCorreccionECD(CorEtiquetadoCajaDet correccion){
-        corecdRepo=new CorEtiqCajaDetRepoImpl(context);
+        CorEtiquetadoCajaDetDao corEtiquetadoDao= ComprasDataBase.getInstance(context).getCorEtiquetadoCajaDetDao();
+        this.corecdRepo=CorEtiqCajaDetRepoImpl.getInstance(corEtiquetadoDao);
         corecdRepo.actualizarEstatusSync(correccion.getId(),2);
     }
     public void actEstatusNotifEtiq(int iddet){

@@ -14,8 +14,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
 import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
+import com.example.comprasmu.data.repositories.CorEtiqCajaDetRepoImpl;
+import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.home.PruebasActivity;
@@ -36,8 +41,11 @@ public class BorrarActivity extends AppCompatActivity {
         AcuseReciboRepositoryImpl acuseReciboRepo=new AcuseReciboRepositoryImpl(this);
         ListaCompraDetRepositoryImpl listaCompraRepo=new ListaCompraDetRepositoryImpl(this);
         ConfiguracionRepositoryImpl configuracionRepository=new ConfiguracionRepositoryImpl(this);
-        mViewModel = new ViewModelProvider(this, new BorrarViewModelFactory(acuseReciboRepo,getApplication(),listaCompraRepo, configuracionRepository)).get(BorrarDatosViewModel.class);
-
+        CorEtiquetadoCajaDao correccionEtiquetadoDao= ComprasDataBase.getInstance(this).getCorEtiquetadoCajaDao();
+        CorEtiqCajaRepoImpl correccionEtiqRepo=CorEtiqCajaRepoImpl.getInstance(correccionEtiquetadoDao);
+        CorEtiquetadoCajaDetDao corEtiquetadoDao= ComprasDataBase.getInstance(this).getCorEtiquetadoCajaDetDao();
+        CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo=CorEtiqCajaDetRepoImpl.getInstance(corEtiquetadoDao);
+        mViewModel = new ViewModelProvider(this, new BorrarViewModelFactory(acuseReciboRepo,getApplication(),listaCompraRepo, configuracionRepository, correccionEtiqRepo, corEtiqCajaDetRepo)).get(BorrarDatosViewModel.class);
         Button btnborrar=findViewById(R.id.btnboaceptar);
         Button btncancelar=findViewById(R.id.btnbocancelar);
         aviso=findViewById(R.id.txtbomensaje);
@@ -98,6 +106,7 @@ public class BorrarActivity extends AppCompatActivity {
         mViewModel.borrarGasto(indice_anterior);
         mViewModel.borrarAcuseRecibo();
         mViewModel.borrarConfiguracion();
+        mViewModel.borrarCorreccionEtiq(indice_anterior);
         //inicializo constantes
         Constantes.CIUDADTRABAJO ="" ;
         Constantes.IDCIUDADTRABAJO=0;

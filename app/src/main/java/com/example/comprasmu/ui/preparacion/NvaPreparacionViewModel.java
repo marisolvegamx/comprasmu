@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.comprasmu.EtiquetadoxCliente;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -20,6 +21,7 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.InformeTemp;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
@@ -30,6 +32,7 @@ import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
@@ -66,6 +69,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public int totCajasEmp;
     public List<EtiquetadoxCliente> resumenEtiq; //es uno x indice
     public List<Integer> muestrasactEtiq; //para guardar las muestras que se actualizaron y se enviaran al serv
+    ListaCompraRepositoryImpl listaCompraRepo;
     public NvaPreparacionViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
@@ -79,6 +83,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         this.cajaAct=new EtiquetadoxCliente();
         muestrasactEtiq=new ArrayList<>();
         this.infEnvioRepo=new InformeEnvioRepositoryImpl(application);
+
     }
     //es para la preparacion
     public int insertarInformeEtapa(String indice,String plantaNombre,int plantaId, String clienteNombre,int clienteId){
@@ -623,18 +628,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
             return reacRepo.findAnterior(id);
 
     }
-    /*public List<InformeCompraDetalle> buscarProdsxQr(int idNuevo, int etapa, int numcaja) {
-        List<InformeEtapaDet> qrs=infDetRepo.getByCaja(idNuevo,etapa,numcaja);
-       InformeComDetRepositoryImpl comrepo=new InformeComDetRepositoryImpl(application);
-       InformeCompraDetalle prod;
-        List<InformeCompraDetalle> listaProds=new ArrayList<>();
-        for(InformeEtapaDet detalle : qrs){
-            //busco el producto en el informe
-            prod=comrepo.findByQr(detalle.getQr(), Constantes.INDICEACTUAL);
-            listaProds.add(prod);
-        }
-        return  listaProds;
-    }*/
+
 
     public InformeEtapaDet buscarDetxQr(String qr) {
          return infDetRepo.getByQr(qr,3);
@@ -974,6 +968,18 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public List<InformeEtapa> getInformesGasPend(String indice){
 
         return   infEtaRepository.getInformesPendGasSim(indice);
+
+    }
+
+    public  List<ListaCompra>  cargarClientesSimplxet(String indice, String ciudadSel, int clienteId, int etapa, ListaCompraDao listaCompraDao){
+
+            listaCompraRepo=ListaCompraRepositoryImpl.getInstance(listaCompraDao);
+
+
+            List<ListaCompra> res=listaCompraRepo.getAllByIndiceCiudadClienteSim(indice,ciudadSel,clienteId,etapa);
+
+            return res;
+
 
     }
 }

@@ -196,7 +196,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     public List<ListaCompra> getAllByIndiceCiudadClienteSim(String indice,String ciudad,int idCliente, int etapa) {
 
         String query="Select * from lista_compras where indice=?" +
-                "and ciudadNombre=? and clientesId=? and lis_etapaactual=?order by clientesId";
+                "and ciudadNombre=? and clientesId=? and lis_etapaactual=? order by clientesId";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,
                 new Object[]{indice,ciudad,idCliente, etapa});

@@ -9,14 +9,9 @@ import java.util.List;
 
 
 public abstract class BaseDao<T> {
-    T ob;
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract long insert(T object);
-
-
-   /* @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insertAll(List<T> object);*/
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertAll(List<T> objects);
@@ -24,40 +19,6 @@ public abstract class BaseDao<T> {
     @Delete
     public abstract void delete(T object);
 
-
-   /* @RawQuery(observedEntities = )
-    protected abstract LiveData<List<T>> doFindAllValid(SupportSQLiteQuery query);
-
-    @RawQuery(observedEntities = ob.getClass())
-  /*  protected abstract LiveData<T> doFind(SupportSQLiteQuery query);
-
-    public LiveData<List<T>> findAll() {
-
-        SimpleSQLiteQuery query = new SimpleSQLiteQuery(
-                "select * from " + getTableName() + " where estatus = 0 order by sortKey"
-        );
-        return doFindAllValid(query);
-    }
-
-
-    public LiveData<T> find(long id) {
-        SimpleSQLiteQuery query = new SimpleSQLiteQuery(
-                "select * from " + getTableName() + " where estatus = 0 and id = ?",
-                new Object[]{id}
-        );
-        return doFind(query);
-    }
-
-
-    public String getTableName() {
-
-        Class clazz = (Class)
-                ((ParameterizedType) getClass().getSuperclass().getGenericSuperclass())
-                        .getActualTypeArguments()[0];
-        // tableName = StringUtil.toSnakeCase(clazz.getSimpleName());
-        String tableName = clazz.getSimpleName();
-        return tableName;
-    }*/
 
 
 }

@@ -7,6 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
@@ -32,21 +35,28 @@ public class NvaCorreViewModel extends AndroidViewModel {
     private final CorreccionRepoImpl correpository;
 
     private final SolicitudCorRepoImpl solRepo;
+    private final CorEtiquetadoCajaDao corEtiquetadoDao;
+    private final CorEtiqCajaDetRepoImpl corecdrepository;
     private int idNuevo;
     private Correccion nvocorreccion;
     private CorEtiquetadoCaja nvocoreticaja;
     final String TAG="NvaCorreViewModel";
     Application application;
     private CorEtiqCajaRepoImpl cocajaRepo;
-    private  CorEtiqCajaDetRepoImpl corecdrepository;
+    private  CorEtiqCajaDetRepoImpl corecdrepositor;
     private  ImagenDetRepositoryImpl imagenDetRepository;
+    CorEtiquetadoCajaDetDao corEtiquetadoCajaDetDao;
+
     public NvaCorreViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
         this.correpository = new CorreccionRepoImpl(application);
         this.solRepo=new SolicitudCorRepoImpl(application);
-        this.cocajaRepo=new CorEtiqCajaRepoImpl(application);
-        this.corecdrepository=new CorEtiqCajaDetRepoImpl(application);
+        this.corEtiquetadoDao= ComprasDataBase.getInstance(application).getCorEtiquetadoCajaDao();
+        this.cocajaRepo=CorEtiqCajaRepoImpl.getInstance(corEtiquetadoDao);
+        this.corEtiquetadoCajaDetDao= ComprasDataBase.getInstance(application).getCorEtiquetadoCajaDetDao();
+        corEtiquetadoCajaDetDao=ComprasDataBase.getInstance(application).getCorEtiquetadoCajaDetDao();
+        this.corecdrepository=CorEtiqCajaDetRepoImpl.getInstance(corEtiquetadoCajaDetDao);
         this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
     }
 

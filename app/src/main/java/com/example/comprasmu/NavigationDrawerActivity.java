@@ -625,11 +625,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     for (ListaCompraDetalle detalle : compraDetalles
                     ) {
 
-
                         informesdetList++;
                     }
-
-
                 }
             }
             totMuestraAdic.setValue(informesdetList);
@@ -641,7 +638,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 List<InformeEtapa> informes = scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
                 int informesfinal = 0;//contador para saber cuantos informes hay
                 Log.i(TAG, "YA CARGÓ " + informes.size());
-
                 for (InformeEtapa infeta : informes
                 ) {
                     //reviso que ya pueda hacer esa etapa
@@ -682,13 +678,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         totMuestraAdic=new MutableLiveData<>();
         contarCorrecc();
         notificacionesGenerales();
-
-
         if(gallery!=null) {
             gallery.setGravity(Gravity.CENTER_VERTICAL);
             gallery.setTypeface(null, Typeface.BOLD);
             gallery.setTextColor(Color.RED);
-
             //  gallery.setTextSize(15);
             int totalnotif = 0;
 
@@ -698,21 +691,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             @Override
             public void onChanged(Integer totcor) {
                 scViewModel.contarCanceladas();
-
-
                 totCancel=scViewModel.getTotCancel();
-
                 totCancel.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                     @Override
                     public void onChanged(Integer totcan) {
 
-
-
-                                contarMuestraAdic();
-
-                                totalNotifGen.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
-                                    @Override
-                                    public void onChanged(Integer valor) {
+                          contarMuestraAdic();
+                          totalNotifGen.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
+                          @Override
+                          public void onChanged(Integer valor) {
 
                                       //  revRecibo.removeObservers(NavigationDrawerActivity.this);
 

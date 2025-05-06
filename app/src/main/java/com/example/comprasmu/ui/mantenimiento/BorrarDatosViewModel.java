@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -25,6 +26,8 @@ import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.modelos.VisitaWithInformes;
 import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
+import com.example.comprasmu.data.repositories.CorEtiqCajaDetRepoImpl;
+import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
@@ -61,16 +64,21 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     DetalleCajaRepoImpl dcRepo;
     AcuseReciboRepositoryImpl acuseRepo;
     ConfiguracionRepositoryImpl configuracionRepo;
+    CorEtiqCajaRepoImpl correccionEtiqRepo;
+    CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo;
+
     Context context;
     ComprasLog complog;
     String TAG="BorrarDatosViewModel";
-    public BorrarDatosViewModel(Application application, ListaCompraDetRepositoryImpl lcdrepo, AcuseReciboRepositoryImpl acuseRepo, ConfiguracionRepositoryImpl configuracionRepo) {
+    public BorrarDatosViewModel(Application application, ListaCompraDetRepositoryImpl lcdrepo, AcuseReciboRepositoryImpl acuseRepo, ConfiguracionRepositoryImpl configuracionRepo, CorEtiqCajaRepoImpl correccionEtiqRepo, CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo) {
         super(application);
         this.context = application;
         complog=ComprasLog.getSingleton();
         this.lcdrepo=lcdrepo;
         this.acuseRepo=acuseRepo;
         this.configuracionRepo=configuracionRepo;
+        this.correccionEtiqRepo=correccionEtiqRepo;
+        this.corEtiqCajaDetRepo=corEtiqCajaDetRepo;
     }
 
     File carpeta;
@@ -270,6 +278,14 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         complog.grabarError("borrando configuracion");
         //busco el detalle
         configuracionRepo.deleteAll();
+
+    }
+
+    public void borrarCorreccionEtiq(String indice) {
+        complog.grabarError("borrando correccion etiq");
+        //busco el detalle
+        correccionEtiqRepo.deleteByIndice(indice);
+        corEtiqCajaDetRepo.deleteAll();
 
     }
 

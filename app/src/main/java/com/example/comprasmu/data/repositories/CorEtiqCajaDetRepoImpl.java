@@ -3,21 +3,30 @@ package com.example.comprasmu.data.repositories;
 import android.content.Context;
 import androidx.lifecycle.LiveData;
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import java.util.List;
 
 public class CorEtiqCajaDetRepoImpl extends BaseRepository<CorEtiquetadoCajaDet> {
 
-    private final CorEtiquetadoCajaDetDao icDao;
+    private static CorEtiquetadoCajaDetDao corEtiquetadoCajaDetDao;
+    private static CorEtiqCajaDetRepoImpl INSTANCE;
 
-    public CorEtiqCajaDetRepoImpl(Context context) {
-        ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
-        icDao = comprasDataBase.getCorEtiquetadoCajaDetDao();
+    public static CorEtiqCajaDetRepoImpl getInstance(CorEtiquetadoCajaDetDao corEtiquetadoDao) {
+        if (INSTANCE == null) {
+            corEtiquetadoCajaDetDao=corEtiquetadoDao;
+            synchronized (CorEtiqCajaRepoImpl.class) {
+                if (INSTANCE == null) {
+                    INSTANCE=new CorEtiqCajaDetRepoImpl();
+                }
+            }
+        }
+        return INSTANCE;
 
     }
     public CorEtiquetadoCajaDetDao getDao(){
-        return icDao;
+        return corEtiquetadoCajaDetDao;
     }
 
     @Override
@@ -88,51 +97,54 @@ public class CorEtiqCajaDetRepoImpl extends BaseRepository<CorEtiquetadoCajaDet>
     }*/
 
     public List<CorEtiquetadoCajaDet> getAllByCorId(int corid) {
-        return icDao.getCorEtiquetadoCajaDetSimp(corid);
+        return corEtiquetadoCajaDetDao.getCorEtiquetadoCajaDetSimp(corid);
     }
 
     public List<CorEtiquetadoCajaDet> getCorrecxdescSimple(int corId, int descripcionId, int numcaja) {
-        return icDao.getCorrecxdescSimple(corId,descripcionId, numcaja);
+        return corEtiquetadoCajaDetDao.getCorrecxdescSimple(corId,descripcionId, numcaja);
     }
     public List<CorEtiquetadoCajaDet> getCorrecxdescSimple2(int corId, int descripcionId, int numcaja) {
-        return icDao.getCorrecxdescSimple2(corId,descripcionId, numcaja);
+        return corEtiquetadoCajaDetDao.getCorrecxdescSimple2(corId,descripcionId, numcaja);
     }
     @Override
     public LiveData<CorEtiquetadoCajaDet> find(int id) {
-        return icDao.find(id);
+        return corEtiquetadoCajaDetDao.find(id);
     }
 
     @Override
     public CorEtiquetadoCajaDet findsimple(int id) {
-        return icDao.findSimple(id);
+        return corEtiquetadoCajaDetDao.findSimple(id);
     }
 
 
     @Override
     public long insert(CorEtiquetadoCajaDet newCorEtiquetadoCajaDet) {
-        return icDao.insert(newCorEtiquetadoCajaDet);
+        return corEtiquetadoCajaDetDao.insert(newCorEtiquetadoCajaDet);
     }
 
     @Override
     public void delete(CorEtiquetadoCajaDet object) {
-        icDao.delete(object);
+        corEtiquetadoCajaDetDao.delete(object);
     }
 
     public void  insertAll(List<CorEtiquetadoCajaDet> newCorEtiquetadoCajaDet) {
-         icDao.insertAll(newCorEtiquetadoCajaDet);
+        corEtiquetadoCajaDetDao.insertAll(newCorEtiquetadoCajaDet);
     }
 
 
 
     public void actualizarEstatus(int id, int estatus) {
 
-         icDao.actualizarEstatus(id, estatus);
+        corEtiquetadoCajaDetDao.actualizarEstatus(id, estatus);
     }
 
     public void actualizarEstatusSync(int id, int estatus) {
 
-        icDao.actualizarEstatusSync(id, estatus);
+        corEtiquetadoCajaDetDao.actualizarEstatusSync(id, estatus);
     }
 
+    public void deleteAll() {
+        corEtiquetadoCajaDetDao.deleteAll();
+    }
 
 }

@@ -21,9 +21,12 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
@@ -42,6 +45,7 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
     private NvaPreparacionViewModel mViewModel;
     private  ArrayList<DescripcionGenerica> listaClientesEnv;
     private static final String TAG = "DescargarEtiqFragment";
+    ListaCompraDao listaCompraDao;
     public DescargarEtiqFragment() {
         // Required empty public constructor
     }
@@ -74,21 +78,17 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
         }
         List<InformeEtapa> listainfetiq;
         listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
-        Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+        Log.i(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+        listaCompraDao= ComprasDataBase.getInstance(getContext()).getListaCompraDao();
+        if(listainfetiq.size()>0) {
 
-                if(listainfetiq.size()>0) {
+            convertirLista(listainfetiq);
+            setLista(listaClientesEnv);
+            setupListAdapter();
 
-                    convertirLista(listainfetiq);
-
-                    setLista(listaClientesEnv);
-                    setupListAdapter();
-
-
-
-
-                }
-                else
-                    Log.d(TAG,"algo salió mal con la consulta de listas");
+        }
+        else
+             Log.e(TAG,"algo salió mal con la consulta de listas");
 
 
         getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,9 +104,14 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
     private  void convertirLista(List<InformeEtapa>lista){
         listaClientesEnv =new ArrayList<DescripcionGenerica>();
         for (InformeEtapa listaCompra: lista ) {
+            //valido que ya esté en la etapa
+            List <ListaCompra> listacompOrig = mViewModel.cargarClientesSimplxet(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listaCompra.getClientesId(), 4, listaCompraDao);
+            if (listacompOrig != null && listacompOrig.size() > 0) {
 
-            listaClientesEnv.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 
+                listaClientesEnv.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
+
+            }
         }
 
     }
@@ -115,17 +120,10 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
        // String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&indicelis="+ Constantes.INDICEACTUAL+"&rec="+Constantes.CLAVEUSUARIO+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO;
         String MY_URL = Constantes.URLSERV+"imprimirReporte.php?tipo_consulta=d&indicelis="+ Constantes.INDICEACTUAL+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO+"&rec="+Constantes.CLAVEUSUARIO;
         Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
-        // registrer receiver in order to verify when download is complete
-        //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-     //   Toast.makeText(getContext(),cliente+"", Toast.LENGTH_LONG).show();
-
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setTitle("DESCARGA ETIQUETAS"); // Title for notification.
-        // request.setVisibleInDownloadsUi(true);
-        // request.setTitle("DESCARGA ETIQUETAS");
-        Log.d(TAG,"hola"+MY_URL);
 
         request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, "etiquetas.pdf");  // Storage directory path
         archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading

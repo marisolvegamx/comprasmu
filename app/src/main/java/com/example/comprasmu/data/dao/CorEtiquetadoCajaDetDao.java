@@ -39,4 +39,7 @@ public abstract class CorEtiquetadoCajaDetDao extends  BaseDao<CorEtiquetadoCaja
     @Query("SELECT * FROM coretiquetado_cajadet WHERE estatusSync =:estatus ")
     public abstract   List<CorEtiquetadoCajaDet> getxEstatusSync(int estatus);
 
+    @Query("DELETE FROM coretiquetado_cajadet")
+    public abstract void deleteAll();
+
    }
