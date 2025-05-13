@@ -11,6 +11,7 @@ public  class Contrato {
     public static String TBLINFORMESETAPADET="informe_etapadet";
     public static String TBLDETALLECAJA="detalle_caja";
     public static String TBLVISITAS="visitas";
+    public static String TBLIMAGENDETALLE="imagen_detalle";
 
     public static class  CatalogosId{
         public static final int CADENACOMER =1 ;

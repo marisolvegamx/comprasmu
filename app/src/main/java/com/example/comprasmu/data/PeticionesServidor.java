@@ -876,10 +876,7 @@ public class PeticionesServidor {
                         Log.d("PeticionesServidor","getCambiosEtiq llego algo"+etapasResp);
 
                         listener.actualizarInformesEtiq(etapasResp);
-                        /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
-                        lcdrepo.insertAll(compraResp.getDetalles());
-                        //actualizar version en tabla
-                        tvrepo.insertAll(compraResp.getVersiones());
+
 */
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
@@ -906,52 +903,7 @@ public class PeticionesServidor {
         });
     }
 
-    public void getInfEtiquetado(String indice, DescRespInformesEta.DescargaRespieListener listener){
 
-        Log.d("PeticionesServidor","getInfEtiquetado haciendo petición etiq ");
-
-        final Call<RespInfEtapaResponse> batch = ServiceGenerator.getApiService().getRespaldoEtiq(indice,usuario);
-
-        batch.enqueue(new Callback<RespInfEtapaResponse>() {
-            @Override
-            public void onResponse(@Nullable Call<RespInfEtapaResponse> call, @Nullable Response<RespInfEtapaResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    RespInfEtapaResponse etapasResp = response.body();
-                    //reviso si está actualizado
-                    if(etapasResp!=null) //falta actualizar
-                    {
-                        Log.d("PeticionesServidor","getInfEtiquetado "+etapasResp);
-
-                        listener.actualizarQr(etapasResp);
-                        /*lcrepo.insertAll(compraResp.getCompras()); //inserto blblbl
-                        lcdrepo.insertAll(compraResp.getDetalles());
-                        //actualizar version en tabla
-                        tvrepo.insertAll(compraResp.getVersiones());
-*/
-                    }
-                    else //aviso al usuario //solo si esta desde descargar lista
-                    {
-                        Log.d("PeticionesServidor","lista vacia");
-                        listener.actualizarQr(null);
-                    }
-
-                }else //aviso al usuario //solo si esta desde descargar lista
-                {
-
-                    listener.actualizarQr(null);
-                }
-            }
-
-            @Override
-            public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
-                if (t != null) {
-
-                    Log.e(Constantes.TAG, t.getMessage());
-                    listener.actualizarQr(null);
-                }
-            }
-        });
-    }
     /****pido informe gasto para ver los cambios***/
     public void getCambiosGastos(String indice, String cd, IListenerResumen listener){
 
@@ -1027,11 +979,8 @@ public class PeticionesServidor {
             public void onResponse(@Nullable Call<DocumentosEnvio> call, @Nullable Response<DocumentosEnvio> response) {
                 if (response.isSuccessful() && response.body() != null) {
 
-
                     DocumentosEnvio docs = response.body();
                     //reviso si está actualizado
-
-
                         petsocor.mostrarBotones(docs);
 
 
@@ -1158,4 +1107,89 @@ public class PeticionesServidor {
         });
     }
 
+    public void pedirCambiosImagenes(String indice,String fecha DescargasIniAsyncTask.DescargaRespListener listener){
+
+        Log.d("PeticionesServidor","pedirCambiosImagenes "+usuario);
+
+        final Call<RespInfEtapaResponse> batch = ServiceGenerator.getApiService().getCambiosImagenes(indice,usuario);
+
+        batch.enqueue(new Callback<RespInfEtapaResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<RespInfEtapaResponse> call, @Nullable Response<RespInfEtapaResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    RespInfEtapaResponse etapasResp = response.body();
+                    //reviso si está actualizado
+                    if(etapasResp!=null) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","respaldo2 "+etapasResp.getInformeEtapa());
+
+                        listener.actualizarInfEtapa(etapasResp);
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista vacia");
+                        listener.actualizarInfEtapa(null);
+                    }
+
+                }else //aviso al usuario //solo si esta desde descargar lista
+                {
+
+                    listener.actualizarInfEtapa(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+
+                    Log.e(Constantes.TAG, t.getMessage());
+                    listener.actualizarInfEtapa(null);
+                }
+            }
+        });
+    }
+    public void getInfEtiquetado(String indice, DescRespInformesEta.DescargaRespieListener listener){
+
+        Log.d("PeticionesServidor","getInfEtiquetado haciendo petición etiq ");
+
+        final Call<RespInfEtapaResponse> batch = ServiceGenerator.getApiService().getRespaldoEtiq(indice,usuario);
+
+        batch.enqueue(new Callback<RespInfEtapaResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<RespInfEtapaResponse> call, @Nullable Response<RespInfEtapaResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    RespInfEtapaResponse etapasResp = response.body();
+                    //reviso si está actualizado
+                    if(etapasResp!=null) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","getInfEtiquetado "+etapasResp);
+
+                        listener.actualizarQr(etapasResp);
+
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista vacia");
+                        listener.actualizarQr(null);
+                    }
+
+                }else //aviso al usuario //solo si esta desde descargar lista
+                {
+
+                    listener.actualizarQr(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+
+                    Log.e(Constantes.TAG, t.getMessage());
+                    listener.actualizarQr(null);
+                }
+            }
+        });
+    }
 }
