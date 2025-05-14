@@ -179,7 +179,7 @@ public class NvaPreparacionFragment extends Fragment {
         //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
         if(!isEdicion&&preguntaAct<2&&mViewModel.getIdNuevo()==0) {
             //es nuevo reviso si ya tengo uno abierto
-            InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,Constantes.ETAPAACTUAL);
+            InformeEtapa informeEtapa = mViewModel.getInformePendPrep(Constantes.INDICEACTUAL);
             Log.d(TAG, "buscando pend");
             if (informeEtapa != null) {
                 Log.d(TAG, "encontré 1");

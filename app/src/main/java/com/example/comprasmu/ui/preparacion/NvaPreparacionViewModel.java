@@ -410,12 +410,15 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     public InformeEtapa getInformexId(int id){
         return   infEtaRepository.findsimple(id);
     }
-    public InformeEtapa getInformePend(String indice){
-        return   infEtaRepository.getInformePend(indice, 1);
-    }
+
     public InformeEtapa getInformePend(String indice, int etapa){
         return   infEtaRepository.getInformePend(indice, etapa);
     }
+    public InformeEtapa getInformePendPrep(String indice){
+        return   infEtaRepository.getInformePendPrep(indice);
+    }
+
+
     public LiveData<InformeEtapaDet> getDetalleEtEdit(int idinf, int preguntaAct){
 
         return infDetRepo.getByDescripcion("foto_preparacion"+preguntaAct,idinf);
