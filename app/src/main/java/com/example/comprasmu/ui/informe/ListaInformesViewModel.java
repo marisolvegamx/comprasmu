@@ -43,7 +43,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
 
     private LiveData<List<InformeCompraDao.InformeCompravisita>> listas;
     private LiveData<List<InformeCompraDao.InformeCompravisita>> cancelados;
-     private  LiveData<Integer> size;
+    private  LiveData<Integer> size;
 
     private  LiveData<Boolean> empty;
     private final static String TAG="ListaInformeNewModel";
@@ -62,7 +62,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
         super(application);
         repository = new InformeCompraRepositoryImpl(application);
         imrepository=new ImagenDetRepositoryImpl(application);
-         detrepository = new InformeComDetRepositoryImpl(application);
+        detrepository = new InformeComDetRepositoryImpl(application);
         visitaRepo = new VisitaRepositoryImpl(application);
         inferepo=new InfEtapaRepositoryImpl(application);
 
@@ -83,7 +83,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
 
         //busco cual es en la lista
         for( i=0;i<listas.getValue().size();i++){
-             InformeCompraDao.InformeCompravisita info=listas.getValue().get(i);
+            InformeCompraDao.InformeCompravisita info=listas.getValue().get(i);
             if(info.idinforme==id){
                 pos=i;
                 break;
@@ -118,7 +118,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
                         informeCan.setDetalle_compra(informeWithDetalle.informeDetalle);
                         informeCan.setImagen_detalle(fotosinfo);
                         //TODO agregar  las imagenes
-                        peticion.cancelarInforme(informeWithDetalle.informe.getId(), informeCan);
+                        //     peticion.cancelarInforme(informeWithDetalle.informe.getId(), informeCan);
                     } else {     //notifico al usuario
                         mSnackbarText.setValue(new Event<>(R.string.resp_cancelar_sinconexion));
 
@@ -164,12 +164,12 @@ public class ListaInformesViewModel extends AndroidViewModel {
         for(InformeCompraDetalle detalle:detalles) {
             List<Integer> fotos=detrepository.getInformesWithImagen(detalle.getId());
             List<ImagenDetalle> imagenDetalles=imrepository.findListsencillo(fotos);
-                   for(ImagenDetalle imagendet:imagenDetalles){
-                       fotosinfo.add(imagendet);
-                       imagendet.setEstatus(0);
-                       imagendet.setEstatusSync(0);
-                       imrepository.insert(imagendet);
-                   }
+            for(ImagenDetalle imagendet:imagenDetalles){
+                fotosinfo.add(imagendet);
+                imagendet.setEstatus(0);
+                imagendet.setEstatusSync(0);
+                imrepository.insert(imagendet);
+            }
 
         }
 
@@ -178,7 +178,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
     }
     public  LiveData<List<InformeCompra>>  cargarPestañas(String indice, String nombreTienda, String ciudad, String planta,int clienteSel){
 
-            return repository.getPlantasByIndice(Constantes.INDICEACTUAL,nombreTienda,ciudad,planta,clienteSel);
+        return repository.getPlantasByIndice(Constantes.INDICEACTUAL,nombreTienda,ciudad,planta,clienteSel);
 
 
     }
@@ -248,9 +248,9 @@ public class ListaInformesViewModel extends AndroidViewModel {
                     /*********todo
                      * pendiente
                      */
-                    // imrepository.cancelAll(idInforme);*/
-               //     listas.getValue().remove(i);
-                    //reviso si hay conexion a internet
+    // imrepository.cancelAll(idInforme);*/
+    //     listas.getValue().remove(i);
+    //reviso si hay conexion a internet
                /*     if (ComprasUtils.isOnlineNet()) {     //envio al servidor
                         PeticionesServidor peticion = new PeticionesServidor(Constantes.CLAVEUSUARIO);
                         InformeCancelar informeCan = new InformeCancelar();

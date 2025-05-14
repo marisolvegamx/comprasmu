@@ -179,7 +179,7 @@ public class NvaPreparacionFragment extends Fragment {
         //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
         if(!isEdicion&&preguntaAct<2&&mViewModel.getIdNuevo()==0) {
             //es nuevo reviso si ya tengo uno abierto
-            InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,Constantes.ETAPAACTUAL);
+            InformeEtapa informeEtapa = mViewModel.getInformePendPrep(Constantes.INDICEACTUAL);
             Log.d(TAG, "buscando pend");
             if (informeEtapa != null) {
                 Log.d(TAG, "encontré 1");
@@ -219,7 +219,7 @@ public class NvaPreparacionFragment extends Fragment {
                     public void onChanged(InformeEtapa informeEtapa) {
                         if(informeEtapa!=null)
                         { ultimares=informeEtapa.getComentarios();
-                        informeEdit=informeEtapa;}
+                            informeEdit=informeEtapa;}
                         crearFormulario();
                     }
                 });
@@ -241,7 +241,7 @@ public class NvaPreparacionFragment extends Fragment {
                         if(informeEtapa!=null) {
                             ultimares = informeEtapa.getPlantasId() + "";
                         }
-                            informeEdit = informeEtapa;
+                        informeEdit = informeEtapa;
                         mViewModel.setNvoinforme(informeEdit);
                         crearFormulario();
                         spclientes = root.findViewById(1001);
@@ -264,32 +264,32 @@ public class NvaPreparacionFragment extends Fragment {
 
 
             }else
-             {
+            {
                 if(detalleEdit!=null){
 
-                        //busco aqui el idinforme
+                    //busco aqui el idinforme
                     ultimares=detalleEdit.getRuta_foto();
                     mViewModel.setIdNuevo(detalleEdit.getInformeEtapaId());
                     mViewModel.getInformeEdit(mViewModel.getIdNuevo()).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
-  @Override
-                    public void onChanged(InformeEtapa informeEtapa) {
+                        @Override
+                        public void onChanged(InformeEtapa informeEtapa) {
 
-                        informeEdit=informeEtapa;
-                        crearFormulario();
-                    }
-                });
+                            informeEdit=informeEtapa;
+                            crearFormulario();
+                        }
+                    });
 
                 }else
-                mViewModel.getDetalleEtEdit(mViewModel.getIdNuevo(),preguntaAct).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
-                    @Override
-                    public void onChanged(InformeEtapaDet informeEtapaDet) {
-                        Log.d(TAG,"edicion detalledit"+informeEtapaDet.getRuta_foto());
-                       if(informeEtapaDet!=null)
-                            ultimares=informeEtapaDet.getRuta_foto();
-                       detalleEdit = informeEtapaDet;
-                       crearFormulario();
-                    }
-                });
+                    mViewModel.getDetalleEtEdit(mViewModel.getIdNuevo(),preguntaAct).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
+                        @Override
+                        public void onChanged(InformeEtapaDet informeEtapaDet) {
+                            Log.d(TAG,"edicion detalledit"+informeEtapaDet.getRuta_foto());
+                            if(informeEtapaDet!=null)
+                                ultimares=informeEtapaDet.getRuta_foto();
+                            detalleEdit = informeEtapaDet;
+                            crearFormulario();
+                        }
+                    });
             }
         }
         else {
@@ -305,10 +305,10 @@ public class NvaPreparacionFragment extends Fragment {
 
         Log.d(TAG,"p*************aso x aqui"+mViewModel.getIdNuevo());
         if(textoint!=null){ //los comentarios no son obligatorios
-          if(preguntaAct<6)
-            textoint.addTextChangedListener(new NvaPreparacionFragment.BotonTextWatcher());
+            if(preguntaAct<6)
+                textoint.addTextChangedListener(new NvaPreparacionFragment.BotonTextWatcher());
             else //solo los comentarios a mayusculas
-              textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(200)});
+                textoint.setFilters(new InputFilter[]{new InputFilter.AllCaps(),new InputFilter.LengthFilter(200)});
 
 
         }
@@ -425,47 +425,47 @@ public class NvaPreparacionFragment extends Fragment {
 
             campo.id=1001;
             campo.funcionOnClick = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        tomarFoto();
-                    }
-                };
+                @Override
+                public void onClick(View view) {
+                    tomarFoto();
+                }
+            };
             campo.tomarFoto = true;
 
             fotomos=root.findViewById(R.id.ivgfoto);
             fotomos.setVisibility(View.VISIBLE);
             btnrotar=root.findViewById(R.id.btngrotar);
             btnrotar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        rotar();
-                    }
-                });
+                @Override
+                public void onClick(View view) {
+                    rotar();
+                }
+            });
 
             if(isEdicion&&ultimares!=null&&!ultimares.equals("")){
                 //busco la ruta en imagenes fotos
                 Log.d(TAG,"buscando foto "+ultimares);
                 ImagenDetalle foto=null;
                 try {
-                     foto = mViewModel.getFoto(Integer.parseInt(ultimares));
+                    foto = mViewModel.getFoto(Integer.parseInt(ultimares));
                 }catch (NumberFormatException ex){
                     complog.grabarError(ex.getMessage());
                 }
                 // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
                 //ComprasUtils cu=new ComprasUtils();
                 // bitmap1=cu.comprimirImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + ultimares.getValor());
-               if(foto!=null) {
-                   Log.d(TAG,"buscando foto "+foto.getRuta());
-                   Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 100, 100);
-                   campo.value = foto.getRuta();
-                   fotomos.setImageBitmap(bitmap1);
-                   // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                   fotomos.setVisibility(View.VISIBLE);
+                if(foto!=null) {
+                    Log.d(TAG,"buscando foto "+foto.getRuta());
+                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 100, 100);
+                    campo.value = foto.getRuta();
+                    fotomos.setImageBitmap(bitmap1);
+                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                    fotomos.setVisibility(View.VISIBLE);
 
-                   btnrotar.setVisibility(View.VISIBLE);
-                   btnrotar.setFocusableInTouchMode(true);
-                   btnrotar.requestFocus();
-               }
+                    btnrotar.setVisibility(View.VISIBLE);
+                    btnrotar.setFocusableInTouchMode(true);
+                    btnrotar.requestFocus();
+                }
 
             }
             // btnrotar.setVisibility(View.VISIBLE);
@@ -538,7 +538,7 @@ public class NvaPreparacionFragment extends Fragment {
             return ;
         }
 
-       //creo el informe
+        //creo el informe
         if ( !isEdicion&&mViewModel.getNvoinforme()==null) {
             Log.d(TAG, "creando nvo inf");
 
@@ -580,8 +580,8 @@ public class NvaPreparacionFragment extends Fragment {
             if(yaestoyProcesando)
                 return;
             yaestoyProcesando=true;
-              //  loadingDialog = new LoadingDialog(getActivity());
-                //   loadingDialog.startLoadingDialog();
+            //  loadingDialog = new LoadingDialog(getActivity());
+            //   loadingDialog.startLoadingDialog();
 
             try {
                 Thread.sleep(2000);
@@ -589,35 +589,35 @@ public class NvaPreparacionFragment extends Fragment {
                 e.printStackTrace();
             }
             try {
-                    //guarda informe
+                //guarda informe
                 this.actualizarInforme();
                 this.finalizar();
-      //  mViewModel.eliminarTblTemp();
-                        //   loadingDialog.dismisDialog();
+                //  mViewModel.eliminarTblTemp();
+                //   loadingDialog.dismisDialog();
                 Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
                 yaestoyProcesando = false;
                 salir();
-                        //  aceptar.setEnabled(true);
+                //  aceptar.setEnabled(true);
                 return;
 
 
             }catch(Exception ex){
-                    ex.printStackTrace();
-                    yaestoyProcesando=false;
-                    complog.grabarError(TAG+"hubo un error al finalizar inf "+ex.getMessage());
-                    Toast.makeText(getActivity(), "algo salió mal", Toast.LENGTH_LONG).show();
+                ex.printStackTrace();
+                yaestoyProcesando=false;
+                complog.grabarError(TAG+"hubo un error al finalizar inf "+ex.getMessage());
+                Toast.makeText(getActivity(), "algo salió mal", Toast.LENGTH_LONG).show();
 
             }
 
         }else
-            {
-                Log.d(TAG,"-----preguntaact"+preguntaAct);
+        {
+            Log.d(TAG,"-----preguntaact"+preguntaAct);
 
-                if(preguntaAct>0)
-                    guardarResp(preguntaAct+101);
-               // avanzarPregunta(preguntaAct++);
+            if(preguntaAct>0)
+                guardarResp(preguntaAct+101);
+            // avanzarPregunta(preguntaAct++);
 
-           }
+        }
         aceptar.setEnabled(true);
     }
     //finalizar informe
@@ -629,8 +629,8 @@ public class NvaPreparacionFragment extends Fragment {
             InformeEtapaEnv informe=this.preparaInforme();
             if(informe.getInformeEtapa().getEstatus()==2)//ya está finalizado
             { SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(informe,getActivity());
-            miTareaAsincrona.execute();
-            subirFotos(getActivity(),informe);}
+                miTareaAsincrona.execute();
+                subirFotos(getActivity(),informe);}
             //necesito ver que sea una correccion
             //busco informe de la misma planta cancelado
             InformeEtapa inf=mViewModel.getInformexPlantaEtaEst(informe.getInformeEtapa().getPlantasId(),1,Constantes.INDICEACTUAL,0);
@@ -645,7 +645,7 @@ public class NvaPreparacionFragment extends Fragment {
              Log.d(TAG,">>>>cambie estatus "+inf2.getEstatus());
             }*/
 
-            }catch(Exception ex){
+        }catch(Exception ex){
             ex.getStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
@@ -722,45 +722,45 @@ public class NvaPreparacionFragment extends Fragment {
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto+"--"+resultCode);
-       // archivofoto=null;
+        // archivofoto=null;
         if ((requestCode == REQUEST_CODE_TAKE_PHOTO) && resultCode == RESULT_OK) {
             //   super.onActivityResult(requestCode, resultCode, data);
 
             if (!nombre_foto.equals("")&&archivofoto!=null&&archivofoto.exists()) {
 
-                    textoint.setText(nombre_foto);
-                    if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
-                    {
-                        Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-                        aceptar.setEnabled(false);
-                        return;
-                    }else {
-                        // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                     try {
-                         ComprasUtils cu = new ComprasUtils();
-                         cu.comprimirImagen(archivofoto.getAbsolutePath());
-                         Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
-                         Glide.with(getContext())
-                                 .load(archivofoto.getAbsolutePath())
-                                 //  .placeholder(R.drawable.ic_cloud_off_red)
+                textoint.setText(nombre_foto);
+                if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
+                {
+                    Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+                    aceptar.setEnabled(false);
+                    return;
+                }else {
+                    // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+                    try {
+                        ComprasUtils cu = new ComprasUtils();
+                        cu.comprimirImagen(archivofoto.getAbsolutePath());
+                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
+                        Glide.with(getContext())
+                                .load(archivofoto.getAbsolutePath())
+                                //  .placeholder(R.drawable.ic_cloud_off_red)
 
-                                 .into(fotomos);
-                         // fotomos.setImageBitmap(bitmap1);
-                         // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                         fotomos.setVisibility(View.VISIBLE);
+                                .into(fotomos);
+                        // fotomos.setImageBitmap(bitmap1);
+                        // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                        fotomos.setVisibility(View.VISIBLE);
 
-                         btnrotar.setVisibility(View.VISIBLE);
-                         btnrotar.setFocusableInTouchMode(true);
-                         btnrotar.requestFocus();
-                         nombre_foto = null;
-                         archivofoto = null;
-                     }catch(Exception ex){
-                         //algo salió mal intente de nuevo
+                        btnrotar.setVisibility(View.VISIBLE);
+                        btnrotar.setFocusableInTouchMode(true);
+                        btnrotar.requestFocus();
+                        nombre_foto = null;
+                        archivofoto = null;
+                    }catch(Exception ex){
+                        //algo salió mal intente de nuevo
                         errorFoto();
-                     }
                     }
+                }
 
 
 
@@ -772,8 +772,8 @@ public class NvaPreparacionFragment extends Fragment {
             }
 
 
-       }
-          else
+        }
+        else
         {
             errorFoto();
             Log.e(TAG,"Algo salió muy mal**");
@@ -790,11 +790,11 @@ public class NvaPreparacionFragment extends Fragment {
 
 
     }
-public void errorFoto(){
-    Toast.makeText(getActivity(), "Intente tomar la foto de nuevo", Toast.LENGTH_LONG).show();
+    public void errorFoto(){
+        Toast.makeText(getActivity(), "Intente tomar la foto de nuevo", Toast.LENGTH_LONG).show();
 
-    aceptar.setEnabled(false);
-}
+        aceptar.setEnabled(false);
+    }
     public void guardarFoto(int sig){
         try {
 
@@ -810,8 +810,8 @@ public void errorFoto(){
 
             } //   Log.d(TAG, "guardando informe"+mViewModel.numMuestra+"--"+mViewModel.getIdInformeNuevo());
 
-                //
-              //  idInformeNuevo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            //
+            //  idInformeNuevo.observe(getViewLifecycleOwner(), new Observer<Integer>() {
                 /*    @Override
                     public void onChanged(Integer idnvo) {
                         Log.d(TAG, "se creo el informe" + idnvo);
@@ -850,8 +850,8 @@ public void errorFoto(){
 
             }else //ya tengo informe y solo guardo el det
           {*/
-              //  si tengo detalle
-                Log.d(TAG,"guardando  detalle"+mViewModel.getIdNuevo());
+            //  si tengo detalle
+            Log.d(TAG,"guardando  detalle"+mViewModel.getIdNuevo());
             int nuevoid =0;
             if(isEdicion){
                 //todo solo actualizaria imagen detalle
@@ -865,13 +865,13 @@ public void errorFoto(){
 
 
             }
-                if (nuevoid > 0) {
+            if (nuevoid > 0) {
 
 
-                    yaestoyProcesando=false;
-                    Log.d(TAG,"en guaradar"+sig);
-                        avanzarPregunta(sig);
-                    }
+                yaestoyProcesando=false;
+                Log.d(TAG,"en guaradar"+sig);
+                avanzarPregunta(sig);
+            }
 
         }catch (Exception ex){
             ex.printStackTrace();
@@ -897,7 +897,7 @@ public void errorFoto(){
             envio.setImagenDetalles(imagenes);
         }
 
-         return envio;
+        return envio;
     }
 
     public static void subirFotos(Activity activity, InformeEtapaEnv informe){
@@ -927,25 +927,25 @@ public void errorFoto(){
 
 
         }else
-        for(InformeEtapaDet imagen:informe.getInformeEtapaDet()){
-            //subo cada una
-            Intent msgIntent = new Intent(activity, SubirFotoService.class);
-            msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
-            msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta_foto());
-            msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
-            // Constantes.INDICEACTUAL
-            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+            for(InformeEtapaDet imagen:informe.getInformeEtapaDet()){
+                //subo cada una
+                Intent msgIntent = new Intent(activity, SubirFotoService.class);
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID, imagen.getId());
+                msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta_foto());
+                msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
+                // Constantes.INDICEACTUAL
+                Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
 
-            msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
+                msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
 
-            //cambio su estatus a subiendo
-            imagen.setEstatusSync(1);
-            activity.startService(msgIntent);
-            //cambio su estatus a subiendo
+                //cambio su estatus a subiendo
+                imagen.setEstatusSync(1);
+                activity.startService(msgIntent);
+                //cambio su estatus a subiendo
 
 
 
-        }
+            }
 
     }
 
@@ -961,7 +961,7 @@ public void errorFoto(){
             NvaPreparacionFragment nvofrag=    new NvaPreparacionFragment();
             nvofrag.setArguments(bundle);
 
-           // NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(preguntaSig, false,null);
+            // NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(preguntaSig, false,null);
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -971,7 +971,7 @@ public void errorFoto(){
 // Cambiar
             fragmentTransaction.commit();
         }
-       else if(sig<6) {
+        else if(sig<6) {
 
             //siguiente queda igual
             preguntaSig = sig;
@@ -980,7 +980,7 @@ public void errorFoto(){
             bundle.putBoolean(NvaPreparacionFragment.ARG_ESEDI,false);
             NvaPreparacionFragment nvofrag=    new NvaPreparacionFragment();
             nvofrag.setArguments(bundle);
-           // NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(preguntaSig, false,null);
+            // NvaPreparacionFragment nvofrag = new NvaPreparacionFragment(preguntaSig, false,null);
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 // Definir una transacción
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -1015,7 +1015,7 @@ public void errorFoto(){
 
     //guardo en tabla temp
     public void guardarResp(int sig) {
-      //  Log.d(TAG, "guardando en temp*****" + preguntaAct.getId());
+        //  Log.d(TAG, "guardando en temp*****" + preguntaAct.getId());
         String valor = null;
         if (textoint != null) {
             valor = textoint.getText().toString();
@@ -1055,8 +1055,8 @@ public void errorFoto(){
             /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
             listaCompra.getPlantaNombre();*/
             //puede ser el que tengo
-           if(inf!=null&&inf.getId()!= informesel)
-               continue;
+            if(inf!=null&&inf.getId()!= informesel)
+                continue;
             listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+","+listaCompra.getClienteNombre(),listaCompra.getPlantaNombre()));
 
         }
