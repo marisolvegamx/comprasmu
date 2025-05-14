@@ -118,7 +118,7 @@ public class ListaInformesViewModel extends AndroidViewModel {
                         informeCan.setDetalle_compra(informeWithDetalle.informeDetalle);
                         informeCan.setImagen_detalle(fotosinfo);
                         //TODO agregar  las imagenes
-                        peticion.cancelarInforme(informeWithDetalle.informe.getId(), informeCan);
+                   //     peticion.cancelarInforme(informeWithDetalle.informe.getId(), informeCan);
                     } else {     //notifico al usuario
                         mSnackbarText.setValue(new Event<>(R.string.resp_cancelar_sinconexion));
 
