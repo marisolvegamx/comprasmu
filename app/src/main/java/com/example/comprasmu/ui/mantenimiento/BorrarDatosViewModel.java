@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -91,7 +92,9 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         visitarepo=new VisitaRepositoryImpl(context);
         icrepo=new InformeCompraRepositoryImpl(context);
         icdrepo=new InformeComDetRepositoryImpl(context);
-        imrepo=new ImagenDetRepositoryImpl(context);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(context).getImagenDetalleDao();
+        this.imrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
+
         List<VisitaWithInformes> listavisitas= visitarepo.getVisitaWithInformesByIndice(indice);
 
         for(VisitaWithInformes visita: listavisitas){

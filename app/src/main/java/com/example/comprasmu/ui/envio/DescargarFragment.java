@@ -2,9 +2,11 @@ package com.example.comprasmu.ui.envio;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,7 @@ import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.LoggedInUser;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.databinding.DescargarEnvFragmentBinding;
@@ -41,6 +44,7 @@ import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 import com.example.comprasmu.utils.ui.ListaSelecViewModel;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,17 +123,15 @@ public class DescargarFragment extends Fragment {
             irAcdSel();
             return;
         }
-
+        mBinding.btndeguia.setVisibility(View.GONE);
         //hago la peticion
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         DocsEnvioListener listener=new DocsEnvioListener();
         ps.getDocumentosEnvio(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
-
-
         getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    clientesel=listaSeleccionable.get(i).getId();
+                clientesel=listaSeleccionable.get(i).getId();
                 mBinding.lldeselcliente.setVisibility(View.GONE);
                    //mostrar ligas
 
@@ -219,9 +221,7 @@ public class DescargarFragment extends Fragment {
        // String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&indicelis="+ Constantes.INDICEACTUAL+"&rec="+Constantes.CLAVEUSUARIO+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO;
         String MY_URL = Constantes.URLSERV+"descargarenv.php?doc="+opcion+"&indice="+ Constantes.INDICEACTUAL+"&id="+idcap+"&rec="+Constantes.CLAVEUSUARIO;
         Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
-        // registrer receiver in order to verify when download is complete
-        //  registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-     //   Toast.makeText(getContext(),cliente+"", Toast.LENGTH_LONG).show();
+
         String nombrearch="";
         switch(opcion){
             case "g":nombrearch="guia_"+Constantes.CIUDADTRABAJO.replace(" ","_");
@@ -246,9 +246,6 @@ public class DescargarFragment extends Fragment {
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setTitle("DESCARGA DOCUMENTOS"); // Title for notification.
-        // request.setVisibleInDownloadsUi(true);
-        // request.setTitle("DESCARGA ETIQUETAS");
-      //  Log.d(TAG,"hola"+MY_URL);
 
         request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, nombrearch+".pdf");  // Storage directory path
         archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
@@ -282,10 +279,12 @@ public class DescargarFragment extends Fragment {
         }
         return false;
     }
+
     public class DocsEnvioListener {
         //  void cerrarAlerta(boolean res);
         public void mostrarBotones(DocumentosEnvio docsenvio){
             mBinding.deprogressBar3.setVisibility(View.GONE);
+            mBinding.btndeguia.setVisibility(View.GONE);
             mBinding.btndefda.setVisibility(View.GONE);
             mBinding.btndefactura.setVisibility(View.GONE);
             mBinding.btndeanexo1.setVisibility(View.GONE);
@@ -320,6 +319,9 @@ public class DescargarFragment extends Fragment {
                 Log.d(TAG,"algo salió mal con la consulta de listas");
             //ponemos botones
             mBinding.lldeseldoc.setVisibility(View.VISIBLE);
+            mBinding.btndefda.setVisibility(View.VISIBLE);
+            //guardo si ya hay guias
+            PreferencesGuias.guardarInformeEnvio(getActivity(),Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,idcap);
             if(docsenvio.getFda()==1)
                 mBinding.btndefda.setVisibility(View.VISIBLE);
             if(docsenvio.getRecoleccion()==1)
@@ -337,4 +339,6 @@ public class DescargarFragment extends Fragment {
 
 
     }
+
+
 }

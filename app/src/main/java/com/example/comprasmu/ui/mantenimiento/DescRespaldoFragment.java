@@ -81,7 +81,7 @@ descargar();
         if(NavigationDrawerActivity.isOnlineNet(getContext())) {
             InformeComDetRepositoryImpl ifodrepo=new InformeComDetRepositoryImpl(getContext());
             InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(getContext());
-            ImagenDetRepositoryImpl imrepo=new ImagenDetRepositoryImpl(getContext());
+         //   ImagenDetRepositoryImpl imrepo=new ImagenDetRepositoryImpl(getContext());
             ProductoExhibidoRepositoryImpl prodrepo=new ProductoExhibidoRepositoryImpl(getContext());
             VisitaRepositoryImpl visrepo=new VisitaRepositoryImpl(getContext());
             ListaCompraDetRepositoryImpl lcrepo=new ListaCompraDetRepositoryImpl(getContext());

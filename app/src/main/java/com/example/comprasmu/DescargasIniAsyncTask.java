@@ -9,7 +9,9 @@ import android.util.Log;
 import androidx.appcompat.app.AlertDialog;
 
 
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.Geocerca;
@@ -370,7 +372,9 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
         Log.d("DescargasIniAsyncTask", "descargando respaldo inf");
         infrepo = new InformeCompraRepositoryImpl(act);
         infdrepo = new InformeComDetRepositoryImpl(act);
-        imagenDetRepo = new ImagenDetRepositoryImpl(act);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(act).getImagenDetalleDao();
+        this.imagenDetRepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
+
         prodrepo = new ProductoExhibidoRepositoryImpl(act);
         visRepo=new VisitaRepositoryImpl(act);
         lcdrepo=new ListaCompraDetRepositoryImpl(act);

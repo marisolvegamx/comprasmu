@@ -131,17 +131,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
         }
         return INSTANCE;
     }
-   /* static RoomDatabase.Callback rdc = new RoomDatabase.Callback() {
-        public void onCreate (SupportSQLiteDatabase db) {
-            // do something after database has been created
-            prepopulatelc(db);
-            prepopulatedetc(INSTANCE);
-
-        }
-        public void onOpen (SupportSQLiteDatabase db) {
-            // do something every time database is open
-        }
-    };*/
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override

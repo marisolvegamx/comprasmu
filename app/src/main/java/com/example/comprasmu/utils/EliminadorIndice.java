@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DetalleCaja;
@@ -73,7 +74,8 @@ public class EliminadorIndice {
     public EliminadorIndice(Context application , String indice) {
         this.visitaRepository = new VisitaRepositoryImpl(application);
         prodeRepository=new ProductoExhibidoRepositoryImpl(application);
-        imdRepository = new ImagenDetRepositoryImpl(application);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(application).getImagenDetalleDao();
+        this.imdRepository= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
         idrepo = new InformeComDetRepositoryImpl(application);
         lcRepository=new ListaCompraDetRepositoryImpl(application);
         infrepo=new InformeCompraRepositoryImpl(application);
@@ -249,7 +251,7 @@ public class EliminadorIndice {
     }
     public void eliminarTablaVers(){
         TablaVersionesRepImpl tvrepo=new TablaVersionesRepImpl(this.application);
-        tvrepo.deleteByIndice();
+        tvrepo.deleteAll();
     }
     public void borrarImagenes(){
 

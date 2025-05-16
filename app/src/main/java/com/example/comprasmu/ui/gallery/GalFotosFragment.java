@@ -120,6 +120,7 @@ public class GalFotosFragment extends Fragment {
                   if(Constantes.ETAPAACTUAL==6){//gastos
 
                       int infsel = params.getInt(VerInformeFragment.ARG_IDMUESTRA);
+                      Log.i(TAG,"inf sel:"+infsel);
                       startuiGasto(igViewModel.getfotosGasto(infsel));
                   }
               }else {
@@ -296,7 +297,7 @@ public class GalFotosFragment extends Fragment {
 
                         fotos.add(id);
                     }
-                    }
+                }
                     //  ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext());
                     adapter.setmSpacePhotos(fotos);
                     adapter.notifyDataSetChanged();
