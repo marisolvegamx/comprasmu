@@ -210,12 +210,14 @@ public interface APIService {
     @GET("notificacionesgen") //
     Call<NotificacionResponse> getNotificacionesGen(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
 
-
     @POST("infgasto/edit")
     @Headers({
             "Accept: application/json",
             "Content-Type: application/json"
     })
     Call<PostResponse> editInformeGasto(@Body InformeGastoEnv item);
+
+    @GET("descimg")
+    Call< List<ImagenDetalle>> getCambiosImagenes( @Query("indice") String indice, @Query("cvereco") String usuario,@Query("fec") String fecha);
 
 }
