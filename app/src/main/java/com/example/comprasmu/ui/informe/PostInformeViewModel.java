@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
@@ -144,8 +145,9 @@ public class PostInformeViewModel {
         });
     }
     public void iniciarConexiones(){
-        infoRepo=new InformeCompraRepositoryImpl(context);
-         imagenRepo=new ImagenDetRepositoryImpl(context);
+         infoRepo=new InformeCompraRepositoryImpl(context);
+         ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(context).getImagenDetalleDao();
+         this.imagenRepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
          infoDetRepo=new InformeComDetRepositoryImpl(context);
          visitaRepo=new VisitaRepositoryImpl(context);
          prodeRepo=new ProductoExhibidoRepositoryImpl(context);
