@@ -9,6 +9,7 @@ import androidx.room.Query;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -77,8 +78,10 @@ public abstract class ImagenDetalleDao extends BaseDao<ImagenDetalle> {
 
     @Query("SELECT * FROM imagen_detalle WHERE estatus =:estatus and estatusSync=:estatusSync ")
     public abstract List<ImagenDetalle> getImagenByEstSyncsimple(int estatus, int estatusSync);
-//    @Query("SELECT * FROM imagen_detalle WHERE informesId=:informe")
- //   public abstract LiveData<List<ImagenDetalle>> getImagenesByInforme(int informe);
+
+    @Query("update imagen_detalle set ruta=:ruta, updatedAt=:fechaActualizacion WHERE id=:id")
+    public abstract void actualizarRuta(int id, String ruta, Date fechaActualizacion);
+
 
     //solo las que ya se sincronizaron
   //  @Query("delete FROM imagen_detalle WHERE estatusSync =2 and informesId=:informe")

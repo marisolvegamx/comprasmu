@@ -8,6 +8,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 
 import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -17,19 +18,32 @@ import com.example.comprasmu.utils.Constantes;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
 
-    private final ImagenDetalleDao dao;
+    private static ImagenDetalleDao dao;
     List<ImagenDetalle> fotos ;
 
-    public ImagenDetRepositoryImpl(Context context) {
-        ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
-         dao=comprasDataBase.getImagenDetalleDao();
+    private static ImagenDetRepositoryImpl INSTANCE;
+    public ImagenDetRepositoryImpl() {
+
     }
 
+    public static ImagenDetRepositoryImpl getInstance(ImagenDetalleDao imagenDetalleDao) {
+        if (INSTANCE == null) {
+            ImagenDetRepositoryImpl.dao=imagenDetalleDao;
+            synchronized (ImagenDetalleDao.class) {
+                if (INSTANCE == null) {
+                    INSTANCE=new ImagenDetRepositoryImpl();
+                }
+            }
+        }
+        return INSTANCE;
+
+    }
     @Override
     public LiveData<List<ImagenDetalle>> getAll() {
       return dao.findAll();
@@ -56,10 +70,6 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
     public ImagenDetalle findsimpleInd(int id, String indice) {
         return dao.findInd(id, indice);
     }
-
-  //  public ImagenDetalle findsimple(int id) {
-    //    return dao.find(id);
-  //  }
 
     public LiveData<List<ImagenDetalle>> findList(List<Integer> fotos) {
         return dao.findinList(fotos);
@@ -110,9 +120,6 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
         dao.cancelar(id, estatus);
     }
 
-   /* public void deleteByInforme(int informe) {
-        dao.deleteByInforme(informe);
-    }*/
 
     @Override
     public void insertAll(List<ImagenDetalle> objects) {
@@ -135,15 +142,8 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
 
     public List<ImagenDetalle> getFotosInfDet(InformeCompraDetalle informe) {
 
-       fotos = new ArrayList<>();
-
-
-
+        fotos = new ArrayList<>();
         ponerFoto( informe.getFoto_codigo_produccion());
-
-        // ponerFoto(informe.getEnergia());
-        //  ponerFoto(getString(R.string.foto_num_tienda),informe.getFoto_num_tienda());
-        // ponerFoto(getString(R.string.foto_codigo_produccion)informe.getMarca_traslape());
         ponerFoto( informe.getFoto_atributoa());
         ponerFoto( informe.getFoto_atributob());
         ponerFoto(informe.getFoto_atributoc());
@@ -153,9 +153,7 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
     public List<ImagenDetalle> getFotosInf(InformeCompra informe) {
         fotos = new ArrayList<>();
         ponerFoto( informe.getTicket_compra());
-        // ponerFoto(informe.getEnergia());
-        //  ponerFoto(getString(R.string.foto_num_tienda),informe.getFoto_num_tienda());
-        // ponerFoto(getString(R.string.foto_codigo_produccion)informe.getMarca_traslape());
+
         ponerFoto( informe.getCondiciones_traslado());
 
         return fotos;
@@ -171,5 +169,9 @@ public class ImagenDetRepositoryImpl extends BaseRepository<ImagenDetalle> {
 
     public void deleteByIndice(String indice) {
         dao.deleteByIndice(indice);
+    }
+    public void actualizarRuta(int id,String ruta, Date fechaActualizacion) {
+
+        dao.actualizarRuta(id, ruta, fechaActualizacion);
     }
 }

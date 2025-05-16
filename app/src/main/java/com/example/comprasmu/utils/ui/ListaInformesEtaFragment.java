@@ -3,6 +3,7 @@ package com.example.comprasmu.utils.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,16 +18,21 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.SubirInformeGastoTask;
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.AcuseRecibo;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
@@ -36,6 +42,10 @@ import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.services.DescargaCambiosImagenes;
 import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
@@ -50,12 +60,14 @@ import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
 import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /*******para lista de informes x etapa y correcciones******/
 public class ListaInformesEtaFragment extends Fragment implements InformeGenAdapter.AdapterCallback {
@@ -77,42 +89,32 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     private NvaCorreViewModel corViewModel;
     NvaPreparacionViewModel npViewModel;
     ComprasLog milog;
+    LoadingAlert alert;
     public ListaInformesEtaFragment() {
 
     }
 
-  /*  public  ListaInformesFragment(int planta, String onombrePlanta, String nomcliente) {
-        //  ListaCompraFragment fragment = new ListaCompraFragment();
-        plantaid=planta;
-        plantasel=onombrePlanta;
-        this.clientesel=nomcliente;
-
-    }*/
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
         if (getArguments() != null) {
-            //Log.e(TAG,"si hay"+getArguments().toString());
+
             tipocons = getArguments().getString(SelClienteGenFragment.ARG_TIPOCONS);
             plantasel=getArguments().getInt(ListaCompraFragment.ARG_PLANTASEL);
             etapa=getArguments().getInt(ContInfEtapaFragment.ETAPA);
 
-          //  indice=getArguments().getString(Constantes.INDICEACTUAL);
 
         }
         indice = Constantes.INDICEACTUAL;
-
-
-     //   Log.d(Constantes.TAG,"cliente y planta sel"+clienteid+"--"+plantaid);
 
         mBinding= DataBindingUtil.inflate(inflater,
                 R.layout.lista_informes_fragment, container, false);
 
         mViewModel = new ViewModelProvider(this).get(InformesGenViewModel.class);
         corViewModel=new ViewModelProvider(this).get(NvaCorreViewModel.class);
-         npViewModel = new ViewModelProvider(this).get(NvaPreparacionViewModel.class);
+        npViewModel = new ViewModelProvider(this).get(NvaPreparacionViewModel.class);
         milog=ComprasLog.getSingleton();
         setHasOptionsMenu(true);
         return    mBinding.getRoot();
@@ -121,12 +123,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-       // mViewModel = new ViewModelProvider(this).get(ListaInformesGenViewModel.class);
-
-      //  mBinding.setLcviewModel(mViewModel);
-       // mBinding.setLifecycleOwner(this);
         coordinator=view.findViewById(R.id.coordinator3);
-
         setupListAdapter();
         Constantes.SINCRONIZANDO=0;
         cargarLista();
@@ -136,20 +133,24 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         //aqui hago la consulta de los informes x etapa
         //y de los informes correccion
         if(tipocons.equals("e")){
-            // getActivity().getActionBar().setTitle("RESUMEN INFORMES");
+
             if( ((AppCompatActivity) requireActivity()).getSupportActionBar()!=null)
              ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("RESUMEN INFORMES");
             Log.e(TAG,etapa+"--"+indice+"--"+plantasel);
             if(etapa==3)
                 listainfs=mViewModel.cargarEtapaAll(etapa,indice, 2);
             else
-                if(etapa==6)
-                    listainfs=mViewModel.cargarGastos(etapa,indice, 2);
+                if(etapa==6) {
+                    listainfs=new MutableLiveData<>();
+                    actualizarImagenes();
+
+                }
                 else
                     listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
                 @Override
                 public void onChanged(List<InformeEtapa> informeEtapas) {
+
                     if(informeEtapas.size()<1){
                         mBinding.emptyStateText.setVisibility(View.VISIBLE);
                     }
@@ -195,16 +196,6 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     }
 
-
- /*   @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Do something that differs the Activity's menu here
-        menu.clear();
-        inflater.inflate(R.menu.menu_listainforme, menu);
-        //  super.onCreateOptionsMenu(menu, inflater);
-
-
-    }*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -275,19 +266,6 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             if(etapa==6){
                 intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_RESUMENGASTO);
 
-                // Veo el estatus del acuse recibo
-               /* AcuseReciboRepositoryImpl acrepo=new AcuseReciboRepositoryImpl(getActivity());
-
-                AcuseRecibo acuse=acrepo.findsimple(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
-                if(acuse!=null) {
-                    //ya tengo acuse, por lo tanto ya se modificó en la supervision
-                    //muestro version del servidor
-                    intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_RESUMENGASTO);
-
-                }
-                else {
-                    intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_INFORMECOR);
-                }*/
 
             }
             else
@@ -539,14 +517,37 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         Log.d(TAG,"subiendo fotos caja"+activity.getLocalClassName());
 
         msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_COR);
-
-
         activity.startService(msgIntent);
 
+    }
 
 
-
-
-
+    private void actualizarImagenes() {
+        mViewModel.setUsuario(Constantes.CLAVEUSUARIO);
+        mViewModel.setIndice(Constantes.INDICEACTUAL);
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        MutableLiveData<Boolean> observable=new MutableLiveData<>();
+        observable.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                   alert.closeAlertDialog();
+                   listainfs = mViewModel.cargarGastos(etapa, indice, 2);
+                   Log.i(TAG,"finalizando");
+                    listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+                        @Override
+                        public void onChanged(List<InformeEtapa> informeEtapas) {
+                            Log. i(TAG,"a ver");
+                            if(informeEtapas.size()<1){
+                                mBinding.emptyStateText.setVisibility(View.VISIBLE);
+                            }
+                            mListAdapter.setInformeCompraList(informeEtapas);
+                            mListAdapter.notifyDataSetChanged();
+                        }
+                    });
+               }
+            });
+        String dirLog=getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
+        mViewModel.actualizarImagen(dirLog,observable);
     }
 }

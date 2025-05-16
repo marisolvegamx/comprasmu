@@ -52,7 +52,7 @@ public class TablaVersionesRepImpl extends BaseRepository<TablaVersiones> {
         dao.delete(object);
     }
 
-    public void deleteByIndice() {
+    public void deleteAll() {
         dao.deleteAll();
     }
 

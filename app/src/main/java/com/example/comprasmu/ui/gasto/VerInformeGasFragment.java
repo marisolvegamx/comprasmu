@@ -30,6 +30,7 @@ import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
+import com.example.comprasmu.ui.informe.VerInformeFragment;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -165,29 +166,11 @@ public class VerInformeGasFragment extends Fragment {
         Log.d(TAG,"CAMPOS TOT"+camposTienda);
         cf1 = new CreadorFormulario(camposTienda, getActivity());
 
-        //busco las muestras es preferences
-      /*  Gson gson = new Gson();
-        String jsonlis=buscarMuestras();
-        if(!jsonlis.equals("")) {
-            Type listType = new TypeToken<List<String>>() {}.getType();
-
-            List<TotalMuestra> nameList = gson.fromJson(jsonlis,  listType);
-
-
-
-            }*/
         llenarTablaConcep(null, detalles);
             mBinding.tblvigastos.setVisibility(View.VISIBLE);
 
     }
 
-    public void verImagen(String nombrearch){
-      //  ImageView imagen=(ImageView)v;
-       // imagen.get
-        Intent iverim=new Intent(getActivity(), RevisarFotoActivity.class);
-        iverim.putExtra(RevisarFotoActivity.IMG_PATH1,nombrearch);
-        startActivity(iverim);
-    }
 
 
 
@@ -195,7 +178,7 @@ public class VerInformeGasFragment extends Fragment {
     public void verFotos(){
 
         Bundle bundle = new Bundle();
-        bundle.putInt(com.example.comprasmu.ui.informe.VerInformeFragment.ARG_IDMUESTRA,informeSel);
+        bundle.putInt(VerInformeFragment.ARG_IDMUESTRA,informeSel);
         bundle.putString(ARG_TIPOINF, tipo);
         Fragment fragment = new GalFotosFragment();
         fragment.setArguments(bundle);
