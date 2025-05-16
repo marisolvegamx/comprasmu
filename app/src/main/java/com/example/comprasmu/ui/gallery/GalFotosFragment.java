@@ -22,12 +22,10 @@ import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Visita;
-import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.empaque.VerEmpaqueFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
@@ -59,7 +57,7 @@ public class GalFotosFragment extends Fragment {
     private static final String TAG="GalFotosFragment";
     public String tipoinf;
     LiveData<List<InformeEtapaDet>> listafotos;
-  ComprasLog compraslog;
+    ComprasLog compraslog;
 
     public static GalFotosFragment newInstance() {
         return new GalFotosFragment();
@@ -75,7 +73,7 @@ public class GalFotosFragment extends Fragment {
         igViewModel=new ViewModelProvider(this).get(InformesGenViewModel.class);
         root= inflater.inflate(R.layout.gal_fotos_fragment, container, false);
         cont=new MutableLiveData<>();
-       compraslog=ComprasLog.getSingleton();
+        compraslog=ComprasLog.getSingleton();
         return  root;
     }
 
@@ -155,9 +153,6 @@ public class GalFotosFragment extends Fragment {
             }
         });
 
-     //   List<ImagenDetalle> lista=this.buscarImagenes(1,2,null);
-
-
 
     }
     public void startuiInf(int infid){
@@ -183,8 +178,6 @@ public class GalFotosFragment extends Fragment {
                 }
             }
         });
-
-        //   List<ImagenDetalle> lista=this.buscarImagenes(1,2,null);
 
 
 
@@ -263,8 +256,6 @@ public class GalFotosFragment extends Fragment {
             }
         });
 
-        //   List<ImagenDetalle> lista=this.buscarImagenes(1,2,null);
-
 
 
     }
@@ -301,15 +292,10 @@ public class GalFotosFragment extends Fragment {
                     //  ImageGalleryAdapter adapter = new ImageGalleryAdapter(getContext());
                     adapter.setmSpacePhotos(fotos);
                     adapter.notifyDataSetChanged();
-                    //  recyclerView.setAdapter(adapter);
-
-
 
 
             }
         });
-
-        //   List<ImagenDetalle> lista=this.buscarImagenes(1,2,null);
 
 
 
@@ -340,17 +326,13 @@ public class GalFotosFragment extends Fragment {
 
         ponerFoto(getString(R.string.foto_codigo_produccion),informe.getFoto_codigo_produccion());
 
-       // ponerFoto(informe.getEnergia());
-      //  ponerFoto(getString(R.string.foto_num_tienda),informe.getFoto_num_tienda());
-       // ponerFoto(getString(R.string.foto_codigo_produccion)informe.getMarca_traslape());
+
         ponerFoto(getString(R.string.foto_posicion1),informe.getFoto_atributoa());
         ponerFoto(getString(R.string.foto_posicion2),informe.getFoto_atributob());
         ponerFoto(getString(R.string.foto_posicion3),informe.getFoto_atributoc());
         if(informe.getFoto_atributod()!=null)
-        ponerFoto(getString(R.string.foto_posicion4),informe.getFoto_atributod());
+            ponerFoto(getString(R.string.foto_posicion4),informe.getFoto_atributod());
         ponerFoto(getString(R.string.etiqueta_evaluacion),informe.getEtiqueta_evaluacion());
-       // ponerFoto(informe.getQr());
-      //  ponerFoto(informe.getAzucares());
 
 
     }
@@ -393,12 +375,7 @@ public class GalFotosFragment extends Fragment {
                             id.setId(pf.imagenId);
                             fotos.add(id);
                         }
-               /*  mBinding.ivuiprodex.setOnClickListener(new View.OnClickListener() {
-                     @Override
-                      public void onClick(View view) {
-                          verImagen(productoExhibidoFotos.get(0).ruta);
-                      }
-                  });*/
+
             }
 
             ponerFoto(getString(R.string.ticket_compra), informe.getTicket_compra());

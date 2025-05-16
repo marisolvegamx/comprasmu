@@ -220,4 +220,7 @@ public interface APIService {
     @GET("descimg")
     Call< List<ImagenDetalle>> getCambiosImagenes( @Query("indice") String indice, @Query("cvereco") String usuario,@Query("fec") String fecha);
 
+    @GET("descinformeEtapa")
+    Call<RespInfEtapaResponse> getCambiosInformeEtapa( @Query("indice") String indice, @Query("cvereco") String usuario, @Query("idinf") int idInforme);
+
 }
