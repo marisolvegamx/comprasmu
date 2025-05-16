@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
@@ -44,7 +46,8 @@ public class SyncWork  extends Worker {
     public void subirImagenes(){
         subirPendientes();
         //busco las imagenes pendientes de subir
-        ImagenDetRepositoryImpl imagenRepo=new ImagenDetRepositoryImpl(super.getApplicationContext());
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(super.getApplicationContext()).getImagenDetalleDao();
+        ImagenDetRepositoryImpl imagenRepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
         Calendar calhoy = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
         calhoy.setTime(new Date());
         calhoy.set(Calendar.HOUR_OF_DAY, -2);

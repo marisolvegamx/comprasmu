@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -51,7 +53,8 @@ public class VerInformeViewModel extends AndroidViewModel {
         context=application;
         icrepo=new InformeCompraRepositoryImpl(context);
         detrepo=new InformeComDetRepositoryImpl(context);
-        imagenDetRepository=new ImagenDetRepositoryImpl(context);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(context).getImagenDetalleDao();
+        this.imagenDetRepository= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
 
 
 

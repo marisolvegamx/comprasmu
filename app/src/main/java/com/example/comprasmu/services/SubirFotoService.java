@@ -14,6 +14,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.comprasmu.NavigationDrawerActivity;
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.SubirFoto;
 import com.example.comprasmu.data.remote.SubirFotoAlt;
@@ -112,7 +114,9 @@ public class SubirFotoService extends IntentService
              //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String dir=   this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
-                ImagenDetRepositoryImpl idrepo=new ImagenDetRepositoryImpl(this);
+                ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(this).getImagenDetalleDao();
+                ImagenDetRepositoryImpl idrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
+
                 sf.subirFoto(Constantes.CLAVEUSUARIO,dir, imagenSubir,indiceimagen, this,idrepo);
                // pvm.actualizarEstatusFoto(imagenSubir);
                // Thread.sleep(10000);
@@ -159,55 +163,7 @@ public class SubirFotoService extends IntentService
 
 
     }
-    //para subirlas en fila
-    private void handleUploadImgFila()
-    {
 
-        // Instanciar y registrar un Observador
-        SubirFotoListener objObservador  = new SubirFotoListener();
-
-        try {
-            Log.d(TAG,"cadena "+cadenarutas);
-            if(this.cadenarutas.length()>0) { //o sea trae algo
-
-                String cadenarutas = this.cadenarutas;
-                String partes[] = cadenarutas.split("¬");
-                List<ImagenDetalle> listaimagenes = new ArrayList<ImagenDetalle>();
-
-
-                for (int i = 0; i < partes.length; i++) {
-                    if(partes[i].length()>0) {
-                        ImagenDetalle imagen = new ImagenDetalle();
-                        imagen.setId(1);
-                        imagen.setIndice(indiceimagen);
-                        imagen.setRuta(partes[i]);
-                        listaimagenes.add(imagen);
-                    }
-                }
-
-                // notificar();
-                SubirFotoAlt sf = new SubirFotoAlt();
-              //  sf.agregarObservador(objObservador);
-                //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String dir = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
-
-                   ImagenDetRepositoryImpl idrepo = new ImagenDetRepositoryImpl(this);
-                  // sf.subirFoto(Constantes.CLAVEUSUARIO, dir, listaimagenes, indiceimagen, this, idrepo);
-
-
-                // pvm.actualizarEstatusFoto(imagenSubir);
-                // Thread.sleep(10000);
-                // enviarOtra();
-            }
-        }catch (Exception ex){
-
-            Log.e(TAG,"error"+ex.getMessage());
-            ex.printStackTrace();
-        }
-
-
-    }
     @Override
     public void onCreate()
     {

@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -78,7 +80,10 @@ public class PruebaFotosFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        this.imagenDetRepository=new ImagenDetRepositoryImpl(getContext());
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(getContext()).getImagenDetalleDao();
+        this.imagenDetRepository= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
+
+
         this.repository = new InformeCompraRepositoryImpl(getContext());
 
         this.visitaRepository=new VisitaRepositoryImpl(getContext());

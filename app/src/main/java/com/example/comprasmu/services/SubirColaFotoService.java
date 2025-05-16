@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.SubirFotoRetro;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
@@ -105,7 +107,9 @@ public class SubirColaFotoService extends IntentService
                     sf.agregarObservador(objObservador);
                     //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    ImagenDetRepositoryImpl idrepo=new ImagenDetRepositoryImpl(this);
+                    ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(this).getImagenDetalleDao();
+                    ImagenDetRepositoryImpl idrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
+
                     sf.subirFoto(Constantes.CLAVEUSUARIO,dir, listaimagenes.get(0),indiceimagen, this,idrepo);
                 }
 
@@ -169,8 +173,9 @@ public class SubirColaFotoService extends IntentService
                 SubirFotoRetro sf = new SubirFotoRetro();
                 sf.agregarObservador(objObservador);
                 //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
+                ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(SubirColaFotoService.this).getImagenDetalleDao();
+                ImagenDetRepositoryImpl idrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
 
-                ImagenDetRepositoryImpl idrepo = new ImagenDetRepositoryImpl(SubirColaFotoService.this);
                 try {
                     sf.subirFoto(Constantes.CLAVEUSUARIO, dir, listaimagenes.get(index), indiceimagen, SubirColaFotoService.this, idrepo);
                 } catch (Exception e) {

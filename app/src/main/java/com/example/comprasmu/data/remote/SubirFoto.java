@@ -6,6 +6,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
@@ -119,7 +121,8 @@ public class SubirFoto implements ImageUploadCallback {
            //filenameGaleria=getFilename();
 
         try {
-            this.idrepo = new ImagenDetRepositoryImpl(context);
+            ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(context).getImagenDetalleDao();
+            this.idrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
             this.imagen=imagen;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String uploadFileArrayList = dir + imagen.getRuta();
