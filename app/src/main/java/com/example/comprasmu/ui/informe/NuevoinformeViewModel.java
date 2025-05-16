@@ -16,7 +16,9 @@ import androidx.lifecycle.Observer;
 
 import com.example.comprasmu.R;
 
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -95,7 +97,8 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public NuevoinformeViewModel(@NonNull Application application) {
         super(application);
         this.repository = new InformeCompraRepositoryImpl(application);
-        this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(application).getImagenDetalleDao();
+        this.imagenDetRepository= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
         this.detalleRepo=new InformeComDetRepositoryImpl(application);
 
         this.visitaRepository=new VisitaRepositoryImpl(application);

@@ -10,6 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.ReactivoDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -54,7 +56,8 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         this.application=application;
         visitaRepository = new VisitaRepositoryImpl(application);
         prodeRepository=new ProductoExhibidoRepositoryImpl(application);
-        imdRepository = new ImagenDetRepositoryImpl(application);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(application).getImagenDetalleDao();
+        this.imdRepository= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
         idrepo = new InformeComDetRepositoryImpl(application);
         lcRepository=new ListaCompraDetRepositoryImpl(application);
         directorio=application.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";

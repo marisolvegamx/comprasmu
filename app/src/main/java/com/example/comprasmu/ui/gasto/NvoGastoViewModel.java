@@ -9,6 +9,7 @@ import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 
 import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 
@@ -48,7 +49,8 @@ public class NvoGastoViewModel extends AndroidViewModel {
         super(application);
         this.application = application;
         this.gasdetrepo=new InfGastoDetRepositoryImpl(application);
-        imagenDetRepository = new ImagenDetRepositoryImpl(application);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(application).getImagenDetalleDao();
+        this.imagenDetRepository= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
         infEtaRepository = new InfEtapaRepositoryImpl(application);
         compraslog=ComprasLog.getSingleton();
     }

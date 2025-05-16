@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
@@ -57,7 +58,8 @@ public class NvaCorreViewModel extends AndroidViewModel {
         this.corEtiquetadoCajaDetDao= ComprasDataBase.getInstance(application).getCorEtiquetadoCajaDetDao();
         corEtiquetadoCajaDetDao=ComprasDataBase.getInstance(application).getCorEtiquetadoCajaDetDao();
         this.corecdrepository=CorEtiqCajaDetRepoImpl.getInstance(corEtiquetadoCajaDetDao);
-        this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(application).getImagenDetalleDao();
+        this.imagenDetRepository= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
     }
 
     public int insertarCorreccion(int solicitudid,String indice,int numFoto,String ruta1, String ruta2,String ruta3,String ruta4){

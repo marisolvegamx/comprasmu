@@ -243,7 +243,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         coloresTienda.put("3",BitmapDescriptorFactory.HUE_GREEN);//verde
         coloresTienda.put("2",BitmapDescriptorFactory.HUE_YELLOW);//amarillo
         coloresTienda.put("1",BitmapDescriptorFactory.HUE_RED);
-         ArrayList<DescripcionGenerica> listaFecha;
+        ArrayList<DescripcionGenerica> listaFecha;
         listaFecha=new ArrayList<DescripcionGenerica>();
         listaFecha.add(new DescripcionGenerica(1,"1 "+getString(R.string.anio)));
         listaFecha.add(new DescripcionGenerica(2,"2 "+getString(R.string.anio)+"S"));

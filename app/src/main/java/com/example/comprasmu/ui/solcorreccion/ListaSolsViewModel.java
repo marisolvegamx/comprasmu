@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -167,7 +168,8 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     }
     public LiveData<ImagenDetalle> buscarImagenCom(int numfoto){
-        imrepo=new ImagenDetRepositoryImpl(context);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(context).getImagenDetalleDao();
+        this.imrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
         return imrepo.find(numfoto);
     }
 

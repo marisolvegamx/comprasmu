@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -44,7 +45,8 @@ public class NvaCorreECViewModel extends AndroidViewModel {
         this.solRepo=new SolicitudCorRepoImpl(application);
         this.corEtiquetadoDao= ComprasDataBase.getInstance(application).getCorEtiquetadoCajaDao();
         this.corecrepository=CorEtiqCajaRepoImpl.getInstance(corEtiquetadoDao);
-        this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(application).getImagenDetalleDao();
+        this.imagenDetRepository= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
     }
 
 

@@ -147,23 +147,17 @@ public class NvoEnvioFragment extends Fragment {
             lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
             //reviso si es edicion y ya tengo info en temp
 
-
             svcli = root.findViewById(R.id.llnvpregcli);
             svfecha = root.findViewById(R.id.llnvpregfecha);
             svrecibe = root.findViewById(R.id.llnvpregrecibe);
             svsello = root.findViewById(R.id.llnvpresello);
-
             svcoment = root.findViewById(R.id.llnvprecomen);
-
             aceptar1 = root.findViewById(R.id.btnnvacecli);
-
             aceptar2 = root.findViewById(R.id.btnnvacfecha);
             aceptar3 = root.findViewById(R.id.btnnvacrec);
             aceptar4 = root.findViewById(R.id.btnnvacepsello);
             guardar = root.findViewById(R.id.btnnvguardar);
-
             btnrotar = root.findViewById(R.id.btnnvrotar);
-
             btntomarf = root.findViewById(R.id.btnnvfoto);
             fotomos=root.findViewById(R.id.ivnvfotosello);
             niviewModel = new ViewModelProvider(requireActivity()).get(NuevoInfEtapaViewModel.class);
@@ -171,15 +165,11 @@ public class NvoEnvioFragment extends Fragment {
             mViewModel = new ViewModelProvider(requireActivity()).get(NvaPreparacionViewModel.class);
             lcViewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
             milog = ComprasLog.getSingleton();
-
             svcli.setVisibility(View.GONE);
             svfecha.setVisibility(View.GONE);
             svrecibe.setVisibility(View.GONE);
             svsello.setVisibility(View.GONE);
-
             svcoment.setVisibility(View.GONE);
-
-
             txtfotosello = root.findViewById(R.id.txtnvfotosello);
             txtfechaent = root.findViewById(R.id.txtnvfechaentr);
             txtnombrerec=root.findViewById(R.id.txtnvnombrerec);
@@ -270,16 +260,27 @@ public class NvoEnvioFragment extends Fragment {
          //   Integer[] clientesprev = mViewModel.tieneInforme(3);
 
             convertirLista(listacomp);
+            //reviso que tenga la guia
+            if(listaClientes.size() > 0) {
+                String infEnvioId = PreferencesGuias.buscarInformeEnvio(getActivity(), Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
+                milog.info(TAG,"onCreateView","guia-informe envio:"+infEnvioId);
+                if (infEnvioId == null||infEnvioId.equals(""))  //tengo varios clientes
+                {
+                    milog.info(TAG,"onCreateView","no puede hacer informe envio");
+
+                    Toast.makeText(getContext(), R.string.no_puede_hacer_infenv, Toast.LENGTH_SHORT).show();
+                    return root;
+                }
+            }
             if (listaClientes.size() > 1) {
-                    //tengo varios clientes
-                    preguntaAct = 1;
+             preguntaAct = 1;
 
 
-                    cargarPlantas(listaClientes, "");
+                cargarPlantas(listaClientes, "");
 
-                    mViewModel.variasClientes = true;
-                    svcli.setVisibility(View.VISIBLE);
-                    aceptar1.setEnabled(true);
+                mViewModel.variasClientes = true;
+                svcli.setVisibility(View.VISIBLE);
+                aceptar1.setEnabled(true);
            } else if (listaClientes.size() > 0) {
                     preguntaAct = 2;
 
@@ -298,6 +299,10 @@ public class NvoEnvioFragment extends Fragment {
                     informetemp.setIndice(Constantes.INDICEACTUAL);
                     informetemp.setTotal_cajas(totalcajas);
                     ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(informetemp);
+            }else{
+                Toast.makeText(getContext(), R.string.no_puede_hacer_infenv, Toast.LENGTH_SHORT).show();
+                milog.info(TAG,"onCreateView","no puede hacer informe envio");
+
             }
 
             if (isEdicion) { //busco el informe
@@ -339,13 +344,13 @@ public class NvoEnvioFragment extends Fragment {
                     }
                 }
             });
-      aceptar2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            aceptar2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                guardarInf();
-            }
-        });
+                    guardarInf();
+                }
+            });
             aceptar3.setOnClickListener(new View.OnClickListener() { //foto
                 @Override
                 public void onClick(View view) {
@@ -367,8 +372,6 @@ public class NvoEnvioFragment extends Fragment {
 
                 }
             });
-
-
 
             btnrotar.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -842,7 +845,7 @@ public class NvoEnvioFragment extends Fragment {
 
         }
 
-        //ya se puede varios informes de etiquetado para la reactivacion
+        //ya se puede tener varios informes de envio por la reactivacion
 
         private  void convertirLista(List<ListaCompra>lista){
             listaClientes =new ArrayList<DescripcionGenerica>();

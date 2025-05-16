@@ -14,7 +14,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
@@ -39,7 +41,9 @@ public class NuevaFotoExhibViewModel extends AndroidViewModel {
     public NuevaFotoExhibViewModel(@NonNull Application application) {
         super(application);
         this.repository = new ProductoExhibidoRepositoryImpl(application);
-        this.imagenDetRepository=new ImagenDetRepositoryImpl(application);
+        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(application).getImagenDetalleDao();
+        this.imagenDetRepository= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
+
     }
 
     public void guardarFoto(String rutaFoto, int idcliente,String cliente,int visitasId,Activity actividad,NuevoinformeViewModel ninfvm) {
