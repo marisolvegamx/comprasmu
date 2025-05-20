@@ -290,7 +290,7 @@ public class DescargarFragment extends Fragment {
             mBinding.btndeanexo1.setVisibility(View.GONE);
             mBinding.btndeanexo2.setVisibility(View.GONE);
             mBinding.btndeanexo3.setVisibility(View.GONE);
-            if(docsenvio==null){
+            if(docsenvio==null||docsenvio.getInv_id()==0){
                 mBinding.txtdemensaje.setText(R.string.empty_state_text);
                 mBinding.txtdemensaje.setVisibility(View.VISIBLE);
                 return;
@@ -321,7 +321,9 @@ public class DescargarFragment extends Fragment {
             mBinding.lldeseldoc.setVisibility(View.VISIBLE);
             mBinding.btndefda.setVisibility(View.VISIBLE);
             //guardo si ya hay guias
-            PreferencesGuias.guardarInformeEnvio(getActivity(),Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,idcap);
+            if(idcap>0) {
+                PreferencesGuias.guardarInformeEnvio(getActivity(), Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO, idcap);
+            }
             if(docsenvio.getFda()==1)
                 mBinding.btndefda.setVisibility(View.VISIBLE);
             if(docsenvio.getRecoleccion()==1)

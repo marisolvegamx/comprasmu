@@ -982,6 +982,7 @@ public class PeticionesServidor {
                 if (response.isSuccessful() && response.body() != null) {
 
                     DocumentosEnvio docs = response.body();
+                    Log.i(TAG,">>"+docs.getCiudadId());
                     //reviso si está actualizado
                         petsocor.mostrarBotones(docs);
 

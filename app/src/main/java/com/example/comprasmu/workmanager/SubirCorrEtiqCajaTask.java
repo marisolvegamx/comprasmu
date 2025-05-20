@@ -93,7 +93,7 @@ public class SubirCorrEtiqCajaTask extends AsyncTask<String, Float, Integer> {
     @Override
     protected void onCancelled (Integer cantidadProcesados) {
         //   TV_mensaje.setText("DESPUÉS de CANCELAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
-        Log.v(TAG, "DESPUÉS de CANCELAR envio. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
+        Log.v(TAG, "DESPUÉS de CANCELAR envio. Se han descargado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
 
         // TV_mensaje.setTextColor(Color.RED);
     }

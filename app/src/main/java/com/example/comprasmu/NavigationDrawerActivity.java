@@ -65,6 +65,7 @@ import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
+import com.example.comprasmu.workmanager.DescargasAutomaticasControl;
 import com.example.comprasmu.workmanager.NotificacionesWork;
 import com.example.comprasmu.workmanager.SyncWork;
 import com.google.android.material.navigation.NavigationView;
@@ -100,20 +101,12 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeUnit;
 
 
@@ -308,17 +301,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                         findItem(R.id.nav_notificaciongen));
             }
             if (Constantes.ETAPAACTUAL == 2) {
-                //   gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                //         findItem(R.id.nav_solcor2));
+
                 gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                         findItem(R.id.nav_notificaciongen));
-            /*txtcancel=(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                    findItem(R.id.nav_cancel));*/
+
 
             }
             if (Constantes.ETAPAACTUAL == 3) {
-                //Ya lo hago desde el menu
-                // pedirInformes(0);
+
+
                 gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                         findItem(R.id.nav_notificaciongen));
             }
@@ -332,8 +323,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                         findItem(R.id.nav_notificaciongen));
             }
             if (Constantes.ETAPAACTUAL == 6) {
-                //Ya lo hago desde el menu
-                // pedirInformes(0);
+
                 gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                         findItem(R.id.nav_notificaciongen));
             }
@@ -351,29 +341,20 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     .setRequiresBatteryNotLow(true)
                     .build();
 
-     /*    PeriodicWorkRequest simpleRequest =
-                new PeriodicWorkRequest.Builder(SyncWork.class, 30, TimeUnit.MINUTES)
-                        .setConstraints(constraints)
-                        .addTag("comprassync_worker")
-                        .build();
-           WorkManager
-                .getInstance(this)
-                .enqueueUniquePeriodicWork(
-                "comprassync_worker",
-                ExistingPeriodicWorkPolicy.KEEP,
-                simpleRequest);*/
 
         PeriodicWorkRequest simpleRequest =
-                new PeriodicWorkRequest.Builder(NotificacionesWork.class, 6, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(NotificacionesWork.class, 10, TimeUnit.SECONDS)
                         .setConstraints(constraints)
                         .addTag("comprassync_worker2")
                         .build();
             WorkManager
                     .getInstance(this)
                     .enqueueUniquePeriodicWork("comprassync_worker2", ExistingPeriodicWorkPolicy.KEEP,simpleRequest);
-         //elimino todos los procesos que se hayan iniciado
+
+         //elimino todos los procesos que se hayan iniciado primera version
             WorkManager
                     .getInstance(this).cancelAllWorkByTag("comprassync_worker");
+
         }catch(Exception ex){
 
 
@@ -574,6 +555,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(rcv);
         Log.i(TAG," detuve");
+        WorkManager
+                .getInstance(this).cancelAllWorkByTag("comprassync_worker2");
     }
 //esta funcion no funciona nunca se llama
     @Override
@@ -929,7 +912,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG," mori");
-        // unregisterReceiver(onDownloadComplete);
+        WorkManager.getInstance(this).cancelAllWorkByTag("comprassync_worker2");
     }
 
     @Override
@@ -1000,6 +983,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
         totalNotifGen.setValue(totalnotif);
     }
+
 
     public class ListenerNavRevRec implements IListenerRevRec{
 

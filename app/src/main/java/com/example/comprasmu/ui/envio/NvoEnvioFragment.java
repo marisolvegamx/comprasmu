@@ -264,7 +264,7 @@ public class NvoEnvioFragment extends Fragment {
             if(listaClientes.size() > 0) {
                 String infEnvioId = PreferencesGuias.buscarInformeEnvio(getActivity(), Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
                 milog.info(TAG,"onCreateView","guia-informe envio:"+infEnvioId);
-                if (infEnvioId == null||infEnvioId.equals(""))  //tengo varios clientes
+                if (infEnvioId == null||infEnvioId.equals("")||infEnvioId.equals("0"))
                 {
                     milog.info(TAG,"onCreateView","no puede hacer informe envio");
 

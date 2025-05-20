@@ -81,8 +81,8 @@ public class DescargasIniciales {
             infetarepo=new InfEtapaRepositoryImpl(this.act);
             visRepo=new VisitaRepositoryImpl(this.act);
             infrepo=new InformeCompraRepositoryImpl(this.act);
-            listacompras();
-
+          //  listacompras();
+            pedirCorrecciones(0,0);
         }
 
 

@@ -158,6 +158,12 @@ public class NvaPreparacionFragment extends Fragment {
 
                     nombrePlantaSel = listacomp.get(0).getPlantaNombre();
                     plantaSel = listacomp.get(0).getPlantasId();
+                    //reviso si ya tengo informe
+                    InformeEtapa inf=mViewModel.getInformexPlantaEta(plantaSel,1,Constantes.INDICEACTUAL,0);
+                    if(inf!=null) {
+                        Toast.makeText(getActivity(), "No hay datos que mostrar", Toast.LENGTH_SHORT).show();
+                        return root;
+                    }
                     clienteId = listacomp.get(0).getClientesId();
                     clienteNombre = listacomp.get(0).getClienteNombre();
                     InformeEtapa informetemp = new InformeEtapa();
@@ -172,7 +178,7 @@ public class NvaPreparacionFragment extends Fragment {
 
         }
         else{
-            Toast.makeText(getActivity(), "No puede hay datos que mostrar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "No hay datos que mostrar", Toast.LENGTH_SHORT).show();
             return root;
         }
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.

@@ -28,6 +28,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.WorkManager;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
@@ -321,6 +322,8 @@ public class NvaCorreccionPreFragment extends Fragment {
 
     public void enviarSolicitud() {
         try {
+            //cancelo las actualizaciones
+            WorkManager.getInstance(getContext()).cancelAllWorkByTag("comprassync_worker2");
 
             CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
             SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());

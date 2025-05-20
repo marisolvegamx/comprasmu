@@ -224,8 +224,6 @@ public class ListaSolsViewModel extends AndroidViewModel {
                     //quito en nuevo codigo
                     if (compradet.getNvoCodigo()!=null&&compradet.getNvoCodigo() != "") {
                        milog.grabarError(TAG,"procesarCanceladas","quitando el codigo"+compradet.getNvoCodigo());
-
-
                         String nuevoscods = compradet.getNvoCodigo().replace(codigo + ";", "");//elimino elcodigo
                         nuevoscods = compradet.getNvoCodigo().replace(codigo, "");//elimino elcodigo
 
@@ -235,13 +233,10 @@ public class ListaSolsViewModel extends AndroidViewModel {
                     det.setMotivoCancel(cancelada.getVas_observaciones());
                     det.setFechaCancel(cancelada.getVas_fecha());
                     det.setEstatus(2);
-
                     infcrepo.insert(det);
                     infcrepo.actualizarEstatus(det.getId(), 2);
                 }
             }
-
-
 
 
             }
@@ -260,8 +255,6 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
             infetarepo.insert(det);
             infetarepo.actualizarEstatus(det.getId(), 0);
-
-
 
         }
 
