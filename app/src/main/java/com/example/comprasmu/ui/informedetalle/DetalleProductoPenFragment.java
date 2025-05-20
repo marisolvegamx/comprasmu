@@ -757,14 +757,6 @@ public class DetalleProductoPenFragment extends Fragment {
         boolean resp=false;
         aceptar.setEnabled(false);
 
-      /*  if (textoint != null) {
-            String valor = textoint.getText().toString();
-            if(valor.length()<=0){
-                return;
-            }
-
-        }*/
-
         switch (preguntaAct.getNombreCampo()){
 
             case Contrato.TablaInformeDet.COSTO:
