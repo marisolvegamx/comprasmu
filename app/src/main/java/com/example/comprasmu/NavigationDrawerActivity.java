@@ -65,7 +65,7 @@ import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.workmanager.DescargasAutomaticasControl;
+//import com.example.comprasmu.workmanager.DescargasAutomaticasControl;
 import com.example.comprasmu.workmanager.NotificacionesWork;
 import com.example.comprasmu.workmanager.SyncWork;
 import com.google.android.material.navigation.NavigationView;
