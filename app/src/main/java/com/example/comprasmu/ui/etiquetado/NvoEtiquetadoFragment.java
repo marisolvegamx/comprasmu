@@ -270,18 +270,7 @@ public class NvoEtiquetadoFragment extends Fragment implements   DescargarListaA
                 }
 
             });
-    /*    potra.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                aceptar5.setEnabled(true);
-            }
-        });*/
-      /*  pcoincide.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                aceptar6.setEnabled(true);
-            }
-        });*/
+
             btnqr.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
