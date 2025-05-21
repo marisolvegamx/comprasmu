@@ -78,16 +78,7 @@ public class SubirFotoService extends IntentService
                 imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
                 indiceimagen=intent.getStringExtra(EXTRA_INDICE);
                 handleUploadImg();
-            }/*else
-                if (ACTION_UPLOAD_LISTA.equals(action)) //para informe compra foto en fila
-            {
-                //  Log.d(TAG,"action"+action);
-              //  imagenSubir=new ImagenDetalle();
-                cadenarutas=intent.getStringExtra(EXTRA_IMG_PATH);
-          //      imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
-                indiceimagen=intent.getStringExtra(EXTRA_INDICE);
-                handleUploadImgFila();
-            }*/
+            }
             else
 
             {
@@ -118,9 +109,7 @@ public class SubirFotoService extends IntentService
                 ImagenDetRepositoryImpl idrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
 
                 sf.subirFoto(Constantes.CLAVEUSUARIO,dir, imagenSubir,indiceimagen, this,idrepo);
-               // pvm.actualizarEstatusFoto(imagenSubir);
-               // Thread.sleep(10000);
-                // enviarOtra();
+
             }catch (Exception ex){
 
                 Log.e(TAG,"error"+ex.getMessage());
@@ -140,7 +129,7 @@ public class SubirFotoService extends IntentService
              String action = intent.getAction();
             SubirFoto sf = new SubirFoto();
             sf.agregarObservador(objObservador);
-            //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
+            Log.i(TAG,"ahora si voy a subir ruta:"+imagenSubir.getRuta()+" tipo:"+tipo);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dir=   this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
            if(action.equals(ACTION_UPLOAD_COR)){
@@ -152,9 +141,7 @@ public class SubirFotoService extends IntentService
                etapadetRepo=new InfEtapaDetRepoImpl(getApplicationContext());
            }
             sf.subirFotoGen(Constantes.CLAVEUSUARIO,dir, imagenSubir,indiceimagen, this,tipo);
-            // pvm.actualizarEstatusFoto(imagenSubir);
-            // Thread.sleep(10000);
-            // enviarOtra();
+
         }catch (Exception ex){
 
             Log.e(TAG,"error"+ex.getMessage());
@@ -179,12 +166,10 @@ public class SubirFotoService extends IntentService
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         //notificationManager.cancel(0);
+        Log.e(TAG,"task removed");
     }
 
-    private void onErrors(Throwable throwable) {
-        sendBroadcastMeaasge("Error in file upload " + throwable.getMessage());
-        Log.e(TAG, "onErrors: ", throwable);
-    }
+
 
     public void sendBroadcastMeaasge(String message) {
         Intent localIntent = new Intent("my.own.broadcast");
@@ -221,10 +206,7 @@ public class SubirFotoService extends IntentService
     }
 
 
-       // protected void onPreExecute() {
-            // mostramos el círculo de progreso
-           // progressBar.setVisibility(View.VISIBLE);
-       // }
+
 
     private void sendProgressUpdate(boolean downloadComplete) {
 
@@ -277,11 +259,12 @@ public class SubirFotoService extends IntentService
             //todo
             //veo si puedo cambiar el estatus del informe
            // pvm.actualizarEstatuscoloInf(0);
-            Log.d(TAG,"ya termino");
+            Log.i(TAG,"ya termino");
             Constantes.SINCRONIZANDO=0;
         }
         public void onSuccess2(ImagenDetalle imagen){
             downloadComplete = true;
+            Log.i(TAG," onSuccess2 ya termino tipo:"+tipo);
            if(tipo.equals("correccion"))
                 //actualizo correccion
             correccionRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
@@ -295,25 +278,8 @@ public class SubirFotoService extends IntentService
         public void onSuccessEtapa(ImagenDetalle imagen){
             downloadComplete = true;
 
-            //actualizo correccion
-
-            //  onDownloadComplete(downloadComplete);
 
         }
-
-       /* public void onRequestError(String errorMessage, int index){
-            Log.d("ejemplo","Hubo un errror");
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
-            builder.setTitle(R.string.app_name);
-            builder.setIcon(android.R.drawable.ic_dialog_info);
-            builder.setMessage(R.string.error_imagen);
-            builder.setNeutralButton("OK", null);
-
-            android.app.AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-            alertDialog.setCancelable(false);
-        }*/
-
 
     }
 

@@ -70,14 +70,14 @@ public class SubirFoto implements ImageUploadCallback {
             this.imagen=imagen;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String uploadFileArrayList = dir + imagen.getRuta();
-            Log.d(TAG, "ahora si voy a subir" + uploadFileArrayList);
+            Log.i(TAG, "ahora si voy a subir" + uploadFileArrayList);
             File file = new File(uploadFileArrayList);
             ProgressRequestBody fileBody = new ProgressRequestBody(file, "image", this);
             /* Notice here the first argument in the createFormData function is the name of the key whose value will be the file you send */
             MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
             // MultipartBody.Part is used to send also the actual file name
 
-// add another part within the multipart request
+            // add another part within the multipart request
             RequestBody ridlocalim =
                     RequestBody.create(MultipartBody.FORM,imagen.getId()+"" );
             RequestBody rruta =
@@ -126,14 +126,14 @@ public class SubirFoto implements ImageUploadCallback {
             this.imagen=imagen;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String uploadFileArrayList = dir + imagen.getRuta();
-            Log.d(TAG, "ahora si voy a subirgen" + uploadFileArrayList);
+            Log.i(TAG, "ahora si voy a subirgen" + uploadFileArrayList);
             File file = new File(uploadFileArrayList);
             ProgressRequestBody fileBody = new ProgressRequestBody(file, "image", this);
             /* Notice here the first argument in the createFormData function is the name of the key whose value will be the file you send */
             MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
             // MultipartBody.Part is used to send also the actual file name
 
-// add another part within the multipart request
+            // add another part within the multipart request
             RequestBody ridlocalim =
                     RequestBody.create(MultipartBody.FORM, imagen.getId() + "");
             RequestBody rruta =

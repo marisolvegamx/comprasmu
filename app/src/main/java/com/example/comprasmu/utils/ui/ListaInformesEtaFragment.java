@@ -295,7 +295,10 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     public void onClickSubir(int informe, String tipo) {
         if(NavigationDrawerActivity.isOnlineNet(getContext())) {
             Constantes.SINCRONIZANDO=1;
+
             if(tipo.equals("e")) {
+                Log.i(TAG, "onClickSubir preparando informe para subir tipo:"+tipo+" etapa:"+etapa+" informe"+informe);
+                milog.grabarError(TAG,"onClickSubir ","preparando informe para subir tipo:"+tipo+" etapa:"+etapa+" informe"+informe);
                 if(this.etapa==5) {
                     InformeEnvPaqEnv envio=npViewModel.prepararInformeEnvPaq(informe);
                     SubirInformeEnvTask miTareaAsincrona = new SubirInformeEnvTask(envio,getActivity());
@@ -325,7 +328,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     subirFotos(getActivity(),informeEta);
                 }
 
-                Log.d(TAG, "preparando informe**********");
+
              //   NuevoinformeFragment.subirFotos(getActivity(), informeenv);
             }else
             if(tipo.equals("action_selclitocor2")){//correccion
@@ -441,14 +444,14 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
                 msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
                 // Constantes.INDICEACTUAL
-                Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+                Log.i(TAG,"subiendo fotos"+activity.getLocalClassName()+"  archivo:"+imagen.getRuta());
 
                 msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
 
                 //cambio su estatus a subiendo
                 imagen.setEstatusSync(1);
                 activity.startService(msgIntent);
-                //cambio su estatus a subiendo
+
 
 
 
