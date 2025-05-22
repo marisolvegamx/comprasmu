@@ -66,6 +66,7 @@ public class ListaSelecFragment extends Fragment {
 
 
     public void setupListAdapter() {
+
         adaptadorLista = new AdaptadorListas((AppCompatActivity) getActivity(),mViewModel);
 
         objetosLV.setAdapter(adaptadorLista);

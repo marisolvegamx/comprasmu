@@ -319,7 +319,7 @@ public class DescargarFragment extends Fragment {
                 Log.d(TAG,"algo salió mal con la consulta de listas");
             //ponemos botones
             mBinding.lldeseldoc.setVisibility(View.VISIBLE);
-            mBinding.btndefda.setVisibility(View.VISIBLE);
+           mBinding.btndeguia.setVisibility(View.VISIBLE);
             //guardo si ya hay guias
             PreferencesGuias.guardarInformeEnvio(getActivity(),Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,idcap);
             if(docsenvio.getFda()==1)
@@ -333,9 +333,6 @@ public class DescargarFragment extends Fragment {
             if(docsenvio.getAnexo3()==1)
                 mBinding.btndeanexo3.setVisibility(View.VISIBLE);
         }
-        //  void estatusInf(int es);
-        //  void estatusLis(int es);
-        // void imagenesEtapa(RespInfEtapaResponse infoResp);
 
 
     }
