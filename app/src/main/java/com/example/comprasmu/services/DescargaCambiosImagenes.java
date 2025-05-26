@@ -28,8 +28,7 @@ import java.util.Observable;
 
 /*****proceso para descargar la imagenes que cambiaron por una correccion***/
 public class DescargaCambiosImagenes
-        //extends AsyncTask<String, Void, Void>
-        {
+{
 
         TablaVersionesRepImpl tablaVersionesRepo;
         SimpleDateFormat sdfformat;
