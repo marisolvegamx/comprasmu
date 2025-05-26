@@ -19,18 +19,13 @@ import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.comprasmu.data.PeticionesServidor;
-import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.modelos.Contrato;
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
@@ -48,38 +43,28 @@ import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
+import com.example.comprasmu.services.DescAutomaticasServiceManager;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.home.HomeActivity;
-import com.example.comprasmu.ui.home.MasPruebasActivity;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
-import com.example.comprasmu.ui.informe.DetalleCancelado;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
-import com.example.comprasmu.ui.mantenimiento.ConfiguracionCamFragment;
 import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
-import com.example.comprasmu.ui.notificaciones.ListaNotifEtiqViewModel;
 import com.example.comprasmu.ui.notificaciones.NotificacionGen;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
-import com.example.comprasmu.ui.solcorreccion.SelNotifFragment;
-import com.example.comprasmu.ui.tiendas.MapaCdFragment;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
-//import com.example.comprasmu.workmanager.DescargasAutomaticasControl;
-import com.example.comprasmu.workmanager.NotificacionesWork;
-import com.example.comprasmu.workmanager.SyncWork;
+import com.example.comprasmu.services.DescargasAutomaticasService;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -88,26 +73,17 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
 import androidx.navigation.Navigation;
-
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
-
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 /*esta es la clase principal con el menu***/
@@ -336,7 +312,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             } else {
                 requestPermission();
             }
-            Constraints constraints = new Constraints.Builder()
+          /*  Constraints constraints = new Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .setRequiresBatteryNotLow(true)
                     .build();
@@ -350,32 +326,24 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             WorkManager
                     .getInstance(this)
                     .enqueueUniquePeriodicWork("comprassync_worker2", ExistingPeriodicWorkPolicy.KEEP,simpleRequest);
-
+*/
          //elimino todos los procesos que se hayan iniciado primera version
             WorkManager
-                    .getInstance(this).cancelAllWorkByTag("comprassync_worker");
+                    .getInstance(this).cancelAllWorkByTag("comprassync_worker2");
 
         }catch(Exception ex){
 
 
             flog.grabarError(TAG,"oncreate",ex.getMessage());
         }
-       // flog.grabarError("archivo creado");
-       /* ServicioCompras sbt = new ServicioCompras();
 
-
-        try {
-            sbt.iniciar(this.getApplicationContext(), "marisol");
-        } catch (Exception e) {
-            Log.d(TAG,"Error al iniciar el servicio");
-            e.printStackTrace();
-        }*/
     }
 
     @Nullable
     @Override
     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
    //   initializeCountDrawer();
+      //  DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
 
         return super.onCreateView(parent, name, context, attrs);
     }
@@ -383,7 +351,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     //saber si tiene mas de una ciudad para mostrar seleccionar ciudad
     public void revisarCiudades(){
 
-        Log.d(TAG,"ciudades"+Constantes.CIUDADTRABAJO);
+            Log.d(TAG,"ciudades"+Constantes.CIUDADTRABAJO);
 
             mViewModel.getCiudades().observe(this, data -> {
                // if(data!=null)
@@ -851,20 +819,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
           //  Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
                 //veo las muestras canceladas
                 if (corrResp.getCanceladas() != null)
-                    if (etapa == 2)//solo para compra
+
                         for (MuestraCancelada cancel :
                                 corrResp.getCanceladas()) {
-                            //busco el informedetalle y actualizo el estatus
-                            scViewModel.procesarCanceladas(cancel);
+                            if(cancel.getIne_etapa()==2) {
+                                //busco el informedetalle y actualizo el estatus
+                                scViewModel.procesarCanceladas(cancel);
+                            }else {
 
-                        }
-                    else
-                        for (MuestraCancelada cancel :
-                                corrResp.getCanceladas()) {
-                           // Log.d(TAG,"dddddd"+cancel.getInf_id());
-                            //busco el informedetalle y actualizo el estatus
-                            scViewModel.procesarCanceladasEta(cancel); //canceladas será 0
+                                scViewModel.procesarCanceladasEta(cancel); //canceladas será 0
 
+                            }
                         }
 
             }
@@ -984,6 +949,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         totalNotifGen.setValue(totalnotif);
     }
 
+    public void pausarServicioDescargas(View view) {
+       // servicio.pausar();
+    }
+
+    public void reanudarServicioDescargas(View view) {
+       // servicio.reanudar();
+    }
 
     public class ListenerNavRevRec implements IListenerRevRec{
 
