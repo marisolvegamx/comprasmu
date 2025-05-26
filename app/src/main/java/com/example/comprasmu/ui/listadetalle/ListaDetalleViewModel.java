@@ -9,7 +9,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.example.comprasmu.DescargaListaCompraAuto;
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
@@ -18,11 +20,14 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaDetalleBu;
+import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
@@ -545,5 +550,15 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             // this will sort the data in Descending order
             return b.compareTo(a);
         }
+    }
+
+    public LiveData<ListaCompraResponse> actualizarListaCompra(ComprasLog compraslog){
+        TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(context);
+        InformeComDetRepositoryImpl informeCompraRepository=new InformeComDetRepositoryImpl(context);
+        DescargaListaCompraAuto descargaListaCompraAuto=new DescargaListaCompraAuto(compraslog,repository,detRepo,informeCompraRepository);
+        PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        PeticionesServidor.PeticionLista peticionLista=peticionesServidor.crearPeticion(null, null,Constantes.INDICEACTUAL);
+        return peticionesServidor.pedirListaCompraxCiudad(peticionLista,Constantes.CIUDADTRABAJO, descargaListaCompraAuto);
+
     }
 }
