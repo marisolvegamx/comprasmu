@@ -48,6 +48,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/**********pedir las lista de compra por ciudad**/
 public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
 
 
@@ -122,11 +123,11 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
     private void listacompras(){
         Log.i("DescargarListaAsyncTask", "descargando listas"+ciudadActual);
         flog.grabarError(TAG,"listacompras","descargando listas =");
-        TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
-        TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
+     //   TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
+       // TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
         DescargarListaAsyncTask.DescargaIniListener listener=new DescargaIniListener();
-        flog.grabarError(TAG,"listacompras","resultado comp="+comp);
-        PeticionesServidor.PeticionLista peticionLista=peticionesServidor.crearPeticion(comp, det,Constantes.INDICEACTUAL);
+
+        PeticionesServidor.PeticionLista peticionLista=peticionesServidor.crearPeticion(null, null,Constantes.INDICEACTUAL);
         peticionesServidor.pedirListaCiu(peticionLista,ciudadActual,listener);
 
 
