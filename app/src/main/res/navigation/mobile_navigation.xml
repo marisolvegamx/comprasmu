@@ -279,7 +279,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_listacor2"
-        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:name="com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment"
         android:label="@string/menu_informescorrec">
         <argument
             android:name="comprasmu.correselcli.tipocons"
@@ -291,7 +291,7 @@
 
     <fragment
         android:id="@+id/nav_listaprep"
-        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:name="com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment"
         android:label="@string/menu_lista_prep">
         <argument
             android:name="comprasmu.correselcli.tipocons"
@@ -411,7 +411,7 @@
 
     <fragment
         android:id="@+id/nav_resumenetiq"
-        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:name="com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment"
         android:label="@string/menu_lista_etiq" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
@@ -431,7 +431,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_rescorretiq"
-        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:name="com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment"
         android:label="@string/menu_rescorreccion" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
@@ -463,7 +463,7 @@
 
     <fragment
         android:id="@+id/nav_resumenemp"
-        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:name="com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment"
         android:label="@string/menu_lista_emp" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
@@ -527,7 +527,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_rescorremp"
-        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:name="com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment"
         android:label="@string/menu_rescorreccion" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
@@ -585,7 +585,7 @@
 
     <fragment
         android:id="@+id/nav_resumenenv"
-        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:name="com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment"
         android:label="@string/menu_resumenenv" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
@@ -628,7 +628,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_rescorrenv"
-        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:name="com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment"
         android:label="@string/menu_rescorreccion" >
         <argument
             android:name="comprasmu.correselcli.tipocons"
@@ -680,7 +680,7 @@
 
     <fragment
         android:id="@+id/nav_resumengas"
-        android:name="com.example.comprasmu.utils.ui.ListaInformesEtaFragment"
+        android:name="com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment"
         android:label="@string/menu_resumenenv" >
         <argument
             android:name="comprasmu.correselcli.tipocons"

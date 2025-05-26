@@ -1,4 +1,4 @@
-package com.example.comprasmu.utils.ui;
+package com.example.comprasmu.ui.infetapa;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -53,6 +53,9 @@ import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
+import com.example.comprasmu.utils.ui.FiltrarListaActivity;
+import com.example.comprasmu.utils.ui.InformeGenAdapter;
+import com.example.comprasmu.utils.ui.InformesGenViewModel;
 import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 
 import java.util.ArrayList;
