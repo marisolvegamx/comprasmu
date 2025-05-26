@@ -30,7 +30,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
@@ -38,6 +37,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
+import com.example.comprasmu.services.DescAutomaticasServiceManager;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -345,6 +345,8 @@ public class NvaCorreccionEnvFragment extends Fragment {
     public void actualizarSolicitud() {
         try {
             solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
+            //una pausa para que lo actualice en el serv
+            DescAutomaticasServiceManager.getInstancia().pausarServicio();
             CorreccionEnvio envio=mViewModel.prepararEnvio(mViewModel.getNvocorreccion());
             SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
             miTareaAsincrona.execute();

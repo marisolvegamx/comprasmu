@@ -24,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
@@ -35,6 +34,7 @@ import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
+import com.example.comprasmu.services.DescAutomaticasServiceManager;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -408,12 +408,10 @@ public class NvaCorreccionEmpFragment extends Fragment {
     public void actualizarSolicitud() {
         try {
 
-
-            solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
+           solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
           //una pausa para que lo actualice en el serv
-
+           DescAutomaticasServiceManager.getInstancia().pausarServicio();
            nuevasCor=mViewModel.getCorreccionesxsolPendSimp(solicitudSel,Constantes.INDICEACTUAL);
-
            CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
            SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
            miTareaAsincrona.execute();
@@ -421,8 +419,7 @@ public class NvaCorreccionEmpFragment extends Fragment {
                subirFotos(getActivity(), cor.getId(), cor.getRuta_foto1());
            }
            //todo limpio variables de sesion
-            mViewModel.setIdNuevo(0);
-
+           mViewModel.setIdNuevo(0);
            mViewModel.setNvocorreccion(null);
 
            Toast.makeText(getContext(),"Se guardó la corrección correctamente",Toast.LENGTH_LONG).show();

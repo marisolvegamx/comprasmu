@@ -26,8 +26,6 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.work.WorkManager;
-
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 
@@ -38,6 +36,7 @@ import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
 
+import com.example.comprasmu.services.DescAutomaticasServiceManager;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -306,8 +305,9 @@ public class NvaCorreccionFragment extends Fragment {
                 aceptar.setEnabled(false);
                 long currentClickTime= SystemClock.elapsedRealtime();
                 // preventing double, using threshold of 1000 ms
-                if (currentClickTime - lastClickTime < 5500){
+                if (currentClickTime - lastClickTime < 3000){
                     //  Log.d(TAG,"doble click :("+lastClickTime);
+                    lastClickTime = currentClickTime;
                     return;
                 }
 
@@ -497,9 +497,11 @@ public class NvaCorreccionFragment extends Fragment {
                     return;
                 }
             }
+
                 //paso a
             //creo el informe
             mViewModel.setIdNuevo(mViewModel.insertarCorreccion(solicitud.getId(), Constantes.INDICEACTUAL,solicitud.getNumFoto(),valor, valor2, valor3, valor4));
+            Log.i(TAG,"guardando correccion solicitud:"+solicitud.getId()+" id correccion:"+mViewModel.getIdNuevo());
             actualizarSolicitud();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
             try {
@@ -522,8 +524,7 @@ public class NvaCorreccionFragment extends Fragment {
     public void actualizarSolicitud() {
         try {
             //cancelo las actualizaciones
-            WorkManager.getInstance(getContext()).cancelAllWorkByTag("comprassync_worker2");
-
+            DescAutomaticasServiceManager.getInstancia().pausarServicio();
             solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
             CorreccionEnvio envio=mViewModel.prepararEnvio(mViewModel.getNvocorreccion());
             SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());

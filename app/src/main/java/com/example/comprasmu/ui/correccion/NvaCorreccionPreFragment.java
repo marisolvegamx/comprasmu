@@ -28,8 +28,6 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.work.WorkManager;
-
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
@@ -38,6 +36,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
+import com.example.comprasmu.services.DescAutomaticasServiceManager;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -323,7 +322,7 @@ public class NvaCorreccionPreFragment extends Fragment {
     public void enviarSolicitud() {
         try {
             //cancelo las actualizaciones
-            WorkManager.getInstance(getContext()).cancelAllWorkByTag("comprassync_worker2");
+            DescAutomaticasServiceManager.getInstancia().pausarServicio();
 
             CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
             SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());

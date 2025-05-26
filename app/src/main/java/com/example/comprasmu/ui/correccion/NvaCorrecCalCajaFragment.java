@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.work.WorkManager;
-
 import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore;
@@ -27,7 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
@@ -41,6 +38,7 @@ import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
+import com.example.comprasmu.services.DescAutomaticasServiceManager;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -56,7 +54,6 @@ import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -745,7 +742,7 @@ if(correccionDet!=null)
             mViewModel.setIdNuevo(0);
             mViewModel.setNvocoreticaja(null);
             //cancelo las actualizaciones
-            WorkManager.getInstance(getContext()).cancelAllWorkByTag("comprassync_worker2");
+            DescAutomaticasServiceManager.getInstancia().pausarServicio();
             solViewModel.actualizarEstSolicitud(solicitudSel, numfotosel,4);
             Toast.makeText(getContext(),"La corrección se guradó correctamente",Toast.LENGTH_SHORT).show();
 
