@@ -1,15 +1,24 @@
 package com.example.comprasmu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+
+import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
+import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
@@ -142,6 +151,41 @@ public class DescargaListaCompraAuto  {
 
     }
 
+    public static void actualizarInformeDetalle(InfEtapaDetRepoImpl idrepository, RespInfEtapaResponse infoResp) {
+
+        Log.i("InformesGenViewModel", "actualizando bd informes");
+        //primero los inserts
+        InformeEtapaDet informeEtapaDetOrig;
+        if (infoResp != null) {
+
+            if (infoResp.getInformeEtapaDet() != null && infoResp.getInformeEtapaDet().size() > 0) {
+
+                for (InformeEtapaDet det:infoResp.getInformeEtapaDet()
+                ) {
+                    //busco
+
+                    informeEtapaDetOrig=idrepository.findsimple(det.getId());
+                    if(informeEtapaDetOrig!=null) {
+                        //modifico
+                        informeEtapaDetOrig.setRuta_foto(det.getRuta_foto());
+                        informeEtapaDetOrig.setQr(det.getQr());
+                        informeEtapaDetOrig.setNum_muestra(det.getNum_muestra());
+                        informeEtapaDetOrig.setDescripcionId(det.getDescripcionId());
+                        informeEtapaDetOrig.setDescripcion(det.getDescripcion());
+                        informeEtapaDetOrig.setNum_caja(det.getNum_caja());
+                    }
+                    else
+                        informeEtapaDetOrig=det;
+                    //actualizo
+                    idrepository.insert(informeEtapaDetOrig);
+                }
+
+            }
+
+        }
+
+
+    }
 
 
 

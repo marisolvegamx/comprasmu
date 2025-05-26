@@ -20,6 +20,7 @@ import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
@@ -43,6 +44,7 @@ import com.example.comprasmu.data.remote.UltimosIdsResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 
+import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
@@ -1151,11 +1153,11 @@ public class PeticionesServidor {
             }
         });
     }
-    public void getInfEtiquetado(String indice, DescRespInformesEta.DescargaRespieListener listener){
-
+    public LiveData<RespInfEtapaResponse> getInfEtiquetado(String indice, int idInforme, InfEtapaDetRepoImpl idrepository){
+        MutableLiveData<RespInfEtapaResponse> informeEtapaLiveData=new MutableLiveData<>();
         Log.d("PeticionesServidor","getInfEtiquetado haciendo petición etiq ");
 
-        final Call<RespInfEtapaResponse> batch = ServiceGenerator.getApiService().getRespaldoEtiq(indice,usuario);
+        final Call<RespInfEtapaResponse> batch = ServiceGenerator.getApiService().getCambiosInformeEtapa(indice,usuario, idInforme);
 
         batch.enqueue(new Callback<RespInfEtapaResponse>() {
             @Override
@@ -1167,20 +1169,20 @@ public class PeticionesServidor {
                     {
                         Log.d("PeticionesServidor","getInfEtiquetado "+etapasResp);
 
-                        listener.actualizarQr(etapasResp);
-
+                       DescargaListaCompraAuto.actualizarInformeDetalle(idrepository, etapasResp);
+                        informeEtapaLiveData.setValue(etapasResp);
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
                         Log.d("PeticionesServidor","lista vacia");
-                        listener.actualizarQr(null);
+                        informeEtapaLiveData.setValue(null);
                     }
 
                 }else //aviso al usuario //solo si esta desde descargar lista
                 {
 
-                    listener.actualizarQr(null);
+                    informeEtapaLiveData.setValue(null);
                 }
             }
 
@@ -1189,10 +1191,11 @@ public class PeticionesServidor {
                 if (t != null) {
 
                     Log.e(Constantes.TAG, t.getMessage());
-                    listener.actualizarQr(null);
+                    informeEtapaLiveData.setValue(null);
                 }
             }
         });
+        return informeEtapaLiveData;
     }
 
     /**trae la lista de compra solo de la ciudad seleccionada***/

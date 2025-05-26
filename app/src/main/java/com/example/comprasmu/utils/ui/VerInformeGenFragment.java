@@ -15,11 +15,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintAttribute;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -32,6 +32,7 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.databinding.VerInformegenFragmentBinding;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.correccion.CorEtiqCajaWithSol;
@@ -40,6 +41,7 @@ import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
 import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
 import com.example.comprasmu.ui.gasto.TotalMuestra;
+import com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
@@ -224,22 +226,48 @@ public class VerInformeGenFragment extends Fragment {
         }
         else    //para ver informes etapa
         {
+            if(Constantes.ETAPAACTUAL==3) //es etiquetado, actualizo los cambios
+            {
+                LiveData<RespInfEtapaResponse> respuestaPeticion= mViewModel.actualizarInformesEtiquetado(Constantes.INDICEACTUAL,informeSel);
+                respuestaPeticion.observe(getViewLifecycleOwner(), new Observer<RespInfEtapaResponse>() {
+                    @Override
+                    public void onChanged(RespInfEtapaResponse respInfEtapaResponse) {
+                        mViewModel.getInforme(informeSel, Constantes.INDICEACTUAL).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
+                            @Override
+                            public void onChanged(InformeEtapa informeEtapax) {
+                                informeEtapa = informeEtapax;
+                                crearFormularioEta();
+                                mBinding.igdatosgen.addView(cf1.crearTabla());
+                                mBinding.btnverdet.setText(textoboton);
+                                mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        verFotos();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            else {
 
                 mViewModel.getInforme(informeSel, Constantes.INDICEACTUAL).observe(getViewLifecycleOwner(), new Observer<InformeEtapa>() {
-                @Override
-                public void onChanged(InformeEtapa informeEtapax) {
-                    informeEtapa = informeEtapax;
-                    crearFormularioEta();
-                    mBinding.igdatosgen.addView(cf1.crearTabla());
-                    mBinding.btnverdet.setText(textoboton);
-                    mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            verFotos();
-                        }
-                    });
-                }
-            });
+                    @Override
+                    public void onChanged(InformeEtapa informeEtapax) {
+                        informeEtapa = informeEtapax;
+                        crearFormularioEta();
+                        mBinding.igdatosgen.addView(cf1.crearTabla());
+                        mBinding.btnverdet.setText(textoboton);
+                        mBinding.btnverdet.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                verFotos();
+                            }
+                        });
+                    }
+                });
+            }
         }
 
     }

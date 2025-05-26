@@ -13,7 +13,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.ui.empaque.VerEmpaqueFragment;
 import com.example.comprasmu.ui.gasto.VerInformeGasFragment;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.ui.ListaInformesEtaFragment;
+import com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment;
 import com.example.comprasmu.utils.ui.VerInformeGenFragment;
 import com.example.comprasmu.ui.informe.NuevaFotoExhibFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;

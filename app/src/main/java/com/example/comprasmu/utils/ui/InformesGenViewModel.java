@@ -12,6 +12,7 @@ import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
+import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -19,6 +20,8 @@ import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
+import com.example.comprasmu.data.modelos.TablaVersiones;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.repositories.CorEtiqCajaDetRepoImpl;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
@@ -33,6 +36,7 @@ import com.example.comprasmu.ui.gasto.VerInformeGasFragment;
 import com.example.comprasmu.utils.Constantes;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -151,6 +155,14 @@ public class InformesGenViewModel extends AndroidViewModel {
         DescargaCambiosImagenes descarga=new DescargaCambiosImagenes(dirLog,tablaVersionesRepo,imagenDetRepository,this.usuario ,this.indice , verLista);
         descarga.ejecutar();
     }
+
+    public LiveData<RespInfEtapaResponse> actualizarInformesEtiquetado(String indice,int idInforme){
+
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        return ps.getInfEtiquetado(indice,idInforme,idrepository);
+    }
+
+
 
     public String getIndice() {
         return indice;

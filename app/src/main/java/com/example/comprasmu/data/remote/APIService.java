@@ -174,6 +174,7 @@ public interface APIService {
     })
     Call<PostResponse> actInformeEtiq(@Body InformeEtapaEnv item);
 
+    /***no se usa***/
     @GET("descrespetiq")
     Call<RespInfEtapaResponse> getRespaldoEtiq( @Query("indice") String indice, @Query("usuario") String usuario);
 

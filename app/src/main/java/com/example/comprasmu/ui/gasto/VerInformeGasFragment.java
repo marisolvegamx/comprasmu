@@ -1,7 +1,6 @@
 package com.example.comprasmu.ui.gasto;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +25,6 @@ import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.databinding.VerInformegenFragmentBinding;
-import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
@@ -37,11 +35,8 @@ import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.ui.InformesGenViewModel;
-import com.example.comprasmu.utils.ui.ListaInformesEtaFragment;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment;
 
-import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;

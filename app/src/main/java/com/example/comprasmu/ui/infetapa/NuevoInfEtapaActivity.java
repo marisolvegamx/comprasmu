@@ -227,7 +227,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     SolicitudCor sol=correViewModel.getSolicitud (idinformeSel,numfoto);
                     if(sol!=null&&sol.getDescripcionId()>11) //es de caja
                     {
-                        NvaCorrecCalCajaFragment frag = new NvaCorrecCalCajaFragment();
+                        NvaCorrecCalCajaFragment frag = NvaCorrecCalCajaFragment.newInstance();
                         frag.setArguments(bundle);
                         ft.add(R.id.continfeta_fragment, frag);
                     }
@@ -250,7 +250,7 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
                     ft.add(R.id.continfeta_fragment, frag);
                 }else
                 {
-                    NvaCorreccionFragment frag = new NvaCorreccionFragment();
+                    NvaCorreccionFragment frag = NvaCorreccionFragment.newInstance();
                     frag.setArguments(bundle);
                     ft.add(R.id.continfeta_fragment, frag);
                 }

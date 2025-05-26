@@ -1,6 +1,5 @@
 package com.example.comprasmu.ui.empaque;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -21,22 +20,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.DetalleCaja;
-import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.databinding.VerEmpaqueFragmentBinding;
-import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
-import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
-import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
-import com.example.comprasmu.ui.informedetalle.VerInformeDetFragment;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.ui.InformesGenViewModel;
-import com.example.comprasmu.utils.ui.ListaInformesEtaFragment;
+import com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment;
 import com.example.comprasmu.utils.ui.VerInformeGenFragment;
 
 import java.util.ArrayList;
