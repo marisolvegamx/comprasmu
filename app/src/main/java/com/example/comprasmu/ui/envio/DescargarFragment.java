@@ -319,7 +319,7 @@ public class DescargarFragment extends Fragment {
                 Log.d(TAG,"algo salió mal con la consulta de listas");
             //ponemos botones
             mBinding.lldeseldoc.setVisibility(View.VISIBLE);
-            mBinding.btndefda.setVisibility(View.VISIBLE);
+           mBinding.btndeguia.setVisibility(View.VISIBLE);
             //guardo si ya hay guias
             if(idcap>0) {
                 PreferencesGuias.guardarInformeEnvio(getActivity(), Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO, idcap);
