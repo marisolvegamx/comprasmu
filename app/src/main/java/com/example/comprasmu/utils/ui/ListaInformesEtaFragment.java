@@ -23,17 +23,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.SubirInformeGastoTask;
-import com.example.comprasmu.data.ComprasDataBase;
-import com.example.comprasmu.data.PeticionesServidor;
-import com.example.comprasmu.data.dao.ListaCompraDao;
-import com.example.comprasmu.data.modelos.AcuseRecibo;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
@@ -41,11 +36,6 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.remote.CorEtiquetaCajaEnvio;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeGastoEnv;
-import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
-import com.example.comprasmu.services.DescargaCambiosImagenes;
 import com.example.comprasmu.ui.correccion.CorreccionWithSol;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.remote.CorreccionEnvio;
@@ -55,7 +45,7 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
-import com.example.comprasmu.ui.gasto.RevReciboActivity;
+
 import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
 import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
@@ -67,7 +57,7 @@ import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
+
 
 /*******para lista de informes x etapa y correcciones******/
 public class ListaInformesEtaFragment extends Fragment implements InformeGenAdapter.AdapterCallback {

@@ -315,28 +315,29 @@ public class SelNotifFragment extends ListaSelecFragment{
 
 
     private  void convertirListaCor(List<NotificacionGen> lista) {
-        listaClientesEnv = new ArrayList<DescripcionGenerica>();
-        //primero las generales
+        try {
+            listaClientesEnv = new ArrayList<DescripcionGenerica>();
+            //primero las generales
 
-         Log.d(TAG,"si llega aqui");
-         DescripcionGenerica gen = new DescripcionGenerica(1,"CORRECCIONES","gen",String.valueOf(totCorrecciones));
-         listaClientesEnv.add(gen);
+             Log.i(TAG,"si llega aqui");
+             DescripcionGenerica gen = new DescripcionGenerica(1,"CORRECCIONES","gen",String.valueOf(totCorrecciones));
+             listaClientesEnv.add(gen);
 
-         listaClientesEnv.add(new DescripcionGenerica(2, "CANCELADAS", "0",totCancel+""));
+             listaClientesEnv.add(new DescripcionGenerica(2, "CANCELADAS", "0",totCancel+""));
 
-         listaClientesEnv.add(new DescripcionGenerica(3, "MUESTRA ADICIONAL", "0",totMuestraAdic+""));
-         for (NotificacionGen noti:
-             lista) {
-            listaClientesEnv.add(new DescripcionGenerica(noti.getTipo(), noti.getDescripcion1(), "0",noti.getTotal()+""));
-             //modifico el estatus del informe
-             if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
-                 //5-ajustar recibo
-                 //6-estatus envio
-                 //busco el informe
-                 List<InformeEtapa> listaInf=scViewModel.getInfGastoxCiudad(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
-                 if(listaInf!=null&&listaInf.size()>0){
-                     scViewModel.actualizarEstatusGas(listaInf.get(0).getId());
-                     Log.d(TAG,"convertirListaNotif "+"actualizando informe gastos ajuste"+listaInf.get(0).getId());
+             listaClientesEnv.add(new DescripcionGenerica(3, "MUESTRA ADICIONAL", "0",totMuestraAdic+""));
+             for (NotificacionGen noti:
+                 lista) {
+                listaClientesEnv.add(new DescripcionGenerica(noti.getTipo(), noti.getDescripcion1(), "0",noti.getTotal()+""));
+                 //modifico el estatus del informe
+                 if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
+                     //5-ajustar recibo
+                     //6-estatus envio
+                     //busco el informe
+                     List<InformeEtapa> listaInf=scViewModel.getInfGastoxCiudad(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
+                     if(listaInf!=null&&listaInf.size()>0){
+                         scViewModel.actualizarEstatusGas(listaInf.get(0).getId());
+                         Log.i(TAG,"convertirListaNotif "+"actualizando informe gastos ajuste"+listaInf.get(0).getId());
 
                      // flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
                  }
@@ -347,7 +348,10 @@ public class SelNotifFragment extends ListaSelecFragment{
          setLista(listaClientesEnv);
          setupListAdapter();
          adaptadorLista.setDesc2(true);
-
+        }catch(Exception ex){
+            Log.e(TAG,ex.getMessage());
+            comprasLog.grabarError(TAG,"convertirListaCor", "Hubo un error al desplegar la lista "+ex.getMessage());
+        }
     }
 
 
@@ -368,8 +372,10 @@ public class SelNotifFragment extends ListaSelecFragment{
         /***para estatus envio****/
         @Override
         public void guardarResNotif(NotificacionResponse response) {
-
-            if(response!=null&&response.getData()!=null) {
+            //podría ya no tener la actividad
+            if(!isAdded() || getActivity()==null)
+                return;
+            if (response != null && response.getData() != null) {
                 convertirListaCor(response.getData());
 
 
