@@ -60,6 +60,7 @@ import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
 
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
+import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
@@ -94,7 +95,7 @@ import static android.app.Activity.RESULT_OK;
 //las cajas se numeran x ciudad cliente
 //ciudad x cajas 1,2,3 no importa el cliente
 //ciudad y 1,2,3 no importa el cliente
-public class NvoEtiquetadoFragment extends Fragment implements   DescargarListaAsyncTask.ProgresoDLListener {
+public class NvoEtiquetadoFragment extends Fragment {
 
     private InformeEtapaDet detalleEdit;
     LinearLayout sv1, sv6, sv3, sv4, svotra;
@@ -146,6 +147,7 @@ public class NvoEtiquetadoFragment extends Fragment implements   DescargarListaA
     private Button btnreubicar;
     int etapa=3;
     private LoadingAlert alert;
+    private LiveData<ListaCompraResponse> listaCompraResponse;
 
     public NvoEtiquetadoFragment() {
 
@@ -313,8 +315,7 @@ public class NvoEtiquetadoFragment extends Fragment implements   DescargarListaA
             milog.grabarError(TAG + " o x aca");
             //busco si tengo varias plantas
             ciudadInf = Constantes.CIUDADTRABAJO;
-            //actualizo lista de compra
-            actualizarListaCompra();
+
             //busco los clientes x ciudad
             listacomp = lcViewModel.getTodosCliByIndiceCdSimplxet(Constantes.CIUDADTRABAJO, this.etapa);
             Log.d(TAG, "PLANTA" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
@@ -345,47 +346,51 @@ public class NvoEtiquetadoFragment extends Fragment implements   DescargarListaA
                     }
 
                 }
-                convertirLista(listacomp, clientesprev);
-                if (listaClientes.size() > 1) {
-                    //tengo varios clientes
-                    preguntaAct = 1;
+                actualizarListaCompra();
+                listaCompraResponse.observe(getViewLifecycleOwner(), listaCompraResponse -> {
+                    alert.closeAlertDialog();
 
-                    cargarPlantas(listaClientes, "");
+                    convertirLista(listacomp, clientesprev);
+                    if (listaClientes.size() > 1) {
+                        //tengo varios clientes
+                        preguntaAct = 1;
 
-                    mViewModel.variasClientes = true;
-                    sv1.setVisibility(View.VISIBLE);
-                    aceptar1.setEnabled(true);
-                } else if (listaClientes.size() > 0) {
-                    preguntaAct = 2;
+                        cargarPlantas(listaClientes, "");
 
-                    sv3.setVisibility(View.VISIBLE);
-                    mViewModel.variasClientes = false;
-                    clienteSel = listacomp.get(0).getClientesId();
-                    clienteNombreSel = listacomp.get(0).getClienteNombre();
-                    totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, Constantes.CIUDADTRABAJO);
-                    //veo si ya tengo un informe
-                    InformeEtapa primero = mViewModel.tieneInforme(3, Constantes.CIUDADTRABAJO, clienteSel);
-                    if (primero != null && primero.getEstatus() == 2) {
-                        issegundoinf = true;
-                        //busco la ultima muestra
-                        InformeEtapaDet ultima = mViewModel.getUltimaMuestraEtiq(primero.getId());
-                        if (ultima != null)
-                            contmuestra = 1;
+                        mViewModel.variasClientes = true;
+                        sv1.setVisibility(View.VISIBLE);
+                        aceptar1.setEnabled(true);
+                    } else if (listaClientes.size() > 0) {
+                        preguntaAct = 2;
+
+                        sv3.setVisibility(View.VISIBLE);
+                        mViewModel.variasClientes = false;
+                        clienteSel = listacomp.get(0).getClientesId();
+                        clienteNombreSel = listacomp.get(0).getClienteNombre();
+                        totmuestras = mViewModel.getTotalMuestrasxCliXcd(clienteSel, Constantes.CIUDADTRABAJO);
+                        //veo si ya tengo un informe
+                        InformeEtapa primero = mViewModel.tieneInforme(3, Constantes.CIUDADTRABAJO, clienteSel);
+                        if (primero != null && primero.getEstatus() == 2) {
+                            issegundoinf = true;
+                            //busco la ultima muestra
+                            InformeEtapaDet ultima = mViewModel.getUltimaMuestraEtiq(primero.getId());
+                            if (ultima != null)
+                                contmuestra = 1;
+                        }
+
+                        InformeEtapa informetemp = new InformeEtapa();
+                        informetemp.setClienteNombre(clienteNombreSel);
+                        informetemp.setClientesId(clienteSel);
+                        informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
+                        informetemp.setIndice(Constantes.INDICEACTUAL);
+                        informetemp.setTotal_muestras(totmuestras);
+                        ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(informetemp);
                     }
-
-                    InformeEtapa informetemp = new InformeEtapa();
-                    informetemp.setClienteNombre(clienteNombreSel);
-                    informetemp.setClientesId(clienteSel);
-                    informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
-                    informetemp.setIndice(Constantes.INDICEACTUAL);
-                    informetemp.setTotal_muestras(totmuestras);
-                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(informetemp);
-                }
+                        });
             }
             if (isEdicion) { //busco el informe
 
                 //busco el informe y el detalle
-
                 infomeEdit = mViewModel.getInformexId(informeSel);
                 preguntaAct = 3;
                 mViewModel.preguntaAct = 3;
@@ -476,40 +481,12 @@ public class NvoEtiquetadoFragment extends Fragment implements   DescargarListaA
 
                 }
             });
-       /* eliminarCaja.setOnClickListener(new View.OnClickListener() { //coincide
-            @Override
-            public void onClick(View view) {
-                eliminarCaja();
 
-            }
-        });*/
-      /*  selplanta.setOnClickListener(new View.OnClickListener() { //coincide
-            @Override
-            public void onClick(View view) {
-
-
-                //iraReubicar();
-
-            }
-        });*/
             aceptar6.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     aceptar1.setEnabled(false);
-             /*   long currentClickTime= SystemClock.elapsedRealtime();
-                // preventing double, using threshold of 1000 ms
-                if (currentClickTime - lastClickTime < 5500){
-                    //  Log.d(TAG,"doble click :("+lastClickTime);
-                    return;
-                }
 
-                lastClickTime = currentClickTime;
-
-                actualizarComent();
-                finalizarInf();
-                Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
-                yaestoyProcesando = false;
-                salir();*/
                     avanzar();
 
 
@@ -667,6 +644,7 @@ public void iraReubicar(){
                 cargarListaCajas();
                 break;
             case 2: //foto
+                cargarListaCajas();
                 sv3.setVisibility(View.GONE);
 
                 sv4.setVisibility(View.VISIBLE);
@@ -1255,16 +1233,6 @@ public void iraReubicar(){
         integrator.initiateScan();
     }
 
-    @Override
-    public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
-        alert.closeAlertDialog();
-    }
-
-    @Override
-    public void notificarSinConexion() {
-        //puede continuar sin conexion
-        alert.closeAlertDialog();
-    }
 
     class BotonTextWatcher implements TextWatcher {
 
@@ -1364,13 +1332,7 @@ public void iraReubicar(){
     private void actualizarListaCompra() {
         alert=new LoadingAlert(getActivity());
         alert.startAlert();
-        TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getContext());
-        ListaCompraDao dao= ComprasDataBase.getInstance(getContext()).getListaCompraDao();
-        ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getContext());
-        ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO) ;
-        DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(),tvRepo,lcdrepo,lcrepo,this,ps, Constantes.CIUDADTRABAJO);
-        task.execute("");
+        listaCompraResponse=lcViewModel.actualizarListaCompra(milog);
     }
     @Override
     public void onDestroyView() {

@@ -44,12 +44,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeGastoTask;
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
@@ -62,6 +68,10 @@ import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeGastoEnv;
+import com.example.comprasmu.data.remote.ListaCompraResponse;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.databinding.FragmentNvogastoBinding;
 import com.example.comprasmu.databinding.VerEmpaqueFragmentBinding;
 import com.example.comprasmu.services.SubirFotoService;
@@ -70,6 +80,7 @@ import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -127,6 +138,8 @@ public class NvoGastoFragment extends Fragment {
     NvoGastoViewModel niviewModel;
 
     private ArrayAdapter<CatalogoDetalle> catAdapter;
+    private LoadingAlert alert;
+    private LiveData<ListaCompraResponse> listaComprasAct;
 
     public NvoGastoFragment() {
 
@@ -205,12 +218,20 @@ public class NvoGastoFragment extends Fragment {
             this.buscarTotalesMuestra();
             totalgastos=totalotros=0;
             totalval=0;
+            actualizarListaCompra();
+            listaComprasAct.observe(getViewLifecycleOwner(), new Observer<ListaCompraResponse>() {
+                @Override
+                public void onChanged(ListaCompraResponse listaCompraResponse) {
+                   alert.closeAlertDialog();
+                    //busco los clientes x ciudad
+                    if(!niviewModel.validarEtapa(ciudadInf)){
+                        Toast.makeText(getActivity(),"No puede hacer gastos",Toast.LENGTH_SHORT).show();
+                        salir();
+                    }
 
-            //busco los clientes x ciudad
-           if(!niviewModel.validarEtapa(ciudadInf)){
-               Toast.makeText(getActivity(),"No puede hacer gastos",Toast.LENGTH_SHORT).show();
-                return root;
-           }
+                }
+            });
+
             //deshabilito botones de aceptar
             aceptar1.setEnabled(true); //resumen
 
@@ -1305,6 +1326,51 @@ public class NvoGastoFragment extends Fragment {
         }
 
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mViewModel = null;
+
+        root=null;
+
+        fotomos=null;
+        //  sv1= sv6 =sv3=sv4=null;
+        btnrotar=null;
+        aceptar1=null;
+        //   nombre_foto=null;
+        //   archivofoto=null;
+    }
+
+
+    public void guardarMuestras(List<TotalMuestra> lista) {
+
+        compraslog.grabarError(TAG,"guardarMuestras","guardar muestras");
+
+        SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefe.edit();
+        // editor.putString("claveusuario",cveusr);
+        String json = new Gson().toJson(lista);
+        editor.putString("totalmuestras", json);
+        // editor.putString("password", Base64.encodeToString(passwordEditText.getText().toString().getBytes(), Base64.DEFAULT));
+        editor.commit();
+
+
+
+    }
+    public String buscarMuestras() {
+
+        SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        String listamuestras = prefe.getString("totalmuestras", "");
+        return listamuestras;
+    }
+
+    private void actualizarListaCompra() {
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        listaComprasAct=niviewModel.actualizarListaCompra();
+    }
+
     public class ListenerM{
         //todo
         public void guardarRes(List<TotalMuestra> respuesta){
@@ -1329,42 +1395,5 @@ public class NvoGastoFragment extends Fragment {
 
     }
 
-        @Override
-        public void onDestroyView() {
-            super.onDestroyView();
-            mViewModel = null;
-
-            root=null;
-
-            fotomos=null;
-          //  sv1= sv6 =sv3=sv4=null;
-            btnrotar=null;
-            aceptar1=null;
-         //   nombre_foto=null;
-         //   archivofoto=null;
-        }
-
-
-    public void guardarMuestras(List<TotalMuestra> lista) {
-
-            compraslog.grabarError(TAG,"guardarMuestras","guardar muestras");
-
-            SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefe.edit();
-            // editor.putString("claveusuario",cveusr);
-            String json = new Gson().toJson(lista);
-            editor.putString("totalmuestras", json);
-            // editor.putString("password", Base64.encodeToString(passwordEditText.getText().toString().getBytes(), Base64.DEFAULT));
-            editor.commit();
-
-
-
-    }
-    public String buscarMuestras() {
-
-        SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
-        String listamuestras = prefe.getString("totalmuestras", "");
-        return listamuestras;
-    }
 }
 

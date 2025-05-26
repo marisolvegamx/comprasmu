@@ -5,10 +5,12 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.comprasmu.DescRespInformes;
 import com.example.comprasmu.DescRespInformesEta;
+import com.example.comprasmu.DescargaListaCompraAuto;
 import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.IDescargaIniListener;
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -383,6 +385,7 @@ public class PeticionesServidor {
             }
         });
     }
+
     /**trae la lista de compra solo de la ciudad seleccionada***/
     public void pedirListaCiu(PeticionLista peticion,String ciudad, IDescargaIniListener listener){
 
@@ -967,10 +970,6 @@ public class PeticionesServidor {
        public PeticionLista() {
        }
 
-       public PeticionLista(String version_lista, String version_detalle) {
-            this.version_lista = version_lista;
-            this.version_detalle = version_detalle;
-        }
     }
     public void getDocumentosEnvio(String indice, String ciudad, DescargarFragment.DocsEnvioListener petsocor){
         Log.d(TAG,"pidiendo docsenvio");
@@ -1195,4 +1194,45 @@ public class PeticionesServidor {
             }
         });
     }
+
+    /**trae la lista de compra solo de la ciudad seleccionada***/
+    public LiveData<ListaCompraResponse> pedirListaCompraxCiudad(PeticionLista peticion, String ciudad, DescargaListaCompraAuto descargaListaCompraAuto){
+
+        Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
+        MutableLiveData<ListaCompraResponse> data=new MutableLiveData<>();
+        final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompraCiu(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle,ciudad);
+
+        batch.enqueue(new Callback<ListaCompraResponse>() {
+            @Override
+            public void onResponse(@Nullable Call<ListaCompraResponse> call, @Nullable Response<ListaCompraResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ListaCompraResponse compraResp = response.body();
+                    //reviso si está actualizado
+                    if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","regresó lista");
+                        descargaListaCompraAuto.actualizar(compraResp);
+                        data.setValue(compraResp);
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
+                        data.setValue(null);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<ListaCompraResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+                    Log.e(Constantes.TAG, t.getMessage());
+                    data.setValue(null);
+                }
+            }
+        });
+        return data;
+    }
+
 }

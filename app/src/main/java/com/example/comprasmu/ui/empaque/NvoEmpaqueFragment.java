@@ -35,9 +35,15 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ListaCompraDao;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -46,11 +52,18 @@ import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
+import com.example.comprasmu.data.remote.ListaCompraResponse;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
+import com.example.comprasmu.data.remote.RespInformesResponse;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -101,7 +114,9 @@ public class NvoEmpaqueFragment extends Fragment {
     ComprasLog compraslog;
     String ciudadInf;
     int etapa=4;
-
+    private LoadingAlert alert;
+    Bundle datosRecuperados;
+    private LiveData<ListaCompraResponse> listaCompraResponse;
 
     public NvoEmpaqueFragment() {
 
@@ -127,7 +142,7 @@ public class NvoEmpaqueFragment extends Fragment {
             aceptar = root.findViewById(R.id.btngaceptar);
 
             compraslog=ComprasLog.getSingleton();
-            Bundle datosRecuperados = getArguments();
+            datosRecuperados = getArguments();
 
             if (datosRecuperados != null) {
                 int numpreg = datosRecuperados.getInt(ARG_PREGACT);
@@ -137,309 +152,14 @@ public class NvoEmpaqueFragment extends Fragment {
                     preguntaAct= mViewModel.buscarReactivoSim(numpreg);
 
             }
-
-             if(preguntaAct!=null)
-            {
-                Log.d(TAG, "pregact"+preguntaAct.getLabel()+"--"+mViewModel.getIdNuevo());
-                mViewModel.preguntaAct=preguntaAct.getId();
-                ciudadInf=Constantes.CIUDADTRABAJO;
-                //llegué por siguiente
-                if(mViewModel.getIdNuevo()>0) {
-                    clienteId=mViewModel.getNvoinforme().getClientesId();
-                    if (preguntaAct.getTabla().equals("ED")) { //veo si ya está
-                        InformeEtapaDet informeEtapaDet= mViewModel.getDetallexDescCajaSim(mViewModel.getIdNuevo(), preguntaAct.getNombreCampo(),mViewModel.cajaAct.consCaja);
-
-                        ultimares = informeEtapaDet;
-                        if(ultimares!=null)
-                        {
-                            mViewModel.cajaAct=new EtiquetadoxCliente();
-                            mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
-                            mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
-                            mViewModel.cajaAct.numCaja=ultimares.getNum_caja();
-
-                            mViewModel.numMuestras=ultimares.getNum_muestra();
-                            isEdicion=true;
-                        }
-                        Log.d(TAG,"DONE 1");
-                        crearFormulario();
+            //actualizo lista de compra
+            actualizarListaCompra();
+            listaCompraResponse.observe(getViewLifecycleOwner(), listaCompraResponse -> {
+                alert.closeAlertDialog();
+                crearVista();});
 
 
-                    }
-                     if (preguntaAct.getTabla().equals("DC")) {//veo si ya está
-                         //Log.d(TAG,"num caja"+mViewModel.cajaAct.consCaja);
-                        ultimarescaja = mViewModel.getDetalleCajaxCaja(mViewModel.getIdNuevo(), mViewModel.cajaAct.consCaja);
-                        if(ultimarescaja!=null) {
-
-
-                            if(ultimarescaja.getLargo()!=null) {
-                                mViewModel.largoCaja = Float.parseFloat(ultimarescaja.getLargo());
-                                if(preguntaAct.getId()==98)
-                                    isEdicion = true;
-                            }if(ultimarescaja.getAncho()!=null) {
-                                mViewModel.anchoCaja = Float.parseFloat(ultimarescaja.getAncho());
-                                if(preguntaAct.getId()==100)
-                                    isEdicion = true;
-                            }if(ultimarescaja.getAlto()!=null) {
-                                mViewModel.altoCaja = Float.parseFloat(ultimarescaja.getAlto());
-                                if(preguntaAct.getId()==102)
-                                    isEdicion = true;
-                            }if(ultimarescaja.getPeso()!=null) {
-                                mViewModel.pesoCaja = Float.parseFloat(ultimarescaja.getPeso());
-                                if(preguntaAct.getId()==104)
-                                    isEdicion = true;
-                            }
-                        }
-                         Log.d(TAG,"DONE 9");
-                         crearFormulario();
-
-                    }
-                    if (preguntaAct.getTabla().equals("IE")) {
-                        //son comentarios o sel cliente
-                       // listacomp = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
-                        listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-                        Integer[] clientesprev = mViewModel.tieneInforme(4);
-                     //   Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
-
-                        if (listacomp.size() > 1) {
-                            //tengo varias clientes
-                            // preguntaAct=1;
-                            convertirLista(listacomp,clientesprev);
-                            mViewModel.variasClientes = true;
-
-                        }
-                        Log.d(TAG,"DONE 10");
-                        crearFormulario();
-                    }
-                }else {
-                   //no he guardado el informe
-                    Log.d(TAG,"DONE 11");
-                    crearFormulario();
-
-                }
-
-            }else
-            {
-
-                ciudadInf=Constantes.CIUDADTRABAJO;
-                if (datosRecuperados != null) {
-                    informeSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
-
-                if (informeSel > 0) //vengo de continuar busco el informe o de nueva caja
-                {
-                    if (isEdicion) {
-
-                        InformeEtapa informeEtapa=mViewModel.getInformexId(informeSel);
-
-                        mViewModel.setNvoinforme(informeEtapa);
-                        clienteId=informeEtapa.getClientesId();
-                        mViewModel.setIdNuevo(informeSel);
-                        int pregact = 0;
-                        ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informeEtapa,informeEtapa.getTotal_muestras(), informeEtapa.getTotal_cajas());
-                        //busco si tengo detalle
-                        ultimares = mViewModel.getUltimoInformeDet(informeSel, 4);
-                        if (ultimares == null) {      //voy en la 93
-                                    //no deberia estar aqui
-                            Log.e(TAG, "no deberia entrar aqui");
-                        } else {
-                                    //busco la lista de cajas
-                            mViewModel.getCajasEtiqCdCli(Constantes.CIUDADTRABAJO,clienteId,Constantes.INDICEACTUAL);
-                            mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
-                            mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
-                            mViewModel.cajaAct.numCaja=ultimares.getNum_caja();
-                            //ya tengo dimensiones?
-                            ultimarescaja = mViewModel.getUltimoxCaja(informeSel,mViewModel.cajaAct.consCaja  );
-                            Log.d(TAG, "lol"+ultimares.getNum_caja());
-
-                            if (ultimarescaja != null)//voy en dimensiones
-                                 {
-                                     Log.d(TAG, ultimarescaja.getInformeEtapaId() + "<--" + ultimarescaja.getLargo() + "--" + ultimarescaja.getAncho() + "--" + ultimarescaja.getAlto() + "--" + ultimarescaja.getPeso());
-                                        if (ultimarescaja.getLargo() != null)
-                                            mViewModel.largoCaja = Float.parseFloat(ultimarescaja.getLargo());
-                                        if (ultimarescaja.getAncho() != null)
-                                            mViewModel.anchoCaja = Float.parseFloat(ultimarescaja.getAncho());
-                                        if (ultimarescaja.getAlto() != null)
-                                            mViewModel.altoCaja = Float.parseFloat(ultimarescaja.getAlto());
-                                        if (ultimarescaja.getPeso() != null)
-                                            mViewModel.pesoCaja = Float.parseFloat(ultimarescaja.getPeso());
-
-                                        if (mViewModel.largoCaja > 0)
-                                            pregact = 98;
-                                        if (mViewModel.anchoCaja > 0)
-                                            pregact = 100;
-                                        if (mViewModel.altoCaja > 0)
-                                            pregact = 102;
-                                        if (mViewModel.pesoCaja > 0)
-                                            pregact = 104;
-
-                                      //  mViewModel.cajaAct.consCaja  = ultimarescaja.getNum_caja();
-
-                                      //  mViewModel.cajaAct.numMuestras=ultimares.getNum_muestra();
-                                        if (pregact > 0) {
-                                            mViewModel.buscarReactivo(pregact).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-                                                @Override
-                                                public void onChanged(Reactivo reactivo) {
-                                                    preguntaAct = reactivo;
-                                                    mViewModel.preguntaAct = preguntaAct.getId();
-                                                    isEdicion = true;
-                                                    Log.d(TAG,"DONE 5");
-                                                    crearFormulario();
-                                                }
-                                            });
-                                        } else {
-                                            //solo es foto
-                                            preguntaAct = mViewModel.buscarReactivoxDesc(ultimares.getDescripcion(), 4);
-                                            mViewModel.preguntaAct = preguntaAct.getId();
-                                            isEdicion = true;
-                                            Log.d(TAG,"DONE 4");
-                                            crearFormulario();
-
-                                        }
-                                    } else {
-
-                                        //busco por la pregunta
-                                        preguntaAct = mViewModel.buscarReactivoxDesc(ultimares.getDescripcion(), 4);
-                                        mViewModel.preguntaAct = preguntaAct.getId();
-                                        isEdicion = true;
-                                        Log.d(TAG,"DONE 3");
-                                        crearFormulario();
-                                    }
-
-                                }
-
-
-                    }else
-                    {
-                       //  mViewModel.variasClientes = false;
-
-                        mViewModel.buscarInformeEmp(Constantes.INDICEACTUAL);
-
-                        mViewModel.buscarReactivo(93).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-                                @Override
-                                public void onChanged(Reactivo reactivo) {
-                                    Log.d(TAG,"DONE 2");
-                                    preguntaAct = reactivo;
-                                    crearFormulario();
-                                }
-                        });
-                    }
-                }
-            } else {
-                    //es nuevo nuevito
-                    //es nuevo pregunta 91
-            //reviso si ya tengo uno abierto
-            InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,4);
-
-            if (informeEtapa != null) {
-
-                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
-                dialogo1.setTitle(R.string.atencion);
-                dialogo1.setMessage(R.string.informe_abierto);
-                dialogo1.setCancelable(false);
-                dialogo1.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogo1, int id) {
-                        //lo mando a continuar
-                        getActivity().finish();
-
-                    }
-                });
-
-                dialogo1.show();
-            }
-                    //busco si tengo varios clientes x ciudad
-                 //   listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
-                    listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO,this.etapa);
-
-                   //busco clientes con informe
-
-                    Integer[] clientesprev = mViewModel.tieneInforme(4);
-
-                    if (listacomp.size() > 1) {
-                            //tengo varias clientes
-                            // preguntaAct=1;
-                            convertirLista(listacomp, clientesprev);
-                       // cargarPlantas(listaClientes, "");
-
-                            mViewModel.variasClientes = true;
-                            buscarPreguntas();
-                            preguntaAct = mViewModel.getListaPreguntas().get(0);
-                            crearFormulario();
-
-                        } else if (listacomp.size() > 0) {
-
-                            mViewModel.variasClientes = false;
-                            clienteId = listacomp.get(0).getClientesId();
-                            clienteNombre = listacomp.get(0).getClienteNombre();
-                            InformeEtapa informetemp = new InformeEtapa();
-                            informetemp.setClienteNombre(clienteNombre);
-                            informetemp.setClientesId(clienteId);
-                            informetemp.setIndice(Constantes.INDICEACTUAL);
-                            mViewModel.setNvoinforme(informetemp);
-                            //busco total de muestras y cajas
-                            mViewModel.getCajasEtiqCdCli(ciudadInf,clienteId,Constantes.INDICEACTUAL);
-                            mViewModel.totCajasEmp=mViewModel.resumenEtiq.size();
-
-                            mViewModel.cajaAct=mViewModel.resumenEtiq.get(0);
-                            ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
-                            mViewModel.buscarReactivo(93).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-                                @Override
-                                public void onChanged(Reactivo reactivo) {
-                                    preguntaAct = reactivo;
-                                    crearFormulario();
-                                }
-                            });
-
-
-
-
-                        }else{
-                            Toast.makeText(getContext(),"NO HAY DATOS QUE MOSTRAR ",Toast.LENGTH_LONG).show();
-
-                            getActivity().finish();
-                        }
-
-
-//////////////////////////
-                  /*  InformeEtapa informetemp=new InformeEtapa();
-
-                    informetemp.setIndice(Constantes.INDICEACTUAL);
-                    mViewModel.setNvoinforme(informetemp);
-                   // Log.d(TAG,"clientesel"+clienteId);
-                    //busco total de muestras y cajas
-                    mViewModel.getCajasEtiq();
-                    mViewModel.totCajasEmp=mViewModel.resumenEtiq.size();
-
-                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
-                    mViewModel.cajaAct=mViewModel.resumenEtiq.get(0);
-
-
-                    ((NuevoInfEtapaActivity)getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);*/
-                  //  mViewModel.cajaAct=mViewModel.listaCajasCli.get(0);
-           // Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
-
-//            if (mViewModel.getIdNuevo() == 0)
-//
-//
-//                    mViewModel.buscarReactivo(92).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
-//                        @Override
-//                        public void onChanged(Reactivo reactivo) {
-//                            Log.d(TAG,"DONE 1");
-//                            preguntaAct = reactivo;
-//                            crearFormulario();
-//                        }
-//                    });
-//
-//
-//
-//
-//                        if(mViewModel.cajaAct.numCaja==0){
-//                            Toast.makeText(getContext(),"NO TIENE INFORMES DE ETIQUETADO ",Toast.LENGTH_LONG).show();
-//
-//                           getActivity().finish();
-//                        }
-                }
-            }
-
-                aceptar.setEnabled(false);
+            aceptar.setEnabled(false);
             if(isEdicion||preguntaAct!=null&&preguntaAct.getId()==114){
                 aceptar.setEnabled(true);
             }
@@ -476,8 +196,270 @@ public class NvoEmpaqueFragment extends Fragment {
 
         return root;
     }
-//mViewModel.getInformeEtiq().getTotal_cajas()
-  //      mViewModel.getInformeEtiq().getTotal_muestras()
+
+    public void crearVista(){
+        if(preguntaAct!=null)
+        {
+            Log.d(TAG, "pregact"+preguntaAct.getLabel()+"--"+mViewModel.getIdNuevo());
+            mViewModel.preguntaAct=preguntaAct.getId();
+            ciudadInf=Constantes.CIUDADTRABAJO;
+            //llegué por siguiente
+            if(mViewModel.getIdNuevo()>0) {
+                clienteId=mViewModel.getNvoinforme().getClientesId();
+                if (preguntaAct.getTabla().equals("ED")) { //veo si ya está
+                    InformeEtapaDet informeEtapaDet= mViewModel.getDetallexDescCajaSim(mViewModel.getIdNuevo(), preguntaAct.getNombreCampo(),mViewModel.cajaAct.consCaja);
+
+                    ultimares = informeEtapaDet;
+                    if(ultimares!=null)
+                    {
+                        mViewModel.cajaAct=new EtiquetadoxCliente();
+                        mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
+                        mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
+                        mViewModel.cajaAct.numCaja=ultimares.getNum_caja();
+
+                        mViewModel.numMuestras=ultimares.getNum_muestra();
+                        isEdicion=true;
+                    }
+                    Log.d(TAG,"DONE 1");
+                    crearFormulario();
+
+
+                }
+                if (preguntaAct.getTabla().equals("DC")) {//veo si ya está
+                    //Log.d(TAG,"num caja"+mViewModel.cajaAct.consCaja);
+                    ultimarescaja = mViewModel.getDetalleCajaxCaja(mViewModel.getIdNuevo(), mViewModel.cajaAct.consCaja);
+                    if(ultimarescaja!=null) {
+
+
+                        if(ultimarescaja.getLargo()!=null) {
+                            mViewModel.largoCaja = Float.parseFloat(ultimarescaja.getLargo());
+                            if(preguntaAct.getId()==98)
+                                isEdicion = true;
+                        }if(ultimarescaja.getAncho()!=null) {
+                            mViewModel.anchoCaja = Float.parseFloat(ultimarescaja.getAncho());
+                            if(preguntaAct.getId()==100)
+                                isEdicion = true;
+                        }if(ultimarescaja.getAlto()!=null) {
+                            mViewModel.altoCaja = Float.parseFloat(ultimarescaja.getAlto());
+                            if(preguntaAct.getId()==102)
+                                isEdicion = true;
+                        }if(ultimarescaja.getPeso()!=null) {
+                            mViewModel.pesoCaja = Float.parseFloat(ultimarescaja.getPeso());
+                            if(preguntaAct.getId()==104)
+                                isEdicion = true;
+                        }
+                    }
+                    Log.d(TAG,"DONE 9");
+                    crearFormulario();
+
+                }
+                if (preguntaAct.getTabla().equals("IE")) {
+                    //son comentarios o sel cliente
+                    // listacomp = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+                    listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                    Integer[] clientesprev = mViewModel.tieneInforme(4);
+                    //   Log.d(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+
+                    if (listacomp.size() > 1) {
+                        //tengo varias clientes
+                        // preguntaAct=1;
+                        convertirLista(listacomp,clientesprev);
+                        mViewModel.variasClientes = true;
+
+                    }
+                    Log.d(TAG,"DONE 10");
+                    crearFormulario();
+                }
+            }else {
+                //no he guardado el informe
+                Log.d(TAG,"DONE 11");
+                crearFormulario();
+
+            }
+
+        }else
+        {
+
+            ciudadInf=Constantes.CIUDADTRABAJO;
+            if (datosRecuperados != null) {
+                informeSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
+
+                if (informeSel > 0) //vengo de continuar busco el informe o de nueva caja
+                {
+                    if (isEdicion) {
+
+                        InformeEtapa informeEtapa=mViewModel.getInformexId(informeSel);
+
+                        mViewModel.setNvoinforme(informeEtapa);
+                        clienteId=informeEtapa.getClientesId();
+                        mViewModel.setIdNuevo(informeSel);
+                        int pregact = 0;
+                        ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informeEtapa,informeEtapa.getTotal_muestras(), informeEtapa.getTotal_cajas());
+                        //busco si tengo detalle
+                        ultimares = mViewModel.getUltimoInformeDet(informeSel, 4);
+                        if (ultimares == null) {      //voy en la 93
+                            //no deberia estar aqui
+                            Log.e(TAG, "no deberia entrar aqui");
+                        } else {
+                            //busco la lista de cajas
+                            mViewModel.getCajasEtiqCdCli(Constantes.CIUDADTRABAJO,clienteId,Constantes.INDICEACTUAL);
+                            mViewModel.cajaAct.consCaja = ultimares.getNum_caja();
+                            mViewModel.cajaAct.numMuestras= ultimares.getNum_muestra();
+                            mViewModel.cajaAct.numCaja=ultimares.getNum_caja();
+                            //ya tengo dimensiones?
+                            ultimarescaja = mViewModel.getUltimoxCaja(informeSel,mViewModel.cajaAct.consCaja  );
+                            Log.d(TAG, "lol"+ultimares.getNum_caja());
+
+                            if (ultimarescaja != null)//voy en dimensiones
+                            {
+                                Log.d(TAG, ultimarescaja.getInformeEtapaId() + "<--" + ultimarescaja.getLargo() + "--" + ultimarescaja.getAncho() + "--" + ultimarescaja.getAlto() + "--" + ultimarescaja.getPeso());
+                                if (ultimarescaja.getLargo() != null)
+                                    mViewModel.largoCaja = Float.parseFloat(ultimarescaja.getLargo());
+                                if (ultimarescaja.getAncho() != null)
+                                    mViewModel.anchoCaja = Float.parseFloat(ultimarescaja.getAncho());
+                                if (ultimarescaja.getAlto() != null)
+                                    mViewModel.altoCaja = Float.parseFloat(ultimarescaja.getAlto());
+                                if (ultimarescaja.getPeso() != null)
+                                    mViewModel.pesoCaja = Float.parseFloat(ultimarescaja.getPeso());
+
+                                if (mViewModel.largoCaja > 0)
+                                    pregact = 98;
+                                if (mViewModel.anchoCaja > 0)
+                                    pregact = 100;
+                                if (mViewModel.altoCaja > 0)
+                                    pregact = 102;
+                                if (mViewModel.pesoCaja > 0)
+                                    pregact = 104;
+
+                                //  mViewModel.cajaAct.consCaja  = ultimarescaja.getNum_caja();
+
+                                //  mViewModel.cajaAct.numMuestras=ultimares.getNum_muestra();
+                                if (pregact > 0) {
+                                    mViewModel.buscarReactivo(pregact).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                                        @Override
+                                        public void onChanged(Reactivo reactivo) {
+                                            preguntaAct = reactivo;
+                                            mViewModel.preguntaAct = preguntaAct.getId();
+                                            isEdicion = true;
+                                            Log.d(TAG,"DONE 5");
+                                            crearFormulario();
+                                        }
+                                    });
+                                } else {
+                                    //solo es foto
+                                    preguntaAct = mViewModel.buscarReactivoxDesc(ultimares.getDescripcion(), 4);
+                                    mViewModel.preguntaAct = preguntaAct.getId();
+                                    isEdicion = true;
+                                    Log.d(TAG,"DONE 4");
+                                    crearFormulario();
+
+                                }
+                            } else {
+
+                                //busco por la pregunta
+                                preguntaAct = mViewModel.buscarReactivoxDesc(ultimares.getDescripcion(), 4);
+                                mViewModel.preguntaAct = preguntaAct.getId();
+                                isEdicion = true;
+                                Log.d(TAG,"DONE 3");
+                                crearFormulario();
+                            }
+
+                        }
+
+
+                    }else
+                    {
+                        //  mViewModel.variasClientes = false;
+
+                        mViewModel.buscarInformeEmp(Constantes.INDICEACTUAL);
+
+                        mViewModel.buscarReactivo(93).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                            @Override
+                            public void onChanged(Reactivo reactivo) {
+                                Log.d(TAG,"DONE 2");
+                                preguntaAct = reactivo;
+                                crearFormulario();
+                            }
+                        });
+                    }
+                }
+            } else {
+                //es nuevo nuevito
+                //es nuevo pregunta 91
+                //reviso si ya tengo uno abierto
+                InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,4);
+
+                if (informeEtapa != null) {
+
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                    dialogo1.setTitle(R.string.atencion);
+                    dialogo1.setMessage(R.string.informe_abierto);
+                    dialogo1.setCancelable(false);
+                    dialogo1.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                            //lo mando a continuar
+                            getActivity().finish();
+
+                        }
+                    });
+
+                    dialogo1.show();
+                }
+                //busco si tengo varios clientes x ciudad
+                //   listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+                listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO,this.etapa);
+
+                //busco clientes con informe
+
+                Integer[] clientesprev = mViewModel.tieneInforme(4);
+
+                if (listacomp.size() > 1) {
+                    //tengo varias clientes
+                    // preguntaAct=1;
+                    convertirLista(listacomp, clientesprev);
+                    // cargarPlantas(listaClientes, "");
+
+                    mViewModel.variasClientes = true;
+                    buscarPreguntas();
+                    preguntaAct = mViewModel.getListaPreguntas().get(0);
+                    crearFormulario();
+
+                } else if (listacomp.size() > 0) {
+
+                    mViewModel.variasClientes = false;
+                    clienteId = listacomp.get(0).getClientesId();
+                    clienteNombre = listacomp.get(0).getClienteNombre();
+                    InformeEtapa informetemp = new InformeEtapa();
+                    informetemp.setClienteNombre(clienteNombre);
+                    informetemp.setClientesId(clienteId);
+                    informetemp.setIndice(Constantes.INDICEACTUAL);
+                    mViewModel.setNvoinforme(informetemp);
+                    //busco total de muestras y cajas
+                    mViewModel.getCajasEtiqCdCli(ciudadInf,clienteId,Constantes.INDICEACTUAL);
+                    mViewModel.totCajasEmp=mViewModel.resumenEtiq.size();
+
+                    mViewModel.cajaAct=mViewModel.resumenEtiq.get(0);
+                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
+                    mViewModel.buscarReactivo(93).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
+                        @Override
+                        public void onChanged(Reactivo reactivo) {
+                            preguntaAct = reactivo;
+                            crearFormulario();
+                        }
+                    });
+
+
+
+
+                }else{
+                    Toast.makeText(getContext(),"NO HAY DATOS QUE MOSTRAR ",Toast.LENGTH_LONG).show();
+
+                    getActivity().finish();
+                }
+
+            }
+        }
+    }
     public void crearFormulario(){
         camposForm=new ArrayList<>();
         CampoForm campo=new CampoForm();
@@ -1122,6 +1104,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
     }
 
+
     public void avanzarPregunta(int sig){
         Log.d(TAG,"sig "+sig);
        /* if(sig==92){
@@ -1167,12 +1150,12 @@ public class NvoEmpaqueFragment extends Fragment {
                 NvoEmpaqueFragment nvofrag = new NvoEmpaqueFragment();
                 nvofrag.setArguments(args);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
+                 // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
+                // Remplazar el contenido principal por el fragmento
                 fragmentTransaction.replace(R.id.continfeta_fragment, nvofrag);
                 //     fragmentTransaction.addToBackStack(null);
-// Cambiar
+                // Cambiar
                 fragmentTransaction.commit();
             }
         });
@@ -1218,16 +1201,22 @@ public class NvoEmpaqueFragment extends Fragment {
     private  void convertirLista(List<ListaCompra>lista, Integer[] clientesprev){
         listaClientes =new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
-          /*  Log.d(TAG,listaCompra.getPlantaNombre());
+            Log.d(TAG,listaCompra.getPlantaNombre());
            if( clientesprev!=null)
                 if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
                 {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
                     Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
-                    continue;}*/
+                    continue;}
             listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 
         }
 
+    }
+
+    private void actualizarListaCompra() {
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        listaCompraResponse=lcViewModel.actualizarListaCompra(compraslog);
     }
     @Override
     public void onDestroyView() {

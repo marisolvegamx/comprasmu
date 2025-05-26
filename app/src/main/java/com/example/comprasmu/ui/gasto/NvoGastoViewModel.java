@@ -1,10 +1,13 @@
 package com.example.comprasmu.ui.gasto;
 
+import android.app.Activity;
 import android.app.Application;
 import android.os.Environment;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
+import com.example.comprasmu.DescargaListaCompraAuto;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 
@@ -14,21 +17,29 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 
 import com.example.comprasmu.data.modelos.Configuracion;
+import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 
+import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.remote.InformeGastoEnv;
+import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
@@ -44,6 +55,8 @@ public class NvoGastoViewModel extends AndroidViewModel {
     private final InfGastoDetRepositoryImpl gasdetrepo;
     private final ImagenDetRepositoryImpl imagenDetRepository;
     private final InfEtapaRepositoryImpl infEtaRepository;
+
+    TablaVersionesRepImpl tvRepo;
     ComprasLog compraslog;
     public NvoGastoViewModel(@NonNull Application application) {
         super(application);
@@ -207,6 +220,19 @@ public class NvoGastoViewModel extends AndroidViewModel {
     public List<InformeEtapa> getInfGasto(String indiceSel, String ciudad){
 
         return infEtaRepository.getInfGasxEstatusCiu(indiceSel,6,2,ciudad);
+
+    }
+
+    public LiveData<ListaCompraResponse> actualizarListaCompra(){
+        tvRepo=new TablaVersionesRepImpl(application);
+        ListaCompraDao listaCompraDao=ComprasDataBase.getInstance(application).getListaCompraDao();
+        ListaCompraRepositoryImpl listaCompraRepo=ListaCompraRepositoryImpl.getInstance(listaCompraDao);
+        ListaCompraDetRepositoryImpl listaCompraDetRepo=new ListaCompraDetRepositoryImpl(application);
+        InformeComDetRepositoryImpl informeCompraRepository=new InformeComDetRepositoryImpl(application);
+        DescargaListaCompraAuto descargaListaCompraAuto=new DescargaListaCompraAuto(compraslog,listaCompraRepo,listaCompraDetRepo,informeCompraRepository);
+        PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        PeticionesServidor.PeticionLista peticionLista=peticionesServidor.crearPeticion(null, null,Constantes.INDICEACTUAL);
+        return peticionesServidor.pedirListaCompraxCiudad(peticionLista,Constantes.CIUDADTRABAJO, descargaListaCompraAuto);
 
     }
 }

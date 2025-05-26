@@ -197,9 +197,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 }
             }
         });
-        //actualizo la lista de compra
-        actualizarListaCompra();
-        buscarClientes();
+
         if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
@@ -211,6 +209,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     LOCATION_REQUEST_CODE);
 
         }
+        //actualizo la lista de compra
+        actualizarListaCompra();
 
         cargarCatalogos();
         indiceini=Constantes.INDICEACTUAL;
@@ -326,7 +326,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             locationPermissionGranted = true;
             mMap.setMyLocationEnabled(true);
             getDeviceLocation();
-            buscarPlantas(Constantes.CIUDADTRABAJO);
+
         } else {
             Log.d(TAG, "no tengo  "+LOCATION_REQUEST_CODE);
             // Solicitar permiso
@@ -892,6 +892,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     @Override
     public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
         alert.closeAlertDialog();
+        buscarPlantas(Constantes.CIUDADTRABAJO);
+        buscarClientes();
     }
 
     @Override

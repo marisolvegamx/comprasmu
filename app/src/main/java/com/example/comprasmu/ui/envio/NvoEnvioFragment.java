@@ -47,11 +47,16 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeEtaTask;
+import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ListaCompraDao;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -63,6 +68,12 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
+import com.example.comprasmu.data.remote.ListaCompraResponse;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
+import com.example.comprasmu.data.remote.RespInformesResponse;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.etiquetado.NvoEtiqCajaFragment;
@@ -71,6 +82,7 @@ import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -85,12 +97,13 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 
-public class NvoEnvioFragment extends Fragment {
+public class NvoEnvioFragment extends Fragment  {
 
     private int preguntaAct;
     LinearLayout svcli,svfecha,svrecibe,svsello,svcoment;
@@ -126,6 +139,8 @@ public class NvoEnvioFragment extends Fragment {
     private NuevoInfEtapaViewModel niviewModel;
     ComprasLog milog;
     private EditText txtfechaent,txtnombrerec,txtcoment,txtfotosello;
+    private LoadingAlert alert;
+    private LiveData<ListaCompraResponse> listaCompraResponse;
 
     public NvoEnvioFragment() {
 
@@ -252,74 +267,82 @@ public class NvoEnvioFragment extends Fragment {
             milog.grabarError(TAG + " o x aca");
             //busco si tengo varias plantas
             ciudadInf = Constantes.CIUDADTRABAJO;
-            //busco los clientes x ciudad
-            listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, this.etapa);
-            Log.d(TAG, "cliente" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
+            actualizarListaCompra();
+            listaCompraResponse.observe(getViewLifecycleOwner(), new Observer<ListaCompraResponse>() {
+                @Override
+                public void onChanged(ListaCompraResponse listaCompraResponse) {
+                    alert.closeAlertDialog();
+                    //busco los clientes x ciudad
+                    listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, etapa);
+                    Log.d(TAG, "cliente" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
 
-            //ya puedo tener varios informes
-         //   Integer[] clientesprev = mViewModel.tieneInforme(3);
+                    //ya no puedo tener varios informes
+                    Integer[] clientesprev = mViewModel.tieneInforme(5);
 
-            convertirLista(listacomp);
-            //reviso que tenga la guia
-            if(listaClientes.size() > 0) {
-                String infEnvioId = PreferencesGuias.buscarInformeEnvio(getActivity(), Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
-                milog.info(TAG,"onCreateView","guia-informe envio:"+infEnvioId);
-                if (infEnvioId == null||infEnvioId.equals("")||infEnvioId.equals("0"))
-                {
-                    milog.info(TAG,"onCreateView","no puede hacer informe envio");
+                    convertirLista(listacomp,clientesprev);
+                    //reviso que tenga la guia
+                    if(listaClientes.size() > 0) {
+                        String infEnvioId = PreferencesGuias.buscarInformeEnvio(getActivity(), Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
+                        milog.info(TAG,"onCreateView","guia-informe envio:"+infEnvioId);
+                        if (infEnvioId == null||infEnvioId.equals("")||infEnvioId.equals("0"))
+                        {
+                            milog.info(TAG,"onCreateView","no puede hacer informe envio");
 
-                    Toast.makeText(getContext(), R.string.no_puede_hacer_infenv, Toast.LENGTH_SHORT).show();
-                    return root;
+                            Toast.makeText(getContext(), R.string.no_puede_hacer_infenv, Toast.LENGTH_SHORT).show();
+                            salir();
+                        }
+                    }
+                    if (listaClientes.size() > 1) {
+                        preguntaAct = 1;
+
+
+                        cargarPlantas(listaClientes, "");
+
+                        mViewModel.variasClientes = true;
+                        svcli.setVisibility(View.VISIBLE);
+                        aceptar1.setEnabled(true);
+                    } else if (listaClientes.size() > 0) {
+                        preguntaAct = 2;
+
+                        svfecha.setVisibility(View.VISIBLE);
+                        mViewModel.variasClientes = false;
+                        clienteId = listacomp.get(0).getClientesId();
+                        clienteNombre = listacomp.get(0).getClienteNombre();
+                        totalcajas = mViewModel.getTotalCajasxCliXcd(clienteId, Constantes.CIUDADTRABAJO);
+                        //veo si ya tengo un informe
+                        InformeEtapa primero = mViewModel.tieneInforme(etapa, Constantes.CIUDADTRABAJO, clienteId);
+
+                        InformeEtapa informetemp = new InformeEtapa();
+                        informetemp.setClienteNombre(clienteNombre);
+                        informetemp.setClientesId(clienteId);
+                        informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
+                        informetemp.setIndice(Constantes.INDICEACTUAL);
+                        informetemp.setTotal_cajas(totalcajas);
+                        ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(informetemp);
+                    }else{
+                        Toast.makeText(getContext(), R.string.no_puede_hacer_infenv, Toast.LENGTH_SHORT).show();
+                        milog.info(TAG,"onCreateView","no puede hacer informe envio");
+                        salir();;
+                    }
+
+                    if (isEdicion) { //busco el informe
+
+                        //busco el informe y el detalle
+
+                        //   infomeEdit = mViewModel.getInformexId(informeSel);
+                        preguntaAct = 2;
+                        mViewModel.preguntaAct = 2;
+                        if (listaClientes != null && listaClientes.size() > 0)
+                            cargarPlantas(listaClientes, informeEdit.informeEtapa.getClientesId() + "");
+                        ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(informeEdit.informeEtapa);
+                        mViewModel.setIdNuevo(informeSel);
+                        totalcajas = informeEdit.informeEtapa.getTotal_cajas();
+                        clienteId = informeEdit.informeEtapa.getClientesId();
+                        editarInforme();
+                    }
                 }
-            }
-            if (listaClientes.size() > 1) {
-             preguntaAct = 1;
+            });
 
-
-                cargarPlantas(listaClientes, "");
-
-                mViewModel.variasClientes = true;
-                svcli.setVisibility(View.VISIBLE);
-                aceptar1.setEnabled(true);
-           } else if (listaClientes.size() > 0) {
-                    preguntaAct = 2;
-
-                    svfecha.setVisibility(View.VISIBLE);
-                    mViewModel.variasClientes = false;
-                    clienteId = listacomp.get(0).getClientesId();
-                    clienteNombre = listacomp.get(0).getClienteNombre();
-                    totalcajas = mViewModel.getTotalCajasxCliXcd(clienteId, Constantes.CIUDADTRABAJO);
-                    //veo si ya tengo un informe
-                    InformeEtapa primero = mViewModel.tieneInforme(etapa, Constantes.CIUDADTRABAJO, clienteId);
-
-                    InformeEtapa informetemp = new InformeEtapa();
-                    informetemp.setClienteNombre(clienteNombre);
-                    informetemp.setClientesId(clienteId);
-                    informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
-                    informetemp.setIndice(Constantes.INDICEACTUAL);
-                    informetemp.setTotal_cajas(totalcajas);
-                    ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(informetemp);
-            }else{
-                Toast.makeText(getContext(), R.string.no_puede_hacer_infenv, Toast.LENGTH_SHORT).show();
-                milog.info(TAG,"onCreateView","no puede hacer informe envio");
-
-            }
-
-            if (isEdicion) { //busco el informe
-
-                //busco el informe y el detalle
-
-             //   infomeEdit = mViewModel.getInformexId(informeSel);
-                preguntaAct = 2;
-                mViewModel.preguntaAct = 2;
-                if (listaClientes != null && listaClientes.size() > 0)
-                    cargarPlantas(listaClientes, this.informeEdit.informeEtapa.getClientesId() + "");
-                ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEnv(this.informeEdit.informeEtapa);
-                mViewModel.setIdNuevo(informeSel);
-                totalcajas = this.informeEdit.informeEtapa.getTotal_cajas();
-                clienteId = this.informeEdit.informeEtapa.getClientesId();
-                editarInforme();
-            }
 
             aceptar1.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -354,7 +377,7 @@ public class NvoEnvioFragment extends Fragment {
             aceptar3.setOnClickListener(new View.OnClickListener() { //foto
                 @Override
                 public void onClick(View view) {
-                 guardarDet();
+                   guardarDet();
 
                 }
             });
@@ -399,11 +422,11 @@ public class NvoEnvioFragment extends Fragment {
 
 
 
-        public void avanzar() {
-            Log.d(TAG, "--" + preguntaAct);
+    public void avanzar() {
+        Log.d(TAG, "--" + preguntaAct);
 
 
-            switch (preguntaAct) {
+        switch (preguntaAct) {
                 case 1: //sel cliente
 
 
@@ -452,13 +475,13 @@ public class NvoEnvioFragment extends Fragment {
             }
 
             mViewModel.preguntaAct = preguntaAct;
-        }
+    }
 
 
 
 
 
-        public void editarInforme() {
+    public void editarInforme() {
             svcli.setVisibility(View.GONE);
             svrecibe.setVisibility(View.GONE);
             svsello.setVisibility(View.GONE);
@@ -491,7 +514,7 @@ public class NvoEnvioFragment extends Fragment {
                 }
             }
 
-        }
+    }
 
 
 
@@ -847,11 +870,15 @@ public class NvoEnvioFragment extends Fragment {
 
         //ya se puede tener varios informes de envio por la reactivacion
 
-        private  void convertirLista(List<ListaCompra>lista){
+        private  void convertirLista(List<ListaCompra>lista,  Integer[] clientesprev){
             listaClientes =new ArrayList<DescripcionGenerica>();
             for (ListaCompra listaCompra: lista ) {
                 Log.d(TAG,listaCompra.getPlantaNombre());
-
+                if( clientesprev!=null)
+                    if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
+                    {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
+                        Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
+                        continue;}
                 listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 
             }
@@ -859,7 +886,9 @@ public class NvoEnvioFragment extends Fragment {
         }
 
 
-        class BotonTextWatcher implements TextWatcher {
+
+
+    class BotonTextWatcher implements TextWatcher {
 
             boolean mEditing;
             Button aceptar;
@@ -1028,6 +1057,11 @@ public class NvoEnvioFragment extends Fragment {
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
     }
 
+    private void actualizarListaCompra() {
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        listaCompraResponse=lcViewModel.actualizarListaCompra(milog);
+    }
 
 
 }
