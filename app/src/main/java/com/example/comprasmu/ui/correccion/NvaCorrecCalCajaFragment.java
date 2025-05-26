@@ -116,11 +116,9 @@ public class NvaCorrecCalCajaFragment extends Fragment {
     /**
      * Informe de correccion de calidad caja para etiquetado
      *Pasa pregunta por pregunta
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment NvaCorrecCalCajaFragment.
      */
-    public static NvaCorrecCalCajaFragment newInstance(String param1, String param2) {
+    public static NvaCorrecCalCajaFragment newInstance() {
         NvaCorrecCalCajaFragment fragment = new NvaCorrecCalCajaFragment();
 
         return fragment;
