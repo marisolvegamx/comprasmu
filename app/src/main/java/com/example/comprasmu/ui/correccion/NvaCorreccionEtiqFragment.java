@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -133,7 +134,8 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
         }
 
-        solViewModel.getSolicitud(solicitudSel,numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
+        LiveData<SolicitudCor> solcorlive=solViewModel.getSolicitud(solicitudSel,numfoto);
+        solcorlive.observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
@@ -202,7 +204,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
                         break;
 
                 }
-
+                solcorlive.removeObservers(getViewLifecycleOwner());
             }
         });
         aceptar.setText(getString(R.string.enviar));

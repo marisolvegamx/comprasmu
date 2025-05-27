@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -118,7 +119,8 @@ public class NvaCorreccionFragment extends Fragment {
         fotoori2=root.findViewById(R.id.ivcoriginal2);
         fotoori3=root.findViewById(R.id.ivcoriginal3);
         fotoori4=root.findViewById(R.id.ivcoriginal4);
-        solViewModel.getSolicitud(solicitudSel,numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
+        LiveData<SolicitudCor> solicitudCorreccionLiveData=solViewModel.getSolicitud(solicitudSel,numfoto);
+        solicitudCorreccionLiveData.observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
@@ -134,7 +136,7 @@ public class NvaCorreccionFragment extends Fragment {
                 }
                 ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud, constienda);
                 crearFormulario();
-
+                solicitudCorreccionLiveData.removeObservers(getViewLifecycleOwner());
                 //BUSCO LA FOTO ORIGINAL
                 //en donde la busco
                 switch (solicitud.getEtapa()){
@@ -204,9 +206,9 @@ public class NvaCorreccionFragment extends Fragment {
                                     if(imagenDetalle!=null) {
                                         rutafotoo2 = imagenDetalle.getRuta();
 
-                                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 80, 80);
-                                            if(bitmap1!=null)
-                                                fotoori2.setImageBitmap(bitmap1);
+                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 80, 80);
+                                        if(bitmap1!=null)
+                                            fotoori2.setImageBitmap(bitmap1);
 
                                         fotoori2.setVisibility(View.VISIBLE);
                                         root.findViewById(R.id.gpocfototo2).setVisibility(View.VISIBLE);

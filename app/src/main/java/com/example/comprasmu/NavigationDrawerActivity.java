@@ -327,6 +327,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     .getInstance(this)
                     .enqueueUniquePeriodicWork("comprassync_worker2", ExistingPeriodicWorkPolicy.KEEP,simpleRequest);
 */
+            DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
          //elimino todos los procesos que se hayan iniciado primera version
             WorkManager
                     .getInstance(this).cancelAllWorkByTag("comprassync_worker2");
@@ -343,7 +344,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     @Override
     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
    //   initializeCountDrawer();
-      //  DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
+
 
         return super.onCreateView(parent, name, context, attrs);
     }
@@ -516,6 +517,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "pausado");
+        DescAutomaticasServiceManager.getInstancia().detenerServicio();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(rcv);
     }
     @Override
@@ -891,10 +894,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
       @Override
-    protected void onResume() {
-        super.onResume();
-        initializeCountDrawer();
-    }
+    protected void onRestart() {
+          super.onRestart();
+
+          Log.d(TAG, "on restart");
+          DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
+
+          initializeCountDrawer();
+      }
 
 
     public void subirImagenes(){

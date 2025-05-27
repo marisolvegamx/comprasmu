@@ -119,7 +119,8 @@ public class NvaCorreccionGasFragment extends Fragment {
         clog=ComprasLog.getSingleton();
         fotoori1=root.findViewById(R.id.ivcoriginal);
 
-        solViewModel.getSolicitud(solicitudSel,numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
+        LiveData<SolicitudCor> solcorlive=solViewModel.getSolicitud(solicitudSel,numfoto);
+        solcorlive.observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
@@ -158,6 +159,7 @@ public class NvaCorreccionGasFragment extends Fragment {
                                 else{
                                     clog.grabarError(TAG,"onCreateView ","Hubo un error al buscar la imagen de correccion"+detallesInf.getFotocomprob());
                                 }
+                                imagen.removeObservers(getViewLifecycleOwner());
                             }
                         });
                     }
@@ -169,6 +171,7 @@ public class NvaCorreccionGasFragment extends Fragment {
                         verImagen(rutafotoo);
                     }
                 });
+                solcorlive.removeObservers(getViewLifecycleOwner());
             }
         });
         aceptar.setText(getString(R.string.enviar));

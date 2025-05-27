@@ -112,7 +112,8 @@ public class NvaCorreccionEnvFragment extends Fragment {
         }
         fotoori1=root.findViewById(R.id.ivcoriginal);
 
-        solViewModel.getSolicitud(solicitudSel,numfoto).observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
+        LiveData<SolicitudCor> solcorlive=solViewModel.getSolicitud(solicitudSel,numfoto);
+        solcorlive.observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
             @Override
             public void onChanged(SolicitudCor solicitudCor) {
                 solicitud=solicitudCor;
@@ -145,7 +146,7 @@ public class NvaCorreccionEnvFragment extends Fragment {
 
                                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                                 //fotoori1.setVisibility(View.VISIBLE);
-
+                                imagen.removeObservers(getViewLifecycleOwner());
                             }
                         });
                     }
@@ -157,6 +158,7 @@ public class NvaCorreccionEnvFragment extends Fragment {
                         verImagen(rutafotoo);
                     }
                 });
+                solcorlive.removeObservers(getViewLifecycleOwner());
             }
         });
         aceptar.setText(getString(R.string.enviar));

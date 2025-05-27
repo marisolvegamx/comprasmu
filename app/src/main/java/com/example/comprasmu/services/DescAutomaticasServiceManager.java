@@ -32,8 +32,10 @@ public class DescAutomaticasServiceManager {
             context.startService(intent);
             servicioIniciado = true;
         }
+        descargasAutomaticasservicio.reanudar();
     }
     public void detenerServicio() {
+        servicioIniciado=false;
         descargasAutomaticasservicio.detenerServicio();
     }
 
