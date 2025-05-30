@@ -433,7 +433,10 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
 
 
                 }
-                else resp=true;
+                else {
+                    //le quito la ,
+                    valor=valor.replace(",","");
+                    resp=true;}
                 break;
             case  Contrato.TablaInformeDet.QR: //valido el qr
                 String  valor2 = textoint.getText().toString();

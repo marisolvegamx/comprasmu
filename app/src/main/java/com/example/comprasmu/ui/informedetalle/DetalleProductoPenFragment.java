@@ -1438,6 +1438,10 @@ public class DetalleProductoPenFragment extends Fragment {
                 valor = pregunta.getRespuesta() + "";
             }
         }
+        if(preguntaAct.getNombreCampo().equals(Contrato.TablaInformeDet.COSTO)) {
+            //le quito la ,
+            valor = valor.replace(",", "");
+        }
             //  if(!preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN))
             //paso a mayusculas
 

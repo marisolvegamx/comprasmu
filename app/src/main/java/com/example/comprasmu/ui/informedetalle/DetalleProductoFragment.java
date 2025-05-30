@@ -795,7 +795,10 @@ public class DetalleProductoFragment extends Fragment {
                 if(valor.equals("$0.00")){
                     Toast.makeText(getActivity(),"Costo inválido, verifique",Toast.LENGTH_LONG).show();
                 }
-                else resp=true;
+                else {
+                    //le quito la ,
+                    valor=valor.replace(",","");
+                    resp=true;}
                 break;
             case Contrato.TablaInformeDet.SIGLAS:
                 resp=validarSiglas();
@@ -1596,21 +1599,25 @@ public class DetalleProductoFragment extends Fragment {
             }
         }
         compraslog.grabarError(TAG,"guardarResp", "guardando en temp" + preguntaAct.getId() + "val:" + valor);
-        if(preguntaAct.getId()==5&& preguntaview.getNopermiso().isChecked())//es ticket
-        {
-            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "0", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
-            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "1", "ticket_noemiten", preguntaAct.getTabla(), mViewModel.consecutivo, true);
+        if(preguntaAct.getNombreCampo().equals(Contrato.TablaInformeDet.COSTO)) {
+            //le quito la ,
+            valor = valor.replace(",", "");
+        }
+            if(preguntaAct.getId()==5&& preguntaview.getNopermiso().isChecked())//es ticket
+            {
+                mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "0", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
+                mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "1", "ticket_noemiten", preguntaAct.getTabla(), mViewModel.consecutivo, true);
 
-        }else
-            //  if(!preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN))
-            //paso a mayusculas
+            }else
+                //  if(!preguntaAct.getType().equals(CreadorFormulario.AGREGARIMAGEN))
+                //paso a mayusculas
 
-            if(preguntaAct.getId() > 0 && valor != null && valor.length() > 0) {
-                //actualizo la visita
-                if(mViewModel.visita.getEstatus()!=3)
-                    mViewModel.actualizarVisita(mViewModel.visita.getId(),3);
-                mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), valor, preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
-            }
+                if(preguntaAct.getId() > 0 && valor != null && valor.length() > 0) {
+                    //actualizo la visita
+                    if(mViewModel.visita.getEstatus()!=3)
+                        mViewModel.actualizarVisita(mViewModel.visita.getId(),3);
+                    mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), valor, preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
+                }
 
         //si es la 2 4 o 3 guardo la
 
