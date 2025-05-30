@@ -64,6 +64,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -485,20 +486,25 @@ public class EditGastoFragment extends Fragment {
 
     public void getConceptos(){
         //  Log.d(TAG,"buscando atributos"+dViewModel.productoSel.empaque+"--"+dViewModel.productoSel.idempaque+"--"+dViewModel.productoSel.clienteSel);
-        conceptos=niviewModel.cargarConceptos();
+        List<CatalogoDetalle> conceptosCatalogo=niviewModel.cargarConceptos();
+        conceptos=new ArrayList<>();
         //busco los que ya seleccionó
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
-        for (int i=0;i<conceptos.size();i++
+        for (int i=0;i<conceptosCatalogo.size();i++
         ){
+            int bandera=0;
             for (InformeGastoDet det:
                     detalles) {
 
-                if (conceptos.get(i).getCad_idopcion() == det.getConceptoId()) {
-                    conceptos.remove(i);
-
+                if (conceptosCatalogo.get(i).getCad_idopcion() == det.getConceptoId()) {
+                    //conceptos.remove(i);
+                    bandera=1;
+                    break;
                 }
 
             }
+            if(bandera==0)
+                conceptos.add(conceptosCatalogo.get(i)); //lo agrego
         }
         catAdapter = new ArrayAdapter<CatalogoDetalle>(getContext(), android.R.layout.simple_spinner_dropdown_item, conceptos) {
 

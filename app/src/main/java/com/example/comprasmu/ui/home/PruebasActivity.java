@@ -290,7 +290,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
         SiglaRepositoryImpl sigRepo=new SiglaRepositoryImpl(getApplicationContext());
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep,sigRepo,puedodescargar);
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep,sigRepo,puedodescargar,false);
         task.execute("cat","");
 
     }
@@ -318,12 +318,12 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     public void imagenesCor(List<Correccion> infoResp) {
         if (infoResp!=null&& infoResp.size() > 0) {
             if(descim3==0)
-            for(Correccion img:infoResp){
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto1(), DESTINATION_PATH);
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto2(), DESTINATION_PATH);
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto3(), DESTINATION_PATH);
-                // Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto1());
-            }
+                for(Correccion img:infoResp){
+                    startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto1(), DESTINATION_PATH);
+                    startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto2(), DESTINATION_PATH);
+                    startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto3(), DESTINATION_PATH);
+                    // Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto1());
+                }
             // cerrarAlerta(true);
             descim3=1;
 

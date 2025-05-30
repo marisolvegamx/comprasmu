@@ -772,7 +772,7 @@ public class PeticionesServidor {
         listener.finalizar();
     }
     public void pedirSolicitudesCorr(String indice, int etapa, String version, IActualListener petsocor){
-        Log.d(TAG,"pidiendo correcciones");
+        Log.d(TAG,"pidiendo correcciones"+petsocor.getClass());
         final Call<SolCorreResponse> batch = ServiceGenerator.getApiService().getSolicitudCorre(indice,usuario,etapa,version);
 
         batch.enqueue(new Callback<SolCorreResponse>() {

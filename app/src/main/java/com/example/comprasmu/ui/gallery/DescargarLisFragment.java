@@ -64,7 +64,7 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getContext());
         SiglaRepositoryImpl sigRepo=new SiglaRepositoryImpl(getContext());
 
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(getActivity(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep,sigRepo,true);
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(getContext(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep,sigRepo,true,true);
         textView.setText("Por favor permanezca en la aplicación hasta que termine la descarga");
         textView.setVisibility(View.VISIBLE);
         pb.setVisibility(View.VISIBLE);
@@ -72,21 +72,6 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         task.execute("","act"); //para saber que estoy actualizando
         ((NavigationDrawerActivity)getActivity()).pedirCorrecciones(1,Constantes.ETAPAACTUAL);
 
-        //descarga solicitudes compra
-         /*AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
-        builder.setCancelable(false);
-        builder.setIcon(android.R.drawable.stat_sys_download);
-        builder.setTitle("Descargando");
-        builder.setMessage("Por favor mantengase en la aplicación hasta que termine la descarga");
-        builder.setInverseBackgroundForced(true);
-
-        alert=builder.create();
-        alert.show();*/
-
-      /*  Dialog builder = new Dialog(act);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.setCancelable(false);
-*/
 
     }
 

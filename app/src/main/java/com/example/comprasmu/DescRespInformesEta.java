@@ -1,6 +1,7 @@
 package com.example.comprasmu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
@@ -32,13 +33,13 @@ public class DescRespInformesEta {
     TablaVersionesRepImpl tvRepo;
     String TAG="DescRespInformesEta";
 
-    Activity act;
+    Context act;
 
 
     private final DescRespInformesEta.ProgresoRespIEListener miproglis;
    // DescargaRespListener listener;
 
-    public DescRespInformesEta(Activity act, DescRespInformesEta.ProgresoRespIEListener miproglis, TablaVersionesRepImpl tvRepo) {
+    public DescRespInformesEta(Context act, DescRespInformesEta.ProgresoRespIEListener miproglis, TablaVersionesRepImpl tvRepo) {
 
         this.act = act;
         this.tvRepo=tvRepo;
