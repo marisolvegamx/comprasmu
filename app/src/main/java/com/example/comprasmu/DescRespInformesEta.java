@@ -21,7 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-/***para actualizar los informes despues de la supervision*******/
+/***para actualizar los informes despues de la supervision
+ * por ahora solo se usa para etiquetado por la correccion*******/
 public class DescRespInformesEta {
 
 
