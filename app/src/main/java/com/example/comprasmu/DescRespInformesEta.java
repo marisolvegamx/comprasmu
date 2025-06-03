@@ -1,6 +1,7 @@
 package com.example.comprasmu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Contrato;
@@ -32,21 +33,21 @@ public class DescRespInformesEta {
     TablaVersionesRepImpl tvRepo;
     String TAG="DescRespInformesEta";
 
-    Activity act;
+    Context act;
 
 
     private final DescRespInformesEta.ProgresoRespIEListener miproglis;
-   // DescargaRespListener listener;
+    // DescargaRespListener listener;
 
-    public DescRespInformesEta(Activity act, DescRespInformesEta.ProgresoRespIEListener miproglis, TablaVersionesRepImpl tvRepo) {
+    public DescRespInformesEta(Context act, DescRespInformesEta.ProgresoRespIEListener miproglis, TablaVersionesRepImpl tvRepo) {
 
         this.act = act;
         this.tvRepo=tvRepo;
         sdfdias=new SimpleDateFormat("dd-MM-yyyy");
         this.miproglis=miproglis;
-       // this.listener=new DescargaRespListener();
-       }
-       //traigo todos los informes de etiq por si alguno cambio qr
+        // this.listener=new DescargaRespListener();
+    }
+    //traigo todos los informes de etiq por si alguno cambio qr
     public void getCambiosSupEtiq(){
 
 
@@ -75,16 +76,16 @@ public class DescRespInformesEta {
         }
 
 
-/*este todavia no esta usandose*/
+        /*este todavia no esta usandose*/
         public void actualizarQr(RespInfEtapaResponse infoResp) {
             Log.d(TAG, "actualizando bd informes");
             //primero los inserts
             if (infoResp != null) {
 
                 if (infoResp.getInformeEtapaDet() != null && infoResp.getInformeEtapaDet().size() > 0) {
-                   //solo actualizo qr
+                    //solo actualizo qr
                     for (InformeEtapaDet det:infoResp.getInformeEtapaDet()
-                         ) {
+                    ) {
                         infdrepo.actQr(det.getId(),det.getQr());
                     }
 
@@ -104,7 +105,7 @@ public class DescRespInformesEta {
 
             miproglis.finalizarrespie();
 
-    }
+        }
         public void actualizarInformesEtiq(RespNotifEtiqResponse infoResp) {
             Log.i(TAG, "actualizando bd informes");
 
@@ -148,13 +149,13 @@ public class DescRespInformesEta {
                 }
                 if (infoResp.getEmp_elim() != null && infoResp.getEmp_elim().size() > 0) {
                     for (InformeEtapa infemp:infoResp.getEmp_elim()
-                         ) {
+                    ) {
                         //cambio estatus det
                         //busco detalles
                         List<InformeEtapaDet> det=infdrepo.getAllSencillo(infemp.getId());
                         if(det!=null)
                             for (InformeEtapaDet infd : det) {
-                               // complog.grabarError("borrando informe etapa det"+infd.getId());
+                                // complog.grabarError("borrando informe etapa det"+infd.getId());
                                 //borro los detalles
                                 infdrepo.actEstatus(infd.getId(),0);
 
@@ -163,7 +164,7 @@ public class DescRespInformesEta {
                         List<DetalleCaja> fotoscaja=cajarepo.getAllsimplexInf(infemp.getId());
                         if(fotoscaja!=null&fotoscaja.size()>0) {
                             for (DetalleCaja foto:fotoscaja
-                                 ) {
+                            ) {
 
                                 cajarepo.actualizarEstatus(foto.getId(), 0);
                             }
