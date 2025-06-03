@@ -37,8 +37,8 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
 
     private ComprasLog complog;
     int procesos;
-   TextView destxtsincon;
-   int contprocesos=0;//para saber que ya terminó las 2 descargas
+    TextView destxtsincon;
+    int contprocesos=0;//para saber que ya terminó las 2 descargas
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +56,7 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
 
         progreso.setCancelable(false);
         destxtsincon=(TextView) findViewById(R.id.destxtsincon);
-      tvRepo=new TablaVersionesRepImpl(this);
+        tvRepo=new TablaVersionesRepImpl(this);
 
         progreso.show();
 
@@ -70,13 +70,13 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
 
         DescRespInformes desc=new DescRespInformes(this,this,tvRepo);
         //oct-2024 se quita porque ya no encuentro el uso, ademas que choca con la descarga de cancelados
-       // desc.getInformes();
+        // desc.getInformes();
         //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
         DescRespInformesEta desetiq=new DescRespInformesEta(this,this,tvRepo);
-       //todo falta esta actualizacion
+        //todo falta esta actualizacion
         desetiq.getCambiosSupEtiq();
         //lo hago al inicio para consultarlo en cualquier modulo
-       // desetiq.getCambiosEtiq();
+        // desetiq.getCambiosEtiq();
 
     }
 
@@ -87,24 +87,24 @@ public class DescInfSupActivity extends AppCompatActivity implements DescRespInf
 
 
     @Override
-            public void finalizarrespie(){
-      //  if(contprocesos==1) {
-            //pasaría a otra actividad
+    public void finalizarrespie(){
+        //  if(contprocesos==1) {
+        //pasaría a otra actividad
         procesos++;
-            //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-           if(procesos==1) {
-               progreso.dismiss();
-               Constantes.ACTUALIZADO = true;
-               Intent intento = new Intent(this, NavigationDrawerActivity.class);
-               intento.putExtra(NavigationDrawerActivity.ETAPA, 3);
-               startActivity(intento);
-               finish();
-           }
+        //Intent intento=new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        if(procesos==1) {
+            progreso.dismiss();
+            Constantes.ACTUALIZADO = true;
+            Intent intento = new Intent(this, NavigationDrawerActivity.class);
+            intento.putExtra(NavigationDrawerActivity.ETAPA, 3);
+            startActivity(intento);
+            finish();
+        }
 
-      //  }
-      ////  else{
+        //  }
+        ////  else{
         //    contprocesos++;
-       // }
+        // }
     }
 
 

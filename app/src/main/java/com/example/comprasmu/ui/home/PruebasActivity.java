@@ -47,7 +47,7 @@ import java.util.List;
 /***procesos iniciales y descarga de info va despues del login y antes al home***/
 public class PruebasActivity  extends AppCompatActivity  implements    DescargasIniAsyncTask.ProgresoListener  {
 
-   ProgressDialog progreso;
+    ProgressDialog progreso;
     String TAG="PruebasActivity";
 
     private static  String DOWNLOAD_PATH = Constantes.URLSERV+"fotografias";
@@ -73,10 +73,10 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         progreso.setCancelable(false);
         progreso.show();
         Log.d(TAG,"Y MI USER??"+Constantes.CLAVEUSUARIO);
-       // mTextView = findViewById(R.id.txtlllog);
+        // mTextView = findViewById(R.id.txtlllog);
         if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
-           DOWNLOAD_PATH = Constantes.URLPRUEBAS1+"fotografias";
-        //    DOWNLOAD_PATH = Constantes.URLPRUEBAS2+"fotografias";
+            DOWNLOAD_PATH = Constantes.URLPRUEBAS1+"fotografias";
+            //    DOWNLOAD_PATH = Constantes.URLPRUEBAS2+"fotografias";
 
         }
 
@@ -85,7 +85,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         if(!ComprasUtils.isOnlineNet(getApplicationContext())) {//no hay conexion trabajo conl lo que hay
             getEtapaPref();
             if(!indicepref.equals("")&&etapafinpref>0){
-              //  Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
+                //  Log.d(TAG, "***** indice " + Constantes.INDICEACTUAL);
                 Constantes.INDICEACTUAL = indicepref;
                 Constantes.ETAPAMENU = etapapref;
                 descargasIniciales(indicepref, etapapref, etapafinpref);
@@ -107,7 +107,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
     public void success() {
         //pasaría a otra actividad
-       // progreso.dismiss();
+        // progreso.dismiss();
         Constantes.ACTUALIZADO=true;
         Intent intento=new Intent(this, HomeActivity.class);
         intento.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -144,8 +144,8 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         String[] aux = mesactual.split("-");
         int mes=0,anio=0;
         try {
-             mes = Integer.parseInt(aux[0]) + 1;
-             anio = Integer.parseInt(aux[1]);
+            mes = Integer.parseInt(aux[0]) + 1;
+            anio = Integer.parseInt(aux[1]);
         }catch(NumberFormatException ex){
             complog.grabarError(TAG,"definirTienda","Error def formato "+ex.getMessage());
         }
@@ -177,47 +177,47 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     //para recolectores foraneos cuando todas las listas están en 1 porque voy a iniciar traigo etapanva y hay que borrar
     //para los locales la etapa se cambia en la tabla del recolector cuando se supervise su ultima etapa
     public void validarBorrar(String indicenvo, int etapanva,int etapafin, int tiporec){
-       Log.d(TAG,"en valdar borrar"+indicepref);
-       if(indicepref!=null&&!indicepref.equals("")) {
+        Log.d(TAG,"en valdar borrar"+indicepref);
+        if(indicepref!=null&&!indicepref.equals("")) {
 
-           if (!indicenvo.equals(indicepref)) {
-               //cambie de indice
-               //veo si es la primera etapa y puedo borrar
+            if (!indicenvo.equals(indicepref)) {
+                //cambie de indice
+                //veo si es la primera etapa y puedo borrar
 
-               if (etapanva>0&&etapanva == etapafin) { // actualizarla del servidor
-                   //voy a borrar datos
-                   //por si no quiere borrar
-                   Constantes.INDICEACTUAL = indicepref;
-                   Constantes.ETAPAMENU =etapapref ;
-                   irABorrar(indicepref); // actividad donde pregunte al usuario
-               } else {
-                 //  Log.d(TAG,"****entre aqui");
-                   //descargar y sigo en el mismo indice
-                   puedodescargar = true;
-                   Constantes.INDICEACTUAL = indicepref;
-                   Constantes.ETAPAMENU = etapanva;
-                   //envio etapa act y etapaini
-                   descargasIniciales(indicenvo, etapanva, etapafin);
+                if (etapanva>0&&etapanva == etapafin) { // actualizarla del servidor
+                    //voy a borrar datos
+                    //por si no quiere borrar
+                    Constantes.INDICEACTUAL = indicepref;
+                    Constantes.ETAPAMENU =etapapref ;
+                    irABorrar(indicepref); // actividad donde pregunte al usuario
+                } else {
+                    //  Log.d(TAG,"****entre aqui");
+                    //descargar y sigo en el mismo indice
+                    puedodescargar = true;
+                    Constantes.INDICEACTUAL = indicepref;
+                    Constantes.ETAPAMENU = etapanva;
+                    //envio etapa act y etapaini
+                    descargasIniciales(indicenvo, etapanva, etapafin);
 
-               }
-           } else {
-               //actualizo en prefs asigno constantes y sigo
-               puedodescargar = true;
-               guardarEtapaPref(etapanva, indicenvo, etapafin,tiporec);
-               Constantes.INDICEACTUAL = indicenvo;
-               Constantes.ETAPAMENU = etapanva;
-               descargasIniciales(indicenvo, etapanva, etapafin);
+                }
+            } else {
+                //actualizo en prefs asigno constantes y sigo
+                puedodescargar = true;
+                guardarEtapaPref(etapanva, indicenvo, etapafin,tiporec);
+                Constantes.INDICEACTUAL = indicenvo;
+                Constantes.ETAPAMENU = etapanva;
+                descargasIniciales(indicenvo, etapanva, etapafin);
 
-           }
-       }//es 1a vez y ya puede descargar
+            }
+        }//es 1a vez y ya puede descargar
         else{
-          //  Log.d(TAG,etapanva+"--"+ indicenvo+"--"+ etapafin);
-           puedodescargar = true;
-           guardarEtapaPref(etapanva, indicenvo, etapafin,tiporec);
-           Constantes.INDICEACTUAL = indicenvo;
-           Constantes.ETAPAMENU = etapanva;
-           descargasIniciales(indicenvo, etapanva, etapafin);
-       }
+            //  Log.d(TAG,etapanva+"--"+ indicenvo+"--"+ etapafin);
+            puedodescargar = true;
+            guardarEtapaPref(etapanva, indicenvo, etapafin,tiporec);
+            Constantes.INDICEACTUAL = indicenvo;
+            Constantes.ETAPAMENU = etapanva;
+            descargasIniciales(indicenvo, etapanva, etapafin);
+        }
     }
     public void getEtapaPref(){
         SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
@@ -225,7 +225,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         indicepref= prefe.getString("indiceact", "");
         etapafinpref= prefe.getInt("etapafin", 0);
         tiporec= prefe.getInt("tiporec", 0);
-      //  Log.d(TAG, "******* indice " + indicepref);
+        //  Log.d(TAG, "******* indice " + indicepref);
     }
     public void guardarEtapaPref(int etapa, String indice, int etapafin, int tiporec){
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
@@ -271,7 +271,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
                     return;
                 }else
                 {
-                 //sigo con el mismo indice y lista
+                    //sigo con el mismo indice y lista
                     puedodescargar=true;
 
 
@@ -290,7 +290,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
         GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
         SiglaRepositoryImpl sigRepo=new SiglaRepositoryImpl(getApplicationContext());
-        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep,sigRepo,puedodescargar);
+        DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep,sigRepo,puedodescargar,false);
         task.execute("cat","");
 
     }
@@ -299,16 +299,16 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     @Override
     public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
         if (maininfoResp!=null&&maininfoResp.getImagenDetalles() != null && maininfoResp.getImagenDetalles().size() > 0) {
-          //  Log.d(TAG," **descargando imagenes " );
+            //  Log.d(TAG," **descargando imagenes " );
             if(descim1==0)
                 descargarImagenes(maininfoResp.getImagenDetalles());
             descim1=1;
         }
 //        Log.d(TAG," **descargando imagenes etapa "+maininfoResp.getImagenDetalles().size());
 
-       // imagenesEtapa(maininfoetaResp); ya vienen con los informes /**pero que pasara cunado solo necesite preparacion
+        // imagenesEtapa(maininfoetaResp); ya vienen con los informes /**pero que pasara cunado solo necesite preparacion
         imagenesCor(mainRespcor);
-       // Log.d(TAG,"**enviando al home");
+        // Log.d(TAG,"**enviando al home");
         success();
     }
 
@@ -318,12 +318,12 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     public void imagenesCor(List<Correccion> infoResp) {
         if (infoResp!=null&& infoResp.size() > 0) {
             if(descim3==0)
-            for(Correccion img:infoResp){
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto1(), DESTINATION_PATH);
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto2(), DESTINATION_PATH);
-                startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto3(), DESTINATION_PATH);
-                // Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto1());
-            }
+                for(Correccion img:infoResp){
+                    startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto1(), DESTINATION_PATH);
+                    startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto2(), DESTINATION_PATH);
+                    startDownload(DOWNLOAD_PATH+"/"+Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto3(), DESTINATION_PATH);
+                    // Log.d(TAG," **descargando "+DOWNLOAD_PATH+"/"+img.getRuta_foto1());
+                }
             // cerrarAlerta(true);
             descim3=1;
 
@@ -333,14 +333,14 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     public void imagenesEtapa(RespInfEtapaResponse infoResp) {
         if (infoResp!=null&&infoResp.getInformeEtapaDet() != null && infoResp.getInformeEtapaDet().size() > 0) {
             if(descim2==0)
-            for(InformeEtapaDet img:infoResp.getInformeEtapaDet()){
-                //busco la ruta
-               // ImagenDetalle imagen=
-                //Log.d(TAG," **descargando etap "+DOWNLOAD_PATH+"/"+img.getRuta_foto());
+                for(InformeEtapaDet img:infoResp.getInformeEtapaDet()){
+                    //busco la ruta
+                    // ImagenDetalle imagen=
+                    //Log.d(TAG," **descargando etap "+DOWNLOAD_PATH+"/"+img.getRuta_foto());
 
 
-                startDownload(DOWNLOAD_PATH+"/"+ Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto(), DESTINATION_PATH);
-            }
+                    startDownload(DOWNLOAD_PATH+"/"+ Constantes.INDICEACTUAL.replace(".","_")+"/"+img.getRuta_foto(), DESTINATION_PATH);
+                }
             descim2=1;
             // cerrarAlerta(true);
 
@@ -352,7 +352,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
     private void descargarImagenes(List<ImagenDetalle> imagenes){
         for(ImagenDetalle img:imagenes){
             startDownload(DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta(), DESTINATION_PATH);
-           // Log.d(TAG," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
+            // Log.d(TAG," descargando "+DOWNLOAD_PATH+"/"+img.getIndice().replace(".","_")+"/"+img.getRuta());
         }
         // cerrarAlerta(true);
     }
@@ -365,14 +365,14 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
-      //  request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);  // This will show notification on top when downloading the file.
+        //  request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);  // This will show notification on top when downloading the file.
         request.setTitle("Downloading a file"); // Title for notification.
-       // request.setVisibleInDownloadsUi(true);
+        // request.setVisibleInDownloadsUi(true);
         if(uri!=null) {
             request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_PICTURES, uri.getLastPathSegment());  // Storage directory path
             archact = ((DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
         }
-            return 0;
+        return 0;
 
     }
 
