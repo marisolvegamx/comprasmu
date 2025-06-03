@@ -34,7 +34,7 @@ public class Constantes {
 
     public static String []meses={"Enero","Febrero","Marzo","Abril", "Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"};
     public static String []anios={"2021","2022","2023","2024", "2025","2026","2027","2028","2029","2030"};
-     public static final String SUCCESS ="1" ;
+    public static final String SUCCESS ="1" ;
     public static final String FAILED = "2";
     /****estatus sync***/
     public static final int PENDIENTE =0 ;
@@ -54,18 +54,18 @@ public class Constantes {
     public static String[] ESTATUSINFORME={"CANCELADO","ABIERTO","FINALIZADO","CON INFORME","ABIERTO"}; //EL segundo abiero es para cuando se reactiva compras y se vuleve a abrir etiquetado
     public static String[] ESTATUSSYNC={"PENDIENTE","ENVIANDO","ENVIADO"};
     public static String[] PUNTOCARDINAL={"NORTE","SUR","ESTE","OESTE","CENTRO"};
-   public static String[] ETAPAS={"0","PREPARACION","COMPRA","ETIQUETADO","EMPAQUE"};
+    public static String[] ETAPAS={"0","PREPARACION","COMPRA","ETIQUETADO","EMPAQUE","ENVIO","GASTOS"};
     public static boolean varciudades;
     public static List<DescripcionGenerica> clientesAsignados;
     public static String modelo="xxx2006C3MG";
     public static String URLSERV="https://muesmerc.com/comprasv1/";
     //local
-  //  public static String URLPRUEBAS1="https://muesmerc.com/comprasv1/";
+    //  public static String URLPRUEBAS1="https://muesmerc.com/comprasv1/";
 
-     public static String URLPRUEBAS1="http://10.0.2.2/comprasv1/";
+    public static String URLPRUEBAS1="http://10.0.2.2/comprasv1/";
     //muesmerc
-  //  public static String URLPRUEBAS1="http://192.168.1.195/comprasv1/";
-   // public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
+    //  public static String URLPRUEBAS1="http://192.168.1.195/comprasv1/";
+    // public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
     public static String ni_clientesel;
     public static int ni_plantasel;
     public static String ni_plantanombre;
@@ -77,12 +77,12 @@ public class Constantes {
     public static NuevoDetalleViewModel.ProductoSel productoSel;
     public static HashMap <Integer,String>TIPOTIENDA;
     public static String CONFROTAR="rotar"; //0 no roto 1 roto
-   public static class VarDetalleProd{
-       public static   String tomadode;
+    public static class VarDetalleProd{
+        public static   String tomadode;
         public static   String nvoatra;
         public static  String nvoatrb;
         public static String nvoatrc;
-       public static String nvoatrd;
+        public static String nvoatrd;
     }
     public static class VarListCompra{
         public static   int idListaSel;

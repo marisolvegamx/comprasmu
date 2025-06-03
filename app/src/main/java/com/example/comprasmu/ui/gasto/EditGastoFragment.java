@@ -64,6 +64,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -178,7 +179,7 @@ public class EditGastoFragment extends Fragment {
                 this.informeEdit = informeEtapa;
 
             }
-          //todo codigo de revisar recibo
+            //todo codigo de revisar recibo
             PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
             ps.getCambiosGastos(Constantes.INDICEACTUAL,informeEdit.getCiudadNombre(),new ListenerEdiGas());
 
@@ -186,7 +187,7 @@ public class EditGastoFragment extends Fragment {
             totalval=0;
             getConceptos();
             //deshabilito botones de aceptar
-          //  aceptar1.setEnabled(true); //resumen
+            //  aceptar1.setEnabled(true); //resumen
 
             aceptar2.setEnabled(false);//pregunta gasto
             aceptar3.setEnabled(true); //concepto
@@ -238,7 +239,7 @@ public class EditGastoFragment extends Fragment {
 
             ((EditGastoActivity) getActivity()).actualizarBarra(ciudadInf);
 
-                //busco el informe y el detalle
+            //busco el informe y el detalle
             mViewModel.setIdNuevo(informeSel);
             editarInforme();
 
@@ -313,7 +314,7 @@ public class EditGastoFragment extends Fragment {
                     if(mBinding.sincomprobante.getRespuesta()){
                         avanzar();
                     }else
-                       guardarDet();
+                        guardarDet();
 
                 }
             });
@@ -370,79 +371,79 @@ public class EditGastoFragment extends Fragment {
         compraslog.grabarError(TAG ,"avanzar","preguntaact="+preguntaAct);
 
         switch (preguntaAct) {
-                case 1: //pregunta
-                    llresumenedi.setVisibility(View.GONE);
-                    llpreg1.setVisibility(View.VISIBLE);
-                    preguntaAct = preguntaAct + 1;
-                    break;
-                case 2: //concepto
-                    llpreg1.setVisibility(View.GONE);
-                    if(mBinding.singasto.getRespuesta()) {
-                        //reviso los conceptos que ya están utilizados
+            case 1: //pregunta
+                llresumenedi.setVisibility(View.GONE);
+                llpreg1.setVisibility(View.VISIBLE);
+                preguntaAct = preguntaAct + 1;
+                break;
+            case 2: //concepto
+                llpreg1.setVisibility(View.GONE);
+                if(mBinding.singasto.getRespuesta()) {
+                    //reviso los conceptos que ya están utilizados
 
-                        List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
-                        for (InformeGastoDet det:
-                                detalles) {
-                            for (int i=0;i<conceptos.size();i++
-                                 ){
-                                if (conceptos.get(i).getCad_idopcion() == det.getConceptoId()) {
-                                    conceptos.remove(i);
-                                    break;
-                                }
-
+                    List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
+                    for (InformeGastoDet det:
+                            detalles) {
+                        for (int i=0;i<conceptos.size();i++
+                        ){
+                            if (conceptos.get(i).getCad_idopcion() == det.getConceptoId()) {
+                                conceptos.remove(i);
+                                break;
                             }
+
                         }
-                        catAdapter.notifyDataSetChanged();
-                        llconce.setVisibility(View.VISIBLE);
-                        preguntaAct = preguntaAct + 1;
-                    }else
-                    {
-                        //nos vamos a comentarios
-                        preguntaAct=8;
-                        mBinding.txtgaconceptosel.setText("");
-                        // calcular total
-                        llenarTablaConcep();
-                        llcomentarios.setVisibility(View.VISIBLE);
                     }
-                    break;
-                case 3: //descripcion
-                    llconce.setVisibility(View.GONE);
-                    lldescripcion.setVisibility(View.VISIBLE);
-                    //busco el concepto seleccionado
-                    CatalogoDetalle sel=(CatalogoDetalle) mBinding.spgasconcep.getSelectedItem();
-
-                    mBinding.txtgaconceptosel.setText(sel.getCad_descripcionesp());
+                    catAdapter.notifyDataSetChanged();
+                    llconce.setVisibility(View.VISIBLE);
                     preguntaAct = preguntaAct + 1;
+                }else
+                {
+                    //nos vamos a comentarios
+                    preguntaAct=8;
+                    mBinding.txtgaconceptosel.setText("");
+                    // calcular total
+                    llenarTablaConcep();
+                    llcomentarios.setVisibility(View.VISIBLE);
+                }
+                break;
+            case 3: //descripcion
+                llconce.setVisibility(View.GONE);
+                lldescripcion.setVisibility(View.VISIBLE);
+                //busco el concepto seleccionado
+                CatalogoDetalle sel=(CatalogoDetalle) mBinding.spgasconcep.getSelectedItem();
 
-                    break;
-                case 4: //costo
-                    lldescripcion.setVisibility(View.GONE);
-                    llcosto.setVisibility(View.VISIBLE);
-                    preguntaAct = preguntaAct + 2; //la foto se hace obligatoria ya no pregunta si hay comprobante
+                mBinding.txtgaconceptosel.setText(sel.getCad_descripcionesp());
+                preguntaAct = preguntaAct + 1;
 
-                    break;
-                case 5: //preg comprob
-                    llcosto.setVisibility(View.GONE);
-                   // llcompr.setVisibility(View.VISIBLE);
+                break;
+            case 4: //costo
+                lldescripcion.setVisibility(View.GONE);
+                llcosto.setVisibility(View.VISIBLE);
+                preguntaAct = preguntaAct + 2; //la foto se hace obligatoria ya no pregunta si hay comprobante
 
-                    preguntaAct = preguntaAct + 1;
+                break;
+            case 5: //preg comprob
+                llcosto.setVisibility(View.GONE);
+                // llcompr.setVisibility(View.VISIBLE);
 
-                    break;
-                case 6: //foto
+                preguntaAct = preguntaAct + 1;
 
-                    llcosto.setVisibility(View.GONE);
-                    llfoto.setVisibility(View.VISIBLE);
-                    preguntaAct = preguntaAct + 1;
+                break;
+            case 6: //foto
 
-                    break;
-                case 7:
-                    llfoto.setVisibility(View.GONE);
-                    //otra vez pregnta 1
-                    preguntaAct=2;
-                    llpreg1.setVisibility(View.VISIBLE);
-                    //todo limpio variables
-                    limpiarForm();
-                    break;
+                llcosto.setVisibility(View.GONE);
+                llfoto.setVisibility(View.VISIBLE);
+                preguntaAct = preguntaAct + 1;
+
+                break;
+            case 7:
+                llfoto.setVisibility(View.GONE);
+                //otra vez pregnta 1
+                preguntaAct=2;
+                llpreg1.setVisibility(View.VISIBLE);
+                //todo limpio variables
+                limpiarForm();
+                break;
             default:
                 compraslog.grabarError(TAG ,"avanzar","preguntaact="+preguntaAct);
                 Toast.makeText(getActivity(), "Hubo un error intente de nuevo", Toast.LENGTH_SHORT).show();
@@ -451,54 +452,59 @@ public class EditGastoFragment extends Fragment {
 
         }
 
-            mViewModel.preguntaAct = preguntaAct;
-        }
+        mViewModel.preguntaAct = preguntaAct;
+    }
 
 
-        public void limpiarForm() {
-            compraslog.grabarError(TAG ,"limpiarForm","limpiando formulario");
+    public void limpiarForm() {
+        compraslog.grabarError(TAG ,"limpiarForm","limpiando formulario");
 
-            mBinding.singasto.clearCheck();
+        mBinding.singasto.clearCheck();
 
-            mBinding.sincomprobante.clearCheck();
-            aceptar2.setEnabled(false);//pregunta gasto
-            aceptar3.setEnabled(true); //concepto
-            //  aceptar4.setEnabled(false);//descripcion
-            aceptar5.setEnabled(false); //costo
-            aceptar6.setEnabled(false); //comprobante
-            aceptar7.setEnabled(false); //foto
-            guardar.setEnabled(true);
-            mBinding.txtgascomentarios.setText("");
-            mBinding.txtgasdescrip.setText("");
+        mBinding.sincomprobante.clearCheck();
+        aceptar2.setEnabled(false);//pregunta gasto
+        aceptar3.setEnabled(true); //concepto
+        //  aceptar4.setEnabled(false);//descripcion
+        aceptar5.setEnabled(false); //costo
+        aceptar6.setEnabled(false); //comprobante
+        aceptar7.setEnabled(false); //foto
+        guardar.setEnabled(true);
+        mBinding.txtgascomentarios.setText("");
+        mBinding.txtgasdescrip.setText("");
 
-            mBinding.txtgascosto.setText("");
+        mBinding.txtgascosto.setText("");
 
-            mBinding.spgasconcep.setSelection(-1);
-            mBinding.txtgasrutafoto.setText("");
-            fotomos.setImageBitmap(null);
-            btnrotar.setVisibility(View.GONE);
-            nombre_foto=null;
-            archivofoto=null;
-            // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-            fotomos.setVisibility(View.GONE);
-        }
+        mBinding.spgasconcep.setSelection(-1);
+        mBinding.txtgasrutafoto.setText("");
+        fotomos.setImageBitmap(null);
+        btnrotar.setVisibility(View.GONE);
+        nombre_foto=null;
+        archivofoto=null;
+        // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+        fotomos.setVisibility(View.GONE);
+    }
 
     public void getConceptos(){
         //  Log.d(TAG,"buscando atributos"+dViewModel.productoSel.empaque+"--"+dViewModel.productoSel.idempaque+"--"+dViewModel.productoSel.clienteSel);
-        conceptos=niviewModel.cargarConceptos();
+        List<CatalogoDetalle> conceptosCatalogo=niviewModel.cargarConceptos();
+        conceptos=new ArrayList<>();
         //busco los que ya seleccionó
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
-        for (int i=0;i<conceptos.size();i++
+        for (int i=0;i<conceptosCatalogo.size();i++
         ){
+            int bandera=0;
             for (InformeGastoDet det:
                     detalles) {
 
-                if (conceptos.get(i).getCad_idopcion() == det.getConceptoId()) {
-                    conceptos.remove(i);
-
+                if (conceptosCatalogo.get(i).getCad_idopcion() == det.getConceptoId()) {
+                    //conceptos.remove(i);
+                    bandera=1;
+                    break;
                 }
 
             }
+            if(bandera==0)
+                conceptos.add(conceptosCatalogo.get(i)); //lo agrego
         }
         catAdapter = new ArrayAdapter<CatalogoDetalle>(getContext(), android.R.layout.simple_spinner_dropdown_item, conceptos) {
 
@@ -578,11 +584,11 @@ public class EditGastoFragment extends Fragment {
         Double totalmu=0.0;
         String total=null;
         try {
-             total=niviewModel.getTotalmu();
-             if(total.equals("")) {
-                 Toast.makeText(getActivity(), "Hubo un error al guardar intente de nuevo", Toast.LENGTH_SHORT).show();
+            total=niviewModel.getTotalmu();
+            if(total.equals("")) {
+                Toast.makeText(getActivity(), "Hubo un error al guardar intente de nuevo", Toast.LENGTH_SHORT).show();
                 return;
-             }
+            }
             totalmu=Double.parseDouble(total);
             costo.setText(Constantes.SIMBOLOMON + new DecimalFormat("#.00").format(totalmu));
         }catch(Exception ex){
@@ -669,341 +675,341 @@ public class EditGastoFragment extends Fragment {
         List<InformeGastoDet> detalles=niviewModel.getGastoDetalles(informeSel);
         if(detalles!=null&&detalles.size()>0) //ya tengo algo
         {
-                totalgastos= detalles.size();
-                //muestro el ultimo
-                totalval=niviewModel.calcularTotal(informeSel);
+            totalgastos= detalles.size();
+            //muestro el ultimo
+            totalval=niviewModel.calcularTotal(informeSel);
         }
     }
 
 
     public void atras(){
-            Log.d(TAG,"atras**"+preguntaAct);
-            compraslog.grabarError(TAG ,"atras","preguntaact="+preguntaAct);
+        Log.d(TAG,"atras**"+preguntaAct);
+        compraslog.grabarError(TAG ,"atras","preguntaact="+preguntaAct);
 
 
-            switch (preguntaAct){
+        switch (preguntaAct){
 
-                case 2:
+            case 2:
 
-                    if(totalgastos>0) //ya no vuelvo
-                    {
+                if(totalgastos>0) //ya no vuelvo
+                {
 
-
-                        break;
-                    }else {
-                        llpreg1.setVisibility(View.GONE);
-                        llresumenedi.setVisibility(View.VISIBLE);
-                        preguntaAct = preguntaAct - 1;
-                    }
-
-
-
-                        mViewModel.preguntaAct = preguntaAct;
 
                     break;
-                case 3: //concepto
-                    llpreg1.setVisibility(View.VISIBLE);
-                    llconce.setVisibility(View.GONE);
-
-                    preguntaAct=preguntaAct-1;
-                    mViewModel.preguntaAct=preguntaAct;
-                    break;
+                }else {
+                    llpreg1.setVisibility(View.GONE);
+                    llresumenedi.setVisibility(View.VISIBLE);
+                    preguntaAct = preguntaAct - 1;
+                }
 
 
-                case 4://descripcion
-                    llconce.setVisibility(View.VISIBLE);
-                    lldescripcion.setVisibility(View.GONE);
 
-                    preguntaAct=preguntaAct-1;
-                    mViewModel.preguntaAct=preguntaAct;
-                    break;
-                case 5:
-                    lldescripcion.setVisibility(View.VISIBLE);
-                    llcosto.setVisibility(View.GONE);
+                mViewModel.preguntaAct = preguntaAct;
 
-                    preguntaAct=preguntaAct-1;
-                    mViewModel.preguntaAct=preguntaAct;
-                    break;
-                case 6:
-                    lldescripcion.setVisibility(View.VISIBLE);
-                    llcosto.setVisibility(View.GONE);
+                break;
+            case 3: //concepto
+                llpreg1.setVisibility(View.VISIBLE);
+                llconce.setVisibility(View.GONE);
 
-                    preguntaAct=preguntaAct-2;
-                    mViewModel.preguntaAct=preguntaAct;
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
+                break;
 
-                    break;
-                case 7:
-                    llcosto.setVisibility(View.VISIBLE);
-                    llfoto.setVisibility(View.GONE);
 
-                    preguntaAct=preguntaAct-1;
-                    mViewModel.preguntaAct=preguntaAct;
+            case 4://descripcion
+                llconce.setVisibility(View.VISIBLE);
+                lldescripcion.setVisibility(View.GONE);
 
-                    break;
-                case 8:
-                    llcomentarios.setVisibility(View.GONE);
-                    if(mBinding.singasto.getRespuesta())
-                    {
-                        llfoto.setVisibility(View.VISIBLE);
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
+                break;
+            case 5:
+                lldescripcion.setVisibility(View.VISIBLE);
+                llcosto.setVisibility(View.GONE);
+
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
+                break;
+            case 6:
+                lldescripcion.setVisibility(View.VISIBLE);
+                llcosto.setVisibility(View.GONE);
+
+                preguntaAct=preguntaAct-2;
+                mViewModel.preguntaAct=preguntaAct;
+
+                break;
+            case 7:
+                llcosto.setVisibility(View.VISIBLE);
+                llfoto.setVisibility(View.GONE);
+
+                preguntaAct=preguntaAct-1;
+                mViewModel.preguntaAct=preguntaAct;
+
+                break;
+            case 8:
+                llcomentarios.setVisibility(View.GONE);
+                if(mBinding.singasto.getRespuesta())
+                {
+                    llfoto.setVisibility(View.VISIBLE);
                     preguntaAct = preguntaAct - 1;}
 
-                   else {
-                        llpreg1.setVisibility(View.VISIBLE);
-                        preguntaAct=2;
-                    }
+                else {
+                    llpreg1.setVisibility(View.VISIBLE);
+                    preguntaAct=2;
+                }
 
 
-                    mViewModel.preguntaAct=preguntaAct;
-                    break;
-
-            }
-            Log.d(TAG,"**"+preguntaAct);
+                mViewModel.preguntaAct=preguntaAct;
+                break;
 
         }
+        Log.d(TAG,"**"+preguntaAct);
+
+    }
 
 
-        public void guardarDet(){
-            try{
-                String rutafoto = null;
-                CatalogoDetalle consel=(CatalogoDetalle) mBinding.spgasconcep.getSelectedItem();
-                int conceptoid= consel.getCad_idopcion();
-                String concepto=consel.getCad_descripcionesp();
-                String descripcion=mBinding.txtgasdescrip.getText().toString();
-                String costo=mBinding.txtgascosto.getText().toString();
-                boolean tienecom= true;
-                rutafoto = mBinding.txtgasrutafoto.getText().toString();
+    public void guardarDet(){
+        try{
+            String rutafoto = null;
+            CatalogoDetalle consel=(CatalogoDetalle) mBinding.spgasconcep.getSelectedItem();
+            int conceptoid= consel.getCad_idopcion();
+            String concepto=consel.getCad_descripcionesp();
+            String descripcion=mBinding.txtgasdescrip.getText().toString();
+            String costo=mBinding.txtgascosto.getText().toString();
+            boolean tienecom= true;
+            rutafoto = mBinding.txtgasrutafoto.getText().toString();
 
-                compraslog.grabarError(TAG,"guardarDet","id nuevo inf "+mViewModel.getIdNuevo());
+            compraslog.grabarError(TAG,"guardarDet","id nuevo inf "+mViewModel.getIdNuevo());
 
-                Log.d(TAG,"preg act "+preguntaAct);
-                //es un nuevo registro
+            Log.d(TAG,"preg act "+preguntaAct);
+            //es un nuevo registro
 
-                compraslog.grabarError(TAG,"guardarDet","no es edicion ");
-
-
-
-                if(mViewModel.getIdNuevo()<1){
-                        throw new Exception("Se perdió el valor del idinforme");
-                }
-                InformeGastoDet nvoDet = new InformeGastoDet();
-                nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
-                nvoDet.setConcepto(concepto);
-                nvoDet.setConceptoId(conceptoid);
-                nvoDet.setDescripcion(descripcion);
-                        //cambio el importe
-                if(!costo.equals("")) {
-                    costo=costo.substring(1).replaceAll(",","");
-                           // costo=costo.substring(1);
-                    try {
-                        float importe=Float.valueOf(costo);
-                        nvoDet.setImporte(importe);
-                    }catch (NumberFormatException ex) {
-                        Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_LONG).show();
-                        compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
+            compraslog.grabarError(TAG,"guardarDet","no es edicion ");
 
 
-                        return;
-                    }
 
-                }
-
-                nvoDet.setComprobante(tienecom);
-                if(rutafoto!=null&&!rutafoto.equals("")){
-
-                    int numfoto=mViewModel.insertarImagen("foto_comprobante",rutafoto, Constantes.INDICEACTUAL);
-                    if(numfoto>0){
-                        nvoDet.setFotocomprob(numfoto);
-
-                    }
-                }
-                    nvoDet.setEstatus(1);
-                    niviewModel.insertarGastoDet(nvoDet);
-                    totalgastos++;
-
-                compraslog.grabarError(TAG,"guardarDet","avanza");
-
-                mBinding.txtgaconceptosel.setText("");
-                avanzar();
-            }catch (Exception ex){
-                ex.printStackTrace();
-                compraslog.grabarError(TAG,"guardarDet",ex.getMessage());
-                Toast.makeText(getActivity(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
-
+            if(mViewModel.getIdNuevo()<1){
+                throw new Exception("Se perdió el valor del idinforme");
             }
-
-        }
-
-        public void rotar(int idcampo){
-            EditText txtruta = root.findViewById(idcampo);
-            String foto=txtruta.getText().toString();
-            if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
-            {
-                Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-                return;
-            }else
-            {
-
-                RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" +foto,fotomos);
-
-            }
-        }
-
-        String nombre_foto;
-        File archivofoto;
-        public void tomarFoto(int REQUEST_CODE){
-            REQUEST_CODE_TAKE_PHOTO=REQUEST_CODE;
-            if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
-            {
-                Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-                return;
-            }else {
-                Activity activity = this.getActivity();
-                Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
-                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
-
-                String dateString = format.format(new Date());
-                String state = Environment.getExternalStorageState();
-
-                File baseDirFile;
-                if (Environment.MEDIA_MOUNTED.equals(state)) {
-                    baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                    if (baseDirFile == null) {
-                        Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                } else {
-                    Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                //  baseDir = baseDirFile.getAbsolutePath();
-
+            InformeGastoDet nvoDet = new InformeGastoDet();
+            nvoDet.setInformeEtapaId(mViewModel.getIdNuevo());
+            nvoDet.setConcepto(concepto);
+            nvoDet.setConceptoId(conceptoid);
+            nvoDet.setDescripcion(descripcion);
+            //cambio el importe
+            if(!costo.equals("")) {
+                costo=costo.substring(1).replaceAll(",","");
+                // costo=costo.substring(1);
                 try {
-                    nombre_foto = "img_" + Constantes.CLAVEUSUARIO + "_" + dateString + ".jpg";
-                    archivofoto = new File(baseDirFile, nombre_foto);
-                    compraslog.grabarError(TAG,"tomarFoto",archivofoto.getAbsolutePath());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    compraslog.grabarError(TAG,"tomarFoto","No se encontró almacenamiento externo");
+                    float importe=Float.valueOf(costo);
+                    nvoDet.setImporte(importe);
+                }catch (NumberFormatException ex) {
+                    Toast.makeText(getActivity(),"El costo es incorrecto verifique",Toast.LENGTH_LONG).show();
+                    compraslog.grabarError(TAG,"guardarDet"," costo incorrecto");
 
-                    Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+
                     return;
-
                 }
 
-                intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
+            }
 
-                if (fotomos != null) {
+            nvoDet.setComprobante(tienecom);
+            if(rutafoto!=null&&!rutafoto.equals("")){
 
-                    startActivityForResult(intento1, REQUEST_CODE);
+                int numfoto=mViewModel.insertarImagen("foto_comprobante",rutafoto, Constantes.INDICEACTUAL);
+                if(numfoto>0){
+                    nvoDet.setFotocomprob(numfoto);
 
                 }
             }
+            nvoDet.setEstatus(1);
+            niviewModel.insertarGastoDet(nvoDet);
+            totalgastos++;
+
+            compraslog.grabarError(TAG,"guardarDet","avanza");
+
+            mBinding.txtgaconceptosel.setText("");
+            avanzar();
+        }catch (Exception ex){
+            ex.printStackTrace();
+            compraslog.grabarError(TAG,"guardarDet",ex.getMessage());
+            Toast.makeText(getActivity(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
         }
+
+    }
+
+    public void rotar(int idcampo){
+        EditText txtruta = root.findViewById(idcampo);
+        String foto=txtruta.getText().toString();
+        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
+        {
+            Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+            return;
+        }else
+        {
+
+            RevisarFotoActivity.rotarImagen(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" +foto,fotomos);
+
+        }
+    }
+
+    String nombre_foto;
+    File archivofoto;
+    public void tomarFoto(int REQUEST_CODE){
+        REQUEST_CODE_TAKE_PHOTO=REQUEST_CODE;
+        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
+        {
+            Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+            return;
+        }else {
+            Activity activity = this.getActivity();
+            Intent intento1 = new Intent(getContext(), MiCamaraActivity.class);
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+
+            String dateString = format.format(new Date());
+            String state = Environment.getExternalStorageState();
+
+            File baseDirFile;
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                baseDirFile = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                if (baseDirFile == null) {
+                    Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            //  baseDir = baseDirFile.getAbsolutePath();
+
+            try {
+                nombre_foto = "img_" + Constantes.CLAVEUSUARIO + "_" + dateString + ".jpg";
+                archivofoto = new File(baseDirFile, nombre_foto);
+                compraslog.grabarError(TAG,"tomarFoto",archivofoto.getAbsolutePath());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                compraslog.grabarError(TAG,"tomarFoto","No se encontró almacenamiento externo");
+
+                Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
+                return;
+
+            }
+
+            intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
+
+            if (fotomos != null) {
+
+                startActivityForResult(intento1, REQUEST_CODE);
+
+            }
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
+        compraslog.grabarError(TAG,"onActivityResult","vars"+requestCode +"--"+ nombre_foto);
+
+        if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == RESULT_OK) {
+            //   super.onActivityResult(requestCode, resultCode, data);
+
+            if (archivofoto!=null&&archivofoto.exists()) {
+                if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
+
+                    mostrarFoto(mBinding.txtgasrutafoto,fotomos,btnrotar);
+                    mBinding.btngasacepfoto.setEnabled(true);
+                }
+
+
+            }
+            else{
+                Log.e(TAG,"Algo salió mal???");
+                compraslog.grabarError(TAG,"tomarFoto","Algo salió mal???");
+
+            }
+
+
+        }else
+
+        {
+            compraslog.grabarError(TAG,"tomarFoto","Algo salió mal");
+
+            Log.e(TAG,"Algo salió muy mal**");
+        }
+
+    }
+
+
+    public void mostrarFoto( EditText textorut,ImageView xfotomos, ImageButton xbtnrotar){
+
+        textorut.setText(nombre_foto);
+        if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
+        {
+            Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
+
+            return;
+        }else {
+            compraslog.grabarError(TAG,"mostrarFoto","mostrado foto");
+
+            // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
+            ComprasUtils cu = new ComprasUtils();
+            cu.comprimirImagen(archivofoto.getAbsolutePath());
+            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
+            xfotomos.setImageBitmap(bitmap1);
+            // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+            xfotomos.setVisibility(View.VISIBLE);
+
+            xbtnrotar.setVisibility(View.VISIBLE);
+            xbtnrotar.setFocusableInTouchMode(true);
+            xbtnrotar.requestFocus();
+            nombre_foto=null;
+            archivofoto=null;
+        }
+
+
+    }
+    public void salir(){
+        //mViewModel.eliminarTblTemp();
+        //me voy a la lista de informes
+        getActivity().finish();
+        Intent intento1 = new Intent(getActivity(), NavigationDrawerActivity.class);
+        intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"listainformeeta");
+        startActivity(intento1);
+        // NavHostFragment.(this).navigate(R.id.action_selclientetolistacompras,bundle);
+
+
+    }
+
+
+    class BotonTextWatcher implements TextWatcher {
+
+        boolean mEditing;
+        Button aceptar;
+        public BotonTextWatcher() {
+            mEditing = false;
+        }
+        public BotonTextWatcher(Button botonac) {
+            mEditing = false;
+            aceptar=botonac;
+        }
+        public synchronized void afterTextChanged(Editable s) {
+
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
         @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-            Log.d(TAG,"vars"+requestCode +"--"+ nombre_foto);
-            compraslog.grabarError(TAG,"onActivityResult","vars"+requestCode +"--"+ nombre_foto);
-
-            if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == RESULT_OK) {
-                //   super.onActivityResult(requestCode, resultCode, data);
-
-                if (archivofoto!=null&&archivofoto.exists()) {
-                    if(requestCode == REQUEST_CODE_TAKE_PHOTO) {
-
-                        mostrarFoto(mBinding.txtgasrutafoto,fotomos,btnrotar);
-                        mBinding.btngasacepfoto.setEnabled(true);
-                    }
-
-
-                }
-                else{
-                    Log.e(TAG,"Algo salió mal???");
-                    compraslog.grabarError(TAG,"tomarFoto","Algo salió mal???");
-
-                }
-
-
-            }else
-
-            {
-                compraslog.grabarError(TAG,"tomarFoto","Algo salió mal");
-
-                Log.e(TAG,"Algo salió muy mal**");
-            }
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            //count es cantidad de caracteres que tiene
+            aceptar.setEnabled(charSequence.length() > 0);
 
         }
 
 
-        public void mostrarFoto( EditText textorut,ImageView xfotomos, ImageButton xbtnrotar){
-
-            textorut.setText(nombre_foto);
-            if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
-            {
-                Toast.makeText(getActivity(), "No hay memoria suficiente para esta accion", Toast.LENGTH_SHORT).show();
-
-                return;
-            }else {
-                compraslog.grabarError(TAG,"mostrarFoto","mostrado foto");
-
-                // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                ComprasUtils cu = new ComprasUtils();
-                cu.comprimirImagen(archivofoto.getAbsolutePath());
-                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(archivofoto.getAbsolutePath(), 100, 100);
-                xfotomos.setImageBitmap(bitmap1);
-                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                xfotomos.setVisibility(View.VISIBLE);
-
-                xbtnrotar.setVisibility(View.VISIBLE);
-                xbtnrotar.setFocusableInTouchMode(true);
-                xbtnrotar.requestFocus();
-                nombre_foto=null;
-                archivofoto=null;
-            }
-
-
-        }
-        public void salir(){
-            //mViewModel.eliminarTblTemp();
-            //me voy a la lista de informes
-            getActivity().finish();
-            Intent intento1 = new Intent(getActivity(), NavigationDrawerActivity.class);
-            intento1.putExtra(NavigationDrawerActivity.NAVINICIAL,"listainformeeta");
-            startActivity(intento1);
-            // NavHostFragment.(this).navigate(R.id.action_selclientetolistacompras,bundle);
-
-
-        }
-
-
-        class BotonTextWatcher implements TextWatcher {
-
-            boolean mEditing;
-            Button aceptar;
-            public BotonTextWatcher() {
-                mEditing = false;
-            }
-            public BotonTextWatcher(Button botonac) {
-                mEditing = false;
-                aceptar=botonac;
-            }
-            public synchronized void afterTextChanged(Editable s) {
-
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                //count es cantidad de caracteres que tiene
-                aceptar.setEnabled(charSequence.length() > 0);
-
-            }
-
-
-        }
+    }
 
     public void finalizarInf() {
         try {
@@ -1179,7 +1185,7 @@ public class EditGastoFragment extends Fragment {
     }
 
     public class ListenerEdiGas implements  IListenerResumen{
-            @Override
+        @Override
         public void guardarRes(List<InformeGastoDet> respuesta) {
             //acomodo en la tabla
             if (respuesta != null) {
@@ -1198,33 +1204,33 @@ public class EditGastoFragment extends Fragment {
         }
     }
 
-        @Override
-        public void onDestroyView() {
-            super.onDestroyView();
-            mViewModel = null;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mViewModel = null;
 
-            root=null;
+        root=null;
 
-            fotomos=null;
-          //  sv1= sv6 =sv3=sv4=null;
-            btnrotar=null;
-            aceptar1=null;
-         //   nombre_foto=null;
-         //   archivofoto=null;
-        }
+        fotomos=null;
+        //  sv1= sv6 =sv3=sv4=null;
+        btnrotar=null;
+        aceptar1=null;
+        //   nombre_foto=null;
+        //   archivofoto=null;
+    }
 
 
     public void guardarMuestras(List<TotalMuestra> lista) {
 
-            compraslog.grabarError(TAG,"guardarMuestras","guardar muestras");
+        compraslog.grabarError(TAG,"guardarMuestras","guardar muestras");
 
-            SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefe.edit();
-            // editor.putString("claveusuario",cveusr);
-            String json = new Gson().toJson(lista);
-            editor.putString("totalmuestras", json);
-            // editor.putString("password", Base64.encodeToString(passwordEditText.getText().toString().getBytes(), Base64.DEFAULT));
-            editor.commit();
+        SharedPreferences prefe = getActivity().getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefe.edit();
+        // editor.putString("claveusuario",cveusr);
+        String json = new Gson().toJson(lista);
+        editor.putString("totalmuestras", json);
+        // editor.putString("password", Base64.encodeToString(passwordEditText.getText().toString().getBytes(), Base64.DEFAULT));
+        editor.commit();
 
 
 
@@ -1236,4 +1242,3 @@ public class EditGastoFragment extends Fragment {
         return listamuestras;
     }
 }
-

@@ -21,6 +21,8 @@ import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.IActualListener;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.MuestraCancelada;
+import com.example.comprasmu.data.remote.NotificacionResponse;
+import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
@@ -32,6 +34,8 @@ import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
+import com.example.comprasmu.ui.gasto.IListenerRevRec;
+import com.example.comprasmu.ui.notificaciones.NotificacionGen;
 import com.example.comprasmu.ui.solcorreccion.ListaSolsViewModel;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
@@ -83,6 +87,7 @@ public class DescargasIniciales {
             infrepo=new InformeCompraRepositoryImpl(this.act);
           //  listacompras();
             pedirCorrecciones(0,0);
+            notificacionesGenerales();
         }
 
 
@@ -137,18 +142,19 @@ public class DescargasIniciales {
             ps.pedirSolicitudesCorr(Constantes.INDICEACTUAL, etapa, version, new DescargaIniListener());
         else
             notificar = true;
-                  /*  act.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("DescargasIniAsyncTask","estas al dia*");
-
-                            proglist.cerrarAlerta();
-                            proglist.todoBien();
-                        }
-                    });*/
 
     }
-public class DescargaIniListener implements  IDescargaIniListener, IActualListener {
+
+    private void notificacionesGenerales() {
+
+        Log.d(TAG, "notificacionesGenerales "+procesos_lev);
+
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        DescargaIniListener listener=new DescargaIniListener();
+        ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
+
+    }
+public class DescargaIniListener implements  IDescargaIniListener, IActualListener, IListenerRevRec {
     public DescargaIniListener(){
 
 
@@ -285,11 +291,12 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
             if (corrResp != null && corrResp.getInserts() != null) {
                 for (SolicitudCor sol : corrResp.getInserts()) {
                     //veo si ya existe
-                    // Log.d(TAG,"solcorreccion"+sol.getId()+"--"+ sol.getNumFoto());
+                     Log.d(TAG,"solcorreccion"+sol.getId()+"--"+ sol.getNumFoto());
                     SolicitudCor solt = solRepo.findsimple(sol.getId(), sol.getNumFoto());
                     if (solt != null) {
                         if (solt.getEstatus() !=4||solt.getEstatus()!=5) {
                             //actualizo
+                           // Log.d(TAG,"actualizo solcorreccion"+solt.getId()+"--"+ solt.getEstatus());
                             solRepo.actualizarEst(sol.getMotivo(), sol.getContador(), sol.getCreatedAt(), sol.getEstatus(), sol.getId(), sol.getNumFoto());
                         } else if (sol.getContador() > 1)
                             solRepo.actualizarEst(sol.getMotivo(), sol.getContador(), sol.getCreatedAt(), sol.getEstatus(), sol.getId(), sol.getNumFoto());
@@ -443,6 +450,46 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
     }
 
 
+    @Override
+    public void guardarEstatus(PostResponse response) {
 
-  }
+    }
+    private  void convertirListaNotif(List<NotificacionGen> lista) {
+        InfEtapaRepositoryImpl informeEtapaRepo=new InfEtapaRepositoryImpl(act);
+        for (NotificacionGen noti:
+                lista) {
+
+            //modifico el estatus del informe
+            if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
+                //5-ajustar recibo
+                //6-estatus envio
+                //busco el informe finalizado con estatus 2
+                List<InformeEtapa> listaInf=informeEtapaRepo.getInfxEstatusCiuSim(Constantes.INDICEACTUAL,6,2, Constantes.CIUDADTRABAJO);
+                if(listaInf!=null&&listaInf.size()>0){
+                    informeEtapaRepo.actualizarEstatus(listaInf.get(0).getId(),5);
+                    flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
+                }
+            }
+
+
+        }
+
+    }
+
+    @Override
+    public void guardarRes(PostResponse respuesta) {
+
+    }
+
+    @Override
+    public void guardarResNotif(NotificacionResponse response) {
+        Log.d(TAG,"actualizando notificaciones");
+        if(response!=null&&response.getData()!=null) {
+            convertirListaNotif(response.getData());
+
+        }
+        Log.d(TAG,"finalizando notificaciones voy en el"+procesos);
+        finalizar();
+    }
+}
 }
