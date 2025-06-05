@@ -2,6 +2,9 @@ package com.example.comprasmu.services;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+
+import com.example.comprasmu.utils.Constantes;
 
 public class DescAutomaticasServiceManager {
     private static DescAutomaticasServiceManager instancia;
@@ -27,16 +30,30 @@ public class DescAutomaticasServiceManager {
     }
 
     public void iniciarServicio(Context context) {
-        if (!servicioIniciado) {
-            Intent intent = new Intent(context, DescargasAutomaticasService.class);
-            context.startService(intent);
-            servicioIniciado = true;
+        int clave=1;
+        //todo quitar este codigo de prueba
+        if(Constantes.CLAVEUSUARIO!=null&&!Constantes.CLAVEUSUARIO.equals("")){
+           try{
+               clave=Integer.parseInt(Constantes.CLAVEUSUARIO);
+
+           }catch (NumberFormatException ex){
+               Log.e("DescAutomaticasServiceManager","Error al convertir usuario");
+           }
         }
-        descargasAutomaticasservicio.reanudar();
+        if(clave%3==0) {
+            if (!servicioIniciado) {
+                Intent intent = new Intent(context, DescargasAutomaticasService.class);
+                context.startService(intent);
+                servicioIniciado = true;
+            }
+            descargasAutomaticasservicio.reanudar();
+        }
     }
     public void detenerServicio() {
-        servicioIniciado=false;
-        descargasAutomaticasservicio.detenerServicio();
+        if (descargasAutomaticasservicio != null) {
+            servicioIniciado = false;
+            descargasAutomaticasservicio.detenerServicio();
+        }
     }
 
 }

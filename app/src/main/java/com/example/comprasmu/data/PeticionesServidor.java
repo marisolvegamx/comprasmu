@@ -678,7 +678,7 @@ public class PeticionesServidor {
                 if (response.isSuccessful() && response.body() != null) {
 
                     PostResponse logResp = response.body();
-                    Log.i(TAG,"respuesta"+logResp.getData());
+                    Log.i(TAG,"respuesta"+logResp.getData()+".."+logResp.getStatus());
                     //reviso si está actualizado
                     if(logResp.getStatus().equals("ok")) //correcto
                     {

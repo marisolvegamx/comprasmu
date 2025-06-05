@@ -291,7 +291,7 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
             if (corrResp != null && corrResp.getInserts() != null) {
                 for (SolicitudCor sol : corrResp.getInserts()) {
                     //veo si ya existe
-                     Log.d(TAG,"solcorreccion"+sol.getId()+"--"+ sol.getNumFoto());
+                  //   Log.d(TAG,"solcorreccion"+sol.getId()+"--"+ sol.getNumFoto());
                     SolicitudCor solt = solRepo.findsimple(sol.getId(), sol.getNumFoto());
                     if (solt != null) {
                         if (solt.getEstatus() !=4||solt.getEstatus()!=5) {
