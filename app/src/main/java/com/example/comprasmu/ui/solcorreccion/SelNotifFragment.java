@@ -1,18 +1,20 @@
 package com.example.comprasmu.ui.solcorreccion;
 
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import com.example.comprasmu.R;
-import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
@@ -23,6 +25,7 @@ import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
 import com.example.comprasmu.ui.notificaciones.NotificacionGen;
+import com.example.comprasmu.ui.notificaciones.ResumenNotificacionesGenFragment;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
@@ -44,6 +47,8 @@ public class SelNotifFragment extends ListaSelecFragment{
     ListaSolsViewModel scViewModel;
     private List<InformeEtapa> totCanceleta;
     private ComprasLog comprasLog;
+    private MutableLiveData<List<NotificacionGen>> listaNotificacionesGenerales;
+
     public SelNotifFragment() {
         super();
     }
@@ -89,14 +94,12 @@ public class SelNotifFragment extends ListaSelecFragment{
         contarCanceladas();
         contarMuestraAdic();
         notificacionesGenerales();
-
+        convertirListaCor();
 
     }
 
     private void notificacionesGenerales() {
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-        ListenerNotRevRec listener=new ListenerNotRevRec();
-        ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
+        listaNotificacionesGenerales=scViewModel.pedirNotificacionesGenerales(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
 
     }
 
@@ -131,12 +134,12 @@ public class SelNotifFragment extends ListaSelecFragment{
         if(totCancel==0){
             //busco etiquetado por reactivacion
             comprasLog.info(TAG,"contarCanceladas","buscando etiquetado x reactivacion");
-            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet2( 3);
             if(listacomp!=null&&listacomp.size()>0)
                 setEtiquetadoCancel(3, 6);
             else {
                         //veo si ya puedo hacer empaque
-                listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                listacomp = scViewModel.cargarClientesSimplxet2( 4);
                 InformeEtapa nvoinf = new InformeEtapa();
                 List<InformeEtapa> listageneral = new ArrayList<>();
                 comprasLog.info(TAG,"contarCanceladas","puedo hacer empaque?:"+listacomp);
@@ -171,7 +174,7 @@ public class SelNotifFragment extends ListaSelecFragment{
     private void contarMuestraAdic(){
 
         // lista de compra pendiente
-        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReac(Constantes.CIUDADTRABAJO, 2,2);
+        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReacsc(2,2);
         comprasLog.info(TAG,"contarMuestraAdic","hay reactivacion muestra adic compra? " + listacomp.size());
         if(listacomp.size()>0){
 
@@ -193,7 +196,7 @@ public class SelNotifFragment extends ListaSelecFragment{
             totMuestraAdic=informesdetList;
 
         }else {
-                listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                listacomp = scViewModel.cargarClientesSimplxet2( 3);
                 if (listacomp != null && listacomp.size() > 0) {
                     //busco etiquetado
                     List<InformeEtapa> informes = scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
@@ -204,7 +207,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                     ) {
                         //reviso que ya pueda hacer esa etapa
                         //busco los clientes x ciudad
-                        listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                        listacomp = scViewModel.cargarClientesSimplxet(infeta.getCiudadNombre(), 3);
 
                         if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
 
@@ -215,7 +218,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                     totMuestraAdic = informesfinal;
                 } else //veo si ya puedo hacer empaque
                 {
-                    listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                    listacomp = scViewModel.cargarClientesSimplxet2( 4);
 
                     int listageneral = 0; //para contar los informes
                     for(ListaCompra listaCompra:listacomp) {
@@ -245,7 +248,7 @@ public class SelNotifFragment extends ListaSelecFragment{
             for (InformeEtapa infeta : informes
             ) {
                 //reviso si ya estoy en etapa 3
-                List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet(infeta.getCiudadNombre(), 3);
                 if (listacomp != null && listacomp.size() > 0 && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
                     listageneral.add(infeta);
                 }
@@ -284,37 +287,34 @@ public class SelNotifFragment extends ListaSelecFragment{
             case 3:
                 NavHostFragment.findNavController(this).navigate(R.id.action_notiftomu, bundle);
                 break;
-            case 4: //revisar recibo
-                if(Constantes.ETAPAACTUAL==6) {
-                    NavHostFragment.findNavController(this).navigate(R.id.action_notiftorev, bundle);
-                }
-                else
-                    Toast.makeText(getContext(),"Capturar en el módulo de Gastos", Toast.LENGTH_LONG).show();
+            case 4: case 5: case 6: //revisar recibo
+                Bundle args = new Bundle();
+                args.putInt(ResumenNotificacionesGenFragment.ARG_OPCION_NOTIF, opcion);
+                ResumenNotificacionesGenFragment nvofrag = new ResumenNotificacionesGenFragment();
+                nvofrag.setArguments(args);
 
-                    break;
-            case 5: //ajustar recibo
-                if(Constantes.ETAPAACTUAL==6) {
-                    NavHostFragment.findNavController(this).navigate(R.id.nav_continuargas, bundle);
+                NavHostFragment navHostFragment =
+                        (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                NavController navController = navHostFragment.getNavController();
+                if(navController!=null)
+                    navController.navigate(R.id.action_notiftores, args);
+              //  FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                // Definir una transacción
+                //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                // Remplazar el contenido principal por el fragmento
+               // fragmentTransaction.replace(R.id.nav_host_fragment, nvofrag);
 
-                } else
-                    Toast.makeText(getContext(),"Capturar en el módulo de Gastos", Toast.LENGTH_LONG).show();
-
+                // Cambiar
+               // fragmentTransaction.commit();
                 break;
-            case 6: //estatus envio
-               // if(listaClientesEnv.get)
-                if(Constantes.ETAPAACTUAL==5) {
-                    NavHostFragment.findNavController(this).navigate(R.id.nav_envdescargas, bundle);
-                } else
-                    Toast.makeText(getContext(),"Capturar en el módulo de Envio", Toast.LENGTH_LONG).show();
 
-                break;
 
         }
 
     }
 
 
-    private  void convertirListaCor(List<NotificacionGen> lista) {
+    private  void convertirListaCor() {
         try {
             listaClientesEnv = new ArrayList<DescripcionGenerica>();
             //primero las generales
@@ -326,29 +326,26 @@ public class SelNotifFragment extends ListaSelecFragment{
              listaClientesEnv.add(new DescripcionGenerica(2, "CANCELADAS", "0",totCancel+""));
 
              listaClientesEnv.add(new DescripcionGenerica(3, "MUESTRA ADICIONAL", "0",totMuestraAdic+""));
-             for (NotificacionGen noti:
-                 lista) {
-                listaClientesEnv.add(new DescripcionGenerica(noti.getTipo(), noti.getDescripcion1(), "0",noti.getTotal()+""));
-                 //modifico el estatus del informe
-                 if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
-                     //5-ajustar recibo
-                     //6-estatus envio
-                     //busco el informe
-                     List<InformeEtapa> listaInf=scViewModel.getInfGastoxCiudad(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
-                     if(listaInf!=null&&listaInf.size()>0){
-                         scViewModel.actualizarEstatusGas(listaInf.get(0).getId());
-                         Log.i(TAG,"convertirListaNotif "+"actualizando informe gastos ajuste"+listaInf.get(0).getId());
+             listaNotificacionesGenerales.observe(getViewLifecycleOwner(), new Observer<List<NotificacionGen>>() {
+                 @Override
+                 public void onChanged(List<NotificacionGen> notificacionGen) {
+                     for (NotificacionGen noti:
+                             notificacionGen) {
+                        listaClientesEnv.add(new DescripcionGenerica(noti.getTipo(), noti.getDescripcion1(), "0",noti.getTotal()+""));
 
-                     // flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
+
+                     }
+                     setLista(listaClientesEnv);
+                     setupListAdapter();
+                     adaptadorLista.setDesc2(true);
                  }
-             }
+             });
 
-         }
 
-         setLista(listaClientesEnv);
-         setupListAdapter();
-         adaptadorLista.setDesc2(true);
+
+
         }catch(Exception ex){
+            ex.printStackTrace();
             Log.e(TAG,ex.getMessage());
             comprasLog.grabarError(TAG,"convertirListaCor", "Hubo un error al desplegar la lista "+ex.getMessage());
         }
@@ -376,7 +373,7 @@ public class SelNotifFragment extends ListaSelecFragment{
             if(!isAdded() || getActivity()==null)
                 return;
             if (response != null && response.getData() != null) {
-                convertirListaCor(response.getData());
+
 
 
             }

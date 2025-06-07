@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -18,6 +19,7 @@ import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.ui.solcorreccion.SelNotifFragment;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 import java.util.List;
@@ -97,10 +99,18 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
 
     }
 
-    public List<ListaCompraDetalle> getAllByListasimple(int idlista) {
-        return lcdrepo.getAllByListasimple(idlista);
-    }
+
     public List<ListaCompraDetalle> getProductosPend(int idlista) {
         return lcdrepo.getPendientes(idlista);
     }
+
+
+    public MutableLiveData<List<NotificacionGen>> pedirNotificacionesGenerales(String indice, String ciudad) {
+            PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+
+            return ps.getNotificacionesGen(indice,ciudad);
+
+    }
+
+
 }

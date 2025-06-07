@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 
@@ -101,6 +103,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
     List<Correccion> mainRespcor;
     private boolean descargarListas;
     private boolean descargarNotificaciones;
+    MutableLiveData<List<NotificacionGen>> listaNotificacionesGen;
     public DescargasIniAsyncTask(Context act, CatalogoDetalleRepositoryImpl cdrepo,
                                  TablaVersionesRepImpl tvRepo,
                                  AtributoRepositoryImpl atRepo, ListaCompraDetRepositoryImpl lcdrepo, ListaCompraRepositoryImpl lcrepo,ProgresoListener miproglis, SustitucionRepositoryImpl sustRepo,GeocercaRepositoryImpl georep,SiglaRepositoryImpl sigRepo,boolean descargarListas, boolean descargarNotificaciones) {
@@ -468,9 +471,45 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
         Log.d("DescargasIniAsyncTask", "notificacionesGenerales "+procesos_lev);
 
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-        DescargaIniListener listener=new DescargaIniListener();
-        ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
 
+        listaNotificacionesGen=ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+        Observer myObserver=new Observer<List<NotificacionGen>>() {
+            @Override
+            public void onChanged(List<NotificacionGen> notificacionGens) {
+                convertirListaNotif(notificacionGens);
+                listaNotificacionesGen.removeObserver(this);
+            }
+        };
+        Handler handler = new Handler(Looper.getMainLooper()); //This is the main thread
+        handler.post(new Runnable() { //task to run on main thread
+            @Override
+            public void run() {
+                listaNotificacionesGen.observeForever(myObserver);
+
+                }
+            }
+        );
+    }
+    private  void convertirListaNotif(List<NotificacionGen> lista) {
+        InfEtapaRepositoryImpl informeEtapaRepo=new InfEtapaRepositoryImpl(act);
+        for (NotificacionGen noti:
+                lista) {
+
+            //modifico el estatus del informe
+            if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
+                //5-ajustar recibo
+                //6-estatus envio
+                //busco el informe finalizado con estatus 2
+                List<InformeEtapa> listaInf=informeEtapaRepo.getInfxEstatusCiuSim(Constantes.INDICEACTUAL,6,2, Constantes.CIUDADTRABAJO);
+                if(listaInf!=null&&listaInf.size()>0){
+                    informeEtapaRepo.actualizarEstatus(listaInf.get(0).getId(),5);
+                    flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
+                }
+            }
+
+
+        }
+        finalizarrespie();
     }
 
     public interface ProgresoListener {
@@ -667,7 +706,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
 
 
 
-    public class DescargaIniListener implements  IDescargaIniListener, IListenerRevRec{
+    public class DescargaIniListener implements  IDescargaIniListener{
         public DescargaIniListener(){
             //if(proglist!=null&&actualiza==1)
             //  proglist.cerrarAlerta();
@@ -860,52 +899,6 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
             tvRepo.insertUpdate(tinfo);
 
         }
-
-
-
-
-        @Override
-        public void guardarEstatus(PostResponse response) {
-
-        }
-
-        @Override
-        public void guardarRes(PostResponse respuesta) {
-
-        }
-
-        @Override
-        public void guardarResNotif(NotificacionResponse response) {
-            Log.d(TAG,"actualizando notificaciones");
-            if(response!=null&&response.getData()!=null) {
-                convertirListaNotif(response.getData());
-
-            }
-            Log.d(TAG,"finalizando notificaciones voy en el"+procesos);
-            finalizar();
-        }
-        private  void convertirListaNotif(List<NotificacionGen> lista) {
-            InfEtapaRepositoryImpl informeEtapaRepo=new InfEtapaRepositoryImpl(act);
-            for (NotificacionGen noti:
-                    lista) {
-
-                //modifico el estatus del informe
-                if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
-                    //5-ajustar recibo
-                    //6-estatus envio
-                    //busco el informe finalizado con estatus 2
-                    List<InformeEtapa> listaInf=informeEtapaRepo.getInfxEstatusCiuSim(Constantes.INDICEACTUAL,6,2, Constantes.CIUDADTRABAJO);
-                    if(listaInf!=null&&listaInf.size()>0){
-                        informeEtapaRepo.actualizarEstatus(listaInf.get(0).getId(),5);
-                        flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
-                    }
-                }
-
-
-            }
-
-        }
-
 
 
     }

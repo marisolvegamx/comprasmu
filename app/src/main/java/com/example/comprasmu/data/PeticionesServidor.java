@@ -61,6 +61,7 @@ import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.login.LoginActivity;
+import com.example.comprasmu.ui.notificaciones.NotificacionGen;
 import com.example.comprasmu.utils.Constantes;
 
 import java.io.IOException;
@@ -1059,20 +1060,20 @@ public class PeticionesServidor {
     }
 
     /***traigo todas las notificaciones en una consulta****/
-    public void getNotificacionesGen(String indiceactual, String ciudad, IListenerRevRec listener) {
+    public MutableLiveData<List<NotificacionGen>> getNotificacionesGen(String indiceactual, String ciudad) {
         final Call<NotificacionResponse> batch = ServiceGenerator.getApiService().getNotificacionesGen(indiceactual,usuario,ciudad);
         Log.d("PeticionesServidor","getNotificacionesGen "+indiceactual+"--"+ciudad);
-
+        MutableLiveData<List<NotificacionGen>> data=new MutableLiveData<>();
         batch.enqueue(new Callback<NotificacionResponse>() {
             @Override
             public void onResponse(@Nullable Call<NotificacionResponse> call, @Nullable Response<NotificacionResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     NotificacionResponse respuestaCats = response.body();
-                    listener.guardarResNotif(respuestaCats);
+                    data.setValue(respuestaCats.getData());
 
                 }else {
                     Log.e("PeticionesServidor", "*algo salio mal en peticion getNotificacionesGen");
-                    listener.guardarResNotif(null);
+                    data.setValue(null);
                 }
             }
 
@@ -1080,10 +1081,11 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<NotificacionResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e("PeticionesServidor", "algo salio mal en peticio getNotificacionesGen"+t.getMessage());
-                    listener.guardarResNotif(null);
+                    data.setValue(null);
                 }
             }
         });
+        return data;
     }
 
     public void getEstatusRecibo(String indiceactual, String ciudadInf, IListenerRevRec listener) {

@@ -157,6 +157,20 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
 
+    public List<ListaCompra> getClientesByIndicexetapa(String indice,int etapa) {
+        List<String> params= new ArrayList<>();
+        params.add(indice);
+        String query="Select * from lista_compras where indice=? and lis_etapaactual=?";
+        params.add(etapa+"");
+
+        query=query+ " group by clientesId,ciudadNombre order by clientesId";
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,params.toArray()
+        );
+        //   Log.d("ListaCompraRepositoryImpl","clientes "+query);
+        return dao.getListaCompraByFiltrosSimple( sqlquery);
+    }
+
     public List<ListaCompra> getClientesByIndiceCiudadSimplsp(String indice,String idCiudad, int cliente) {
         List<String> params= new ArrayList<>();
         params.add(indice);
@@ -214,6 +228,20 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
             params.add(idCiudad);
         }
         query=query+ " group by clientesId order by clientesId";
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,params.toArray()
+        );
+        //Log.d("ListaCompraRepositoryImpl","clientes "+query);
+        return dao.getListaCompraByFiltrosSimple( sqlquery);
+    }
+
+    public List<ListaCompra> getClieByIndiceSimplxetReac(String indice,int etapa, int reactivado) {
+        List<String> params= new ArrayList<>();
+        params.add(indice);
+        String query="Select * from lista_compras where indice=? and lis_etapaactual=? and lis_reactivado=?";
+        params.add(etapa+"");
+        params.add(reactivado+"");
+        query=query+ " group by clientesId, ciudadNombre order by clientesId";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );

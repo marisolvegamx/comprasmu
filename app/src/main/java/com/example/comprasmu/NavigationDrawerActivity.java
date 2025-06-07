@@ -112,6 +112,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private ComprasLog flog;
     private LiveData<Integer> totCancel;
     private MutableLiveData<Integer> totalNotifGen;
+    MutableLiveData<List<NotificacionGen>> listaNotificacionesGen;
     Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -564,9 +565,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private void contarMuestraAdic(){
 
         // lista de compra pendiente
-        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReac(Constantes.CIUDADTRABAJO, 2,2);
-        if(listacomp.size()>0){
+        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReacsc( 2,2);
 
+        if(listacomp.size()>0){
+            Log.d(TAG,"contarMuestraAdic-hey reactivacion");
             int informesdetList=0;
             //busco el detalle
             for (ListaCompra compra:listacomp
@@ -584,17 +586,18 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             totMuestraAdic.setValue(informesdetList);
 
         }else {
-            listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            listacomp = scViewModel.cargarClientesSimplxet2( 3);
             if (listacomp != null && listacomp.size() > 0){
+                Log.i(TAG, "contarMuestraAdic esta en etiquetado");
                 //busco etiquetado
                 List<InformeEtapa> informes = scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
                 int informesfinal = 0;//contador para saber cuantos informes hay
-                Log.i(TAG, "YA CARGÓ " + informes.size());
+                Log.i(TAG, "contarMuestraAdic YA CARGÓ " + informes.size());
                 for (InformeEtapa infeta : informes
                 ) {
                     //reviso que ya pueda hacer esa etapa
                     //busco los clientes x ciudad
-                    listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                    listacomp = scViewModel.cargarClientesSimplxet(infeta.getCiudadNombre(), 3);
                     if (listacomp != null && listacomp.size() > 0 && listacomp.get(0) != null && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
 
                         informesfinal++;
@@ -604,12 +607,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
              }else
             //veo si ya puedo hacer empaque
             {
-                listacomp = scViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
-
+                listacomp = scViewModel.cargarClientesSimplxet2( 4);
+                Log.i(TAG, "contarMuestraAdic puedo hacer empaque?"+listacomp!=null?(listacomp.size()+""):"0" );
                 int listageneral = 0; //para contar los informes
                 for(ListaCompra listaCompra:listacomp) {
 
                     if (listacomp != null && listacomp.size() > 0 && listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 2) {
+                        Log.i(TAG, "contarMuestraAdic hay reactivacion");
                         ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
                         InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
                         if (informesEtapa == null) {
@@ -817,18 +821,19 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 tinfo.setTipo("I");
 
                 tvRepo.insertUpdate(tinfo);
-          //  Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
+            Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
                 //veo las muestras canceladas
                 if (corrResp.getCanceladas() != null)
 
                         for (MuestraCancelada cancel :
                                 corrResp.getCanceladas()) {
-                            if(cancel.getIne_etapa()==2) {
+                            if(cancel.getIne_etapa()>0&&cancel.getIne_etapa()!=2) {
                                 //busco el informedetalle y actualizo el estatus
-                                scViewModel.procesarCanceladas(cancel);
-                            }else {
 
-                                scViewModel.procesarCanceladasEta(cancel); //canceladas será 0
+                                scViewModel.procesarCanceladasEta(cancel);
+                            }else {
+                                scViewModel.procesarCanceladas(cancel);
+                               //canceladas será 0
 
                             }
                         }
@@ -910,10 +915,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
     private void notificacionesGenerales() {
         totalNotifGen=new MutableLiveData<>();
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-        ListenerNavRevRec listener=new ListenerNavRevRec();
-        ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
 
+        listaNotificacionesGen= scViewModel.pedirNotificacionesGenerales(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+        listaNotificacionesGen.observe(this, new Observer<List<NotificacionGen>>() {
+            @Override
+            public void onChanged(List<NotificacionGen> notificacionGens) {
+                convertirListaNotif(notificacionGens);
+            }
+        });
     }
 
     //la lista de notificaciones la cuento
@@ -923,7 +932,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 lista) {
            totalnotif+=noti.getTotal();
 
-          /*   if(noti.getTipo()==5&&Constantes.CIUDADTRABAJO.equals("TUXTLA GUTIERREZ")){    //4-revisar recibo
+           if(noti.getTipo()==4&&noti.getTotal()>0){    //4-revisar recibo
                  //5-ajustar recibo
                  //6-estatus envio
                  //busco el informe
@@ -932,11 +941,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                      for (InformeEtapa info:listaInformes
                           ) {
 
-                         mViewModel.actualizarEstatusGas(info.getId(),2);
+                         mViewModel.actualizarEstatusGas(info.getId(),7);
                          flog.grabarError(TAG, "convertirListaNotif", "actualizando informe gastos ajuste" + info.getId());
                      }
                  }
-             }*/
+             }
            //modifico el estatus del informe
              if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
                       //5-ajustar recibo
@@ -962,27 +971,5 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
        // servicio.reanudar();
     }
 
-    public class ListenerNavRevRec implements IListenerRevRec{
 
-        @Override
-        public void guardarEstatus(PostResponse response) {
-
-        }
-
-        @Override
-        public void guardarRes(PostResponse respuesta) {
-
-        }
-
-        @Override
-        public void guardarResNotif(NotificacionResponse response) {
-            if(response!=null&&response.getData()!=null) {
-                convertirListaNotif(response.getData());
-
-            }
-
-        }
-
-
-    }
 }

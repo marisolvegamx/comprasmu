@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -26,6 +27,7 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.remote.MuestraCancelada;
+import com.example.comprasmu.data.remote.NotificacionResponse;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
@@ -37,6 +39,7 @@ import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
+import com.example.comprasmu.ui.notificaciones.NotificacionGen;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
@@ -264,6 +267,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         int itotCanceleta=0;
         //busco si hay cancelacion de preparacion
         List<InformeEtapa> totCanceleta=getTotalCancelEtaSim(Constantes.INDICEACTUAL,1);
+        Log.d(TAG,"contarCanceladas-tot prep"+(totCanceleta!=null?totCanceleta.size():0));
         for (InformeEtapa informe:totCanceleta
         ) { //busco si no se ha vuelto a elaborar
             InformeEtapa inf=getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,0);
@@ -281,22 +285,24 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
         if(informesCancel!=null&&informesCancel.size()>0) {
             itotCancel = informesCancel.size();
-
+            Log.d(TAG,"contarCanceladas- totcancelcompras"+itotCanceleta);
 
         }
         else {
-            List<ListaCompra> listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            List<ListaCompra> listacomp = cargarClientesSimplxet2( 3);
             if(listacomp!=null&&listacomp.size()>0)
                 setEtiquetadoCancel(3, 6);
             else {
                 //veo si ya puedo hacer empaque
-                listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+                listacomp = cargarClientesSimplxet2( 4);
                 InformeEtapa nvoinf = new InformeEtapa();
                 List<InformeEtapa> listageneral = new ArrayList<>();
+                Log.d(TAG,"contarCanceladas- puedo hacer empaque?"+listacomp);
                 for(ListaCompra listaCompra:listacomp) {
                     if (listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
                         //veo que no haya hecho informe para no esperar a la supervisión
                         // ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+                        Log.d(TAG,"contarCanceladas-hay reactivacion");
                         InformeEtapa informesEtapa = getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
                         if (informesEtapa == null) {
                             nvoinf.setIndice(listacomp.get(0).getIndice());
@@ -326,12 +332,12 @@ public class ListaSolsViewModel extends AndroidViewModel {
         List<InformeEtapa> listageneral=new ArrayList<>();
         //para ver si sigue etiquetado y empaque
         List<InformeEtapa> informes=getInfEtapaxEstatusSim(Constantes.INDICEACTUAL,etapa,estatus);
-
+        Log.d(TAG,"setEtiquetadoCancel-hayinforme"+informes);
         //paso de informe etapa a informe compra
         for (InformeEtapa infeta : informes
         ) {
             //reviso si ya estoy en etapa 3
-            List<ListaCompra> listacomp = cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+            List<ListaCompra> listacomp = cargarClientesSimplxet(infeta.getCiudadNombre(), 3);
             if (listacomp != null && listacomp.size() > 0 && listacomp.get(0)!=null&&listacomp.get(0).getClientesId() == infeta.getClientesId()) {
 
                 listageneral.add(infeta);
@@ -360,16 +366,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
 
     }
-    public InformeEtapa getInformeCancel(String indice,int etapa){
 
-        List<InformeEtapa> respuesta=infetarepo.getCancelados(indice, etapa);
-        if(respuesta!=null&&respuesta.size()>0){
-            return respuesta.get(0);
-        }
-        return null;
-
-
-    }
     //para buscar si hay un inf de etiquetado reabierto
     public List<InformeEtapa> getInfEtapaxEstatusSim(String indiceSel, int etapa, int estatus ){
 
@@ -382,9 +379,16 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
 
     }
-    public  List<ListaCompra>  cargarClientesSimplxetReac(String ciudadSel, int etapa, int reactivado){
+    public  List<ListaCompra>  cargarClientesSimplxet2( int etapa){
 
-        return lcrepo.getClieByIndiceCiudadSimplxetReac(Constantes.INDICEACTUAL,ciudadSel,etapa,  reactivado);
+        return lcrepo.getClientesByIndicexetapa(Constantes.INDICEACTUAL,etapa);
+
+
+    }
+
+    public  List<ListaCompra>  cargarClientesSimplxetReacsc(int etapa, int reactivado){
+
+        return lcrepo.getClieByIndiceSimplxetReac(Constantes.INDICEACTUAL,etapa,  reactivado);
 
 
     }
@@ -403,29 +407,17 @@ public class ListaSolsViewModel extends AndroidViewModel {
     public InformeEnvioPaq getInformeEnvSol(int informesId) {
         return infenvrepo.findInfsimple(informesId);
     }
-    public List<InformeGastoDet> getGastoDetalles(int id){
-        return gasdetrepo.getAllSencillo(id);
-    }
     public InformeGastoDet getByNumfoto(int idInforme, int numfoto) {
         return gasdetrepo.getByNumfoto(idInforme, numfoto);
     }
 
-    public  List<ListaCompra>  getClientesByIndiceCiudadSimplsp(String ciudadSel, int clienteId){
-
-        return lcrepo.getClientesByIndiceCiudadSimplsp(Constantes.INDICEACTUAL,ciudadSel,clienteId);
 
 
-    }
 
-    //para buscar si hay un inf
-    public List<InformeEtapa> getInfGastoxCiudad(String indiceSel, String ciudad){
+    public MutableLiveData<List<NotificacionGen>> pedirNotificacionesGenerales(String indice, String ciudad) {
+        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
 
-        return infetarepo.getInfxEstatusCiuSim(indiceSel,6,2,ciudad);
+       return ps.getNotificacionesGen(indice,ciudad);
 
     }
-    public void actualizarEstatusGas(int idInf){
-
-        infetarepo.actualizarEstatus(idInf,5);
-    }
-
 }

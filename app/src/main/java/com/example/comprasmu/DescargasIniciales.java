@@ -5,6 +5,9 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.comprasmu.data.ComprasDataBase;
@@ -64,11 +67,13 @@ public class DescargasIniciales {
         DescargaIniListener listenprin;
         final String TAG="DescargasIniciales";
         boolean notificar=false;
+
         public DescargasIniciales(Context act) {
             this.act=act;
             sdfdias=new SimpleDateFormat("dd-MM-yyyy");
             flog = ComprasLog.getSingleton();
             flog.crearLog(act.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
+
         }
 
         public void ejecutar() {
@@ -145,13 +150,48 @@ public class DescargasIniciales {
 
     }
 
-    private void notificacionesGenerales() {
+    private void notificacionesGenerales( ) {
 
         Log.d(TAG, "notificacionesGenerales "+procesos_lev);
 
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         DescargaIniListener listener=new DescargaIniListener();
-        ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
+        MutableLiveData<List<NotificacionGen>> listaNotificaciones= ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+        Observer myObserver=new Observer<List<NotificacionGen>>() {
+            @Override
+            public void onChanged(List<NotificacionGen> notificacionGens) {
+                convertirListaNotif(notificacionGens);
+                Log.d(TAG,"finalizando notificaciones voy en el"+procesos);
+                finalizar();
+                listaNotificaciones.removeObserver(this);
+            }
+        };
+        listaNotificaciones.observeForever(myObserver);
+
+    }
+    private  void convertirListaNotif(List<NotificacionGen> lista) {
+        InfEtapaRepositoryImpl informeEtapaRepo=new InfEtapaRepositoryImpl(act);
+        for (NotificacionGen noti:
+                lista) {
+
+            //modifico el estatus del informe
+            if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
+                //5-ajustar recibo
+                //6-estatus envio
+                //busco el informe finalizado con estatus 2
+                List<InformeEtapa> listaInf=informeEtapaRepo.getInfxEstatusCiuSim(Constantes.INDICEACTUAL,6,2, Constantes.CIUDADTRABAJO);
+                if(listaInf!=null&&listaInf.size()>0){
+                    informeEtapaRepo.actualizarEstatus(listaInf.get(0).getId(),5);
+                    flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
+                }
+            }
+
+
+        }
+
+    }
+    public void finalizar(){
+        Log.d(TAG,"finalizo descarga"+procesos+"--"+procesos_lev);
 
     }
 public class DescargaIniListener implements  IDescargaIniListener, IActualListener, IListenerRevRec {
@@ -335,10 +375,15 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
                     for (MuestraCancelada cancel :
                             corrResp.getCanceladas()) {
                         //busco el informedetalle y actualizo el estatus
-                        if(cancel.getIne_etapa()==2)
+                        if(cancel.getIne_etapa()>0&&cancel.getIne_etapa()!=2) {
+                            //busco el informedetalle y actualizo el estatus
+
+                            this.procesarCanceladasEta(cancel);
+                        }else {
                             this.procesarCanceladas(cancel);
-                        else
-                            this.procesarCanceladasEta(cancel); //canceladas será 0
+                            //canceladas será 0
+
+                        }
 
                     }
 
@@ -454,27 +499,7 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
     public void guardarEstatus(PostResponse response) {
 
     }
-    private  void convertirListaNotif(List<NotificacionGen> lista) {
-        InfEtapaRepositoryImpl informeEtapaRepo=new InfEtapaRepositoryImpl(act);
-        for (NotificacionGen noti:
-                lista) {
 
-            //modifico el estatus del informe
-            if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
-                //5-ajustar recibo
-                //6-estatus envio
-                //busco el informe finalizado con estatus 2
-                List<InformeEtapa> listaInf=informeEtapaRepo.getInfxEstatusCiuSim(Constantes.INDICEACTUAL,6,2, Constantes.CIUDADTRABAJO);
-                if(listaInf!=null&&listaInf.size()>0){
-                    informeEtapaRepo.actualizarEstatus(listaInf.get(0).getId(),5);
-                    flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
-                }
-            }
-
-
-        }
-
-    }
 
     @Override
     public void guardarRes(PostResponse respuesta) {

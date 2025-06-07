@@ -228,32 +228,37 @@
         android:id="@+id/nav_notificaciongen"
         android:name="com.example.comprasmu.ui.solcorreccion.SelNotifFragment"
         android:label="@string/menu_notificaciones">
-    <action android:id="@+id/action_notiftosolcor"
-        app:destination="@id/nav_listasolcor"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    <action android:id="@+id/action_notiftocan"
-        app:destination="@id/nav_cancel"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    <action android:id="@+id/action_notiftomu"
-        app:destination="@id/nav_listanotif"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-        />
+        <action android:id="@+id/action_notiftosolcor"
+            app:destination="@id/nav_listasolcor"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_notiftocan"
+            app:destination="@id/nav_cancel"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action android:id="@+id/action_notiftomu"
+            app:destination="@id/nav_listanotif"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+
         <action android:id="@+id/action_notiftorev"
             app:destination="@id/nav_revrecibo"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-        />
+        <action android:id="@+id/action_notiftores"
+            app:destination="@id/nav_resumennotificaciongen"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
     <fragment
         android:id="@+id/nav_listanotif"
@@ -709,6 +714,13 @@
 
     </activity>
     <!-- fin opciones gastos-->
+    <fragment
+        android:id="@+id/nav_resumennotificaciongen"
+        android:name="com.example.comprasmu.ui.notificaciones.ResumenNotificacionesGenFragment"
+        android:label="@string/menu_notificaciones"
+        tools:layout="@layout/lista_generic_fragment" >
+
+    </fragment>
     <activity
         android:id="@+id/nav_menuini"
         android:name="com.example.comprasmu.ui.home.PruebasActivity"

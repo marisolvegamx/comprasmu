@@ -1215,11 +1215,11 @@ public void iraReubicar(){
         listaClientes =new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
             Log.d(TAG,listaCompra.getPlantaNombre());
-         /*   if( clientesprev!=null)
+            if( clientesprev!=null)
                 if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
                 {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
                     Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
-                    continue;}*/
+                    continue;}
             listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 
         }
