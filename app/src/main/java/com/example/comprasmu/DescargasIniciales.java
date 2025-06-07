@@ -335,10 +335,15 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
                     for (MuestraCancelada cancel :
                             corrResp.getCanceladas()) {
                         //busco el informedetalle y actualizo el estatus
-                        if(cancel.getIne_etapa()==2)
+                        if(cancel.getIne_etapa()>0&&cancel.getIne_etapa()!=2) {
+                            //busco el informedetalle y actualizo el estatus
+
+                            this.procesarCanceladasEta(cancel);
+                        }else {
                             this.procesarCanceladas(cancel);
-                        else
-                            this.procesarCanceladasEta(cancel); //canceladas será 0
+                            //canceladas será 0
+
+                        }
 
                     }
 

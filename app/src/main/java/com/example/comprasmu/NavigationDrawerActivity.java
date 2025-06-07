@@ -823,12 +823,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
                         for (MuestraCancelada cancel :
                                 corrResp.getCanceladas()) {
-                            if(cancel.getIne_etapa()==2) {
+                            if(cancel.getIne_etapa()>0&&cancel.getIne_etapa()!=2) {
                                 //busco el informedetalle y actualizo el estatus
-                                scViewModel.procesarCanceladas(cancel);
-                            }else {
 
-                                scViewModel.procesarCanceladasEta(cancel); //canceladas será 0
+                                scViewModel.procesarCanceladasEta(cancel);
+                            }else {
+                                scViewModel.procesarCanceladas(cancel);
+                                //canceladas será 0
 
                             }
                         }
