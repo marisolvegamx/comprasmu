@@ -90,9 +90,13 @@ public class DescargasIniciales {
             infetarepo=new InfEtapaRepositoryImpl(this.act);
             visRepo=new VisitaRepositoryImpl(this.act);
             infrepo=new InformeCompraRepositoryImpl(this.act);
-          //  listacompras();
+            listacompras();
             pedirCorrecciones(0,0);
             notificacionesGenerales();
+            //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
+            DescRespInformesEta desetiq=new DescRespInformesEta( act,listenprin,tvRepo);
+
+            desetiq.getCambiosEtiq();
         }
 
 
@@ -103,9 +107,9 @@ public class DescargasIniciales {
            //por ahora no tiene caso la fecha de actualizacion porque no se registra en la tabla, falta mejorar esto en la app web
             // TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
            // TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
-            DescargaIniListener listener=new DescargaIniListener();
+
             //siempre actualizo
-            ps.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
+            ps.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listenprin);
             flog.grabarError(TAG,"listacompras"," siempre actualizo"+actualiza);
 
         }
@@ -194,7 +198,7 @@ public class DescargasIniciales {
         Log.d(TAG,"finalizo descarga"+procesos+"--"+procesos_lev);
 
     }
-public class DescargaIniListener implements  IDescargaIniListener, IActualListener, IListenerRevRec {
+public class DescargaIniListener implements  IDescargaIniListener, IActualListener, IListenerRevRec, DescRespInformesEta.ProgresoRespIEListener {
     public DescargaIniListener(){
 
 
@@ -515,6 +519,15 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
         }
         Log.d(TAG,"finalizando notificaciones voy en el"+procesos);
         finalizar();
+    }
+
+    @Override
+    public void finalizarrespie() {
+
+        procesos++;
+
+        finalizar();
+
     }
 }
 }
