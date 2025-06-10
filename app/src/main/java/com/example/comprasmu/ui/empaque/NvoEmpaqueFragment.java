@@ -152,13 +152,7 @@ public class NvoEmpaqueFragment extends Fragment {
                     preguntaAct= mViewModel.buscarReactivoSim(numpreg);
 
             }
-            //actualizo lista de compra
-            actualizarListaCompra();
-            listaCompraResponse.observe(getViewLifecycleOwner(), listaCompraResponse -> {
-                alert.closeAlertDialog();
-                crearVista();});
-
-
+            crearVista();
             aceptar.setEnabled(false);
             if(isEdicion||preguntaAct!=null&&preguntaAct.getId()==114){
                 aceptar.setEnabled(true);
@@ -387,6 +381,13 @@ public class NvoEmpaqueFragment extends Fragment {
                 //es nuevo nuevito
                 //es nuevo pregunta 91
                 //reviso si ya tengo uno abierto
+                //actualizo lista de compra
+                actualizarListaCompra();
+                listaCompraResponse.observe(getViewLifecycleOwner(), listaCompraResponse -> {
+                    alert.closeAlertDialog();
+
+
+
                 InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL,4);
 
                 if (informeEtapa != null) {
@@ -412,11 +413,11 @@ public class NvoEmpaqueFragment extends Fragment {
                 //busco clientes con informe
 
                 Integer[] clientesprev = mViewModel.tieneInforme(4);
+                convertirLista(listacomp, clientesprev);
 
-                if (listacomp.size() > 1) {
+                if (listaClientes.size() > 1) {
                     //tengo varias clientes
                     // preguntaAct=1;
-                    convertirLista(listacomp, clientesprev);
                     // cargarPlantas(listaClientes, "");
 
                     mViewModel.variasClientes = true;
@@ -424,7 +425,7 @@ public class NvoEmpaqueFragment extends Fragment {
                     preguntaAct = mViewModel.getListaPreguntas().get(0);
                     crearFormulario();
 
-                } else if (listacomp.size() > 0) {
+                } else if (listaClientes.size() > 0) {
 
                     mViewModel.variasClientes = false;
                     clienteId = listacomp.get(0).getClientesId();
@@ -449,16 +450,16 @@ public class NvoEmpaqueFragment extends Fragment {
                     });
 
 
-
-
                 }else{
                     Toast.makeText(getContext(),"NO HAY DATOS QUE MOSTRAR ",Toast.LENGTH_LONG).show();
 
                     getActivity().finish();
                 }
-
+                });
             }
+
         }
+
     }
     public void crearFormulario(){
         camposForm=new ArrayList<>();
