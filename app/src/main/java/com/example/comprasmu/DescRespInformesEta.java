@@ -22,7 +22,8 @@ import java.util.Date;
 import java.util.List;
 
 /***para actualizar los informes despues de la supervision
- * por ahora solo se usa para etiquetado por la correccion*******/
+ * por ahora solo se usa para etiquetado por la correccion
+ * y para la reactivacion*******/
 public class DescRespInformesEta {
 
 
@@ -116,6 +117,7 @@ public class DescRespInformesEta {
                     for(InformeEtapaDet det:infoResp.getEtiq_cancel()){
                         //todo revisar si ya fue actualizada para no veolver a actualizar
                         //busco el informe
+                        Log.i(TAG, "actualizando bd informes");
                         InformeEtapa informeapp=infrepo.findsimple(det.getInformeEtapaId());
                         if(det.getEstatus()==2&&(informeapp==null||informeapp.getEstatusSync()==2)) //no se subió, pero ya se completó
                         {
