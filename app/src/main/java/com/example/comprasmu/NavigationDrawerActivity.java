@@ -586,7 +586,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             totMuestraAdic.setValue(informesdetList);
 
         }else {
-            listacomp = scViewModel.cargarClientesSimplxet2( 3);
+            listacomp = scViewModel.cargarClientesSimplxetReacsc( 3,2);
             if (listacomp != null && listacomp.size() > 0){
                 Log.i(TAG, "contarMuestraAdic esta en etiquetado");
                 //busco etiquetado
@@ -607,7 +607,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
              }else
             //veo si ya puedo hacer empaque
             {
-                listacomp = scViewModel.cargarClientesSimplxet2( 4);
+                listacomp = scViewModel.cargarClientesSimplxetReacsc( 4,2);
                 Log.i(TAG, "contarMuestraAdic puedo hacer empaque?"+listacomp!=null?(listacomp.size()+""):"0" );
                 int listageneral = 0; //para contar los informes
                 for(ListaCompra listaCompra:listacomp) {
@@ -821,7 +821,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 tinfo.setTipo("I");
 
                 tvRepo.insertUpdate(tinfo);
-            Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
+                Log.d(TAG,"dddddd"+corrResp.getCanceladas().size());
                 //veo las muestras canceladas
                 if (corrResp.getCanceladas() != null)
 

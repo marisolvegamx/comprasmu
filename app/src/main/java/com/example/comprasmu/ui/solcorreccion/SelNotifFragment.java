@@ -134,12 +134,12 @@ public class SelNotifFragment extends ListaSelecFragment{
         if(totCancel==0){
             //busco etiquetado por reactivacion
             comprasLog.info(TAG,"contarCanceladas","buscando etiquetado x reactivacion");
-            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxet2( 3);
+            List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReacsc( 3,1);
             if(listacomp!=null&&listacomp.size()>0)
                 setEtiquetadoCancel(3, 6);
             else {
                         //veo si ya puedo hacer empaque
-                listacomp = scViewModel.cargarClientesSimplxet2( 4);
+                listacomp = scViewModel.cargarClientesSimplxetReacsc( 4,1);
                 InformeEtapa nvoinf = new InformeEtapa();
                 List<InformeEtapa> listageneral = new ArrayList<>();
                 comprasLog.info(TAG,"contarCanceladas","puedo hacer empaque?:"+listacomp);
@@ -196,7 +196,7 @@ public class SelNotifFragment extends ListaSelecFragment{
             totMuestraAdic=informesdetList;
 
         }else {
-                listacomp = scViewModel.cargarClientesSimplxet2( 3);
+                listacomp = scViewModel.cargarClientesSimplxetReacsc( 3,2);
                 if (listacomp != null && listacomp.size() > 0) {
                     //busco etiquetado
                     List<InformeEtapa> informes = scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
@@ -218,7 +218,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                     totMuestraAdic = informesfinal;
                 } else //veo si ya puedo hacer empaque
                 {
-                    listacomp = scViewModel.cargarClientesSimplxet2( 4);
+                    listacomp = scViewModel.cargarClientesSimplxetReacsc( 4,2);
 
                     int listageneral = 0; //para contar los informes
                     for(ListaCompra listaCompra:listacomp) {
