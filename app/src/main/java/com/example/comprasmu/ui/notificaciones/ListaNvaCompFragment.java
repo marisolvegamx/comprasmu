@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -81,7 +82,7 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
 
     public void cargarLista(){
         // lista de compra pendiente
-        List<ListaCompra> listacomp = mViewModel.cargarClientesSimplxetReac(Constantes.CIUDADTRABAJO, 2,2);
+        List<ListaCompra> listacomp = mViewModel.cargarClientesSimplxetReac( 2,2);
         if(listacomp.size()>0){
             List<InformeCompraDao.InformeCompravisita> informesList=new ArrayList<>();
             List<InformeCompraDetalle> informesdetList=new ArrayList<>();
@@ -130,7 +131,8 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
         }
         List<InformeEtapa> informesfinal=new ArrayList<>();
         //busco etiquetado
-        mViewModel.getEtiquetadoAdicional(indice).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+        LiveData<List<InformeEtapa>> listaInformesEtapa= mViewModel.getEtiquetadoAdicional(indice);
+        listaInformesEtapa.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
             @Override
             public void onChanged(List<InformeEtapa> informes) {
 
@@ -140,7 +142,7 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
                 ) {
                     //reviso que ya pueda hacer esa etapa
                     //busco los clientes x ciudad
-                    List<ListaCompra> listacomp = mViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 3);
+                    List<ListaCompra> listacomp = mViewModel.cargarClientesSimplxet(infeta.getCiudadNombre(), 3);
                     for(ListaCompra listaCompra:listacomp) {
                         if (listaCompra.getClientesId() == infeta.getClientesId()) {
 
@@ -159,12 +161,12 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
                     mEtaAdapter.notifyDataSetChanged();
                 }
 
-
+                listaInformesEtapa.removeObservers(getViewLifecycleOwner());
             }
         });
 
         //veo si ya puedo hacer empaque
-         listacomp = mViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 4);
+         listacomp = mViewModel.cargarClientesSimplxetReac( 4,2);
         InformeEtapa nvoinf=new InformeEtapa();
         List<InformeEtapa> listageneral=new ArrayList<>();
         for(ListaCompra listaCompra:listacomp) {

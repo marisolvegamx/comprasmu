@@ -289,12 +289,12 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
         }
         else {
-            List<ListaCompra> listacomp = cargarClientesSimplxet2( 3);
+            List<ListaCompra> listacomp = cargarClientesSimplxetReacsc( 3,1);
             if(listacomp!=null&&listacomp.size()>0)
                 setEtiquetadoCancel(3, 6);
             else {
                 //veo si ya puedo hacer empaque
-                listacomp = cargarClientesSimplxet2( 4);
+                listacomp = cargarClientesSimplxetReacsc( 4,1);
                 InformeEtapa nvoinf = new InformeEtapa();
                 List<InformeEtapa> listageneral = new ArrayList<>();
                 Log.d(TAG,"contarCanceladas- puedo hacer empaque?"+listacomp);
@@ -379,12 +379,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
 
     }
-    public  List<ListaCompra>  cargarClientesSimplxet2( int etapa){
 
-        return lcrepo.getClientesByIndicexetapa(Constantes.INDICEACTUAL,etapa);
-
-
-    }
 
     public  List<ListaCompra>  cargarClientesSimplxetReacsc(int etapa, int reactivado){
 

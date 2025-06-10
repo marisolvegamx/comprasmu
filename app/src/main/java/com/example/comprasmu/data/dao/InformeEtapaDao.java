@@ -55,7 +55,7 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     @Query("SELECT * FROM informe_etapa WHERE  indice=:indice and (estatus=1) and etapa=:etapa order by id desc")
     public abstract LiveData<List<InformeEtapa>>  getInformePend(String indice, int etapa);
 
-    @Query("SELECT * FROM informe_etapa WHERE  indice=:indice and (estatus=1 or estatus=7 or estatus=6) and etapa=:etapa order by id desc")
+    @Query("SELECT * FROM informe_etapa WHERE  indice=:indice and (estatus=1 or estatus=7 or estatus=6 or estatus=4) and etapa=:etapa order by id desc")
     public abstract LiveData<List<InformeEtapa>>  getInformePendRe(String indice, int etapa);
 
     @RawQuery(observedEntities = InformeEtapa.class)
