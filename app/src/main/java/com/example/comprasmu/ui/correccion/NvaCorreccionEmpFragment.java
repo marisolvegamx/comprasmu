@@ -284,10 +284,10 @@ public class NvaCorreccionEmpFragment extends Fragment {
                 });
             }
 
-            if(preguntaAct.getId()>122){
+           // if(preguntaAct.getId()>122){
                 txtcajaact.setText("CAJA "+cajaAct);
                 txtcajaact.setVisibility(View.VISIBLE);
-            }
+           // }
         } catch(Exception ex)
 
     {
