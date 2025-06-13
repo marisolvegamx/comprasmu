@@ -79,7 +79,7 @@ public class InformesGenViewModel extends AndroidViewModel {
 
     }
     public LiveData<List<InformeEtapa>> cargarEtapaAll(int etapa, String indice){
-        return ierepository.getAllsp(etapa, indice);
+        return ierepository.getActivos(etapa, indice);
 
     }
     public LiveData<InformeEtapa> getInforme(int id, String indice){

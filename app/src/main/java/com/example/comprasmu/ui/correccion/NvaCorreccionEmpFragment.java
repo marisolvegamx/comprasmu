@@ -411,7 +411,7 @@ public class NvaCorreccionEmpFragment extends Fragment {
            solViewModel.actualizarEstSolicitud(solicitudSel,numfoto,4);
           //una pausa para que lo actualice en el serv
            DescAutomaticasServiceManager.getInstancia().pausarServicio();
-           nuevasCor=mViewModel.getCorreccionesxsolPendSimp(solicitudSel,Constantes.INDICEACTUAL);
+           nuevasCor=mViewModel.getCorreccionesEmpaque(solicitudSel,Constantes.INDICEACTUAL);
            CorreccionEnvio envio=mViewModel.prepararEnvioVar(nuevasCor);
            SubirCorreccionTask miTareaAsincrona = new SubirCorreccionTask(envio,getActivity());
            miTareaAsincrona.execute();

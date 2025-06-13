@@ -328,7 +328,6 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
     }
     public int actualizarCorre(SolCorreResponse corrResp, int etapa) {
 
-
         //primero los inserts
         if (corrResp != null) {
 
@@ -416,7 +415,7 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
     }
 
         public void procesarCanceladas(MuestraCancelada cancelada){
-
+            infdrepo=new InformeComDetRepositoryImpl(act);
             InformeCompraDetalle det=infdrepo.findsimple(cancelada.getInd_id());
 
             if(det!=null) {
