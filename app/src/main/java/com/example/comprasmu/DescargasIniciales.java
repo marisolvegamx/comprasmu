@@ -79,6 +79,7 @@ public class DescargasIniciales {
             ListaCompraDao dao= ComprasDataBase.getInstance(this.act).getListaCompraDao();
             lcdrepo=new ListaCompraDetRepositoryImpl(this.act);
             lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
+            infdrepo=new InformeComDetRepositoryImpl(act);
             georep=new GeocercaRepositoryImpl(this.act);
             listenprin=new DescargaIniListener();
             solRepo=new SolicitudCorRepoImpl(this.act);
@@ -372,7 +373,7 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
     }
 
         public void procesarCanceladas(MuestraCancelada cancelada){
-
+            infdrepo=new InformeComDetRepositoryImpl(act);
             InformeCompraDetalle det=infdrepo.findsimple(cancelada.getInd_id());
 
             if(det!=null) {
