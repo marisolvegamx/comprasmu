@@ -42,6 +42,7 @@ public class DescAutomaticasServiceManager {
         }
         if(clave%3==0) {
             if (!servicioIniciado) {
+
                 Intent intent = new Intent(context, DescargasAutomaticasService.class);
                 context.startService(intent);
                 servicioIniciado = true;

@@ -30,6 +30,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.LoggedInUser;
@@ -66,8 +67,10 @@ public class DescargarFragment extends Fragment {
     private TextView indicacion,textView;
     int clientesel;
     ProgressBar progressBar;
+    String ciudadSeleccionada;
     protected ArrayList<DescripcionGenerica> listaSeleccionable;
     int idcap;
+    private String ARG_DESCCIUDADSEL="comprasmu.descenv.cdsel";
 
 
     public DescargarFragment() {
@@ -92,15 +95,22 @@ public class DescargarFragment extends Fragment {
         mBinding= DataBindingUtil.inflate(inflater,
                 R.layout.descargar_env_fragment, container, false);
         lsViewModel = new ViewModelProvider(this).get(ListaSelecViewModel.class);
-
-
         listaSeleccionable=new ArrayList<DescripcionGenerica>();
         // mViewModel.setLista( this.listaSeleccionable);
         //  mBinding.setViewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
         objetosLV=mBinding.getRoot().findViewById(R.id.listaobjetos);
         objetosLV.setVisibility(View.GONE);
-
+        if (getArguments() != null) {
+             Log.d(TAG,"aqui"+getArguments());
+            this.ciudadSeleccionada = getArguments().getString(ARG_DESCCIUDADSEL);
+            if(ciudadSeleccionada==null||!ciudadSeleccionada.equals("")){
+                this.ciudadSeleccionada=Constantes.CIUDADTRABAJO;
+            }
+        }else
+        {
+            this.ciudadSeleccionada=Constantes.CIUDADTRABAJO;
+        }
         indicacion=mBinding.textView9;
         return mBinding.getRoot();
 
@@ -127,7 +137,7 @@ public class DescargarFragment extends Fragment {
         //hago la peticion
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         DocsEnvioListener listener=new DocsEnvioListener();
-        ps.getDocumentosEnvio(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listener);
+        ps.getDocumentosEnvio(Constantes.INDICEACTUAL,this.ciudadSeleccionada,listener);
         getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -224,22 +234,22 @@ public class DescargarFragment extends Fragment {
 
         String nombrearch="";
         switch(opcion){
-            case "g":nombrearch="guia_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+            case "g":nombrearch="guia_"+this.ciudadSeleccionada.replace(" ","_");
             break;
             case "fda":
-                nombrearch="fda_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                nombrearch="fda_"+this.ciudadSeleccionada.replace(" ","_");
                 break;
             case "fac":
-                nombrearch="guia_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                nombrearch="guia_"+this.ciudadSeleccionada.replace(" ","_");
                 break;
             case "anx1":
-                nombrearch="anexo1_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                nombrearch="anexo1_"+this.ciudadSeleccionada.replace(" ","_");
                 break;
             case "anx2":
-                nombrearch="anexo2_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                nombrearch="anexo2_"+this.ciudadSeleccionada.replace(" ","_");
                 break;
             case "anx3":
-                nombrearch="anexo3_"+Constantes.CIUDADTRABAJO.replace(" ","_");
+                nombrearch="anexo3_"+this.ciudadSeleccionada.replace(" ","_");
                 break;
         }
         DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -303,7 +313,7 @@ public class DescargarFragment extends Fragment {
             //busco si tengo varios clientes x ciudad
 
             List<ListaCompra> listainfetiq;
-            listainfetiq = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, etapa);
+            listainfetiq = lcViewModel.cargarClientesSimplxet(ciudadSeleccionada, etapa);
             Log.d(TAG, "id nuevo" + docsenvio.getCiudadId() + "--" + listainfetiq.size());
 
             if(listainfetiq.size()>0) {
@@ -322,7 +332,7 @@ public class DescargarFragment extends Fragment {
            mBinding.btndeguia.setVisibility(View.VISIBLE);
             //guardo si ya hay guias
             if(idcap>0) {
-                PreferencesGuias.guardarInformeEnvio(getActivity(), Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO, idcap);
+                PreferencesGuias.guardarInformeEnvio(getActivity(), Constantes.INDICEACTUAL, ciudadSeleccionada, idcap);
             }
             if(docsenvio.getFda()==1)
                 mBinding.btndefda.setVisibility(View.VISIBLE);
