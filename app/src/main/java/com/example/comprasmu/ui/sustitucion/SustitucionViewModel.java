@@ -70,13 +70,15 @@ public class SustitucionViewModel extends AndroidViewModel {
         InformeComDetRepositoryImpl icrepo=new InformeComDetRepositoryImpl(context);
         String nvoCodigos = "";
         //busco los nuevos codigos
-        List<InformeCompraDetalle> informeCompraDetalles=icrepo.getByProductoAna(Constantes.INDICEACTUAL,Constantes.VarListCompra.plantaSel,detalle.getSu_producto(),Constantes.VarListCompra.detallebuSel.getAnalisisId(),detalle.getSu_tipoempaque(),detalle.getNomtamanio());
+        if(Constantes.VarListCompra.detallebuSel!=null) {
+            List<InformeCompraDetalle> informeCompraDetalles = icrepo.getByProductoAna(Constantes.INDICEACTUAL, Constantes.VarListCompra.plantaSel, detalle.getSu_producto(), Constantes.VarListCompra.detallebuSel.getAnalisisId(), detalle.getSu_tipoempaque(), detalle.getNomtamanio());
 
-        if(informeCompraDetalles!=null) {
-            //     Log.d(TAG,"encontré " +informeCompraDetalles.size());
-            for (InformeCompraDetalle info : informeCompraDetalles) {
-                nvoCodigos = nvoCodigos + sdfcodigo.format(info.getCaducidad()) + "\n";
+            if (informeCompraDetalles != null) {
+                //     Log.d(TAG,"encontré " +informeCompraDetalles.size());
+                for (InformeCompraDetalle info : informeCompraDetalles) {
+                    nvoCodigos = nvoCodigos + sdfcodigo.format(info.getCaducidad()) + "\n";
 
+                }
             }
         }
 

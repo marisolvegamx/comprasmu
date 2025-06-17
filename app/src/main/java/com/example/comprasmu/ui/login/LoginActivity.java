@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity
                 lastClickTime = currentClickTime;
                 Log.d(TAG,"model"+Build.MODEL+"-"+Constantes.modelo);
                 if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)) {//pruebas y el lenovo//entro rapido
-               //   new LoginListener().iniciar(); return;
+                  new LoginListener().iniciar(); return;
                 }
              //   loadingProgressBar.setVisibility(View.VISIBLE);
                 //hago validaciones

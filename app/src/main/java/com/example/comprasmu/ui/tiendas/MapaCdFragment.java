@@ -891,9 +891,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
     @Override
     public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
-        alert.closeAlertDialog();
-        buscarPlantas(Constantes.CIUDADTRABAJO);
-        buscarClientes();
+       if(getView()!=null) {
+           alert.closeAlertDialog();
+           buscarPlantas(Constantes.CIUDADTRABAJO);
+           buscarClientes();
+       }
     }
 
     @Override

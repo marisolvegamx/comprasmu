@@ -6,31 +6,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.comprasmu.R;
-
-import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Sustitucion;
 
 import com.example.comprasmu.databinding.ListaGenericFragmentBinding;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoElecFragment;
-import com.example.comprasmu.ui.informedetalle.DetalleProductoFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoJumFragment;
 import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
-import com.example.comprasmu.ui.listacompras.PlaceholderFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
-import com.example.comprasmu.ui.mantenimiento.CiudadTrabajoFragment;
 import com.example.comprasmu.utils.Constantes;
 
 
@@ -85,6 +76,10 @@ public class SustitucionFragment extends Fragment implements SustitucionAdapter.
                 tamanio= Constantes.VarListCompra.detallebuSel.getTamanioId();
                 empaque= Constantes.VarListCompra.detallebuSel.getEmpaquesId();
                 productoId= Constantes.VarListCompra.detallebuSel.getProductosId();
+            }
+            else{
+                //regreso al informe
+                getActivity().finish();
             }
             clienteSel= bundle2.getInt(ListaCompraFragment.ARG_CLIENTESEL);
             nombrePlanta = bundle2.getString(ListaCompraFragment.ARG_NOMBREPLANTASEL);
