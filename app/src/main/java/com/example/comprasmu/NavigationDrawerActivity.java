@@ -34,8 +34,6 @@ import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.IActualListener;
 import com.example.comprasmu.data.remote.MuestraCancelada;
-import com.example.comprasmu.data.remote.NotificacionResponse;
-import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
@@ -45,7 +43,6 @@ import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.DescAutomaticasServiceManager;
 import com.example.comprasmu.services.SubirFotoService;
-import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.infetapa.ContInfEtaViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
@@ -527,6 +524,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         Log.i(TAG," detuve");
         WorkManager
                 .getInstance(this).cancelAllWorkByTag("comprassync_worker2");
+        DescAutomaticasServiceManager.getInstancia().detenerServicio();
     }
 //esta funcion no funciona nunca se llama
     @Override
@@ -884,6 +882,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         super.onDestroy();
         Log.i(TAG," mori");
         WorkManager.getInstance(this).cancelAllWorkByTag("comprassync_worker2");
+        DescAutomaticasServiceManager.getInstancia().detenerServicio();
     }
 
     @Override
@@ -962,14 +961,5 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
         totalNotifGen.setValue(totalnotif);
     }
-
-    public void pausarServicioDescargas(View view) {
-       // servicio.pausar();
-    }
-
-    public void reanudarServicioDescargas(View view) {
-       // servicio.reanudar();
-    }
-
 
 }

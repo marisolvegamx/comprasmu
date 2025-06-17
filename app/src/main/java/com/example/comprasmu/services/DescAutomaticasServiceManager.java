@@ -32,7 +32,7 @@ public class DescAutomaticasServiceManager {
     public void iniciarServicio(Context context) {
         int clave=1;
         //todo quitar este codigo de prueba
-      /*  if(Constantes.CLAVEUSUARIO!=null&&!Constantes.CLAVEUSUARIO.equals("")){
+        if(Constantes.CLAVEUSUARIO!=null&&!Constantes.CLAVEUSUARIO.equals("")){
            try{
                clave=Integer.parseInt(Constantes.CLAVEUSUARIO);
 
@@ -40,14 +40,14 @@ public class DescAutomaticasServiceManager {
                Log.e("DescAutomaticasServiceManager","Error al convertir usuario");
            }
         }
-        if(clave%3==0) {*/
+        if(clave%3==0) {
             if (!servicioIniciado) {
                 Intent intent = new Intent(context, DescargasAutomaticasService.class);
                 context.startService(intent);
                 servicioIniciado = true;
             }
             descargasAutomaticasservicio.reanudar();
-        //}
+        }
     }
     public void detenerServicio() {
         if (descargasAutomaticasservicio != null) {

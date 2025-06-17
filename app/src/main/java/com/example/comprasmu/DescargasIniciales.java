@@ -84,6 +84,7 @@ public class DescargasIniciales {
             ListaCompraDao dao= ComprasDataBase.getInstance(this.act).getListaCompraDao();
             lcdrepo=new ListaCompraDetRepositoryImpl(this.act);
             lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
+            infdrepo=new InformeComDetRepositoryImpl(act);
             georep=new GeocercaRepositoryImpl(this.act);
             listenprin=new DescargaIniListener();
             solRepo=new SolicitudCorRepoImpl(this.act);
