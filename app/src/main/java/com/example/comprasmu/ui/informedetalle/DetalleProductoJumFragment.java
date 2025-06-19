@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.camera.lifecycle.ExperimentalCameraProviderConfiguration;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -487,6 +488,8 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                     //reviso si hay más clientes, si no fin
                     buscarClientes();
                     compraslog.grabarError(TAG+" finalizando buscando clientes ");
+                   if(2==2)
+                       throw new Exception("*****");
                     if (clientesAsig != null && clientesAsig.size() > 0) {
                         loadingDialog.dismisDialog();
                         yaestoyProcesando=false;
@@ -514,8 +517,8 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                     ex.printStackTrace();
                     loadingDialog.dismisDialog();
                     yaestoyProcesando=false;
-                    compraslog.grabarError(TAG+" HUBO UN ERROR AL FINALIZAR EL INFORME "+ex.getMessage());
-                    Toast.makeText(getActivity(), "HUBO UN ERROR AL FINALIZAR EL INFORME", Toast.LENGTH_LONG).show();
+                    compraslog.grabarError(TAG+" HUBO UN ERROR AL FINALIZAR EL INFORME, INTENTE ENVIAR DE NUEVO "+ex.getMessage());
+                    Toast.makeText(getActivity(), "HUBO UN ERROR AL FINALIZAR EL INFORME, INTENTE ENVIAR DE NUEVO", Toast.LENGTH_LONG).show();
                     aceptar.setEnabled(false);
 
                 }
