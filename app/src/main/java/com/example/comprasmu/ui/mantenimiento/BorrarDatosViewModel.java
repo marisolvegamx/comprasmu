@@ -116,7 +116,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
                 //borro los detalle
                     icdrepo.deleteByInforme(informe.getId());
                 //busco imagenes del informe
-                      borrarImagenes(visita.visita,informe);
+                    borrarImagenes(visita.visita,informe);
                     icrepo.deleteInformeCompra(informe.getId());
                     } //borre el informe
                 }
