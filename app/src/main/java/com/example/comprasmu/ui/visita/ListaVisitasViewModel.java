@@ -81,7 +81,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
 
                 for (InformeCompra inf : informeCompras) {
 
-                    if (inf.getEstatus() == 2&&inf.getEstatusSync()<2) //ya está finalizado
+                    if (inf.getEstatus() == 2&&inf.getEstatusSync()==0) //ya está finalizado
                     {
                         visitaRepository.actualizarEstatus(id, 2);
                         mSnackbarText.setValue("No se puede eliminar, solo puede finalizar el informe por que ya fue enviado");
@@ -113,19 +113,19 @@ public class ListaVisitasViewModel extends AndroidViewModel {
 
         //si llegó hasta aqui no tiene informes y puedo eliminar
 
-            Visita eliminar= visitaRepository.findsimple(id);
+        Visita eliminar= visitaRepository.findsimple(id);
 
-            if(eliminar!=null) {
+        if(eliminar!=null) {
 
-                ImagenDetalle img1=imdRepository.findsimple(eliminar.getFotoFachada());
-                if(img1!=null) {//borro el archivo
-                    File fdelete = new File(directorio+img1.getRuta());
-                    if (fdelete.exists())
+            ImagenDetalle img1=imdRepository.findsimple(eliminar.getFotoFachada());
+            if(img1!=null) {//borro el archivo
+                File fdelete = new File(directorio+img1.getRuta());
+                if (fdelete.exists())
                         fdelete.delete();
-                    }
+            }
                             //elimino las imagenes
-                    imdRepository.deleteById(eliminar.getFotoFachada());
-                    List<ProductoExhibido> prods= prodeRepository.getAllByVisitaSimple(eliminar.getId());
+            imdRepository.deleteById(eliminar.getFotoFachada());
+            List<ProductoExhibido> prods= prodeRepository.getAllByVisitaSimple(eliminar.getId());
 
                            //elimino prods
                     if(prods!=null&&prods.size()>0)
