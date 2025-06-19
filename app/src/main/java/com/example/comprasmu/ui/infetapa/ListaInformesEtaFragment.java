@@ -83,6 +83,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     NvaPreparacionViewModel npViewModel;
     ComprasLog milog;
     LoadingAlert alert;
+    ComprasLog milog2;
     public ListaInformesEtaFragment() {
 
     }
@@ -104,6 +105,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
         mBinding= DataBindingUtil.inflate(inflater,
                 R.layout.lista_informes_fragment, container, false);
+        milog2=ComprasLog.getSingleton();
 
         mViewModel = new ViewModelProvider(this).get(InformesGenViewModel.class);
         corViewModel=new ViewModelProvider(this).get(NvaCorreViewModel.class);
@@ -384,7 +386,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     }
 
-    public static void subirFotosCor(Activity activity, int id, String ruta){
+    public  void subirFotosCor(Activity activity, int id, String ruta){
 
         //subo cada una
         Intent msgIntent = new Intent(activity, SubirFotoService.class);
@@ -393,8 +395,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
         msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,Constantes.INDICEACTUAL);
         // Constantes.INDICEACTUAL
-        ComprasLog milog2=ComprasLog.getSingleton();
-        milog2.grabarError(TAG,"subiendo fotos",ruta);
+
+        milog2.grabarError(TAG,"subirFotosCor",ruta);
 
         msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_COR);
 
@@ -426,7 +428,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         return envio;
     }
 
-    public static void subirFotos(Activity activity, InformeEtapaEnv informe){
+    public  void subirFotos(Activity activity, InformeEtapaEnv informe){
         //las imagenes
             //busco la imagenes
             for(ImagenDetalle imagen:informe.getImagenDetalles()){
@@ -437,7 +439,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
                 msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
                 // Constantes.INDICEACTUAL
-                Log.i(TAG,"subiendo fotos"+activity.getLocalClassName()+"  archivo:"+imagen.getRuta());
+                milog2.grabarError(TAG,"subiendo fotos","  archivo:"+imagen.getRuta());
 
                 msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
 
@@ -453,7 +455,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
 
     }
-    public static void subirFotosEnv(Activity activity, InformeEnvPaqEnv informe){
+    public  void subirFotosEnv(Activity activity, InformeEnvPaqEnv informe){
         //las imagenes
         //busco la imagenes
         for(ImagenDetalle imagen:informe.getImagenDetalles()){
@@ -464,7 +466,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,imagen.getRuta());
             msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
             // Constantes.INDICEACTUAL
-            Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
+            milog2.grabarError(TAG,"subirFotosEnvs",imagen.getRuta());
 
             msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
 
@@ -477,7 +479,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     }
 
-    public static void subirFotosGasto(Activity activity, InformeGastoEnv informe){
+    public  void subirFotosGasto(Activity activity, InformeGastoEnv informe){
         //las imagenes
         //busco la imagenes
         for(ImagenDetalle imagen:informe.getImagenDetalles()){
@@ -489,7 +491,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
             // Constantes.INDICEACTUAL
             Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
-
+            milog2.grabarError(TAG,"subirFotosGasto",imagen.getRuta());
             msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_ETA);
 
             //cambio su estatus a subiendo
@@ -501,7 +503,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         }
 
     }
-    public static void subirFotosCaj(Activity activity, int id, String ruta){
+    public  void subirFotosCaj(Activity activity, int id, String ruta){
 
         //subo cada una
         Intent msgIntent = new Intent(activity, SubirFotoService.class);
@@ -510,7 +512,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
         msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,Constantes.INDICEACTUAL);
         // Constantes.INDICEACTUAL
-        Log.d(TAG,"subiendo fotos caja"+activity.getLocalClassName());
+        milog2.grabarError(TAG,"subiendo fotos caja",ruta);
 
         msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_COR);
         activity.startService(msgIntent);
