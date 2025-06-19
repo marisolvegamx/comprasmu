@@ -11,6 +11,7 @@ import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
+import com.example.comprasmu.utils.ComprasLog;
 
 
 import java.io.File;
@@ -25,14 +26,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/*proceso que se usa actualmente 2025 con retrofit*/
 public class SubirFoto implements ImageUploadCallback {
 
     private final ArrayList<SubirFotoService.SubirFotoListener> observadores = new ArrayList<SubirFotoService.SubirFotoListener>();
     ImagenDetRepositoryImpl idrepo;
     private final String TAG="SubirFoto";
     ImagenDetalle imagen;
+    ComprasLog milog;
     public SubirFoto() {
-
+        milog=ComprasLog.getSingleton();
     }
 
     public void agregarObservador(SubirFotoService.SubirFotoListener o)
@@ -68,10 +71,14 @@ public class SubirFoto implements ImageUploadCallback {
         try {
             this.idrepo = idrepo;
             this.imagen=imagen;
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String uploadFileArrayList = dir + imagen.getRuta();
-            Log.i(TAG, "ahora si voy a subir" + uploadFileArrayList);
+            milog.info(TAG,"subir foto", " ahora si voy a subir" + uploadFileArrayList);
             File file = new File(uploadFileArrayList);
+            if(!file.exists()){
+                throw new Exception("No se encontró el archivo");
+            }
             ProgressRequestBody fileBody = new ProgressRequestBody(file, "image", this);
             /* Notice here the first argument in the createFormData function is the name of the key whose value will be the file you send */
             MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
@@ -103,14 +110,17 @@ public class SubirFoto implements ImageUploadCallback {
 
                 @Override
                 public void onFailure(@NonNull Call<PostResponse> call, @NonNull Throwable t) {
+                   t.printStackTrace();
+                    milog.grabarError(TAG+"error"+t.getMessage());
                     onError(null);
                 }
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
 
-            this.onSuccess(null);
+            e.printStackTrace();
+            milog.grabarError(TAG+" error:"+e.getMessage());
+            this.onError(null);
 
         }
 
@@ -126,7 +136,7 @@ public class SubirFoto implements ImageUploadCallback {
             this.imagen=imagen;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String uploadFileArrayList = dir + imagen.getRuta();
-            Log.i(TAG, "ahora si voy a subirgen" + uploadFileArrayList);
+            milog.info(TAG,"subirFotoGen", " ahora si voy a subirgen" + uploadFileArrayList);
             File file = new File(uploadFileArrayList);
             ProgressRequestBody fileBody = new ProgressRequestBody(file, "image", this);
             /* Notice here the first argument in the createFormData function is the name of the key whose value will be the file you send */
@@ -151,6 +161,7 @@ public class SubirFoto implements ImageUploadCallback {
             uploadImage.enqueue(new Callback<PostResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<PostResponse> call, @NonNull Response<PostResponse> response) {
+
                     onSuccessGen(response);
 
                 }
@@ -158,6 +169,7 @@ public class SubirFoto implements ImageUploadCallback {
 
                 @Override
                 public void onFailure(@NonNull Call<PostResponse> call, @NonNull Throwable t) {
+
                     onErrorGen(null);
                 }
             });
@@ -177,31 +189,33 @@ public class SubirFoto implements ImageUploadCallback {
     }
     @Override
     public void onError(Response<PostResponse> response) {
+        milog.grabarError(TAG,"SubirFoto", "Error al subir"+response);
         if(response!=null) {
             PostResponse compraResp = response.body();
-            Log.e("SubirFoto", "Error al subir" + compraResp.getData());
+            milog.grabarError(TAG,"SubirFoto", "Error al subir" + compraResp.getData());
         }
         notificarObservadores();
     }
     @Override
     public void onSuccess(Response<PostResponse> response) {
+        milog.info(TAG, "onSuccess","Respuesta->" + response);
         if (response != null) {
-            Log.i(TAG, "Respuesta->" + response.message());
+            milog.info(TAG, "onSuccess","Respuesta->" + response.message());
             PostResponse compraResp = response.body();
             // do something on upload finished
             //for example, start next uploading at the queue
             if (response.isSuccessful() && compraResp != null) {
 
-                Log.d(TAG, "Respuesta->" + compraResp.getData());
+                milog.info(TAG, "onSuccess","Respuesta->" + compraResp.getData());
                 //todo descomentar
                  actualizarEstado(imagen);
             } else { //hubo un error
                 //lo registro en el log
                 if (compraResp != null) {
-                    Log.e("SubirFoto", "Hubo un error al subir imagen " + compraResp.getData());
+                    milog.grabarError(TAG,"SubirFoto", "Hubo un error al subir imagen " + compraResp.getData());
                 }
             }
-            Log.i("SubirFoto", "terminó de subir");
+            milog.grabarError(TAG,"SubirFoto", "terminó de subir");
         }
         notificarObservadores();
 
@@ -210,29 +224,32 @@ public class SubirFoto implements ImageUploadCallback {
 
     @Override
     public void onErrorGen(Response<PostResponse> response) {
+        milog.grabarError("SubirFoto"+ "onErrorGen Error al subir"+response);
         if(response!=null) {
             PostResponse compraResp = response.body();
-            Log.d("SubirFoto", "Error al subir" + compraResp.getData());
+            milog.grabarError("SubirFoto"+ "Error al subir" + compraResp.getData());
         }
         notificarObservadores();
     }
 
     @Override
     public void onSuccessGen(Response<PostResponse> response) {
+        milog.grabarError(TAG+ "onSuccessGen Respuesta->" + response);
         if (response != null) {
-            Log.d(TAG, "Respuesta->" + response.message());
+            milog.grabarError(TAG+ "Respuesta->" + response.message());
             PostResponse compraResp = response.body();
             // do something on upload finished
             //for example, start next uploading at the queue
             if (response.isSuccessful() && compraResp != null) {
 
-                Log.d(TAG, "Respuesta->" + compraResp.getData());
+                milog.grabarError(TAG+ "Respuesta->" + compraResp.getData());
                // actualizarEstado(imagen);
                 notificarObservadoresIm(imagen);
             }
         }else { //hubo un error
+            milog.grabarError("SubirFoto"+"Hubo un error al subir imagen "+response.body());
             notificarObservadoresIm(null);
-          //  Log.d("SubirFoto","Hubo un error al subir imagen "+response.body());
+
         }
     }
 

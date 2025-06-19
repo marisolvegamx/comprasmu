@@ -103,12 +103,13 @@
         <service
             android:name=".services.SubirFotoService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            />
         <service
             android:name=".services.SubirColaFotoService"
             android:enabled="true"
             android:exported="true" />
-        <service android:name=".services.DescargasAutomaticasService" />
+        <service android:name=".services.DescargasAutomaticasService"/>
         <service android:name=".services.SubirLogService" />
 
         <activity

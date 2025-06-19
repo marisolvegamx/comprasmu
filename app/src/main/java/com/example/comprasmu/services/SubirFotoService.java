@@ -26,8 +26,6 @@ import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /****un servicio x foto****/
@@ -57,22 +55,22 @@ public class SubirFotoService extends IntentService
     public SubirFotoService()
     {
         super("SubirFotoService");
-      //  pvm=new PostInformeViewModel(getApplicationContext());
-       // pvm.iniciarConexiones();
+        //  pvm=new PostInformeViewModel(getApplicationContext());
+        // pvm.iniciarConexiones();
     }
     @Override
     protected void onHandleIntent(Intent intent)
     {
         milog=ComprasLog.getSingleton();
-      //  Log.d(TAG,"action");
+        //  Log.d(TAG,"action");
         if (intent != null)
         {
             final String action = intent.getAction();
-           // intent.setAction(ACTION_UPLOAD_IMG);
+            // intent.setAction(ACTION_UPLOAD_IMG);
 
             if (ACTION_UPLOAD_IMG.equals(action)) //para informe compra
             {
-              //  Log.d(TAG,"action"+action);
+                //  Log.d(TAG,"action"+action);
                 imagenSubir=new ImagenDetalle();
                 imagenSubir.setRuta(intent.getStringExtra(EXTRA_IMG_PATH));
                 imagenSubir.setId(intent.getIntExtra(EXTRA_IMAGE_ID,0));
@@ -95,26 +93,27 @@ public class SubirFotoService extends IntentService
     {
 
 
-            // Instanciar y registrar un Observador
-            SubirFotoListener objObservador  = new SubirFotoListener();
+        // Instanciar y registrar un Observador
+        SubirFotoListener objObservador  = new SubirFotoListener();
 
-            try {
-               // notificar();
-                SubirFoto sf = new SubirFoto();
-                sf.agregarObservador(objObservador);
-             //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String dir=   this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
-                ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(this).getImagenDetalleDao();
-                ImagenDetRepositoryImpl idrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
+        try {
+            // notificar();
+            SubirFoto sf = new SubirFoto();
+            sf.agregarObservador(objObservador);
+            //   Log.d(TAG,"ahora si voy a subir*"+imagenSubir.getRuta());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dir=   this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
+            ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(this).getImagenDetalleDao();
+            ImagenDetRepositoryImpl idrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
+            milog.info(TAG,"handleUploadImg","ahora si voy a subir ruta:"+imagenSubir.getRuta());
 
-                sf.subirFoto(Constantes.CLAVEUSUARIO,dir, imagenSubir,indiceimagen, this,idrepo);
+            sf.subirFoto(Constantes.CLAVEUSUARIO,dir, imagenSubir,indiceimagen, this,idrepo);
 
-            }catch (Exception ex){
+        }catch (Exception ex){
 
-                Log.e(TAG,"error"+ex.getMessage());
-                ex.printStackTrace();
-            }
+            milog.grabarError(TAG+"error"+ex.getMessage());
+            ex.printStackTrace();
+        }
 
 
     }
@@ -126,25 +125,26 @@ public class SubirFotoService extends IntentService
 
         try {
             // notificar();
-             String action = intent.getAction();
+            String action = intent.getAction();
             SubirFoto sf = new SubirFoto();
             sf.agregarObservador(objObservador);
-            Log.i(TAG,"ahora si voy a subir ruta:"+imagenSubir.getRuta()+" tipo:"+tipo);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dir=   this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
-           if(action.equals(ACTION_UPLOAD_COR)){
-               tipo="correccion";
-               correccionRepo=new CorreccionRepoImpl(getApplicationContext());
-           }
-           if(action.equals(ACTION_UPLOAD_ETA)){
-               tipo="etapa";
-               etapadetRepo=new InfEtapaDetRepoImpl(getApplicationContext());
-           }
+            if(action.equals(ACTION_UPLOAD_COR)){
+                tipo="correccion";
+                correccionRepo=new CorreccionRepoImpl(getApplicationContext());
+            }
+            if(action.equals(ACTION_UPLOAD_ETA)){
+                tipo="etapa";
+                etapadetRepo=new InfEtapaDetRepoImpl(getApplicationContext());
+            }
+            milog.info(TAG,"handleUploadImg2","ahora si voy a subir ruta:"+imagenSubir.getRuta()+" tipo:"+tipo);
+
             sf.subirFotoGen(Constantes.CLAVEUSUARIO,dir, imagenSubir,indiceimagen, this,tipo);
 
         }catch (Exception ex){
 
-            Log.e(TAG,"error"+ex.getMessage());
+            milog.grabarError(TAG+" error"+ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -161,12 +161,12 @@ public class SubirFotoService extends IntentService
     public void onDestroy()
     {
         super.onDestroy();
-     //   Log.e(TAG,"onDestroy");
+        milog.grabarError(TAG+" se eliminó el servicio");
     }
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         //notificationManager.cancel(0);
-        Log.e(TAG,"task removed");
+        milog.grabarError(TAG+" task removed");
     }
 
 
@@ -250,28 +250,28 @@ public class SubirFotoService extends IntentService
 
         public void onProgress(int progress)
         {
-           // updateNotification(progress);
+            // updateNotification(progress);
         }
         public void onSuccess(){
 
             downloadComplete = true;
-          //  onDownloadComplete(downloadComplete);
+            //  onDownloadComplete(downloadComplete);
             //todo
             //veo si puedo cambiar el estatus del informe
-           // pvm.actualizarEstatuscoloInf(0);
+            // pvm.actualizarEstatuscoloInf(0);
             Log.i(TAG,"ya termino");
             Constantes.SINCRONIZANDO=0;
         }
         public void onSuccess2(ImagenDetalle imagen){
             downloadComplete = true;
             Log.i(TAG," onSuccess2 ya termino tipo:"+tipo);
-           if(tipo.equals("correccion"))
+            if(tipo.equals("correccion"))
                 //actualizo correccion
-            correccionRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
-           else
-               if(tipo.equals("etapa")){
-                   etapadetRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
-               }
+                correccionRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
+            else
+            if(tipo.equals("etapa")){
+                etapadetRepo.actualizarEstatusSync(imagen.getId(), Constantes.ENVIADO);
+            }
             //  onDownloadComplete(downloadComplete);
             Constantes.SINCRONIZANDO=0;
         }

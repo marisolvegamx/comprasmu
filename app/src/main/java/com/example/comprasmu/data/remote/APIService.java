@@ -151,6 +151,7 @@ public interface APIService {
 
     @GET("siglas")
     Call<List<Sigla>> getSiglas(@Query("usuario") String usuario);
+
     @Multipart
     @POST("subirfoto")
     Call<PostResponse> uploadImage(@Part MultipartBody.Part file, @Part("ruta") RequestBody ruta,@Part("idlocalim") RequestBody idimagen,
