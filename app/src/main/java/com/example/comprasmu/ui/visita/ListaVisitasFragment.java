@@ -31,6 +31,7 @@ import com.example.comprasmu.databinding.ListaInformesFragmentBinding;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.informedetalle.ContinuarInformeActivity;
 import com.example.comprasmu.ui.informedetalle.ValidadorDatos;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
 
@@ -50,18 +51,12 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     static String tienda;
     static String indice;
     CoordinatorLayout coordinator;
-
+    ComprasLog compraslog;
     public ListaVisitasFragment() {
     }
 
     public static ListaVisitasFragment newInstance()
     {
-     //   ListaVisitaFragment fragment = new ListaVisitaFragment();
-      //  Bundle bundle = new Bundle();
-      //  bundle.putInt(ARG_CLIENTEID, cliente);
-
-       // fragment.setArguments(bundle);
-      //  clienteid=cliente;
         return new ListaVisitasFragment();
     }
 
@@ -70,11 +65,6 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                              @Nullable Bundle savedInstanceState) {
 
         if (getArguments() != null) {
-        //    clienteid = getArguments().getInt(BuscarInformeFragment.ARG_CLIENTE);
-        //    plantaid=getArguments().getInt(ARG_PLANTAID);
-         //   ciudadid=getArguments().getInt(BuscarInformeFragment.CIUDAD);
-         //   tienda=getArguments().getString(BuscarInformeFragment.NOMBRETIENDA);
-         //   indice=getArguments().getString(BuscarInformeFragment.INDICE);
 
         }else {
             indice = Constantes.INDICEACTUAL;
@@ -82,7 +72,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         }
 
      //   Log.d(Constantes.TAG,"cliente y planta sel"+clienteid+"--"+plantaid);
-
+        compraslog=ComprasLog.getSingleton();
         mBinding= DataBindingUtil.inflate(inflater,
                 R.layout.lista_informes_fragment, container, false);
         mViewModel = new ViewModelProvider(this).get(ListaVisitasViewModel.class);
@@ -178,19 +168,21 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         //reviso si elimina x fecha
         ValidadorDatos valdat=new ValidadorDatos();
         //si se creo antes de hoy
+
         try{
 
-            if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
-                //elimino
-               eliminar(idVisita, 1);
-               return;
-           }
             AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
             dialogo1.setTitle(R.string.importante);
             dialogo1.setMessage(R.string.pregunta_eliminar_mensaje);
             dialogo1.setCancelable(false);
             dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogo1, int id) {
+                    if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
+                        //elimino
+                        eliminar(idVisita, 1);
+                        return;
+                    }
+
                     eliminar(idVisita,0);
 
 
@@ -213,6 +205,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     }
     public void eliminar(int idVisita, int banAccion){ //0 eliminado x no finalizado
                                                         //1 eliminado x fecha
+        compraslog.info(TAG,"eliminar","eliminando visita:"+idVisita+"--bandera"+banAccion);
         mViewModel.eliminarVisita(idVisita, banAccion);
 
         mViewModel.getmSnackbarText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -270,7 +263,11 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                 NuevoinformeViewModel niViewModel =
                         new ViewModelProvider(ListaVisitasFragment.this).get(NuevoinformeViewModel.class);
                 niViewModel.finalizarVisita(idvisita);
+                List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);
+                if(informes!=null&&informes.size()>0) //no puede finalizar
+                {
 
+                }
                 Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
                 //paso al home
                 NavHostFragment.findNavController(ListaVisitasFragment.this).navigate(R.id.action_visitatohome);
