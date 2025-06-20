@@ -81,7 +81,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
 
                 for (InformeCompra inf : informeCompras) {
 
-                    if (inf.getEstatus() == 2&&inf.getEstatusSync()==0) //ya está finalizado
+                    if (inf.getEstatus() == 2&&inf.getEstatusSync()==2) //ya está finalizado
                     {
                         visitaRepository.actualizarEstatus(id, 2);
                         mSnackbarText.setValue("No se puede eliminar, solo puede finalizar el informe por que ya fue enviado");

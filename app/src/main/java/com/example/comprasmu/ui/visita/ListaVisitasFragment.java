@@ -240,13 +240,20 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
            }
         }
         //reviso si ya se enviaron los informes
-        //todo como va a enviarlo sin finalizar
+
         List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);
         if(informes!=null&&informes.size()>0) //no puede finalizar
         {
             Toast.makeText(getActivity(), getString(R.string.no_finalizar),Toast.LENGTH_SHORT).show();
             return;
         }
+
+        if(visitaCont.getEstatusSync()==0) {
+            Toast.makeText(getActivity(), getString(R.string.no_finalizar), Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
         //puede que no esté guardado reviso si hay algo en la tabla temporal
         if(mViewModel.hayInfDetalleTemp()){
             Toast.makeText(getActivity(), getString(R.string.no_finalizar),Toast.LENGTH_SHORT).show();
