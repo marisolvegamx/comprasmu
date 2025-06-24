@@ -26,7 +26,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
-/*****proceso para descargar la imagenes que cambiaron por una correccion***/
+/*****proceso para descargar la imagenes que cambiaron por una correccion
+ *  se usa en las imagenes de gastos y  antes de una nueva solicitud de correccion***/
 public class DescargaCambiosImagenes
 {
 

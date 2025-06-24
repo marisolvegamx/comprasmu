@@ -54,6 +54,8 @@ public class DescRespInformesEta {
 
 
     }
+
+    /**PAra notificaciones de etiquetado y reactivacion*/
     public void getCambiosEtiq(){
 
         Log.d(TAG, "descargando cambios etiq");
