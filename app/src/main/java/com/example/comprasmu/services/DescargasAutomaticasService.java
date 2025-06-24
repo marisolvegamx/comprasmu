@@ -57,6 +57,7 @@ public class DescargasAutomaticasService extends Service {
         ejecutando = false;
         handler = null;
         runnable = null;
+        pausado=false;
     }
 
     @Nullable

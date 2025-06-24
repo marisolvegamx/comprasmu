@@ -161,7 +161,7 @@ public class DescargasIniciales {
 
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         DescargaIniListener listener=new DescargaIniListener();
-        MutableLiveData<List<NotificacionGen>> listaNotificaciones= ps.getNotificacionesGen(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+        MutableLiveData<List<NotificacionGen>> listaNotificaciones= ps.getNotificacionesGen(Constantes.INDICEACTUAL);
         Observer myObserver=new Observer<List<NotificacionGen>>() {
             @Override
             public void onChanged(List<NotificacionGen> notificacionGens) {
@@ -184,7 +184,7 @@ public class DescargasIniciales {
                 //5-ajustar recibo
                 //6-estatus envio
                 //busco el informe finalizado con estatus 2
-                List<InformeEtapa> listaInf=informeEtapaRepo.getInfxEstatusCiuSim(Constantes.INDICEACTUAL,6,2, Constantes.CIUDADTRABAJO);
+                List<InformeEtapa> listaInf=informeEtapaRepo.getInfxEstatusCiuSim(Constantes.INDICEACTUAL,6,2, noti.getCiudad());
                 if(listaInf!=null&&listaInf.size()>0){
                     informeEtapaRepo.actualizarEstatus(listaInf.get(0).getId(),5);
                     flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());

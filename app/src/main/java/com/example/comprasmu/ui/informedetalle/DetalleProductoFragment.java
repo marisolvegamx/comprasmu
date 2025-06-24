@@ -1306,7 +1306,7 @@ public class DetalleProductoFragment extends Fragment {
         return envio;
     }
 
-    public static void subirFotos(Activity activity, InformeEnvio informe){
+    public  void subirFotos(Activity activity, InformeEnvio informe){
         //las imagenes
         for(ImagenDetalle imagen:informe.getImagenDetalles()){
             //subo cada una
@@ -1316,7 +1316,7 @@ public class DetalleProductoFragment extends Fragment {
             msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,informe.getIndice());
             // Constantes.INDICEACTUAL
             Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
-
+            compraslog.grabarError(TAG,"subiendo foto",imagen.getRuta());
             msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_IMG);
 
             //cambio su estatus a subiendo

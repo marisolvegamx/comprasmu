@@ -70,7 +70,7 @@ public class DescargarFragment extends Fragment {
     String ciudadSeleccionada;
     protected ArrayList<DescripcionGenerica> listaSeleccionable;
     int idcap;
-    private String ARG_DESCCIUDADSEL="comprasmu.descenv.cdsel";
+    public static String ARG_DESCCIUDADSEL="comprasmu.descenv.cdsel";
 
 
     public DescargarFragment() {
@@ -101,15 +101,13 @@ public class DescargarFragment extends Fragment {
         mBinding.setLifecycleOwner(this);
         objetosLV=mBinding.getRoot().findViewById(R.id.listaobjetos);
         objetosLV.setVisibility(View.GONE);
+        this.ciudadSeleccionada=Constantes.CIUDADTRABAJO;
         if (getArguments() != null) {
              Log.d(TAG,"aqui"+getArguments());
-            this.ciudadSeleccionada = getArguments().getString(ARG_DESCCIUDADSEL);
-            if(ciudadSeleccionada==null||!ciudadSeleccionada.equals("")){
-                this.ciudadSeleccionada=Constantes.CIUDADTRABAJO;
+
+            if( getArguments().getString(ARG_DESCCIUDADSEL)!=null&&!getArguments().getString(ARG_DESCCIUDADSEL).equals("")){
+                this.ciudadSeleccionada = getArguments().getString(ARG_DESCCIUDADSEL);
             }
-        }else
-        {
-            this.ciudadSeleccionada=Constantes.CIUDADTRABAJO;
         }
         indicacion=mBinding.textView9;
         return mBinding.getRoot();
@@ -314,7 +312,7 @@ public class DescargarFragment extends Fragment {
 
             List<ListaCompra> listainfetiq;
             listainfetiq = lcViewModel.cargarClientesSimplxet(ciudadSeleccionada, etapa);
-            Log.d(TAG, "id nuevo" + docsenvio.getCiudadId() + "--" + listainfetiq.size());
+            Log.d(TAG, "id nuevo" +ciudadSeleccionada+"ciudadenv"+ docsenvio.getCiudadId() + "--" + listainfetiq.size());
 
             if(listainfetiq.size()>0) {
 
@@ -326,7 +324,7 @@ public class DescargarFragment extends Fragment {
 
             }
             else
-                Log.d(TAG,"algo salió mal con la consulta de listas");
+                Log.e(TAG,"algo salió mal con la consulta de listas");
             //ponemos botones
             mBinding.lldeseldoc.setVisibility(View.VISIBLE);
            mBinding.btndeguia.setVisibility(View.VISIBLE);
