@@ -768,11 +768,10 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public void actualizarInforme() throws Exception { //inserta el informe desde temporal
         //conservo el id
         InformeCompra compra2=tempToIC();
-
         if(compra2.getId()==0)
         {
             //algo salio mal
-            throw new Exception("no tengo informe");
+            throw new Exception("no tengo id informe");
         }
         //recupero el informe
         informe=repository.findSimple(compra2.getId());

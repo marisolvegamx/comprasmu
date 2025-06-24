@@ -105,10 +105,10 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
     }
 
 
-    public MutableLiveData<List<NotificacionGen>> pedirNotificacionesGenerales(String indice, String ciudad) {
+    public MutableLiveData<List<NotificacionGen>> pedirNotificacionesGenerales(String indice) {
             PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
 
-            return ps.getNotificacionesGen(indice,ciudad);
+            return ps.getNotificacionesGen(indice);
 
     }
 

@@ -94,6 +94,7 @@ public class ListaNotifEtiqFragment extends Fragment implements NotifEtiqAdapter
                     informeDetalles.addAll(empaque);
                     Log.d(TAG, "ELIMI EMP " + empaque.size());
                 }
+        mEtaAdapter=new NotifEtiqAdapter(this);
         mEtaAdapter.setInformeCompraList(informeDetalles);
         mEtaAdapter.notifyDataSetChanged();
         if (informeDetalles.size() < 1&&etiqpend.size()<1 &&empaque.size()<1) {

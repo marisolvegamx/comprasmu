@@ -1059,10 +1059,10 @@ public class PeticionesServidor {
         });
     }
 
-    /***traigo todas las notificaciones en una consulta****/
-    public MutableLiveData<List<NotificacionGen>> getNotificacionesGen(String indiceactual, String ciudad) {
-        final Call<NotificacionResponse> batch = ServiceGenerator.getApiService().getNotificacionesGen(indiceactual,usuario,ciudad);
-        Log.d("PeticionesServidor","getNotificacionesGen "+indiceactual+"--"+ciudad);
+    /***traigo todas las notificaciones en una consulta ya no importa la ciudad****/
+    public MutableLiveData<List<NotificacionGen>> getNotificacionesGen(String indiceactual) {
+        final Call<NotificacionResponse> batch = ServiceGenerator.getApiService().getNotificacionesGen(indiceactual,usuario);
+        Log.d("PeticionesServidor","getNotificacionesGen "+indiceactual);
         MutableLiveData<List<NotificacionGen>> data=new MutableLiveData<>();
         batch.enqueue(new Callback<NotificacionResponse>() {
             @Override

@@ -915,11 +915,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private void notificacionesGenerales() {
         totalNotifGen=new MutableLiveData<>();
 
-        listaNotificacionesGen= scViewModel.pedirNotificacionesGenerales(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+        listaNotificacionesGen= scViewModel.pedirNotificacionesGenerales(Constantes.INDICEACTUAL);
         listaNotificacionesGen.observe(this, new Observer<List<NotificacionGen>>() {
             @Override
             public void onChanged(List<NotificacionGen> notificacionGens) {
-                convertirListaNotif(notificacionGens);
+                if(notificacionGens!=null)
+                    convertirListaNotif(notificacionGens);
             }
         });
     }
@@ -935,7 +936,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                  //5-ajustar recibo
                  //6-estatus envio
                  //busco el informe
-                 List<InformeEtapa> listaInformes=mViewModel.getInfGasxCiudad(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
+                 List<InformeEtapa> listaInformes=mViewModel.getInfGasxCiudad(Constantes.INDICEACTUAL, noti.getCiudad());
                  if(listaInformes!=null&&listaInformes.size()>0){
                      for (InformeEtapa info:listaInformes
                           ) {
@@ -950,7 +951,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                       //5-ajustar recibo
                      //6-estatus envio
                 //busco el informe finalizado con estatus 2
-                 List<InformeEtapa> listaInf=mViewModel.getInfGastoxCiudad(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
+                 List<InformeEtapa> listaInf=mViewModel.getInfGastoxCiudad(Constantes.INDICEACTUAL, noti.getCiudad());
                 if(listaInf!=null&&listaInf.size()>0){
                     mViewModel.actualizarEstatusGas(listaInf.get(0).getId(),5);
                     flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());

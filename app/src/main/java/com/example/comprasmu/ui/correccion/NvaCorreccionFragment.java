@@ -734,12 +734,7 @@ public class NvaCorreccionFragment extends Fragment {
 
         msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_COR);
 
-
         activity.startService(msgIntent);
-
-
-
-
 
 
     }

@@ -71,6 +71,9 @@ public class ListaTextViewsAdapter extends RecyclerView.Adapter<ListaTextViewsAd
                 this.binding.llltmainlinearlayout.addView(textView);
 
             }
+            if(cardView.getBotonIr()!=null){
+                this.binding.llltmainlinearlayout.addView(cardView.getBotonIr());
+            }
 
         }
 

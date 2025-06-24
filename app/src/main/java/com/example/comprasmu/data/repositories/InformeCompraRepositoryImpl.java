@@ -194,7 +194,7 @@ public class InformeCompraRepositoryImpl   {
 
     public LiveData<List<InformeCompraDao.InformeCompravisita>> getInformesVisitas (String indice, String nombretienda, String ciudad, int planta, String cliente) {
         String query="Select * from InformeCompravisita " +
-                "where 1=1";
+                "where 1=1 and estatus=2";
         ArrayList<String> filtros=new ArrayList<String>();
         if(indice!=null&&!indice.equals("")) {
             query =query+ " and indice=?";

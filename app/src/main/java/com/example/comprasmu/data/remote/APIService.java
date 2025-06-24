@@ -151,6 +151,7 @@ public interface APIService {
 
     @GET("siglas")
     Call<List<Sigla>> getSiglas(@Query("usuario") String usuario);
+
     @Multipart
     @POST("subirfoto")
     Call<PostResponse> uploadImage(@Part MultipartBody.Part file, @Part("ruta") RequestBody ruta,@Part("idlocalim") RequestBody idimagen,
@@ -209,7 +210,7 @@ public interface APIService {
     Call<PostResponse> getReciboListo(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
 
     @GET("notificacionesgen") //
-    Call<NotificacionResponse> getNotificacionesGen(@Query("indice") String indice, @Query("cvereco") String usuario, @Query("cd") String cd);
+    Call<NotificacionResponse> getNotificacionesGen(@Query("indice") String indice, @Query("cvereco") String usuario);
 
     @POST("infgasto/edit")
     @Headers({

@@ -1,27 +1,38 @@
 package com.example.comprasmu.ui.notificaciones;
 
+import static com.example.comprasmu.ui.envio.DescargarFragment.ARG_DESCCIUDADSEL;
+
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.comprasmu.R;
 
 import com.example.comprasmu.databinding.ListaGenericFragmentBinding;
 
+import com.example.comprasmu.ui.envio.DescargarFragment;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.CardViewGenerico;
 import com.example.comprasmu.utils.ui.ListaTextViewsAdapter;
@@ -78,16 +89,17 @@ public class ResumenNotificacionesGenFragment extends Fragment  {
 
     public void cargarLista(){
         List<CardViewGenerico> listaTarjetas=new ArrayList<>();
-        listaNotificacionesGen=mViewModel.pedirNotificacionesGenerales(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+        listaNotificacionesGen=mViewModel.pedirNotificacionesGenerales(Constantes.INDICEACTUAL);
         listaNotificacionesGen.observe(getViewLifecycleOwner(), new Observer<List<NotificacionGen>>() {
             @Override
             public void onChanged(List<NotificacionGen> notificacionesGen) {
-
+                CardViewGenerico cardViewGenerico=new CardViewGenerico();
                 for (NotificacionGen notificacion : notificacionesGen
                 ) {
                     if (notificacion.getTipo() == opcion&notificacion.getTotal()>0) {
+                        cardViewGenerico=crearTarjeta(notificacion);
 
-                        listaTarjetas.add(crearTarjeta(notificacion));
+                        listaTarjetas.add(cardViewGenerico);
                         Log.d(TAG,listaTarjetas.get(0).getTextos().toString());
                     }
 
@@ -113,18 +125,34 @@ public class ResumenNotificacionesGenFragment extends Fragment  {
             switch (opcion) {
                 case 6: //docs envio
 
-                    tarjeta.setTitulo1(notificacion.getIndice());
+                    tarjeta.setTitulo1(ComprasUtils.indiceLetra(notificacion.getIndice()));
                   //  textos.add(notificacion.getCliente());
                     textos.add(notificacion.getCiudad());
-                    textos.add("CAPTURAR EN EL MODULO CORRESPONDIENTE");
+                 //   textos.add("CAPTURAR EN EL MODULO CORRESPONDIENTE");
                     tarjeta.setTextos(textos);
+                    Button boton=new Button(getActivity());
+                    boton.setTextColor(Color.WHITE);
+                    boton.setBackgroundColor(ResourcesCompat.getColor(getResources(),R.color.blue_principal,null));
+                    boton.setText(getString(R.string.descargar));
+                    boton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            iraDescargarDocsEnvio(notificacion.getCiudad());
+                        }
+                    });
+                    tarjeta.setBotonIr(boton);
                     break;
                 case 4: //revisar recibo
+                    tarjeta.setTitulo1(ComprasUtils.indiceLetra(notificacion.getIndice()));
+                    textos.add(notificacion.getCiudad());
+                    textos.add("IR A DESCARGAR RECIBO EN EL MODULO DE GASTOS");
+                    tarjeta.setTextos(textos);
+                    break;
                 case 5: //agregar recibo
 
-                    tarjeta.setTitulo1(notificacion.getIndice());
+                    tarjeta.setTitulo1(ComprasUtils.indiceLetra(notificacion.getIndice()));
                     textos.add(notificacion.getCiudad());
-                    textos.add("CAPTURAR EN EL MODULO CORRESPONDIENTE");
+                    textos.add("IR A CONTINUAR INFORME EN EL MODULO DE GASTOS");
                     tarjeta.setTextos(textos);
                     break;
             }
@@ -141,5 +169,22 @@ public class ResumenNotificacionesGenFragment extends Fragment  {
         cargarLista();
 
     }
+    private void iraDescargarDocsEnvio(String ciudad)
+    {
+        if(Constantes.ETAPAACTUAL==5) {
+            Bundle bundle = new Bundle();
+            bundle.putString(ARG_DESCCIUDADSEL, ciudad);
+            NavHostFragment.findNavController(this).navigate(R.id.nav_envdescargas, bundle);
+        } else
+            Toast.makeText(getContext(),"Capturar en el módulo de Envio", Toast.LENGTH_LONG).show();
 
+
+    /*    DescargarFragment nvofrag = new DescargarFragment();
+        nvofrag.setArguments(args);
+
+        NavHostFragment navHostFragment =
+                (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();*/
+
+    }
 }

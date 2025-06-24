@@ -31,7 +31,9 @@ import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*** juntar correcciones, notificaciones y canceladas***/
 public class SelNotifFragment extends ListaSelecFragment{
@@ -43,7 +45,7 @@ public class SelNotifFragment extends ListaSelecFragment{
     int totCancel;
     int itotCanceleta;
     int totMuestraAdic;
-    MutableLiveData<Integer> contNotif;
+
     ListaSolsViewModel scViewModel;
     private List<InformeEtapa> totCanceleta;
     private ComprasLog comprasLog;
@@ -99,7 +101,7 @@ public class SelNotifFragment extends ListaSelecFragment{
     }
 
     private void notificacionesGenerales() {
-        listaNotificacionesGenerales=scViewModel.pedirNotificacionesGenerales(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
+        listaNotificacionesGenerales=scViewModel.pedirNotificacionesGenerales(Constantes.INDICEACTUAL);
 
     }
 
@@ -326,15 +328,21 @@ public class SelNotifFragment extends ListaSelecFragment{
              listaClientesEnv.add(new DescripcionGenerica(2, "CANCELADAS", "0",totCancel+""));
 
              listaClientesEnv.add(new DescripcionGenerica(3, "MUESTRA ADICIONAL", "0",totMuestraAdic+""));
-             listaNotificacionesGenerales.observe(getViewLifecycleOwner(), new Observer<List<NotificacionGen>>() {
+            listaNotificacionesGenerales.observe(getViewLifecycleOwner(), new Observer<List<NotificacionGen>>() {
                  @Override
                  public void onChanged(List<NotificacionGen> notificacionGen) {
-                     for (NotificacionGen noti:
-                             notificacionGen) {
-                        listaClientesEnv.add(new DescripcionGenerica(noti.getTipo(), noti.getDescripcion1(), "0",noti.getTotal()+""));
+                     HashMap<Integer,String[]> arregloTemporal=arreglarNotificacionesGenerales(notificacionGen);
+                     for (Map.Entry<Integer, String[]> entry:arregloTemporal.entrySet()
+                          )
+                         {
+                             if(entry.getValue()!=null)
+                               listaClientesEnv.add(new DescripcionGenerica(entry.getKey(), entry.getValue()[0], "0", entry.getValue()[1]+""));
+
+                          }
 
 
-                     }
+
+
                      setLista(listaClientesEnv);
                      setupListAdapter();
                      adaptadorLista.setDesc2(true);
@@ -352,7 +360,33 @@ public class SelNotifFragment extends ListaSelecFragment{
     }
 
 
+   private HashMap<Integer,String[]> arreglarNotificacionesGenerales(List<NotificacionGen> notificaciones){
+       HashMap<Integer,String[]> arregloTemporal=new HashMap<>();
 
+       for (NotificacionGen notificacionGen:
+               notificaciones) {
+           String[] arregloNoti= arregloTemporal.get(notificacionGen.getTipo());
+           if(arregloNoti!=null&&arregloNoti.length>0){
+               int total=0;
+               try {
+                   total= Integer.parseInt(arregloNoti[1]);
+               }
+               catch (NumberFormatException ex){
+                   total=0;
+               }
+                   arregloNoti[1] = (total+ notificacionGen.getTotal()) + "";
+
+           }
+           else{
+               arregloNoti=new String[2];
+               arregloNoti[0]=notificacionGen.getDescripcion1();
+               arregloNoti[1]=notificacionGen.getTotal()+"";
+           }
+           arregloTemporal.put(notificacionGen.getTipo(),arregloNoti);
+
+       }
+       return arregloTemporal;
+   }
 
     public class ListenerNotRevRec implements IListenerRevRec{
 
