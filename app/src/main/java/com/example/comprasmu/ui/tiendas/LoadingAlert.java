@@ -20,8 +20,10 @@ public class LoadingAlert {
             LayoutInflater inflater=activity.getLayoutInflater();
             builder.setView(inflater.inflate(R.layout.dialog_layout,null));
             builder.setCancelable(false);
-            dialog=builder.create();
-            dialog.show();
+            if(activity!=null) {
+                dialog = builder.create();
+                dialog.show();
+            }
         }
         mostrando=true;
 
