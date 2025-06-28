@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -130,7 +131,9 @@ public class ResumenNotificacionesGenFragment extends Fragment  {
                     textos.add(notificacion.getCiudad());
                  //   textos.add("CAPTURAR EN EL MODULO CORRESPONDIENTE");
                     tarjeta.setTextos(textos);
-                    Button boton=new Button(getActivity());
+                    ContextThemeWrapper newContext = new ContextThemeWrapper(getContext(),R.style.btnverde);
+
+                    Button boton=new Button(newContext);
                     boton.setTextColor(Color.WHITE);
                     boton.setBackgroundColor(ResourcesCompat.getColor(getResources(),R.color.blue_principal,null));
                     boton.setText(getString(R.string.descargar));

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,9 +66,12 @@ public class ListaTextViewsAdapter extends RecyclerView.Adapter<ListaTextViewsAd
             if(cardView!=null)
              Log.e("adapter",cardView.getTitulo1()+"--"+cardView.getTextos().toString());
             this.binding.txtlttitulo1.setText(cardView.getTitulo1());
+          //  ContextThemeWrapper newContext = new ContextThemeWrapper(context,R.style.textolista2);
+
             for (String entry :cardView.getTextos()){
                 TextView textView=new TextView(context);
                 textView.setText(entry);
+                textView.setTextAppearance(R.style.textolista2);
                 this.binding.llltmainlinearlayout.addView(textView);
 
             }
