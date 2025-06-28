@@ -70,6 +70,7 @@ public class DescargaCambiosImagenes
             String fecha="2025-01-01"; //para la 1era vez
             if(comp!=null&&!comp.getVersion().equals("")){
                 fecha=sdfformat.format(comp.getVersion());
+                Log.i(TAG,"fecha tabla version"+fecha);
             }
             //siempre actualizo
             ps.pedirCambiosImagenes(indice,fecha,listenprin);
