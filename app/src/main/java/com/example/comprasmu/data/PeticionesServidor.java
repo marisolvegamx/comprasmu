@@ -1115,7 +1115,7 @@ public class PeticionesServidor {
 
     public void pedirCambiosImagenes(String indice,String fecha, DescargaCambiosImagenes.DescargaCambImgagenListener listener){
 
-        Log.d("PeticionesServidor","pedirCambiosImagenes usuario:"+usuario);
+        Log.i("PeticionesServidor","pedirCambiosImagenes usuario:"+usuario+"fecha"+fecha);
 
         final Call< List<ImagenDetalle>> batch = ServiceGenerator.getApiService().getCambiosImagenes(indice,usuario,fecha);
 
