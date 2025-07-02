@@ -925,6 +925,12 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         }
 
    }
-
+    public class VarDetalleProd{
+        public  String tomadode;
+        public  String nvoatra;
+        public  String nvoatrb;
+        public  String nvoatrc;
+        public  String nvoatrd;
+    }
 
 }

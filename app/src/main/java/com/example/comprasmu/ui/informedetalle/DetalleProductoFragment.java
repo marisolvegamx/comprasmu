@@ -181,6 +181,9 @@ public class DetalleProductoFragment extends Fragment {
                     this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
                     preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
                 }
+            if(dViewModel.varDetalleProd==null){
+                dViewModel.varDetalleProd=new NuevoDetalleViewModel.VarDetalleProd();
+            }
             crearPregunta();
 
         } catch (Exception e) {
@@ -216,7 +219,7 @@ public class DetalleProductoFragment extends Fragment {
             ((ContinuarInformeActivity)getActivity()).noSalir(false);
 
             ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
-            compraslog.info(TAG, "crearPregunta","1--cons" + Constantes.DP_CONSECUTIVO);
+            compraslog.info(TAG, "crearPregunta","1--cons" + dViewModel.DP_CONSECUTIVO);
             if(ultimares!=null) {    //es edicion
                 isEdicion = true;
                 if(preguntaAct.getId()==47||preguntaAct.getId()==48){
@@ -226,7 +229,7 @@ public class DetalleProductoFragment extends Fragment {
                     InformeTemp inft=dViewModel.buscarxNombreCam("informeid");
                     if(inft!=null) {
                         mViewModel.setIdInformeNuevo(Integer.parseInt(inft.getValor()));
-                        Constantes.DP_CONSECUTIVO = inft.getConsecutivo();
+                        dViewModel.DP_CONSECUTIVO = inft.getConsecutivo();
 
                     }
                     //busco el informe
@@ -244,7 +247,7 @@ public class DetalleProductoFragment extends Fragment {
            buscarDatosGenerales();
             if(isEdicion) {
 
-                Constantes.DP_CONSECUTIVO=ultimares.getConsecutivo();
+                dViewModel.DP_CONSECUTIVO=ultimares.getConsecutivo();
 
 
                 if(preguntaAct.getId()==5)//ticket de compra
@@ -280,9 +283,9 @@ public class DetalleProductoFragment extends Fragment {
                         if(cat.getCad_idopcion()==opcion)
                             valor=cat.getCad_descripcionesp();
                     }
-                    Constantes.VarDetalleProd.tomadode =valor;
+                    dViewModel.varDetalleProd.tomadode =valor;
 
-                    ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
+                    ((ContinuarInformeActivity)getActivity()).actualizarAtributo1v(dViewModel.varDetalleProd.tomadode, dViewModel.varDetalleProd.nvoatra);
 
                 }
                 if (preguntaAct.getId() >= 33&&preguntaAct.getId()!=47&&preguntaAct.getId() !=126) {
@@ -295,8 +298,8 @@ public class DetalleProductoFragment extends Fragment {
                             if (cat.getCad_idopcion() == opcion)
                                 valor = cat.getCad_descripcionesp();
                         }
-                        Constantes.VarDetalleProd.nvoatra = valor;
-                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo1();
+                        dViewModel.varDetalleProd.nvoatra = valor;
+                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo1v(dViewModel.varDetalleProd.tomadode, dViewModel.varDetalleProd.nvoatra);
                     }
 
                  }
@@ -310,8 +313,8 @@ public class DetalleProductoFragment extends Fragment {
                             if (cat.getCad_idopcion() == opcion)
                                 valor = cat.getCad_descripcionesp();
                         }
-                        Constantes.VarDetalleProd.nvoatrb = resp == null ? "" : valor;
-                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo2();
+                        dViewModel.varDetalleProd.nvoatrb = resp == null ? "" : valor;
+                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo2v( dViewModel.varDetalleProd.nvoatrb, dViewModel.varDetalleProd.nvoatrc);
                     }
 
                 }
@@ -325,8 +328,8 @@ public class DetalleProductoFragment extends Fragment {
                             if (cat.getCad_idopcion() == opcion)
                                 valor = cat.getCad_descripcionesp();
                         }
-                        Constantes.VarDetalleProd.nvoatrc = resp == null ? "" : valor;
-                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo2();
+                        dViewModel.varDetalleProd.nvoatrc = resp == null ? "" : valor;
+                        ((ContinuarInformeActivity) getActivity()).actualizarAtributo2v(dViewModel.varDetalleProd.nvoatrb, dViewModel.varDetalleProd.nvoatrc);
                     }
 
             }
@@ -340,17 +343,17 @@ public class DetalleProductoFragment extends Fragment {
                         if (cat.getCad_idopcion() == opcion)
                             valor = cat.getCad_descripcionesp();
                     }
-                    Constantes.VarDetalleProd.nvoatrd = resp == null ? "" : valor;
-                    ((ContinuarInformeActivity) getActivity()).actualizarAtributo3();
+                    dViewModel.varDetalleProd.nvoatrd = resp == null ? "" : valor;
+                    ((ContinuarInformeActivity) getActivity()).actualizarAtributo3v(dViewModel.varDetalleProd.nvoatrd);
                 }
 
             }
             //busco el total de prods en la lista
-            if(Constantes.NM_TOTALISTA==0) {
+            if(dViewModel.NM_TOTALISTA==0) {
                 InformeTemp resp = dViewModel.buscarxNombreCam("totalLista");
                 String valor = "";
                 if (resp != null) {
-                    Constantes.NM_TOTALISTA = Integer.parseInt(resp.getValor());
+                    dViewModel.NM_TOTALISTA = Integer.parseInt(resp.getValor());
 
                 }
             }
@@ -360,18 +363,18 @@ public class DetalleProductoFragment extends Fragment {
 
         if (preguntaAct.getId() == 2) {
 
-            mViewModel.consecutivo=Constantes.DP_CONSECUTIVO;
+            mViewModel.consecutivo=dViewModel.DP_CONSECUTIVO;
             mViewModel.numMuestra = 1;
             compraslog.info(TAG,"creaarPregunta", "-------------cons" + mViewModel.consecutivo);
 
         }
 
         if (preguntaAct.getId() == 3) {
-            mViewModel.consecutivo=Constantes.DP_CONSECUTIVO;
+            mViewModel.consecutivo=dViewModel.DP_CONSECUTIVO;
             mViewModel.numMuestra = 2;
         }
         if (preguntaAct.getId() == 4) {
-            mViewModel.consecutivo=Constantes.DP_CONSECUTIVO;
+            mViewModel.consecutivo=dViewModel.DP_CONSECUTIVO;
             mViewModel.numMuestra = 3;
         }
 
@@ -398,7 +401,7 @@ public class DetalleProductoFragment extends Fragment {
             mViewModel.informe=mViewModel.getInformeCompra(mViewModel.getIdInformeNuevo());
             if( mViewModel.informe!=null) {
                 mViewModel.consecutivo = mViewModel.informe.getConsecutivo();
-                Constantes.DP_CONSECUTIVO = mViewModel.consecutivo;
+                dViewModel.DP_CONSECUTIVO = mViewModel.consecutivo;
 
                 ((ContinuarInformeActivity) getActivity()).actualizarCliente(mViewModel.informe);
 
@@ -836,7 +839,7 @@ public class DetalleProductoFragment extends Fragment {
                 String  valor = opcionsel.getCad_descripcionesp()+ "";
 
                 //guardo el atributo para mostrarlo despues
-                Constantes.VarDetalleProd.tomadode = valor;
+                dViewModel.varDetalleProd.tomadode = valor;
                 ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
 
             }
@@ -846,31 +849,31 @@ public class DetalleProductoFragment extends Fragment {
                 String  valor = opcionsel.getCad_descripcionesp()+ "";
 
                 //guardo el atributo para mostrarlo despues
-                Constantes.VarDetalleProd.nvoatra = valor;
-                ((ContinuarInformeActivity)getActivity()).actualizarAtributo1();
+                dViewModel.varDetalleProd.nvoatra = valor;
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo1v(dViewModel.varDetalleProd.tomadode,  dViewModel.varDetalleProd.nvoatra);
 
             }
             else  if( preguntaAct.getId()==36) {
                 CatalogoDetalle opcionsel = (CatalogoDetalle) preguntaview.getSelectedItem();
                 String valor = opcionsel.getCad_descripcionesp() + "";
                 //guardo el atributo para mostrarlo despues
-                Constantes.VarDetalleProd.nvoatrb = valor;
-                ((ContinuarInformeActivity)getActivity()).actualizarAtributo2();
+                dViewModel.varDetalleProd.nvoatrb = valor;
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo2v(dViewModel.varDetalleProd.nvoatrb, dViewModel.varDetalleProd.nvoatrc);
 
             } else  if(preguntaAct.getId()==39){
                 CatalogoDetalle opcionsel = (CatalogoDetalle) preguntaview.getSelectedItem();
                 String valor = opcionsel.getCad_descripcionesp() + "";
                 //guardo el atributo para mostrarlo despues
-                Constantes.VarDetalleProd.nvoatrc=valor;
-                ((ContinuarInformeActivity)getActivity()).actualizarAtributo2();
+                dViewModel.varDetalleProd.nvoatrc=valor;
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo2v(dViewModel.varDetalleProd.nvoatrb, dViewModel.varDetalleProd.nvoatrc);
 
             }else  if(preguntaAct.getId()==106){
                 CatalogoDetalle opcionsel = (CatalogoDetalle) preguntaview.getSelectedItem();
                 String valor = opcionsel.getCad_descripcionesp() + "";
 
                 //guardo el atributo para mostrarlo despues
-                Constantes.VarDetalleProd.nvoatrd=valor;
-                ((ContinuarInformeActivity)getActivity()).actualizarAtributo3();
+                dViewModel.varDetalleProd.nvoatrd=valor;
+                ((ContinuarInformeActivity)getActivity()).actualizarAtributo3v( dViewModel.varDetalleProd.nvoatrd);
 
             }
 
@@ -984,7 +987,7 @@ public class DetalleProductoFragment extends Fragment {
                     if(valor.equals("7")) //es otras
                     {
                         //generar consecutivo tienda
-                        int consecutivo=mViewModel.getConsecutivo(Constantes.ni_plantasel,getActivity(), this);
+                        int consecutivo=mViewModel.getConsecutivo(dViewModel.ni_plantasel,getActivity(), this);
 
                         Log.d(TAG,"*genere cons="+consecutivo);
 
@@ -992,20 +995,20 @@ public class DetalleProductoFragment extends Fragment {
                         compraslog.grabarError(TAG,"siguiente","genere cons="+consecutivo+" planta"+plantaSel);
 
                         mViewModel.informe.setConsecutivo(consecutivo);
-                        Constantes.DP_CONSECUTIVO = consecutivo;
+                        dViewModel.DP_CONSECUTIVO = consecutivo;
                         mViewModel.consecutivo=consecutivo;
-                        mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",mViewModel.consecutivo,false);
-                        mViewModel.guardarResp(0,0,Constantes.ni_plantanombre,"plantaNombre","I",mViewModel.consecutivo,false);
-                        mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",mViewModel.consecutivo,false);
+                        mViewModel.guardarResp(0,0,dViewModel.ni_plantasel+"","plantasId","I",mViewModel.consecutivo,false);
+                        mViewModel.guardarResp(0,0,dViewModel.ni_plantanombre,"plantaNombre","I",mViewModel.consecutivo,false);
+                        mViewModel.guardarResp(0,0,dViewModel.ni_clientesel,"clienteNombre","I",mViewModel.consecutivo,false);
                         guardarMuestra(preguntaAct.getSigId());
                         loadingDialog.dismisDialog();
                         //  consecutivo.removeObservers(DetalleProductoFragment.this);
 
 
                     }else {
-                        mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",0,false);
-                        mViewModel.guardarResp(0,0,Constantes.ni_plantanombre,"plantaNombre","I",0,false);
-                        mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",0,false);
+                        mViewModel.guardarResp(0,0,dViewModel.ni_plantasel+"","plantasId","I",0,false);
+                        mViewModel.guardarResp(0,0,dViewModel.ni_plantanombre,"plantaNombre","I",0,false);
+                        mViewModel.guardarResp(0,0,dViewModel.ni_clientesel,"clienteNombre","I",0,false);
 
                         guardarMuestra(preguntaAct.getSigId());
                         loadingDialog.dismisDialog();
@@ -1069,19 +1072,19 @@ public class DetalleProductoFragment extends Fragment {
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_LONG).show();
         }
         //limpio variables de sesion
-        Constantes.productoSel=null;
-        Constantes.VarDetalleProd.tomadode=null;
-        Constantes.VarDetalleProd.nvoatra=null;
-        Constantes.VarDetalleProd.nvoatrb=null;
-        Constantes.VarDetalleProd.nvoatrc=null;
+        dViewModel.productoSel=null;
+        dViewModel.varDetalleProd.tomadode=null;
+        dViewModel.varDetalleProd.nvoatra=null;
+        dViewModel.varDetalleProd.nvoatrb=null;
+        dViewModel.varDetalleProd.nvoatrc=null;
         Constantes.DP_TIPOTIENDA=0;
-        Constantes.NM_TOTALISTA=0;
-        Constantes.ni_clientesel=null;
+        dViewModel.NM_TOTALISTA=0;
+        dViewModel.ni_clientesel=null;
         mViewModel.limpiarVarInforme();
         mViewModel.setIdInformeNuevo(0);
         plantaSel=0;
         NOMBREPLANTASEL=null;
-        Constantes.DP_CONSECUTIVO=0;
+        dViewModel.DP_CONSECUTIVO=0;
 
         nombre_foto=null;
         archivofoto=null;
@@ -1161,8 +1164,8 @@ public class DetalleProductoFragment extends Fragment {
                         // mViewModel.informe.setSinproducto();
                         if(!mViewModel.informe.isSinproducto()) {
                             //si tengo detalle
-                            Log.d(TAG,"guardando  muestras "+mViewModel.numMuestra+"--"+Constantes.NM_TOTALISTA);
-                            compraslog.grabarError(TAG,"guardarMuestra","guardando  muestras "+mViewModel.numMuestra+"--"+Constantes.NM_TOTALISTA);
+                            Log.d(TAG,"guardando  muestras "+mViewModel.numMuestra+"--"+dViewModel.NM_TOTALISTA);
+                            compraslog.grabarError(TAG,"guardarMuestra","guardando  muestras "+mViewModel.numMuestra+"--"+dViewModel.NM_TOTALISTA);
 
                             //    List<Integer> muestras= dViewModel.muestrasTotales();
                             //  for(int x:muestras) {
@@ -1193,9 +1196,9 @@ public class DetalleProductoFragment extends Fragment {
                                 return;
                             }
                             yaestoyProcesando=false;
-                            if(Constantes.NM_TOTALISTA>=16&&numues==3||Constantes.NM_TOTALISTA<16&&numues==2) //ya terminé
+                            if(dViewModel.NM_TOTALISTA>=16&&numues==3||dViewModel.NM_TOTALISTA<16&&numues==2) //ya terminé
                             {
-                                compraslog.grabarError(TAG+"terminé debo guardar y salir"+Constantes.NM_TOTALISTA+"--"+numues);
+                                compraslog.grabarError(TAG+"terminé debo guardar y salir"+dViewModel.NM_TOTALISTA+"--"+numues);
                                 //   limpiarTablTemp();
 
                                 avanzarPregunta(5);
@@ -1249,9 +1252,9 @@ public class DetalleProductoFragment extends Fragment {
                     dViewModel.setIddetalleNuevo(0);
                     dViewModel.limpiarVarsMuestra();
                     yaestoyProcesando=false;
-                    if(numues==3||Constantes.NM_TOTALISTA<17&&numues==2) //ya terminé
+                    if(numues==3||dViewModel.NM_TOTALISTA<17&&numues==2) //ya terminé
                     {
-                        compraslog.grabarError(TAG,"GuardarMuestra","terminé debo guardar y salir"+Constantes.NM_TOTALISTA+"--"+numues);
+                        compraslog.grabarError(TAG,"GuardarMuestra","terminé debo guardar y salir"+dViewModel.NM_TOTALISTA+"--"+numues);
                         //   limpiarTablTemp();
                         avanzarPregunta(5);
 
@@ -1354,7 +1357,7 @@ public class DetalleProductoFragment extends Fragment {
     }
 
     public boolean validarCodigoprod(){
-        compraslog.info(TAG,"guardarmuestra","En validar cod consecutivo "+Constantes.DP_CONSECUTIVO);
+        compraslog.info(TAG,"guardarmuestra","En validar cod consecutivo "+dViewModel.DP_CONSECUTIVO);
         try {
             fechacad=sdfcodigo.parse(preguntaview.getTextoint().toString());
         } catch (ParseException e) {
@@ -1414,7 +1417,7 @@ public class DetalleProductoFragment extends Fragment {
         }
         //busco el siguiente
         Reactivo nvoReac = dViewModel.buscarReactivoSimpl(sig);
-        compraslog.info(TAG, "avanzarpregunta","4-------------cons" + Constantes.DP_CONSECUTIVO+"--"+mViewModel.numMuestra);
+        compraslog.info(TAG, "avanzarpregunta","4-------------cons" + dViewModel.DP_CONSECUTIVO+"--"+mViewModel.numMuestra);
         preguntaview=null;
         //creo uno nuevo
         preguntaview=new DetalleInfView(getContext());
@@ -1761,17 +1764,15 @@ public class DetalleProductoFragment extends Fragment {
             //capturé muestra
             if(resultCode==NUEVO_RESULT_OK) {
 
-                // totalLista=data.getIntExtra(ARG_TOTALLISTA, 0);
-                //muestro el de 3a muestra
-                // if(Constantes.NM_TOTALISTA>=16)
-                //  tercera.setVisible(View.VISIBLE);
+
                 if(Constantes.productoSel!=null)
                 {
                     dViewModel.productoSel = Constantes.productoSel;
+                    dViewModel.NM_TOTALISTA=Constantes.NM_TOTALISTA;
                     //guardo el total de la lista
                     //generar consecutivo tienda
                     Log.d(TAG, "antes de generar cons "+  dViewModel.productoSel.clienteNombre+"--"+dViewModel.productoSel.plantaSel);
-
+                    Log.i(TAG, "total lista"+ dViewModel.NM_TOTALISTA);
                     if(mViewModel.consecutivo==0) {
                         int consecutivo = mViewModel.getConsecutivo(dViewModel.productoSel.plantaSel, getActivity(), this);
                         //  Log.d(TAG, "*genere cons=" + consecutivo);
@@ -1780,19 +1781,15 @@ public class DetalleProductoFragment extends Fragment {
                         mViewModel.informe.setConsecutivo(consecutivo);
 
                         mViewModel.consecutivo = consecutivo;
-                        Constantes.DP_CONSECUTIVO=consecutivo;
+                        dViewModel.DP_CONSECUTIVO=consecutivo;
                         //actualizo barra
                         Log.d(TAG,"tengo el tipo muestra "+dViewModel.productoSel);
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
-                        mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
+                        mViewModel.guardarResp(0, 0, dViewModel.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
                         ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
-                        //veo si fue sustitucion
-                       // if(Constantes.productoSel.tipoMuestra==3)
-                       //     avanzarPregunta(126); //pregunto motivo
-                      //  else
-                            avanzarPregunta(23);
+                        avanzarPregunta(23);
 
                     }else {
 
@@ -1802,7 +1799,7 @@ public class DetalleProductoFragment extends Fragment {
                         //actualizo barra
                         ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
 
-                        mViewModel.guardarResp(0, 0, Constantes.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
+                        mViewModel.guardarResp(0, 0, dViewModel.NM_TOTALISTA + "", "totalLista", "", mViewModel.consecutivo, false);
 
                             avanzarPregunta(23);
 
@@ -1883,7 +1880,22 @@ public class DetalleProductoFragment extends Fragment {
         if(dViewModel.productoSel.clienteSel==4)
             if(!preguntaview.getTextoint().toString().equals("")){
                 String siglaslis=dViewModel.productoSel.siglas;
-                if(dViewModel.productoSel.siglas!=null&&!siglaslis.toUpperCase().equals(preguntaview.getTextoint().toString().toUpperCase())){
+                if(dViewModel.productoSel.siglas!=null)
+                    //puede que tenga mas de una sigla
+                    if(dViewModel.productoSel.siglas.indexOf('/')>0)
+                    {
+                        String arregloAuxiliar[]=dViewModel.productoSel.siglas.split("/");
+                        //compraro con cada uno
+                        List<String> list = Arrays.asList(arregloAuxiliar);
+                        boolean contiene = list.contains(preguntaview.getTextoint().toString().toUpperCase());
+                       if(!contiene) {
+                           Toast.makeText(getActivity(), getString(R.string.error_siglas), Toast.LENGTH_LONG).show();
+                           preguntaview.aceptarSetEnabled(true);
+                           return false;
+                       }
+
+                    }else
+                if(!siglaslis.toUpperCase().equals(preguntaview.getTextoint().toString().toUpperCase())){
                     Toast.makeText(getActivity(), getString(R.string.error_siglas), Toast.LENGTH_LONG).show();
                     preguntaview.aceptarSetEnabled(true);
                     return false;
@@ -1964,7 +1976,7 @@ public class DetalleProductoFragment extends Fragment {
 
         opcion = BackActivity.OP_LISTACOMPRA;
         //  }
-        mViewModel.consecutivo=Constantes.DP_CONSECUTIVO;
+        mViewModel.consecutivo=dViewModel.DP_CONSECUTIVO;
         //ya existe el informe
         intento1.putExtra(DetalleProductoFragment.ARG_NUEVOINFORME, mViewModel.getIdInformeNuevo());
         intento1.putExtra(BackActivity.ARG_FRAGMENT,opcion);
@@ -2132,17 +2144,17 @@ public class DetalleProductoFragment extends Fragment {
         }
         inf= dViewModel.buscarxNombreCam("clienteNombre");
         if(inf!=null) {
-            Constantes.ni_clientesel=inf.getValor();
+            dViewModel.ni_clientesel=inf.getValor();
 
         }
         inf= dViewModel.buscarxNombreCam("plantasId");
         if(inf!=null) {
-            Constantes.ni_plantasel=Integer.parseInt(inf.getValor());
+            dViewModel.ni_plantasel=Integer.parseInt(inf.getValor());
 
         }
         inf= dViewModel.buscarxNombreCam("plantaNombre");
         if(inf!=null) {
-            Constantes.ni_plantanombre=inf.getValor();
+            dViewModel.ni_plantanombre=inf.getValor();
 
         }
     }

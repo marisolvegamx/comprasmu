@@ -19,7 +19,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
@@ -28,8 +27,6 @@ import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.ActivityContinuarInformeBinding;
-import com.example.comprasmu.ui.BackActivity;
-import com.example.comprasmu.ui.etiquetado.NvoEtiquetadoFragment;
 import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.utils.Constantes;
 
@@ -261,6 +258,23 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
     public void actualizarAtributo3() {
         mBinding.setDaniod(Constantes.VarDetalleProd.nvoatrd);
        mBinding.row8.setVisibility(View.VISIBLE);
+    }
+    public void actualizarAtributo1v(String tomadode, String nvoAtributo ) {
+        mBinding.txtcitomadode.setText(tomadode);
+        mBinding.setDanioa(nvoAtributo);
+
+        mBinding.row5.setVisibility(View.VISIBLE);
+
+    }
+    public void actualizarAtributo2v(String nvoAtributoB, String nvoAtributoC) {
+        mBinding.setDaniob(nvoAtributoB);
+
+        mBinding.setDanioc(nvoAtributoC);
+        mBinding.row6.setVisibility(View.VISIBLE);
+    }
+    public void actualizarAtributo3v(String nvoAtributoD) {
+        mBinding.setDaniod(nvoAtributoD);
+        mBinding.row8.setVisibility(View.VISIBLE);
     }
 
 

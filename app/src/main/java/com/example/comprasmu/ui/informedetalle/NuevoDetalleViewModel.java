@@ -95,6 +95,13 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     final String TAG="NvoDetVM";
     Application application;
     public int reactivoAct;
+    public int DP_CONSECUTIVO;
+    public int NM_TOTALISTA=0;
+    public VarDetalleProd varDetalleProd;
+    public String ni_clientesel;
+    public int ni_plantasel;
+    public String ni_plantanombre;
+
    // public SiglaRepositoryImpl sigRepo;
     public NuevoDetalleViewModel(@NonNull Application application) {
         super(application);
@@ -560,6 +567,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
     }
 
     public void setProductoSel(ListaCompraDetalle productoSel,String nombrePlanta,int plantaSel,int clienteSel,String clienteNombre, String siglas, ListaCompraDetalle prodbu) {
+        Log.e(TAG,"agregando producto");
         this.productoSel=new ProductoSel();
         this.productoSel.producto=productoSel.getProductoNombre();
         this.productoSel.productoid=productoSel.getProductosId();
@@ -813,5 +821,12 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         public ProductoSel() {
 
         }
+    }
+    public static class VarDetalleProd{
+        public  String tomadode;
+        public  String nvoatra;
+        public  String nvoatrb;
+        public  String nvoatrc;
+        public  String nvoatrd;
     }
 }
