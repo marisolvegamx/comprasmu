@@ -3,7 +3,6 @@ package com.example.comprasmu.ui.infetapa;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -45,12 +44,8 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
-
-import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
-import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
-import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.FiltrarListaActivity;
@@ -81,9 +76,8 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     String tipocons; //e para etapa, action_selclitocor2 para correccion
     private NvaCorreViewModel corViewModel;
     NvaPreparacionViewModel npViewModel;
-    ComprasLog milog;
-    LoadingAlert alert;
     ComprasLog milog2;
+
     public ListaInformesEtaFragment() {
 
     }
@@ -110,7 +104,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
         mViewModel = new ViewModelProvider(this).get(InformesGenViewModel.class);
         corViewModel=new ViewModelProvider(this).get(NvaCorreViewModel.class);
         npViewModel = new ViewModelProvider(this).get(NvaPreparacionViewModel.class);
-        milog=ComprasLog.getSingleton();
+
         setHasOptionsMenu(true);
         return    mBinding.getRoot();
     }
@@ -137,7 +131,19 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
             else
                 if(etapa==6) {
                     listainfs=new MutableLiveData<>();
-                    actualizarImagenes();
+                    listainfs = mViewModel.cargarGastos(etapa, indice, 2);
+                    Log.i(TAG,"finalizando");
+                    listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+                        @Override
+                        public void onChanged(List<InformeEtapa> informeEtapas) {
+                            Log. i(TAG,"a ver");
+                            if(informeEtapas.size()<1){
+                                mBinding.emptyStateText.setVisibility(View.VISIBLE);
+                            }
+                            mListAdapter.setInformeCompraList(informeEtapas);
+                            mListAdapter.notifyDataSetChanged();
+                        }
+                    });
 
                 }
                 else
@@ -293,7 +299,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
             if(tipo.equals("e")) {
                 Log.i(TAG, "onClickSubir preparando informe para subir tipo:"+tipo+" etapa:"+etapa+" informe"+informe);
-                milog.grabarError(TAG,"onClickSubir ","preparando informe para subir tipo:"+tipo+" etapa:"+etapa+" informe"+informe);
+                milog2.grabarError(TAG,"onClickSubir ","preparando informe para subir tipo:"+tipo+" etapa:"+etapa+" informe"+informe);
                 if(this.etapa==5) {
                     InformeEnvPaqEnv envio=npViewModel.prepararInformeEnvPaq(informe);
                     SubirInformeEnvTask miTareaAsincrona = new SubirInformeEnvTask(envio,getActivity());
@@ -520,32 +526,4 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     }
 
 
-    private void actualizarImagenes() {
-        mViewModel.setUsuario(Constantes.CLAVEUSUARIO);
-        mViewModel.setIndice(Constantes.INDICEACTUAL);
-        alert=new LoadingAlert(getActivity());
-        alert.startAlert();
-        MutableLiveData<Boolean> observable=new MutableLiveData<>();
-        observable.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                   alert.closeAlertDialog();
-                   listainfs = mViewModel.cargarGastos(etapa, indice, 2);
-                   Log.i(TAG,"finalizando");
-                    listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
-                        @Override
-                        public void onChanged(List<InformeEtapa> informeEtapas) {
-                            Log. i(TAG,"a ver");
-                            if(informeEtapas.size()<1){
-                                mBinding.emptyStateText.setVisibility(View.VISIBLE);
-                            }
-                            mListAdapter.setInformeCompraList(informeEtapas);
-                            mListAdapter.notifyDataSetChanged();
-                        }
-                    });
-               }
-            });
-        String dirLog=getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
-        mViewModel.actualizarImagen(dirLog,observable);
-    }
 }

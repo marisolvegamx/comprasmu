@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -45,6 +46,7 @@ import com.example.comprasmu.ui.infetapa.ListaInformesEtaFragment;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
 import com.example.comprasmu.ui.informe.NuevoinformeFragment;
 import com.example.comprasmu.ui.informe.VerInformeFragment;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -69,7 +71,6 @@ public class VerInformeGenFragment extends Fragment {
     CorreccionWithSol correccion;
     CorEtiqCajaWithSol correCaja;
     private CreadorFormulario cf1;
-    private CreadorFormulario cf2;
     CampoForm campo2;
     private VerInformegenFragmentBinding mBinding;
     NvaCorreViewModel corViewModel;
@@ -79,7 +80,7 @@ public class VerInformeGenFragment extends Fragment {
     String textoboton;
     int numfoto;
     ComprasLog milog;
-
+    LoadingAlert alert;
     public static VerInformeGenFragment newInstance() {
         return new VerInformeGenFragment();
     }
@@ -105,7 +106,8 @@ public class VerInformeGenFragment extends Fragment {
             informeSel=bundle.getInt(ListaInformesEtaFragment.INFORMESEL);
             tipo=bundle.getString(ListaInformesEtaFragment.ARG_TIPOCONS);
             numfoto= bundle.getInt(NuevoInfEtapaActivity.NUMFOTO);
-            llenarDetalle();
+            actualizarImagenes();
+
 
         }
 
@@ -114,6 +116,7 @@ public class VerInformeGenFragment extends Fragment {
     }
 
     public void llenarDetalle() {
+
         if(Constantes.ETAPAACTUAL==1||Constantes.ETAPAACTUAL==4||Constantes.ETAPAACTUAL==6){
            textoboton= getString(R.string.ver_fotos);
         }
@@ -399,9 +402,6 @@ public class VerInformeGenFragment extends Fragment {
     }
 
     public void crearFormularioCorCaja() {
-        String directorio=getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" ;
-
-
         List<CampoForm> camposTienda = new ArrayList<CampoForm>();
         CampoForm campo = new CampoForm();
         campo.style = R.style.verinforme2;
@@ -846,22 +846,31 @@ public class VerInformeGenFragment extends Fragment {
         return listamuestras;
     }
 
+    private void actualizarImagenes() {
+        mViewModel.setUsuario(Constantes.CLAVEUSUARIO);
+        mViewModel.setIndice(Constantes.INDICEACTUAL);
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        MutableLiveData<Boolean> observable=new MutableLiveData<>();
+        observable.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                alert.closeAlertDialog();
+                llenarDetalle();
+            }
+        });
+        String dirLog=getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
+        mViewModel.actualizarImagen(dirLog,observable);
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         mViewModel=null;
-
-        cf2=null;
-
-         informeEtapa=null;
+        informeEtapa=null;
         cf1=null;
-
-         campo2=null;
-         mBinding=null;
-
-
-         directorio=null;
+        campo2=null;
+        mBinding=null;
+        directorio=null;
 
     }
 
