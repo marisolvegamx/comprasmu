@@ -32,8 +32,9 @@ public class ServiceGeneratorIm {
 
 
         OkHttpClient httpClient =new OkHttpClient.Builder()
-                .readTimeout(90, TimeUnit.SECONDS)
-                .connectTimeout(90, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
+                .writeTimeout(300,TimeUnit.SECONDS)
+                .connectTimeout(300, TimeUnit.SECONDS)
                 .build();
 
         Gson gson = new GsonBuilder()
