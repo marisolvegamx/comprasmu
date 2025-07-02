@@ -524,7 +524,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             Log.d(TAG,"nvo cods"+productoSel.getNvoCodigo());
 
             Constantes.productoSel=nuevoInf.productoSel;
+          //  nuevoInf.productoSel=nuevoInf.productoSel;
             Intent resultIntent = new Intent();
+
            if( mViewModel.getClienteSel()==4)
             getActivity().setResult(DetalleProductoFragment.NUEVO_RESULT_OK, resultIntent);
            else
@@ -546,11 +548,11 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         //es el detalle original
         mViewModel.setDetallebuSel(productoSel);
         Constantes.VarListCompra.detallebuSel=productoSel;
+
         if(!ismuestra) { //solo de consulta
             Constantes.VarListCompra.detallebuSel=productoSel;
             Constantes.VarListCompra.idListaSel=lista.getId();
             Constantes.VarListCompra.listaSelec=lista;
-
             Intent intento1 = new Intent(getActivity(), BackActivity.class);
             intento1.putExtra("ciudadSel", mViewModel.ciudadSel);
             intento1.putExtra("ciudadNombre", mViewModel.nombreCiudadSel);
@@ -573,7 +575,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 intento1.putExtra(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
                 intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
                 intento1.putExtra(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
+                //todo en un futuro se quietaran las constantes
                 Constantes.ni_clientesel = nombreCliente;
+                nuevoInf.ni_clientesel=nombreCliente;
             }
                 startActivity(intento1);
 
@@ -622,6 +626,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 bundle.putString(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
                 fragment.setArguments(bundle);
                 Constantes.ni_clientesel = nombreCliente;
+                nuevoInf.ni_clientesel = nombreCliente;
                 fragmentTransaction.replace(R.id.back_fragment, fragment);
                 fragmentTransaction.addToBackStack(null);
                 // Cambiar
@@ -673,7 +678,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
             intento1.putExtra(SustitucionFragment.ARG_SIGLAS, etsiglas.getText().toString());
             Constantes.ni_clientesel = nombreCliente;
-
+            nuevoInf.ni_clientesel = nombreCliente;
             startActivity(intento1);
 
 
@@ -705,6 +710,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             fragment.setArguments(bundle);
 
             Constantes.ni_clientesel = nombreCliente;
+            nuevoInf.ni_clientesel = nombreCliente;
             fragmentTransaction.replace(R.id.back_fragment, fragment);
 
             fragmentTransaction.addToBackStack(null);
