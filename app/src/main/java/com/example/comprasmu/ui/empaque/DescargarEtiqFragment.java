@@ -4,16 +4,11 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
@@ -26,11 +21,9 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,9 +51,9 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
      */
     // TODO: Rename and change types and number of parameters
     public static DescargarEtiqFragment newInstance() {
-        DescargarEtiqFragment fragment = new DescargarEtiqFragment();
+        return new DescargarEtiqFragment();
 
-        return fragment;
+
     }
 
 
@@ -73,8 +66,13 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
         if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
 
             // Constantes.CIUDADTRABAJO="CIUDAD DE MEXICO";
-            irAcdSel();
-            return;
+            try {
+                irAcdSel();
+
+                return;
+            }catch (Exception ex){
+                Log.e(TAG,"Hubo un error inesperado"+ex.getMessage());
+            }
         }
         List<InformeEtapa> listainfetiq;
         listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
@@ -102,7 +100,7 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
 
     }
     private  void convertirLista(List<InformeEtapa>lista){
-        listaClientesEnv =new ArrayList<DescripcionGenerica>();
+        listaClientesEnv =new ArrayList<>();
         for (InformeEtapa listaCompra: lista ) {
             //valido que ya esté en la etapa
             List <ListaCompra> listacompOrig = mViewModel.cargarClientesSimplxet(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listaCompra.getClientesId(), 4, listaCompraDao);
@@ -116,18 +114,22 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
 
     }
     public void descargarPDF2(int cliente){
-        long archact;
-       // String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&indicelis="+ Constantes.INDICEACTUAL+"&rec="+Constantes.CLAVEUSUARIO+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO;
-        String MY_URL = Constantes.URLSERV+"imprimirReporte.php?tipo_consulta=d&indicelis="+ Constantes.INDICEACTUAL+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO+"&rec="+Constantes.CLAVEUSUARIO;
-        Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setTitle("DESCARGA ETIQUETAS"); // Title for notification.
-        Log.i(TAG,MY_URL);
-        request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, "etiquetas.pdf");  // Storage directory path
-        archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
-        // return 0;
+      try {
+          // String MY_URL = "http://192.168.1.84/comprasv1/imprimirReporte.php?admin=impetiq&indicelis="+ Constantes.INDICEACTUAL+"&rec="+Constantes.CLAVEUSUARIO+"&cli="+cliente+"&ciu="+Constantes.CIUDADTRABAJO;
+          String MY_URL = Constantes.URLSERV + "imprimirReporte.php?tipo_consulta=d&indicelis=" + Constantes.INDICEACTUAL + "&cli=" + cliente + "&ciu=" + Constantes.CIUDADTRABAJO + "&rec=" + Constantes.CLAVEUSUARIO;
+          Uri uri = Uri.parse(MY_URL); // Path where you want to download file.
+          DownloadManager.Request request = new DownloadManager.Request(uri);
+          request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
+          request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+          request.setTitle("DESCARGA ETIQUETAS"); // Title for notification.
+          Log.i(TAG, MY_URL);
+          request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, "etiquetas.pdf");  // Storage directory path
+
+          ((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
+      }catch(Exception ex){
+          Log.e(TAG,"Error al descargar");
+          Toast.makeText(getActivity(), "Hubo un error al descargar intente de nuevo", Toast.LENGTH_SHORT).show();
+      }
     }
     public void irAcdSel(){
         NavHostFragment navHostFragment =

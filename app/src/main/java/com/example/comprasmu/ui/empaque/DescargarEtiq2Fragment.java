@@ -50,16 +50,10 @@ public class DescargarEtiq2Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-
-
-
-
-
             Bundle datosRecuperados = getArguments();
 
             if (datosRecuperados != null) {
                 tipo = datosRecuperados.getString(ARG_TIPO);
-
 
             }
           return  inflater.inflate(R.layout.fragment_descargar_etiq, container, false);

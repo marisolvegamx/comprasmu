@@ -2,17 +2,14 @@ package com.example.comprasmu.ui.envio;
 
 import android.app.DownloadManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,24 +25,17 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.PeticionesServidor;
-import com.example.comprasmu.data.modelos.Correccion;
+
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
-import com.example.comprasmu.data.modelos.InformeEnvioPaq;
-import com.example.comprasmu.data.modelos.InformeEtapa;
+
 import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.modelos.LoggedInUser;
-import com.example.comprasmu.data.remote.RespInfEtapaResponse;
-import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.databinding.DescargarEnvFragmentBinding;
-import com.example.comprasmu.databinding.ListaSelecFragmentBinding;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 import com.example.comprasmu.utils.ui.ListaSelecViewModel;
-
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -254,7 +244,7 @@ public class DescargarFragment extends Fragment {
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setTitle("DESCARGA DOCUMENTOS"); // Title for notification.
-
+        Log.i(TAG,MY_URL);
         request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, nombrearch+".pdf");  // Storage directory path
         archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
         // return 0;
