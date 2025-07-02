@@ -378,7 +378,22 @@ public class EliminadorIndice {
         cors.removeObservers(lo);
 
     }
+    public void eliminarContenidoPictures(){
+        File dir=application.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if(dir!=null) {
+            try {
+                File archivos[]=dir.listFiles();
+                for (File archivo: archivos
+                     ) {
+                    boolean resp = archivo.delete();
+                    complog.grabarError("*eliminando archivo " + Environment.DIRECTORY_PICTURES + archivo.getName() + "--" + resp);
 
+                }
+            }catch(NullPointerException ex){
+                complog.grabarError("EliminadorIndice","eliminarContenidoPictures", "error al borrar el archivo");
+            }
+        }
+    }
     public void mostrarResultados(){
         //no se borró bien
 

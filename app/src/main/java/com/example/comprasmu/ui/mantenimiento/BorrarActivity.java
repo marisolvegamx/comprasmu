@@ -111,7 +111,7 @@ public class BorrarActivity extends AppCompatActivity {
         Constantes.CIUDADTRABAJO ="" ;
         Constantes.IDCIUDADTRABAJO=0;
         borrarCiudadPref();
-
+        ei.eliminarContenidoPictures();
     }
     public void inicializarEtapaPref(){
         SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
