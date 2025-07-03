@@ -179,7 +179,7 @@ public class ResumenNotificacionesGenFragment extends Fragment  {
             bundle.putString(ARG_DESCCIUDADSEL, ciudad);
             NavHostFragment.findNavController(this).navigate(R.id.nav_envdescargas, bundle);
         } else
-            Toast.makeText(getContext(),"Capturar en el módulo de Envio", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(),"DESCARGAR EN EL MODULO DE ENVIO", Toast.LENGTH_LONG).show();
 
 
     /*    DescargarFragment nvofrag = new DescargarFragment();
