@@ -102,6 +102,7 @@ public class SubirFoto implements ImageUploadCallback {
             uploadImage.enqueue(new Callback<PostResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<PostResponse> call, @NonNull Response<PostResponse> response) {
+                    milog.grabarError(TAG+ "subir foto Respuesta->" + response);
                     onSuccess(response);
 
                 }
@@ -111,7 +112,7 @@ public class SubirFoto implements ImageUploadCallback {
                 @Override
                 public void onFailure(@NonNull Call<PostResponse> call, @NonNull Throwable t) {
                    t.printStackTrace();
-                    milog.grabarError(TAG+"error"+t.getMessage());
+                    milog.grabarError(TAG+"subir foto error"+t.getMessage());
                     onError(null);
                 }
             });
@@ -161,7 +162,7 @@ public class SubirFoto implements ImageUploadCallback {
             uploadImage.enqueue(new Callback<PostResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<PostResponse> call, @NonNull Response<PostResponse> response) {
-
+                    milog.grabarError(TAG+ " subir fotogen Respuesta->" + response);
                     onSuccessGen(response);
 
                 }
@@ -169,6 +170,8 @@ public class SubirFoto implements ImageUploadCallback {
 
                 @Override
                 public void onFailure(@NonNull Call<PostResponse> call, @NonNull Throwable t) {
+                    Log.e(TAG,"hubo un error al subir"+t.getMessage());
+                    milog.grabarError("SubirFoto"+ " subir foto gen Error al subir"+t.getMessage());
 
                     onErrorGen(null);
                 }
@@ -176,8 +179,11 @@ public class SubirFoto implements ImageUploadCallback {
 
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("SubirFoto","Error al subir....."+e.getMessage());
 
-            this.onSuccess(null);
+            milog.grabarError(TAG,"Error al subir", "Error al subir"+e.getMessage());
+
+            this.onError(null);
 
         }
     }
@@ -224,7 +230,6 @@ public class SubirFoto implements ImageUploadCallback {
 
     @Override
     public void onErrorGen(Response<PostResponse> response) {
-        milog.grabarError("SubirFoto"+ "onErrorGen Error al subir"+response);
         if(response!=null) {
             PostResponse compraResp = response.body();
             milog.grabarError("SubirFoto"+ "Error al subir" + compraResp.getData());
@@ -234,7 +239,7 @@ public class SubirFoto implements ImageUploadCallback {
 
     @Override
     public void onSuccessGen(Response<PostResponse> response) {
-        milog.grabarError(TAG+ "onSuccessGen Respuesta->" + response);
+
         if (response != null) {
             milog.grabarError(TAG+ "Respuesta->" + response.message());
             PostResponse compraResp = response.body();
