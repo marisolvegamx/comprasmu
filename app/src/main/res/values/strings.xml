@@ -389,5 +389,6 @@
     <string name="no_finalizar">No puede finalizar el informe sin enviarlo, de click en CONTINUAR</string>
     <string name="agregar_gasto">AGREGAR GASTOS</string>
     <string name="no_puede_hacer_infenv">No puede hacer informe de envío</string>
+    <string name="seleccionar_tienda">SELECCIONAR TIENDA</string>
 
 </resources>
