@@ -177,7 +177,7 @@ public class DescargasIniciales {
     private  void convertirListaNotif(List<NotificacionGen> lista) {
         InfEtapaRepositoryImpl informeEtapaRepo=new InfEtapaRepositoryImpl(act);
         if(lista!=null)
-        for (NotificacionGen noti:
+            for (NotificacionGen noti:
                 lista) {
 
             //modifico el estatus del informe
