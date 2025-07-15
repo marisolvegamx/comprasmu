@@ -639,28 +639,7 @@ public class PeticionesServidor {
             }
         });
     }*/
-    public void cancelarInforme(int informeId,InformeCancelar informe){
 
-        Call<ResponseBody> respuesta= ServiceGenerator.getApiService().cancelarInforme(informeId,informe);
-
-        respuesta.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@Nullable Call<ResponseBody> call, @Nullable Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    //actualizo su estatus
-
-                }
-            }
-
-            @Override
-            public void onFailure(@Nullable Call<ResponseBody> call, @Nullable Throwable t) {
-                if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
-
-                }
-            }
-        });
-    }
 
     public void autenticar(String username, String password, LoginActivity.LoginListener listener){
 
