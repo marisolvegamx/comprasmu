@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_span="2"
                     android:layout_weight="1"
-                    android:visibility='@{tipocons.equals("rescor")&amp;&amp;detalle.etapa>4?View.GONE:tipocons.equals("e")&amp;&amp;detalle.etapa>2?View.GONE:View.VISIBLE}'
+                    android:visibility='@{tipocons.equals("rescor")&amp;&amp;detalle.etapa>4?View.VISIBLE:tipocons.equals("e")&amp;&amp;detalle.etapa>2?View.GONE:View.VISIBLE}'
                     android:text="@{detalle.plantaNombre}" />
             </LinearLayout>
 

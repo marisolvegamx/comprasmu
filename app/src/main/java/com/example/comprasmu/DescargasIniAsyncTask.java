@@ -493,6 +493,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
     //llegan de todas las ciudades
     private  void convertirListaNotif(List<NotificacionGen> lista) {
         InfEtapaRepositoryImpl informeEtapaRepo=new InfEtapaRepositoryImpl(act);
+        if(lista!=null)
         for (NotificacionGen noti:
                 lista) {
 
