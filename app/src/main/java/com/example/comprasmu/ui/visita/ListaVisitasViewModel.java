@@ -30,6 +30,7 @@ import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
+import com.example.comprasmu.utils.Constantes;
 
 import java.io.File;
 import java.util.List;
@@ -177,13 +178,25 @@ public class ListaVisitasViewModel extends AndroidViewModel {
             Log.d(TAG,"www"+infd.getComprasId()+"--"+infd.getComprasDetId());
             //ajusto cantidades
             //solo si es normal
-            if(infd.getTipoMuestra()!=3) {
+         //   if(infd.getTipoMuestra()!=3) {
                 ListaCompraDetalle compradet = lcRepository.findsimple(infd.getComprasId(), infd.getComprasDetId());
                 if (compradet != null && compradet.getComprados() > 0) {
                     int nvacant = compradet.getComprados() - 1;
                     lcRepository.actualizarComprados(infd.getComprasDetId(), infd.getComprasId(), nvacant);
+                    //quito el codigo
+
                 }
+            //quito en nuevo codigo
+            String codigo= Constantes.sdfcaducidad.format(infd.getCaducidad());
+            if (compradet.getNvoCodigo()!=null&&compradet.getNvoCodigo() != "") {
+                Log.i(TAG,"borrarImagenesxInforme quitando el codigo"+compradet.getNvoCodigo());
+                String nuevoscods = compradet.getNvoCodigo().replace(codigo + ";", "");//elimino elcodigo
+              //  nuevoscods = compradet.getNvoCodigo().replace(codigo, "");//elimino elcodigo
+
+                //Log.d(TAG,compradet.getId()+"--"+compradet.getListaId()+"--"+nuevoscods);
+                lcRepository.actualizarNvosCodigos(compradet.getId(), compradet.getListaId(), nuevoscods);
             }
+           // }
             //borro los detalles
             idrepo.delete(infd);
         }
