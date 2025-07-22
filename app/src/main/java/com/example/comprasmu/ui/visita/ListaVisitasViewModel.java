@@ -107,7 +107,7 @@ public class ListaVisitasViewModel extends AndroidViewModel {
             for (InformeCompra inf : informeCompras) {
 
                 infrepo.deleteInformeCompra(inf.getId());
-                borrarImagenesxInforme(inf);
+                borrarImagenesxInforme(inf); //aqui elimina informe detalle
             }
 
         }

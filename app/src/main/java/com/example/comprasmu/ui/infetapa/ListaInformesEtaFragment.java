@@ -66,10 +66,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     private ListaInformesFragmentBinding mBinding;
     private InformeGenAdapter mListAdapter;
     private LiveData<List<InformeEtapa>> listainfs;
-    private int clienteid;
-    private String ciudad;
     private String indice;
-    String clientesel;
     int plantasel;
     CoordinatorLayout coordinator;
     private int etapa;
@@ -160,17 +157,17 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 }
             });
         }
-        if(tipocons.equals("rescor")||tipocons.equals("action_selclitocor2")){ //CORRECCIONES
+        if(tipocons.equals("rescor")||tipocons.equals("action_selclitocor2")&& ((AppCompatActivity)getActivity()).getSupportActionBar()!=null){ //CORRECCIONES
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.correcciones);
 
 
             Log.e(TAG,"--"+indice+"--"+plantasel);
-            List<CorreccionWithSol> listacor=null;
-            if(etapa==2)
+            List<CorreccionWithSol> listacor;
+          /*  if(etapa==2)
                  listacor = corViewModel.getCorreccionesxEta(etapa, indice, plantasel);
 
             else
-                listacor = corViewModel.getCorreccionesxEtaPlan(etapa, indice, plantasel);
+                listacor = corViewModel.getCorreccionesxEtaPlan(etapa, indice, plantasel);*/
           /********mod. marzo 24 ahora se muestran todas las correcciones siempre***/
             listacor = corViewModel.getCorreccionesAll(indice);
             //las de caja etiquetado estan en otra tabla
@@ -294,7 +291,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
     @Override
     public void onClickSubir(int informe, String tipo) {
-        if(NavigationDrawerActivity.isOnlineNet(getContext())) {
+        if(getContext()!=null&&NavigationDrawerActivity.isOnlineNet(getContext())) {
             Constantes.SINCRONIZANDO=1;
 
             if(tipo.equals("e")) {
