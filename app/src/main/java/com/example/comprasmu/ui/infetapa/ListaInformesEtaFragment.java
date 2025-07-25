@@ -477,6 +477,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
 
         }
 
+
     }
 
     public  void subirFotosGasto(Activity activity, InformeGastoEnv informe){
