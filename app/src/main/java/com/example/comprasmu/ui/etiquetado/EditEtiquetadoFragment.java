@@ -459,34 +459,13 @@ public void iraReubicar(){
                 break;
             case 3: //qr
                 String qr=txtqr.getText().toString();
-
+                if(validarQr(qr)) {
                     //sv3.setVisibility(View.GONE);
                     sv4.setVisibility(View.GONE);
-
-
                     preguntaAct = 4;
                     //pido caja
                     sv6.setVisibility(View.VISIBLE);
-                //}
-              /*  }else {
-
-                    guardarDet();
-                    isEdicion = false;
-                    if(contmuestra<=totmuestras) {
-
-                        capturarMuestra();
-
-                    }
-                    else
-
-                    {
-
-                        preguntaAct=5;
-                        //me voy a comentarios
-                        sv5.setVisibility(View.VISIBLE);
-                        break;
-                    }
-                }*/
+                }
                 break;
             case 4: //numcaja
 
@@ -968,6 +947,27 @@ public void iraReubicar(){
         //  integrator.setOrientationLocked(false);
         Log.d(TAG, "inciando scanner");
         integrator.initiateScan();
+    }
+    //devuelve verdadero si no existe el qr en el informe de etiquetado
+    public boolean validarQr(String qr) {
+        // listaqr.setAdapter(null);
+        InformeEtapaDet prods = mViewModel.buscarDetxQr(qr);
+        if(prods!=null)
+            if(prods.getEstatus()==0) //esta cancelado es reemplazo
+        {
+            return true;
+        }else
+            {
+                Toast.makeText(getActivity(), getString(R.string.ya_existe_qr), Toast.LENGTH_LONG).show();
+                return false;
+
+            }
+            //es nueva muestra
+        //revisa si hay muestra
+        if(mViewModel.validarQrCompra(qr))
+            return true;
+        Toast.makeText(getActivity(), getString(R.string.no_hay_muestra), Toast.LENGTH_LONG).show();
+        return false;
     }
 
     class BotonTextWatcher implements TextWatcher {

@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -40,46 +39,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-
-import com.example.comprasmu.SubirInformeEtaTask;
-
-import com.example.comprasmu.data.ComprasDataBase;
-import com.example.comprasmu.data.PeticionesServidor;
-import com.example.comprasmu.data.dao.ListaCompraDao;
-import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
-
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompra;
-
-import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
-import com.example.comprasmu.data.remote.RespInfEtapaResponse;
-import com.example.comprasmu.data.remote.RespInformesResponse;
-import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
-import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
-
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
-
 import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-
-import com.example.comprasmu.utils.Preguntasino;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -102,12 +78,11 @@ public class NvoEtiquetadoFragment extends Fragment {
     private static final String TAG = "NvoEtiquetadoFragment";
     Button aceptar1,  aceptar3, aceptar4, aceptar5, aceptar6, nvacaja;
     //eliminarCaja
-    Button selplanta;
     private long lastClickTime = 0;
     private boolean yaestoyProcesando = false;
-    EditText txtrutaim, txtqr, txtrutacaja, txtcajaact, txtdescidfoto;
-    TextView txtnumuestra, txttotmues, txtdescfotocaj, txtcajafoto;
-    ImageView fotomos, fotomoscaj;
+    EditText txtrutaim, txtqr, txtcajaact, txtdescidfoto;
+    TextView txtnumuestra, txtcajafoto;
+    ImageView fotomos;
     private ImageButton btnrotar, btntomarf, btnqr;
     public int REQUEST_CODE_TAKE_PHOTO = 1;
     NuevoInfEtapaViewModel niviewModel;
@@ -413,10 +388,7 @@ public class NvoEtiquetadoFragment extends Fragment {
             {
                 cargarListaCajas();
             }
-            if (preguntaAct > 11)//busco el total de cajas
-            {
-                //   totcajas =mViewModel.getTotCajasEtiqxCd(Constantes.CIUDADTRABAJO);
-            }
+
             if (detalleEdit != null) {
 
                 spcaja.setSelection(adaptercaja.getPosition(detalleEdit.getNum_caja() + ""));
@@ -661,25 +633,7 @@ public void iraReubicar(){
                     //pido caja
                     sv6.setVisibility(View.VISIBLE);
                 }
-              /*  }else {
 
-                    guardarDet();
-                    isEdicion = false;
-                    if(contmuestra<=totmuestras) {
-
-                        capturarMuestra();
-
-                    }
-                    else
-
-                    {
-
-                        preguntaAct=5;
-                        //me voy a comentarios
-                        sv5.setVisibility(View.VISIBLE);
-                        break;
-                    }
-                }*/
                 break;
             case 4: //numcaja
 
@@ -764,7 +718,7 @@ public void iraReubicar(){
 
     }*/
 
-    //devuelve verdadero si no existe el qr
+    //devuelve verdadero si no existe el qr en el informe de etiquetado
     public boolean validarQr(String qr) {
         // listaqr.setAdapter(null);
         InformeEtapaDet prods = mViewModel.buscarDetxQr(qr);
@@ -774,10 +728,14 @@ public void iraReubicar(){
             //es el mismo
         }else
         if (prods != null) {
-            Toast.makeText(getActivity(), getString(R.string.ya_existe_qr), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.ya_existe_qr), Toast.LENGTH_LONG).show();
             return false;
         }
-        return true;
+        //revisa si hay muestra
+        if(mViewModel.validarQrCompra(qr))
+            return true;
+        Toast.makeText(getActivity(), getString(R.string.no_hay_muestra), Toast.LENGTH_LONG).show();
+        return false;
     }
 
     public boolean validasSecuenciaCaj(){
@@ -795,7 +753,6 @@ public void iraReubicar(){
     //si hhay cajas vacias devuelve true
     public boolean validarCajasVacias(){
 
-         int i=1;
         for (String caja:spinnerValues) {
             int numcaja=0;
             try {

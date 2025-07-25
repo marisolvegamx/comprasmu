@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -36,6 +37,7 @@ import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
+import com.example.comprasmu.ui.informedetalle.ValidadorDatos;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -655,8 +657,13 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         return infDetRepo.getByQr2(qr,3);
 
     }
+    //valida si se compro una muestra con ese qr
+    //DEVUELVE TRUE SI hay muestra, false si no
+    public boolean validarQrCompra( String qr){
+        ValidadorDatos valdat = new ValidadorDatos();
+        return valdat.validarQr(qr,this.application);
 
-
+    }
     public List<InformeEtapa>  buscarInformesEtiq(String indice) {
 
         List<InformeEtapa> informes= infEtaRepository.getAllSimple(3, indice);
