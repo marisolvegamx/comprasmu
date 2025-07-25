@@ -861,9 +861,9 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         this.ticket_compra = ticket_compra;
     }
 
-    public boolean validarQr(LifecycleOwner lo, String qr, int cliente){
+    public boolean validarQr( String qr){
         ValidadorDatos valdat = new ValidadorDatos();
-        return valdat.validarQr(lo,qr,cliente,this.application);
+        return valdat.validarQr(qr,this.application);
 
     }
 
