@@ -210,7 +210,7 @@ public class ValidadorDatos {
 
     //devuelve true si ya existe
     //false si no existe
-    public boolean validarQr(LifecycleOwner lo, String qr,int cliente, Context context){
+    public boolean validarQr(String qr, Context context){
 
         InformeComDetRepositoryImpl  infcomrepo=new InformeComDetRepositoryImpl(context);
         InformeCompraDetalle comp=infcomrepo.getByqr(qr);
