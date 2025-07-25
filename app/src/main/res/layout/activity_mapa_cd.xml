@@ -155,6 +155,33 @@
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toBottomOf="@+id/llmfiltros">
 
+        <LinearLayout
+            android:id="@+id/llmapamensajetienda"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tap_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/recomend_tienda" />
+
+            <TextView
+                android:id="@+id/txtmapcerrarmensaje"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:gravity="center"
+                android:paddingEnd="30dp"
+                android:text="@string/aceptar"
+                android:textColor="@color/blue_title" />
+
+        </LinearLayout>
         <androidx.fragment.app.FragmentContainerView
 
             android:id="@+id/mapcd_container"
@@ -165,6 +192,7 @@
             tools:layout="@layout/activity_leer_log"
             tools:layout_conversion_absoluteHeight="0dp"
             tools:layout_conversion_absoluteWidth="411dp" />
+
     </LinearLayout>
 
     <LinearLayout

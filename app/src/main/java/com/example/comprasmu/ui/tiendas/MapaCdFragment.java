@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -65,6 +66,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -130,6 +133,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     private LocationManager fusedLocationClient;
     private miLocationListener locallis;
     ComprasLog compraslog;
+    LinearLayout mensajetienda;
+    TextView txtcerrarmensaje;
+    Circle circleNuevaTienda;
     public MapaCdFragment() {
     }
 
@@ -147,6 +153,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             //   cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
         mapFragment.getMapAsync(this);
+
+        mensajetienda=view.findViewById(R.id.llmapamensajetienda);
+        txtcerrarmensaje=view.findViewById(R.id.txtmapcerrarmensaje);
         verfiltros=false;
         compraslog=ComprasLog.getSingleton();
         spplantas=view.findViewById(R.id.spmcdplanta);
@@ -160,6 +169,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         llcadena=view.findViewById(R.id.llmcdcadena);
         llfiltros.setVisibility(View.GONE);
         llcancel.setVisibility(View.GONE);
+        mensajetienda.setVisibility(View.GONE);
         btnverfil=view.findViewById(R.id.btnmfiltros);
         btnverfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,7 +296,15 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        txtcerrarmensaje.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mensajetienda.setVisibility(View.GONE);
+                circleNuevaTienda.remove();
 
+
+            }
+        });
         return  view;
 
     }
@@ -442,27 +460,15 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             if (bt.hayTiendas(nollistatiendas, lastKnownLocation.getLatitude(),
                     lastKnownLocation.getLongitude())) {
                 //solo informativo te recomendamos visitar una tienda existente
-                new AlertDialog.Builder(getActivity())
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle(R.string.importante)
-                        .setMessage(getString(R.string.recomend_tienda))
-                        .setPositiveButton(R.string.nueva_tienda, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Bundle bundle = new Bundle();
-                                bundle.putBoolean("nuevatienda", true);
-                                //  bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
-                                NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
-                                Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
-                                if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
+                         mensajetienda.setVisibility(View.VISIBLE);
 
-                                    nav.navigate(R.id.action_buscartonuevo, bundle);
-                                    //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
-                                }
 
-                            }
-                        })
-                        .setNegativeButton(R.string.regresar, null)
-                        .show();
+                 circleNuevaTienda = mMap.addCircle(new CircleOptions()
+                        .center(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
+                        .radius(200)
+                        .strokeColor(Color.RED));
+
+
             }else{
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("nuevatienda", true);
