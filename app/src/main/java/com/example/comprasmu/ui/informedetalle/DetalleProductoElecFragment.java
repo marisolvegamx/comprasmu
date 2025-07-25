@@ -440,7 +440,7 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 break;
             case  Contrato.TablaInformeDet.QR: //valido el qr
                 String  valor2 = textoint.getText().toString();
-                resp=mViewModel.validarQr(getViewLifecycleOwner(),valor2,mViewModel.clienteSel);
+                resp=mViewModel.validarQr(valor2);
                 if(resp){
                     Toast.makeText(getActivity(),"EL QR YA SE CAPTURO, VERIFIQUE",Toast.LENGTH_LONG).show();
                     resp=false;
