@@ -1133,7 +1133,7 @@ public class EditGastoFragment extends Fragment {
 
             concepto.setText(detalle.getConcepto());
             concepto.setBackgroundResource(R.drawable.valuecellborder);
-            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.##").format(detalle.getImporte()));
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getImporte()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
             //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
             //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -1167,7 +1167,7 @@ public class EditGastoFragment extends Fragment {
         costo.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setText("TOTAL A VALIDAR");
-        costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.##").format(sumacosto));
+        costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.00").format(sumacosto));
         //  concepto.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
         //   costo.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
         concepto.setLayoutParams(lp1);

@@ -231,7 +231,7 @@ public class VerInformeGasFragment extends Fragment {
 
             concepto.setText(detalle.getConcepto());
             concepto.setBackgroundResource(R.drawable.valuecellborder);
-            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.##").format(detalle.getImporte()));
+            costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getImporte()));
             costo.setBackgroundResource(R.drawable.valuecellborder);
             concepto.setPadding(30,10,30,10);
             costo.setPadding(30,10,30,10);
@@ -259,7 +259,7 @@ public class VerInformeGasFragment extends Fragment {
         costo.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setBackgroundResource(R.drawable.valuecellborder);
         concepto.setText("TOTAL A VALIDAR");
-        costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.##").format(sumacosto));
+        costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.00").format(sumacosto));
         concepto.setPadding(30,10,30,10);
         costo.setPadding(30,10,30,10);
         concepto.setLayoutParams(lp1);
