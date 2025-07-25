@@ -53,6 +53,7 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
          //   subiendoInf=true;
             holder.binding.liBtnsubir.setEnabled(false);
         }
+
     }
 
 
