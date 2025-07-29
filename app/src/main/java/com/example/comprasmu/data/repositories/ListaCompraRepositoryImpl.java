@@ -289,7 +289,12 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
 
     @Override
     public List<ListaCompra> getAllsimple() {
-        return dao.findAllSimp();
+        return dao.findAllsimple();
+    }
+
+
+    public List<ListaCompra> getIndice() {
+        return dao.findIndice();
     }
 
     @Override

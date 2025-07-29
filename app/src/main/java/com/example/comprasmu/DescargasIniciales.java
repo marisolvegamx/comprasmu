@@ -116,23 +116,7 @@ public class DescargasIniciales {
         }
 
 
-    private void buscarListaDet(ListaCompraDetalle compra, List<ListaCompraDetalle> json){
-        for (ListaCompraDetalle jcompra: json) {
-            if(jcompra.getId()==compra.getId()&&compra.getListaId()==jcompra.getListaId()){
-                // Log.d(TAG,compra.getProductoNombre()+"--"+jcompra.getProductoNombre()+".."+compra.getListaId()+"--"+ compra.getId());
-                return;
-            }
-        }
 
-        //si llego aqui, no lo encontré por lo que se eliminó
-        //busco que no tenga informe
-        infdrepo=new InformeComDetRepositoryImpl(act);
-        List<InformeCompraDetalle> prods=infdrepo.findByCompra(compra.getListaId(), compra.getId());
-        Log.d(TAG,"prbabbl elimine "+compra.getProductoNombre()+"--"+compra.getListaId()+"--"+ compra.getId());
-        if(prods==null||prods.size()<1)
-            lcdrepo.delete(compra);
-
-    }
     public void pedirCorrecciones(int actualiza, int etapa) {
         PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
         TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLSOLCORRECCIONES, Constantes.INDICEACTUAL);
@@ -235,97 +219,10 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
 
 
     public void actualizar(ListaCompraResponse compraResp) {
-        //primero los inserts
-        if(compraResp!=null) {
-            if (compraResp.getInserts() != null) {
-                if (compraResp.getInserts().getListaCompra() != null) {
-                    Log.d("Descargaini","listacomp<"+compraResp.getInserts().getListaCompra());
-                    flog.grabarError(TAG,"actualizar lista compra","listacomp<");
-
-                    lcrepo.insertAll(compraResp.getInserts().getListaCompra()); //inserto blblbl
-                }
-
-                if (compraResp.getInserts().getListaCompraDetalle() != null) {
-                    //como puede que ya existan reviso primero e inserto unoxuno
-                    for (ListaCompraDetalle detalle : compraResp.getInserts().getListaCompraDetalle()) {
-                        ListaCompraDetalle existe = lcdrepo.findsimple(detalle.getListaId(), detalle.getId());
-                        if (existe == null) {
-                            // lcrepo.insert(detalle);
-
-                        } else {  //no reemplazo los comprados ni los nuevos codigos
-                            detalle.setComprados(existe.getComprados());
-                            detalle.setNvoCodigo(existe.getNvoCodigo());
-                            //lcrepo.updateSC(compra);
-                        }
-                       long id=lcdrepo.insert(detalle);
-
-                    }
-                    //reviso los que se eliminaron
-                    if(compraResp.getInserts().getListaCompraDetalle()!=null&&compraResp.getInserts().getListaCompraDetalle().size()>0) {
-                        //  Log.d(TAG,"buscando elim");
-                        List<ListaCompraDetalle> liscompapp = lcdrepo.getAllSimpl();
-                        for (ListaCompraDetalle compra : liscompapp
-                        ) {
-                            //veo si está en el json si no es que se elimina, solo checo que no
-                            //tenga informe
-                            buscarListaDet(compra, compraResp.getInserts().getListaCompraDetalle());
-                        }
-                    }
-                }
-                // lcdrepo.insertAll(compraResp.getInserts().getListaCompraDetalle());
-            }
-            //los updates
-            if (compraResp.getUpdates() != null) {
-
-                if (compraResp.getUpdates().getListaCompra() != null)
-                    lcrepo.insertAll(compraResp.getUpdates().getListaCompra()); //inserto blblbl
-                if (compraResp.getUpdates().getListaCompraDetalle() != null) {
-                    //como puede que ya existan reviso primero e inserto unoxuno
-                    for (ListaCompraDetalle detalle : compraResp.getInserts().getListaCompraDetalle()) {
-                        ListaCompraDetalle existe = lcdrepo.findsimple(detalle.getListaId(), detalle.getId());
-                        if (existe == null) {
-                            // lcrepo.insert(detalle);
-
-                        } else {   //mantengo los comprados y codigos nevos
-                            detalle.setComprados(existe.getComprados());
-                            detalle.setNvoCodigo(existe.getNvoCodigo());
-                            //lcrepo.updateSC(compra);
-                        }
-                        lcdrepo.insert(detalle);
-
-                    }
-                    //reviso los que se eliminaron
-                            /*List<ListaCompraDetalle> liscompapp=lcdrepo.getAllSimpl();
-                            for (ListaCompraDetalle compra:liscompapp
-                            ) {
-                                //veo si está en el json si no es que se elimina, solo checo que no
-                                //tenga informe
-                                buscarListaDet(compra,compraResp.getInserts().getListaCompraDetalle());
-                            }*/
-                    // lcdrepo.updateAll(compraResp.getUpdates().getListaCompraDetalle());
-                }
-            }
-
-            //actualizar version en tabla
-            TablaVersiones tinfo = new TablaVersiones();
-            tinfo.setNombreTabla(Contrato.TBLLISTACOMPRAS);
-            Date fecha1 = new Date();
-            Log.d(TAG, "insertando fecha version 1" + fecha1);
-
-            tinfo.setVersion(fecha1);
-            tinfo.setIndice(Constantes.INDICEACTUAL);
-            tinfo.setTipo("I");
-            TablaVersiones tinfod = new TablaVersiones();
-            tinfod.setNombreTabla(Contrato.TBLLISTACOMPRASDET);
-            tinfod.setVersion(fecha1);
-            tinfod.setTipo("I");
-            tinfod.setIndice(Constantes.INDICEACTUAL);
-            tvRepo.insertUpdate(tinfo);
-            tvRepo.insertUpdate(tinfod);
-
-        }
-
-        finalizar();
+        infdrepo = new InformeComDetRepositoryImpl(act);
+       DescargasListaCompraImpl descargasListaCompra=new DescargasListaCompraImpl(flog);
+       descargasListaCompra.actualizarListaCompra(compraResp,lcrepo,lcdrepo,tvRepo,infdrepo);
+       finalizar();
 
     }
     public int actualizarCorre(SolCorreResponse corrResp, int etapa) {

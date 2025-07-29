@@ -257,7 +257,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         ListaCompraDao dao= ComprasDataBase.getInstance(getApplicationContext()).getListaCompraDao();
 
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
-        List<ListaCompra> lista=lcrepo.getAllsimple();
+        List<ListaCompra> lista=lcrepo.getIndice();
         if(lista!=null&&lista.size()>0){
             String indicelis=lista.get(0).getIndice();
             if(indicelis.equals(indicenvo)){

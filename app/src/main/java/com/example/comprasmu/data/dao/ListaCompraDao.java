@@ -33,8 +33,10 @@ public abstract class ListaCompraDao  extends  BaseDao<ListaCompra> {
 
     @Query("SELECT * FROM lista_compras")
     public  abstract LiveData<List<ListaCompra>> findAll();
+    @Query("SELECT * FROM lista_compras")
+    public  abstract List<ListaCompra> findAllsimple();
     @Query("SELECT * FROM lista_compras group by indice")
-    public  abstract List<ListaCompra> findAllSimp();
+    public  abstract List<ListaCompra> findIndice();
 
     @Query("SELECT * FROM lista_compras where indice=:indice")
     public  abstract LiveData<List<ListaCompra>> findAllByIndice(String indice);

@@ -819,39 +819,6 @@ public void iraReubicar(){
         txtnumuestra.setText("MUESTRA " + contmuestra);
     }
 
-
-
-   /* public void editarMuestra() {
-
-        ImagenDetalle foto;
-        detalleEdit=mViewModel.getUltimaMuestraEtiq(informeSel);
-        if (detalleEdit != null) {
-            //busco en la bd para regresar a la primer muestra
-            foto = mViewModel.getFoto(Integer.parseInt(detalleEdit.getRuta_foto()));
-            txtrutaim.setText(foto.getRuta());
-            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + foto.getRuta(), 80, 80);
-            fotomos.setImageBitmap(bitmap1);
-            fotomos.setVisibility(View.VISIBLE);
-            btnrotar.setVisibility(View.VISIBLE);
-
-            txtqr.setText(detalleEdit.getQr());
-            contmuestra = detalleEdit.getNum_muestra();
-
-            txtnumuestra.setText("MUESTRA " + contmuestra);
-            //alta saber el numero total de cajas
-            //    contcaja=detalleEdit.getNum_caja();
-
-            //  txtcajaact.setText("CAJA "+contcaja);
-
-
-            // totcajas=infomeEdit.getTotal_cajas();
-            aceptar3.setEnabled(true);
-            aceptar4.setEnabled(true);
-            aceptar5.setEnabled(true);
-            aceptar6.setEnabled(true);
-        }
-
-    }*/
     public void atras(){
         Log.d(TAG,"**atras contf"+contcajaf+"--"+isEdicion);
         isEdicion=true; //siempre es edicion

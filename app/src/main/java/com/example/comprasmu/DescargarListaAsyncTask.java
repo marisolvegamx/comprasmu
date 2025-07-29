@@ -13,6 +13,7 @@ import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
@@ -217,6 +218,17 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
 
                             }
                             //reviso los que se eliminaron
+                            if(compraResp.getInserts().getListaCompra()!=null&&compraResp.getInserts().getListaCompra().size()>0) {
+                                //  Log.d(TAG,"buscando elim");
+                                List<ListaCompra> liscompapp = lcrepo.getAllByIndicesimple(Constantes.INDICEACTUAL);
+                                for (ListaCompra compra : liscompapp
+                                ) {
+                                    //veo si está en el json si no es que se elimina, solo checo que no
+                                    //tenga informe
+                                    eliminarListaCompra(compra, compraResp.getInserts().getListaCompra(), infdrepo, lcrepo);
+                                }
+                            }
+                            //reviso los que se eliminaron
                             if(compraResp.getInserts().getListaCompraDetalle()!=null&&compraResp.getInserts().getListaCompraDetalle().size()>0) {
                             //  Log.d(TAG,"buscando elim");
                                 List<ListaCompraDetalle> liscompapp = lcdrepo.getAllSimpl();
@@ -267,7 +279,23 @@ public class DescargarListaAsyncTask extends AsyncTask<String, Void, Void>  {
     }
 
 
+    private void eliminarListaCompra(ListaCompra compra, List<ListaCompra> json, InformeComDetRepositoryImpl infdrepo, ListaCompraRepositoryImpl lcrepo){
+        for (ListaCompra jcompra: json) {
+            if(jcompra.getId()==compra.getId()){
+                // Log.d(TAG,compra.getProductoNombre()+"--"+jcompra.getProductoNombre()+".."+compra.getListaId()+"--"+ compra.getId());
+                return;
+            }
+        }
 
+        //si llego aqui, no lo encontré por lo que se eliminó
+        //busco que no tenga informe
+
+        List<InformeCompraDetalle> prods=infdrepo.findByCompra(compra.getId());
+        Log.d(TAG,"prbabbl elimine "+compra.getId());
+        if(prods==null||prods.size()<1)
+            lcrepo.delete(compra);
+
+    }
     public void buscarListaDet(ListaCompraDetalle compra, List<ListaCompraDetalle> json){
         for (ListaCompraDetalle jcompra: json) {
             if(jcompra.getId()==compra.getId()&&compra.getListaId()==jcompra.getListaId()){

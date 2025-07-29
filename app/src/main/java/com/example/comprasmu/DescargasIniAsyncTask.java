@@ -494,23 +494,23 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
     private  void convertirListaNotif(List<NotificacionGen> lista) {
         InfEtapaRepositoryImpl informeEtapaRepo=new InfEtapaRepositoryImpl(act);
         if(lista!=null)
-        for (NotificacionGen noti:
-                lista) {
+            for (NotificacionGen noti:
+                    lista) {
 
-            //modifico el estatus del informe
-            if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
-                //5-ajustar recibo
-                //6-estatus envio
-                //busco el informe finalizado con estatus 2
-                List<InformeEtapa> listaInf=informeEtapaRepo.getInfxEstatusCiuSim(Constantes.INDICEACTUAL,6,2, noti.getCiudad());
-                if(listaInf!=null&&listaInf.size()>0){
-                    informeEtapaRepo.actualizarEstatus(listaInf.get(0).getId(),5);
-                    flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
+                //modifico el estatus del informe
+                if(noti.getTipo()==5&&noti.getTotal()>0){    //4-revisar recibo
+                    //5-ajustar recibo
+                    //6-estatus envio
+                    //busco el informe finalizado con estatus 2
+                    List<InformeEtapa> listaInf=informeEtapaRepo.getInfxEstatusCiuSim(Constantes.INDICEACTUAL,6,2, noti.getCiudad());
+                    if(listaInf!=null&&listaInf.size()>0){
+                        informeEtapaRepo.actualizarEstatus(listaInf.get(0).getId(),5);
+                        flog.grabarError(TAG,"convertirListaNotif","actualizando informe gastos ajuste"+listaInf.get(0).getId());
+                    }
                 }
+
+
             }
-
-
-        }
         finalizarrespie();
     }
 
@@ -725,11 +725,6 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
                 //para que no vuelva a entrar
 
             }
-            //else if(actualiza==1&&procesos>3){
-
-            //     miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
-
-            //  }
 
 
         }
@@ -757,102 +752,12 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
             finalizar();
         }
         public void actualizar(ListaCompraResponse compraResp) {
-            //primero los inserts
+            infdrepo = new InformeComDetRepositoryImpl(act);
+            tvRepo=new TablaVersionesRepImpl(act);
+            lcdrepo=new ListaCompraDetRepositoryImpl(act);
+            DescargasListaCompraImpl descargasListaCompra=new DescargasListaCompraImpl(flog);
+            descargasListaCompra.actualizarListaCompra(compraResp,lcrepo,lcdrepo,tvRepo,infdrepo);
 
-            if(compraResp!=null) {
-                if (compraResp.getInserts() != null) {
-                    if (compraResp.getInserts().getListaCompra() != null) {
-                        Log.d("Descargaini","listacomp<"+compraResp.getInserts().getListaCompra());
-                        flog.grabarError(TAG,"actualizar lista compra","listacomp<");
-
-                        lcrepo.insertAll(compraResp.getInserts().getListaCompra()); //inserto blblbl
-                    }
-                    // Log.d("Descargaini","resp3>>"+compraResp.getInserts().getListaCompraDetalle());
-
-                    if (compraResp.getInserts().getListaCompraDetalle() != null) {
-                        //como puede que ya existan reviso primero e inserto unoxuno
-                        for (ListaCompraDetalle detalle : compraResp.getInserts().getListaCompraDetalle()) {
-                            ListaCompraDetalle existe = lcdrepo.findsimple(detalle.getListaId(), detalle.getId());
-                            if (existe == null) {
-                                // lcrepo.insert(detalle);
-
-                            } else {  //no reemplazo los comprados ni los nuevos codigos
-                                detalle.setComprados(existe.getComprados());
-                                detalle.setNvoCodigo(existe.getNvoCodigo());
-                                //lcrepo.updateSC(compra);
-                            }
-                            // Log.d(TAG,"insertando"+detalle.getListaId()+"--"+detalle.getId());
-                            long id=lcdrepo.insert(detalle);
-                            //Log.d(TAG,"**insertando"+id);
-
-
-
-                        }
-                        //reviso los que se eliminaron
-                        if(compraResp.getInserts().getListaCompraDetalle()!=null&&compraResp.getInserts().getListaCompraDetalle().size()>0) {
-                            //  Log.d(TAG,"buscando elim");
-                            List<ListaCompraDetalle> liscompapp = lcdrepo.getAllSimpl();
-                            for (ListaCompraDetalle compra : liscompapp
-                            ) {
-                                //veo si está en el json si no es que se elimina, solo checo que no
-                                //tenga informe
-                                buscarListaDet(compra, compraResp.getInserts().getListaCompraDetalle());
-                            }
-                        }
-                    }
-
-                    // lcdrepo.insertAll(compraResp.getInserts().getListaCompraDetalle());
-                }
-                //los updates
-                if (compraResp.getUpdates() != null) {
-
-                    if (compraResp.getUpdates().getListaCompra() != null)
-                        lcrepo.insertAll(compraResp.getUpdates().getListaCompra()); //inserto blblbl
-                    if (compraResp.getUpdates().getListaCompraDetalle() != null) {
-                        //como puede que ya existan reviso primero e inserto unoxuno
-                        for (ListaCompraDetalle detalle : compraResp.getInserts().getListaCompraDetalle()) {
-                            ListaCompraDetalle existe = lcdrepo.findsimple(detalle.getListaId(), detalle.getId());
-                            if (existe == null) {
-                                // lcrepo.insert(detalle);
-
-                            } else {   //mantengo los comprados y codigos nevos
-                                detalle.setComprados(existe.getComprados());
-                                detalle.setNvoCodigo(existe.getNvoCodigo());
-                                //lcrepo.updateSC(compra);
-                            }
-                            lcdrepo.insert(detalle);
-
-                        }
-                        //reviso los que se eliminaron
-                            /*List<ListaCompraDetalle> liscompapp=lcdrepo.getAllSimpl();
-                            for (ListaCompraDetalle compra:liscompapp
-                            ) {
-                                //veo si está en el json si no es que se elimina, solo checo que no
-                                //tenga informe
-                                buscarListaDet(compra,compraResp.getInserts().getListaCompraDetalle());
-                            }*/
-                        // lcdrepo.updateAll(compraResp.getUpdates().getListaCompraDetalle());
-                    }
-                }
-
-                //actualizar version en tabla
-                TablaVersiones tinfo = new TablaVersiones();
-                tinfo.setNombreTabla(Contrato.TBLLISTACOMPRAS);
-                Date fecha1 = new Date();
-                Log.d("DescargasAsyncTask", "insertando fecha version 1" + fecha1);
-
-                tinfo.setVersion(fecha1);
-                tinfo.setIndice(Constantes.INDICEACTUAL);
-                tinfo.setTipo("I");
-                TablaVersiones tinfod = new TablaVersiones();
-                tinfod.setNombreTabla(Contrato.TBLLISTACOMPRASDET);
-                tinfod.setVersion(fecha1);
-                tinfod.setTipo("I");
-                tinfod.setIndice(Constantes.INDICEACTUAL);
-                tvRepo.insertUpdate(tinfo);
-                tvRepo.insertUpdate(tinfod);
-
-            }
             if(actualiza==0) {
                 Log.d(TAG,"hago inf"+procesos);
                 informes(); //solo en la descarga incial
