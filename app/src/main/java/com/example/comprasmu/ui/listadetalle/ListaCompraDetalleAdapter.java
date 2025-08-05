@@ -86,10 +86,10 @@ public class ListaCompraDetalleAdapter extends RecyclerView.Adapter<ListaCompraD
        holder.binding.setPlantasel(plantasel);
     //   this.mViewModel.setListacomprasbu(listacomprasbu);
        holder.binding.setMViewModel(this.mViewModel);
-        holder.binding.setCriteriobu(this.criterio);
+       holder.binding.setCriteriobu(this.criterio);
 //        Log.d(TAG, "va    rs " +listacomprasbu.size());
       // if(cliente==4&&numtienda>10&&!isbu) {
-           if(!isbu) {
+        if(!isbu) {
            holder.binding.setMostrarbcu(true);
        }
         if(cliente!=4&&!isbu) {
