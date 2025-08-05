@@ -383,7 +383,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<ListaCompraResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(Constantes.TAG,"pedirlista"+ t.getMessage());
                     listener.actualizar(null);
                 }
             }
@@ -422,7 +422,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<ListaCompraResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(Constantes.TAG,"pedirlistaciu"+ t.getMessage());
                     listener.actualizar(null);
                 }
             }
@@ -464,7 +464,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<RespInformesResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(Constantes.TAG,"pedirrespaldo"+t.getMessage());
                     listener.actualizarInformes(null);
                 }
             }
@@ -502,7 +502,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<RespInformesResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(Constantes.TAG+" 9pedirRespaldoSup", t.getMessage());
                     listener.actualizarInformes(null);
                 }
             }
@@ -549,7 +549,7 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
                 if (t != null) {
 
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(TAG+".pedirRespaldo2", t.getMessage());
                     listener.actualizarInfEtapa(null);
                 }
             }
@@ -591,7 +591,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<List<Correccion>> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(TAG+" pedirRespaldoCor", t.getMessage());
 
                 }
                 listener.actualizarCorre(null);
@@ -656,7 +656,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<ResponseBody> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(TAG+" cancelarInforme", t.getMessage());
 
                 }
             }
@@ -803,7 +803,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<SolCorreResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(TAG+" pedirSolicitudesCorr", t.getMessage());
 
                 }
             }
@@ -905,7 +905,7 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<RespNotifEtiqResponse> call, @Nullable Throwable t) {
                 if (t != null) {
 
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(TAG+" getCambiosEtiq", t.getMessage());
                     listener.actualizarInformesEtiq(null);
                 }
             }
@@ -950,7 +950,7 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<List<InformeGastoDet>> call, @Nullable Throwable t) {
                 if (t != null) {
 
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(TAG+" getCambiosGastos", t.getMessage());
                     listener.guardarRes(null);
                 }
             }
@@ -996,7 +996,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<DocumentosEnvio> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(TAG+" getDocumentosEnvio", t.getMessage());
                     petsocor.mostrarBotones(null);
                 }
             }
@@ -1193,7 +1193,7 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<RespInfEtapaResponse> call, @Nullable Throwable t) {
                 if (t != null) {
 
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(TAG+".getInfEtiquetado", t.getMessage());
                     informeEtapaLiveData.setValue(null);
                 }
             }
@@ -1233,7 +1233,7 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<ListaCompraResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(Constantes.TAG, t.getMessage());
+                    Log.e(TAG+" pedirListaCompraxCiudad", t.getMessage());
                     data.setValue(null);
                 }
             }
@@ -1276,8 +1276,8 @@ public class PeticionesServidor {
             @Override
             public void onFailure(@Nullable Call<CambiosInformesReponse> call, @Nullable Throwable t) {
                 if (t != null) {
-
-                   Log.e (Constantes.TAG, t.getMessage());
+                    t.printStackTrace();
+                   Log.e (TAG+".getCambiosInformes", t.getMessage());
                     informeEtapaLiveData.setValue(null);
                 }
             }
