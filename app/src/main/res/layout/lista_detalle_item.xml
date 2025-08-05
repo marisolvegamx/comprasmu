@@ -244,7 +244,7 @@
                     android:id="@+id/txtcodigos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text='@{mViewModel.ordenarCodigosNoPermitidos(numTienda,detalle.nvoCodigo,detalle.codigosNoPermitidos,criteriobu,detalle.analisisId,detalle,plantasel)}' />
+                    android:text='@{mViewModel.ordenarCodigosNoPermitidos(detalle.codigosNoPermitidos,criteriobu,detalle,plantasel)}' />
                 <!--                <Button-->
                 <!--                    android:id="@+id/btncodigosex"-->
                 <!--                    style="@style/Widget.AppCompat.Button.Borderless"-->
@@ -286,9 +286,7 @@
 
 
                 <LinearLayout
-
                     android:id="@+id/informebudata"
-
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"

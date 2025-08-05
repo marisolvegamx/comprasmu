@@ -27,6 +27,7 @@ import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -376,16 +377,16 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         return num;
 
     }
+    //public String ordenarCodigosNoPermitidos(int numTienda, String nvoCodigos, String noPermitidos, int criterio, int analisis, ListaDetalleBu detalle,int plantasel) {
 
-    public String ordenarCodigosNoPermitidos(int numTienda, String nvoCodigos, String noPermitidos, int criterio, int analisis, ListaDetalleBu detalle,int plantasel) {
+        public String ordenarCodigosNoPermitidos( String noPermitidos, int criterio,  ListaDetalleBu detalle,int plantasel) {
         SimpleDateFormat sdfcodigo= new SimpleDateFormat("dd-MM-yy");
         List<String> otodo= new ArrayList<String>();
         List<Date> fechas=new ArrayList<Date>();
         String resultado = "";
-
        // Log.d(TAG,"yyy  "+clienteSel+"--"+criterio+"--"+analisis);
         InformeComDetRepositoryImpl icrepo=new InformeComDetRepositoryImpl(context);
-        nvoCodigos = "";
+        String nvoCodigos = "";
         if(clienteSel==4)
         {   if(criterio>0){
                 nvoCodigos = "";
@@ -451,6 +452,23 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     return  resultado;
 
+    }
+
+
+    public String buscarCodigosComprados(int clienteId,String indice, int planta, NuevoDetalleViewModel.ProductoSel productosel){
+        InformeComDetRepositoryImpl informeCompraDetRepository=new InformeComDetRepositoryImpl(this.context);
+        List<InformeCompraDetalle> informeCompraDetalles;
+        if(clienteId==5) //peñafiel busca la sigla
+            informeCompraDetalles=informeCompraDetRepository.getByProductoAnaPen(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion, productosel.siglas);
+        else
+            informeCompraDetalles=informeCompraDetRepository.getByProductoAna(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion);
+        String codigosnuevos="";
+        for(InformeCompraDetalle det:informeCompraDetalles) {
+            Log.d(TAG, "buscando codigo igual" + det.getCaducidad());
+            //recorro el informe buscando
+            codigosnuevos=codigosnuevos+";"+det.getCaducidad();
+        }
+        return codigosnuevos;
     }
 
     public LiveData<List<ListaCompraDetalle>> getListas() {
