@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Gravity;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
@@ -33,6 +34,7 @@ import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
 
+import com.example.comprasmu.data.remote.CambiosInformesReponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 
 import com.example.comprasmu.data.remote.NotificacionResponse;
@@ -172,11 +174,11 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
 
                 Log.d(TAG,"no hagos resp 2 ni cor"+procesos);
             }
-
+            actualizarInformesAll(Constantes.INDICEACTUAL);
             //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
-            DescRespInformesEta desetiq=new DescRespInformesEta( act,this,tvRepo);
+         //   DescRespInformesEta desetiq=new DescRespInformesEta( act,this,tvRepo);
 
-            desetiq.getCambiosEtiq();
+         //   desetiq.getCambiosEtiq();
             procesos_lev++;
         }
 
@@ -188,6 +190,70 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
 
     }
 
+    //actualiza todos los informes cada 10 seg con las ultimas modificaciones
+    public void actualizarInformesAll(String indice){
+        TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLINFORMESDET, Constantes.INDICEACTUAL);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String version;
+        if (comp != null && comp.getVersion() != null) {
+            version = sdf.format(comp.getVersion());
+        } else //es la 1a vez
+        {
+            version = "1999-09-09"; //una fecha muy antigua
+        }
+
+        InfEtapaDetRepoImpl infEtapaDetRepo=new InfEtapaDetRepoImpl(this.act);
+        PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        LiveData<CambiosInformesReponse> lcambiosInformesResponse=peticionesServidor.getCambiosInformes(indice,version);
+        Observer observadorCambios= new Observer<CambiosInformesReponse>() {
+            @Override
+            public void onChanged(CambiosInformesReponse cambiosInformesReponse) {
+                if(cambiosInformesReponse!=null) {
+                    if (cambiosInformesReponse.getID() != null) {
+                        Log.d(TAG,"actualizarInformesAll hubo cambios");
+                        flog.info(TAG,"actualizarInformesAll","hubo cambios en informes"+cambiosInformesReponse.getID());
+
+                        actualizarInformeCompraDet(cambiosInformesReponse.getID());
+                    }
+                    if (cambiosInformesReponse.getDC() != null) {
+                        //todo
+                    }
+                    if (cambiosInformesReponse.getIGD() != null) {
+                        //todo
+                    }
+                    if (cambiosInformesReponse.getIED() != null) {
+                        flog.info(TAG,"actualizarInformesAll","hubo cambios en informes etapas"+cambiosInformesReponse.getIED());
+                        RespInfEtapaResponse infoResponse = new RespInfEtapaResponse();
+                        infoResponse.setInformeEtapaDet(cambiosInformesReponse.getIED());
+                        DescargaListaCompraAuto.actualizarInformeDetalle(infEtapaDetRepo, infoResponse);
+                    }
+                    lcambiosInformesResponse.removeObserver(this);
+                    //actualizo en tabla versiones la fecha
+
+                    TablaVersiones tinfo = new TablaVersiones();
+                    tinfo.setNombreTabla(Contrato.TBLINFORMESDET);
+                    Date fecha1 = new Date();
+
+                    tinfo.setVersion(fecha1);
+                    tinfo.setIndice(Constantes.INDICEACTUAL);
+                    tinfo.setTipo("I");
+
+                    tvRepo.insertUpdate(tinfo);
+                }
+            }
+        };
+        Handler handler = new Handler(Looper.getMainLooper()); //This is the main thread
+        handler.post(new Runnable() { //task to run on main thread
+                         @Override
+                         public void run() {
+                             lcambiosInformesResponse.observeForever(  observadorCambios);
+
+                         }
+                     }
+        );
+
+        listenprin.finalizar();
+    }
 
     private void catalogos()
     {
@@ -355,6 +421,37 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
         DescargaRespListener listener=new DescargaRespListener();
         ps.pedirRespaldo(Constantes.INDICEACTUAL,listener);
         procesos_lev++;
+    }
+
+    private void actualizarInformeCompraDet(List<InformeCompraDetalle> infComprasDetalle){
+        InformeCompraDetalle informeDetOrig;
+        if (infComprasDetalle.size() > 0) {
+
+            for (InformeCompraDetalle det:infComprasDetalle
+            ) {
+                //busco
+
+                informeDetOrig = infdrepo.findsimple(det.getId());
+                if(informeDetOrig!=null) {
+                    //modifico
+                    informeDetOrig.setOrigen(det.getOrigen());
+                    informeDetOrig.setQr(det.getQr());
+                    informeDetOrig.setCaducidad(det.getCaducidad());
+                    informeDetOrig.setCodigo(det.getCodigo());
+                    informeDetOrig.setCosto(det.getCosto());
+                    informeDetOrig.setAtributoa(det.getAtributoa());
+                    informeDetOrig.setAtributob(det.getAtributob());
+                    informeDetOrig.setAtributoa(det.getAtributoc());
+                    informeDetOrig.setAtributob(det.getAtributod());
+                }
+                else
+                    informeDetOrig=det;
+                //actualizo
+                infdrepo.insert(informeDetOrig);
+            }
+
+        }
+
     }
 
 
