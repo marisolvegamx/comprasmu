@@ -424,6 +424,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
     }
 
     private void actualizarInformeCompraDet(List<InformeCompraDetalle> infComprasDetalle){
+        infdrepo=new InformeComDetRepositoryImpl(this.act);
         InformeCompraDetalle informeDetOrig;
         if (infComprasDetalle.size() > 0) {
 

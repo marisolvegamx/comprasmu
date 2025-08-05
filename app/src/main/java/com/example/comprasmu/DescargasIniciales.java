@@ -203,7 +203,7 @@ public class DescargasIniciales {
         {
             version = "1999-09-09"; //una fecha muy antigua
         }
-
+        Log.e(TAG,">>>"+version);
         InfEtapaDetRepoImpl infEtapaDetRepo=new InfEtapaDetRepoImpl(this.act);
         PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         LiveData<CambiosInformesReponse> lcambiosInformesResponse=peticionesServidor.getCambiosInformes(indice,version);

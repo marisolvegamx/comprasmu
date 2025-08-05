@@ -155,6 +155,8 @@ public class NvaCorrecCalCajaFragment extends Fragment {
         try {
             //    aceptar.setEnabled(false);
             LiveData<SolicitudCor> resultad= solViewModel.getSolicitud(solicitudSel, numfotosel);
+            Log.e(TAG, "numfoto " + numfotosel + "--solicitudsel:" +solicitudSel);
+
             resultad.observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
                 @Override
                 public void onChanged(SolicitudCor solicitudCor) {
@@ -728,7 +730,7 @@ if(correccionDet!=null)
             miTareaAsincrona.execute();
             //necesito tiempo para no actualizar el estatus
             try {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
