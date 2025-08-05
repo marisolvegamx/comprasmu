@@ -72,8 +72,7 @@ public class SubirFoto implements ImageUploadCallback {
             this.idrepo = idrepo;
             this.imagen=imagen;
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String uploadFileArrayList = dir + imagen.getRuta();
+             String uploadFileArrayList = dir + imagen.getRuta();
             milog.info(TAG,"subir foto", " ahora si voy a subir" + uploadFileArrayList);
             File file = new File(uploadFileArrayList);
             if(!file.exists()){
@@ -135,8 +134,7 @@ public class SubirFoto implements ImageUploadCallback {
             ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(context).getImagenDetalleDao();
             this.idrepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
             this.imagen=imagen;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String uploadFileArrayList = dir + imagen.getRuta();
+             String uploadFileArrayList = dir + imagen.getRuta();
             milog.info(TAG,"subirFotoGen", " ahora si voy a subirgen" + uploadFileArrayList);
             File file = new File(uploadFileArrayList);
             ProgressRequestBody fileBody = new ProgressRequestBody(file, "image", this);
