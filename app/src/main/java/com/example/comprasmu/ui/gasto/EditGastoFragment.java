@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -21,6 +22,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -164,7 +168,7 @@ public class EditGastoFragment extends Fragment {
             llcosto.setVisibility(View.GONE);
             llcompr.setVisibility(View.GONE);
             llfoto.setVisibility(View.GONE);
-
+            mBinding.tblgaresconcep.setVisibility(View.GONE);
             llcomentarios.setVisibility(View.GONE);
 
             ciudadInf=Constantes.CIUDADTRABAJO;
@@ -179,10 +183,28 @@ public class EditGastoFragment extends Fragment {
                 this.informeEdit = informeEtapa;
 
             }
-            //todo codigo de revisar recibo
-            PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-            ps.getCambiosGastos(Constantes.INDICEACTUAL,informeEdit.getCiudadNombre(),new ListenerEdiGas());
+            String BASE_URL;
+            if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)){//pruebas y el lenovo
+                //nam
+                BASE_URL = "http://192.168.1.84/comprasv1/api/public/";
+                BASE_URL = Constantes.URLPRUEBAS1;
 
+            }else {
+                BASE_URL = Constantes.URLSERV;
+            }
+            String urlrecibo= BASE_URL+"Views/modulos/cue_reciboprev.php?idrec="+Constantes.CLAVEUSUARIO+"&idmes="+Constantes.INDICEACTUAL+"&idciu="+Constantes.CIUDADTRABAJO+"&eta=6&estatus=1&numc=0";
+            WebView webView = (WebView)root.findViewById(R.id.ngwebview);
+            webView.clearCache(true);
+            WebSettings mWebSettings = webView.getSettings();
+            mWebSettings.setBuiltInZoomControls(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+            webView.setScrollbarFadingEnabled(false);
+            webView.loadUrl(urlrecibo);
+            mBinding.txtgaalgunerror.setText("");
+            mBinding.llgasresumenedi.setVisibility(View.VISIBLE);
+            aceptarresedi.setEnabled(true);
             totalgastos=totalotros=0;
             totalval=0;
             getConceptos();
@@ -195,7 +217,7 @@ public class EditGastoFragment extends Fragment {
             aceptar5.setEnabled(false); //costo
             aceptar6.setEnabled(false); //comprobante
             aceptar7.setEnabled(false); //foto
-            aceptarresedi.setEnabled(false);
+           // aceptarresedi.setEnabled(false);
             guardar.setEnabled(true);
             mBinding.singasto.setmLabel(getString(R.string.realizo_otro));
             mBinding.singasto.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -1081,7 +1103,7 @@ public class EditGastoFragment extends Fragment {
 
     }
 
-    public void llenarTablaConcepIni( List<InformeGastoDet> detalles){
+   /* public void llenarTablaConcepIni( List<InformeGastoDet> detalles){
         TableRow tableRow;
         NvoGastoViewModel niviewModel = new ViewModelProvider(requireActivity()).get(NvoGastoViewModel.class);
 
@@ -1183,7 +1205,7 @@ public class EditGastoFragment extends Fragment {
 
         //  costo=null;
     }
-
+*/
     public class ListenerEdiGas implements  IListenerResumen{
         @Override
         public void guardarRes(List<InformeGastoDet> respuesta) {
@@ -1191,7 +1213,7 @@ public class EditGastoFragment extends Fragment {
             if (respuesta != null) {
 
 
-                llenarTablaConcepIni(respuesta);
+             //   llenarTablaConcepIni(respuesta);
                 mBinding.txtgaalgunerror.setText("");
                 mBinding.llgasresumenedi.setVisibility(View.VISIBLE);
                 aceptarresedi.setEnabled(true);

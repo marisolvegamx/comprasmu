@@ -26,6 +26,7 @@ import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.data.remote.CambiosInformesReponse;
 import com.example.comprasmu.data.remote.CatalogosResponse;
 import com.example.comprasmu.data.remote.EtapaResponse;
 import com.example.comprasmu.data.remote.IActualListener;
@@ -1239,5 +1240,48 @@ public class PeticionesServidor {
         });
         return data;
     }
+    public LiveData<CambiosInformesReponse> getCambiosInformes(String indice, String fecha){
+        MutableLiveData<CambiosInformesReponse> informeEtapaLiveData=new MutableLiveData<>();
+        Log.d("PeticionesServidor","getCambiosInformes haciendo petición ");
 
+        final Call<CambiosInformesReponse> batch = ServiceGenerator.getApiService().getCambiosInformes(indice,usuario, fecha);
+
+        batch.enqueue(new Callback<CambiosInformesReponse>() {
+            @Override
+            public void onResponse(@Nullable Call<CambiosInformesReponse> call, @Nullable Response<CambiosInformesReponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    CambiosInformesReponse informesResponse = response.body();
+                    //reviso si está actualizado
+                    if(informesResponse!=null) //falta actualizar
+                    {
+                        Log.d("PeticionesServidor","getCambiosInformes "+informesResponse);
+
+
+                        informeEtapaLiveData.setValue(informesResponse);
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor","lista vacia");
+                        informeEtapaLiveData.setValue(null);
+                    }
+
+                }else //aviso al usuario //solo si esta desde descargar lista
+                {
+
+                    informeEtapaLiveData.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call<CambiosInformesReponse> call, @Nullable Throwable t) {
+                if (t != null) {
+
+                   Log.e (Constantes.TAG, t.getMessage());
+                    informeEtapaLiveData.setValue(null);
+                }
+            }
+        });
+        return informeEtapaLiveData;
+    }
 }

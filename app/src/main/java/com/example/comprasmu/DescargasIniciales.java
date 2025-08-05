@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,18 +18,22 @@ import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
+import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Visita;
+import com.example.comprasmu.data.remote.CambiosInformesReponse;
 import com.example.comprasmu.data.remote.IActualListener;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.MuestraCancelada;
 import com.example.comprasmu.data.remote.NotificacionResponse;
 import com.example.comprasmu.data.remote.PostResponse;
+import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
+import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
@@ -94,10 +99,13 @@ public class DescargasIniciales {
             listacompras();
             pedirCorrecciones(0,0);
             notificacionesGenerales();
+            //descargo cambios informes
+            this.actualizarInformesAll(Constantes.INDICEACTUAL);
+            //incluye
             //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
-            DescRespInformesEta desetiq=new DescRespInformesEta( act,listenprin,tvRepo);
+            //DescRespInformesEta desetiq=new DescRespInformesEta( act,listenprin,tvRepo);
 
-            desetiq.getCambiosEtiq();
+            //desetiq.getCambiosEtiq();
         }
 
 
@@ -120,7 +128,7 @@ public class DescargasIniciales {
     public void pedirCorrecciones(int actualiza, int etapa) {
         PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
         TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLSOLCORRECCIONES, Constantes.INDICEACTUAL);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String version;
         if (comp != null && comp.getVersion() != null) {
             version = sdf.format(comp.getVersion());
@@ -184,6 +192,92 @@ public class DescargasIniciales {
         Log.d(TAG,"finalizo descarga"+procesos+"--"+procesos_lev);
 
     }
+    //actualiza todos los informes cada 10 seg con las ultimas modificaciones
+    public void actualizarInformesAll(String indice){
+        TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLINFORMESDET, Constantes.INDICEACTUAL);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String version;
+        if (comp != null && comp.getVersion() != null) {
+            version = sdf.format(comp.getVersion());
+        } else //es la 1a vez
+        {
+            version = "1999-09-09"; //una fecha muy antigua
+        }
+
+        InfEtapaDetRepoImpl infEtapaDetRepo=new InfEtapaDetRepoImpl(this.act);
+        PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        LiveData<CambiosInformesReponse> lcambiosInformesResponse=peticionesServidor.getCambiosInformes(indice,version);
+        Observer observadorCambios= new Observer<CambiosInformesReponse>() {
+            @Override
+            public void onChanged(CambiosInformesReponse cambiosInformesReponse) {
+                if(cambiosInformesReponse!=null) {
+                    if (cambiosInformesReponse.getID() != null) {
+                        flog.info(TAG,"actualizarInformesAll","hubo cambios en informes"+cambiosInformesReponse.getID());
+
+                        actualizarInformeCompraDet(cambiosInformesReponse.getID());
+                    }
+                    if (cambiosInformesReponse.getDC() != null) {
+                        //todo
+                    }
+                    if (cambiosInformesReponse.getIGD() != null) {
+                        //todo
+                    }
+                    if (cambiosInformesReponse.getIED() != null) {
+                        flog.info(TAG,"actualizarInformesAll","hubo cambios en informes etapas"+cambiosInformesReponse.getIED());
+                        RespInfEtapaResponse infoResponse = new RespInfEtapaResponse();
+                        infoResponse.setInformeEtapaDet(cambiosInformesReponse.getIED());
+                        DescargaListaCompraAuto.actualizarInformeDetalle(infEtapaDetRepo, infoResponse);
+                    }
+                    lcambiosInformesResponse.removeObserver(this);
+                    //actualizo en tabla versiones la fecha
+
+                    TablaVersiones tinfo = new TablaVersiones();
+                    tinfo.setNombreTabla(Contrato.TBLINFORMESDET);
+                    Date fecha1 = new Date();
+
+                    tinfo.setVersion(fecha1);
+                    tinfo.setIndice(Constantes.INDICEACTUAL);
+                    tinfo.setTipo("I");
+
+                    tvRepo.insertUpdate(tinfo);
+                }
+            }
+        };
+        lcambiosInformesResponse.observeForever(observadorCambios);
+
+    }
+    private void actualizarInformeCompraDet(List<InformeCompraDetalle> infComprasDetalle){
+        InformeCompraDetalle informeDetOrig;
+        if (infComprasDetalle.size() > 0) {
+
+            for (InformeCompraDetalle det:infComprasDetalle
+            ) {
+                //busco
+
+                 informeDetOrig = infdrepo.findsimple(det.getId());
+                if(informeDetOrig!=null) {
+                    //modifico
+                    informeDetOrig.setOrigen(det.getOrigen());
+                    informeDetOrig.setQr(det.getQr());
+                    informeDetOrig.setCaducidad(det.getCaducidad());
+                    informeDetOrig.setCodigo(det.getCodigo());
+                    informeDetOrig.setCosto(det.getCosto());
+                    informeDetOrig.setAtributoa(det.getAtributoa());
+                    informeDetOrig.setAtributob(det.getAtributob());
+                    informeDetOrig.setAtributoa(det.getAtributoc());
+                    informeDetOrig.setAtributob(det.getAtributod());
+                }
+                else
+                    informeDetOrig=det;
+                //actualizo
+                infdrepo.insert(informeDetOrig);
+            }
+
+        }
+
+    }
+
+
 public class DescargaIniListener implements  IDescargaIniListener, IActualListener, IListenerRevRec, DescRespInformesEta.ProgresoRespIEListener {
     public DescargaIniListener(){
 

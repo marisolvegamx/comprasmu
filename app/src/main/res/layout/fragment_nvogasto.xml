@@ -33,34 +33,27 @@
                     android:layout_height="wrap_content"
                     android:text="@string/agregar_gasto" />
 
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dip"
-                    android:scrollbars="horizontal">
+
 
                     <LinearLayout
                         android:id="@+id/scroll_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:isScrollContainer="true"
+                        android:layout_height="match_parent"
+                        android:isScrollContainer="false"
                         android:orientation="vertical">
 
-                        <TableLayout
-                            android:id="@+id/tblvigastos"
-                            android:layout_width="450dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginBottom="20dp"
-                            android:visibility="visible" />
+                        <WebView
+                            android:id="@+id/ngwebview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
                     </LinearLayout>
-                </HorizontalScrollView>
 
 
                 <Button
                     android:id="@+id/btngasacepresedi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
                     android:text="@string/aceptar" />
             </LinearLayout>
 
@@ -381,10 +374,11 @@
                         android:layout_height="wrap_content"
                         android:isScrollContainer="true"
                         android:orientation="vertical">
-                    <TableLayout
-                        android:id="@+id/tblgaresconcep"
-                        android:layout_width="450dp"
-                        android:layout_height="wrap_content" />
+
+                        <TableLayout
+                            android:id="@+id/tblgaresconcep"
+                            android:layout_width="450dp"
+                            android:layout_height="wrap_content" />
                     </LinearLayout>
                 </HorizontalScrollView>
 

@@ -391,6 +391,7 @@
     <string name="no_puede_hacer_infenv">No puede hacer informe de envío</string>
     <string name="seleccionar_tienda">SELECCIONAR TIENDA</string>
     <string name="no_hay_muestra">NO SE COMPRÓ UNA MUESTRA CON ESE QR, VERIFIQUE</string>
+    <string name="periodo">PERIODO</string>
 
 
 </resources>
