@@ -136,7 +136,7 @@ public class ResumenNotificacionesGenFragment extends Fragment  {
                     Button boton=new Button(newContext);
                     boton.setTextColor(Color.WHITE);
                     boton.setBackgroundColor(ResourcesCompat.getColor(getResources(),R.color.blue_principal,null));
-                    boton.setText(getString(R.string.descargar));
+                    boton.setText(getString(R.string.descargar_docs));
                     boton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
