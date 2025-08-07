@@ -365,7 +365,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                         }
                         });
                 }
-
+                mViewModel.getListaCompra().removeObservers(getViewLifecycleOwner());
             });
 
         }
