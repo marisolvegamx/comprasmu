@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.comprasmu.ActInformeEtaTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirInformeEtaTask;
@@ -698,8 +700,8 @@ if(correccionDet!=null)
             preViewModel.actualizarInfEtaDet(muestraEdit);
 
             InformeEtapaEnv envio=preViewModel.preparaInformeEtiqCor(solicitud.getInformesId(),muestraEdit);
-            SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
-            miTareaAsincrona.execute();
+            ActInformeEtaTask miTareaAsincrona = new ActInformeEtaTask(envio,getActivity());
+            miTareaAsincrona.execute("","act");
             //actualizo total de cajas por si se agrego una
             totcajas = preViewModel.getTotCajasEtiqxInf(this.solicitud.getInformesId());
             reubicoMuestra=true;

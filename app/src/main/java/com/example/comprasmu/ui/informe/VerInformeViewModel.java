@@ -24,7 +24,10 @@ import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
+import com.example.comprasmu.services.DescargaCambiosImagenes;
+import com.example.comprasmu.utils.Constantes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -199,6 +202,10 @@ public class VerInformeViewModel extends AndroidViewModel {
         this.productoExhib = productoExhib;
     }
 
-
+    public void actualizarImagen(String dirLog, MutableLiveData<Boolean> verLista){
+        TablaVersionesRepImpl tablaVersionesRepo=new TablaVersionesRepImpl(context);
+        DescargaCambiosImagenes descarga=new DescargaCambiosImagenes(dirLog,tablaVersionesRepo,imagenDetRepository, Constantes.CLAVEUSUARIO ,Constantes.INDICEACTUAL , verLista);
+        descarga.ejecutar();
+    }
 
 }

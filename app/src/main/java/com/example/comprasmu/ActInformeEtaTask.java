@@ -13,6 +13,7 @@ public class ActInformeEtaTask extends AsyncTask<String, Float, Integer> {
     public static String TAG = "ActInformeEtaTask";
     InformeEtapaEnv envio;
     Context context;
+    private int correccion;
 
     /**
      * Contructor de ejemplo que podemos crear en el AsyncTask
@@ -45,10 +46,12 @@ public class ActInformeEtaTask extends AsyncTask<String, Float, Integer> {
      * @return devuelve un valor al terminar de ejecutar este segundo plano. Se lo envía y ejecuta "onPostExecute" si ha termiado, o a "onCancelled" si se ha cancelado con "cancel"
      */
     @Override
-    protected Integer doInBackground(String... variableNoUsada) {
-       //  envio=mviemodel.preparaInforme();
-        enviarReporte();
-      //  subirFotos(envio);
+    protected Integer doInBackground(String... variable) {
+        if (variable[1].equals("act")) //vengo de correccion
+           this.enviarEdicionEtiquetado();
+        else
+            enviarReporte();
+
         return 0;
     }
 
@@ -61,10 +64,9 @@ public class ActInformeEtaTask extends AsyncTask<String, Float, Integer> {
      */
     @Override
     protected void onProgressUpdate(Float... porcentajeProgreso) {
-        // TV_mensaje.setText("Progreso descarga: "+porcentajeProgreso[0]+"%. Hilo PRINCIPAL");
         Log.v(TAG, "Progreso envio: "+porcentajeProgreso[0]+"%. Hilo PRINCIPAL");
 
-        //  miBarraDeProgreso.setProgress( Math.round(porcentajeProgreso[0]) );
+
     }
 
     /**
@@ -76,10 +78,9 @@ public class ActInformeEtaTask extends AsyncTask<String, Float, Integer> {
      */
     @Override
     protected void onPostExecute(Integer cantidadProcesados) {
-        //   TV_mensaje.setText("DESPUÉS de TERMINAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
         Log.v(TAG, "DESPUÉS de TERMINAR el envio. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
 
-        // TV_mensaje.setTextColor(Color.GREEN);
+
     }
 
     /**
@@ -92,10 +93,9 @@ public class ActInformeEtaTask extends AsyncTask<String, Float, Integer> {
      */
     @Override
     protected void onCancelled (Integer cantidadProcesados) {
-        //   TV_mensaje.setText("DESPUÉS de CANCELAR la descarga. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
         Log.v(TAG, "DESPUÉS de CANCELAR envio. Se han descarcado "+cantidadProcesados+" imágenes. Hilo PRINCIPAL");
 
-        // TV_mensaje.setTextColor(Color.RED);
+
     }
     public void enviarReporte() {
         //reviso si tengo conexion
@@ -104,10 +104,17 @@ public class ActInformeEtaTask extends AsyncTask<String, Float, Integer> {
 
             postviewModel.actInformeEtiq(envio);
 
-          //  String result = postviewModel.getMensaje();
+        }
+    }
+    public void enviarEdicionEtiquetado() {
+        //reviso si tengo conexion
+        if(NavigationDrawerActivity.isOnlineNet(context)) {
+            PostInformeViewModel postviewModel = new PostInformeViewModel(context);
+
+            postviewModel.editarInformeEtiq(envio);
+
 
         }
     }
-
 
 }

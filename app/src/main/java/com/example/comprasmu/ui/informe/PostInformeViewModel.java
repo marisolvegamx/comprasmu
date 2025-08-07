@@ -441,7 +441,7 @@ public class PostInformeViewModel {
 
         });
     }
-
+    //este es para reactivacion
     public  void actInformeEtiq(InformeEtapaEnv informeEtapa) {
         Log.d(TAG+"actInformeEta", informeEtapa.toJson(informeEtapa));
         ServiceGenerator.getApiService().actInformeEtiq(informeEtapa).enqueue(new Callback<PostResponse>() {
@@ -461,6 +461,38 @@ public class PostInformeViewModel {
                     for (InformeEtapaDet det:informeEtapa.getInformeEtapaDet()) {
                         actEstatusNotifEtiq(det.getId());
                     }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
+                t.printStackTrace();
+                Log.e(TAG, "actInformeEtiq Unable to submit post to API.");
+            }
+
+
+        });
+    }
+    //este es para cuando reubica por correccion en etiquetado
+    public  void editarInformeEtiq(InformeEtapaEnv informeEtapa) {
+        Log.d(TAG+"actInformeEta", informeEtapa.toJson(informeEtapa));
+        ServiceGenerator.getApiService().actInformeEtiq(informeEtapa).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
+                // respuesta serv:
+                // { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+
+                    mensaje=response.body().getData();
+                    Log.d(TAG+"actInformeEtiq", ""+mensaje);
+                    //actualizo el estatus
+                    iniciarBD();
+                    etapadetRepo.actEstatusSyncxInfo(informeEtapa.getInformeEtapa().getId(),Constantes.ENVIADO);
+
+
                 }
             }
 
