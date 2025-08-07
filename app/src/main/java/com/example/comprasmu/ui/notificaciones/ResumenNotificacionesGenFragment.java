@@ -95,6 +95,7 @@ public class ResumenNotificacionesGenFragment extends Fragment  {
             @Override
             public void onChanged(List<NotificacionGen> notificacionesGen) {
                 CardViewGenerico cardViewGenerico=new CardViewGenerico();
+                if(notificacionesGen!=null)
                 for (NotificacionGen notificacion : notificacionesGen
                 ) {
                     if (notificacion.getTipo() == opcion&notificacion.getTotal()>0) {

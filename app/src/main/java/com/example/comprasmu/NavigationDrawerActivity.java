@@ -649,19 +649,19 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 totCancel.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                     @Override
                     public void onChanged(Integer totcan) {
-
+                          Log.i(TAG,"regresaron canceladas");
                           contarMuestraAdic();
                           totalNotifGen.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                           @Override
                           public void onChanged(Integer valor) {
-
+                              Log.i(TAG,"regresaron generales");
                                       //  revRecibo.removeObservers(NavigationDrawerActivity.this);
 
                                     totMuestraAdic.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                                     @Override
                                     public void onChanged(Integer totma) {
                                         int totalnotif = totcor + totcan + totma +valor;
-
+                                        Log.i(TAG,"poniendo total notificaciones");
                                         gallery.setText(totalnotif + "");
                                     }
                                 });
@@ -919,7 +919,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         listaNotificacionesGen.observe(this, new Observer<List<NotificacionGen>>() {
             @Override
             public void onChanged(List<NotificacionGen> notificacionGens) {
-                if(notificacionGens!=null)
+
                     convertirListaNotif(notificacionGens);
             }
         });
@@ -928,6 +928,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     //la lista de notificaciones la cuento
     private  void convertirListaNotif(List<NotificacionGen> lista) {
         int totalnotif=0;
+        Log.i(TAG,"convirtiendo nofitificaciones generales");
+        if(lista!=null)
          for (NotificacionGen noti:
                 lista) {
            totalnotif+=noti.getTotal();

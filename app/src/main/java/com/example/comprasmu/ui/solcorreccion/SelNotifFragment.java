@@ -362,7 +362,7 @@ public class SelNotifFragment extends ListaSelecFragment{
 
    private HashMap<Integer,String[]> arreglarNotificacionesGenerales(List<NotificacionGen> notificaciones){
        HashMap<Integer,String[]> arregloTemporal=new HashMap<>();
-
+       if(notificaciones!=null)
        for (NotificacionGen notificacionGen:
                notificaciones) {
            String[] arregloNoti= arregloTemporal.get(notificacionGen.getTipo());
