@@ -4,6 +4,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -31,6 +32,7 @@ import com.example.comprasmu.data.dao.ProductoExhibidoDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.databinding.VerInformeFragmentBinding;
@@ -40,6 +42,7 @@ import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.gallery.GalFotosFragment;
 import com.example.comprasmu.ui.informedetalle.InformeDetalleAdapter;
 import com.example.comprasmu.ui.informedetalle.VerInformeDetFragment;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -65,7 +68,7 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
     private VerInformeFragmentBinding mBinding;
     private InformeDetalleAdapter mListAdapter;
     private static final String TAG = "VerInformeFragment";
-
+    LoadingAlert alert;
     private int cliente;
 
     String directorio;
@@ -104,19 +107,10 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
             informeSel = datosRecuperados.getInt(NuevoinformeFragment.INFORMESEL);
             //busco el informe
             mViewModel.buscarInforme(informeSel);
-
-       /*   mViewModel.informevisita.observe(getViewLifecycleOwner(), new Observer<InformeCompraDao.InformeCompravisita>() {
-            @Override
-            public void onChanged(InformeCompraDao.InformeCompravisita informeCompra) {
-                //lleno el formulario
-               // crearFormulario();
-                mBinding.setInforme(informeCompra);
-
-            }
-        });*/
+            actualizarImagenes();
 
             setupListAdapter();
-            llenarDetalle();
+
 
         }
 
@@ -345,7 +339,21 @@ public class VerInformeFragment extends Fragment implements InformeDetalleAdapte
         fragmentTransaction.commit();
 
     }
+    private void actualizarImagenes() {
 
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        MutableLiveData<Boolean> observable=new MutableLiveData<>();
+        observable.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                alert.closeAlertDialog();
+                llenarDetalle();
+            }
+        });
+        String dirLog=getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
+        mViewModel.actualizarImagen(dirLog,observable);
+    }
     @Override
     public void onClickCancelar(InformeCompraDetalle detalle) {
 
