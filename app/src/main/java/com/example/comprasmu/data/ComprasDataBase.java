@@ -17,6 +17,7 @@ import com.example.comprasmu.data.dao.CorEtiquetadoCajaDetDao;
 import com.example.comprasmu.data.dao.CorreccionDao;
 import com.example.comprasmu.data.dao.DetalleCajaDao;
 import com.example.comprasmu.data.dao.GeocercaDao;
+import com.example.comprasmu.data.dao.HistoricoMuestrasDao;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.dao.InformeCompraDetDao;
@@ -44,6 +45,7 @@ import com.example.comprasmu.data.modelos.CorEtiquetadoCajaDet;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DetalleCaja;
 import com.example.comprasmu.data.modelos.Geocerca;
+import com.example.comprasmu.data.modelos.HistoricoMuestras;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -77,8 +79,8 @@ import java.util.List;
         CatalogoDetalle.class, Atributo.class, Geocerca.class,
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class,
-        Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class, InformeGastoDet.class, AcuseRecibo.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=32, exportSchema = false)
+        Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class, InformeGastoDet.class, AcuseRecibo.class, HistoricoMuestras.class},
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=33, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -109,21 +111,20 @@ public abstract class ComprasDataBase extends RoomDatabase {
     public abstract InformeEnvioDetDao getInformeEnvioDetDao();
     public abstract InformeGastoDetDao getInformeGastoDetDao();
     public abstract AcuseReciboDao getAcuseReciboDao();
+    public abstract HistoricoMuestrasDao getHistoricoMuestrasDao();
     public static ComprasDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
             ctx=context;
             synchronized (ComprasDataBase.class) {
                 if (INSTANCE == null) {
-                 /*   INSTANCE =  Room.databaseBuilder(context,
-                            ReportesDatabase.class, "muestreo").allowMainThreadQueries()
-                            .addMigrations(MIGRATION_1_2)
-                            .build();*/
+
                     INSTANCE =  Room.databaseBuilder(context,
                             ComprasDataBase.class, "compras_data").allowMainThreadQueries()
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
-                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
-                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29,MIGRATION_29_30,MIGRATION_30_31,MIGRATION_31_32)
+                                    ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
+                                    MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
+                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29,MIGRATION_29_30,MIGRATION_30_31,MIGRATION_31_32, MIGRATION_32_33)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -168,7 +169,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
             database.execSQL(
                     "ALTER TABLE lista_compras_detalle ADD COLUMN lid_orden INTEGER DEFAULT 0 NOT NULL; " );
 
-
         }
     };
 
@@ -182,7 +182,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     "DELETE FROM lista_compras_detalle " );
             database.execSQL(
                     "DELETE FROM lista_compras " );
-
 
             database.execSQL(
                     "ALTER TABLE informe_temp ADD COLUMN clienteSel INTEGER DEFAULT 0 NOT NULL; " );
@@ -595,6 +594,29 @@ public abstract class ComprasDataBase extends RoomDatabase {
 
         }
     };
+    static final Migration MIGRATION_32_33 = new Migration(32,33) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "DROP TABLE IF EXISTS historico_muestras; " );
+            database.execSQL("create  TABLE historico_muestras ( hisId INTEGER not null," +
+                    "inf_indice TEXT," +
+                    "plantaId INTEGER not null," +
+                    "clienteId INTEGER not null,  " +
+                    "ind_informes_id INTEGER not null," +
+                    "ind_id INTEGER not null ," +
+                    "productoId INTEGER not null, "+
+                    "producto TEXT ," +
+                    "tamanioId INTEGER not null ," +
+                    "presentacion TEXT,  " +
+                    "empaquesId INTEGER not null ," +
+                    "empaque TEXT," +
+                    "caducidad INTEGER, "+
+                    "tipoAnalisis INTEGER not null, "+
+                    "nombreAnalisis TEXT ,  PRIMARY KEY(hisId)) ");
+
+        }
+    };
     private void cargandodatos(){
 
         runInTransaction(new Runnable() {
@@ -602,27 +624,14 @@ public abstract class ComprasDataBase extends RoomDatabase {
             public void run() {
                 ReactivoDao dao = getReactivoDao();
                 List<Reactivo> myProducts=dao.findAllsimple();
-                   // if (myProducts == null||myProducts.size()==0) {
-                        //no tengo datos
-                     //   prepopulatelc();
-                    //    prepopulatedetc();
                 prepopulateder();
                 prepopulatederpeni();
                 prepopulatederele();
-                //catalogos();
-
-                   // }
                 List<Reactivo> myProductsP=dao.findByCliente(5);
-                if (myProductsP == null||myProductsP.size()==0) {
-                    //no tengo datos
-
-
-
-                }
                 Reactivo myProductsem=dao.findsimple(91);
-                //if (myProductsem == null) {
-                    prepopulatereaEmp();
-               // }
+
+                prepopulatereaEmp();
+
                 prepopulateCorEtiq();
             }
         });
@@ -782,50 +791,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setClienteSel(cliid);
         camposForm.add(campo);
 
-       /* campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.azucareS));
-        campo.setNombreCampo(Contrato.TablaInformeDet.AZUCARES);
-        campo.setType("agregarImagen");
-        campo.setTabla("ID");
-
-
-        campo.setId(29);
-        campo.setSigId(30);
-        camposForm.add(campo);
-
-
-
-        /*campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.energia));
-        campo.setNombreCampo(Contrato.TablaInformeDet.ENERGIA);
-        campo.setType("agregarImagen");
-        campo.setId(30);
-        camposForm.add(campo);
-*/
-     /*   campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.foto_num_tienda));
-        campo.setNombreCampo( Contrato.TablaInformeDet.FOTONUMTIENDA);
-        campo.setType("agregarImagen");
-        campo.setTabla("ID");
-
-        campo.setId(30);
-        campo.setSigId(31);
-        camposForm.add(campo);
-
-
-
-
-        campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.marca_traslape));
-        campo.setNombreCampo(Contrato.TablaInformeDet.MARCA_TRASLAPE);
-        campo.setType("agregarImagen");
-        campo.setTabla("ID");
-
-        campo.setId(31);
-        campo.setSigId(32);
-        camposForm.add(campo);*/
-
-
         campo = new Reactivo();
         campo.setLabel( ctx.getString(R.string.danio1));
         campo.setNombreCampo("danio1");
@@ -852,19 +817,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setClienteSel(cliid);
         camposForm.add(campo);
 
-
-      /*  campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.foto_atributoa));
-        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOA);
-        campo.setType("agregarImagen");
-        campo.setTabla("ID");
-
-        campo.setId(34);
-        campo.setSigId(35);
-        camposForm.add(campo);*/
-
-
-
         campo = new Reactivo();
         campo.setLabel( ctx.getString(R.string.danio2));
         campo.setId(35);
@@ -890,16 +842,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
         camposForm.add(campo);
-       /* campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.foto_atributob));
-        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOB);
-        campo.setType("agregarImagen");
-        campo.setTabla("ID");
-
-        campo.setId(37);
-        campo.setSigId(38);
-        camposForm.add(campo);*/
-
         campo = new Reactivo();
         campo.setLabel( ctx.getString(R.string.danio3));
         campo.setId(38);
@@ -924,15 +866,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setCliente(cliente);
         campo.setClienteSel(cliid);
         camposForm.add(campo);
-      /*  campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.foto_atributoc));
-        campo.setNombreCampo(Contrato.TablaInformeDet.FOTO_ATRIBUTOC);
-        campo.setType("agregarImagen");
-        campo.setTabla("ID");
-
-        campo.setId(40);
-        campo.setSigId(41);
-        camposForm.add(campo);*/
         campo=new Reactivo();
         campo.setLabel("QR");
         campo.setTabla("ID");
@@ -1081,16 +1014,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         String cliente="PEÑAFIEL";
         String cliid="5,7";
 
-      /*  campo.setLabel(ctx.getString(R.string.cliente));
-        campo.setNombreCampo( "clientesId");
-        campo.setType("selectDes");
-        campo.setCatalogo(true);
-        campo.setSigId(52);//abrir listacompra
-        campo.setId(51);
-        campo.setTabla("I");
-        campo.setCliente("PEÑAFIEL");*/
         List<Reactivo> camposForm = new ArrayList<Reactivo>();
-       // camposForm.add(campo);
         campo = new Reactivo();
 
         campo.setLabel(ctx.getString(R.string.se_compro_producto));
@@ -1296,17 +1220,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setClienteSel(cliid);
         camposForm.add(campo);
 
-
-     /*   campo=new Reactivo();
-        campo.setLabel(ctx.getString(R.string.etiqueta_evaluacion));
-        campo.setNombreCampo(Contrato.TablaInformeDet.ETIQUETA_EVALUACION);
-        campo.setType("agregarImagen");
-        campo.setTabla("ID");
-        campo.setId(42);
-        campo.setSigId(48);
-        campo.setCliente(cliente);    campo.setClienteSel(cliid);
-        camposForm.add(campo);*/
-
         //insert into reactivos values(43,1,'¿CAPTURAR INFORME DE OTRO CLIENTE MISMA TIENDA?',"preguntasino","",0,0,0,null)
         campo=new Reactivo();
         campo.setLabel(ctx.getString(R.string.pregunta_mas_clientes));
@@ -1366,17 +1279,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         String cliente="ELECTROPURA";
         String cliid="6";
 
-      /*  campo.setLabel(ctx.getString(R.string.cliente));
-        campo.setNombreCampo( "clientesId");
-        campo.setType("selectDes");
-        campo.setCatalogo(true);
-        campo.setSigId(72);//abrir listacompra
-        campo.setId(71);
-        campo.setTabla("I");
-        campo.setCliente(cliente);    campo.setClienteSel(cliid);*/
         List<Reactivo> camposForm = new ArrayList<Reactivo>();
-       // camposForm.add(campo);
-        //campo = new Reactivo();
 
         campo.setLabel(ctx.getString(R.string.se_compro_producto));
         campo.setNombreCampo( "primeraMuestra");
@@ -1667,21 +1570,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
         lista.add(cat);
         getCatalogoDao().insertAll(lista);
         getCatalogoDao().insertAll(lista);
-       /* lista=new ArrayList<>();
-        cat=new CatalogoDetalle();
-        cat.setCad_idcatalogo(2);
-        cat.setCad_idopcion(1);
-        cat.setCad_descripcionesp("anaquel");
-        cat.setCad_nombreCatalogo("ubicacion_muestra");
-        lista.add(cat);
-        getCatalogoDao().insertAll(lista);
-        cat=new CatalogoDetalle();
-        cat.setCad_idcatalogo(2);
-        cat.setCad_idopcion(2);
-        cat.setCad_descripcionesp("refri");
-        cat.setCad_nombreCatalogo("ubicacion_muestra");
-        lista.add(cat);
-        getCatalogoDao().insertAll(lista);*/
+
     }
 
 
@@ -1707,18 +1596,6 @@ public abstract class ComprasDataBase extends RoomDatabase {
         campo.setClienteSel(cliid);
 
         camposForm.add(campo);
-
-        /* se pasó a etiquetado
-        campo = new Reactivo();
-        campo.setLabel(ctx.getString(R.string.acomodo_mues));
-        campo.setId(92);
-        campo.setTabla("ED");
-        campo.setNombreCampo("acomodo_muestras");
-        campo.setType("agregarImagen");
-        campo.setSigId(93);
-        campo.setCliente(cliente);
-        campo.setClienteSel(cliid);
-        camposForm.add(campo);*/
 
         campo = new Reactivo();
         campo.setLabel(ctx.getString(R.string.relleno_esp));

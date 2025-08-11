@@ -304,7 +304,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         //reviso si es fecha permitid
         SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yy");
 
-        if(!codigosperm.equals(""));
+     /*   if(!codigosperm.equals(""));
         {
             codigosperm=codigosperm.replace("=","");
             String[] fechas=codigosperm.split(";");
@@ -323,7 +323,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
             }
 
-        }
+        }*/
         //busco en los informes
         List<InformeCompraDetalle> informeCompraDetalles=detalleRepo.getByProductoAna(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion);
         Log.d(TAG,"buscando codigo igual"+informeCompraDetalles.size());
@@ -344,7 +344,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         //reviso si es fecha permitid
         SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yy");
 
-        if(!codigosperm.equals(""));
+      /*  if(!codigosperm.equals(""));
         {
             codigosperm=codigosperm.replace("=","");
             String[] fechas=codigosperm.split(";");
@@ -363,7 +363,7 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
             }
 
-        }
+        }*/
         Log.d(TAG,"SI TRAigo siglas"+productosel.siglas);
         //busco en los informes
         List<InformeCompraDetalle> informeCompraDetalles=detalleRepo.getByProductoAnaPen(indice,planta,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion, productosel.siglas);

@@ -223,19 +223,5 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " WHERE lista_compras.ciudadNombre = :cd and informe_compras.clientesId=:cliente and (informe_detalle.estatus=1 or informe_detalle.estatus=3 ) and visitas.indice=:indice " )
     public abstract List<InformeCompraDetalle>   getInformesxCliCd(String cd,int cliente, String indice);
 
-  /*  public class InformeDetalleImagenes {
 
-        public int id;
-        public int foto_codigo_produccion;
-        public int energia;
-        public int producto_exhibido;
-        public int foto_num_tienda;
-        public int marca_traslape;
-
-        public int foto_atributoa;
-        public int foto_atributob;
-        public int foto_atributoc;
-        public int etiqueta_evaluacion;
-
-    }*/
 }

@@ -28,6 +28,9 @@ import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.EliminadorIndice;
 
+/****
+ * proceso para borrar las tablas con informes de el mes actual
+ */
 public class BorrarActivity extends AppCompatActivity {
     public static String INDICEACT="comprasmu.borindiceact";
     TextView aviso;
@@ -107,6 +110,7 @@ public class BorrarActivity extends AppCompatActivity {
         mViewModel.borrarAcuseRecibo();
         mViewModel.borrarConfiguracion();
         mViewModel.borrarCorreccionEtiq(indice_anterior);
+        mViewModel.borrarHistoricoMuestras();
         //inicializo constantes
         Constantes.CIUDADTRABAJO ="" ;
         Constantes.IDCIUDADTRABAJO=0;

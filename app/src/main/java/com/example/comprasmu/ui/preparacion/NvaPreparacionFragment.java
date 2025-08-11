@@ -1061,7 +1061,7 @@ public class NvaPreparacionFragment extends Fragment {
             /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
             listaCompra.getPlantaNombre();*/
             //puede ser el que tengo
-            if(inf!=null&&inf.getId()!= informesel)
+            if(inf!=null&&inf.getId()!= informesel&&inf.getEstatus()!=4)
                 continue;
             listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+","+listaCompra.getClienteNombre(),listaCompra.getPlantaNombre()));
 

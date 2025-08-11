@@ -411,14 +411,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     public boolean onOptionsItemSelected(MenuItem item) {
         NavController navController;
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_settings: //configuracion
 
                 navController = Navigation.findNavController(this, R.id.nav_host_fragment);
                 navController.navigate(R.id.nav_configurar);
                 return true;
 
 
-            case R.id.action_mapa:
+            case R.id.action_mapa: //enviar errores
                 Intent homeIntent=new Intent(this, LeerLogActivity.class);
                 startActivity(homeIntent);
                 return true;

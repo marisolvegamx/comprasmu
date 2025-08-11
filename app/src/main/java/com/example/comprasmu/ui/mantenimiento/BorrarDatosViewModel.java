@@ -30,6 +30,7 @@ import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
 import com.example.comprasmu.data.repositories.CorEtiqCajaDetRepoImpl;
 import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
+import com.example.comprasmu.data.repositories.HistoricoMuestrasRepositoryImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
@@ -291,7 +292,14 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         corEtiqCajaDetRepo.deleteAll();
 
     }
+    public void borrarHistoricoMuestras() {
+        complog.grabarError("borrando historico_muestras");
+        HistoricoMuestrasRepositoryImpl historicoMuestrasRepository=HistoricoMuestrasRepositoryImpl.getInstance(
+                ComprasDataBase.getInstance(context).getHistoricoMuestrasDao());
+        //busco el detalle
+        historicoMuestrasRepository.deleteAll();
 
+    }
 
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -44,16 +45,13 @@ public class DescargaCambiosImagenesTest {
         ImagenDetalleDao imagenDao= db.getImagenDetalleDao();
         ImagenDetRepositoryImpl imagenRepo=ImagenDetRepositoryImpl.getInstance(imagenDao);
 
-        Observable observable=new Observable();
-        observable.addObserver(new Observer() {
-            @Override
-            public void update(Observable observable, Object o) {
-                Log.d("PRUEBAS","termine");
-                ImagenDetalle resp= imagenRepo.findsimple(6633);
+        MutableLiveData<Boolean> observable=new MutableLiveData();
+
+        Log.d("PRUEBAS","termine");
+        ImagenDetalle resp= imagenRepo.findsimple(6633);
                if(resp!=null)
                    Log.d("PRUEBAS",resp.getRuta());
-            }
-        });
+
         String dirLog=context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
         DescargaCambiosImagenes descarga=new DescargaCambiosImagenes(dirLog,tvrepo,imagenRepo, usuario, indice, observable);
         descarga.ejecutar();

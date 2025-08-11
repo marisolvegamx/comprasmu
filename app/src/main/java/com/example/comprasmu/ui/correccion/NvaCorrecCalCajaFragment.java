@@ -687,7 +687,10 @@ if(correccionDet!=null)
                     Log.e(TAG,ex.getMessage());
                     ex.printStackTrace();
                 }
-
+            if(numcaja<1){
+                Toast.makeText(getContext(),R.string.selec_caja,Toast.LENGTH_SHORT).show();
+                return;
+            }
             // validar que no queden cajas vacias
             if(validarUltMuesCaja()){
                 preguntaview.aceptarSetEnabled(true);

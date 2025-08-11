@@ -11,8 +11,13 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +45,7 @@ import com.example.comprasmu.ui.informedetalle.DetalleProductoPenFragment;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listacompras.SelClienteFragment;
 import com.example.comprasmu.ui.sustitucion.SustitucionFragment;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import java.util.ArrayList;
@@ -97,6 +103,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     };
     private NuevoinformeViewModel niViewModel;
     private int nummuestra;
+    private LoadingAlert alert;
 
     public  ListaCompraFragment() {
 
@@ -537,6 +544,10 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
     @Override
     public void verBackup(ListaCompraDetalle productoSel) {
+        actualizarHistoricoMuestras(productoSel);
+    }
+
+    public void irABuckup(ListaCompraDetalle productoSel){
         //paso los params que necesito
        if(ismuestra) {
             this.dialogoSust(getContext(),clienteSel,0,0);
@@ -545,6 +556,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         mViewModel.listaSelec = lista;
         //es el detalle original
         mViewModel.setDetallebuSel(productoSel);
+
         Constantes.VarListCompra.detallebuSel=productoSel;
         if(!ismuestra) { //solo de consulta
             Constantes.VarListCompra.detallebuSel=productoSel;
@@ -826,5 +838,21 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             niViewModel.guardarRespSust(idvista, idcliente,nummuestra,niViewModel.getIdInformeNuevo(), iddetalleNuevo, valor,Contrato.TablaInformeDet.CAUSA_SUSTITUCIONID, "ID", consecutivo, false);
         }
 
+    }
+
+    private void actualizarHistoricoMuestras(ListaCompraDetalle productoSel) {
+
+        alert = new LoadingAlert(getActivity());
+        alert.startAlert();
+        String dirLog = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
+        LiveData<Boolean> listener = mViewModel.actualizarHistoricoMuestras(dirLog, this, plantaSel);
+
+        listener.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                alert.closeAlertDialog();
+                irABuckup(productoSel);
+            }
+        });
     }
 }

@@ -2,16 +2,20 @@ package com.example.comprasmu.ui.listadetalle;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 
 import com.example.comprasmu.DescargaListaCompraAuto;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.HistoricoMuestrasDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
@@ -22,12 +26,15 @@ import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaDetalleBu;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
+import com.example.comprasmu.data.repositories.HistoricoMuestrasRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.services.DescargaHistoricoMuestras;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -230,7 +237,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     //para las colsultas de bu
     public void consultasBackup(int idlista,int opcionsel,String categoria, String productoNombre, String empaque,int tamanio,int analisisid, String analisis,int iddetorig ){
-      Log.i(TAG,"consuta bu params"+idlista+"--"+ opcionsel+"--"+ categoria+"--"+ productoNombre+"--"+ empaque+"--"+ analisis+"--"+tamanio+"--"+iddetorig+"--"+analisisid);
+      Log.i(TAG,"consulta bu params"+idlista+"--"+ opcionsel+"--"+ categoria+"--"+ productoNombre+"--"+ empaque+"--"+ analisis+"--"+tamanio+"--"+iddetorig+"--"+analisisid);
         switch (analisisid){
           case 1: case 5: //fisico
                 consultaFisico(idlista, opcionsel, categoria, productoNombre, empaque, analisisid,tamanio,iddetorig);
@@ -578,5 +585,15 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         PeticionesServidor.PeticionLista peticionLista=peticionesServidor.crearPeticion(null, null,Constantes.INDICEACTUAL);
         return peticionesServidor.pedirListaCompraxCiudad(peticionLista,Constantes.CIUDADTRABAJO, descargaListaCompraAuto);
 
+    }
+
+    public LiveData<Boolean> actualizarHistoricoMuestras(String dirLog,LifecycleOwner lifecycleOwner,int plantaId){
+        HistoricoMuestrasDao historicoMuestrasDao=ComprasDataBase.getInstance(context).getHistoricoMuestrasDao();
+        HistoricoMuestrasRepositoryImpl historicoMuestraRepo=HistoricoMuestrasRepositoryImpl.getInstance(historicoMuestrasDao);
+        PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+
+        DescargaHistoricoMuestras descargaHistoricoMuestras=new DescargaHistoricoMuestras( dirLog,  historicoMuestraRepo, Constantes.CLAVEUSUARIO,  Constantes.INDICEACTUAL,
+                peticionesServidor,  lifecycleOwner);
+        return descargaHistoricoMuestras.ejecutar(plantaId);
     }
 }

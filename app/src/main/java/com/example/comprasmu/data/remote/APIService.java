@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.remote;
 
 import com.example.comprasmu.data.modelos.Correccion;
+import com.example.comprasmu.data.modelos.HistoricoMuestras;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -227,5 +228,8 @@ public interface APIService {
 
     @GET("cambiosInformes")
     Call<CambiosInformesReponse> getCambiosInformes( @Query("indice") String indice, @Query("cvereco") String usuario,@Query("fecha") String fecha);
+
+    @GET("deschistorico")
+    Call< List<HistoricoMuestras>> getHistoricoMuestras(@Query("indice") String indice, @Query("usuario") String usuario, @Query("planta") int plantaId);
 
 }

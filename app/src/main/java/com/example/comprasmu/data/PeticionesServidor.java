@@ -18,6 +18,7 @@ import com.example.comprasmu.SimpleTask;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Correccion;
+import com.example.comprasmu.data.modelos.HistoricoMuestras;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeEtapa;
@@ -1089,6 +1090,12 @@ public class PeticionesServidor {
         return data;
     }
 
+    /****
+     * se consulta el estatus del recibo del id enviado en el servidor
+     * @param indiceactual
+     * @param ciudadInf
+     * @param listener
+     */
     public void getEstatusRecibo(String indiceactual, String ciudadInf, IListenerRevRec listener) {
         final Call<PostResponse> batch = ServiceGenerator.getApiService().getReciboListo(indiceactual,usuario,ciudadInf);
 
@@ -1114,6 +1121,13 @@ public class PeticionesServidor {
         });
     }
 
+    /*******
+     * se pide al servidor los registros de imagenes detalle modificados desde la fecha enviada para sincronizar
+     * con la base local
+     * @param indice
+     * @param fecha
+     * @param listener
+     */
     public void pedirCambiosImagenes(String indice,String fecha, DescargaCambiosImagenes.DescargaCambImgagenListener listener){
 
         Log.d("PeticionesServidor","pedirCambiosImagenes usuario:"+usuario);
@@ -1156,6 +1170,15 @@ public class PeticionesServidor {
             }
         });
     }
+
+    /**********
+     * pide al servidor los registros del id informe etapa enviado se usa para actualizar los cambios en etiquetado
+     * pero tiende a desapareces porque se piden ya de todos los informes
+     * @param indice
+     * @param idInforme
+     * @param idrepository
+     * @return
+     */
     public LiveData<RespInfEtapaResponse> getInfEtiquetado(String indice, int idInforme, InfEtapaDetRepoImpl idrepository){
         MutableLiveData<RespInfEtapaResponse> informeEtapaLiveData=new MutableLiveData<>();
         Log.d("PeticionesServidor","getInfEtiquetado haciendo petición etiq ");
@@ -1240,6 +1263,15 @@ public class PeticionesServidor {
         });
         return data;
     }
+
+    /*****
+     * Se pide al servidor los registros modificados desde la fecha enviada de las tablas de informes compra
+     * detalle, informes etapa detalle, gastos detalle y envio detalle para sincronizarlos y actualizar los cambios
+     * en las tablas locales
+     * @param indice
+     * @param fecha
+     * @return
+     */
     public LiveData<CambiosInformesReponse> getCambiosInformes(String indice, String fecha){
         MutableLiveData<CambiosInformesReponse> informeEtapaLiveData=new MutableLiveData<>();
         Log.d("PeticionesServidor","getCambiosInformes haciendo petición ");
@@ -1283,5 +1315,50 @@ public class PeticionesServidor {
             }
         });
         return informeEtapaLiveData;
+    }
+    //se pide en el servidor el detalle de las muestras compradas en los 2 meses anteriores por planta para poder
+    //consultar los codigos no permitidos cuando se haga sustituciónn de pepsi
+    public LiveData<List<HistoricoMuestras>> getHistoricoMuestras(String indice, int plantaId){
+        MutableLiveData<List<HistoricoMuestras>> lista=new MutableLiveData<>();
+        Log.d("PeticionesServidor","getHistoricoMuestras usuario:"+usuario);
+
+        final Call< List<HistoricoMuestras>> batch = ServiceGenerator.getApiService().getHistoricoMuestras(indice,usuario,plantaId);
+
+        batch.enqueue(new Callback< List<HistoricoMuestras>>() {
+            @Override
+            public void onResponse(@Nullable Call< List<HistoricoMuestras>> call, @Nullable Response< List<HistoricoMuestras>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<HistoricoMuestras> respuesta = response.body();
+
+                    if(respuesta!=null)
+                    {
+                        Log.d("PeticionesServidor getHistoricoMuestras","tamanio lista:"+respuesta.size()+"--"+respuesta);
+
+                        lista.setValue(respuesta);
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor getHistoricoMuestras","lista vacia");
+                        lista.setValue(null);
+                    }
+
+                }else //aviso al usuario //solo si esta desde descargar lista
+                {
+
+                    lista.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call< List<HistoricoMuestras>> call, @Nullable Throwable t) {
+                if (t != null) {
+
+                    Log.e(TAG+" getHistoricoMuestras", t.getMessage());
+                    lista.setValue(null);
+                }
+            }
+        });
+        return lista;
     }
 }
