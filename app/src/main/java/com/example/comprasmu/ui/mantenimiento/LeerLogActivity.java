@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,15 +34,6 @@ public class LeerLogActivity extends AppCompatActivity {
 
         mTextView = findViewById(R.id.txtlllog);
         Log.d("hola","hola");
-        // Enables Always-on
-      /*  ComprasLog flog=ComprasLog.getSingleton();
-
-            try {
-                String todo = flog.leerArch();
-                mTextView.setText(todo);
-            }catch (Exception e) {
-                e.printStackTrace();
-            }*/
 
         //envio el log al servidor que lo guardará en la carpeta del usuario
 
@@ -56,6 +48,8 @@ public class LeerLogActivity extends AppCompatActivity {
         msgIntent.setAction(SubirLogService.ACTION_UPLOAD_LOG);
         startService(msgIntent);
         respaldarBd();
+        Toast.makeText(getApplicationContext(), "Informe de errores enviado correctamente", Toast.LENGTH_LONG).show();
+
         finish();
     }
 
