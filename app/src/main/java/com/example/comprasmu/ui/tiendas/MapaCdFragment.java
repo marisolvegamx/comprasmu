@@ -244,7 +244,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         btnvatienda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                nuevaTienda();
+                if(mensajetienda.getVisibility()==View.GONE)
+                    nuevaTienda();
             }
         });
 
