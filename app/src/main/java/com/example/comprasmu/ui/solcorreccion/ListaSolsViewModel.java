@@ -268,7 +268,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
         //busco si hay cancelacion de preparacion
         List<InformeEtapa> totCanceleta=getTotalCancelEtaSim(Constantes.INDICEACTUAL,1);
         Log.d(TAG,"contarCanceladas-tot prep"+(totCanceleta!=null?totCanceleta.size():0));
-        for (InformeEtapa informe:totCanceleta
+      /*  for (InformeEtapa informe:totCanceleta
         ) { //busco si no se ha vuelto a elaborar
             InformeEtapa inf=getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,0);
             if(inf!=null){
@@ -278,8 +278,8 @@ public class ListaSolsViewModel extends AndroidViewModel {
             else
                 itotCanceleta++;
 
-        }
-
+        }*/
+        itotCanceleta=totCanceleta!=null?totCanceleta.size():0;
         List<InformeCompraDetalle> informesCancel=getTotalCancel(Constantes.INDICEACTUAL);
         totCancel=new MutableLiveData<>();
 
