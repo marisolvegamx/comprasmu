@@ -160,7 +160,8 @@ public class NvaPreparacionFragment extends Fragment {
                     plantaSel = listacomp.get(0).getPlantasId();
                     //reviso si ya tengo informe
                     InformeEtapa inf=mViewModel.getInformexPlantaEta(plantaSel,1,Constantes.INDICEACTUAL,0);
-                    if(inf!=null) {
+                    if(inf!=null&&inf.getEstatus()!=4) {
+                        aceptar.setEnabled(false);
                         Toast.makeText(getActivity(), "No hay datos que mostrar", Toast.LENGTH_SHORT).show();
                         return root;
                     }
@@ -178,6 +179,7 @@ public class NvaPreparacionFragment extends Fragment {
 
         }
         else{
+            aceptar.setEnabled(false);
             Toast.makeText(getActivity(), "No hay datos que mostrar", Toast.LENGTH_SHORT).show();
             return root;
         }
@@ -1061,7 +1063,7 @@ public class NvaPreparacionFragment extends Fragment {
             /*String tupla=Integer.toString(listaCompra.getClienteId())+";"+
             listaCompra.getPlantaNombre();*/
             //puede ser el que tengo
-            if(inf!=null&&inf.getId()!= informesel)
+            if(inf!=null&&inf.getId()!= informesel&&inf.getEstatus()!=4)
                 continue;
             listaPlantas.add(new DescripcionGenerica(listaCompra.getPlantasId(), listaCompra.getClienteNombre()+" "+listaCompra.getPlantaNombre(),listaCompra.getClientesId()+","+listaCompra.getClienteNombre(),listaCompra.getPlantaNombre()));
 

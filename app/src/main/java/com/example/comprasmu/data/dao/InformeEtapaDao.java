@@ -69,7 +69,7 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and plantasId=:plantaid limit 1")
     public abstract InformeEtapa getInformexPlant(int etapa, String indice, int plantaid);
 
-    @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and plantasId=:plantaid and estatus>:estatus limit 1")
+    @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and plantasId=:plantaid and estatus>:estatus order by id desc limit 1")
     public abstract InformeEtapa getInformexPlantEst(int etapa, String indice, int plantaid, int estatus);
     @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and plantasId=:plantaid and estatus=:estatus limit 1")
     public abstract InformeEtapa getInformexPlantEst2(int etapa, String indice, int plantaid, int estatus);
@@ -154,5 +154,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
 
     @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and etapa=:etapa and ciudadNombre=:ciudad order by id desc")
     public abstract List<InformeEtapa>  getInfxCiudadSim(String indice, int etapa, String ciudad);
+
+    @Query("SELECT * FROM informe_etapa where etapa=1 and indice=:indice and estatus>0 and estatus<>4")
+    public abstract LiveData<List<InformeEtapa>> getInformesActivosPreparacion( String indice);
 
 }
