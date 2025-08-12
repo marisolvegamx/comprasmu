@@ -40,7 +40,7 @@ public class DescAutomaticasServiceManager {
                Log.e("DescAutomaticasServiceManager","Error al convertir usuario");
            }
         }
-        if(clave%3==0||clave%2==0) {
+        if((clave%3==0||clave%2==0)&&descargasAutomaticasservicio!=null) {
             if (!servicioIniciado) {
 
                 Intent intent = new Intent(context, DescargasAutomaticasService.class);

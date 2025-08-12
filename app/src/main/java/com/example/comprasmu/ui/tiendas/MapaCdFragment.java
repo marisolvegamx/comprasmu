@@ -136,6 +136,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     LinearLayout mensajetienda;
     TextView txtcerrarmensaje;
     Circle circleNuevaTienda;
+    Button btnvatienda;
     public MapaCdFragment() {
     }
 
@@ -153,7 +154,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             //   cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
         mapFragment.getMapAsync(this);
-
+        btnvatienda=view.findViewById(R.id.btnmcdnvati);
         mensajetienda=view.findViewById(R.id.llmapamensajetienda);
         txtcerrarmensaje=view.findViewById(R.id.txtmapcerrarmensaje);
         verfiltros=false;
@@ -171,6 +172,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         llcancel.setVisibility(View.GONE);
         mensajetienda.setVisibility(View.GONE);
         btnverfil=view.findViewById(R.id.btnmfiltros);
+        btnvatienda.setEnabled(false);
         btnverfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,7 +242,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
             }
         });
-        Button btnvatienda=view.findViewById(R.id.btnmcdnvati);
+
         btnvatienda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -436,7 +438,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     }
 
     public void guardarPosicion(Location loc)
-
     {
         lastKnownLocation=loc;
         if (lastKnownLocation != null&&mMap!=null) {
@@ -518,9 +519,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             verfiltros=false;
         }
     }
-    protected void createLocationRequest() {
 
-    }
 
     public void dibujarZonas(List<Geocerca> zonas){
         regionPolygon=new ArrayList<Polygon>();
@@ -591,6 +590,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 nollistatiendas=tiendas;
                 Log.d(TAG," antes de dibujar"+(new Date()));
                 dibujarTiendas(tiendas);
+
              //   alert.closeAlertDialog();
                 listatiendas.removeObservers(getViewLifecycleOwner());
             }
@@ -688,6 +688,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,10));
         else
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 4));
+       btnvatienda.setEnabled(true);
     }
     public void buscarClientes(){
         //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
@@ -899,9 +900,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     @Override
     public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
        if(getView()!=null) {
-           alert.closeAlertDialog();
+
            buscarPlantas(Constantes.CIUDADTRABAJO);
            buscarClientes();
+           alert.closeAlertDialog();
        }
     }
 
