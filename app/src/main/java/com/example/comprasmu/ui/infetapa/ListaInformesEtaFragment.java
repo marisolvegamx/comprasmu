@@ -140,8 +140,10 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     actualizarImagenes();
 
                 }
-                else
-                    listainfs=mViewModel.cargarEtapaAll(etapa,indice);
+                else if(etapa==1)
+                    listainfs=mViewModel.cargarPreparacion(indice);
+                        else
+                            listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
                 @Override
                 public void onChanged(List<InformeEtapa> informeEtapas) {
