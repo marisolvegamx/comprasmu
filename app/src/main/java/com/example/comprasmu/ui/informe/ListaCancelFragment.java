@@ -193,12 +193,12 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                                 if (informes != null && informes.size() > 0) {
                                     for (InformeEtapa informe:informes
                                     ) { //busco si no se ha vuelto a elaborar
-                                        InformeEtapa inf=mViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,2);
+                                     /*   InformeEtapa inf=mViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,2);
                                         if(inf!=null){
                                             //corregido
                                             continue;
                                         }
-                                        else
+                                        else*/
                                             listageneral.add(informe);
 
                                     }
