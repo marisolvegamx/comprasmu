@@ -1074,21 +1074,14 @@ public class NvaPreparacionFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mViewModel = null;
-
         cf=null;
         camposForm=null;
-
         root=null;
         textoint=null;
-
-
         fotomos=null;
         sv=null;
         btnrotar=null;
-
         aceptar=null;
-
-
         nombre_foto=null;
         archivofoto=null;
     }
