@@ -1,27 +1,32 @@
 package com.example.comprasmu.data.modelos;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "tienda")
 public class Tienda {
 
+    @PrimaryKey()
     private int une_id;
     private String une_descripcion;
     private String tipoTienda;
-    private int une_tipotienda;
+    private Integer une_tipotienda;
     private String une_direccion;
     private String ciudad;
-    private int une_cla_ciudad;
+    private Integer une_cla_ciudad;
     private String pais;
-    private int une_cla_pais;
+    private Integer une_cla_pais;
     private String une_puntocardinal;
-    private int une_estatus;
+    private Integer une_estatus;
     private String une_coordenadasxy;
-    private int une_cadenacomercial;
+    private Integer une_cadenacomercial;
     private String une_dir_referencia;
     private String color;
-    private int estpen; //para saber si compre en peñafiel
-    private int estpep;
-    private int estele;
-    private int estjum;
+    private Integer estpen; //para saber si compre en peñafiel
+    private Integer estpep;
+    private Integer estele;
+    private Integer estjum;
+    private String indiceUltimaVisita;
 
     public int getUne_id() {
         return une_id;
@@ -47,11 +52,11 @@ public class Tienda {
         this.tipoTienda = tipoTienda;
     }
 
-    public int getUne_tipotienda() {
+    public Integer getUne_tipotienda() {
         return une_tipotienda;
     }
 
-    public void setUne_tipotienda(int une_tipotienda) {
+    public void setUne_tipotienda(Integer une_tipotienda) {
         this.une_tipotienda = une_tipotienda;
     }
 
@@ -71,11 +76,11 @@ public class Tienda {
         this.ciudad = ciudad;
     }
 
-    public int getUne_cla_ciudad() {
+    public Integer getUne_cla_ciudad() {
         return une_cla_ciudad;
     }
 
-    public void setUne_cla_ciudad(int une_cla_ciudad) {
+    public void setUne_cla_ciudad(Integer une_cla_ciudad) {
         this.une_cla_ciudad = une_cla_ciudad;
     }
 
@@ -87,11 +92,11 @@ public class Tienda {
         this.pais = pais;
     }
 
-    public int getUne_cla_pais() {
+    public Integer getUne_cla_pais() {
         return une_cla_pais;
     }
 
-    public void setUne_cla_pais(int une_cla_pais) {
+    public void setUne_cla_pais(Integer une_cla_pais) {
         this.une_cla_pais = une_cla_pais;
     }
 
@@ -103,11 +108,11 @@ public class Tienda {
         this.une_puntocardinal = une_puntocardinal;
     }
 
-    public int getUne_estatus() {
+    public Integer getUne_estatus() {
         return une_estatus;
     }
 
-    public void setUne_estatus(int une_estatus) {
+    public void setUne_estatus(Integer une_estatus) {
         this.une_estatus = une_estatus;
     }
 
@@ -119,11 +124,11 @@ public class Tienda {
         this.une_coordenadasxy = une_coordenadasxy;
     }
 
-    public int getUne_cadenacomercial() {
+    public Integer getUne_cadenacomercial() {
         return une_cadenacomercial;
     }
 
-    public void setUne_cadenacomercial(int une_cadenacomercial) {
+    public void setUne_cadenacomercial(Integer une_cadenacomercial) {
         this.une_cadenacomercial = une_cadenacomercial;
     }
 
@@ -135,8 +140,6 @@ public class Tienda {
         this.une_dir_referencia = une_dir_referencia;
     }
 
-
-
     public String getColor() {
         return color;
     }
@@ -145,35 +148,43 @@ public class Tienda {
         this.color = color;
     }
 
-    public int getEstpen() {
+    public Integer getEstpen() {
         return estpen;
     }
 
-    public void setEstpen(int estpen) {
+    public void setEstpen(Integer estpen) {
         this.estpen = estpen;
     }
 
-    public int getEstpep() {
+    public Integer getEstpep() {
         return estpep;
     }
 
-    public void setEstpep(int estpep) {
+    public void setEstpep(Integer estpep) {
         this.estpep = estpep;
     }
 
-    public int getEstele() {
+    public Integer getEstele() {
         return estele;
     }
 
-    public void setEstele(int estele) {
+    public void setEstele(Integer estele) {
         this.estele = estele;
     }
 
-    public int getEstjum() {
+    public Integer getEstjum() {
         return estjum;
     }
 
-    public void setEstjum(int estjum) {
+    public void setEstjum(Integer estjum) {
         this.estjum = estjum;
+    }
+
+    public String getIndiceUltimaVisita() {
+        return indiceUltimaVisita;
+    }
+
+    public void setIndiceUltimaVisita(String indiceUltimaVisita) {
+        this.indiceUltimaVisita = indiceUltimaVisita;
     }
 }

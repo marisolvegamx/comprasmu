@@ -33,6 +33,7 @@ import com.example.comprasmu.data.dao.SiglaDao;
 import com.example.comprasmu.data.dao.SolicitudCorDao;
 import com.example.comprasmu.data.dao.SustitucionDao;
 import com.example.comprasmu.data.dao.TablaVersionesDao;
+import com.example.comprasmu.data.dao.TiendaDao;
 import com.example.comprasmu.data.dao.VisitaDao;
 import com.example.comprasmu.data.modelos.AcuseRecibo;
 import com.example.comprasmu.data.modelos.Atributo;
@@ -60,6 +61,7 @@ import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
+import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.utils.CreadorFormulario;
 import java.util.ArrayList;
@@ -77,7 +79,7 @@ import java.util.List;
         CatalogoDetalle.class, Atributo.class, Geocerca.class,
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class,
-        Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class, InformeGastoDet.class, AcuseRecibo.class},
+        Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class, InformeGastoDet.class, AcuseRecibo.class, Tienda.class},
         views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=32, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
@@ -109,6 +111,8 @@ public abstract class ComprasDataBase extends RoomDatabase {
     public abstract InformeEnvioDetDao getInformeEnvioDetDao();
     public abstract InformeGastoDetDao getInformeGastoDetDao();
     public abstract AcuseReciboDao getAcuseReciboDao();
+    public abstract TiendaDao getTiendaDao();
+
     public static ComprasDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
             ctx=context;
@@ -591,6 +595,35 @@ public abstract class ComprasDataBase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL(
                     "ALTER TABLE acuse_recibo ADD COLUMN ciudad TEXT; " );
+
+
+        }
+    };
+    static final Migration MIGRATION_32_33 = new Migration(32,33) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+
+            database.execSQL("create  TABLE tienda ( une_id INTEGER not null,"+
+            "une_descripcion TEXT,"+
+            " tipoTienda TEXT,"+
+            " une_tipotienda INTEGER ,"+
+            "  une_direccion TEXT ,"+
+            " ciudad TEXT,"+
+            " une_cla_ciudad INTEGER,"+
+            " pais TEXT,"+
+            "  une_cla_pais INTEGER,"+
+            " une_puntocardinal TEXT,"+
+            " une_estatus INTEGER,"+
+            "  une_coordenadasxy TEXT,"+
+            " une_cadenacomercial INTEGER,"+
+            " une_dir_referencia TEXT,"+
+            " color TEXT,"+
+            " estpen INTEGER,"+ //para saber si compre en peñafiel
+            "  estpep INTEGER,"+
+            " estele INTEGER,"+
+            " estjum INTEGER,"+
+            " indiceUltimaVisita TEXT," +
+                    " PRIMARY KEY(une_id )) ");
 
 
         }
