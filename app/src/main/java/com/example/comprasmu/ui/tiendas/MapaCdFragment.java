@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -395,12 +396,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         try {
             if (locationPermissionGranted) {
 
-
                 fusedLocationClient=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
                 locallis=new miLocationListener();
                 this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-
                 final boolean gpsEnabled = fusedLocationClient.isProviderEnabled(LocationManager.GPS_PROVIDER);
                 if (!gpsEnabled) {
                     Log.d(TAG, "1");
@@ -456,15 +454,15 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
     public void nuevaTienda(){
         BuscadorTiendas bt=new BuscadorTiendas();
-
         if(lastKnownLocation!=null) {
+            compraslog.info(TAG,".nuevatienda lastKnownLocation:",lastKnownLocation.getLatitude()+"--"+lastKnownLocation.getLongitude());
+
             if(nollistatiendas!=null)
             if (bt.hayTiendas(nollistatiendas, lastKnownLocation.getLatitude(),
                     lastKnownLocation.getLongitude())) {
+                compraslog.info(TAG,".nuevatienda ","ya existe");
                 //solo informativo te recomendamos visitar una tienda existente
                          mensajetienda.setVisibility(View.VISIBLE);
-
-
                  circleNuevaTienda = mMap.addCircle(new CircleOptions()
                         .center(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
                         .radius(200)
@@ -838,9 +836,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     }
 
 
-
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -885,6 +880,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         markerSel=null;
     }
 
+
     @Override
     public void onDestroy() {
         if(alert!=null) {
@@ -894,6 +890,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         if (this.locallis != null)
             locallis.desactivar();
         super.onDestroy();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (this.locallis != null)
+            locallis.desactivar();
 
     }
 

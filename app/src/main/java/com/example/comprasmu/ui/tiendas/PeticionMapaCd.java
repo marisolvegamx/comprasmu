@@ -49,14 +49,10 @@ public class PeticionMapaCd {
                     TiendasResponse respuestaTiendas = response.body();
                     if(respuestaTiendas!=null) {
                       //  Log.d(TAG,"llego algo"+respuestaTiendas.getTiendas().size());
-
                         listatiendas.setValue(respuestaTiendas.getTiendas());
                         listageocercas.setValue(respuestaTiendas.getGeocercas());
-
                     }
                     //  return lista;
-
-
                 }
             }
 
@@ -64,7 +60,6 @@ public class PeticionMapaCd {
             public void onFailure(@Nullable Call<TiendasResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(TAG, t.getMessage());
-
                 }
             }
         });
@@ -93,7 +88,6 @@ public class PeticionMapaCd {
                         listener.insertarZonas(null);
                     }
                     //  return lista;
-
 
                 }else  listener.insertarZonas(null);
             }
