@@ -288,7 +288,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         AtributoRepositoryImpl atRepo=new AtributoRepositoryImpl(getApplicationContext());
         ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getApplicationContext());
         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getApplicationContext());
-        GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getApplicationContext());
+        GeocercaRepositoryImpl georep=GeocercaRepositoryImpl.getInstance(ComprasDataBase.getInstance(getApplicationContext()).getGeocercaDao());
         SiglaRepositoryImpl sigRepo=new SiglaRepositoryImpl(getApplicationContext());
         DescargasIniAsyncTask task = new DescargasIniAsyncTask(this,cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,sustRepo,georep,sigRepo,puedodescargar,false);
         task.execute("cat","");

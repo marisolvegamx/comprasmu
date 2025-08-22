@@ -90,7 +90,7 @@ public class DescargasIniciales {
             lcdrepo=new ListaCompraDetRepositoryImpl(this.act);
             lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
             infdrepo=new InformeComDetRepositoryImpl(act);
-            georep=new GeocercaRepositoryImpl(this.act);
+            georep=GeocercaRepositoryImpl.getInstance(ComprasDataBase.getInstance(act).getGeocercaDao());
             listenprin=new DescargaIniListener();
             solRepo=new SolicitudCorRepoImpl(this.act);
             infetarepo=new InfEtapaRepositoryImpl(this.act);

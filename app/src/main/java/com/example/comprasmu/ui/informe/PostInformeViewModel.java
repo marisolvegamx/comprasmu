@@ -92,7 +92,7 @@ public class PostInformeViewModel {
 
               //  { "status": "ok",
                 //        "data": "Informe dado de alta correctamente."}
-                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+                if(response.isSuccessful()&&response.body().getStatus()!=null&&response.body().getStatus().equals("ok")) {
 
                     mensaje=response.body().getData();
                     Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);

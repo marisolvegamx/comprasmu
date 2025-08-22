@@ -4,11 +4,13 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.data.modelos.TiendaJson;
 import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.ServiceGenerator;
 import com.example.comprasmu.data.remote.TiendasResponse;
@@ -26,7 +28,7 @@ public class PeticionMapaCd {
 
     static final String TAG="PeticionMapaCd";
 
-    MutableLiveData<List<Tienda>> listatiendas;
+    MutableLiveData<List<TiendaJson>> listatiendas;
     MutableLiveData<List<Geocerca>> listageocercas;
 
     public PeticionMapaCd(String usuario ) {
@@ -36,19 +38,19 @@ public class PeticionMapaCd {
     }
 
 
-    public  void getTiendas(String pais, String ciudad,int planta,int cliente, String fechaini,String fechafin, String tipo, String nombre) {
-        Log.d(TAG,"haciendo petición "+nombre+"--"+tipo);
+    public void getTiendas(String pais, String ciudad, String fechafin) {
+        Log.d(TAG,"haciendo petición "+fechafin);
 
-        final Call<TiendasResponse> batch = ServiceGenerator.getApiService().getTiendas(pais, ciudad, planta, cliente, fechaini,fechafin,tipo,nombre,usuario);
+        final Call<TiendasResponse> batch = ServiceGenerator.getApiService().getTiendas(pais, ciudad,fechafin,usuario);
 
         batch.enqueue(new Callback<TiendasResponse>() {
             @Override
             public void onResponse(@Nullable Call<TiendasResponse> call, @Nullable Response<TiendasResponse> response) {
-//               Log.d(TAG,"llego algo"+response.body().toString());
+               Log.d(TAG,"llego algo"+response.body().toString());
                 if (response.isSuccessful() && response.body() != null) {
                     TiendasResponse respuestaTiendas = response.body();
                     if(respuestaTiendas!=null) {
-                      //  Log.d(TAG,"llego algo"+respuestaTiendas.getTiendas().size());
+                        Log.d(TAG,"llego algo"+respuestaTiendas.getTiendas());
                         listatiendas.setValue(respuestaTiendas.getTiendas());
                         listageocercas.setValue(respuestaTiendas.getGeocercas());
                     }
@@ -138,7 +140,7 @@ public class PeticionMapaCd {
     }
 
 
-    public MutableLiveData<List<Tienda>> getListatiendas() {
+    public MutableLiveData<List<TiendaJson>> getListatiendas() {
         return listatiendas;
     }
 

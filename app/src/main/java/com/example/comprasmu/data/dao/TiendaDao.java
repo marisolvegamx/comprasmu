@@ -14,14 +14,16 @@ import java.util.List;
 public abstract class TiendaDao extends BaseDao<Tienda>{
 
 
-    @Query("SELECT * FROM tabla_versiones")
+    @Query("SELECT * FROM tienda")
     public  abstract LiveData<List<Tienda>> findAll();
 
-    @Query("delete FROM tabla_versiones")
+    @Query("delete FROM tienda")
     public  abstract void deleteAll();
 
-    @Query("SELECT * FROM tabla_versiones where id=:id")
+    @Query("SELECT * FROM tienda where une_id=:id")
     public abstract LiveData<Tienda> find(int id);
+    @Query("SELECT * FROM tienda where trim(ciudad)=trim(:ciudad)")
+    public abstract List<Tienda> getByCiudad(String ciudad);
 
     @RawQuery(observedEntities = Tienda.class)
     public abstract LiveData<List<Tienda>> getTiendasByFiltros(SupportSQLiteQuery query);

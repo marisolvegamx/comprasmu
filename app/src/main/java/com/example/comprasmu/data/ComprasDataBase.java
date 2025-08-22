@@ -34,6 +34,7 @@ import com.example.comprasmu.data.dao.SolicitudCorDao;
 import com.example.comprasmu.data.dao.SustitucionDao;
 import com.example.comprasmu.data.dao.TablaVersionesDao;
 import com.example.comprasmu.data.dao.TiendaDao;
+import com.example.comprasmu.data.dao.TiendaEstatusClienteDao;
 import com.example.comprasmu.data.dao.VisitaDao;
 import com.example.comprasmu.data.modelos.AcuseRecibo;
 import com.example.comprasmu.data.modelos.Atributo;
@@ -62,6 +63,7 @@ import com.example.comprasmu.data.modelos.SolicitudCor;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.data.modelos.TiendaEstatusCliente;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.utils.CreadorFormulario;
 import java.util.ArrayList;
@@ -79,8 +81,10 @@ import java.util.List;
         CatalogoDetalle.class, Atributo.class, Geocerca.class,
         InformeEtapa.class, InformeEtapaDet.class, DetalleCaja.class,
         SolicitudCor.class, Correccion.class, Sigla.class,
-        Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class, InformeGastoDet.class, AcuseRecibo.class, Tienda.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=32, exportSchema = false)
+        Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class,
+        InformeEnvioDet.class, InformeGastoDet.class, AcuseRecibo.class, Tienda.class,
+        TiendaEstatusCliente.class},
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=33, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -112,7 +116,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
     public abstract InformeGastoDetDao getInformeGastoDetDao();
     public abstract AcuseReciboDao getAcuseReciboDao();
     public abstract TiendaDao getTiendaDao();
-
+    public abstract TiendaEstatusClienteDao getTiendaEstatusClienteDao();
     public static ComprasDataBase getInstance(final Context context) {
         if (INSTANCE == null) {
             ctx=context;
@@ -127,7 +131,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                             .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6,MIGRATION_6_7,MIGRATION_7_8,
                                     MIGRATION_8_9,MIGRATION_9_10,MIGRATION_10_11,MIGRATION_11_12,MIGRATION_12_13,MIGRATION_13_14,MIGRATION_14_15
                                     ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
-                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29,MIGRATION_29_30,MIGRATION_30_31,MIGRATION_31_32)
+                                    MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29,MIGRATION_29_30,MIGRATION_30_31,MIGRATION_31_32,MIGRATION_32_33)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -622,8 +626,16 @@ public abstract class ComprasDataBase extends RoomDatabase {
             "  estpep INTEGER,"+
             " estele INTEGER,"+
             " estjum INTEGER,"+
-            " indiceUltimaVisita TEXT," +
-                    " PRIMARY KEY(une_id )) ");
+            " PRIMARY KEY(une_id )) ");
+
+            database.execSQL("create  TABLE tienda_estatuscliente ( une_id INTEGER not null,"+
+                    "clientesId INTEGER  not null,"+
+
+                    " estatus INTEGER not null ,"+
+
+                    " periodo INTEGER not null,"+
+
+                    " PRIMARY KEY(une_id, clientesId )) ");
 
 
         }

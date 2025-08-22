@@ -40,6 +40,8 @@ import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
+import com.example.comprasmu.data.repositories.TiendaEstatusClienteRepositoryImpl;
+import com.example.comprasmu.data.repositories.TiendaRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.utils.ComprasLog;
 
@@ -67,11 +69,16 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     ConfiguracionRepositoryImpl configuracionRepo;
     CorEtiqCajaRepoImpl correccionEtiqRepo;
     CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo;
-
+    TiendaRepositoryImpl tiendaRepository;
+    TiendaEstatusClienteRepositoryImpl tiendaEstatusclienteRepository;
     Context context;
     ComprasLog complog;
     String TAG="BorrarDatosViewModel";
-    public BorrarDatosViewModel(Application application, ListaCompraDetRepositoryImpl lcdrepo, AcuseReciboRepositoryImpl acuseRepo, ConfiguracionRepositoryImpl configuracionRepo, CorEtiqCajaRepoImpl correccionEtiqRepo, CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo) {
+    public BorrarDatosViewModel(Application application, ListaCompraDetRepositoryImpl lcdrepo, AcuseReciboRepositoryImpl acuseRepo,
+                                ConfiguracionRepositoryImpl configuracionRepo, CorEtiqCajaRepoImpl correccionEtiqRepo,
+                                CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo,TiendaRepositoryImpl tiendaRepository,
+                                TiendaEstatusClienteRepositoryImpl tiendaEstatusclienteRepository
+                                ) {
         super(application);
         this.context = application;
         complog=ComprasLog.getSingleton();
@@ -80,6 +87,8 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         this.configuracionRepo=configuracionRepo;
         this.correccionEtiqRepo=correccionEtiqRepo;
         this.corEtiqCajaDetRepo=corEtiqCajaDetRepo;
+        this.tiendaRepository=tiendaRepository;
+        this.tiendaEstatusclienteRepository=tiendaEstatusclienteRepository;
     }
 
     File carpeta;
@@ -284,6 +293,8 @@ public class BorrarDatosViewModel extends AndroidViewModel {
 
     }
 
+
+
     public void borrarCorreccionEtiq(String indice) {
         complog.grabarError("borrando correccion etiq");
         //busco el detalle
@@ -292,6 +303,19 @@ public class BorrarDatosViewModel extends AndroidViewModel {
 
     }
 
+    public void borrarTiendas() {
+        complog.grabarError("borrando tiendas");
+        //busco el detalle
+        tiendaRepository.deleteAll();
+
+
+    }
+    public void borrarTiendasEstatusCliente() {
+        complog.grabarError("borrando tiendas_estatus");
+        //busco el detalle
+       tiendaEstatusclienteRepository.deleteAll();
+
+    }
 
 
 }

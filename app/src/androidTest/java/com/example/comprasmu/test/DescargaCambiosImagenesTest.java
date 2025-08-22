@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -21,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Observable;
-import java.util.Observer;
 
 @RunWith(AndroidJUnit4.class)
 public class DescargaCambiosImagenesTest {
@@ -44,10 +45,11 @@ public class DescargaCambiosImagenesTest {
         ImagenDetalleDao imagenDao= db.getImagenDetalleDao();
         ImagenDetRepositoryImpl imagenRepo=ImagenDetRepositoryImpl.getInstance(imagenDao);
 
-        Observable observable=new Observable();
-        observable.addObserver(new Observer() {
+        MutableLiveData<Boolean> observable= new MutableLiveData<Boolean>();
+        observable.observeForever(new Observer<Boolean>() {
             @Override
-            public void update(Observable observable, Object o) {
+            public void onChanged(Boolean aBoolean) {
+
                 Log.d("PRUEBAS","termine");
                 ImagenDetalle resp= imagenRepo.findsimple(6633);
                if(resp!=null)

@@ -97,10 +97,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     Map<String,Float> coloresTienda;
     private  final String TAG="MapaCdFragment";
     private ArrayList<DescripcionGenerica> listaPlantasEnv;
-    MutableLiveData<List<Tienda>> listatiendas;
+    LiveData<List<Tienda>> listatiendas;
     List<Tienda> nollistatiendas;
     Button btnverfil;
-    MutableLiveData<List<Geocerca>> listageocercas;
+    List<Geocerca> listageocercas;
     List<Polygon> regionPolygon;
     List<Marker> martiendas;
     int cdId;
@@ -127,7 +127,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     View view;
     private int cliente;
     private Spinner sptipoti, spcadena, spfecha,spseleccion;
-    private String indiceini;
+
     private boolean verfiltros;
     LoadingAlert alert;
     private LocationCallback locationCallback;
@@ -222,11 +222,13 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     LOCATION_REQUEST_CODE);
 
         }
+        //actualizo tiendas
+
         //actualizo la lista de compra
         actualizarListaCompra();
 
         cargarCatalogos();
-        indiceini=Constantes.INDICEACTUAL;
+
         //  cargarIndices();
         Button btnbuscar=view.findViewById(R.id.btnmcdbuscar);
         btnbuscar.setOnClickListener(new View.OnClickListener() {
@@ -236,7 +238,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 if(plantasel!=null) {
                     int planta = plantasel.id;
                     //calculo indice fin
-                    buscarTiendas(planta, indiceini);
+                    buscarTiendas(planta);
                 }
                 else
                     irAcdSel();
@@ -546,41 +548,29 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         }
 
     }
-    public void buscarTiendas( int planta,String indicefin){
-        //peticion al servidor
-        //cambio el inice
-       // alert=new LoadingAlert(getActivity());
-      //  alert.startAlert();
-        PeticionMapaCd petmap=new PeticionMapaCd(Constantes.CLAVEUSUARIO);
+    public void buscarTiendas( int planta){
+
         //usaria la ciudad de trabajo
 
         markerSel=null;
 
         llcancel.setVisibility(View.GONE);
-        String ffin= "";
-        ffin= ComprasUtils.indiceaFecha2(indicefin);
-        String fini="";
         //calculo el fin
-        String[] aux1=indicefin.replace(".","-").split("-");
-        String anio=aux1[1];
+
         int anios=((DescripcionGenerica) spfecha.getSelectedItem()).getId();
-        int anioant=Integer.parseInt(anio)-anios;
-        String indiceini=aux1[0]+"."+anioant;
-        fini=ComprasUtils.indiceaFecha2(indiceini);
+
         //busco el pais y cd de la planta
         int[] aux =lcviewModel.buscarClienCdxPlan(planta, Constantes.INDICEACTUAL);
         cliente=aux[0];
         String ciudad=Constantes.CIUDADTRABAJO;
-        //   Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini+","+ffin);
+       //   Log.d(TAG,"--"+0+"--"+ciudad+"..."+planta+".."+cliente+"--"+fini);
         int tipo=((CatalogoDetalle)sptipoti.getSelectedItem()).getCad_idopcion();
         int cadena=((CatalogoDetalle)spcadena.getSelectedItem()).getCad_idopcion();
 
         Log.d(TAG,"pidiendo tiendas"+(new Date()));
-        petmap.getTiendas("0",ciudad,planta,cliente,fini,ffin,tipo+"",cadena+""); //se agregarian filtros despues
-         Log.d(TAG,"--zzzzzzzzzzzzz"+tipo+"--"+cadena);
-        //petmap.getTiendas("1","1",25,4,"2022-01-01","2022-04-01","",""); //se agregarian filtros despues
-        this.listatiendas=petmap.getListatiendas();
-        this.listageocercas=petmap.getListageocercas();
+          Log.d(TAG,"--zzzzzzzzzzzzz"+tipo+"--"+cadena);
+        this.listatiendas=lcviewModel.getTiendas(ciudad,anios,tipo,cadena,cliente);
+        this.listageocercas= lcviewModel.getGeocercas(ciudad);
         //observo
         this.listatiendas.observe(getViewLifecycleOwner(), new Observer<List<Tienda>>() {
             @Override
@@ -588,21 +578,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 nollistatiendas=tiendas;
                 Log.d(TAG," antes de dibujar"+(new Date()));
                 dibujarTiendas(tiendas);
-
              //   alert.closeAlertDialog();
                 listatiendas.removeObservers(getViewLifecycleOwner());
             }
         });
-        this.listageocercas.observe(getViewLifecycleOwner(), new Observer<List<Geocerca>>() {
-            @Override
-            public void onChanged(List<Geocerca> zonas) {
-                if(zonas!=null&&zonas.size()>0) {
 
-                    dibujarZonas(zonas);
-                }
-                listageocercas.removeObservers(getViewLifecycleOwner());
-            }
-        });
+        if(listageocercas!=null&&listageocercas.size()>0) {
+
+           dibujarZonas(listageocercas);
+        }
+
 
     }
 
@@ -614,42 +599,32 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         if(listiendas!=null)
             for(Tienda tienda: listiendas){
                 //  Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
-
-                if(cliente==4&&tienda.getEstpep()>0) {
-                    color = tienda.getEstpep() + "";
-                    tienda.setColor(color);
-                }else
-                if(cliente==5&&tienda.getEstpen()>0) {
-
-                    color = tienda.getEstpen() + "";
-                    tienda.setColor(color);
+                switch(cliente) {
+                    case 4 : color = validarColorTienda(tienda.getEstpep() );
+                             break;
+                    case 5:  color = validarColorTienda(tienda.getEstpen() );
+                             break;
+                    case 6:  color = validarColorTienda(tienda.getEstele() );
+                             break;
+                    case 7:  color = validarColorTienda(tienda.getEstjum()) ;
+                             break;
                 }
-                else
-                if(cliente==6&&tienda.getEstele()>0) {
-                    color = tienda.getEstele()+"";
-                    tienda.setColor(color);
-                    // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
-
-                } else if(cliente==7&&tienda.getEstjum()>0) {
-
-                    color = tienda.getEstjum() + "";
-                    tienda.setColor(color);
-                }
+                tienda.setColor(color);
                 //para poner en que tiendas puedo comprar
                 String estatusClientes="";
-                //el estatus es 1-rojo, 2 amarillo, 3.verde solo en verde puedo comprar
-                if(tienda.getEstpep()==3&&existeCliente(4)) {
+                //el estatus es 1-rojo, 2 amarillo, 3.verde solo en verde puedo comprar o con 0
+                if((tienda.getEstpep()==3||tienda.getEstpep()==0)&&existeCliente(4)) {
                     estatusClientes=estatusClientes+"PEPSI, ";
                 }
-                if(tienda.getEstpen()==3&&existeCliente(5)) {
+                if((tienda.getEstpen()==3||tienda.getEstpen()==0)&&existeCliente(5)) {
 
                     estatusClientes=estatusClientes+"PEÑAFIEL, ";
                 }
 
-                if(tienda.getEstele()==3&&existeCliente(6)) {
+                if((tienda.getEstele()==3||tienda.getEstele()==0)&&existeCliente(6)) {
                     estatusClientes=estatusClientes+"ELECTROPURA, ";
                 }
-                if(tienda.getEstjum()==3&&existeCliente(7)) {
+                if((tienda.getEstjum()==3||tienda.getEstjum()==0)&&existeCliente(7)) {
 
                     estatusClientes=estatusClientes+"JUMEX, ";
                 }
@@ -688,13 +663,23 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 4));
        btnvatienda.setEnabled(true);
     }
+
+    public String validarColorTienda(int estatus){
+        if( estatus > 0) {
+
+            return estatus+"";
+        }
+        else
+            return "3";
+    }
     public void buscarClientes(){
         //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
         if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
 
-
-         //   alert.closeAlertDialog();
+            if(alert!=null)
+            alert.closeAlertDialog();
             irAcdSel();
+
             return;
         }
         List<ListaCompra> data=lcviewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 2);
@@ -741,11 +726,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     if(plantasel==null) {
                         //busco el 1o de la lista
                         DescripcionGenerica primero=listaPlantasEnv.get(0);
-                        buscarTiendas(primero.id, indiceini);
+                        buscarTiendas(primero.id);
                     }else {
 
                         int planta = plantasel.id;
-                        buscarTiendas(planta, indiceini);
+                        buscarTiendas(planta);
                     }
 
 
@@ -828,11 +813,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ArrayAdapter aa2 = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,indiceslist);
         aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //Setting the ArrayAdapter data on the Spinner
-        //  spindiceini.setAdapter(aa);
-        // spindicefin.setAdapter(aa);
-        //spindiceini.setSelection(0);
-        //spindicefin.setSelection(7);
+
     }
 
 
@@ -907,7 +888,15 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
            buscarPlantas(Constantes.CIUDADTRABAJO);
            buscarClientes();
-           alert.closeAlertDialog();
+
+           String ffin= "";
+           ffin= ComprasUtils.indiceaFecha2(Constantes.INDICEACTUAL);
+           descargarTiendas(Constantes.CIUDADTRABAJO,ffin).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+               @Override
+               public void onChanged(Boolean aBoolean) {
+                   alert.closeAlertDialog();
+               }
+           });
        }
     }
 
@@ -915,6 +904,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     public void notificarSinConexion() {
         //puede seguir trabajando
         alert.closeAlertDialog();
+    }
+    //descarga las tiendas del servidor
+    public MutableLiveData<Boolean> descargarTiendas(String ciudad, String ffin){
+        return lcviewModel.descargarTiendas(ciudad,ffin,getViewLifecycleOwner());
     }
 
     public class miLocationListener implements LocationListener {

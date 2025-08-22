@@ -1,6 +1,8 @@
 package com.example.comprasmu.data.repositories;
 
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.example.comprasmu.data.dao.TiendaDao;
@@ -29,14 +31,35 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
 
 
 
-    public LiveData<List<Tienda>> gettiendasByFiltros( String ciudad, String fechaini,String fechafin, int tipo, int cadena) {
+    public LiveData<List<Tienda>> gettiendasByFiltros( String ciudad, int periodo, int tipo, int cadena, int clienteId) {
         List<String> params= new ArrayList<>();
 
-        String query="Select * from tienda where ciudad=? and " +
-                " and str_to_date(concat('01.',indiceUltimaVisita ),'%d.%m.%Y') < DATE_ADD('"+fechafin+"', interval 1 month)" +
-                " and str_to_date(concat('01.',indiceUltimaVisita ),'%d.%m.%Y') >= DATE_ADD('"+fechaini+"', interval 1 month) ";
-        params.add(ciudad+"");
+        String query="Select tienda.une_id," +
+                " tienda.une_descripcion," +
+                " tienda.une_tipoTienda," +
+                " tienda.une_tipotienda," +
+                " tienda.une_direccion," +
+                " tienda.ciudad," +
+                " tienda.une_cla_ciudad," +
+                " tienda.pais," +
+                " tienda.une_cla_pais," +
+                " tienda.une_puntocardinal," +
+                " tienda.une_coordenadasxy," +
+                " tienda.une_cadenacomercial," +
+                " tienda.une_dir_referencia," +
+                " sum(case clientesId " +
+                "    when 4 then estatus else 0 end)   estpep," +
+                " sum( case clientesId " +
+                "    when 5 then estatus else 0 end)   estpen," +
+                " sum(case clientesId " +
+                "    when 6 then estatus else 0 end)   estele," +
+                " sum( case clientesId " +
+                "    when 7 then estatus else 0 end)   estjum" +
+                "   from tienda  left join tienda_estatuscliente on tienda.une_id=tienda_estatuscliente.une_id " +
+                " where ciudad=? and (periodo<=? or periodo is null)";
 
+        params.add(ciudad+"");
+        params.add(periodo+"");
         if(tipo>0) {
             query = query + " and une_tipotienda=?";
             params.add(tipo+"");
@@ -45,11 +68,12 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
             query = query + " and une_cadenacomercial=?";
             params.add(cadena+"");
         }
-
+        query=query+" group by tienda.une_id" +
+                "   order by tienda.une_id" ;
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
-        //Log.d("TiendaRepositoryImpl","clientes "+query);
+        Log.d("TiendaRepositoryImpl","query "+query);
         return dao.getTiendasByFiltros( sqlquery);
     }
 
@@ -71,6 +95,10 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
         return dao.find(id);
     }
 
+    public List<Tienda> getByCiudad(String ciudadNombre) {
+        return dao.getByCiudad(ciudadNombre);
+    }
+
     @Override
     public Tienda findsimple(int id) {
         return null;
@@ -81,6 +109,9 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
         dao.delete(object);
     }
 
+    public void deleteAll(){
+        dao.deleteAll();
+    }
     @Override
     public void insertAll(List<Tienda> objects) {
         dao.insertAll(objects);
