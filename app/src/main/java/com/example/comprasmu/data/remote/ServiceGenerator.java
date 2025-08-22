@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceGenerator {
 
     //  private static final String BASE_URL = "http://192.168.1.79/comprasv1/api/public/";
-
+    private static Retrofit retrofit;
     public static APIService getApiService() {
         APIService servicio = null;
         // Creamos un interceptor y le indicamos el log level a usar
@@ -48,23 +48,21 @@ public class ServiceGenerator {
 
              httpClient = okbuilder
                     .readTimeout(90, TimeUnit.SECONDS)
-                    .connectTimeout(15, TimeUnit.SECONDS)
+                    .connectTimeout(90, TimeUnit.SECONDS)
                     .build();
-
-
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
-
-        if (servicio == null) {
-            Retrofit retrofit = new Retrofit.Builder()
+        if(retrofit==null) {
+            retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(httpClient) // <-- usamos el log level
                     .build();
-            servicio = retrofit.create(APIService.class);
         }
+            servicio = retrofit.create(APIService.class);
+
        // Log.d("NUEVA URL",servicio.);
         return servicio;
     }

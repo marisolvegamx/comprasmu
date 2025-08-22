@@ -327,21 +327,23 @@ public class PostInformeViewModel {
 
                 //  { "status": "ok",
                 //        "data": "Informe dado de alta correctamente."}
-                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+                if(response.isSuccessful()&&response.body()!=null&&response.body().getStatus()!=null&&response.body().getStatus().equals("ok")) {
 
                     mensaje=response.body().getData();
-                    Log.d("sendInformeEta", ""+mensaje);
+                    Log.e("sendInformeEta", ""+mensaje);
                     //actualizo el estatus
                     iniciarBD();
                     actEstatusInfEtapa(informeEtapa);
 
+                }else{
+                    Log.e(TAG, "Error al enviar informe etapa");
                 }
             }
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
                 mensaje="No se pudo subir";
-                Log.e(TAG, "Unable to submit post to API.");
+                Log.e(TAG, "Unable to submit post to API."+t.getMessage());
             }
 
 
@@ -398,8 +400,8 @@ public class PostInformeViewModel {
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
-                mensaje="No se pudo subir";
-                Log.e(TAG, "Unable to submit post to API.");
+                mensaje="No se pudo subir"+t.getMessage();
+                Log.e(TAG, "Unable to submit post to API."+t.getMessage());
             }
 
 

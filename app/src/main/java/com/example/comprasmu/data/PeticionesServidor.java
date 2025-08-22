@@ -676,28 +676,27 @@ public class PeticionesServidor {
                 if(response.code()==500){
                     listener.incorrecto("Usuario o contraseña incorrectos");
                 }else
+                if(response.code()==200) {
+                    if (response.isSuccessful() && response.body() != null) {
 
-                if (response.isSuccessful() && response.body() != null) {
+                        PostResponse logResp = response.body();
+                        Log.i(TAG, "respuesta" + logResp.getData() + ".." + logResp.getStatus());
+                        //reviso si está actualizado
+                        if (logResp.getStatus().equals("ok")) //correcto
+                        {
+                            listener.correcto(logResp.getData());
+                            //guardar cveuser
+                        } else //aviso al usuario
+                        {
+                            listener.incorrecto("Hubo un error:" + logResp.getData());
+                        }
 
-                    PostResponse logResp = response.body();
-                    Log.i(TAG,"respuesta"+logResp.getData()+".."+logResp.getStatus());
-                    //reviso si está actualizado
-                    if(logResp.getStatus().equals("ok")) //correcto
-                    {
-
-                        listener.correcto(logResp.getData());
-                        //guardar cveuser
-
-
+                    } else {
+                        //  PostResponse logResp = response.body();
+                        listener.incorrecto("Error de conexión, intente nuevamente");
                     }
-                    else //aviso al usuario
-                    {
-                        listener.incorrecto(logResp.getData());
-                    }
-
                 }else{
-                  //  PostResponse logResp = response.body();
-                    listener.incorrecto("Error de conexión, intente nuevamete");
+                    listener.incorrecto("Error de conexión ("+response.code()+"), intente nuevamente");
                 }
             }
 
@@ -705,8 +704,8 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     t.printStackTrace();
-                    Log.e("Peticiones servidor","autent"+ t.getMessage());
-                    listener.incorrecto(t.getMessage());
+                    Log.e("Peticiones servidor","autent"+ t.getCause()+"--"+t.getMessage());
+                    listener.incorrecto(t.getMessage()+"."+t.getCause());
                 }
             }
         });

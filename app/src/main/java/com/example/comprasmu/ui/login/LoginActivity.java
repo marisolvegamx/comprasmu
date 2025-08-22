@@ -9,18 +9,22 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.SystemClock;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.LoggedInUser;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.ui.home.PruebasActivity;
+import com.example.comprasmu.ui.mantenimiento.LeerLogActivity;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import java.nio.charset.StandardCharsets;
@@ -47,6 +51,7 @@ public class LoginActivity extends AppCompatActivity
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
         usernameEditText = findViewById(R.id.username);
+        TextView liga = findViewById(R.id.textView19);
         passwordEditText = findViewById(R.id.password);
         loginButton  = findViewById(R.id.login);
         loadingProgressBar = findViewById(R.id.loading);
@@ -87,7 +92,7 @@ public class LoginActivity extends AppCompatActivity
                 lastClickTime = currentClickTime;
                 Log.d(TAG,"model"+Build.MODEL+"-"+Constantes.modelo);
                 if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)) {//pruebas y el lenovo//entro rapido
-                  new LoginListener().iniciar(); return;
+               //   new LoginListener().iniciar(); return;
                 }
              //   loadingProgressBar.setVisibility(View.VISIBLE);
                 //hago validaciones
@@ -113,6 +118,16 @@ public class LoginActivity extends AppCompatActivity
                 if(loginFormState.isDataValid())
                     comprobacion();
 
+            }
+        });
+        SpannableString mitextoU = new SpannableString("Enviar errores");
+        mitextoU.setSpan(new UnderlineSpan(), 0, mitextoU.length(), 0);
+        liga.setText(mitextoU);
+        liga.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent homeIntent=new Intent(LoginActivity.this, LeerLogActivity.class);
+                startActivity(homeIntent);
             }
         });
     }

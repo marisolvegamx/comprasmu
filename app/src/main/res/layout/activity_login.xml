@@ -20,7 +20,7 @@
             android:id="@+id/textView18"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1.0.50" />
+            android:text="1.0.50b" />
 
         <TextView
             android:id="@+id/textView27"
@@ -109,6 +109,12 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="enviar errores"
+                />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
