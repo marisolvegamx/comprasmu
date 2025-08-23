@@ -56,7 +56,7 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
                 " sum( case clientesId " +
                 "    when 7 then estatus else 0 end)   estjum" +
                 "   from tienda  left join tienda_estatuscliente on tienda.une_id=tienda_estatuscliente.une_id " +
-                " where ciudad=? and (periodo<=? or periodo is null)";
+                " where trim(ciudad)=trim(?) and (periodo<=? or periodo is null)";
 
         params.add(ciudad+"");
         params.add(periodo+"");
@@ -74,9 +74,32 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
                 query,params.toArray()
         );
         Log.d("TiendaRepositoryImpl","query "+query);
+        for (String param:params
+             ) {
+            Log.d("TiendaRepo","--zzzzzzzzzzzzz"+param);
+        }
         return dao.getTiendasByFiltros( sqlquery);
     }
 
+
+    public List<Tienda> gettiendasByFiltrosSimp( String ciudad) {
+        List<String> params= new ArrayList<>();
+
+        String query="Select *" +
+                "   from tienda  " +
+                " where trim(ciudad)=trim(?)";
+        params.add(ciudad+"");
+        query=query+"  order by tienda.une_id" ;
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,params.toArray()
+        );
+        Log.d("TiendaRepositoryImpl","query "+query);
+        for (String param:params
+        ) {
+            Log.d("TiendaRepo","--"+param);
+        }
+        return dao.getTiendasByFiltrosSimp( sqlquery);
+    }
 
     @Override
     public LiveData<List<Tienda>> getAll() {

@@ -1,6 +1,5 @@
 package com.example.comprasmu.data.dao;
 
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
@@ -9,10 +8,8 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 import com.example.comprasmu.data.modelos.Tienda;
 import java.util.List;
 
-
 @Dao
 public abstract class TiendaDao extends BaseDao<Tienda>{
-
 
     @Query("SELECT * FROM tienda")
     public  abstract LiveData<List<Tienda>> findAll();
@@ -27,5 +24,8 @@ public abstract class TiendaDao extends BaseDao<Tienda>{
 
     @RawQuery(observedEntities = Tienda.class)
     public abstract LiveData<List<Tienda>> getTiendasByFiltros(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = Tienda.class)
+    public abstract List<Tienda> getTiendasByFiltrosSimp(SupportSQLiteQuery query);
 
 }
