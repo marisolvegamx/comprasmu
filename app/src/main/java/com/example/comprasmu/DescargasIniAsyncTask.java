@@ -1,23 +1,17 @@
 package com.example.comprasmu;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Gravity;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-
-
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
@@ -25,8 +19,6 @@ import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-
-import com.example.comprasmu.data.modelos.InformeEnvioDet;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
@@ -36,12 +28,8 @@ import com.example.comprasmu.data.modelos.Visita;
 
 import com.example.comprasmu.data.remote.CambiosInformesReponse;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
-
-import com.example.comprasmu.data.remote.NotificacionResponse;
-import com.example.comprasmu.data.remote.PostResponse;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
-import com.example.comprasmu.data.remote.SolCorreResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.CorreccionRepoImpl;
@@ -62,19 +50,16 @@ import com.example.comprasmu.data.repositories.SolicitudCorRepoImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
-import com.example.comprasmu.ui.gasto.IListenerRevRec;
 import com.example.comprasmu.ui.notificaciones.NotificacionGen;
 import com.example.comprasmu.ui.tiendas.PeticionMapaCd;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> implements  DescRespInformesEta.ProgresoRespIEListener {
+public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void>  {
 
     CatalogoDetalleRepositoryImpl cdrepo;
     SustitucionRepositoryImpl sustRepo;
@@ -96,7 +81,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
     int procesos=0;
     int procesos_lev=0; //para saber cuantos si se corrieron
     private ComprasLog flog;
-    DescargaIniListener listenprin;
+    DescargaIniListener descargaIniListener;
     SolicitudCorRepoImpl solRepo;
     final String TAG="DescargasIniAsyncTask";
     private final ProgresoListener miproglis;
@@ -139,7 +124,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
             actualiza=1;
 
         // if (indice[0].equals("cat")) //descargo cats tmb
-        listenprin=new DescargaIniListener();
+        descargaIniListener =new DescargaIniListener();
         if(!ComprasUtils.isOnlineNet(act)) {
             miproglis.notificarSinConexion();
             //  miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
@@ -155,7 +140,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
             listacompras(); //aqui esta informes y sust
         }
         if(Constantes.INDICEACTUAL!=""){
-            DescargaIniListener listdesc=new DescargaIniListener();
+
             DescargaRespListener listresp=new DescargaRespListener();
             PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
             if(actualiza==0) {
@@ -252,7 +237,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
                      }
         );
 
-        listenprin.finalizar();
+        descargaIniListener.finalizar();
     }
 
     private void catalogos()
@@ -268,23 +253,13 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
             //no actualice
             if(actualiza==1) {
                 procesos_lev++;
-                ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
+                ps.getCatalogos(cdrepo, tvRepo, atRepo, descargaIniListener);
                 ps.getSiglas(sigRepo,tvRepo);
 
-
-                  /*  act.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("DescargasIniAsyncTask","estas al dia*");
-
-                          //  proglist.cerrarAlerta();
-                         //   proglist.todoBien();
-                        }
-                    });*/
             }else
             if(!sdfdias.format(cats.getVersion()).equals(sdfdias.format(new Date()))){
                 procesos_lev++;
-                ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
+                ps.getCatalogos(cdrepo, tvRepo, atRepo, descargaIniListener);
                 ps.getSiglas(sigRepo,tvRepo);
 
             }
@@ -292,7 +267,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
         }else {   //primera vez
 
             procesos_lev++;
-            ps.getCatalogos(cdrepo, tvRepo, atRepo,listenprin);
+            ps.getCatalogos(cdrepo, tvRepo, atRepo, descargaIniListener);
             ps.getSiglas(sigRepo,tvRepo);
         }
 
@@ -317,10 +292,10 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
         flog.grabarError(TAG,"listacompras","descargando listas actualiza="+actualiza);
         procesos_lev++; //para verificar que ya terminó
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-        ps.getSustitucion(Constantes.INDICEACTUAL,tvRepo, sustRepo,listenprin);
+        ps.getSustitucion(Constantes.INDICEACTUAL,tvRepo, sustRepo, descargaIniListener);
         TablaVersiones comp=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRAS,Constantes.INDICEACTUAL);
         TablaVersiones det=tvRepo.getVersionByNombreTablasmd(Contrato.TBLLISTACOMPRASDET,Constantes.INDICEACTUAL);
-        DescargasIniAsyncTask.DescargaIniListener listener=new DescargaIniListener();
+
 
         flog.grabarError(TAG,"listacompras","resultado comp="+comp);
 
@@ -328,13 +303,13 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
             if(actualiza==1) {
                 //siempre actualizo
                 procesos_lev++;
-                ps.getListasdeCompra(null,null,Constantes.INDICEACTUAL,listener);
+                ps.getListasdeCompra(null,null,Constantes.INDICEACTUAL,descargaIniListener);
                 flog.grabarError(TAG,"listacompras"," siempre actualizo"+actualiza);
 
             }else {
                 if (!sdfdias.format(comp.getVersion()).equals(sdfdias.format(new Date()))) {
                     procesos_lev++;
-                    ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
+                    ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, descargaIniListener);
 
 
                 }else {
@@ -349,7 +324,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
             flog.grabarError(TAG,"listacompras","primera vez");
 
             procesos_lev++;
-            ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, listener);
+            ps.getListasdeCompra(comp, det, Constantes.INDICEACTUAL, descargaIniListener);
 
         }
     }
@@ -398,8 +373,8 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
     }
     public void pedirZonas(PeticionMapaCd petmap) {
         procesos_lev++;
-        DescargaIniListener listener=new DescargaIniListener();
-        petmap.getZonas("", Constantes.INDICEACTUAL,listener); //se agregarian filtros despues
+
+        petmap.getZonas("", Constantes.INDICEACTUAL,descargaIniListener); //se agregarian filtros despues
 
     }
 
@@ -467,24 +442,12 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
 
     }
 
-    @Override
-    public void finalizarrespie() {
-        Log.d(TAG,"DescargaIniListener procesos "+procesos+"--"+procesos_lev);
-        procesos++;
-        if(procesos==procesos_lev){ //llama 2 veces al home etra 2 vece
 
-
-            miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
-
-            //para que no vuelva a entrar
-
-        }
-    }
 
 
 
     public void informes(){
-        DescargaIniListener listener=new DescargaIniListener();
+
         int ban=0;
         if(getTotVisitas()==0) {
             //    DescargaRespAsyncTask.DescargaRespListener listener=new DescargaRespAsyncTask.DescargaRespListener();
@@ -609,7 +572,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
 
 
             }
-        finalizarrespie();
+       descargaIniListener.finalizar();
     }
 
     public interface ProgresoListener {
@@ -734,7 +697,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
                     }
             }
 
-            listenprin.finalizar();
+            descargaIniListener.finalizar();
         }
 
         public void actualizarInfEtapa (RespInfEtapaResponse response){
@@ -771,7 +734,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
                     // }
                 }
             }
-            listenprin.finalizar();
+            descargaIniListener.finalizar();
 
         }
 
@@ -795,15 +758,11 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
 
 
             }
-            listenprin.finalizar();
+            descargaIniListener.finalizar();
         }
 
 
     }
-
-
-
-
 
 
     public class DescargaIniListener implements  IDescargaIniListener{
@@ -817,10 +776,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void> impleme
             procesos++;
             if(procesos==procesos_lev){ //llama 2 veces al home etra 2 vece
 
-
                 miproglis.todoBien(maininfoetaResp,maininfoResp,mainRespcor);
-
-                //para que no vuelva a entrar
 
             }
 
