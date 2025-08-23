@@ -158,4 +158,7 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     @Query("SELECT * FROM informe_etapa where etapa=1 and indice=:indice and estatus>0 and estatus<>4")
     public abstract LiveData<List<InformeEtapa>> getInformesActivosPreparacion( String indice);
 
+    @Query("SELECT * FROM informe_etapa")
+    public abstract List<InformeEtapa> getAll();
+
 }
