@@ -308,7 +308,7 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
 
         // imagenesEtapa(maininfoetaResp); ya vienen con los informes /**pero que pasara cunado solo necesite preparacion
         imagenesCor(mainRespcor);
-        // Log.d(TAG,"**enviando al home");
+        Log.e(TAG,"**enviando al home");
         success();
     }
 
