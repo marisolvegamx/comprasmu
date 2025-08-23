@@ -1,10 +1,6 @@
 package com.example.comprasmu.data.repositories;
 
-import android.content.Context;
-
 import androidx.lifecycle.LiveData;
-
-import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.CorEtiquetadoCajaDao;
 import com.example.comprasmu.data.modelos.CorEtiquetadoCaja;
 
@@ -86,8 +82,8 @@ public class CorEtiqCajaRepoImpl extends BaseRepository<CorEtiquetadoCaja> {
         icDao.actualizarEstatusSync(id, estatus);
     }
 
-    public void deleteByIndice(String indice) {
-        icDao.deleteByIndice(indice);
+    public void deleteAll() {
+        icDao.deleteAll();
     }
     public LiveData<List<CorEtiquetadoCaja>> getByIndice(String indice){
         return icDao.getByIndice(indice);
