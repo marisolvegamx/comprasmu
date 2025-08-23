@@ -37,7 +37,7 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
     @Override
     public List<InformeEtapa> getAllsimple() {
-        return null;
+        return icDao.getAll();
     }
 
     public List<InformeEtapa> findAllByIndice(String indice) {
