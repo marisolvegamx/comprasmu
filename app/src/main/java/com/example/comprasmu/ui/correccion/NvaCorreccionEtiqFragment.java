@@ -359,13 +359,19 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
             if (spdato1 != null) {
                 valor2 =  (String) spdato1.getSelectedItem();
-                if(!valor2.equals("0"))
+                if(!valor2.equals(getString(R.string.seleccione_opcion)))
                     try {
                         nucaja = Integer.parseInt(valor2);
                     }catch (NumberFormatException ex){
                         Log.e(TAG,ex.getMessage());
                         ex.printStackTrace();
                     }
+                else
+                {
+                    Toast.makeText(getContext(),"Seleccione una caja",Toast.LENGTH_LONG).show();
+                    aceptar.setEnabled(true);
+                    return;
+                }
             }
             //paso a
             //creo el informe
@@ -382,7 +388,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             miTareaAsincrona.execute();
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
             try {
-                Thread.sleep(4000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
