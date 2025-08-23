@@ -98,18 +98,18 @@ public class BorrarActivity extends AppCompatActivity {
         EliminadorIndice ei=new EliminadorIndice(this,indice_anterior);
         ei.eliminarVisitas();
         aviso.setVisibility(View.VISIBLE);
-        mViewModel.borrarListasCompra(indice_anterior);
+        mViewModel.borrarListasCompra();
         // borrar informes etapa
-        mViewModel.borrarInformesetapa(indice_anterior);
+        mViewModel.borrarInformesetapa();
         ei.eliminarCorrecciones();
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
         ei.eliminarTablaVers();
         mViewModel.borrarEnvio();
-        mViewModel.borrarGasto(indice_anterior);
+        mViewModel.borrarGasto();
         mViewModel.borrarAcuseRecibo();
         mViewModel.borrarConfiguracion();
-        mViewModel.borrarCorreccionEtiq(indice_anterior);
+        mViewModel.borrarCorreccionEtiq();
         mViewModel.borrarTiendas();
         mViewModel.borrarTiendasEstatusCliente();
         //inicializo constantes
