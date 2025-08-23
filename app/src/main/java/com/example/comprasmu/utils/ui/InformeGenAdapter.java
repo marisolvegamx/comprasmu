@@ -50,7 +50,9 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
       //  holder.binding.setVisita();
       //  holder.binding.executePendingBindings();
         if(Constantes.SINCRONIZANDO==1){
-         //   subiendoInf=true;
+            Log.e("InformeGenAdapter","como"); //es calidad de caja etapa 3 etiquetado
+
+            //   subiendoInf=true;
             holder.binding.liBtnsubir.setEnabled(false);
         }
 
@@ -65,8 +67,6 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
     static class InformeGenViewHolder extends RecyclerView.ViewHolder {
         final ListaInformegenItemBinding binding;
         public String tipo;
-
-
 
 
         public InformeGenViewHolder(ListaInformegenItemBinding binding,AdapterCallback callback,String tipo) {
