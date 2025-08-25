@@ -186,18 +186,6 @@ public class ContInfEtapaFragment extends Fragment implements ContInfEtaAdapter.
     private void eliminar(int id) {
         Log.e(TAG,"eliminando "+ id);
         mViewModel.eliminarInformeEta(id);
-        //todo quitar solo es para arreglar lo de ivan
-        if(Constantes.CLAVEUSUARIO.equals("41")&&id==99) {
-            InfEtapaDetRepoImpl repo = new InfEtapaDetRepoImpl(getContext());
-
-            repo.deleteByInf(310);
-            //modifico el
-           InformeEtapaDet mal= repo.findsimple(306);
-           if(mal!=null&&mal.getQr().equals("2334470008")){
-               mal.setNum_muestra(11);
-               repo.insert(mal);
-           }
-        }
       //  mListAdapter.setInformeCompraList(null);
         //mListAdapter.notifyDataSetChanged();
     }
