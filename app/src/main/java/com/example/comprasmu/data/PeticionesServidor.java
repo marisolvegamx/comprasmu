@@ -352,7 +352,7 @@ public class PeticionesServidor {
 
     public void pedirLista(PeticionLista peticion, IDescargaIniListener listener){
 
-        Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
+        Log.d("PeticionesServidor pedirLista","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
 
         final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompra(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle);
 
@@ -366,14 +366,14 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
-                        Log.d("PeticionesServidor","regresó lista");
+                        Log.d("PeticionesServidor pedirLista","regresó lista");
 
                         listener.actualizar(compraResp);
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
-                        Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
+                        Log.d("PeticionesServidor pedirLista","lista compras descarga "+compraResp.getData());
                         listener.actualizar(null);
                     }
 
@@ -393,7 +393,7 @@ public class PeticionesServidor {
     /**trae la lista de compra solo de la ciudad seleccionada***/
     public void pedirListaCiu(PeticionLista peticion,String ciudad, IDescargaIniListener listener){
 
-        Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
+        Log.d("PeticionesServidor pedirListaCiu","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
 
         final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompraCiu(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle,ciudad);
 
@@ -405,14 +405,14 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
-                        Log.d("PeticionesServidor","regresó lista");
+                        Log.d("PeticionesServidor pedirListaCiu","regresó lista");
 
                         listener.actualizar(compraResp);
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
-                        Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
+                        Log.d("PeticionesServidor pedirListaCiu","lista compras descarga "+compraResp.getData());
                         listener.actualizar(null);
                     }
 
@@ -1203,7 +1203,7 @@ public class PeticionesServidor {
     /**trae la lista de compra solo de la ciudad seleccionada***/
     public LiveData<ListaCompraResponse> pedirListaCompraxCiudad(PeticionLista peticion, String ciudad, DescargaListaCompraAuto descargaListaCompraAuto){
 
-        Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
+        Log.d("PeticionesServidor pedirListaCompraxCiudad","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
         MutableLiveData<ListaCompraResponse> data=new MutableLiveData<>();
         final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompraCiu(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle,ciudad);
 
@@ -1215,24 +1215,35 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
-                        Log.d("PeticionesServidor","regresó lista");
+                        Log.d("PeticionesServidor pedirListaCompraxCiudad","regresó lista");
                         descargaListaCompraAuto.actualizar(compraResp);
                         data.setValue(compraResp);
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
-                        Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
+                        Log.d("PeticionesServidor pedirListaCompraxCiudad","lista compras descarga "+compraResp.getData());
                         data.setValue(null);
                     }
 
+                }
+                else {
+                    Log.d("PeticionesServidor pedirListaCompraxCiudad","no regresó lista");
+
+                    data.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(@Nullable Call<ListaCompraResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(TAG+" pedirListaCompraxCiudad", t.getMessage());
+                    Log.e(TAG+" pedirListaCompraxCiudad pedirListaCompraxCiudad", t.getMessage());
+                    data.setValue(null);
+                }
+                else {
+
+                    Log.d("PeticionesServidor pedirListaCompraxCiudad","no regresó error");
+
                     data.setValue(null);
                 }
             }
