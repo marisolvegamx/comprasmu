@@ -102,10 +102,10 @@ public class DescargasIniciales {
             //descargo cambios informes
             this.actualizarInformesAll(Constantes.INDICEACTUAL);
             //incluye
-            //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
-            //DescRespInformesEta desetiq=new DescRespInformesEta( act,listenprin,tvRepo);
+            //descargo notificaciones etiquetado
+            DescRespInformesEta desetiq=new DescRespInformesEta( act,listenprin,tvRepo);
 
-            //desetiq.getCambiosEtiq();
+            desetiq.getCambiosEtiq();
         }
 
 

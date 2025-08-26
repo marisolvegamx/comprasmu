@@ -25,6 +25,7 @@ public class DescargasAutomaticasService extends Service {
         flog.grabarError("DescargasAutomaticasService","oncreate","iniciando ");
         DescAutomaticasServiceManager.getInstancia().setServicio(this);
         handler = new Handler();
+        pausado=false;
         runnable = new Runnable() {
             @Override
             public void run() {

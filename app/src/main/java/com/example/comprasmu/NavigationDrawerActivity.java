@@ -344,7 +344,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
    //   initializeCountDrawer();
         pausado=false;
-
+        DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
         return super.onCreateView(parent, name, context, attrs);
     }
 
