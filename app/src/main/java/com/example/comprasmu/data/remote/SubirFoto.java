@@ -2,24 +2,15 @@ package com.example.comprasmu.data.remote;
 
 import android.content.Context;
 import android.util.Log;
-
-
 import androidx.annotation.NonNull;
-
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.utils.ComprasLog;
-
-
 import java.io.File;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
