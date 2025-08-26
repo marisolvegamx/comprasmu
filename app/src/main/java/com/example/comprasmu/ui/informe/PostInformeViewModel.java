@@ -648,34 +648,6 @@ public class PostInformeViewModel {
 
         });
     }
-    //para cuando hago reubicacion en correccion etiquetado
-    public  void actualizarInformeEta(InformeEtapaEnv informeEtapa) {
-        Log.d("actualizarInformeEta", informeEtapa.toJson(informeEtapa));
-        ServiceGenerator.getApiService().editInformeEtapa(informeEtapa).enqueue(new Callback<PostResponse>() {
-            @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
 
-                //  { "status": "ok",
-                //        "data": "Informe dado de alta correctamente."}
-                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
-
-                    mensaje=response.body().getData();
-                    Log.d("actualizarInformeEta", ""+mensaje);
-                    //actualizo el estatus
-                    iniciarBD();
-                    actEstatusInfEtapa(informeEtapa);
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
-                mensaje="No se pudo subir";
-                Log.e(TAG, " actualizarInformeEta Unable to submit post to API.");
-            }
-
-
-        });
-    }
 
 }

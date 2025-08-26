@@ -32,11 +32,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.comprasmu.ActInformeEtaTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.SubirActInformeEtaTask;
 import com.example.comprasmu.SubirCorreccionTask;
-import com.example.comprasmu.SubirInformeEtaTask;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -221,9 +221,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
                 }
 
                 lastClickTime = currentClickTime;
-
-
-                    guardar();
+                guardar();
 
 
             }
@@ -385,8 +383,8 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             //reenvio inf con su detalle
 
             InformeEtapaEnv envio=preViewModel.preparaInformeEtiqCor(solicitud.getInformesId(),detEdit);
-            SubirActInformeEtaTask miTareaAsincrona = new SubirActInformeEtaTask(envio,getActivity());
-            miTareaAsincrona.execute();
+            ActInformeEtaTask miTareaAsincrona = new ActInformeEtaTask(envio,getActivity());
+            miTareaAsincrona.execute("","act");
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
             try {
                 Thread.sleep(2000);

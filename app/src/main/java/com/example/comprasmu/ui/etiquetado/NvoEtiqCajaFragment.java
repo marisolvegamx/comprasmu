@@ -586,7 +586,7 @@ public void iraReubicar(){
             mViewModel.finalizarInf();
             InformeEtapaEnv envio=mViewModel.preparaInformeEtiqAct(mViewModel.getIdNuevo());
             ActInformeEtaTask miTareaAsincrona = new ActInformeEtaTask(envio,getActivity());
-            miTareaAsincrona.execute();
+            miTareaAsincrona.execute("","act");
             subirFotos(getActivity(),envio);
             //cambio el estatus para que no vuelva a pedir en el task
            if(envio.getInformeEtapaDet()!=null)
