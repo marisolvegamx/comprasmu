@@ -15,8 +15,7 @@ import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
-import com.example.comprasmu.data.modelos.InformeEnvioPaq;
-import com.example.comprasmu.data.modelos.InformeEtapa;
+
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
@@ -46,7 +45,6 @@ import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.SubirPendService;
 import com.example.comprasmu.utils.Constantes;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -92,7 +90,7 @@ public class PostInformeViewModel {
 
               //  { "status": "ok",
                 //        "data": "Informe dado de alta correctamente."}
-                if(response.isSuccessful()&&response.body().getStatus()!=null&&response.body().getStatus().equals("ok")) {
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
 
                     mensaje=response.body().getData();
                     Log.d("POstInformeVM", "jjjjjjjjj"+mensaje);
@@ -327,21 +325,23 @@ public class PostInformeViewModel {
 
                 //  { "status": "ok",
                 //        "data": "Informe dado de alta correctamente."}
-                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+                if(response.isSuccessful()&&response.body()!=null&&response.body().getStatus()!=null&&response.body().getStatus().equals("ok")) {
 
                     mensaje=response.body().getData();
-                    Log.d("sendInformeEta", ""+mensaje);
+                    Log.e("sendInformeEta", ""+mensaje);
                     //actualizo el estatus
                     iniciarBD();
                     actEstatusInfEtapa(informeEtapa);
 
+                }else{
+                    Log.e(TAG, "Error al enviar informe etapa");
                 }
             }
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
                 mensaje="No se pudo subir";
-                Log.e(TAG, "Unable to submit post to API.");
+                Log.e(TAG, "Unable to submit post to API."+t.getMessage());
             }
 
 
@@ -398,8 +398,8 @@ public class PostInformeViewModel {
 
             @Override
             public void onFailure(Call<PostResponse> call, Throwable t) {
-                mensaje="No se pudo subir";
-                Log.e(TAG, "Unable to submit post to API.");
+                mensaje="No se pudo subir"+t.getMessage();
+                Log.e(TAG, "Unable to submit post to API."+t.getMessage());
             }
 
 
@@ -648,4 +648,34 @@ public class PostInformeViewModel {
 
         });
     }
+    //para cuando hago reubicacion en correccion etiquetado
+    public  void actualizarInformeEta(InformeEtapaEnv informeEtapa) {
+        Log.d("actualizarInformeEta", informeEtapa.toJson(informeEtapa));
+        ServiceGenerator.getApiService().editInformeEtapa(informeEtapa).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+
+                //  { "status": "ok",
+                //        "data": "Informe dado de alta correctamente."}
+                if(response.isSuccessful()&&response.body().getStatus().equals("ok")) {
+
+                    mensaje=response.body().getData();
+                    Log.d("actualizarInformeEta", ""+mensaje);
+                    //actualizo el estatus
+                    iniciarBD();
+                    actEstatusInfEtapa(informeEtapa);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                mensaje="No se pudo subir";
+                Log.e(TAG, " actualizarInformeEta Unable to submit post to API.");
+            }
+
+
+        });
+    }
+
 }
