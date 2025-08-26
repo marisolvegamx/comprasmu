@@ -352,7 +352,7 @@ public class PeticionesServidor {
 
     public void pedirLista(PeticionLista peticion, IDescargaIniListener listener){
 
-        Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
+        Log.d("PeticionesServidor pedirLista","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
 
         final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompra(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle);
 
@@ -366,14 +366,14 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
-                        Log.d("PeticionesServidor","regresó lista");
+                        Log.d("PeticionesServidor pedirLista","regresó lista");
 
                         listener.actualizar(compraResp);
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
-                        Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
+                        Log.d("PeticionesServidor pedirLista","lista compras descarga "+compraResp.getData());
                         listener.actualizar(null);
                     }
 
@@ -393,7 +393,7 @@ public class PeticionesServidor {
     /**trae la lista de compra solo de la ciudad seleccionada***/
     public void pedirListaCiu(PeticionLista peticion,String ciudad, IDescargaIniListener listener){
 
-        Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
+        Log.d("PeticionesServidor pedirListaCiu","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
 
         final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompraCiu(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle,ciudad);
 
@@ -405,14 +405,14 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
-                        Log.d("PeticionesServidor","regresó lista");
+                        Log.d("PeticionesServidor pedirListaCiu","regresó lista");
 
                         listener.actualizar(compraResp);
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
-                        Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
+                        Log.d("PeticionesServidor pedirListaCiu","lista compras descarga "+compraResp.getData());
                         listener.actualizar(null);
                     }
 
@@ -676,28 +676,27 @@ public class PeticionesServidor {
                 if(response.code()==500){
                     listener.incorrecto("Usuario o contraseña incorrectos");
                 }else
+                if(response.code()==200) {
+                    if (response.isSuccessful() && response.body() != null) {
 
-                if (response.isSuccessful() && response.body() != null) {
+                        PostResponse logResp = response.body();
+                        Log.i(TAG, "respuesta" + logResp.getData() + ".." + logResp.getStatus());
+                        //reviso si está actualizado
+                        if (logResp.getStatus().equals("ok")) //correcto
+                        {
+                            listener.correcto(logResp.getData());
+                            //guardar cveuser
+                        } else //aviso al usuario
+                        {
+                            listener.incorrecto("Hubo un error:" + logResp.getData());
+                        }
 
-                    PostResponse logResp = response.body();
-                    Log.i(TAG,"respuesta"+logResp.getData()+".."+logResp.getStatus());
-                    //reviso si está actualizado
-                    if(logResp.getStatus().equals("ok")) //correcto
-                    {
-
-                        listener.correcto(logResp.getData());
-                        //guardar cveuser
-
-
+                    } else {
+                        //  PostResponse logResp = response.body();
+                        listener.incorrecto("Error de conexión, intente nuevamente");
                     }
-                    else //aviso al usuario
-                    {
-                        listener.incorrecto(logResp.getData());
-                    }
-
                 }else{
-                  //  PostResponse logResp = response.body();
-                    listener.incorrecto("Error de conexión, intente nuevamete");
+                    listener.incorrecto("Error de conexión ("+response.code()+"), intente nuevamente");
                 }
             }
 
@@ -705,8 +704,8 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<PostResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     t.printStackTrace();
-                    Log.e("Peticiones servidor","autent"+ t.getMessage());
-                    listener.incorrecto(t.getMessage());
+                    Log.e("Peticiones servidor","autent"+ t.getCause()+"--"+t.getMessage());
+                    listener.incorrecto(t.getMessage()+"."+t.getCause());
                 }
             }
         });
@@ -1204,7 +1203,7 @@ public class PeticionesServidor {
     /**trae la lista de compra solo de la ciudad seleccionada***/
     public LiveData<ListaCompraResponse> pedirListaCompraxCiudad(PeticionLista peticion, String ciudad, DescargaListaCompraAuto descargaListaCompraAuto){
 
-        Log.d("PeticionesServidor","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
+        Log.d("PeticionesServidor pedirListaCompraxCiudad","haciendo petición lista"+peticion.version_lista+"--"+peticion.version_detalle);
         MutableLiveData<ListaCompraResponse> data=new MutableLiveData<>();
         final Call<ListaCompraResponse> batch = ServiceGenerator.getApiService().getListasCompraCiu(peticion.indice,peticion.usuario,peticion.version_lista,peticion.version_detalle,ciudad);
 
@@ -1216,24 +1215,35 @@ public class PeticionesServidor {
                     //reviso si está actualizado
                     if(compraResp.getStatus()==null||!compraResp.getStatus().equals("error")) //falta actualizar
                     {
-                        Log.d("PeticionesServidor","regresó lista");
+                        Log.d("PeticionesServidor pedirListaCompraxCiudad","regresó lista");
                         descargaListaCompraAuto.actualizar(compraResp);
                         data.setValue(compraResp);
 
                     }
                     else //aviso al usuario //solo si esta desde descargar lista
                     {
-                        Log.d("PeticionesServidor","lista compras descarga "+compraResp.getData());
+                        Log.d("PeticionesServidor pedirListaCompraxCiudad","lista compras descarga "+compraResp.getData());
                         data.setValue(null);
                     }
 
+                }
+                else {
+                    Log.d("PeticionesServidor pedirListaCompraxCiudad","no regresó lista");
+
+                    data.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(@Nullable Call<ListaCompraResponse> call, @Nullable Throwable t) {
                 if (t != null) {
-                    Log.e(TAG+" pedirListaCompraxCiudad", t.getMessage());
+                    Log.e(TAG+" pedirListaCompraxCiudad pedirListaCompraxCiudad", t.getMessage());
+                    data.setValue(null);
+                }
+                else {
+
+                    Log.d("PeticionesServidor pedirListaCompraxCiudad","no regresó error");
+
                     data.setValue(null);
                 }
             }
