@@ -145,8 +145,8 @@ public abstract class InformeEtapaDao extends  BaseDao<InformeEtapa>{
     @Query("SELECT * FROM informe_etapa WHERE  indice=:indice and (estatus=1 or estatus=5) and etapa=:etapa order by id desc")
     public abstract List<InformeEtapa>  getInformePendGasSim(String indice, int etapa);
 
-    //gastos puede estar en 2 o 6
-    @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and (estatus=:estatus or estatus=6 )")
+    //gastos puede estar en 2 o 5,6o 7
+    @Query("SELECT * FROM informe_etapa where etapa=:etapa and indice=:indice and (estatus=:estatus or estatus>4 )")
     public abstract LiveData<List<InformeEtapa>> getInformesGastos(int etapa, String indice, int estatus);
 
     @Query("SELECT * FROM informe_etapa WHERE   indice=:indice and (estatus=:estatus or estatus=5 or estatus=6 or estatus=7) and etapa=:etapa and ciudadNombre=:ciudad order by id desc")

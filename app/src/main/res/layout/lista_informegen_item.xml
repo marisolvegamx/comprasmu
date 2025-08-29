@@ -157,6 +157,7 @@
                     android:layout_width="41dp"
                     android:layout_height="39dp"
                     android:layout_weight="1"
+                    android:visibility="@{(detalle.etapa==6&amp;&amp;detalle.estatus==7)?View.GONE:View.VISIBLE}"
                     app:srcCompat="@drawable/ic_baseline_cloud_upload_24" />
 
                 <ImageButton
