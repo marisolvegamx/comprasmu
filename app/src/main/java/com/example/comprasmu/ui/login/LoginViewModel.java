@@ -29,12 +29,7 @@ public class LoginViewModel extends ViewModel {
     LoginFormState getLoginFormState() {
         return loginFormState;
     }
-
-
-   /* LiveData<LoginResult> getLoginResult() {
-        return loginResult;
-    }*/
-
+    
     public void login(String username, String password,LoginActivity.LoginListener listener) {
         // can be launched in a separate asynchronous job
         loginRepository=LoginRepository.getInstance();
