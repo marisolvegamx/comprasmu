@@ -585,15 +585,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
                 Log.d(TAG," antes de dibujar"+(new Date()));
                 dibujarTiendas(tiendas);
+                if(listageocercas!=null&&listageocercas.size()>0) {
+
+                    dibujarZonas(listageocercas);
+                }
              //   alert.closeAlertDialog();
                 listatiendas.removeObservers(getViewLifecycleOwner());
             }
         });
 
-        if(listageocercas!=null&&listageocercas.size()>0) {
 
-           dibujarZonas(listageocercas);
-        }
 
 
     }
