@@ -84,8 +84,8 @@ public class HistoricoMuestrasRepositoryImpl extends BaseRepository<HistoricoMue
 
     }
 
-    public void getByProducto(String indice, int planta, int producto, int analisis, int empaque, String tamanio) {
+    public void getByProducto(String indice1, String indice2, int planta, int producto, int analisis, int empaque, String tamanio) {
 
-        dao.getByProducto( indice,  planta,  producto,  analisis,  empaque,  tamanio);
+        dao.getByProducto( indice1,indice2,  planta,  producto,  analisis,  empaque,  tamanio);
     }
 }

@@ -118,7 +118,7 @@ public class ListaCompraDetRepositoryImpl {
         return dao.getDetallesByFiltros(sqlquery);
     }
 
-    public LiveData<List<ListaCompraDetalle>> consultaFisico4(int idlista,int analisisid,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
+    public LiveData<List<ListaCompraDetalle>> consultaFisico4(int idlista,int analisisid,String categoria, String productoNombre, String empaque,int tamanio ) {
 
         String query="select id,  listaId, productosId, productoNombre, " +
                 "                   tamanio,  tamanioId,  empaque,   empaquesId, tipoAnalisis," +

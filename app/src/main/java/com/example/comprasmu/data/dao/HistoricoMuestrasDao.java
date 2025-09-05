@@ -29,9 +29,9 @@ public abstract class HistoricoMuestrasDao extends BaseDao<HistoricoMuestras> {
             "FROM historico_muestras " +
             " where productoId=:producto and presentacion=:tamanio" +
             " and empaquesId=:empaque and tipoAnalisis=:analisis " +
-            " and inf_indice=:indice and plantaId=:planta" +
+            " and inf_indice in (:indice1, :indice2) and plantaId=:planta" +
             " group by caducidad order by caducidad desc" )
-    public abstract List<HistoricoMuestras> getByProducto(String indice, int planta, int producto, int analisis, int empaque, String tamanio);
+    public abstract List<HistoricoMuestras> getByProducto(String indice1,String indice2, int planta, int producto, int analisis, int empaque, String tamanio);
 
     @Query("delete FROM historico_muestras")
     public  abstract void deleteAll();

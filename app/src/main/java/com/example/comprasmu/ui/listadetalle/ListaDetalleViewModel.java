@@ -274,7 +274,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 detallebu = detRepo.getDetalleByFiltrosUD(idlista, analisisid,categoria,productoNombre, "", 0);
                 break;
             case 4: default: //la misma lista
-                detallebu = detRepo.consultaFisico4(idlista,analisisid, categoria, productoNombre, empaque, tamanio,"",iddetorig);
+                detallebu = detRepo.consultaFisico4(idlista,analisisid, categoria, productoNombre, empaque, tamanio);
                 break;
         }
 
