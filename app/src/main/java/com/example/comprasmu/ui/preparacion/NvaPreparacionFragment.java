@@ -160,7 +160,8 @@ public class NvaPreparacionFragment extends Fragment {
                     plantaSel = listacomp.get(0).getPlantasId();
                     //reviso si ya tengo informe
                     InformeEtapa inf=mViewModel.getInformexPlantaEta(plantaSel,1,Constantes.INDICEACTUAL,0);
-                    if(inf!=null) {
+                    if(inf!=null&&inf.getEstatus()!=4) {
+                        aceptar.setEnabled(false);
                         Toast.makeText(getActivity(), "No hay datos que mostrar", Toast.LENGTH_SHORT).show();
                         return root;
                     }
@@ -178,6 +179,7 @@ public class NvaPreparacionFragment extends Fragment {
 
         }
         else{
+            aceptar.setEnabled(false);
             Toast.makeText(getActivity(), "No hay datos que mostrar", Toast.LENGTH_SHORT).show();
             return root;
         }
