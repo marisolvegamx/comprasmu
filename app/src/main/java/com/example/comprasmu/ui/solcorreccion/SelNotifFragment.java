@@ -112,14 +112,15 @@ public class SelNotifFragment extends ListaSelecFragment{
         //busco cancelados de preparacion
 
         totCanceleta=scViewModel.getTotalCancelEtaSim(Constantes.INDICEACTUAL,1);
+
         for (InformeEtapa informe:totCanceleta
         ) { //busco si no se ha vuelto a elaborar
-            InformeEtapa inf=scViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,0);
+         /*   InformeEtapa inf=scViewModel.getInformexPlantaEtaEst(informe.getPlantasId(),informe.getEtapa(),Constantes.INDICEACTUAL,0);
             if(inf!=null){
                 //corregido
                 continue;
             }
-            else
+            else*/
                 itotCanceleta++;
 
         }
