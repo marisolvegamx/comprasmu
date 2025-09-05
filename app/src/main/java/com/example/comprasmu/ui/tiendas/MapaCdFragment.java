@@ -575,9 +575,13 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         int cadena=((CatalogoDetalle)spcadena.getSelectedItem()).getCad_idopcion();
 
         Log.d(TAG,"pidiendo tiendas"+(new Date()));
-
+        mMap.clear();
         this.listatiendas=lcviewModel.getTiendas(ciudad,anios,tipo,cadena,cliente);
         this.listageocercas= lcviewModel.getGeocercas(ciudad);
+        if(listageocercas!=null&&listageocercas.size()>0) {
+
+            dibujarZonas(listageocercas);
+        }
         //observo
         this.listatiendas.observe(getViewLifecycleOwner(), new Observer<List<Tienda>>() {
             @Override
@@ -585,10 +589,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
                 Log.d(TAG," antes de dibujar"+(new Date()));
                 dibujarTiendas(tiendas);
-                if(listageocercas!=null&&listageocercas.size()>0) {
 
-                    dibujarZonas(listageocercas);
-                }
              //   alert.closeAlertDialog();
                 listatiendas.removeObservers(getViewLifecycleOwner());
             }
@@ -604,7 +605,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         LatLng japon2 = null;
         String color="1";
 
-        mMap.clear();
+
         if(listiendas!=null) {
             Log.d(TAG,"--tiendas"+listiendas.size());
 
@@ -693,7 +694,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
 
             if(alert!=null)
-            alert.closeAlertDialog();
+                alert.closeAlertDialog();
             irAcdSel();
 
             return;
