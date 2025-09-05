@@ -6,6 +6,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -1725,7 +1727,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             LatLng punto = new LatLng(Double.parseDouble(auxp[0]), Double.parseDouble(auxp[1]));
 
         //busco las zonas de la ciudad de trabajo
-        GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getActivity());
+        GeocercaRepositoryImpl georep=GeocercaRepositoryImpl.getInstance(ComprasDataBase.getInstance(getContext()).getGeocercaDao());
         List<Geocerca> zonas=georep.findsimplexCd(Constantes.CIUDADTRABAJO);
       //  Log.i(TAG,Constantes.CIUDADTRABAJO+"--"+zonas.size());
         LatLng p1;

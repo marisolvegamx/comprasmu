@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Environment;
 import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +23,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.LoggedInUser;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.ui.home.PruebasActivity;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import java.nio.charset.StandardCharsets;
@@ -31,20 +34,23 @@ public class LoginActivity extends AppCompatActivity
 
     private static final String TAG ="LoginActivity" ;
     private LoginViewModel loginViewModel;
-     EditText usernameEditText;
-     EditText passwordEditText;
-     ProgressBar loadingProgressBar;
+    EditText usernameEditText;
+    EditText passwordEditText;
+    ProgressBar loadingProgressBar;
     //private static final String DOWNLOAD_PATH = "https://muesmerc.mx/comprasv1/fotografias";
     private   String DESTINATION_PATH ;
     ImagenDetRepositoryImpl imagenDetRepo;
     int desclis; int descinf; int descfoto;
     private long lastClickTime = 0;
-     Button loginButton;
+    Button loginButton;
+    ComprasLog comprasLog;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        comprasLog = ComprasLog.getSingleton();
+        comprasLog.crearLog(this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath());
 
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
@@ -144,11 +150,13 @@ public class LoginActivity extends AppCompatActivity
         LoggedInUser luser=tengoUsuario();
 
         if(ComprasUtils.isOnlineNet(getApplicationContext())) {
+            comprasLog.grabarError(TAG+" haciendo peticion remota");
             loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString(), new LoginListener());
 
         }else
         {
+            comprasLog.grabarError(TAG,"comprobacion", "sin conexion");
 
             if(luser==null) { //primera vez
                 loadingProgressBar.setVisibility(View.GONE);
@@ -233,6 +241,7 @@ public class LoginActivity extends AppCompatActivity
     public class LoginListener{
 
         public void incorrecto(String response){
+            comprasLog.grabarError(TAG,"LoginListener ",response);
             //muestro error
             loadingProgressBar.setVisibility(View.GONE);
             showLoginFailed(response);

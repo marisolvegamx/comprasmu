@@ -31,6 +31,8 @@ public class DescAutomaticasServiceManager {
 
     public void iniciarServicio(Context context) {
         int clave=1;
+        Log.i("DescAutomaticasServiceManager",Constantes.CLAVEUSUARIO);
+
         //todo quitar este codigo de prueba
         if(Constantes.CLAVEUSUARIO!=null&&!Constantes.CLAVEUSUARIO.equals("")){
            try{
@@ -47,7 +49,12 @@ public class DescAutomaticasServiceManager {
                 context.startService(intent);
                 servicioIniciado = true;
             }
-            descargasAutomaticasservicio.reanudar();
+            else{
+                if(descargasAutomaticasservicio!=null){
+                    descargasAutomaticasservicio.reanudar();
+                }
+            }
+
         }
     }
     public void detenerServicio() {

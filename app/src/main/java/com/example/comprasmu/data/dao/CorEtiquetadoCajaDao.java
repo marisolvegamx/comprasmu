@@ -43,8 +43,8 @@ public abstract class CorEtiquetadoCajaDao extends  BaseDao<CorEtiquetadoCaja>{
     @Query("SELECT * FROM coretiquetado_caja WHERE id =:id")
     public abstract   LiveData<CorEtiquetadoCaja> find(int id);
 
-    @Query("delete from coretiquetado_caja where indice=:indice ")
-    public abstract  void deleteByIndice(String indice);
+    @Query("delete from coretiquetado_caja")
+    public abstract  void deleteAll();
 
     @Query("select * from coretiquetado_caja where indice=:indice ")
     public abstract  LiveData<List<CorEtiquetadoCaja>> getByIndice(String indice);

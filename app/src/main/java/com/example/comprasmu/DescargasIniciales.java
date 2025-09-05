@@ -90,7 +90,7 @@ public class DescargasIniciales {
             lcdrepo=new ListaCompraDetRepositoryImpl(this.act);
             lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
             infdrepo=new InformeComDetRepositoryImpl(act);
-            georep=new GeocercaRepositoryImpl(this.act);
+            georep=GeocercaRepositoryImpl.getInstance(ComprasDataBase.getInstance(act).getGeocercaDao());
             listenprin=new DescargaIniListener();
             solRepo=new SolicitudCorRepoImpl(this.act);
             infetarepo=new InfEtapaRepositoryImpl(this.act);
@@ -102,10 +102,10 @@ public class DescargasIniciales {
             //descargo cambios informes
             this.actualizarInformesAll(Constantes.INDICEACTUAL);
             //incluye
-            //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
-            //DescRespInformesEta desetiq=new DescRespInformesEta( act,listenprin,tvRepo);
+            //descargo notificaciones etiquetado
+            DescRespInformesEta desetiq=new DescRespInformesEta( act,listenprin,tvRepo);
 
-            //desetiq.getCambiosEtiq();
+            desetiq.getCambiosEtiq();
         }
 
 

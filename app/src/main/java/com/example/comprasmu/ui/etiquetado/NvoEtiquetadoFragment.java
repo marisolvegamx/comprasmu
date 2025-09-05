@@ -321,10 +321,11 @@ public class NvoEtiquetadoFragment extends Fragment {
                     }
 
                 }
+
                 actualizarListaCompra();
                 listaCompraResponse.observe(getViewLifecycleOwner(), listaCompraResponse -> {
                     alert.closeAlertDialog();
-
+                    milog.info(TAG, "oncreate","volvi de actualizar lista"+listaCompraResponse);
                     convertirLista(listacomp, clientesprev);
                     if (listaClientes.size() > 1) {
                         //tengo varios clientes
@@ -378,6 +379,7 @@ public class NvoEtiquetadoFragment extends Fragment {
                 //  totcajas=mViewModel.getu
                 //veo si es de muestra o de cja
                 if (detalleEdit != null && detalleEdit.getDescripcionId() > 11) {
+
                     capturarFotoCaja();
                 } else
                     mostrarCapMuestra();
@@ -681,6 +683,8 @@ public void iraReubicar(){
     }
 
     public void capturarFotoCaja() {
+        if(alert!=null)
+            alert.closeAlertDialog();
         Bundle args = new Bundle();
         args.putInt(NvoEtiquetadoFragment.ARG_PREGACT,5 );
         args.putBoolean(NvoEtiquetadoFragment.ARG_ESEDI,this.isEdicion);

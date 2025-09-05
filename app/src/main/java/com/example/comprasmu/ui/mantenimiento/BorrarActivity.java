@@ -22,6 +22,8 @@ import com.example.comprasmu.data.repositories.AcuseReciboRepositoryImpl;
 import com.example.comprasmu.data.repositories.CorEtiqCajaDetRepoImpl;
 import com.example.comprasmu.data.repositories.CorEtiqCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.TiendaEstatusClienteRepositoryImpl;
+import com.example.comprasmu.data.repositories.TiendaRepositoryImpl;
 import com.example.comprasmu.ui.home.HomeActivity;
 import com.example.comprasmu.ui.home.PruebasActivity;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -48,7 +50,9 @@ public class BorrarActivity extends AppCompatActivity {
         CorEtiqCajaRepoImpl correccionEtiqRepo=CorEtiqCajaRepoImpl.getInstance(correccionEtiquetadoDao);
         CorEtiquetadoCajaDetDao corEtiquetadoDao= ComprasDataBase.getInstance(this).getCorEtiquetadoCajaDetDao();
         CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo=CorEtiqCajaDetRepoImpl.getInstance(corEtiquetadoDao);
-        mViewModel = new ViewModelProvider(this, new BorrarViewModelFactory(acuseReciboRepo,getApplication(),listaCompraRepo, configuracionRepository, correccionEtiqRepo, corEtiqCajaDetRepo)).get(BorrarDatosViewModel.class);
+        TiendaRepositoryImpl tiendaRepository=TiendaRepositoryImpl.getInstance(ComprasDataBase.getInstance(this).getTiendaDao());
+        TiendaEstatusClienteRepositoryImpl tiendaEstatusclienteRepository=TiendaEstatusClienteRepositoryImpl.getInstance(ComprasDataBase.getInstance(this).getTiendaEstatusClienteDao());
+        mViewModel = new ViewModelProvider(this, new BorrarViewModelFactory(acuseReciboRepo,getApplication(),listaCompraRepo, configuracionRepository, correccionEtiqRepo, corEtiqCajaDetRepo, tiendaRepository, tiendaEstatusclienteRepository)).get(BorrarDatosViewModel.class);
         Button btnborrar=findViewById(R.id.btnboaceptar);
         Button btncancelar=findViewById(R.id.btnbocancelar);
         aviso=findViewById(R.id.txtbomensaje);
@@ -98,18 +102,20 @@ public class BorrarActivity extends AppCompatActivity {
         EliminadorIndice ei=new EliminadorIndice(this,indice_anterior);
         ei.eliminarVisitas();
         aviso.setVisibility(View.VISIBLE);
-        mViewModel.borrarListasCompra(indice_anterior);
+        mViewModel.borrarListasCompra();
         // borrar informes etapa
-        mViewModel.borrarInformesetapa(indice_anterior);
+        mViewModel.borrarInformesetapa();
         ei.eliminarCorrecciones();
         ei.eliminarSolicitudes();
         ei.borrarImagenes();
         ei.eliminarTablaVers();
         mViewModel.borrarEnvio();
-        mViewModel.borrarGasto(indice_anterior);
+        mViewModel.borrarGasto();
         mViewModel.borrarAcuseRecibo();
         mViewModel.borrarConfiguracion();
-        mViewModel.borrarCorreccionEtiq(indice_anterior);
+        mViewModel.borrarCorreccionEtiq();
+        mViewModel.borrarTiendas();
+        mViewModel.borrarTiendasEstatusCliente();
         mViewModel.borrarHistoricoMuestras();
         //inicializo constantes
         Constantes.CIUDADTRABAJO ="" ;

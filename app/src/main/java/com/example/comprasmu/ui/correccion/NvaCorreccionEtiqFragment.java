@@ -32,6 +32,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.comprasmu.ActInformeEtaTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
@@ -220,9 +222,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
                 }
 
                 lastClickTime = currentClickTime;
-
-
-                    guardar();
+                guardar();
 
 
             }
@@ -359,13 +359,19 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
             if (spdato1 != null) {
                 valor2 =  (String) spdato1.getSelectedItem();
-                if(!valor2.equals("0"))
+                if(!valor2.equals(getString(R.string.seleccione_opcion)))
                     try {
                         nucaja = Integer.parseInt(valor2);
                     }catch (NumberFormatException ex){
                         Log.e(TAG,ex.getMessage());
                         ex.printStackTrace();
                     }
+                else
+                {
+                    Toast.makeText(getContext(),"Seleccione una caja",Toast.LENGTH_LONG).show();
+                    aceptar.setEnabled(true);
+                    return;
+                }
             }
             //paso a
             //creo el informe
@@ -378,11 +384,11 @@ public class NvaCorreccionEtiqFragment extends Fragment {
             //reenvio inf con su detalle
 
             InformeEtapaEnv envio=preViewModel.preparaInformeEtiqCor(solicitud.getInformesId(),detEdit);
-            SubirInformeEtaTask miTareaAsincrona = new SubirInformeEtaTask(envio,getActivity());
-            miTareaAsincrona.execute();
+            ActInformeEtaTask miTareaAsincrona = new ActInformeEtaTask(envio,getActivity());
+            miTareaAsincrona.execute("","act");
             Toast.makeText(getContext(),"Informe guardado correctamente",Toast.LENGTH_SHORT).show();
             try {
-                Thread.sleep(4000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

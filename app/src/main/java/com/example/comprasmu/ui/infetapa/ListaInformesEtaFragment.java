@@ -45,9 +45,6 @@ import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.BackActivity;
 import com.example.comprasmu.ui.correccion.NvaCorreViewModel;
 import com.example.comprasmu.ui.gasto.NvoGastoViewModel;
-
-import com.example.comprasmu.ui.infetapa.ContInfEtapaFragment;
-import com.example.comprasmu.ui.infetapa.SelClienteGenFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.ui.tiendas.LoadingAlert;
@@ -60,7 +57,6 @@ import com.example.comprasmu.workmanager.SubirCorrEtiqCajaTask;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 /*******para lista de informes x etapa y correcciones******/
 public class ListaInformesEtaFragment extends Fragment implements InformeGenAdapter.AdapterCallback {
@@ -140,8 +136,10 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                     actualizarImagenes();
 
                 }
-                else
-                    listainfs=mViewModel.cargarEtapaAll(etapa,indice);
+                else if(etapa==1)
+                    listainfs=mViewModel.cargarPreparacion(indice);
+                        else
+                            listainfs=mViewModel.cargarEtapaAll(etapa,indice);
             listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
                 @Override
                 public void onChanged(List<InformeEtapa> informeEtapas) {
@@ -290,7 +288,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     public void onClickSubir(int informe, String tipo) {
         if(NavigationDrawerActivity.isOnlineNet(getContext())) {
             Constantes.SINCRONIZANDO=1;
-
+            mListAdapter.notifyDataSetChanged();
             if(tipo.equals("e")) {
                 Log.i(TAG, "onClickSubir preparando informe para subir tipo:"+tipo+" etapa:"+etapa+" informe"+informe);
                 milog.grabarError(TAG,"onClickSubir ","preparando informe para subir tipo:"+tipo+" etapa:"+etapa+" informe"+informe);
@@ -372,6 +370,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
     @Override
     public void onClickSubirCC(int id) {
         Constantes.SINCRONIZANDO=1;
+        mListAdapter.notifyDataSetChanged();
             //busco la correccion x el id
         List<CorEtiquetadoCajaDet> nuevasCor= corViewModel.getCorreccionesCDet(id);
         CorEtiquetadoCaja nvacor=corViewModel.getCorreccionesCxid(id,Constantes.INDICEACTUAL);

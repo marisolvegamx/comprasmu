@@ -160,9 +160,9 @@ public class BorrarDatosFragment extends Fragment {
         aviso.setVisibility(View.VISIBLE);
         //todo borrar informes etapa
         // mViewModel.borrarInformes(indice_anterior);
-         mViewModel.borrarListasCompra(indice_anterior);
+         mViewModel.borrarListasCompra();
        // Log.d("Comprasmu.BorrarDatosFragment","Se eliminaron las listas");
-        mViewModel.borrarInformesetapa(indice_anterior);
+        mViewModel.borrarInformesetapa();
         ei.eliminarCorrecciones();
         ei.eliminarSolicitudes();
         ei.borrarImagenes();

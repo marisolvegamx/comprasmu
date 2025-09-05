@@ -16,6 +16,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -111,6 +112,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private MutableLiveData<Integer> totalNotifGen;
     MutableLiveData<List<NotificacionGen>> listaNotificacionesGen;
     Toolbar toolbar;
+    private boolean pausado = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -299,7 +301,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                         findItem(R.id.nav_notificaciongen));
             }
-            initializeCountDrawer();
+
+            actualizarNotificaciones();
             revisarCiudades();
             if (checkPermission()) {
                 //main logic or main code
@@ -340,9 +343,28 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     @Override
     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
    //   initializeCountDrawer();
-
-
+        pausado=false;
+        DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
         return super.onCreateView(parent, name, context, attrs);
+    }
+
+    public void actualizarNotificaciones(){
+        int INTERVALO = 10*1000; // 10seg
+        Handler handler;
+        Runnable runnable;
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(!pausado) {
+                    initializeCountDrawer();
+                }
+                    handler.postDelayed(this, INTERVALO);
+
+            }
+        };
+        handler.post(runnable);
+
     }
 
     //saber si tiene mas de una ciudad para mostrar seleccionar ciudad
@@ -516,6 +538,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         Log.d(TAG, "pausado");
         DescAutomaticasServiceManager.getInstancia().detenerServicio();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(rcv);
+        pausado=true;
     }
     @Override
     protected void onStop() {
@@ -525,6 +548,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         WorkManager
                 .getInstance(this).cancelAllWorkByTag("comprassync_worker2");
         DescAutomaticasServiceManager.getInstancia().detenerServicio();
+        pausado=true;
     }
 //esta funcion no funciona nunca se llama
     @Override
@@ -883,6 +907,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         Log.i(TAG," mori");
         WorkManager.getInstance(this).cancelAllWorkByTag("comprassync_worker2");
         DescAutomaticasServiceManager.getInstancia().detenerServicio();
+        pausado=true;
     }
 
     @Override
@@ -901,7 +926,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
           Log.d(TAG, "on restart");
           DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
-
+          pausado=false;
           initializeCountDrawer();
       }
 

@@ -41,6 +41,8 @@ import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
+import com.example.comprasmu.data.repositories.TiendaEstatusClienteRepositoryImpl;
+import com.example.comprasmu.data.repositories.TiendaRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.utils.ComprasLog;
 
@@ -68,11 +70,16 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     ConfiguracionRepositoryImpl configuracionRepo;
     CorEtiqCajaRepoImpl correccionEtiqRepo;
     CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo;
-
+    TiendaRepositoryImpl tiendaRepository;
+    TiendaEstatusClienteRepositoryImpl tiendaEstatusclienteRepository;
     Context context;
     ComprasLog complog;
     String TAG="BorrarDatosViewModel";
-    public BorrarDatosViewModel(Application application, ListaCompraDetRepositoryImpl lcdrepo, AcuseReciboRepositoryImpl acuseRepo, ConfiguracionRepositoryImpl configuracionRepo, CorEtiqCajaRepoImpl correccionEtiqRepo, CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo) {
+    public BorrarDatosViewModel(Application application, ListaCompraDetRepositoryImpl lcdrepo, AcuseReciboRepositoryImpl acuseRepo,
+                                ConfiguracionRepositoryImpl configuracionRepo, CorEtiqCajaRepoImpl correccionEtiqRepo,
+                                CorEtiqCajaDetRepoImpl corEtiqCajaDetRepo,TiendaRepositoryImpl tiendaRepository,
+                                TiendaEstatusClienteRepositoryImpl tiendaEstatusclienteRepository
+                                ) {
         super(application);
         this.context = application;
         complog=ComprasLog.getSingleton();
@@ -81,6 +88,8 @@ public class BorrarDatosViewModel extends AndroidViewModel {
         this.configuracionRepo=configuracionRepo;
         this.correccionEtiqRepo=correccionEtiqRepo;
         this.corEtiqCajaDetRepo=corEtiqCajaDetRepo;
+        this.tiendaRepository=tiendaRepository;
+        this.tiendaEstatusclienteRepository=tiendaEstatusclienteRepository;
     }
 
     File carpeta;
@@ -88,7 +97,7 @@ public class BorrarDatosViewModel extends AndroidViewModel {
     public void setCarpeta(File carpeta) {
         this.carpeta = carpeta;
     }
-
+    /*no se usa**/
     public void borrarInformes(String indice){
         visitarepo=new VisitaRepositoryImpl(context);
         icrepo=new InformeCompraRepositoryImpl(context);
@@ -140,14 +149,14 @@ public class BorrarDatosViewModel extends AndroidViewModel {
 
     }
 
-    public void borrarInformesetapa(String indice){
+    public void borrarInformesetapa(){
         ieRepo=new InfEtapaRepositoryImpl(context);
         iedRepo=new InfEtapaDetRepoImpl(context);
         dcRepo=new DetalleCajaRepoImpl(context);
 
-        complog.grabarError("borrando informes etapas"+indice);
+        complog.grabarError("borrando informes etapas");
         //busco el detalle
-        List<InformeEtapa> infos=ieRepo.getDao().findAllByIndice(indice);
+        List<InformeEtapa> infos=ieRepo.getAllsimple();
         for(InformeEtapa informe:infos) {
             borrarInfEtapaDetalle(informe);
             dcRepo.deleteByInforme(informe.getId());
@@ -155,11 +164,8 @@ public class BorrarDatosViewModel extends AndroidViewModel {
 
     }
 
-
-
     //borra los detalles informe x etapa
     public void borrarInfEtapaDetalle(InformeEtapa inf){
-
         //busco los detalles
         List<InformeEtapaDet> det=iedRepo.getAllSencillo(inf.getId());
         if(det!=null)
@@ -175,7 +181,6 @@ public class BorrarDatosViewModel extends AndroidViewModel {
 
     public void borrarEnvio() {
        ienRepo=new InformeEnvioRepositoryImpl(this.context);
-
         //busco el detalle
         List<InformeEnvioDet> infos = ienRepo.getAllsimple();
 
@@ -189,50 +194,43 @@ public class BorrarDatosViewModel extends AndroidViewModel {
 
 
     private void puedoBorrarInforme(InformeCompra informe){
-
         List<InformeCompraDetalle> informeCompraDetalles=icdrepo.getAllSencillo(informe.getId());
         if(informeCompraDetalles==null||informeCompraDetalles.size()==0) {
-
             //reviso la imagenes
             List<ImagenDetalle> imagenDetalles = imrepo.getFotosInf(informe);
 
             if (imagenDetalles == null || imagenDetalles.size() == 0) {
                 //puedo borrar si ya no hay detalles ni imagenes
                 icrepo.deleteInformeCompra(informe.getId());
-
             }
         }
-
 
     }
 
     private void puedoBorrarLista(ListaCompra compra){
 
         List<ListaCompraDetalle> compraDetalles= lcdrepo.getAllByListasimple(compra.getId());
-
-            if(compraDetalles==null||compraDetalles.size()==0){
+        if(compraDetalles==null||compraDetalles.size()==0){
                            //puedo borrar
-                           lcrepo.delete(compra);
-
-                       }
-                       else
+            lcrepo.delete(compra);
+        }
+        else
                            //borro los detalles
-            {
-                lcdrepo.deleteByLista(compra.getId());
-                puedoBorrarLista(compra);
-
-                    }
+        {
+            lcdrepo.deleteByLista(compra.getId());
+            puedoBorrarLista(compra);
+        }
 
     }
 
     //revisar que no choque con la descarga de la lista de compra
-    public void borrarListasCompra(String indice){
+    public void borrarListasCompra(){
         ListaCompraDao dao = ComprasDataBase.getInstance(context).getListaCompraDao();
         lcrepo = ListaCompraRepositoryImpl.getInstance(dao);
 
-        complog.grabarError(TAG,"borrarListasCompra","borrando de "+indice);
+        complog.grabarError(TAG,"borrarListasCompra","");
         lcdrepo=new ListaCompraDetRepositoryImpl(context);
-        List<ListaCompra> listaCompras= lcrepo.getAllByIndicesimple(indice);
+        List<ListaCompra> listaCompras= lcrepo.getAllsimple();
 
                 //para cada detalle lo elimino
                 if(listaCompras!=null&&listaCompras.size()>0){
@@ -263,13 +261,11 @@ public class BorrarDatosViewModel extends AndroidViewModel {
             else { Log.e("BorrarDatosFregment","No se pudo borrar el archivo "+path); } }
     }
 
-    public void borrarGasto(String indice) {
+    public void borrarGasto() {
         igasRepo=new InfGastoDetRepositoryImpl(this.context);
-
-
-        complog.grabarError("borrando informes gasto det" + indice);
+        complog.grabarError("borrando informes gasto det");
         //busco el detalle
-       igasRepo.deleteAll();
+        igasRepo.deleteAll();
 
     }
     public void borrarAcuseRecibo() {
@@ -285,13 +281,26 @@ public class BorrarDatosViewModel extends AndroidViewModel {
 
     }
 
-    public void borrarCorreccionEtiq(String indice) {
+    public void borrarCorreccionEtiq() {
         complog.grabarError("borrando correccion etiq");
         //busco el detalle
-        correccionEtiqRepo.deleteByIndice(indice);
+        correccionEtiqRepo.deleteAll();
         corEtiqCajaDetRepo.deleteAll();
 
     }
+    public void borrarTiendas() {
+        complog.grabarError("borrando tiendas");
+        //busco el detalle
+        tiendaRepository.deleteAll();
+
+    }
+    public void borrarTiendasEstatusCliente() {
+        complog.grabarError("borrando tiendas_estatus");
+        //busco el detalle
+        tiendaEstatusclienteRepository.deleteAll();
+
+    }
+
     public void borrarHistoricoMuestras() {
         complog.grabarError("borrando historico_muestras");
         HistoricoMuestrasRepositoryImpl historicoMuestrasRepository=HistoricoMuestrasRepositoryImpl.getInstance(

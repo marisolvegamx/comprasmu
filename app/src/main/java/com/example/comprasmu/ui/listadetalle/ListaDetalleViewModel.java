@@ -19,22 +19,28 @@ import com.example.comprasmu.data.dao.HistoricoMuestrasDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
+import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaDetalleBu;
+import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.data.modelos.TiendaJson;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
+import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
 import com.example.comprasmu.data.repositories.HistoricoMuestrasRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.data.repositories.TiendaEstatusClienteRepositoryImpl;
+import com.example.comprasmu.data.repositories.TiendaRepositoryImpl;
 import com.example.comprasmu.services.DescargaHistoricoMuestras;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
-import com.example.comprasmu.ui.tiendas.LoadingAlert;
+import com.example.comprasmu.ui.tiendas.PeticionMapaCd;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -53,28 +59,28 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     private final ListaCompraRepositoryImpl repository;
     private ListaCompraDetRepositoryImpl detRepo;
 
-    private  LiveData<ListaCompra> listaCompra;
-    private  LiveData<List<ListaCompraDetalle>> listas;
-    private  LiveData<List<ListaCompraDetalle>> detallebu;
+    private LiveData<ListaCompra> listaCompra;
+    private LiveData<List<ListaCompraDetalle>> listas;
+    private LiveData<List<ListaCompraDetalle>> detallebu;
 
     private final MutableLiveData<Event<Integer>> mOpenListaCompraEvent = new MutableLiveData<>();
-    private  LiveData<Integer> size;
+    private LiveData<Integer> size;
 
-    private  LiveData<Boolean> empty;
+    private LiveData<Boolean> empty;
     private int idListaSel;
-    private  ListaCompraDetalle detallebuSel;
+    private ListaCompraDetalle detallebuSel;
     public ListaCompra listaSelec;
     private int clienteSel;
     private int plantaSel;
     public String nombrePlantaSel;
     public int ciudadSel;
     public String nombreCiudadSel;
-    private static final String TAG=ListaDetalleViewModel.class.getCanonicalName();
-    private boolean nuevaMuestra=false;  //indica si se agregará muestra
+    private static final String TAG = ListaDetalleViewModel.class.getCanonicalName();
+    private boolean nuevaMuestra = false;  //indica si se agregará muestra
     Context context;
     private final InfEtapaRepositoryImpl infEtaRepository;
 
-    public ListaDetalleViewModel(Application application ) {
+    public ListaDetalleViewModel(Application application) {
         super(application);
         this.infEtaRepository = new InfEtapaRepositoryImpl(application);
         ListaCompraDao dao=ComprasDataBase.getInstance(application).getListaCompraDao();
@@ -595,5 +601,55 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         DescargaHistoricoMuestras descargaHistoricoMuestras=new DescargaHistoricoMuestras( dirLog,  historicoMuestraRepo, Constantes.CLAVEUSUARIO,  Constantes.INDICEACTUAL,
                 peticionesServidor,  lifecycleOwner);
         return descargaHistoricoMuestras.ejecutar(plantaId);
+    }
+    public LiveData<List<Tienda>> getTiendas(String ciudad, int periodo, int tipo, int cadena, int cliente) {
+        TiendaRepositoryImpl tiendaRepository = TiendaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaDao());
+
+        return tiendaRepository.gettiendasByFiltros(ciudad, periodo, tipo, cadena, cliente);
+
+    }
+    public List<Tienda> getTiendasSimp(String ciudad, int periodo, int tipo, int cadena, int cliente) {
+        TiendaRepositoryImpl tiendaRepository = TiendaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaDao());
+
+        return tiendaRepository.gettiendasByFiltrosSimp(ciudad);
+
+    }
+
+
+    public MutableLiveData<Boolean> descargarTiendas(String ciudad, String ffin, LifecycleOwner lifeCycleOwner){
+        //veo si hay algo en la tabla
+        MutableLiveData<Boolean> finProceso=new MutableLiveData<>();
+        TiendaRepositoryImpl tiendaRepository = TiendaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaDao());
+        TiendaEstatusClienteRepositoryImpl tiendaEstatusRepository=TiendaEstatusClienteRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaEstatusClienteDao());
+        List<Tienda> tiendas=tiendaRepository.getByCiudad(ciudad);
+        if(tiendas==null||tiendas.size()<1) {
+            PeticionMapaCd peticionmap = new PeticionMapaCd(Constantes.CLAVEUSUARIO);
+            peticionmap.getTiendas("0", ciudad,   ffin); //se agregarian filtros despues
+            peticionmap.getListatiendas().observe(lifeCycleOwner, new Observer<List<TiendaJson>>() {
+                @Override
+                public void onChanged(List<TiendaJson> tiendas) {
+                    //guardo en la tabla local
+                    if(tiendas!=null&& tiendas.size()>0)
+                        for (TiendaJson tienda: tiendas
+                             ) {
+                            tiendaRepository.insert(tienda.crearTienda());
+                            if(tienda.getTiendaEstatusCliente()!=null&&tienda.getTiendaEstatusCliente().size()>0){
+                                tiendaEstatusRepository.insertAll(tienda.getTiendaEstatusCliente());
+                            }
+                        }
+                    finProceso.setValue(true);
+                }
+            });
+        }
+        else{
+            finProceso.setValue(true);
+        }
+        return finProceso;
+    }
+
+    public List<Geocerca> getGeocercas(String ciudad) {
+        GeocercaRepositoryImpl geocercaRepository = GeocercaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getGeocercaDao());
+        return geocercaRepository.findsimplexCd(ciudad);
+
     }
 }

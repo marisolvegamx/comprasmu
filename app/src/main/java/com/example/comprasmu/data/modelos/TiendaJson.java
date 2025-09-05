@@ -1,14 +1,12 @@
 package com.example.comprasmu.data.modelos;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 import java.util.List;
 
-@Entity(tableName = "tienda")
-public class Tienda {
 
-    @PrimaryKey()
+public class TiendaJson {
+
+
     private int une_id;
     private String une_descripcion;
     private String tipoTienda;
@@ -28,7 +26,7 @@ public class Tienda {
     private Integer estpep;
     private Integer estele;
     private Integer estjum;
-
+    private List<TiendaEstatusCliente> tiendaEstatusCliente;
 
     public int getUne_id() {
         return une_id;
@@ -182,4 +180,36 @@ public class Tienda {
         this.estjum = estjum;
     }
 
+    public List<TiendaEstatusCliente> getTiendaEstatusCliente() {
+        return tiendaEstatusCliente;
+    }
+
+    public void setTiendaEstatusCliente(List<TiendaEstatusCliente> tiendaEstatusCliente) {
+        this.tiendaEstatusCliente = tiendaEstatusCliente;
+    }
+
+    public Tienda crearTienda(){
+
+        Tienda tiendaModel=new Tienda();
+        tiendaModel.setUne_id(this.getUne_id());
+        tiendaModel.setTipoTienda(this.getTipoTienda());
+        tiendaModel.setCiudad(this.getCiudad());
+        tiendaModel.setColor(this.getColor());
+        tiendaModel.setEstele(this.getEstele());
+        tiendaModel.setEstpep(this.getEstpep());
+        tiendaModel.setEstpep(this.getEstpep());
+        tiendaModel.setEstjum(this.getEstjum());
+        tiendaModel.setUne_direccion(this.getUne_direccion());
+        tiendaModel.setPais(this.getPais());
+        tiendaModel.setUne_cadenacomercial(this.getUne_cadenacomercial());
+        tiendaModel.setUne_cla_ciudad(this.getUne_cla_ciudad());
+        tiendaModel.setUne_cla_pais(this.getUne_cla_pais());
+        tiendaModel.setUne_coordenadasxy(this.getUne_coordenadasxy());
+        tiendaModel.setUne_descripcion(this.getUne_descripcion());
+        tiendaModel.setUne_dir_referencia(this.getUne_dir_referencia());
+        tiendaModel.setUne_puntocardinal(this.getUne_puntocardinal());
+        tiendaModel.setUne_tipotienda(this.getUne_tipotienda());
+        tiendaModel.setUne_estatus(this.getUne_estatus());
+        return  tiendaModel;
+    }
 }

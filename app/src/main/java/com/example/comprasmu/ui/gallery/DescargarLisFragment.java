@@ -61,7 +61,7 @@ public class DescargarLisFragment extends Fragment implements DescargasIniAsyncT
         ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getContext());
         ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
         SustitucionRepositoryImpl sustRepo=new SustitucionRepositoryImpl(getContext());
-        GeocercaRepositoryImpl georep=new GeocercaRepositoryImpl(getContext());
+        GeocercaRepositoryImpl georep=GeocercaRepositoryImpl.getInstance(ComprasDataBase.getInstance(getContext()).getGeocercaDao());
         SiglaRepositoryImpl sigRepo=new SiglaRepositoryImpl(getContext());
 
         DescargasIniAsyncTask task = new DescargasIniAsyncTask(getContext(),cdrepo,tvRepo,atRepo,lcdrepo,lcrepo,this,  sustRepo,georep,sigRepo,true,true);
