@@ -43,7 +43,10 @@
             android:id="@+id/nav_listacor2"
             android:icon="@drawable/ic_baseline_check_24"
             android:title="@string/menu_rescorreccion" />
-
+        <item
+            android:id="@+id/nav_tutoriales"
+            android:icon="@drawable/ic_baseline_help_outline_24"
+            android:title="@string/menu_tutoriales" />
 
 
         <item
@@ -51,6 +54,7 @@
             android:icon="?attr/actionModeCloseDrawable"
             android:title="@string/menu_inicial"
          />
+
         <item
             android:id="@+id/nav_cerrarsesion"
             android:icon="@android:drawable/ic_menu_close_clear_cancel"
