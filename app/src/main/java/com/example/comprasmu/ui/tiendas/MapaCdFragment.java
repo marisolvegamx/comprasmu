@@ -610,7 +610,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             Log.d(TAG,"--tiendas"+listiendas.size());
 
             for (Tienda tienda : listiendas) {
-                //  Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
+                  Log.d(TAG,tienda.getUne_id()+"--"+tienda.getEstpep()+tienda.getUne_descripcion()+".."+tienda.getEstele()+".."+tienda.getEstpen());
                 switch (cliente) {
                     case 4:
                         color = validarColorTienda(tienda.getEstpep());

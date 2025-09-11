@@ -637,7 +637,11 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         TiendaRepositoryImpl tiendaRepository = TiendaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaDao());
         TiendaEstatusClienteRepositoryImpl tiendaEstatusRepository=TiendaEstatusClienteRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaEstatusClienteDao());
         List<Tienda> tiendas=tiendaRepository.getByCiudad(ciudad);
-        if(tiendas==null||tiendas.size()<1) {
+        if(tiendas!=null&&tiendas.size()>0) {
+            //las borro
+            tiendaRepository.deleteAll();
+            tiendaEstatusRepository.deleteAll();
+        }
             PeticionMapaCd peticionmap = new PeticionMapaCd(Constantes.CLAVEUSUARIO);
             peticionmap.getTiendas("0", ciudad,   ffin); //se agregarian filtros despues
             peticionmap.getListatiendas().observe(lifeCycleOwner, new Observer<List<TiendaJson>>() {
@@ -655,10 +659,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                     finProceso.setValue(true);
                 }
             });
-        }
-        else{
-            finProceso.setValue(true);
-        }
+
         return finProceso;
     }
 
