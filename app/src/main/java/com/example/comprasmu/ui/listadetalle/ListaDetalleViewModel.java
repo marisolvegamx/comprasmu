@@ -20,6 +20,7 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.Geocerca;
+import com.example.comprasmu.data.modelos.HistoricoMuestras;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
@@ -42,6 +43,7 @@ import com.example.comprasmu.services.DescargaHistoricoMuestras;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.tiendas.PeticionMapaCd;
 import com.example.comprasmu.utils.ComprasLog;
+import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
 
@@ -206,9 +208,9 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         List<DescripcionGenerica> opciones=new ArrayList<>();
         opciones.add(new DescripcionGenerica(1,"Criterio 1"));
         opciones.add(new DescripcionGenerica(2,"Criterio 2"));
-
+        //sensorial solo tiene 2 criterios
         switch (idanalisis){
-            case 1: case 5: //fisico
+            case 1:  case 4: case 8: case 5: //fisico
                 opciones.add(new DescripcionGenerica(3,"Criterio 3"));
                 opciones.add(new DescripcionGenerica(4,"Criterio 4"));
                 break;
@@ -313,10 +315,16 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     }
     public void consultaMicro(int idlista,int opcionsel,String categoria, String productoNombre, String empaque, int analisis,int tamanio,int iddetorig ){
         switch (opcionsel) {
-            case 1:
+            case 1: //mismo analisis, producto, empaque y diferente tamaño
+                detallebu = detRepo.getDetalleByFiltrosUDA2(idlista, analisis,categoria, analisis,productoNombre, empaque, tamanio);
+                break;
+            case 2: //mismo analisis, producto,  y diferente empaque por eso tamaño va en 0
+                detallebu = detRepo.getDetalleByFiltrosUDA2(idlista, analisis,categoria, analisis,productoNombre, empaque, 0);
+                break;
+            case 3: //mismo analisis y misma categoria
                 detallebu = detRepo.getDetalleByFiltrosUDA2(idlista, analisis,categoria, analisis,productoNombre, "", 0);
                 break;
-            case 2: default:
+            case 4: default: //el mismo producto
                 detallebu = detRepo.getDetalleByFiltros(idlista,analisis, categoria, productoNombre, empaque, tamanio,analisis+"",0);
                 break;
         }
@@ -651,5 +659,41 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         GeocercaRepositoryImpl geocercaRepository = GeocercaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getGeocercaDao());
         return geocercaRepository.findsimplexCd(ciudad);
 
+    }
+
+    //aqui guardo los backups
+    public List<ListaDetalleBu> pasarADetalleBU(List<ListaCompraDetalle> listalcd, HistoricoMuestrasDao historicoMuestrasDao, int plantaId){
+        HistoricoMuestrasRepositoryImpl historicoMuestrasRepository=HistoricoMuestrasRepositoryImpl.getInstance(historicoMuestrasDao);
+        List<ListaDetalleBu> listanueva=new ArrayList<>();
+        String indice1="",indice2="";
+        //calcular indices pasados
+        try {
+
+            indice1= ComprasUtils.restarIndice(Constantes.INDICEACTUAL,1);
+            indice2= ComprasUtils.restarIndice(Constantes.INDICEACTUAL,2);
+            String codigosNoPermitidos="";
+            for (ListaCompraDetalle lcdo:listalcd
+            ) {
+
+                ListaDetalleBu nuevaitem= new ListaDetalleBu(lcdo);
+                Log.d(TAG,"nuevaitem codigo>"+nuevaitem.getCodigosNoPermitidos());
+                //aqui reviso si tiene codigos, si no los busco en el historico
+                if(nuevaitem.getCodigosNoPermitidos().equals("")){
+                    //busco
+                    List<HistoricoMuestras> listaHistorico=historicoMuestrasRepository.getDetalleByFiltros(plantaId,nuevaitem.getAnalisisId(),nuevaitem.getProductoNombre(),nuevaitem.getEmpaque(),nuevaitem.getTamanioId(),indice1, indice2);
+                    if(listaHistorico!=null&&listaHistorico.size()>0){
+                        for (HistoricoMuestras muestrapasada: listaHistorico
+                             ) {
+                            codigosNoPermitidos=codigosNoPermitidos+";"+Constantes.sdfcaducidad.format(muestrapasada.getCaducidad());
+                        }
+                        nuevaitem.setCodigosNoPermitidos(codigosNoPermitidos);
+                    }
+                }
+                listanueva.add(nuevaitem);
+            }
+        } catch (Exception e) {
+            Log.e(TAG,"pasarADetalleBU Error al calcular los indices");
+        }
+        return listanueva;
     }
 }
