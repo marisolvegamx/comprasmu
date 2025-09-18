@@ -29,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.comprasmu.R;
+import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
@@ -97,8 +98,9 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             "MISMO EMPAQUE, PERO DIFERENTE PRODUCTO",
             "MISMA FECHA DE CADUCIDAD PARA EL PRODUCTO QUE ESTÁ INTENTANDO SUSTITUIR"
     };
-    private final String[] desccritMic={"OTRO PRODUCTO PARA LA MISMA CATEGORIA Y CON EL MISMO TIPO DE ANALISIS",
-
+    private final String[] desccritMic={"MISMO PRODUCTO, MISMO EMPAQUE, DIFERENTE TAMAÑO",
+            "MISMO PRODUCTO, DIFERENTE EMPAQUE" ,
+            "OTRO PRODUCTO QUE ESTÉ EN LA LISTA DE COMPRA" ,
             "MISMA FECHA DE CADUCIDAD PARA EL PRODUCTO QUE ESTÁ INTENTANDO SUSTITUIR"
     };
     private NuevoinformeViewModel niViewModel;
@@ -185,148 +187,159 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         if(args!=null&&args.getBoolean(ISBACKUP)){
             isbu=args.getBoolean(ISBACKUP);
             if(isbu) {
+                if (Constantes.VarListCompra.detallebuSel != null){
+                    opcionbu = 2;
+                    mBinding.txtlcopcionbu.setText(getString(R.string.criterio) + " " + (opcionbu - 1));
+                    mBinding.txtlcopcionbu.setVisibility(View.VISIBLE);
+                    String descri = "";
+                    switch (Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
+                        case 1:
+                        case 5:
+                            descri = desccritFis[opcionbu - 2];
+                            break;
+                        case 2:
+                        case 6:
+                            descri = desccritSen[opcionbu - 2];
+                            break;
+                        case 3:
+                        case 7:
+                            descri = desccritTor[opcionbu - 2];
+                            break;
+                        case 4:
+                        case 8:
+                            descri = desccritMic[opcionbu - 2];
+                            break;
 
-                opcionbu=2;
-                mBinding.txtlcopcionbu.setText(getString(R.string.criterio)+" "+(opcionbu-1));
-                mBinding.txtlcopcionbu.setVisibility(View.VISIBLE);
-                String descri="";
-                switch(Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
-                    case 1: case 5:
-                        descri=desccritFis[opcionbu-2];
-                        break;
-                    case 2: case 6:
-                        descri=desccritSen[opcionbu-2];
-                        break;
-                    case 3: case 7:
-                        descri=desccritTor[opcionbu-2];
-                        break;
-                    case 4: case 8:
-                        descri=desccritMic[opcionbu-2];
-                        break;
+                    }
+                    mBinding.txtlcdescbu.setText(descri);
+                    mBinding.txtlcdescbu.setVisibility(View.VISIBLE);
 
-                }
-                mBinding.txtlcdescbu.setText(descri);
-                mBinding.txtlcdescbu.setVisibility(View.VISIBLE);
+                    if (!ismuestra) {
+                        mViewModel.setDetallebuSel(Constantes.VarListCompra.detallebuSel);
+                        mViewModel.listaSelec = Constantes.VarListCompra.listaSelec;
+                        mViewModel.setIdListaSel(Constantes.VarListCompra.idListaSel);
+                    }
+                    //reviso que traiga el detalle original
+                    if (mViewModel.getDetallebuSel() != null) {
 
-                if(!ismuestra) {
-                    mViewModel.setDetallebuSel(Constantes.VarListCompra.detallebuSel);
-                    mViewModel.listaSelec = Constantes.VarListCompra.listaSelec;
-                    mViewModel.setIdListaSel(Constantes.VarListCompra.idListaSel);
-                }
-                //reviso que traiga el detalle original
-                if(mViewModel.getDetallebuSel()!=null) {
+                        etsiglas.setText(mViewModel.listaSelec.getSiglas());
+                        clienteSel = mViewModel.listaSelec.getClientesId();
+                        mViewModel.setClienteSel(clienteSel);
+                        if (nombreCliente == null)
+                            nombreCliente = "";
+                        mBinding.txtlcplanta.setText(nombreCliente + " " + nombrePlanta + " (" + mViewModel.listaSelec.getSiglas() + ")");
 
-                    etsiglas.setText(mViewModel.listaSelec.getSiglas());
-                    clienteSel=mViewModel.listaSelec.getClientesId();
-                    mViewModel.setClienteSel(clienteSel);
-                    if(nombreCliente==null)
-                        nombreCliente="";
-                    mBinding.txtlcplanta.setText(nombreCliente+" "+nombrePlanta+" ("+mViewModel.listaSelec.getSiglas()+")");
-
-                    mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio)+" "+opcionbu);
-                    mBinding.lllc3.setVisibility(View.VISIBLE);
-                    if(opcionbu>2)
-                        mBinding.btnlcantbu.setVisibility(View.VISIBLE);
-                    else
-                        mBinding.btnlcantbu.setVisibility(View.GONE);
-
-                    // mBinding.txtlcopcionbu.setVisibility(View.VISIBLE);
-                    mBinding.btnlcsigbu.setVisibility(View.VISIBLE);
-                    int idana = mViewModel.getDetallebuSel().getAnalisisId();
-                    //busco los criterios
-                    List<DescripcionGenerica> opcionesbu=mViewModel.cargarOpcionesAnalisis(idana);
-                    mBinding.btnlcsigbu.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                           // opcionbu=Integer.parseInt(mBinding.txtlcopcionbu.getText().toString());
-                            nuevaConsultaBu(opcionbu,mViewModel.getDetallebuSel().getId());
-                            mBinding.txtlcopcionbu.setText(getString(R.string.criterio)+" "+(opcionbu));
-                            String descri="";
-                            switch(Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
-                                case 1: case 5:
-                                    descri=desccritFis[opcionbu-1];
-                                    break;
-                                case 2: case 6:
-                                    descri=desccritSen[opcionbu-1];
-                                    break;
-                                case 3: case 7:
-                                    descri=desccritTor[opcionbu-1];
-                                    break;
-                                case 4: case 8:
-                                    descri=desccritMic[opcionbu-1];
-                                    break;
-
-                            }
-                            mBinding.txtlcdescbu.setText(descri);
-                            mBinding.txtlcdescbu.setVisibility(View.VISIBLE);
-                            opcionbu++;
-                            mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio)+" "+opcionbu);
-
-
+                        mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio) + " " + opcionbu);
+                        mBinding.lllc3.setVisibility(View.VISIBLE);
+                        if (opcionbu > 2)
                             mBinding.btnlcantbu.setVisibility(View.VISIBLE);
-                            if(opcionbu>opcionesbu.size()){
-                                mBinding.lllc3.setVisibility(View.VISIBLE);
+                        else
+                            mBinding.btnlcantbu.setVisibility(View.GONE);
 
-                                mBinding.btnlcsigbu.setVisibility(View.GONE);
+                        // mBinding.txtlcopcionbu.setVisibility(View.VISIBLE);
+                        mBinding.btnlcsigbu.setVisibility(View.VISIBLE);
+                        int idana = mViewModel.getDetallebuSel().getAnalisisId();
+                        //busco los criterios
+                        List<DescripcionGenerica> opcionesbu = mViewModel.cargarOpcionesAnalisis(idana);
+                        mBinding.btnlcsigbu.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // opcionbu=Integer.parseInt(mBinding.txtlcopcionbu.getText().toString());
+                                nuevaConsultaBu(opcionbu, mViewModel.getDetallebuSel().getId());
+                                mBinding.txtlcopcionbu.setText(getString(R.string.criterio) + " " + (opcionbu));
+                                String descri = "";
+                                switch (Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
+                                    case 1:
+                                    case 5:
+                                        descri = desccritFis[opcionbu - 1];
+                                        break;
+                                    case 2:
+                                    case 6:
+                                        descri = desccritSen[opcionbu - 1];
+                                        break;
+                                    case 3:
+                                    case 7:
+                                        descri = desccritTor[opcionbu - 1];
+                                        break;
+                                    case 4:
+                                    case 8:
+                                        descri = desccritMic[opcionbu - 1];
+                                        break;
+
+                                }
+                                mBinding.txtlcdescbu.setText(descri);
+                                mBinding.txtlcdescbu.setVisibility(View.VISIBLE);
+                                opcionbu++;
+                                mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio) + " " + opcionbu);
+
+
+                                mBinding.btnlcantbu.setVisibility(View.VISIBLE);
+                                if (opcionbu > opcionesbu.size()) {
+                                    mBinding.lllc3.setVisibility(View.VISIBLE);
+
+                                    mBinding.btnlcsigbu.setVisibility(View.GONE);
+                                }
                             }
-                        }
-                    });
-                    mBinding.btnlcantbu.setOnClickListener(new View.OnClickListener() {
-                                                               @Override
-                                                               public void onClick(View view) {
-                                                                  // Log.d(TAG,"valor opcionbu"+opcionbu);
-                                                                   opcionbu--;
-                                                                   nuevaConsultaBu((opcionbu-1),mViewModel.getDetallebuSel().getId());
-                                                                   mBinding.txtlcopcionbu.setText(getString(R.string.criterio)+" "+(opcionbu-1));
-                                                                   String descri="";
-                                                                   switch(Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
-                                                                       case 1: case 5:
-                                                                           descri=desccritFis[opcionbu-2];
-                                                                           break;
-                                                                       case 2: case 6:
-                                                                           descri=desccritSen[opcionbu-2];
-                                                                           break;
-                                                                       case 3: case 7:
-                                                                           descri=desccritTor[opcionbu-2];
-                                                                           break;
-                                                                       case 4: case 8:
-                                                                           descri=desccritMic[opcionbu-2];
-                                                                           break;
+                        });
+                        mBinding.btnlcantbu.setOnClickListener(new View.OnClickListener() {
+                                                                   @Override
+                                                                   public void onClick(View view) {
+                                                                       // Log.d(TAG,"valor opcionbu"+opcionbu);
+                                                                       opcionbu--;
+                                                                       nuevaConsultaBu((opcionbu - 1), mViewModel.getDetallebuSel().getId());
+                                                                       mBinding.txtlcopcionbu.setText(getString(R.string.criterio) + " " + (opcionbu - 1));
+                                                                       String descri = "";
+                                                                       switch (Constantes.VarListCompra.detallebuSel.getAnalisisId()) {
+                                                                           case 1:
+                                                                           case 5:
+                                                                               descri = desccritFis[opcionbu - 2];
+                                                                               break;
+                                                                           case 2:
+                                                                           case 6:
+                                                                               descri = desccritSen[opcionbu - 2];
+                                                                               break;
+                                                                           case 3:
+                                                                           case 7:
+                                                                               descri = desccritTor[opcionbu - 2];
+                                                                               break;
+                                                                           case 4:
+                                                                           case 8:
+                                                                               descri = desccritMic[opcionbu - 2];
+                                                                               break;
+
+                                                                       }
+                                                                       mBinding.txtlcdescbu.setText(descri);
+                                                                       mBinding.txtlcdescbu.setVisibility(View.VISIBLE);
+                                                                       mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio) + " " + (opcionbu));
+                                                                       mBinding.lllc3.setVisibility(View.VISIBLE);
+                                                                       mBinding.btnlcantbu.setVisibility(View.VISIBLE);
+                                                                       mBinding.btnlcsigbu.setVisibility(View.VISIBLE);
+
+                                                                       if (opcionbu - 1 == 1) {
+                                                                           mBinding.btnlcantbu.setVisibility(View.GONE);
+                                                                       }
 
                                                                    }
-                                                                   mBinding.txtlcdescbu.setText(descri);
-                                                                   mBinding.txtlcdescbu.setVisibility(View.VISIBLE);
-                                                                   mBinding.btnlcsigbu.setText(getString(R.string.sig_criterio)+" "+(opcionbu));
-                                                                   mBinding.lllc3.setVisibility(View.VISIBLE);
-                                                                   mBinding.btnlcantbu.setVisibility(View.VISIBLE);
-                                                                   mBinding.btnlcsigbu.setVisibility(View.VISIBLE);
-
-                                                                   if(opcionbu-1==1){
-                                                                       mBinding.btnlcantbu.setVisibility(View.GONE);
-                                                                   }
-
                                                                }
-                                                           }
-                    );
+                        );
 
 
-                        nuevaConsultaBu(1,mViewModel.getDetallebuSel().getId());
+                        nuevaConsultaBu(1, mViewModel.getDetallebuSel().getId());
 
-                }else
-                {
-                    Log.e(TAG,"algo salió mal");
+                    } else {
+                        Log.e(TAG, "algo salió mal");
+                    }
+                    if (mViewModel.listaSelec.getLis_nota().length() > 2) {
+
+                        //si hay nota
+                        mBinding.lonota.setVisibility(View.VISIBLE);
+                        mBinding.txtlcnota2.setText(mViewModel.listaSelec.getLis_nota());
+                        mBinding.txtlcnota.setText(getString(R.string.nota) + ": ");
+
+                    } else
+                        mBinding.lonota.setVisibility(View.GONE);
+                    mBinding.txtlctotal.setVisibility(View.GONE);
                 }
-                if( mViewModel.listaSelec.getLis_nota().length()>2) {
-
-                    //si hay nota
-                    mBinding.lonota.setVisibility(View.VISIBLE);
-                    mBinding.txtlcnota2.setText(mViewModel.listaSelec.getLis_nota());
-                    mBinding.txtlcnota.setText(getString(R.string.nota) + ": ");
-
-                }
-                else
-                    mBinding.lonota.setVisibility(View.GONE);
-                mBinding.txtlctotal.setVisibility(View.GONE);
             }
         }else { //no es bu
            mViewModel.cargarListaCompra();
@@ -405,7 +418,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
                 });
                 mBinding.txtsdatosbu.setVisibility(View.GONE);
                 //paso a nuevo objeto
-                List<ListaDetalleBu> detalles=pasarADetalleBU(myProducts);
+                List<ListaDetalleBu> detalles=mViewModel.pasarADetalleBU(myProducts, ComprasDataBase.getInstance(getActivity()).getHistoricoMuestrasDao(),plantaSel);
               //  consecutivoTienda=11;
                 mListAdapter.setListaCompraDetalleList(detalles, consecutivoTienda,isbu,ismuestra,clienteSel,opcionsel,plantaSel);
                 mListAdapter.notifyDataSetChanged();
@@ -457,17 +470,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
         }
         return listanueva;
     }
-    //aqui guardo los backups
-    public List<ListaDetalleBu> pasarADetalleBU(List<ListaCompraDetalle> listalcd){
-        List<ListaDetalleBu> listanueva=new ArrayList<>();
-        for (ListaCompraDetalle lcdo:listalcd
-        ) {
-            ListaDetalleBu nuevaitem= new ListaDetalleBu(lcdo);
 
-            listanueva.add(nuevaitem);
-        }
-        return listanueva;
-    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
