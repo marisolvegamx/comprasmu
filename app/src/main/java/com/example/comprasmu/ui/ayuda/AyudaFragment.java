@@ -59,7 +59,8 @@ public class AyudaFragment extends Fragment {
         webView.clearCache(true);
         WebSettings mWebSettings = webView.getSettings();
       //  mWebSettings.setBuiltInZoomControls(true);
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient());
+        /*{
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
@@ -74,7 +75,7 @@ public class AyudaFragment extends Fragment {
                     return true;
                 }
             }
-        });
+        });*/
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(false);
