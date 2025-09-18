@@ -23,6 +23,8 @@ public class HistoricoMuestras {
     private Date caducidad;
     private int tipoAnalisis;
     private String nombreAnalisis;
+    private int categoriaId;
+    private String categoriaNombre;
 
     public int getHisId() {
         return hisId;
@@ -142,5 +144,21 @@ public class HistoricoMuestras {
 
     public void setNombreAnalisis(String nombreAnalisis) {
         this.nombreAnalisis = nombreAnalisis;
+    }
+
+    public int getCategoriaId() {
+        return categoriaId;
+    }
+
+    public void setCategoriaId(int categoriaId) {
+        this.categoriaId = categoriaId;
+    }
+
+    public String getCategoriaNombre() {
+        return categoriaNombre;
+    }
+
+    public void setCategoriaNombre(String categoriaNombre) {
+        this.categoriaNombre = categoriaNombre;
     }
 }

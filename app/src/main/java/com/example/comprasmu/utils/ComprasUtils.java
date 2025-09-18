@@ -41,7 +41,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -532,7 +536,32 @@ public class ComprasUtils {
         return cadenarutas;
     }
 
-
+    //resta x meses al indice
+    public static String restarIndice(String indice, int x) throws Exception {
+        String aux[] =indice.replace(".","-").split("-");
+        System.out.println("**"+indice);
+        if (aux != null && aux.length > 0) {
+            try {
+                Date fecha = Constantes.sdfsolofecha.parse("01-" + aux[0] + "-" + aux[1]);
+                SimpleDateFormat  sdfsolofecha=new SimpleDateFormat("dd-M-yyyy");
+                Calendar cal = Calendar.getInstance(); // Obtenga un calendario utilizando la zona horaria y la configuración regional predeterminadas
+                cal.setTime(fecha);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                cal.add(Calendar.MONTH, (x*-1));
+                String nvafecha = sdfsolofecha.format(cal.getTime());
+                System.out.println("2<<"+nvafecha);
+                aux = nvafecha.split("-");
+                if (aux != null && aux.length > 0)
+                    return aux[1] + "." + aux[2];
+            } catch (ParseException e) {
+                throw new Exception("hubo un error en el formato de la fecha");
+            }
+        }
+        return null;
+    }
 }
 
 

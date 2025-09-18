@@ -657,7 +657,9 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     "empaque TEXT," +
                     "caducidad INTEGER, "+
                     "tipoAnalisis INTEGER not null, "+
-                    "nombreAnalisis TEXT ,  PRIMARY KEY(hisId)) ");
+                    "nombreAnalisis TEXT ," +
+                    "categoriaId INTEGER not null," +
+                    "categoriaNombre TEXT,  PRIMARY KEY(hisId)) ");
 
         }
     };

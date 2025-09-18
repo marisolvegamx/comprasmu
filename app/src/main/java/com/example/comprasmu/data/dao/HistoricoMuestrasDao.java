@@ -5,7 +5,12 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RawQuery;
+import androidx.sqlite.db.SupportSQLiteQuery;
+
 import com.example.comprasmu.data.modelos.HistoricoMuestras;
+import com.example.comprasmu.data.modelos.ListaCompraDetalle;
+
 import java.util.List;
 
 @Dao
@@ -33,6 +38,10 @@ public abstract class HistoricoMuestrasDao extends BaseDao<HistoricoMuestras> {
             " group by caducidad order by caducidad desc" )
     public abstract List<HistoricoMuestras> getByProducto(String indice1,String indice2, int planta, int producto, int analisis, int empaque, String tamanio);
 
+    @RawQuery(observedEntities = ListaCompraDetalle.class)
+    public abstract List<HistoricoMuestras> getDetallesByFiltros(SupportSQLiteQuery query);
+
     @Query("delete FROM historico_muestras")
     public  abstract void deleteAll();
+
 }
