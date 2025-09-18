@@ -1494,15 +1494,13 @@ public class DetalleProductoPenFragment extends Fragment {
                  nombre_foto = "img_" + Constantes.CLAVEUSUARIO + "_" + dateString + ".jpg";
                  // Log.e(TAG, "****"+foto.getAbsolutePath());
                  archivofoto = new File(baseDirFile, nombre_foto);
+
              } catch (Exception ex) {
                  ex.printStackTrace();
                  Toast.makeText(activity, "No se encontró almacenamiento externo", Toast.LENGTH_SHORT).show();
                  return;
 
              }
-             Uri photoURI = FileProvider.getUriForFile(activity,
-                     "com.example.comprasmu.fileprovider",
-                     archivofoto);
              intento1.putExtra(MediaStore.EXTRA_OUTPUT, archivofoto.getAbsolutePath()); //se pasa a la otra activity la referencia al archivo
              //intento1.putExtra("origen", origen);
              if (fotomos != null) {
