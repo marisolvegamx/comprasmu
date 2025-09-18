@@ -60,7 +60,7 @@ public class DescargaHistoricoMuestras
             return observable;
     }
 
-
+    //revisa si tengo las muestras de la tabla si no las hay obtiene el historico por planta
     private void getMuestras (int plantaId){
 
             //reviso si tengo algo en la tabla
