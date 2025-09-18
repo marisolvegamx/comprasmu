@@ -27,6 +27,7 @@ public class ListaCompraDetRepositoryImpl {
         ComprasDataBase comprasDataBase = ComprasDataBase.getInstance(context.getApplicationContext());
         dao=comprasDataBase.getListaCompraDetalleDao();
     }
+    //consulta igual a los filtros enviados
     public LiveData<List<ListaCompraDetalle>> getDetalleByFiltros(int idlista,int analisisid,String categoria, String productoNombre, String empaque,int tamanio,String analisis,int detorig ) {
 
         String query="select id,  listaId, productosId, productoNombre, " +
@@ -169,7 +170,7 @@ public class ListaCompraDetRepositoryImpl {
 
         return dao.getDetallesByFiltros(sqlquery);
     }
-    //el ultimo parametro enviado debe ser diferente
+    //el ultimo parametro enviado debe ser diferente, no valida el analisis
     public LiveData<List<ListaCompraDetalle>> getDetalleByFiltrosUD(int idlista,int analisis,String categoria, String productoNombre, String empaque,int tamanio ) {
 
         String query="select id,  listaId, productosId, productoNombre, " +
