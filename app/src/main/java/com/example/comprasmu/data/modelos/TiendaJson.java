@@ -26,6 +26,7 @@ public class TiendaJson {
     private Integer estpep;
     private Integer estele;
     private Integer estjum;
+    private Integer periodo;
     private List<TiendaEstatusCliente> tiendaEstatusCliente;
 
     public int getUne_id() {
@@ -188,6 +189,14 @@ public class TiendaJson {
         this.tiendaEstatusCliente = tiendaEstatusCliente;
     }
 
+    public Integer getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(Integer periodo) {
+        this.periodo = periodo;
+    }
+
     public Tienda crearTienda(){
 
         Tienda tiendaModel=new Tienda();
@@ -210,6 +219,7 @@ public class TiendaJson {
         tiendaModel.setUne_puntocardinal(this.getUne_puntocardinal());
         tiendaModel.setUne_tipotienda(this.getUne_tipotienda());
         tiendaModel.setUne_estatus(this.getUne_estatus());
+        tiendaModel.setPeriodo(this.getPeriodo());
         return  tiendaModel;
     }
 }

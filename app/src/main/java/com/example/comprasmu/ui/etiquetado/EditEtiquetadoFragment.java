@@ -953,7 +953,7 @@ public void iraReubicar(){
         // listaqr.setAdapter(null);
         InformeEtapaDet prods = mViewModel.buscarDetxQr(qr);
         if(prods!=null)
-            if(prods.getEstatus()==0) //esta cancelado es reemplazo
+            if(prods.getEstatus()!=null&&prods.getEstatus()==0) //esta cancelado es reemplazo
         {
             return true;
         }else

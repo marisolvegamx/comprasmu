@@ -55,6 +55,7 @@ import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.services.DescAutomaticasServiceManager;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.ComprasLog;
@@ -316,6 +317,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     }
 
     private void actualizarListaCompra() {
+        //desactivo descargas automaticas
+        DescAutomaticasServiceManager.getInstancia().pausarServicio();
         alert=new LoadingAlert(getActivity());
         alert.startAlert();
         TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getContext());

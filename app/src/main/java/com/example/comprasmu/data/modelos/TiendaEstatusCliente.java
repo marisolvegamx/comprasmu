@@ -8,7 +8,7 @@ public class TiendaEstatusCliente {
     private int une_id;
     private int clientesId;
     private int estatus;
-    private int periodo;
+   // private int periodo;
 
     public int getUne_id() {
         return une_id;
@@ -34,11 +34,4 @@ public class TiendaEstatusCliente {
         this.estatus = estatus;
     }
 
-    public int getPeriodo() {
-        return periodo;
-    }
-
-    public void setPeriodo(int periodo) {
-        this.periodo = periodo;
-    }
 }

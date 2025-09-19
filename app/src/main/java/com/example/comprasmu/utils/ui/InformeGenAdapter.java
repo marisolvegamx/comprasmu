@@ -67,8 +67,6 @@ public class InformeGenAdapter extends RecyclerView.Adapter<InformeGenAdapter.In
         public String tipo;
 
 
-
-
         public InformeGenViewHolder(ListaInformegenItemBinding binding,AdapterCallback callback,String tipo) {
             super(binding.getRoot());
             this.binding = binding;

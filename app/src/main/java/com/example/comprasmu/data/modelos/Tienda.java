@@ -28,6 +28,7 @@ public class Tienda {
     private Integer estpep;
     private Integer estele;
     private Integer estjum;
+    private Integer periodo; //indica si se visito por ultima vez en 1 2 o 3 años
 
 
     public int getUne_id() {
@@ -182,4 +183,11 @@ public class Tienda {
         this.estjum = estjum;
     }
 
+    public Integer getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(Integer periodo) {
+        this.periodo = periodo;
+    }
 }
