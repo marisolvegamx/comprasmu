@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -126,7 +127,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
     private NuevoinformeViewModel mViewModel;
     private NuevaFotoExhibViewModel feviewModel;
-
+    private LoadingAlert alert;
     CreadorFormulario cf2;
     List<CampoForm> camposForm;
     List<CampoForm> camposTienda;
@@ -291,8 +292,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                 if (txtubicacion.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
-
-                   locationStart();
+                   if (Local==null)
+                     locationStart();
                    return;
                 }
 
@@ -425,6 +426,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         });
         mensajedir = root.findViewById(R.id.txtaimensajeubicacion);
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
         locationStart();
 
         return root;
@@ -783,28 +786,34 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
         final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!gpsEnabled) {
+        final boolean networkEnabled = mlocManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (!gpsEnabled&&!networkEnabled) {
             Log.i(TAG, "gps inactivo");
                 Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(settingsIntent);
+            if(alert.isMostrando())
+                alert.closeAlertDialog();
                 return;
             }
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-
+            if(alert.isMostrando())
+                alert.closeAlertDialog();
                 return;
             }
-        if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 8, Local);
-                provedorgps = LocationManager.NETWORK_PROVIDER;
-
-
-        } else  if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+        if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
             //  if (Local == null) { //Validación que evita NullPointerException
             //Requiere actualización
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 8, Local);
             provedorgps = LocationManager.GPS_PROVIDER;
+
+        } else
+        if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 8, Local);
+                provedorgps = LocationManager.NETWORK_PROVIDER;
+
 
         } else
                 Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
@@ -1494,9 +1503,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 }
             }
         }
-         /*   if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)) {//pruebas y el lenovo//entro rapido
+            if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)) {//pruebas y el lenovo//entro rapido
                 txtaiultubic.setText("ubicacion reg");
-            }*/
+            }
         if (txtaiultubic.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
             guardar.setEnabled(true);
@@ -1971,6 +1980,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 Log.i(TAG,"desactivando");
                 mlocManager.removeUpdates(Local);
             }
+            if(alert.isMostrando())
+                alert.closeAlertDialog();
             mlocManager=null;
             Local=null;
         }
@@ -2015,6 +2026,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
     }
     public void mostrarPosicion(Location location){
+        if(alert.isMostrando())
+            alert.closeAlertDialog();
         String latitude = String.valueOf(location.getLatitude());
         String longitude = String.valueOf(location.getLongitude());
         txtubicacion.setText(latitude + "," + longitude);
