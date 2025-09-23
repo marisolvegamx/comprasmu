@@ -672,10 +672,10 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
             indice1= ComprasUtils.restarIndice(Constantes.INDICEACTUAL,1);
             indice2= ComprasUtils.restarIndice(Constantes.INDICEACTUAL,2);
-            String codigosNoPermitidos="";
+
             for (ListaCompraDetalle lcdo:listalcd
             ) {
-
+                String codigosNoPermitidos="";
                 ListaDetalleBu nuevaitem= new ListaDetalleBu(lcdo);
                 Log.d(TAG,"nuevaitem codigo>"+nuevaitem.getCodigosNoPermitidos());
                 //aqui reviso si tiene codigos, si no los busco en el historico
