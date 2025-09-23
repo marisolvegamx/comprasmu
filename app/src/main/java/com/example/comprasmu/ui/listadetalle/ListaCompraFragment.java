@@ -453,7 +453,6 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     //aqui guardo los backups
     public List<ListaDetalleBu> buscarBU(List<ListaCompraDetalle> listalcd){
         List<ListaDetalleBu> listanueva=new ArrayList<>();
-        List<InformeCompraDetalle> listacomprasbu=new ArrayList<InformeCompraDetalle>();
         for (ListaCompraDetalle lcdo:listalcd
              ) {
             ListaDetalleBu nuevaitem= new ListaDetalleBu(lcdo);
