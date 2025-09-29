@@ -136,17 +136,18 @@ public class NvaCorreccionEnvFragment extends Fragment {
                         imagen.observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
                             @Override
                             public void onChanged(ImagenDetalle imagenDetalle) {
+                                if(imagenDetalle!=null) {
 
+                                    rutafotoo = imagenDetalle.getRuta();
 
-                                rutafotoo=imagenDetalle.getRuta();
+                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
 
-                                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+                                    fotoori1.setImageBitmap(bitmap1);
 
-                                fotoori1.setImageBitmap(bitmap1);
-
-                                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                                //fotoori1.setVisibility(View.VISIBLE);
-                                imagen.removeObservers(getViewLifecycleOwner());
+                                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                                    //fotoori1.setVisibility(View.VISIBLE);
+                                    imagen.removeObservers(getViewLifecycleOwner());
+                                }
                             }
                         });
                     }
