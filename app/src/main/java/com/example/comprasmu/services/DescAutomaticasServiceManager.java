@@ -30,19 +30,11 @@ public class DescAutomaticasServiceManager {
     }
 
     public void iniciarServicio(Context context) {
-        int clave=1;
+
         Log.i("DescAutomaticasServiceManager",Constantes.CLAVEUSUARIO);
 
-        //todo quitar este codigo de prueba
-        if(Constantes.CLAVEUSUARIO!=null&&!Constantes.CLAVEUSUARIO.equals("")){
-           try{
-               clave=Integer.parseInt(Constantes.CLAVEUSUARIO);
 
-           }catch (NumberFormatException ex){
-               Log.e("DescAutomaticasServiceManager","Error al convertir usuario");
-           }
-        }
-        if(clave%3==0||clave%2==0) {
+
             if (!servicioIniciado) {
 
                 Intent intent = new Intent(context, DescargasAutomaticasService.class);
@@ -55,7 +47,7 @@ public class DescAutomaticasServiceManager {
                 }
             }
 
-        }
+
     }
     public void detenerServicio() {
         if (descargasAutomaticasservicio != null) {
