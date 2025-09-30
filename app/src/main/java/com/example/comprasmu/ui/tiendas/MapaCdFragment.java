@@ -164,7 +164,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         spplantas=view.findViewById(R.id.spmcdplanta);
         spcadena=view.findViewById(R.id.spmccadenati);
         sptipoti=view.findViewById(R.id.spmctipoti);
-        spfecha=view.findViewById(R.id.spmctiempo);
+       // spfecha=view.findViewById(R.id.spmctiempo);
         spseleccion=view.findViewById(R.id.spmcdseltienda);
         llfiltros=view.findViewById(R.id.llmfiltros);
         llcancel=view.findViewById(R.id.llmcancel);
@@ -260,12 +260,12 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         coloresTienda.put("3",BitmapDescriptorFactory.HUE_GREEN);//verde
         coloresTienda.put("2",BitmapDescriptorFactory.HUE_YELLOW);//amarillo
         coloresTienda.put("1",BitmapDescriptorFactory.HUE_RED);
-        ArrayList<DescripcionGenerica> listaFecha;
-        listaFecha=new ArrayList<DescripcionGenerica>();
-        listaFecha.add(new DescripcionGenerica(1,"1 "+getString(R.string.anio)));
-        listaFecha.add(new DescripcionGenerica(2,"2 "+getString(R.string.anio)+"S"));
-        listaFecha.add(new DescripcionGenerica(3,"3 "+getString(R.string.anio)+"S"));
-        CreadorFormulario.cargarSpinnerDescr(getContext(),spfecha,listaFecha);
+       //ArrayList<DescripcionGenerica> listaFecha;
+        //listaFecha=new ArrayList<DescripcionGenerica>();
+        //listaFecha.add(new DescripcionGenerica(1,"1 "+getString(R.string.anio)));
+        //listaFecha.add(new DescripcionGenerica(2,"2 "+getString(R.string.anio)+"S"));
+        //listaFecha.add(new DescripcionGenerica(3,"3 "+getString(R.string.anio)+"S"));
+       // CreadorFormulario.cargarSpinnerDescr(getContext(),spfecha,listaFecha);
         ArrayList<DescripcionGenerica> listaop;
         listaop=new ArrayList<DescripcionGenerica>();
         listaop.add(new DescripcionGenerica(0,"SELECCIONAR OPCION"));
@@ -566,8 +566,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
         llcancel.setVisibility(View.GONE);
         //calculo el fin
-
-        int anios=((DescripcionGenerica) spfecha.getSelectedItem()).getId();
+        //cambio 29/09/25 siempre es 1
+        int anios=1;
 
         //busco el pais y cd de la planta
         int[] aux =lcviewModel.buscarClienCdxPlan(planta, Constantes.INDICEACTUAL);
@@ -927,7 +927,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         //puede seguir trabajando
         alert.closeAlertDialog();
     }
-    //descarga las tiendas del servidor
+    //descarga las tiendas del servidor, ffin en el indice actual
     public MutableLiveData<Boolean> descargarTiendas(String ciudad, String ffin){
         return lcviewModel.descargarTiendas(ciudad,ffin,getViewLifecycleOwner());
     }

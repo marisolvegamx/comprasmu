@@ -640,6 +640,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             peticionmap.getListatiendas().observe(lifeCycleOwner, new Observer<List<TiendaJson>>() {
                 @Override
                 public void onChanged(List<TiendaJson> tiendas) {
+                    Log.i(TAG,"total tiendas descargadas"+tiendas);
                     //guardo en la tabla local
                     if(tiendas!=null&& tiendas.size()>0)
                         for (TiendaJson tienda: tiendas
