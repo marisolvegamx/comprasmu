@@ -100,14 +100,16 @@
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toBottomOf="@id/llmcdtipotienda"
             tools:layout_conversion_absoluteHeight="40dp"
-            tools:layout_conversion_absoluteWidth="379dp">
+            tools:layout_conversion_absoluteWidth="379dp"
+            tools:visibility="visible">
 
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.3"
-                android:text="@string/cadena_comer" />
+                android:text="@string/cadena_comer"
+                android:textSize="15sp" />
 
             <Spinner
                 android:id="@+id/spmccadenati"
@@ -118,7 +120,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/textView35"
@@ -232,6 +235,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
 
+        android:visibility="gone"
         map:layout_constraintBottom_toTopOf="@+id/linearLayout8"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintHorizontal_bias="0.0"
