@@ -109,7 +109,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     ListaDetalleViewModel lcviewModel;
     Button btncancel;
     Marker markerSel;
-    LinearLayout llfiltros, llcancel,lltipotienda,llcadena;
+    LinearLayout llfiltros;
+    //llcancel,
+    LinearLayout lltipotienda,llcadena;
     private final long lastClickTime = 0;
     private static final int DEFAULT_ZOOM = 4;
     Spinner spplantas;
@@ -167,11 +169,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
        // spfecha=view.findViewById(R.id.spmctiempo);
         spseleccion=view.findViewById(R.id.spmcdseltienda);
         llfiltros=view.findViewById(R.id.llmfiltros);
-        llcancel=view.findViewById(R.id.llmcancel);
+       // llcancel=view.findViewById(R.id.llmcancel);
         lltipotienda=view.findViewById(R.id.llmcdtipotienda);
         llcadena=view.findViewById(R.id.llmcdcadena);
         llfiltros.setVisibility(View.GONE);
-        llcancel.setVisibility(View.GONE);
+       // llcancel.setVisibility(View.GONE);
         mensajetienda.setVisibility(View.GONE);
         btnverfil=view.findViewById(R.id.btnmfiltros);
         btnvatienda.setEnabled(false);
@@ -183,7 +185,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
             }
         });
-        btncancel=view.findViewById(R.id.btnmccancel);
+     /*   btncancel=view.findViewById(R.id.btnmccancel);
         btncancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -211,7 +213,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 }
             }
         });
-
+*/
         if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
@@ -451,8 +453,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        btncancel.setVisibility(View.VISIBLE);
-        llcancel.setVisibility(View.VISIBLE);
+      //  btncancel.setVisibility(View.VISIBLE);
+       // llcancel.setVisibility(View.VISIBLE);
         markerSel=marker;
         return false;
     }
@@ -564,7 +566,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
         markerSel=null;
 
-        llcancel.setVisibility(View.GONE);
+       // llcancel.setVisibility(View.GONE);
         //calculo el fin
         //cambio 29/09/25 siempre es 1
         int anios=1;
@@ -876,8 +878,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
     @Override
     public void onMapClick(@NonNull LatLng latLng) {
-        Log.d(TAG,"ocultando++"+btncancel.getVisibility());
-        llcancel.setVisibility(View.GONE);
+     //   Log.d(TAG,"ocultando++"+btncancel.getVisibility());
+      //  llcancel.setVisibility(View.GONE);
         markerSel=null;
     }
 
