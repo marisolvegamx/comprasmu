@@ -426,9 +426,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         });
         mensajedir = root.findViewById(R.id.txtaimensajeubicacion);
-        alert=new LoadingAlert(getActivity());
-        alert.startAlert();
-        locationStart();
+
 
         return root;
     }
@@ -505,7 +503,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             if (categoryId > 0) {
                 //es edicion
                 isEdicion = true;
-
+                alert=new LoadingAlert(getActivity());
+                alert.setMensaje(getString(R.string.validando_ubicacion));
+                alert.startAlert();
+                locationStart();
                 nuevoId = mViewModel.start(categoryId, getActivity());
                 fotosExh = feviewModel.cargarfotosSimpl(nuevoId);
                 //lleno los campos
@@ -553,6 +554,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                             return;
                 }
 
+                alert=new LoadingAlert(getActivity());
+                alert.setMensaje(getString(R.string.registrando_ubicacion));
+                alert.startAlert();
+                locationStart();
 
                 nuevaTienda = getArguments().getBoolean("nuevatienda");
 
