@@ -33,8 +33,6 @@ public class DescAutomaticasServiceManager {
 
         Log.i("DescAutomaticasServiceManager",Constantes.CLAVEUSUARIO);
 
-
-
             if (!servicioIniciado) {
 
                 Intent intent = new Intent(context, DescargasAutomaticasService.class);

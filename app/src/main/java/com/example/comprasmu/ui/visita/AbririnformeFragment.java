@@ -2050,11 +2050,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             if (ComprasUtils.isOnlineNet(getContext())) {
                 Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
                 List<Address> list = new ArrayList<>();
+                milog.info(TAG,"buscarDireccion"," Buscando direccion ultimaloc:"+ultimaLoc);
                 if (geocoder != null&&ultimaLoc!=null)
                     list = geocoder.getFromLocation(
                             ultimaLoc.getLatitude(), ultimaLoc.getLongitude(), 1);
 
                 if (!list.isEmpty()) {
+                    milog.info(TAG,"buscarDireccion"," Sí hubo");
                     Address DirCalle = list.get(0);
                     String state = DirCalle.getAdminArea();
                     country = DirCalle.getCountryName();
