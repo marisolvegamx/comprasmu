@@ -455,17 +455,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            //  requestPermissionLauncher.launch(
-            //        Manifest.permission.REQUESTED_PERMISSION);
+
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
 
         } else {
-            // rastreoGPS();
-            //  locationStart();
+
         }
         loadData();
-        //   probarUbicacion();
+
 
     }
 
@@ -504,8 +501,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 //es edicion
                 isEdicion = true;
                 alert=new LoadingAlert(getActivity());
-                alert.setMensaje(getString(R.string.validando_ubicacion));
-                alert.startAlert();
+             //   alert.setMensaje(getString(R.string.validando_ubicacion));
+                //  alert.startAlert();
                 locationStart();
                 nuevoId = mViewModel.start(categoryId, getActivity());
                 fotosExh = feviewModel.cargarfotosSimpl(nuevoId);
