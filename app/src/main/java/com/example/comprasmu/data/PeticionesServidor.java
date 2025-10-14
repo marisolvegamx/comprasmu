@@ -2,6 +2,7 @@ package com.example.comprasmu.data;
 
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
 
 import androidx.annotation.Nullable;
 
@@ -23,6 +24,7 @@ import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
+import com.example.comprasmu.data.modelos.MenuVideo;
 import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.data.modelos.TablaVersiones;
@@ -1365,6 +1367,51 @@ public class PeticionesServidor {
                 if (t != null) {
 
                     Log.e(TAG+" getHistoricoMuestras", t.getMessage());
+                    lista.setValue(null);
+                }
+            }
+        });
+        return lista;
+    }
+
+    //consultar lista de videos
+    public LiveData<List<MenuVideo>> getVideos(){
+        MutableLiveData<List<MenuVideo>> lista=new MutableLiveData<>();
+        Log.d("PeticionesServidor","getVideos usuario:"+usuario);
+
+        final Call< List<MenuVideo>> batch = ServiceGenerator.getApiService().getVideos();
+
+        batch.enqueue(new Callback< List<MenuVideo>>() {
+            @Override
+            public void onResponse(@Nullable Call< List<MenuVideo>> call, @Nullable Response< List<MenuVideo>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<MenuVideo> respuesta = response.body();
+
+                    if(respuesta!=null)
+                    {
+                        Log.d("PeticionesServidor getVideos","tamanio lista:"+respuesta.size()+"--"+respuesta);
+
+                        lista.setValue(respuesta);
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor getVideos","lista vacia");
+                        lista.setValue(null);
+                    }
+
+                }else //aviso al usuario //solo si esta desde descargar lista
+                {
+
+                    lista.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call< List<MenuVideo>> call, @Nullable Throwable t) {
+                if (t != null) {
+
+                    Log.e(TAG+" getVideos", t.getMessage());
                     lista.setValue(null);
                 }
             }

@@ -719,13 +719,13 @@
         tools:layout="@layout/lista_generic_fragment" >
 
     </fragment>
-    <fragment
+    <activity
         android:id="@+id/nav_tutoriales"
-        android:name="com.example.comprasmu.ui.ayuda.AyudaFragment"
+        android:name="com.example.comprasmu.ui.ayuda.AyudaActivity"
         android:label="@string/menu_tutoriales"
         tools:layout="@layout/fragment_ayuda" >
 
-    </fragment>
+    </activity>
     <activity
         android:id="@+id/nav_menuini"
         android:name="com.example.comprasmu.ui.home.PruebasActivity"

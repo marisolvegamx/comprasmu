@@ -13,7 +13,7 @@ android {
         unitTests.includeAndroidResources = true
     }
 
-    compileSdkVersion 31
+    compileSdkVersion 33
     buildToolsVersion "29.0.3"
 
     defaultConfig {
@@ -133,4 +133,7 @@ dependencies {
 
     implementation "androidx.camera:camera-extensions:${camerax_version}"
     testImplementation "androidx.test:core:1.5.0"
+    implementation "androidx.media3:media3-exoplayer:1.0.1"
+    implementation "androidx.media3:media3-exoplayer-dash:1.0.1"
+    implementation "androidx.media3:media3-ui:1.0.1"
 }
