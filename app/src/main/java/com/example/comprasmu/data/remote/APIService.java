@@ -7,6 +7,7 @@ import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
+import com.example.comprasmu.data.modelos.MenuVideo;
 import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
 import com.example.comprasmu.ui.envio.DocumentosEnvio;
@@ -231,5 +232,7 @@ public interface APIService {
 
     @GET("deschistorico")
     Call< List<HistoricoMuestras>> getHistoricoMuestras(@Query("indice") String indice, @Query("usuario") String usuario, @Query("planta") int plantaId);
+    @GET("videos")
+    Call< List<MenuVideo>> getVideos();
 
 }
