@@ -118,7 +118,7 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     }
 
     public void actualizarEstatusSync(int id, int estatus) {
-
+        Log.d("actualizarEstatusSync actInformeEtiq", ""+id+"estatus"+estatus);
         icDao.actualizarEstatusSync(id, estatus);
     }
 
@@ -267,6 +267,10 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
         return icDao.getInfxCiudadSim(indice,etapa,ciudad);
 
 
+    }
+
+    public List<InformeEtapa> getInformeCanecladoxCli(int clienteSel, String indiceactual, String cd, int etapa) {
+       return icDao.getInformesxCliEst(etapa,indiceactual,clienteSel,cd,0);
     }
 
 }

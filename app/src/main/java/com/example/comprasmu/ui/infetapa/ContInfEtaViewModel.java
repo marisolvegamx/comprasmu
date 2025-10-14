@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
+import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
 
@@ -47,9 +48,8 @@ public class ContInfEtaViewModel extends AndroidViewModel {
     public InformeEtapa getInformeNoCancel(String indice,int etapa, String ciudad, int clientesId){
 
             return   infEtaRepository.getInformeNoCancelxCiudad(indice, etapa, ciudad, clientesId);
-
-
     }
+
     public InformeEtapa getInformeCancel(String indice,int etapa){
 
         List<InformeEtapa> respuesta=infEtaRepository.getCancelados(indice, etapa);
@@ -59,6 +59,10 @@ public class ContInfEtaViewModel extends AndroidViewModel {
         return null;
 
 
+    }
+    public List<InformeEtapa> getInformeCancelado(int clientesId,String indice, String ciudad,int etapa ){
+
+        return    infEtaRepository.getInformeCanecladoxCli(clientesId,indice, ciudad, etapa);
     }
 
 }

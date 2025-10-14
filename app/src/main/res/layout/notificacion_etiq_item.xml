@@ -79,7 +79,7 @@
                 android:id="@+id/txtiecestatusmen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text='@{detalle.estatus==0?"ELIMINADO":Constantes.ESTATUSINFORME[detalle.estatus]}' />
+                android:text='@{detalle.etapa==4?detalle.motivoCancel:detalle.estatus==0?"ELIMINADO":Constantes.ESTATUSINFORME[detalle.estatus]}' />
 
             <TextView
                 android:id="@+id/txtecmenemp"

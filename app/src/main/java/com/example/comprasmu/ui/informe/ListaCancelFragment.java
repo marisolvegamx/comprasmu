@@ -234,19 +234,40 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         List<InformeEtapa> listageneral=new ArrayList<>();
         for(ListaCompra listaCompra:listacomp) {
             if ( listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
-                //veo que no haya hecho informe para no esperar a la supervisión
+                //veo que se haya cancelado
                 ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-                InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
-                if (informesEtapa == null) {
-                    nvoinf2.setIndice(listaCompra.getIndice());
-                    nvoinf2.setEstatus(listaCompra.getEstatus());
-                    nvoinf2.setEtapa(4);
 
-                    nvoinf2.setCiudadNombre(listaCompra.getCiudadNombre());
-                    nvoinf2.setClienteNombre(listaCompra.getClienteNombre());
+                List<InformeEtapa> informeCancelado = conViewModel.getInformeCancelado(listaCompra.getClientesId(), Constantes.INDICEACTUAL, listaCompra.getCiudadNombre(), 4);
+                if (informeCancelado != null && informeCancelado.size() > 0) {
 
-                    // nvoinf.mo
-                    listageneral.add(nvoinf2);
+
+                    //veo que no haya hecho informe para no esperar a la supervisión
+                    InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
+                    if (informesEtapa == null) {
+                        nvoinf2.setIndice(listaCompra.getIndice());
+                        nvoinf2.setEstatus(listaCompra.getEstatus());
+                        nvoinf2.setEtapa(4);
+
+                        nvoinf2.setCiudadNombre(listaCompra.getCiudadNombre());
+                        nvoinf2.setClienteNombre(listaCompra.getClienteNombre());
+                        nvoinf2.setMotivoCancel("ELIMINADO");
+                        // nvoinf.mo
+                        listageneral.add(nvoinf2);
+                    }
+                }else{
+                    //veo que no haya hecho informe para no esperar a la supervisión
+                    InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
+                    if (informesEtapa == null) {
+                        nvoinf2.setIndice(listaCompra.getIndice());
+                        nvoinf2.setEstatus(listaCompra.getEstatus());
+                        nvoinf2.setEtapa(4);
+
+                        nvoinf2.setCiudadNombre(listaCompra.getCiudadNombre());
+                        nvoinf2.setClienteNombre(listaCompra.getClienteNombre());
+                        nvoinf2.setMotivoCancel("PENDIENTE");
+                        // nvoinf.mo
+                        listageneral.add(nvoinf2);
+                    }
                 }
             }
         }
@@ -264,15 +285,6 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         });
     }
 
- /*   @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Do something that differs the Activity's menu here
-        menu.clear();
-        inflater.inflate(R.menu.menu_listainforme, menu);
-        //  super.onCreateOptionsMenu(menu, inflater);
-
-
-    }*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -299,16 +311,6 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
     }
 
 
-  /*  @Override
-    public void onClickAgregar(int idinforme) {
-        //se cancelo
-        Intent intento1 = new Intent(getActivity(), EditInfEtapaActivity.class);
-        intento1.putExtra(EditInfEtapaActivity.INFORMESEL,idinforme );
-        intento1.putExtra(EditInfEtapaActivity.ETAPA,3 );
-        intento1.putExtra(EditInfEtapaActivity.REACTIVADO,1);
-        startActivity(intento1);
-
-    }*/
 
     @Override
     public void onClickContinuar(int idinforme) {
