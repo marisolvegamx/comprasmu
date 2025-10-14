@@ -490,6 +490,7 @@ public class PostInformeViewModel {
                     Log.d(TAG+"actInformeEtiq", ""+mensaje);
                     //actualizo el estatus
                     iniciarBD();
+                    etapaRepo.actualizarEstatusSync(informeEtapa.getInformeEtapa().getId(),2);
                     etapadetRepo.actEstatusSyncxInfo(informeEtapa.getInformeEtapa().getId(),Constantes.ENVIADO);
 
 
