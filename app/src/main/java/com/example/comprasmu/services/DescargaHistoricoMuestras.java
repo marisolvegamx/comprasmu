@@ -62,7 +62,7 @@ public class DescargaHistoricoMuestras
 
     //revisa si tengo las muestras de la tabla si no las hay obtiene el historico por planta
     private void getMuestras (int plantaId){
-
+            Log.i(TAG,"pidiendo historico");
             //reviso si tengo algo en la tabla
             List<HistoricoMuestras> registros= historicoMuestraRepo.getByPlanta(plantaId);
             if(registros.isEmpty()) {
