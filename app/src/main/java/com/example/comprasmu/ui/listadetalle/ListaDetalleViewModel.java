@@ -685,6 +685,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                     if(listaHistorico!=null&&listaHistorico.size()>0){
                         for (HistoricoMuestras muestrapasada: listaHistorico
                              ) {
+                            //valido que no sea permitido
                             codigosNoPermitidos=codigosNoPermitidos+";"+Constantes.sdfcaducidad.format(muestrapasada.getCaducidad());
                         }
                         nuevaitem.setCodigosNoPermitidos(codigosNoPermitidos);
