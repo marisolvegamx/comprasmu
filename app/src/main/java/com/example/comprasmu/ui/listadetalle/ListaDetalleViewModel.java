@@ -41,6 +41,7 @@ import com.example.comprasmu.data.repositories.TiendaEstatusClienteRepositoryImp
 import com.example.comprasmu.data.repositories.TiendaRepositoryImpl;
 import com.example.comprasmu.services.DescargaHistoricoMuestras;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
+import com.example.comprasmu.ui.informedetalle.ValidadorDatos;
 import com.example.comprasmu.ui.tiendas.PeticionMapaCd;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -677,7 +678,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             ) {
                 String codigosNoPermitidos="";
                 ListaDetalleBu nuevaitem= new ListaDetalleBu(lcdo);
-                Log.d(TAG,"nuevaitem codigo>"+nuevaitem.getCodigosNoPermitidos());
+                Log.d(TAG,"nuevaitem codigo>"+nuevaitem.getCodigosNoPermitidos()+"***"+lcdo.getLid_fechapermitida());
                 //aqui reviso si tiene codigos, si no los busco en el historico
                 if(nuevaitem.getCodigosNoPermitidos().equals("")){
                     //busco
@@ -685,8 +686,10 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                     if(listaHistorico!=null&&listaHistorico.size()>0){
                         for (HistoricoMuestras muestrapasada: listaHistorico
                              ) {
+                            Log.d(TAG,"---"+muestrapasada.getCaducidad());
                             //valido que no sea permitido
-                            codigosNoPermitidos=codigosNoPermitidos+";"+Constantes.sdfcaducidad.format(muestrapasada.getCaducidad());
+                            if(!ValidadorDatos.validarCodigoPermitido(muestrapasada.getCaducidad(),lcdo.getLid_fechapermitida()))
+                                codigosNoPermitidos=codigosNoPermitidos+";"+Constantes.sdfcaducidad.format(muestrapasada.getCaducidad());
                         }
                         nuevaitem.setCodigosNoPermitidos(codigosNoPermitidos);
                     }

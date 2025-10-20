@@ -230,7 +230,7 @@ public class ValidadorDatos {
         if(!codigosperm.equals(""));
         {
             codigosperm=codigosperm.replace("=","");
-            String[] fechas=codigosperm.split(";");
+            String[] fechas=codigosperm.trim().split(",");
 
             for(int j=0;j<fechas.length;j++){
                 try {
