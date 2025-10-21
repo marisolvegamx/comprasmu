@@ -288,7 +288,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
             Log.d(TAG,"contarCanceladas- totcancelcompras"+itotCanceleta);
 
         }
-        else {
+        else {  //esto es para cuando se reactiva
             List<ListaCompra> listacomp = cargarClientesSimplxetReacsc( 3,1);
             if(listacomp!=null&&listacomp.size()>0)
                 setEtiquetadoCancel(3, 6);
