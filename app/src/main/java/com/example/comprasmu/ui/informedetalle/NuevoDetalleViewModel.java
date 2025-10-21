@@ -721,6 +721,33 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
         return "";
     }
 
+    /***
+     * devuelve verdadero si existe una muestra con el mismo codigo, mismo producto mismo analisis en el informe enviado,
+     * devuelve falso en caso contrario
+     * @param indice
+     * @param productosel
+     * @param caducidad
+     * @param informeId
+     * @return
+     */
+    public boolean buscarMuestraCodigoMismoInforme(String indice, ProductoSel productosel,  Date caducidad, int informeId){
+        Log.d(TAG, "buscando codigo"+caducidad);
+
+        //busco en los informes
+        List<InformeCompraDetalle> informeCompraDetalles=detalleRepo.getByProductoAnalisisxInf(indice,informeId,productosel.productoid,productosel.tipoAnalisis,productosel.idempaque,productosel.presentacion);
+        Log.d(TAG,"buscando codigo igual"+informeCompraDetalles.size());
+        for(InformeCompraDetalle det:informeCompraDetalles) {
+            Log.d(TAG, "buscando codigo igual" + det.getCaducidad());
+            //recorro el informe buscando
+            if (det.getCaducidad().equals(caducidad)) {
+
+                return true; //tengo uno
+
+            }
+        }
+
+        return false;
+    }
     public ImagenDetalle getEnergia() {
         return energia;
     }

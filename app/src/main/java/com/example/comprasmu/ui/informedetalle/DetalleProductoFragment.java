@@ -119,7 +119,7 @@ public class DetalleProductoFragment extends Fragment {
     ComprasLog compraslog;
     NuevoDetalleViewModel.ProductoSel prodSel;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
-    SpeechRecognizer sspeechRecognizer;
+
     private int tipoTienda;
     public static final int NUEVO_RESULT_OK =102 ;
     // public static final Integer RecordAudioRequestCode = 1;
@@ -1379,6 +1379,16 @@ public class DetalleProductoFragment extends Fragment {
                         return false;
 
                     }
+                }else {
+                    //nueva validacion 21-10-25 cuando sea sustitucion puede comprar el mismo codigo para el mismo analisis en la misma tienda
+                    res = buscarMuestraCodigoMismoInforme(dViewModel.productoSel, fechacad,mViewModel.getIdInformeNuevo());
+
+                    if (res) {
+                        Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
+
+                        return false;
+
+                    }
                 }
 
             }
@@ -1441,12 +1451,12 @@ public class DetalleProductoFragment extends Fragment {
                 nvofrag.setArguments(args);
                 // DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo,false);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
+                // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
+                // Remplazar el contenido principal por el fragmento
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
                 fragmentTransaction.addToBackStack(null);
-// Cambiar
+                // Cambiar
                 fragmentTransaction.commit();
             }
         });
@@ -1465,12 +1475,12 @@ public class DetalleProductoFragment extends Fragment {
                 nvofrag.setArguments(args);
                 // DetalleProductoElecFragment nvofrag = new DetalleProductoElecFragment(reactivo,false);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
+                // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
+                // Remplazar el contenido principal por el fragmento
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
                 fragmentTransaction.addToBackStack(null);
-// Cambiar
+                // Cambiar
                 fragmentTransaction.commit();
             }
         });
@@ -1489,76 +1499,15 @@ public class DetalleProductoFragment extends Fragment {
                 nvofrag.setArguments(args);
                 //DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo,false);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
+                // Definir una transacción
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
+                // Remplazar el contenido principal por el fragmento
                 fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
                 fragmentTransaction.addToBackStack(null);
-// Cambiar
+                // Cambiar
                 fragmentTransaction.commit();
             }
         });
-    }
-    public SpeechRecognizer grabarVoz(){
-
-        SpeechRecognizer speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getActivity());
-        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        speechRecognizer.setRecognitionListener(new RecognitionListener() {
-            @Override
-            public void onReadyForSpeech(Bundle bundle) {
-
-            }
-
-            @Override
-            public void onBeginningOfSpeech() {
-                //  textoint.setText("");
-                //  textoint.setHint("Escuchando...");
-            }
-
-            @Override
-            public void onRmsChanged(float v) {
-
-            }
-
-            @Override
-            public void onBufferReceived(byte[] bytes) {
-
-            }
-
-            @Override
-            public void onEndOfSpeech() {
-                //   textoint.setHint("");
-            }
-
-            @Override
-            public void onError(int i) {
-
-            }
-
-            @Override
-            public void onResults(Bundle bundle) {
-                // micbtn.setImageResource(R.drawable.ic_baseline_mic_none_24);
-                ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                // textoint.setText(data.get(0));
-                //  textoint.setHint("");
-
-            }
-
-            @Override
-            public void onPartialResults(Bundle bundle) {
-
-            }
-
-            @Override
-            public void onEvent(int i, Bundle bundle) {
-
-            }
-        });
-
-
-        return  speechRecognizer;
     }
 
     //        int consecutivo =1;
@@ -1901,15 +1850,17 @@ public class DetalleProductoFragment extends Fragment {
         return dViewModel.buscarMuestraCodigo(Constantes.INDICEACTUAL,dViewModel.productoSel.plantaSel,productosel,codigonvo,caducidadnva,getViewLifecycleOwner(),codigosperm);
 
     }
+    public boolean buscarMuestraCodigoMismoInforme(NuevoDetalleViewModel.ProductoSel productosel,Date caducidadnva, int informeId){
+        //busco en el mismo informe
+        return dViewModel.buscarMuestraCodigoMismoInforme(Constantes.INDICEACTUAL,productosel,caducidadnva,informeId);
+
+    }
 
     @Override
     public void onDestroy() {
 
         super.onDestroy();
 
-
-        if(sspeechRecognizer!=null)
-            sspeechRecognizer.destroy();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

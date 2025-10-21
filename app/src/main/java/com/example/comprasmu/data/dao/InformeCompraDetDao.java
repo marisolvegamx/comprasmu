@@ -223,5 +223,22 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " WHERE lista_compras.ciudadNombre = :cd and informe_compras.clientesId=:cliente and (informe_detalle.estatus=1 or informe_detalle.estatus=3 ) and visitas.indice=:indice " )
     public abstract List<InformeCompraDetalle>   getInformesxCliCd(String cd,int cliente, String indice);
 
+    @Query("SELECT informe_detalle.id,informe_detalle.informesId,informe_detalle.estatus," +
+            "informe_detalle.estatusSync,productoId,producto,presentacion,tamanioId," +
+            "empaque,empaquesId,codigo, caducidad,origen, costo,foto_codigo_produccion  ," +
+            "energia,producto_exhibido,foto_num_tienda,marca_traslape, atributoa," +
+            "foto_atributoa,atributob,foto_atributob,atributoc,foto_atributoc,foto_atributod,azucares," +
+            "qr,etiqueta_evaluacion,tipoMuestra,nombreTipoMuestra,tipoAnalisis,nombreAnalisis," +
+            "numMuestra,informe_detalle.comentarios,comprasId,comprasDetId,informe_detalle.createdAt,informe_detalle.updatedAt," +
+            "comprasIdbu,comprasDetIdbu,siglas, fechaCancel, motivoCancel, causaSustId, causaSustitucion  " +
+            "FROM informe_detalle " +
+            " inner join informe_compras on informe_compras.id=informe_detalle.informesId" +
+            " inner join visitas on visitas.id=informe_compras.visitasId" +
+            " where productoId=:producto and presentacion=:presentacion" +
+            " and empaquesId=:empaque and tipoAnalisis=:analisis " +
+            " and visitas.indice=:indice and informe_compras.id=:informeId and informe_detalle.estatus<>2" +
+            " group by caducidad order by caducidad desc" )
+    public abstract List<InformeCompraDetalle> getByProductoAnalisisxInf(String indice, int informeId,int producto, int analisis, int empaque, String presentacion);
+
 
 }
