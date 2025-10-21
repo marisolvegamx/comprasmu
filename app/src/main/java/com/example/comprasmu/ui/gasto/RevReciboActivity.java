@@ -22,6 +22,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +76,12 @@ public class RevReciboActivity extends AppCompatActivity {
 
       //  llpregunta.setVisibility(View.GONE);
         pregunta.setmLabel(getString(R.string.esta_acuerdo));
+        pregunta.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                btnenviar.setEnabled(true);
+            }
+        });
         btndescargar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,7 +134,7 @@ public class RevReciboActivity extends AppCompatActivity {
         webView.loadUrl(urlrecibo);
         milog.info(TAG,"create",urlrecibo);
         comentarios.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-
+        btnenviar.setEnabled(false);
         btnenviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,9 +147,9 @@ public class RevReciboActivity extends AppCompatActivity {
     }
     //devuelve false si no hay comentarios y se respondió que no
     private boolean validarComentarios(String comentarios){
-        if(!pregunta.getRespuesta()&&comentarios.equals("")){
-            Toast.makeText(this,"Por favor captura comentarios", Toast.LENGTH_LONG);
-            btnenviar.setEnabled(false);
+        if(!pregunta.getRespuesta()&& comentarios.isEmpty()){
+            Toast.makeText(this,"Por favor captura comentarios", Toast.LENGTH_LONG).show();
+            btnenviar.setEnabled(true);
             return false;
         }
         return true;
