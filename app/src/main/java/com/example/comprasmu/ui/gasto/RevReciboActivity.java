@@ -46,16 +46,17 @@ public class RevReciboActivity extends AppCompatActivity {
     TextView txtmensaje;
     ComprasLog milog;
     private String TAG="RevReciboActivity";
-
+    Preguntasino pregunta;
+    Button btnenviar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rev_recibo);
         String BASE_URL;
 
-        Button btnenviar=findViewById(R.id.btnrrenviar);
+        btnenviar=findViewById(R.id.btnrrenviar);
         TextView comentarios=findViewById(R.id.txtrrcomentarios);
-        Preguntasino pregunta=findViewById(R.id.rrsinoacuerdo);
+        pregunta=findViewById(R.id.rrsinoacuerdo);
         txtmensaje=findViewById(R.id.txtrrmensaje);
 
         // Enable the Up button
@@ -137,11 +138,22 @@ public class RevReciboActivity extends AppCompatActivity {
 
 
     }
-    private void enviarResp(String comentarios, boolean respuesta){
+    //devuelve false si no hay comentarios y se respondió que no
+    private boolean validarComentarios(String comentarios){
+        if(!pregunta.getRespuesta()&&comentarios.equals("")){
+            Toast.makeText(this,"Por favor captura comentarios", Toast.LENGTH_LONG);
+            btnenviar.setEnabled(false);
+            return false;
+        }
+        return true;
+    }
+    private void enviarResp(String comentarios, boolean respuesta) {
+        if (validarComentarios(comentarios)) {
+            estatusAceptado = respuesta ? 1 : 0;
+            PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+            ps.acuseRecibo(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO, comentarios, estatusAceptado, new ListenerRec());
+        }
 
-        estatusAceptado=respuesta?1:0;
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-        ps.acuseRecibo(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,comentarios,estatusAceptado, new ListenerRec());
     }
     private void descargar(){
         String MY_URL = Constantes.URLSERV+"descargarRecibo.php?cd="+Constantes.CIUDADTRABAJO+"&indice="+ Constantes.INDICEACTUAL+"&cverec="+Constantes.CLAVEUSUARIO;

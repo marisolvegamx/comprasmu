@@ -607,7 +607,7 @@ public void iraReubicar(){
             Log.e(TAG,"Algo salió mal al finalizar"+ex.getMessage());
             Toast.makeText(getContext(),"Algo salio mal al enviar",Toast.LENGTH_SHORT).show();
         }
-        // limpio variables de sesion
+        // lmpio variables de sesion
 
         mViewModel.setIdNuevo(0);
         mViewModel.setIddetalle(0);

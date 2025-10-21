@@ -31,9 +31,7 @@ public class DescAutomaticasServiceManager {
 
     public void iniciarServicio(Context context) {
 
-        Log.i("DescAutomaticasServiceManager",Constantes.CLAVEUSUARIO);
-
-
+      //  Log.i("DescAutomaticasServiceManager",Constantes.CLAVEUSUARIO);
 
             if (!servicioIniciado) {
 
