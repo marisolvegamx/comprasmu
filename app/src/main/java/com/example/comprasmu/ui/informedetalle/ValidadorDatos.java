@@ -223,4 +223,30 @@ public class ValidadorDatos {
             return false;
     }
 
+    //si es permitido devuelve true
+    public static boolean validarCodigoPermitido(Date nuevaCaducidad,String codigosperm){
+        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yy");
+
+        if(!codigosperm.equals(""));
+        {
+            codigosperm=codigosperm.replace("=","");
+            String[] fechas=codigosperm.trim().split(",");
+
+            for(int j=0;j<fechas.length;j++){
+                try {
+                    if(!fechas[j].equals("")) {
+                        Date fechaperm = sdf.parse(fechas[j]);
+                        if (fechaperm.equals(nuevaCaducidad))
+                            return true; //esta permitida
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+        return false;
+    }
 }
