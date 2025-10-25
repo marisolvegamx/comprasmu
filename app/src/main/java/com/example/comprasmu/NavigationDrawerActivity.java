@@ -349,7 +349,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
 
     public void actualizarNotificaciones(){
-        int INTERVALO = 10*1000; // 10seg
+        int INTERVALO = 50*1000; // 10seg
         Handler handler;
         Runnable runnable;
         handler = new Handler();
@@ -673,7 +673,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 totCancel.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                     @Override
                     public void onChanged(Integer totcan) {
-                          Log.i(TAG,"regresaron canceladas");
+                         // Log.i(TAG,"regresaron canceladas");
                           contarMuestraAdic();
                           totalNotifGen.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                           @Override
@@ -682,23 +682,28 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                                       //  revRecibo.removeObservers(NavigationDrawerActivity.this);
 
                                     totMuestraAdic.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
-                                    @Override
-                                    public void onChanged(Integer totma) {
-                                        int totalnotif = totcor + totcan + totma +valor;
-                                        Log.i(TAG,"poniendo total notificaciones");
-                                        gallery.setText(totalnotif + "");
-                                    }
-                                });
-                                    }
-                                });
-                            }
+                                        @Override
+                                        public void onChanged(Integer totma) {
+                                            int totalnotif = totcor + totcan + totma +valor;
+                                            Log.i(TAG,"poniendo total notificaciones");
+                                            gallery.setText(totalnotif + "");
+                                            totMuestraAdic.removeObservers(NavigationDrawerActivity.this);
+                                        }
+                                    });
+                              totalNotifGen.removeObservers(NavigationDrawerActivity.this);
+                          }
+                          });
+                          totCancel.removeObservers(NavigationDrawerActivity.this);
+                    }
 
 
                 });
+                totCorrecciones.removeObservers(NavigationDrawerActivity.this);
 
 
 
             }
+
         });
 
     }
