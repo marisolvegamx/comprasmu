@@ -85,7 +85,7 @@ import java.util.List;
         SolicitudCor.class, Correccion.class, Sigla.class,
         Configuracion.class, CorEtiquetadoCaja.class, CorEtiquetadoCajaDet.class, InformeEnvioDet.class, InformeGastoDet.class, AcuseRecibo.class,
         Tienda.class,TiendaEstatusCliente.class,HistoricoMuestras.class},
-        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=35, exportSchema = false)
+        views = {InformeCompraDao.InformeCompravisita.class, ProductoExhibidoDao.ProductoExhibidoFoto.class}, version=36, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ComprasDataBase extends RoomDatabase {
     private static ComprasDataBase INSTANCE;
@@ -132,7 +132,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                                     ,MIGRATION_15_16,MIGRATION_16_17, MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
                                     MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
                                     MIGRATION_25_26, MIGRATION_26_27, MIGRATION_27_28,MIGRATION_28_29,MIGRATION_29_30,MIGRATION_30_31,MIGRATION_31_32,
-                                    MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35)
+                                    MIGRATION_32_33, MIGRATION_33_34, MIGRATION_34_35, MIGRATION_35_36)
                             .build();
                     INSTANCE.cargandodatos();
                 }
@@ -675,6 +675,20 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     "categoriaId INTEGER not null," +
                     "categoriaNombre TEXT,  PRIMARY KEY(hisId)) ");
 
+        }
+    };
+
+    static final Migration MIGRATION_35_36 = new Migration(35,36) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("drop  TABLE if exists tienda_estatuscliente ");
+            database.execSQL("create  TABLE tienda_estatuscliente ( une_id INTEGER not null,"+
+                    "clientesId INTEGER  not null,"+
+                    "plantasId INTEGER not null," +
+                    "plantasNombre TEXT,"+
+                    " estatus INTEGER not null ,"+
+
+                    " PRIMARY KEY(une_id, clientesId )) ");
         }
     };
     private void cargandodatos(){
