@@ -1377,7 +1377,6 @@ public class DetalleProductoFragment extends Fragment {
                         Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
 
                         return false;
-
                     }
                 }else {
                     //nueva validacion 21-10-25 cuando sea sustitucion puede comprar el mismo codigo para el mismo analisis en la misma tienda
@@ -1387,7 +1386,6 @@ public class DetalleProductoFragment extends Fragment {
                         Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
 
                         return false;
-
                     }
                 }
 

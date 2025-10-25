@@ -823,8 +823,19 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                 return 2;
 
             if (dViewModel.productoSel.tipoMuestra != 3 ) //solo si no es bu
+            {
                 if (this.buscarMuestraCodigoPeniafiel(fechacad))
                     return 2;
+            }else {
+                //nueva validacion 21-10-25 cuando sea sustitucion puede comprar el mismo codigo para el mismo analisis en la misma tienda
+                boolean res = dViewModel.buscarMuestraCodigoMismoInforme(Constantes.INDICEACTUAL, dViewModel.productoSel, fechacad, mViewModel.getIdInformeNuevo());
+
+                if (res) {
+                    Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
+
+                    return 1;
+                }
+            }
         }
 
         return 3; //todo bien
@@ -900,8 +911,8 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
             }
             mViewModel.informe.setConsecutivo(mViewModel.consecutivo);
 
-                Log.d(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
-                ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
+            Log.d(TAG, "tengo el tipo muestra " + dViewModel.productoSel);
+            ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
 
                //actualizo barra
             ((ContinuarInformeActivity) getActivity()).actualizarProdSel(dViewModel.productoSel);
@@ -947,12 +958,12 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                     nvofrag.setArguments(args);
                     //DetalleProductoJumFragment nvofrag = new DetalleProductoJumFragment(reactivo, false);
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
+                     // Definir una transacción
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
+                    // Remplazar el contenido principal por el fragmento
                     fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
                     //   fragmentTransaction.addToBackStack(null);
-// Cambiar
+                    // Cambiar
                     fragmentTransaction.commit();
                 }
             }

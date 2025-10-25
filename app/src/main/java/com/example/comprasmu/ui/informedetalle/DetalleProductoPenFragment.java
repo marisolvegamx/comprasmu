@@ -1303,7 +1303,7 @@ public class DetalleProductoPenFragment extends Fragment {
         return true;
     }
     // devuelve 1 cuando muestro solo un toast y sigo en la misma pantalla
-    //devuelve 2 cuando falla los no permi o los repetidos
+    //devuelve 2 cuando falla los no permidos o los repetidos
     public int validarCodigoProd(){
 
         Date fechacad;
@@ -1336,10 +1336,20 @@ public class DetalleProductoPenFragment extends Fragment {
                 return 2;
 
             if (dViewModel.productoSel.tipoMuestra != 3 ) //solo si no es bu
+            {
                 if (this.buscarMuestraCodigoPeniafiel(fechacad))
                     return 2;
-        }
+            }else {
+                    //nueva validacion 21-10-25 cuando sea sustitucion puede comprar el mismo codigo para el mismo analisis en la misma tienda
+                boolean res = dViewModel.buscarMuestraCodigoMismoInforme(Constantes.INDICEACTUAL, dViewModel.productoSel, fechacad, mViewModel.getIdInformeNuevo());
 
+                if (res) {
+                    Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
+
+                    return 1;
+                }
+            }
+        }
         return 3; //todo bien
     }
 

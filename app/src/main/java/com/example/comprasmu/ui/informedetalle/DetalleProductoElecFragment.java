@@ -849,8 +849,19 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                 return 2;
 
             if (dViewModel.productoSel.tipoMuestra != 3) //solo si no es bu
-                if(this.buscarMuestraCodigoElec(fechacad))
+            {
+                if (this.buscarMuestraCodigoElec(fechacad))
                     return 2;
+            }else {
+                //nueva validacion 21-10-25 cuando sea sustitucion puede comprar el mismo codigo para el mismo analisis en la misma tienda
+                boolean res = dViewModel.buscarMuestraCodigoMismoInforme(Constantes.INDICEACTUAL, dViewModel.productoSel, fechacad, mViewModel.getIdInformeNuevo());
+
+                if (res) {
+                    Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
+
+                    return 1;
+                }
+            }
         }
 
         return 3; //todo bien
