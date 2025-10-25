@@ -66,4 +66,9 @@ public class TiendaEstatusClienteRepositoryImpl extends BaseRepository<TiendaEst
     public void deleteAll(){
         dao.deleteAll();
     }
+
+    public List<TiendaEstatusCliente> findByTienda(int idTienda) {
+        return dao.findByTienda(idTienda);
+    }
+
 }
