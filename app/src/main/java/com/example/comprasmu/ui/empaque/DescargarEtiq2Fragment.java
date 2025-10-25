@@ -17,9 +17,7 @@ import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.utils.Constantes;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link DescargarEtiq2Fragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Descargo etiquetas fijas destino y fragil
  */
 public class DescargarEtiq2Fragment extends Fragment {
 
@@ -49,11 +47,6 @@ public class DescargarEtiq2Fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-
-
-
-
 
             Bundle datosRecuperados = getArguments();
 
