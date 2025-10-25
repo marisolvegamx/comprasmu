@@ -138,16 +138,14 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             int  consecutivo = niViewModel.getConsecutivo(plantaSel, getActivity(), this);
             //  Log.d(TAG, "*genere cons=" + consecutivo);
 
-            Log.i(TAG, "plantasel " + plantaSel);
+            //Log.i(TAG, "plantasel " + plantaSel);
             consecutivoTienda = consecutivo;
-            Log.i(TAG, " nummuestra" + nummuestra);
+            //Log.i(TAG, " nummuestra" + nummuestra);
 
 
             if(bundle.getString(ARG_MUESTRA)!=null&&bundle.getString(ARG_MUESTRA).equals("true")) {
                 //vengo de agregar muestra
-
                 mViewModel.setNuevaMuestra(true);
-
 
             }
 
@@ -165,7 +163,6 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
 
         mViewModel.setPlantaSel(plantaSel);
         mViewModel.nombrePlantaSel=nombrePlanta;
@@ -529,8 +526,8 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             }
             else
                  nuevoInf.setProductoSel(productoSel,mViewModel.nombrePlantaSel,mViewModel.getPlantaSel(), mViewModel.getClienteSel(),nombreCliente,etsiglas.getText().toString(),null);
-            Log.d(TAG,"NO PERM"+productoSel.getCodigosNoPermitidos());
-            Log.d(TAG,"nvo cods"+productoSel.getNvoCodigo());
+           // Log.d(TAG,"NO PERM"+productoSel.getCodigosNoPermitidos());
+            //Log.d(TAG,"nvo cods"+productoSel.getNvoCodigo());
 
             Constantes.productoSel=nuevoInf.productoSel;
             Intent resultIntent = new Intent();
@@ -582,7 +579,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
 
                 intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_SUSTITUCION);
                 intento1.putExtra(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
-                Log.d(TAG,"XXX"+productoSel.getCategoriaid());
+                //Log.d(TAG,"XXX"+productoSel.getCategoriaid());
                 intento1.putExtra(SustitucionFragment.ARG_CATEGORIAID, productoSel.getCategoriaid());
                 intento1.putExtra(ListaCompraFragment.ARG_PLANTASEL, plantaSel);
                 intento1.putExtra(ListaCompraFragment.ARG_NOMBREPLANTASEL, nombrePlanta);
@@ -678,7 +675,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             intento1.putExtra(ARG_CLIENTESEL, mViewModel.getClienteSel());
 
             intento1.putExtra(SustitucionFragment.ARG_CONSTIENDA, numtienda);
-            Log.d(TAG,"cat"+productoSel.getCategoriaid());
+            //Log.d(TAG,"cat"+productoSel.getCategoriaid());
             intento1.putExtra(SustitucionFragment.ARG_CATEGORIAID, productoSel.getCategoriaid());
 
             intento1.putExtra(BackActivity.ARG_FRAGMENT, BackActivity.OP_SUSTITUCION);
@@ -707,7 +704,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
             bundle.putString(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
             bundle.putString(SustitucionFragment.ARG_CATEGORIA, productoSel.getCategoria());
             bundle.putInt(SustitucionFragment.ARG_CONSTIENDA, numtienda);
-            Log.d(TAG,"XXX"+productoSel.getCategoriaid());
+            //Log.d(TAG,"XXX"+productoSel.getCategoriaid());
             bundle.putInt(SustitucionFragment.ARG_CATEGORIAID, productoSel.getCategoriaid());
             bundle.putInt(DetalleProductoPenFragment.NUMMUESTRA,nummuestra );
 
@@ -824,7 +821,7 @@ public class ListaCompraFragment extends Fragment implements ListaCompraDetalleA
     public void guardarResp(Spinner select, int idcliente, int iddetalleNuevo,int  consecutivo) {
         niViewModel=new ViewModelProvider(requireActivity()).get(NuevoinformeViewModel.class);
         nuevoInf=new ViewModelProvider(requireActivity()).get(NuevoDetalleViewModel.class);
-        Log.d(TAG, "guardando en temp*****"+niViewModel);
+        //Log.d(TAG, "guardando en temp*****"+niViewModel);
         //busco los datos que me faltan
         InformeTemp inf= nuevoInf.buscarxNombreCam("clientesId");
         if(inf==null){
