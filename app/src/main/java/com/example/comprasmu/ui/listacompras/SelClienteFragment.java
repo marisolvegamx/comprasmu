@@ -123,7 +123,7 @@ public class SelClienteFragment extends ListaSelecFragment {
 
 
     public void siguiente(int i){
-        Log.d(TAG,"una planta "+listaSeleccionable.get(i).getId()+"--"+listaSeleccionable.get(i).getNombre());
+        //Log.d(TAG,"una planta "+listaSeleccionable.get(i).getId()+"--"+listaSeleccionable.get(i).getNombre());
 
 
         if(clienteSel==0){
