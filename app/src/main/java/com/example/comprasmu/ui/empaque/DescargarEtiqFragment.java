@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -26,8 +27,12 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.services.DescAutomaticasServiceManager;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
 
@@ -46,6 +51,8 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
     private  ArrayList<DescripcionGenerica> listaClientesEnv;
     private static final String TAG = "DescargarEtiqFragment";
     ListaCompraDao listaCompraDao;
+    private LoadingAlert alert;
+    private LiveData<ListaCompraResponse> listaCompraResponse;
     public DescargarEtiqFragment() {
         // Required empty public constructor
     }
@@ -76,20 +83,23 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
             irAcdSel();
             return;
         }
-        List<InformeEtapa> listainfetiq;
-        listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
-        Log.i(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
-        listaCompraDao= ComprasDataBase.getInstance(getContext()).getListaCompraDao();
-        if(listainfetiq.size()>0) {
+        actualizarListaCompra();
+        listaCompraResponse.observe(getViewLifecycleOwner(), listaCompraResponse -> {
+            alert.closeAlertDialog();
 
-            convertirLista(listainfetiq);
-            setLista(listaClientesEnv);
-            setupListAdapter();
+            List<InformeEtapa> listainfetiq;
+            listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL, Constantes.CIUDADTRABAJO);
+            Log.i(TAG, "id nuevo" + mViewModel.getIdNuevo() + "--" + listainfetiq.size());
+            listaCompraDao = ComprasDataBase.getInstance(getContext()).getListaCompraDao();
+            if (listainfetiq.size() > 0) {
 
-        }
-        else
-             Log.e(TAG,"algo salió mal con la consulta de listas");
+                convertirLista(listainfetiq);
+                setLista(listaClientesEnv);
+                setupListAdapter();
 
+            } else
+                Log.e(TAG, "algo salió mal con la consulta de listas");
+        });
 
         getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -107,8 +117,6 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
             //valido que ya esté en la etapa
             List <ListaCompra> listacompOrig = mViewModel.cargarClientesSimplxet(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO,listaCompra.getClientesId(), 4, listaCompraDao);
             if (listacompOrig != null && listacompOrig.size() > 0) {
-
-
                 listaClientesEnv.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 
             }
@@ -136,5 +144,13 @@ public class DescargarEtiqFragment  extends ListaSelecFragment {
         if(navController!=null)
             navController.navigate(R.id.action_descetitocdtrab);
 
+    }
+    private void actualizarListaCompra() {
+        //cancelo las actualizaciones
+        DescAutomaticasServiceManager.getInstancia().pausarServicio();
+        ComprasLog comprasLog=ComprasLog.getSingleton();
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        listaCompraResponse=mViewModel.actualizarListaCompra(comprasLog);
     }
 }

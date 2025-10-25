@@ -10,8 +10,10 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.comprasmu.DescargaListaCompraAuto;
 import com.example.comprasmu.EtiquetadoxCliente;
 import com.example.comprasmu.data.ComprasDataBase;
+import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
@@ -28,6 +30,7 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
+import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
@@ -35,8 +38,10 @@ import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeEnvioRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
+import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.ui.informedetalle.ValidadorDatos;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.Constantes;
@@ -1003,6 +1008,16 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
 
         return res;
 
+
+    }
+    public LiveData<ListaCompraResponse> actualizarListaCompra(ComprasLog compraslog){
+        TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(application);
+        listaCompraRepo=ListaCompraRepositoryImpl.getInstance(ComprasDataBase.getInstance(application).getListaCompraDao());
+        InformeComDetRepositoryImpl informeCompraRepository=new InformeComDetRepositoryImpl(application);
+        DescargaListaCompraAuto descargaListaCompraAuto=new DescargaListaCompraAuto(compraslog,listaCompraRepo,new ListaCompraDetRepositoryImpl(application),informeCompraRepository);
+        PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+        PeticionesServidor.PeticionLista peticionLista=peticionesServidor.crearPeticion(null, null,Constantes.INDICEACTUAL);
+        return peticionesServidor.pedirListaCompraxCiudad(peticionLista,Constantes.CIUDADTRABAJO, descargaListaCompraAuto);
 
     }
 }
