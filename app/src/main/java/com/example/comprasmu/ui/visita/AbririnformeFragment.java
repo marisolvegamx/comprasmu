@@ -561,7 +561,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                 nuevaTienda = getArguments().getBoolean("nuevatienda");
 
-                Log.d(TAG, "datosrec " + nuevaTienda);
+              //  Log.d(TAG, "datosrec " + nuevaTienda);
                 if (!nuevaTienda)// es una tienda existente
                 {
 
@@ -651,8 +651,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             //las fotos exhib
             // for(ProductoExhibidoDao.ProductoExhibidoFoto fotoe:fotosExh) {
             if (fotosExh != null && fotosExh.size() > 0) {
-                Log.d(TAG, "fotos exh----" + fotosExh.size());
-                Log.d(TAG, "fotos exh ruta" + fotosExh.get(0).ruta);
+            //    Log.d(TAG, "fotos exh----" + fotosExh.size());
+            //    Log.d(TAG, "fotos exh ruta" + fotosExh.get(0).ruta);
                 if(fotosExh.get(0).imagenId==0){
                     cbfotoex.setChecked(true);
                 }else
@@ -741,7 +741,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public int buscarEnClientes(int seleccion, List<DescripcionGenerica> listaclientes) {
       if(listaclientes!=null)
         for (int i = 0; i < listaclientes.size(); i++) {
-            Log.d(TAG, "clientesas " + listaclientes.get(i).getId() + "--" + seleccion);
+          //  Log.d(TAG, "clientesas " + listaclientes.get(i).getId() + "--" + seleccion);
             if (listaclientes.get(i).getId() == seleccion)
                 return i;
         }
@@ -768,7 +768,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     }
     public void cargarFotos(String s, EditText txtruta, ImageButton boton, ImageView iv) {
         txtruta.setText(s);
-          Log.d(TAG,"ruta "+s);
+        //  Log.d(TAG,"ruta "+s);
         Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + s, 80, 80);
         iv.setVisibility(View.VISIBLE);
         boton.setVisibility(View.VISIBLE);
@@ -892,7 +892,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             return;
         }
-        Log.d(TAG, "regresó de la consulta " + totClientes);
+     //   Log.d(TAG, "regresó de la consulta " + totClientes);
 
         clientesAsignados = ComprasUtils.convertirListaaClientes(data);
         if (totClientes > 1) {
