@@ -17,6 +17,7 @@ import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.HistoricoMuestrasDao;
 import com.example.comprasmu.data.dao.ListaCompraDao;
+import com.example.comprasmu.data.dao.TiendaEstatusClienteDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.Geocerca;
@@ -27,6 +28,7 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaDetalleBu;
 import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.data.modelos.TiendaEstatusCliente;
 import com.example.comprasmu.data.modelos.TiendaJson;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
@@ -700,5 +702,10 @@ public class ListaDetalleViewModel extends AndroidViewModel {
             Log.e(TAG,"pasarADetalleBU Error al calcular los indices");
         }
         return listanueva;
+    }
+
+    public List<TiendaEstatusCliente> buscarEstatusTienda(int idTienda, TiendaEstatusClienteDao tiendaEstatusClienteDao){
+        TiendaEstatusClienteRepositoryImpl tiendaEstatusRepository=TiendaEstatusClienteRepositoryImpl.getInstance(tiendaEstatusClienteDao);
+        return tiendaEstatusRepository.findByTienda(idTienda);
     }
 }
