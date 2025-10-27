@@ -397,6 +397,7 @@
     <string name="validando_ubicacion">VALIDANDO UBICACION</string>
     <string name="registrando_ubicacion">REGISTRANDO UBICACION</string>
     <string name="title_activity_tutoriales">TUTORIALES</string>
+    <string name="desea_finalizar">¿ESTA SEGURO DE ELIMINAR EL INFORME POR SER DE UNA FECHA POSTERIOR?</string>
 
 
 </resources>

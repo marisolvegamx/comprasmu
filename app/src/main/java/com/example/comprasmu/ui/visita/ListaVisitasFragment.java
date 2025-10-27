@@ -231,6 +231,9 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
     @Override
     public void onClickFinalizar(int idvisita, Visita visitaCont) {
         ValidadorDatos valdat=new ValidadorDatos();
+        NuevoinformeViewModel niViewModel =
+                new ViewModelProvider(ListaVisitasFragment.this).get(NuevoinformeViewModel.class);
+
         //si se creo antes de hoy
        if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
            if(visitaCont.getEstatusSync()==0) {
@@ -244,8 +247,33 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);
         if(informes!=null&&informes.size()>0) //no puede finalizar
         {
-            Toast.makeText(getActivity(), getString(R.string.no_finalizar),Toast.LENGTH_SHORT).show();
-            return;
+            if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())) {
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setTitle(R.string.importante);
+                dialogo1.setMessage(R.string.desea_finalizar);
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        eliminarInformexFecha(informes); //y finalizo la visita
+
+                        niViewModel.finalizarVisita(idvisita);
+                    }
+                });
+                dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        //no hago nada
+                        dialogo1.cancel();
+
+                    }
+                });
+                dialogo1.show();
+                return;
+            }else
+
+                    {
+                        Toast.makeText(getActivity(), getString(R.string.no_finalizar), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
         }
 
         if(visitaCont.getEstatusSync()==0) {
@@ -256,8 +284,30 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
 
         //puede que no esté guardado reviso si hay algo en la tabla temporal
         if(mViewModel.hayInfDetalleTemp()){
-            Toast.makeText(getActivity(), getString(R.string.no_finalizar),Toast.LENGTH_SHORT).show();
-            return;
+            if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())) {
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setTitle(R.string.importante);
+                dialogo1.setMessage(R.string.desea_finalizar);
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        mViewModel.eliminarTblTemp();
+                        niViewModel.finalizarVisita(idvisita);
+                    }
+                });
+                dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        //no hago nada
+                        dialogo1.cancel();
+
+                    }
+                });
+                dialogo1.show();
+                return;
+            }else {
+                Toast.makeText(getActivity(), getString(R.string.no_finalizar), Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
         //pregunto si habrá más clientes
         AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
@@ -289,6 +339,15 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
             }
         });
         dialogo1.show();
+    }
+
+    public void eliminarInformexFecha(List<InformeCompra> informes) {
+        for (InformeCompra informeEliminar:informes
+             ) {
+            if(informeEliminar.getEstatusSync()==0)
+                mViewModel.eliminarInforme(informeEliminar);
+
+        }
     }
 
 

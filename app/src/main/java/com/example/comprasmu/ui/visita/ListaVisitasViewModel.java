@@ -220,6 +220,16 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         List<InformeTemp> temps=itemprepo.getAllByTabla("ID");
         return temps != null && temps.size() > 0;
     }
+
+    public void eliminarInforme(InformeCompra informe){
+        InformeCompraRepositoryImpl infrepo=new InformeCompraRepositoryImpl(application);
+        infrepo.deleteInformeCompra(informe.getId());
+        borrarImagenesxInforme(informe);
+    }
+    public void eliminarTblTemp(){
+        InformeTempRepositoryImpl itemprepo=new InformeTempRepositoryImpl(application);
+        itemprepo.deleteAll();
+    }
     public LiveData<List<Visita>> getListas() {
         return listas;
     }
