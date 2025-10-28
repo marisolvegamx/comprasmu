@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,6 +16,7 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -616,14 +618,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         if(listiendas!=null) {
             Log.d(TAG,"--tiendas"+listiendas.size());
             List<TiendaEstatusCliente> estatusTienda;
-            String estatusClientes = "";
+            StringBuilder estatusClientes = new StringBuilder();
             String color="3";
             ArrayList<DescripcionGenerica> plantasDisponibles;
             for (Tienda tienda : listiendas) {
               //  Log.d(TAG,tienda.getUne_id()+"--"+tienda.getUne_descripcion());
                 //busco los estatus por planta
                 estatusTienda= lcviewModel.buscarEstatusTienda(tienda.getUne_id(),ComprasDataBase.getInstance(getActivity()).getTiendaEstatusClienteDao());
-                estatusClientes = "";
+                estatusClientes = new StringBuilder();
                 color="3";
                 //armo lista de plantas de la ciudad
                 plantasDisponibles=new ArrayList<>();
@@ -645,13 +647,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     }
               //  Log.i(TAG,"size>>"+plantasDisponibles.size());
                 //el estatus es 1-rojo, 2 amarillo, 3.verde solo en verde puedo comprar o con 0
+                int i=0;
                 if (!plantasDisponibles.isEmpty()) {
                     for (DescripcionGenerica descripcion:plantasDisponibles
                          ) {
-                        estatusClientes= estatusClientes +", "+descripcion.getNombre();
+                        estatusClientes.append(", ");
+                        estatusClientes.append(descripcion.getNombre());
+                        i++;
                     }
 
-                    estatusClientes = estatusClientes.substring(2,estatusClientes.length());
+                    estatusClientes = new StringBuilder(estatusClientes.substring(2, estatusClientes.length()));
                 }
                 tienda.setColor(color);
 
@@ -667,8 +672,40 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                                 .title(tienda.getUne_descripcion())
                                 .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color)));
                         if (estatusClientes.length() > 0) {
-                            moptions.snippet(estatusClientes);
+                            moptions.snippet(estatusClientes.toString());
                         }
+                        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                            @Override
+                            public View getInfoWindow(Marker arg0) {
+                                return null;
+                            }
+
+                            @Override
+                            public View getInfoContents(Marker marker) {
+
+                                Context context = getActivity(); //or getActivity(), YourActivity.this, etc.
+
+                                LinearLayout info = new LinearLayout(context);
+                                info.setOrientation(LinearLayout.VERTICAL);
+
+                                TextView title = new TextView(context);
+                                title.setTextColor(Color.BLACK);
+                                title.setGravity(Gravity.CENTER);
+                                title.setTypeface(null, Typeface.BOLD);
+                                title.setText(marker.getTitle());
+
+                                TextView snippet = new TextView(context);
+                                snippet.setTextColor(Color.GRAY);
+                                snippet.setTextSize(10);
+                                snippet.setText(marker.getSnippet());
+
+                                info.addView(title);
+                                info.addView(snippet);
+
+                                return info;
+                            }
+                        });
                         Marker marker = mMap.addMarker(moptions
                         );
                         marker.setTag(tienda);
