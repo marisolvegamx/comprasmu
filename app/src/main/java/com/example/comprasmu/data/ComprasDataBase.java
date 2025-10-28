@@ -688,7 +688,7 @@ public abstract class ComprasDataBase extends RoomDatabase {
                     "plantasNombre TEXT,"+
                     " estatus INTEGER not null ,"+
 
-                    " PRIMARY KEY(une_id, clientesId )) ");
+                    " PRIMARY KEY(une_id, plantasId )) ");
         }
     };
     private void cargandodatos(){
