@@ -40,6 +40,7 @@ public abstract class InformeTempDao extends  BaseDao<InformeTemp>  {
     @Query("SELECT * FROM informe_temp WHERE tabla=:tabla")
     public abstract List<InformeTemp>  getInformesByTablaI(String tabla);
 
+    /*no se usa*/
     @Query("DELETE FROM informe_temp where nombre_campo!='clientesId' and nombre_campo!='primeraMuestra'" +
             " and nombre_campo!='segundaMuestra' and  nombre_campo!='terceraMuestra'")
     public abstract void deleteMenosCliente();

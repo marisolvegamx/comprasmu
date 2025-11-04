@@ -101,6 +101,28 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
         return dao.getTiendasByFiltrosSimp( sqlquery);
     }
 
+    public List<Tienda> getTiendasByPlantaSimp( String ciudad, int plantaId) {
+        List<String> params= new ArrayList<>();
+
+        String query="Select tienda.*" +
+                "   from tienda  " +
+                " inner join tienda_estatuscliente on tienda.une_id=tienda_estatuscliente.une_id" +
+                " where trim(ciudad)=trim(?)" +
+                " and plantasId=?";
+        params.add(ciudad+"");
+        params.add(plantaId+"");
+        query=query+"  order by tienda.une_id" ;
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,params.toArray()
+        );
+        Log.d("TiendaRepositoryImpl","query "+query);
+        for (String param:params
+        ) {
+            Log.d("TiendaRepo","--"+param);
+        }
+        return dao.getTiendasByFiltrosSimp( sqlquery);
+    }
+
     @Override
     public LiveData<List<Tienda>> getAll() {
       return dao.findAll();

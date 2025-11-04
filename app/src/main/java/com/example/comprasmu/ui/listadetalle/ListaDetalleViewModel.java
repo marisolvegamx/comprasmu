@@ -626,7 +626,12 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
 
+    public List<Tienda> getTiendasByPlantaSimp(String ciudad, int plantaSel) {
+        TiendaRepositoryImpl tiendaRepository = TiendaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaDao());
 
+        return tiendaRepository.getTiendasByPlantaSimp(ciudad, plantaSel);
+
+    }
     public MutableLiveData<Boolean> descargarTiendas(String ciudad, String ffin, LifecycleOwner lifeCycleOwner){
         //veo si hay algo en la tabla
         MutableLiveData<Boolean> finProceso=new MutableLiveData<>();

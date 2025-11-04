@@ -41,6 +41,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import com.example.comprasmu.DescargarListaAsyncTask;
+import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
@@ -325,15 +326,20 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     private void actualizarListaCompra() {
         //desactivo descargas automaticas
         DescAutomaticasServiceManager.getInstancia().pausarServicio();
-        alert=new LoadingAlert(getActivity());
-        alert.startAlert();
-        TablaVersionesRepImpl tvRepo=new TablaVersionesRepImpl(getContext());
-        ListaCompraDao dao= ComprasDataBase.getInstance(getContext()).getListaCompraDao();
-        ListaCompraDetRepositoryImpl lcdrepo=new ListaCompraDetRepositoryImpl(getContext());
-        ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(dao);
-        PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO) ;
-        DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(),tvRepo,lcdrepo,lcrepo,this,ps,Constantes.CIUDADTRABAJO);
-        task.execute("");
+        if (NavigationDrawerActivity.isOnlineNet(getActivity())) {
+            alert = new LoadingAlert(getActivity());
+            alert.startAlert();
+            TablaVersionesRepImpl tvRepo = new TablaVersionesRepImpl(getContext());
+            ListaCompraDao dao = ComprasDataBase.getInstance(getContext()).getListaCompraDao();
+            ListaCompraDetRepositoryImpl lcdrepo = new ListaCompraDetRepositoryImpl(getContext());
+            ListaCompraRepositoryImpl lcrepo = ListaCompraRepositoryImpl.getInstance(dao);
+            PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
+            DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(), tvRepo, lcdrepo, lcrepo, this, ps, Constantes.CIUDADTRABAJO);
+            task.execute("");
+        }
+        else{
+            Toast.makeText(getActivity(),"Esta acción requiere conexión a internet, verifique",Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
@@ -409,9 +415,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
                 fusedLocationClient=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
                 locallis=new miLocationListener();
-                this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+               // this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                final boolean networkEnabled = fusedLocationClient.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
                 final boolean gpsEnabled = fusedLocationClient.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                if (!gpsEnabled) {
+                if (!gpsEnabled&&!networkEnabled) {
                     Log.d(TAG, "1");
                     Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     startActivity(settingsIntent);
@@ -468,7 +476,12 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         if(lastKnownLocation!=null) {
             compraslog.info(TAG,".nuevatienda lastKnownLocation:",lastKnownLocation.getLatitude()+"--"+lastKnownLocation.getLongitude());
             if(nollistatiendas==null){
-                nollistatiendas=lcviewModel.getTiendasSimp(Constantes.CIUDADTRABAJO,3,0,0,0);
+                DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
+                if(plantasel!=null)
+                    plantaId=plantasel.getId();
+                //nollistatiendas=lcviewModel.getTiendasByPlantaSimp(Constantes.CIUDADTRABAJO,plantaId);
+                nollistatiendas=lcviewModel.getTiendasSimp(Constantes.CIUDADTRABAJO,0,0,0,0);
+
             }
             if(nollistatiendas!=null) {
                Log.d(TAG, ".nuevatienda tot tiendas:"+nollistatiendas.size());

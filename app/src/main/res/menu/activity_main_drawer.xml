@@ -43,10 +43,10 @@
             android:id="@+id/nav_listacor2"
             android:icon="@drawable/ic_baseline_check_24"
             android:title="@string/menu_rescorreccion" />
-       <item
+      <!-- <item
             android:id="@+id/nav_tutoriales"
             android:icon="@drawable/ic_baseline_help_outline_24"
-            android:title="@string/menu_tutoriales" />
+            android:title="@string/menu_tutoriales" />-->
 
 
         <item
