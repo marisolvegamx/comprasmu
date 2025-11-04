@@ -182,6 +182,7 @@ public class DetalleProductoFragment extends Fragment {
                     preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
                 }
             crearPregunta();
+            Log.d(TAG,"consecutivo>>>>>"+Constantes.DP_CONSECUTIVO);
 
         } catch (Exception e) {
             e.printStackTrace();

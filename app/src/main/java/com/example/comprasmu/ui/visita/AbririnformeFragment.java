@@ -1649,6 +1649,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                @Override
                public void onChanged(Integer integer) {
                    mViewModel.eliminarTblTemp();
+                   limpiarVariables();
                    guardado=true;
 
                        if(!cbfotoex.isChecked()) {
@@ -2332,7 +2333,20 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
         }
     }
+    public void limpiarVariables(){
+        Constantes.productoSel=null;
+        Constantes.VarDetalleProd.tomadode=null;
+        Constantes.VarDetalleProd.nvoatra=null;
+        Constantes.VarDetalleProd.nvoatrb=null;
+        Constantes.VarDetalleProd.nvoatrc=null;
+        Constantes.DP_TIPOTIENDA=0;
+        Constantes.NM_TOTALISTA=0;
+        Constantes.ni_clientesel=null;
+        mViewModel.limpiarVarInforme();
+        mViewModel.setIdInformeNuevo(0);
+        Constantes.DP_CONSECUTIVO=0;
 
+    }
 
 
 
