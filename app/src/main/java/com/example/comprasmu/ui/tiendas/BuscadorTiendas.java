@@ -3,13 +3,15 @@ package com.example.comprasmu.ui.tiendas;
 import android.location.Location;
 import android.util.Log;
 import com.example.comprasmu.data.modelos.Tienda;
+import com.example.comprasmu.utils.ComprasLog;
+
 import java.util.List;
 
 public class BuscadorTiendas {
 
 
     /***Revisa si hay tiendas cerca alrededor de xmts***/
-    public boolean hayTiendas(List<Tienda> lista, double xact, double yact){
+    public boolean hayTiendas(List<Tienda> lista, double xact, double yact, ComprasLog compraslog){
         for (Tienda tienda:lista
              ) {
             //separo las coordenas
@@ -19,8 +21,8 @@ public class BuscadorTiendas {
                 double y = Double.parseDouble(aux[1]);
                 if (dentroDelCirculo(x, y, xact, yact)) {
                     Log.d("tiendas", x + "," + y);
-                    Log.d("tiendas", tienda.getUne_descripcion() + "," + xact + "," + yact);
-
+                    Log.d("tiendas hay una tienda", tienda.getUne_descripcion() + "," + xact + "," + yact);
+                    compraslog.info("tiendas hay una tienda", ".nuevatienda ", "ya existe"+tienda.getUne_descripcion() + "," + xact + "," + yact);
                     return true; //con una tienda ya no puede ser nueva
 
 

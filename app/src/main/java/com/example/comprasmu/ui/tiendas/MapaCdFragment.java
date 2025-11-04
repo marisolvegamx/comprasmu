@@ -488,7 +488,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
                 compraslog.info(TAG, ".nuevatienda ", "tot tiendas:"+nollistatiendas.size());
                 if (bt.hayTiendas(nollistatiendas, lastKnownLocation.getLatitude(),
-                        lastKnownLocation.getLongitude())) {
+                        lastKnownLocation.getLongitude(), compraslog)) {
                     compraslog.info(TAG, ".nuevatienda ", "ya existe");
                     //solo informativo te recomendamos visitar una tienda existente
                     mensajetienda.setVisibility(View.VISIBLE);
