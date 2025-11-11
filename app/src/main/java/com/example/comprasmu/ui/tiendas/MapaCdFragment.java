@@ -629,13 +629,22 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
 
         if(listiendas!=null) {
-            Log.d(TAG,"--tiendas"+listiendas.size());
+           // Log.d(TAG,"--tiendas"+listiendas.size());
             List<TiendaEstatusCliente> estatusTienda;
             StringBuilder estatusClientes = new StringBuilder();
             String color="3";
             ArrayList<DescripcionGenerica> plantasDisponibles;
+            HashMap<Integer,Integer> totalPlantas=lcviewModel.getTotalPlantasxCliente(Constantes.CIUDADTRABAJO);
             for (Tienda tienda : listiendas) {
-              //  Log.d(TAG,tienda.getUne_id()+"--"+tienda.getUne_descripcion());
+                Log.d(TAG,tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen());
+                //busco los estatus por cliente
+
+                tienda.setEstpep(lcviewModel.getEstatusCliente(tienda.getEstpep(),totalPlantas,4));
+                tienda.setEstpen(lcviewModel.getEstatusCliente(tienda.getEstpen(),totalPlantas,5));
+                tienda.setEstele(lcviewModel.getEstatusCliente(tienda.getEstele(),totalPlantas,6));
+                tienda.setEstjum(lcviewModel.getEstatusCliente(tienda.getEstjum(),totalPlantas,7));
+                Log.d(TAG,"despues"+tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen()+"--"+tienda.getEstele()+"--"+tienda.getEstjum());
+
                 //busco los estatus por planta
                 estatusTienda= lcviewModel.buscarEstatusTienda(tienda.getUne_id(),ComprasDataBase.getInstance(getActivity()).getTiendaEstatusClienteDao());
                 estatusClientes = new StringBuilder();
@@ -643,7 +652,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 //armo lista de plantas de la ciudad
                 plantasDisponibles=new ArrayList<>();
                 plantasDisponibles.addAll(listaPlantasEnv);
-               // Log.i(TAG,"size antes>>"+plantasDisponibles.size());
+              //  Log.i(TAG,"size antes>>"+estatusTienda.size());
                 if(estatusTienda!=null)
 
                     for (TiendaEstatusCliente estatus:estatusTienda
@@ -674,7 +683,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 tienda.setColor(color);
 
                 //latitud es x longitud es y
-                // Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
+               //  Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
                 if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
                     String[] aux = tienda.getUne_coordenadasxy().split(",");
 

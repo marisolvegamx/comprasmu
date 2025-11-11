@@ -142,7 +142,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     Tienda tienda;
     int nuevoId;
     private boolean yaTengoFoto;
-    private int estatusPepsi; //para saber si la tienda se puede comprar pepsi
+    private int estatusPepsi; //para saber si la tienda se puede comprar pepsi 1- si puede, 0 no puede
     private int estatusPen;
     private int estatusElec;
     private int estatusJum;
@@ -578,14 +578,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     tienda.setEstjum(getArguments().getInt("estjum"));
                     tienda.setColor(colortienda);
                     Log.d(TAG, "wwwww" + tienda.getColor());
-                    if(tienda.getEstpep()==2)
-                    estatusPepsi =0 ;
-                    if(tienda.getEstpen()==2)
-                    estatusPen = 0;
-                    if(tienda.getEstele()==2)
-                    estatusElec = 0;
-                    if(tienda.getEstjum()==2)
-                        estatusJum = 0;
+
+                    estatusPepsi =tienda.getEstpep();
+
+                    estatusPen = tienda.getEstpen();
+                    estatusElec = tienda.getEstele();
+                    estatusJum = tienda.getEstjum();
 
 
                 }

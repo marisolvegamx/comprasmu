@@ -34,48 +34,46 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
     public LiveData<List<Tienda>> gettiendasByFiltros( String ciudad, int periodo, int tipo, int cadena, int clienteId) {
         List<String> params= new ArrayList<>();
 
-        String query="Select tienda_estatus.une_id, tienda_estatus.une_descripcion," +
-                " tienda_estatus.une_tipoTienda," +
-                " tienda_estatus.une_tipotienda, tienda_estatus.une_direccion, tienda_estatus.ciudad," +
-                " tienda_estatus.une_cla_ciudad, tienda_estatus.pais, tienda_estatus.une_cla_pais, " +
-                " tienda_estatus.une_puntocardinal, tienda_estatus.une_coordenadasxy," +
-                " tienda_estatus.une_cadenacomercial, tienda_estatus.une_dir_referencia," +
-                " sum(case tienda_estatus.clientesId   when 4 and totplantas=estpep then 0 else 1 end)   estpep," +
-                " sum( case tienda_estatus.clientesId  when 5 and totplantas=estpep then 0 else 1 end)   estpen," +
-                " sum(case tienda_estatus.clientesId   when 6 and totplantas=estpep then 0 else 1 end)   estele," +
-                " sum( case tienda_estatus.clientesId  when 7 and totplantas=estpep then 0 else 1 end)   estjum " +
-                " from (Select tienda.une_id, tienda.une_descripcion, tienda.une_tipoTienda," +
-                " tienda.une_tipotienda, tienda.une_direccion, tienda.ciudad," +
-                " tienda.une_cla_ciudad, tienda.pais, tienda.une_cla_pais, " +
-                " tienda.une_puntocardinal, tienda.une_coordenadasxy," +
-                " tienda.une_cadenacomercial, tienda.une_dir_referencia,tienda_estatuscliente.clientesId ," +
-                " sum(case tienda_estatuscliente.clientesId   when 4 then 1 else 0 end)   estpep," +
-                " sum( case tienda_estatuscliente.clientesId  when 5 then 1 else 0 end)   estpen," +
-                " sum(case tienda_estatuscliente.clientesId   when 6 then 1 else 0 end)   estele," +
-                " sum( case tienda_estatuscliente.clientesId  when 7 then 1 else 0 end)   estjum ," +
+        String query="select" +
+                " tienda.une_id," +
+                " tienda.une_descripcion," +
+                " tienda.une_tipotienda," +
+                " tienda.une_direccion," +
+                " tienda.ciudad," +
+                " tienda.une_cla_ciudad," +
+                " tienda.pais," +
+                " tienda.une_cla_pais," +
+                " tienda.une_puntocardinal," +
+                " tienda.une_coordenadasxy," +
+                " tienda.une_cadenacomercial," +
+                " tienda.une_dir_referencia," +
+                " tienda_estatuscliente.clientesId ," +
+                " sum(case tienda_estatuscliente.clientesId when 4 then 1 else 0 end) estpep," +
+                " sum( case tienda_estatuscliente.clientesId when 5 then 1 else 0 end) estpen," +
+                " sum(case tienda_estatuscliente.clientesId when 6 then 1 else 0 end) estele," +
+                " sum( case tienda_estatuscliente.clientesId when 7 then 1 else 0 end) estjum ," +
                 " tienda_estatuscliente.plantasId" +
-                " from tienda  " +
-                " left join tienda_estatuscliente on tienda.une_id=tienda_estatuscliente.une_id  " +
-                " where trim(ciudad)=trim(?) and (periodo<=? or periodo is null)" +
-                " group by tienda.une_id " +
-                " ) as tienda_estatus" +
-                " inner join (SELECT plantasId, clientesId, count(*) as totplantas FROM lista_compras" +
-                " where trim(ciudadNombre)=trim(?)" +
-                " group by clientesId, ciudadesId) as lista on lista.plantasId=tienda_estatus.plantasId" ;
+                " from" +
+                " tienda" +
+                " left join tienda_estatuscliente on" +
+                " tienda.une_id = tienda_estatuscliente.une_id" +
+                " where" +
+                " trim(ciudad)= trim(?)" +
+                " and (periodo <= ?" +
+                "  or periodo is null) " ;
 
         params.add(ciudad+"");
         params.add(periodo+"");
-        params.add(ciudad+"");
         if(tipo>0) {
-            query = query + " and une_tipotienda=?";
+            query = query + " and tienda.une_tipotienda=?";
             params.add(tipo+"");
         }
         if(cadena>0) {
-            query = query + " and une_cadenacomercial=?";
+            query = query + " and tienda.une_cadenacomercial=?";
             params.add(cadena+"");
         }
-        query=query+" group by tienda_estatus.une_id,tienda_estatus.clientesId" +
-                    "     order by tienda_estatus.une_id" ;
+        query=query+" group by tienda.une_id" +
+                    "     order by tienda.une_id" ;
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );

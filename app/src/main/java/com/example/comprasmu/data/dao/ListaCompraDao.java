@@ -9,7 +9,9 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Dao
 public abstract class ListaCompraDao  extends  BaseDao<ListaCompra> {
@@ -58,4 +60,36 @@ public abstract class ListaCompraDao  extends  BaseDao<ListaCompra> {
     @Query("SELECT * FROM lista_compras where id=:id")
     public abstract LiveData<ListaCompra> find( int id);
 
+    @Query("select" +
+            " clientesId," +
+            " count(*) as total" +
+            " from" +
+            " lista_compras" +
+            " where" +
+            " trim(ciudadNombre)= trim(:ciudad)" +
+            " group by" +
+            " clientesId," +
+            " ciudadesId")
+    public abstract List<TotalPlantas> getTotalPlantasxCliente(String ciudad);
+
+    public class TotalPlantas{
+        int clientesId;
+        int total;
+
+        public int getClientesId() {
+            return clientesId;
+        }
+
+        public void setClientesId(int clientesId) {
+            this.clientesId = clientesId;
+        }
+
+        public int getTotal() {
+            return total;
+        }
+
+        public void setTotal(int total) {
+            this.total = total;
+        }
+    }
 }

@@ -57,6 +57,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListaDetalleViewModel extends AndroidViewModel {
@@ -712,5 +713,27 @@ public class ListaDetalleViewModel extends AndroidViewModel {
     public List<TiendaEstatusCliente> buscarEstatusTienda(int idTienda, TiendaEstatusClienteDao tiendaEstatusClienteDao){
         TiendaEstatusClienteRepositoryImpl tiendaEstatusRepository=TiendaEstatusClienteRepositoryImpl.getInstance(tiendaEstatusClienteDao);
         return tiendaEstatusRepository.findByTienda(idTienda);
+    }
+
+
+    public  HashMap<Integer,Integer> getTotalPlantasxCliente(String ciudad){
+        HashMap<Integer,Integer> mapa=new HashMap<>();
+        List<ListaCompraDao.TotalPlantas> listaTotales=repository.getTotalPlantasxCliente(ciudad) ;
+        if(listaTotales!=null)
+            for (ListaCompraDao.TotalPlantas total:listaTotales
+                 ) {
+                mapa.put(total.getClientesId(), total.getTotal());
+            }
+        return mapa;
+    }
+    //devuelve 1 si puede comprar o 0 si no
+    public int getEstatusCliente(int totaltienda,HashMap<Integer,Integer> totalPlantas, int clienteId){
+
+        if(totalPlantas!=null)
+        if(totalPlantas.get(clienteId)!=null&&totaltienda==totalPlantas.get(clienteId)){
+            return 0;
+        }
+        return 1;
+
     }
 }

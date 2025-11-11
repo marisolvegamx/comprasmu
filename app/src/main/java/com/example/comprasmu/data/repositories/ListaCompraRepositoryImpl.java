@@ -8,6 +8,7 @@ import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaWithDetalle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
@@ -349,5 +350,8 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         return dao.insert(object);
     }
 
-
+    //devuelve un arreglo de la forma [clientes][ciudad]
+    public List<ListaCompraDao.TotalPlantas> getTotalPlantasxCliente(String ciudad ){
+        return dao.getTotalPlantasxCliente( ciudad);
+    }
 }
