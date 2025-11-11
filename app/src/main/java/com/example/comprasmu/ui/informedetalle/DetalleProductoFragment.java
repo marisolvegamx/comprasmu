@@ -598,13 +598,13 @@ public class DetalleProductoFragment extends Fragment {
         Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
         //ahora son plantas
          List<ListaCompra> listacomp= lcviewModel.cargarPestanasxEtaSimp(Constantes.CIUDADTRABAJO);
-        clientesAsignados = convertirListaaPlantas(listacomp, clientesprev);
+        clientesAsignados = convertirListaaPlantas(listacomp, clientesprev,mViewModel.visita.getTiendaId());
         compraslog.grabarError(TAG,"cargarClientes ","*regresó de la consulta de clientes " + clientesAsignados.size());
 
     }
 
 
-    public  List<DescripcionGenerica> convertirListaaPlantas(List<ListaCompra> lista, Integer[] clientesprev){
+    public  List<DescripcionGenerica> convertirListaaPlantas(List<ListaCompra> lista, Integer[] clientesprev,int tiendaId){
         int i=0;
         List<DescripcionGenerica> mapa=new ArrayList<>();
         List<Integer> coninf;
@@ -612,17 +612,17 @@ public class DetalleProductoFragment extends Fragment {
 
             coninf=Arrays.asList(clientesprev);
         }
-
+        //busco los status de la tienda para cada planta para saber si puede comprar ahi
+        //si estatus=2(amarillo ) no puede comprar
+        HashMap<Integer,Integer> mapaEstatusTienda=dViewModel.getEstatusTiendaPlanta(tiendaId);
         if(lista!=null)
             for (ListaCompra listaCompra: lista ) {
-                if(estatusPepsi==0&&listaCompra.getClientesId()==4)
+                if(mapaEstatusTienda!=null)
+                    if(mapaEstatusTienda.get(listaCompra.getPlantasId())!=null&&2==mapaEstatusTienda.get(listaCompra.getPlantasId())){
+
                     continue;
-                if(estatusPen==0&&listaCompra.getClientesId()==5)
-                    continue;
-                if(estatusElec==0&&listaCompra.getClientesId()==6)
-                    continue;
-                if(estatusJum==0&&listaCompra.getClientesId()==7)
-                    continue;
+                    }
+
                 DescripcionGenerica item=new DescripcionGenerica();
 
                 if( clientesprev!=null)
@@ -2096,6 +2096,8 @@ public class DetalleProductoFragment extends Fragment {
 
         }
     }
+
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -2103,19 +2105,13 @@ public class DetalleProductoFragment extends Fragment {
         lcviewModel = null;
         dViewModel=null;
         preguntaview=null;
-
         tomadoDe=null;
         atributos=null;
         causas=null;
         root=null;
-
         preguntaAct=null;
-
         svprin=null;
-
         loadingDialog=null ;
-
-
         lcviewModel=null;
         nombre_foto=null;
         archivofoto=null;

@@ -611,31 +611,14 @@ public class DetalleProductoPenFragment extends Fragment {
 
     public void buscarClientes(){
         Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
-        //if (clientesAsig == null||clientesAsig.size()<1){
-      //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
-      /*  if(estatusPepsi==0){
-            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO,4);
-        }else
-        if(estatusPen==0){
-            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO,5);
-        }else
-        if(estatusElec==0){
-            data=lcviewModel.cargarClientesSimplsp(Constantes.CIUDADTRABAJO,6);
-        }*/
-     //  clientesAsig = convertirListaaClientesE(data,clientesprev);
-      //  Log.d(TAG, "*regresó de la consulta de clientes " +  clientesAsig.size()+"");
 
-        //Integer[] clientesprev=dViewModel.tieneInforme(mViewModel.visita);
-        //ahora son plantas
-        //if (Constantes.clientesAsignados == null||Constantes.clientesAsignados.size()<1){
-        //  List<ListaCompra> data=lcviewModel.cargarClientesSimpl(Constantes.CIUDADTRABAJO);
         List<ListaCompra> listacomp= lcviewModel.cargarPestanasxEtaSimp(Constantes.CIUDADTRABAJO);
-        clientesAsig = convertirListaaPlantas(listacomp, clientesprev);
+        clientesAsig = convertirListaaPlantas(listacomp, clientesprev, mViewModel.visita.getTiendaId());
         Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsig.size());
 
 
     }
-    public  List<DescripcionGenerica> convertirListaaPlantas(List<ListaCompra> lista, Integer[] clientesprev){
+    public  List<DescripcionGenerica> convertirListaaPlantas(List<ListaCompra> lista, Integer[] clientesprev, int tiendaId){
         int i=0;
         List<DescripcionGenerica> mapa=new ArrayList<>();
         List<Integer> coninf;
@@ -644,14 +627,14 @@ public class DetalleProductoPenFragment extends Fragment {
             coninf=Arrays.asList(clientesprev);
         }
 
+        HashMap<Integer,Integer> mapaEstatusTienda=dViewModel.getEstatusTiendaPlanta(tiendaId);
         if(lista!=null)
             for (ListaCompra listaCompra: lista ) {
-                if(estatusPepsi==0&&listaCompra.getClientesId()==4)
-                    continue;
-                if(estatusPen==0&&listaCompra.getClientesId()==5)
-                    continue;
-                if(estatusElec==0&&listaCompra.getClientesId()==6)
-                    continue;
+                if(mapaEstatusTienda!=null)
+                    if(mapaEstatusTienda.get(listaCompra.getPlantasId())!=null&&2==mapaEstatusTienda.get(listaCompra.getPlantasId())){
+
+                        continue;
+                    }
                 DescripcionGenerica item=new DescripcionGenerica();
                 Log.d(TAG,"-estoy aqui"+listaCompra.getClientesId());
                 if( clientesprev!=null)

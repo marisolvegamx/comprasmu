@@ -21,4 +21,6 @@ public abstract class TiendaEstatusClienteDao extends BaseDao<TiendaEstatusClien
     @Query("SELECT * FROM tienda_estatuscliente where une_id=:idTienda")
     public abstract List<TiendaEstatusCliente> findByTienda(int idTienda);
 
+
+
 }

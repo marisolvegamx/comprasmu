@@ -20,6 +20,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
+import com.example.comprasmu.data.dao.TiendaEstatusClienteDao;
 import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
@@ -32,6 +33,7 @@ import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.modelos.Sigla;
 import com.example.comprasmu.data.modelos.Sustitucion;
+import com.example.comprasmu.data.modelos.TiendaEstatusCliente;
 import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.InformeEtapaEnv;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
@@ -43,6 +45,7 @@ import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
 import com.example.comprasmu.data.repositories.ReactivoRepositoryImpl;
 
 import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
+import com.example.comprasmu.data.repositories.TiendaEstatusClienteRepositoryImpl;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
@@ -55,6 +58,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -810,6 +814,23 @@ public class NuevoDetalleViewModel extends AndroidViewModel {
 
     public void setEtiqueta_evaluacion(ImagenDetalle etiqueta_evaluacion) {
         this.etiqueta_evaluacion = etiqueta_evaluacion;
+    }
+
+    //ver si tiene informe la visita y devuelve el cliente o los clientes
+    public HashMap<Integer,Integer> getEstatusTiendaPlanta(int tiendaId){
+       TiendaEstatusClienteRepositoryImpl tiendaEstatusRepo=TiendaEstatusClienteRepositoryImpl.getInstance(ComprasDataBase.getInstance(application).getTiendaEstatusClienteDao());
+        List<TiendaEstatusCliente> listaEstatusTienda=tiendaEstatusRepo.findByTienda(tiendaId);
+        HashMap<Integer,Integer> mapaEstatus=new HashMap<>();
+        if(listaEstatusTienda!=null&&listaEstatusTienda.size()>0) {
+            for (TiendaEstatusCliente estatustienda:listaEstatusTienda
+                 ) {
+                mapaEstatus.put(estatustienda.getPlantasId(),estatustienda.getEstatus());
+            }
+        }
+
+
+        return mapaEstatus;
+
     }
     public static class ProductoSel{
         public String producto;

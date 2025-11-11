@@ -2032,7 +2032,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public void mostrarPosicion(Location location){
         if(alert.isMostrando())
             alert.closeAlertDialog();
-        String latitude = String.valueOf(location.getLatitude());
+        String latitude = String.format("%.6f", location.getLatitude());
         String longitude = String.valueOf(location.getLongitude());
         txtubicacion.setText(latitude + "," + longitude);
         ultimaLoc=location;

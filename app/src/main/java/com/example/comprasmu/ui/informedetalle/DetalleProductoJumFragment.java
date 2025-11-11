@@ -539,8 +539,6 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
 
                 guardarMuestra(sig);
 
-
-
             }else
             if(preguntaAct.getId()==69)//no hubo producto, causano compra
             {
