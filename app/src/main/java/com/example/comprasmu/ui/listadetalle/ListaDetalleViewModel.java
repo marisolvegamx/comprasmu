@@ -687,8 +687,11 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 String codigosNoPermitidos="";
                 ListaDetalleBu nuevaitem= new ListaDetalleBu(lcdo);
                 Log.d(TAG,"nuevaitem codigo>"+nuevaitem.getCodigosNoPermitidos());
-                //aqui reviso si tiene codigos, si no los busco en el historico
-                if(nuevaitem.getCodigosNoPermitidos().equals("")){
+                //aqui reviso si esta en la lista de compra, si no los busco en el historico
+
+                ListaCompraDetalle compra=detRepo.getByProductoAna(lcdo.getProductosId(),lcdo.getEmpaquesId(),lcdo.getTamanioId(),lcdo.getAnalisisId(),Constantes.INDICEACTUAL,plantaSel);
+
+                if(compra==null){ //no esta en la lista
                     //busco
                     List<HistoricoMuestras> listaHistorico=historicoMuestrasRepository.getDetalleByFiltros(plantaId,nuevaitem.getAnalisisId(),nuevaitem.getProductoNombre(),nuevaitem.getEmpaque(),nuevaitem.getTamanioId(),indice1, indice2);
                     if(listaHistorico!=null&&listaHistorico.size()>0){

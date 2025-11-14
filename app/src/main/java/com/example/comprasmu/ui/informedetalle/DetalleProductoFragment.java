@@ -1380,7 +1380,7 @@ public class DetalleProductoFragment extends Fragment {
                         return false;
                     }
                 }else {
-                    //nueva validacion 21-10-25 cuando sea sustitucion puede comprar el mismo codigo para el mismo analisis en la misma tienda
+                    //nueva validacion 21-10-25 cuando sea sustitucion no puede comprar el mismo codigo para el mismo analisis en la misma tienda
                     res = buscarMuestraCodigoMismoInforme(dViewModel.productoSel, fechacad,mViewModel.getIdInformeNuevo());
 
                     if (res) {

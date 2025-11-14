@@ -1506,7 +1506,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 }
             }
         }
-            if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)) {//pruebas y el lenovo//entro rapido
+            if (Build.PRODUCT.contains ("sdk")) {//pruebas y el lenovo//entro rapido
                 txtaiultubic.setText("ubicacion reg");
             }
         if (txtaiultubic.getText().toString().equals("")) {
@@ -2033,7 +2033,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if(alert.isMostrando())
             alert.closeAlertDialog();
         String latitude = String.format("%.6f", location.getLatitude());
-        String longitude = String.valueOf(location.getLongitude());
+        String longitude =  String.format("%.6f",location.getLongitude());
         txtubicacion.setText(latitude + "," + longitude);
         ultimaLoc=location;
         Log.d(TAG,"****Ya tengo la ubicacion" + latitude + "," + longitude);
