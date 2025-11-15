@@ -263,6 +263,7 @@ public class NvoEnvioFragment extends Fragment  {
 
                     dialogo1.show();
                 }
+                return root;
             }
             milog.grabarError(TAG + " o x aca");
             //busco si tengo varias plantas
@@ -275,9 +276,11 @@ public class NvoEnvioFragment extends Fragment  {
                     //busco los clientes x ciudad
                     listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, etapa);
                     Log.d(TAG, "cliente" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
+                    Integer[] clientesprev=null ;
 
                     //ya no puedo tener varios informes
-                    Integer[] clientesprev = mViewModel.tieneInforme(5);
+                    if(!isEdicion)
+                        clientesprev = mViewModel.tieneInforme(5);
 
                     convertirLista(listacomp,clientesprev);
                     //reviso que tenga la guia
