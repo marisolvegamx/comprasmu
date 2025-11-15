@@ -21,11 +21,11 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
-//import androidx.camera.extensions.HdrImageCaptureExtender;
+
 import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,15 +48,13 @@ import com.example.comprasmu.databinding.ActivityMicamaraBinding;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -142,7 +140,6 @@ public class MiCamaraActivity extends AppCompatActivity {
         try {
             Preview preview = new Preview.Builder()
                     .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                    //  .setTargetResolution(new Size(800, 600))
                     .build();
 
 
@@ -155,14 +152,6 @@ public class MiCamaraActivity extends AppCompatActivity {
 
             ImageCapture.Builder builder = new ImageCapture.Builder();
 
-            //Vendor-Extensions (The CameraX extensions dependency in build.gradle)
-           // HdrImageCaptureExtender hdrImageCaptureExtender = HdrImageCaptureExtender.create(builder);
-
-            // Query if extension is available (optional).
-        //    if (hdrImageCaptureExtender.isExtensionAvailable(cameraSelector)) {
-                // Enable the extension if available.
-        //        hdrImageCaptureExtender.enableExtension(cameraSelector);
-         //   }
 
             final ImageCapture imageCapture = builder
                     .setTargetRotation(this.getWindowManager().getDefaultDisplay().getRotation())
@@ -170,15 +159,7 @@ public class MiCamaraActivity extends AppCompatActivity {
                     .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                     .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .build();
-     /*   ViewPort viewPort = new ViewPort.Builder(
-                new Rational(800, 600),
-                getDisplay().getRotation()).build();
-        UseCaseGroup useCaseGroup = new UseCaseGroup.Builder()
-                .addUseCase(preview)
-                .addUseCase(imageAnalysis)
-                .addUseCase(imageCapture)
-                .setViewPort(viewPort)
-                .build();*/
+
             preview.setSurfaceProvider(mPreviewView.getSurfaceProvider());
             cameraProvider.unbindAll();
             camera = cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageAnalysis, imageCapture);
@@ -242,7 +223,6 @@ public class MiCamaraActivity extends AppCompatActivity {
                     } else {
                         rotation = Surface.ROTATION_0;
                     }
-                    //   System.out.println("giro"+rotation);
                     imageCapture.setTargetRotation(rotation);
                 }
             };
@@ -259,15 +239,11 @@ public class MiCamaraActivity extends AppCompatActivity {
                     imageCapture.takePicture(outputFileOptions, executor, new ImageCapture.OnImageSavedCallback() {
                         @Override
                         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                            //   new Handler().post(new Runnable() {
-                            //     @Override
-                            //     public void run() {
-                            //   Toast.makeText(MainActivity.this, "Image Saved successfully", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, "la imagen se tomo correctamente " + file.getName());
+                              Log.d(TAG, "la imagen se tomo correctamente " + file.getName());
                             //veo la imagen
 
                             try {
-                                // este no getRotacion(archivo_foto);
+
                                 if (ComprasUtils.debeRotar(MiCamaraActivity.this)) {
                                     getRotacionConf(archivo_foto); //o sea no funcionará getrotacion2
                                 } else
@@ -276,13 +252,6 @@ public class MiCamaraActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             vistaPrevia();
-                            //    }
-                            //      });
-                            //veo la rotacion
-
-                            //if(girarFoto()){
-                            //     rotateImage(file.getPath(),90);
-                            //  }
 
                         }
 
@@ -323,9 +292,7 @@ public class MiCamaraActivity extends AppCompatActivity {
     public String getBatchDirectoryName() {
 
         String app_folder_path = "";
-       // activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        //app_folder_path = Environment.getExternalStorageDirectory().toString() + "/images";
-        app_folder_path = getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() ;
+          app_folder_path = getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() ;
 
         File dir = new File(app_folder_path);
         if (!dir.exists() && !dir.mkdirs()) {
@@ -355,29 +322,10 @@ public class MiCamaraActivity extends AppCompatActivity {
                 this.finish();
             }
         }
-      //  super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
     }
 
 
-    public void getRotacion(String filePath) throws IOException {
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inPurgeable = true;
-
-     //   Bitmap cameraBitmap = BitmapFactory.decodeFile(filePath);//get file path from intent when you take iamge.
-     //   ByteArrayOutputStream bos = new ByteArrayOutputStream();
-     //   cameraBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-
-
-        ExifInterface exif = new ExifInterface(filePath);
-        float rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-        System.out.println("rot*"+rotation);
-
-        float rotationInDegrees = exifToDegrees(rotation);//queda igual aunque la gire
-        System.out.println("indegres"+rotationInDegrees);
-
-    }
     public void rotateImage(String filePath, float angle) {
         Bitmap source = BitmapFactory.decodeFile(filePath);//get file path from intent when you take iamge.
         if(source==null){
@@ -486,40 +434,12 @@ public class MiCamaraActivity extends AppCompatActivity {
     }
 
 
-   /* @Override
-    private void onError(ImageCaptureException exc) {
-        Log.e(TAG, "Photo capture failed: ${exc.message}", exc);
-    }*/
-
     private void vistaPrevia( ) {
         Intent intento=new Intent(this, RevisarPrevActivity.class);
         intento.putExtra(RevisarPrevActivity.IMG_PATH1,archivo_foto);
         startActivityForResult(intento,REQUEST_CODE_TAKE_PHOTO);
     }
-        //se guarda 1 si hay que girarla
-    public boolean  girarFoto() //devuelve tru si hay que girarla
-    {
-        SharedPreferences prefe = getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
-        String girar= prefe.getString("girarfoto", "1");
 
-        if(girar.equals("1")){
-            return true; //sale en paisaje
-        }
-      return false;
-
-    }
-    public void guardarGirar(){
-
-
-        SharedPreferences prefe=getSharedPreferences("comprasmu.datos", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=prefe.edit();
-
-        editor.putString("girarfoto", "1");
-         editor.commit();
-
-
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -529,11 +449,6 @@ public class MiCamaraActivity extends AppCompatActivity {
 
             if (archivo_foto != null) {
 
-
-                // Bitmap bitmap1 = BitmapFactory.decodeFile(getActivity().getExternalFilesDir(null) + "/" + nombre_foto);
-                    /*    ComprasUtils cu = new ComprasUtils();
-                        cu.comprimirImagen(archivofoto.getAbsolutePath());
-                      */
                 resultact =-1;
 
             } else {
@@ -546,18 +461,19 @@ public class MiCamaraActivity extends AppCompatActivity {
                 //no hago nada
                 return;
             }else
-            resultact =0;
+                resultact =0;
         regresarResult();
-        }
+    }
 
-        public void regresarResult(){
+    public void regresarResult(){
             Intent resultIntent = new Intent();
             setResult(resultact, resultIntent);
 
             //regreso al main
             finish();
-        }
+    }
+
     public void cancelar() {
-       finish();
+           finish();
     }
 }
