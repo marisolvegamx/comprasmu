@@ -245,6 +245,8 @@ public class MiCamaraActivity extends AppCompatActivity {
                             try {
 
                                 if (ComprasUtils.debeRotar(MiCamaraActivity.this)) {
+                                    milog.grabarError(TAG,"bindPreview","configurado para rotar");
+
                                     getRotacionConf(archivo_foto); //o sea no funcionará getrotacion2
                                 } else
                                     getRotacion2(archivo_foto);
@@ -332,6 +334,8 @@ public class MiCamaraActivity extends AppCompatActivity {
             milog.grabarError(TAG,"rorateImage","Error al tomar la foto");
             return;
         }
+        milog.grabarError(TAG,"rotateImage","rotando imagen "+filePath);
+
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         Bitmap rotatedBitmap = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
