@@ -305,11 +305,10 @@ public class NvaCorreccionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 aceptar.setEnabled(false);
-                long currentClickTime= SystemClock.elapsedRealtime();
-                // preventing double, using threshold of 1000 ms
-                if (currentClickTime - lastClickTime < 3000){
+                long currentClickTime=SystemClock.elapsedRealtime();
+                 // preventing double, using threshold of 1000 ms
+                if (currentClickTime - lastClickTime < 5000){
                     //  Log.d(TAG,"doble click :("+lastClickTime);
-                    lastClickTime = currentClickTime;
                     return;
                 }
 
@@ -517,9 +516,9 @@ public class NvaCorreccionFragment extends Fragment {
             ex.getStackTrace();
             Log.e(TAG,"Algo salió mal al enviar"+ex.getMessage());
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
-
+            aceptar.setEnabled(true);
         }
-        aceptar.setEnabled(true);
+
     }
 
     //cambiar estatus sol
