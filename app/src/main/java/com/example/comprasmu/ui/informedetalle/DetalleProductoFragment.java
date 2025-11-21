@@ -1384,7 +1384,7 @@ public class DetalleProductoFragment extends Fragment {
                     res = buscarMuestraCodigoMismoInforme(dViewModel.productoSel, fechacad,mViewModel.getIdInformeNuevo());
 
                     if (res) {
-                        Toast.makeText(getActivity(), getString(R.string.error_codigo_per), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.error_recuerde_no), Toast.LENGTH_LONG).show();
 
                         return false;
                     }
