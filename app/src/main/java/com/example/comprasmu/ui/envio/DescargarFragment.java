@@ -22,6 +22,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -34,12 +36,15 @@ import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.LoggedInUser;
+import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.databinding.DescargarEnvFragmentBinding;
 import com.example.comprasmu.databinding.ListaSelecFragmentBinding;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.ui.ListaSelecFragment;
@@ -71,8 +76,9 @@ public class DescargarFragment extends Fragment {
     protected ArrayList<DescripcionGenerica> listaSeleccionable;
     int idcap;
     public static String ARG_DESCCIUDADSEL="comprasmu.descenv.cdsel";
-
-
+    private LoadingAlert alert;
+    private LiveData<ListaCompraResponse> listaCompraResponse;
+    ComprasLog milog;
     public DescargarFragment() {
         // Required empty public constructor
     }
@@ -110,6 +116,7 @@ public class DescargarFragment extends Fragment {
             }
         }
         indicacion=mBinding.textView9;
+        milog=ComprasLog.getSingleton();
         return mBinding.getRoot();
 
     }
@@ -134,19 +141,25 @@ public class DescargarFragment extends Fragment {
         mBinding.btndeguia.setVisibility(View.GONE);
         //hago la peticion
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
-        DocsEnvioListener listener=new DocsEnvioListener();
-        ps.getDocumentosEnvio(Constantes.INDICEACTUAL,this.ciudadSeleccionada,listener);
-        getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        actualizarListaCompra();
+        listaCompraResponse.observe(getViewLifecycleOwner(), new Observer<ListaCompraResponse>() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                clientesel=listaSeleccionable.get(i).getId();
-                mBinding.lldeselcliente.setVisibility(View.GONE);
-                   //mostrar ligas
+            public void onChanged(ListaCompraResponse listaCompraResponse) {
+                alert.closeAlertDialog();
+                DocsEnvioListener listener = new DocsEnvioListener();
+                ps.getDocumentosEnvio(Constantes.INDICEACTUAL, ciudadSeleccionada, listener);
+                getObjetosLV().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        clientesel = listaSeleccionable.get(i).getId();
+                        mBinding.lldeselcliente.setVisibility(View.GONE);
+                        //mostrar ligas
 
-                mBinding.lldeseldoc.setVisibility(View.VISIBLE);
+                        mBinding.lldeseldoc.setVisibility(View.VISIBLE);
 
-            }
-        });
+                    }
+                });
+            }});
 
         mBinding.btndeguia.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,7 +300,11 @@ public class DescargarFragment extends Fragment {
         }
         return false;
     }
-
+    private void actualizarListaCompra() {
+        alert=new LoadingAlert(getActivity());
+        alert.startAlert();
+        listaCompraResponse=lcViewModel.actualizarListaCompra(milog);
+    }
     public class DocsEnvioListener {
         //  void cerrarAlerta(boolean res);
         public void mostrarBotones(DocumentosEnvio docsenvio){
@@ -343,12 +360,9 @@ public class DescargarFragment extends Fragment {
             if(docsenvio.getAnexo3()==1)
                 mBinding.btndeanexo3.setVisibility(View.VISIBLE);
         }
-        //  void estatusInf(int es);
-        //  void estatusLis(int es);
-        // void imagenesEtapa(RespInfEtapaResponse infoResp);
-
 
     }
+
 
 
 }
