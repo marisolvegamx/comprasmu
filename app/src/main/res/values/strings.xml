@@ -157,9 +157,9 @@
     <string name="nuevo_informe">NUEVO INFORME</string>
     <string name="delete_muestra_message">La muestra se eliminó correctamente</string>
     <string name="conf_finalizar">¿ESTÁ SEGURO? TOME EN CUENTA QUE NO PODRÁ ELABORAR MÁS INFORMES CON LOS DATOS DE LA TIENDA</string>
-    <string name="salir_sin_guardar">¿SI SALE SIN GUARDAR PERDERÁ SU INFORMACIÓN</string>
+    <string name="salir_sin_guardar">SI SALE SIN GUARDAR PERDERÁ SU INFORMACIÓN</string>
 
-    <string name="fin_informe">SE FINALIZÓ EN INFORME</string>
+    <string name="fin_informe">SE FINALIZÓ EL INFORME</string>
     <string name="pregunta_mas_clientes">¿COMPRO PRODUCTO PARA OTROS CLIENTES?</string>
     <string name="menu_ciudad_trabajo">Ciudad de trabajo</string>
     <string name="informes">INFORMES</string>
@@ -207,7 +207,7 @@
     <string name="menu_home">INICIO</string>
     <string name="nota">NOTA</string>
     <string name="enviar">ENVIAR</string>
-    <string name="informe_ayer">ESTE INFORME YA NO ES VÁLIDO POR LA FECHA, PARA CONTINUAR FINALICE O ELIMINE</string>
+    <string name="informe_ayer">ESTE INFORME YA NO ES VÁLIDO POR LA FECHA, PARA CONTINUAR FINALICE O ELIMINE EL INFORME</string>
     <string name="regresar">REGRESAR</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="cerrar_app">¿ESTÁ SEGURO DE SALIR DE LA APLICACIÓN?</string>
@@ -259,7 +259,7 @@
     <string name="correcciones">CORRECCIONES</string>
     <string name="descripcion">DESCRIPCION</string>
     <string name="menu_nvopreparacion">Nuevo Inf Prep</string>
-    <string name="req_foto">¿REQUIERES OTRA FOTO?</string>
+    <string name="req_foto">¿REQUIERE OTRA FOTO?</string>
 
     <string name="menu_resumencomp">Resumen compra</string>
     <string name="preparacion">PREPARACION</string>
@@ -332,7 +332,7 @@
     <string name="caraa">FOTO CALIDAD DE CAJA CARA A</string>
     <string name="carab">FOTO CALIDAD DE CAJA CARA B</string>
     <string name="solicitudcor">SOLICITUDES CORRECCION</string>
-    <string name="informe_reubicar">PARA REUBICAR NECESITAS CREAR UN NUEVO INFORME</string>
+    <string name="informe_reubicar">PARA REUBICAR NECESITA CREAR UN NUEVO INFORME</string>
     <string name="el_numcaja">EL NUMERO DE CAJA DEBE SER CONSECUTIVO FAVOR DE REUBICAR</string>
     <string name="atras">ATRAS</string>
     <string name="eti_destinatario">Destinatario</string>
@@ -398,6 +398,6 @@
     <string name="registrando_ubicacion">REGISTRANDO UBICACION</string>
     <string name="title_activity_tutoriales">TUTORIALES</string>
     <string name="desea_finalizar">¿ESTA SEGURO DE ELIMINAR EL INFORME POR SER DE UNA FECHA POSTERIOR?</string>
-
+    <string name="error_recuerde_no">RECUERDE QUE NO PUEDE COMPRAR EL MISMO PRODUCTO PARA EL MISMO ANALISIS EN LA MISMA TIENDA</string>
 
 </resources>
