@@ -161,7 +161,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                     for(ListaCompra listaCompra:listacomp) {
 
                             compraslog.info(TAG, "setEtiquetado", "reactivado" + listaCompra.getLis_reactivado());
-                            if (listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1)
+                            if (listaCompra.getLis_reactivado() != null && (listaCompra.getLis_reactivado() == 1||listaCompra.getLis_reactivado()==3))
                                 listageneral.add(infeta);
 
                     }
@@ -233,7 +233,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         InformeEtapa nvoinf2=new InformeEtapa();
         List<InformeEtapa> listageneral=new ArrayList<>();
         for(ListaCompra listaCompra:listacomp) {
-            if ( listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
+            if ( listaCompra.getLis_reactivado() != null && (listaCompra.getLis_reactivado() == 1||listaCompra.getLis_reactivado() == 3) {
                 //veo que se haya cancelado
                 ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
 

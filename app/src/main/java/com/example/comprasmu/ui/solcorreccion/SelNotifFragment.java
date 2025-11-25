@@ -141,34 +141,39 @@ public class SelNotifFragment extends ListaSelecFragment{
             if(listacomp!=null&&listacomp.size()>0)
                 setEtiquetadoCancel(3, 6);
             else {
-                        //veo si ya puedo hacer empaque
-                listacomp = scViewModel.cargarClientesSimplxetReacsc( 4,1);
-                InformeEtapa nvoinf = new InformeEtapa();
-                List<InformeEtapa> listageneral = new ArrayList<>();
-                comprasLog.info(TAG,"contarCanceladas","puedo hacer empaque?:"+listacomp);
-                for(ListaCompra listaCompra:listacomp) {
-                    if ( listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
+                listacomp = scViewModel.cargarClientesSimplxetReacsc(3, 3);
+                if (listacomp != null && listacomp.size() > 0)
+                    setEtiquetadoCancel(3, 6);
+                else {
+                    //veo si ya puedo hacer empaque
+                    listacomp = scViewModel.cargarClientesSimplxetReacsc(4, 1);
+                    InformeEtapa nvoinf = new InformeEtapa();
+                    List<InformeEtapa> listageneral = new ArrayList<>();
+                    comprasLog.info(TAG, "contarCanceladas", "puedo hacer empaque?:" + listacomp);
+                    for (ListaCompra listaCompra : listacomp) {
+                        if (listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
 
-                        //veo que no haya hecho informe para no esperar a la supervisión
-                        InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
-                        comprasLog.info(TAG, "contarCanceladas", "tengo informe?:" + informesEtapa);
+                            //veo que no haya hecho informe para no esperar a la supervisión
+                            InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
+                            comprasLog.info(TAG, "contarCanceladas", "tengo informe?:" + informesEtapa);
 
-                        if (informesEtapa == null) {
-                            nvoinf.setIndice(listaCompra.getIndice());
-                            nvoinf.setEstatus(listaCompra.getEstatus());
-                            nvoinf.setEtapa(4);
+                            if (informesEtapa == null) {
+                                nvoinf.setIndice(listaCompra.getIndice());
+                                nvoinf.setEstatus(listaCompra.getEstatus());
+                                nvoinf.setEtapa(4);
 
-                            nvoinf.setCiudadNombre(listaCompra.getCiudadNombre());
-                            nvoinf.setClienteNombre(listaCompra.getClienteNombre());
+                                nvoinf.setCiudadNombre(listaCompra.getCiudadNombre());
+                                nvoinf.setClienteNombre(listaCompra.getClienteNombre());
 
-                            // nvoinf.mo
-                            listageneral.add(nvoinf);
+                                // nvoinf.mo
+                                listageneral.add(nvoinf);
+                            }
                         }
                     }
+
+                    totCancel = listageneral.size();
+
                 }
-
-                totCancel = listageneral.size();
-
             }
         }
         comprasLog.info(TAG,"contarCanceladas","totcancel:"+totCancel);

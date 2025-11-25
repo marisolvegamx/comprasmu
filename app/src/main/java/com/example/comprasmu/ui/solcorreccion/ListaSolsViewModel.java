@@ -289,39 +289,45 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
         }
         else {  //esto es para cuando se reactiva
-            List<ListaCompra> listacomp = cargarClientesSimplxetReacsc( 3,1);
-            if(listacomp!=null&&listacomp.size()>0)
+            List<ListaCompra> listacomp = cargarClientesSimplxetReacsc(3, 1);
+            if (listacomp != null && listacomp.size() > 0)
                 setEtiquetadoCancel(3, 6);
             else {
-                //veo si ya puedo hacer empaque
-                listacomp = cargarClientesSimplxetReacsc( 4,1);
-                InformeEtapa nvoinf = new InformeEtapa();
-                List<InformeEtapa> listageneral = new ArrayList<>();
-                Log.d(TAG,"contarCanceladas- puedo hacer empaque?"+listacomp);
-                for(ListaCompra listaCompra:listacomp) {
-                    if (listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
-                        //veo que no haya hecho informe para no esperar a la supervisión
-                        // ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-                        Log.d(TAG,"contarCanceladas-hay reactivacion");
-                        InformeEtapa informesEtapa = getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
-                        if (informesEtapa == null) {
-                            nvoinf.setIndice(listacomp.get(0).getIndice());
-                            // nvoinf.set = listacomp.get(0).getId();
-                            nvoinf.setEstatus(listacomp.get(0).getEstatus());
-                            nvoinf.setEtapa(4);
 
-                            nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
-                            nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
+                listacomp = cargarClientesSimplxetReacsc(3, 3);
+                if (listacomp != null && listacomp.size() > 0)
+                    setEtiquetadoCancel(3, 6);
+                else {
+                    //veo si ya puedo hacer empaque
+                    listacomp = cargarClientesSimplxetReacsc(4, 1);
+                    InformeEtapa nvoinf = new InformeEtapa();
+                    List<InformeEtapa> listageneral = new ArrayList<>();
+                    Log.d(TAG, "contarCanceladas- puedo hacer empaque?" + listacomp);
+                    for (ListaCompra listaCompra : listacomp) {
+                        if (listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
+                            //veo que no haya hecho informe para no esperar a la supervisión
+                            // ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
+                            Log.d(TAG, "contarCanceladas-hay reactivacion");
+                            InformeEtapa informesEtapa = getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
+                            if (informesEtapa == null) {
+                                nvoinf.setIndice(listacomp.get(0).getIndice());
+                                // nvoinf.set = listacomp.get(0).getId();
+                                nvoinf.setEstatus(listacomp.get(0).getEstatus());
+                                nvoinf.setEtapa(4);
 
-                            // nvoinf.mo
-                            listageneral.add(nvoinf);
+                                nvoinf.setCiudadNombre(listacomp.get(0).getCiudadNombre());
+                                nvoinf.setClienteNombre(listacomp.get(0).getClienteNombre());
+
+                                // nvoinf.mo
+                                listageneral.add(nvoinf);
+                            }
                         }
                     }
+
+                    itotCancel = listageneral.size();
+
+
                 }
-
-                itotCancel = listageneral.size();
-
-               
             }
         }
         totCancel.setValue(itotCancel+itotCanceleta);
