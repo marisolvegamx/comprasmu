@@ -246,7 +246,6 @@ public class NvoEnvioFragment extends Fragment  {
                 //es nuevo
                 //reviso si ya tengo uno abierto
                 InformeEtapa informeEtapa = mViewModel.getInformePend(Constantes.INDICEACTUAL, etapa);
-
                 if (informeEtapa != null) {
 
                     AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
@@ -262,8 +261,9 @@ public class NvoEnvioFragment extends Fragment  {
                     });
 
                     dialogo1.show();
+                    return root;
                 }
-                return root;
+
             }
             milog.grabarError(TAG + " o x aca");
             //busco si tengo varias plantas
@@ -275,7 +275,7 @@ public class NvoEnvioFragment extends Fragment  {
                     alert.closeAlertDialog();
                     //busco los clientes x ciudad
                     listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, etapa);
-                    Log.d(TAG, "cliente" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size());
+                    Log.d(TAG, "cliente" + ciudadInf + "ss" + mViewModel.getIdNuevo() + "--" + listacomp.size()+" isedicion:"+isEdicion);
                     Integer[] clientesprev=null ;
 
                     //ya no puedo tener varios informes
