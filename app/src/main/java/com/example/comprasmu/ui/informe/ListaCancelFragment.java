@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -145,7 +146,8 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
     private void setEtiquetado(int etapa, int estatus) {
         listageneral=new ArrayList<>();
         //para ver si sigue etiquetado
-        mViewModel.getInfEtapaxEstatus(indice,etapa,estatus).observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
+        LiveData<List<InformeEtapa>> listaInformes= mViewModel.getInfEtapaxEstatus(indice,etapa,estatus);
+        listaInformes.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
             @Override
             public void onChanged(List<InformeEtapa> informes) {
                 compraslog.info(TAG,"setEtiquetado", " si hay informe etiquetado"+informes);
@@ -223,8 +225,9 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                     mBinding.lisinfeta.setVisibility(View.VISIBLE);
                 }
 
-
+                listaInformes.removeObservers(getViewLifecycleOwner());
             }
+
         });
     }
     private  List<InformeEtapa> revisarEmpaque(){
@@ -233,7 +236,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         InformeEtapa nvoinf2=new InformeEtapa();
         List<InformeEtapa> listageneral=new ArrayList<>();
         for(ListaCompra listaCompra:listacomp) {
-            if ( listaCompra.getLis_reactivado() != null && (listaCompra.getLis_reactivado() == 1||listaCompra.getLis_reactivado() == 3) {
+            if ( listaCompra.getLis_reactivado() != null && (listaCompra.getLis_reactivado() == 1||listaCompra.getLis_reactivado() == 3)) {
                 //veo que se haya cancelado
                 ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
 
