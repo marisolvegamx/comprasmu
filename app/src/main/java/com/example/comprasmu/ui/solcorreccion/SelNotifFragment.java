@@ -141,10 +141,6 @@ public class SelNotifFragment extends ListaSelecFragment{
             if(listacomp!=null&&listacomp.size()>0)
                 setEtiquetadoCancel(3, 6);
             else {
-                listacomp = scViewModel.cargarClientesSimplxetReacsc(3, 3);
-                if (listacomp != null && listacomp.size() > 0)
-                    setEtiquetadoCancel(3, 6);
-                else {
                     //veo si ya puedo hacer empaque
                     listacomp = scViewModel.cargarClientesSimplxetReacsc(4, 1);
                     InformeEtapa nvoinf = new InformeEtapa();
@@ -173,7 +169,7 @@ public class SelNotifFragment extends ListaSelecFragment{
 
                     totCancel = listageneral.size();
 
-                }
+
             }
         }
         comprasLog.info(TAG,"contarCanceladas","totcancel:"+totCancel);
