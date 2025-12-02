@@ -99,21 +99,6 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
         return icDao.getCorrByFiltros( sqlquery);
     }
 
-
-
-
-   /* public LiveData<SolicitudWithCor> findSolCor(int id) {
-        String query="SELECT * FROM solicitud_cor inner join correccion on correccion.solicitudId=solicitud_cor.id" +
-                "     and correccion.numfoto=solicitud_cor.numfoto  WHERE correccion.id =?";
-        ArrayList<String> filtros=new ArrayList<String>();
-        filtros.add(id+"");
-
-        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
-                query,
-                filtros.toArray());
-        Log.d("CorreccionRepoImpl",query);
-        return icDao.getCorreSolByFiltro( sqlquery);
-    }*/
     public List<Correccion> getCorrecxSolSim(int solid, int numfoto,String indice) {
         return icDao.getCorreccxsolSimple(solid,numfoto, indice);
     }
@@ -186,5 +171,9 @@ public class CorreccionRepoImpl extends BaseRepository<Correccion> {
     }
     public LiveData<List<Correccion>> getByIndice(String indice){
         return icDao.getByIndice(indice);
+    }
+
+    public List<Correccion> getCorreccionxsolicitudDesc(int solid, int numfoto,String indice) {
+        return icDao.getCorreccionxsolicitudDesc(solid,numfoto, indice);
     }
 }

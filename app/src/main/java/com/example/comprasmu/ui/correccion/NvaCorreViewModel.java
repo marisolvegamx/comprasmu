@@ -311,4 +311,8 @@ public class NvaCorreViewModel extends AndroidViewModel {
     public void setNvocorreccion(Correccion nvocorreccion) {
         this.nvocorreccion = nvocorreccion;
     }
+
+    public List<Correccion> getCorreccionxsolicitudDesc(int solicitudId, int numFoto){
+       return correpository.getCorreccionxsolicitudDesc(solicitudId,numFoto,Constantes.INDICEACTUAL);
+    }
 }
