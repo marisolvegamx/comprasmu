@@ -294,10 +294,6 @@ public class ListaSolsViewModel extends AndroidViewModel {
                 setEtiquetadoCancel(3, 6);
             else {
 
-                listacomp = cargarClientesSimplxetReacsc(3, 3);
-                if (listacomp != null && listacomp.size() > 0)
-                    setEtiquetadoCancel(3, 6);
-                else {
                     //veo si ya puedo hacer empaque
                     listacomp = cargarClientesSimplxetReacsc(4, 1);
                     InformeEtapa nvoinf = new InformeEtapa();
@@ -327,7 +323,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
                     itotCancel = listageneral.size();
 
 
-                }
+
             }
         }
         totCancel.setValue(itotCancel+itotCanceleta);
