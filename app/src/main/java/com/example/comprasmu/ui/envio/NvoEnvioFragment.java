@@ -262,8 +262,9 @@ public class NvoEnvioFragment extends Fragment  {
                     });
 
                     dialogo1.show();
+                    return root;
                 }
-                return root;
+
             }
             milog.grabarError(TAG + " o x aca");
             //busco si tengo varias plantas
