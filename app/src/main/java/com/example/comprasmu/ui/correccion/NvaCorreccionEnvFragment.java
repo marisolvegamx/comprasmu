@@ -341,7 +341,7 @@ public class NvaCorreccionEnvFragment extends Fragment {
             Toast.makeText(getContext(),"Hubo un error al guardar intente de nuevo",Toast.LENGTH_SHORT).show();
 
         }
-        aceptar.setEnabled(true);
+       // aceptar.setEnabled(true);
     }
 
     //cambiar estatus sol

@@ -383,7 +383,7 @@ public class NvaCorreccionEmpFragment extends Fragment {
                         compraslog.grabarError(TAG, "guardarCorr", ex.getMessage());
                     }
                     mViewModel.setIdNuevo(mViewModel.insertarCorreccionEtiq(solicitud.getId(), Constantes.INDICEACTUAL, num_foto, valor, "", "", ""));
-                    preguntaview.aceptarSetEnabled(true);
+                   // preguntaview.aceptarSetEnabled(true);
                 }
             }else
             {
