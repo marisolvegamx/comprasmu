@@ -598,7 +598,7 @@ public void iraReubicar(){
             }
             //necesito tiempo para no actualizar el estatus
             try {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
