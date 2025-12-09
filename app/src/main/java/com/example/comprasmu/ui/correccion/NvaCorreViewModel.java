@@ -256,7 +256,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
         return resp;
     }
     public LiveData<Correccion> getCorreccion(int id){
-        Log.d(TAG,"ESTOY AQUI");
+    //    Log.d(TAG,"ESTOY AQUI");
         return correpository.find(id);
     }
 
@@ -265,7 +265,7 @@ public class NvaCorreViewModel extends AndroidViewModel {
         return solRepo.findsimple(id,numfoto);
     }
     public LiveData<CorEtiquetadoCaja> getCorreccionCaja(int id){
-        Log.d(TAG,"ESTOY AQUI");
+       // Log.d(TAG,"ESTOY AQUI");
         return cocajaRepo.find(id);
     }
 
@@ -293,6 +293,10 @@ public class NvaCorreViewModel extends AndroidViewModel {
         envio.setIndice(Constantes.INDICEACTUAL);
         return envio;
 
+    }
+    public List<Correccion> getCorrecionesxSol(int idsol,int numfoto,String indice){
+
+        return correpository.getCorrecxSolSim(idsol,numfoto,indice);
     }
 
     public int getIdNuevo() {

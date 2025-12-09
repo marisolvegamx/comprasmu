@@ -38,6 +38,7 @@ import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
 import com.example.comprasmu.SubirInformeEtaTask;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -84,8 +85,7 @@ public class NvaCorreccionEtiqFragment extends Fragment {
     public static int REQUEST_CODE2 = 2;
     public static int REQUEST_CODE3 = 3;
     String rutafotoo;
-    String rutafotoo3;
-    String rutafotoo2;
+
     private View root;
     private NvaCorreViewModel mViewModel;
     ListaSolsViewModel solViewModel;
@@ -145,67 +145,53 @@ public class NvaCorreccionEtiqFragment extends Fragment {
                 //busco el consecutivo de la tienda
                 int constienda=0;
                  txtmotivo.setText(solicitud.getMotivo());
-                //BUSCO LA FOTO ORIGINAL
-                //en donde la busco
-                switch (solicitud.getEtapa()){
+                //BUSCO si ya hay correcciones
+                List<Correccion> listaCorrecciones=mViewModel.getCorreccionxsolicitudDesc(solicitudSel,solicitud.getNumFoto());
 
-                        case 3:
-                           infcor= preViewModel.getInformexId(solicitudCor.getInformesId());
-                          //  Log.d(TAG,"ciud"+infcor.getCiudadNombre());
-                            solViewModel.buscarFotoEta(solicitud.getNumFoto(),solicitudCor.getInformesId(),3).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
-                                @Override
-                                public void onChanged(InformeEtapaDet informeEtapaDet) {
-
-                                    detEdit=informeEtapaDet;
-                                    if(informeEtapaDet!=null) {
-                                        Log.d(TAG,"buscando"+informeEtapaDet.getId());
-
-                                      //  txtnumcaja.setText("hola");
-                                      //  txtnumcaja.setText(informeEtapaDet.getNum_caja()+""); //caja en la que esta la muestra
-                                        ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCorEta(solicitud,informeEtapaDet.getNum_caja());
-
-                                        solViewModel.buscarImagenCom(Integer.parseInt(informeEtapaDet.getRuta_foto())).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                                            @Override
-                                            public void onChanged(ImagenDetalle imagenDetalle) {
-                                                rutafotoo = imagenDetalle.getRuta();
-
-                                               // Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-
-                                               // fotoori1.setImageBitmap(bitmap1);
-                                                crearFormulario(imagenDetalle);
-
-                                            }
-                                        });
+                infcor= preViewModel.getInformexId(solicitudCor.getInformesId());
 
 
-                                    }
-                                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                                    //fotoori1.setVisibility(View.VISIBLE);
+                solViewModel.buscarFotoEta(solicitud.getNumFoto(), solicitudCor.getInformesId(), 3).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
+                    @Override
+                     public void onChanged(InformeEtapaDet informeEtapaDet) {
 
-                                }
-                            });
-                            break;
-                            case 4:case 5:case 6:
-                        ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCorEta(solicitud,0);
+                          detEdit = informeEtapaDet;
+                          if (informeEtapaDet != null) {
+                              Log.d(TAG, "buscando" + informeEtapaDet.getId());
 
-                        solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
-                            @Override
-                            public void onChanged(InformeEtapaDet informeEtapaDet) {
-                                if(informeEtapaDet!=null) {
-                                    rutafotoo = informeEtapaDet.getRuta_foto();
+                                //  txtnumcaja.setText("hola");
+                                //  txtnumcaja.setText(informeEtapaDet.getNum_caja()+""); //caja en la que esta la muestra
+                                ((NuevoInfEtapaActivity) getActivity()).actualizarBarraCorEta(solicitud, informeEtapaDet.getNum_caja());
+                              if(listaCorrecciones!=null&&listaCorrecciones.size()>0) //ya hay alguna correccion
+                              {
+                                  buscarFotoCorreccion(listaCorrecciones);
+                                  ImagenDetalle imagenDetalle=new ImagenDetalle();
+                                  imagenDetalle.setRuta(rutafotoo);
+                                  crearFormulario(imagenDetalle);
+                              }else {
+                                  solViewModel.buscarImagenCom(Integer.parseInt(informeEtapaDet.getRuta_foto())).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                                      @Override
+                                      public void onChanged(ImagenDetalle imagenDetalle) {
+                                          rutafotoo = imagenDetalle.getRuta();
 
-                                    //Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+                                          // Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
 
-                                    //fotoori1.setImageBitmap(bitmap1);
-                                }
-                                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                                //fotoori1.setVisibility(View.VISIBLE);
+                                          // fotoori1.setImageBitmap(bitmap1);
+                                          crearFormulario(imagenDetalle);
+
+                                      }
+                                  });
+                              }
+
 
                             }
-                        });
-                        break;
+                        // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                        //fotoori1.setVisibility(View.VISIBLE);
 
-                }
+                        }
+                    });
+
+
                 solcorlive.removeObservers(getViewLifecycleOwner());
             }
         });
@@ -319,12 +305,6 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
         cf=new CreadorFormulario(camposForm2,getContext());
         sv2.addView(cf.crearFormulario());
-      /*  fotoori1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                verImagen(rutafotoo);
-            }
-        });*/
 
         spinnerValues = new ArrayList<>();
         //busco el total de cajas
@@ -607,11 +587,21 @@ public class NvaCorreccionEtiqFragment extends Fragment {
 
     }
 
-  /*  public void nvacaja(){
-        ultimacaja++;
-        spinnerValues.add(ultimacaja+"");
-        adaptercaja.notifyDataSetChanged();
-    }*/
+    public void buscarFotoCorreccion(List<Correccion> listaCorreccion){
+        //uso la penultima correccion
+        int i=0;
+
+        for (Correccion correccion:listaCorreccion) {
+
+            if(i==0){
+
+                rutafotoo= correccion.getRuta_foto1();
+
+                break;
+            }
+
+        }
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

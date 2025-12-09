@@ -138,161 +138,7 @@ public class NvaCorreccionFragment extends Fragment {
                 ((NuevoInfEtapaActivity)getActivity()).actualizarBarraCor(solicitud, constienda);
                 crearFormulario();
                 solicitudCorreccionLiveData.removeObservers(getViewLifecycleOwner());
-                //BUSCO LA FOTO ORIGINAL
-                //en donde la busco
-                switch (solicitud.getEtapa()){
-                    case 1:
-                        solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
-                            @Override
-                            public void onChanged(InformeEtapaDet informeEtapaDet) {
-                                rutafotoo=informeEtapaDet.getRuta_foto();
-                                Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-                                fotoori1.setImageBitmap(bitmap1);
-                            }
-                        });
-                        break;
-                    case 3:
-                        solViewModel.buscarFotoEta(solicitud.getNumFoto(),solicitudCor.getInformesId(),3).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
-                                @Override
-                                public void onChanged(InformeEtapaDet informeEtapaDet) {
-                                    Log.d(TAG,"buscando"+informeEtapaDet.getId());
-                                    if(informeEtapaDet!=null) {
-                                        rutafotoo = informeEtapaDet.getRuta_foto();
-
-                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-
-                                        fotoori1.setImageBitmap(bitmap1);
-                                    }
-                                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                                    //fotoori1.setVisibility(View.VISIBLE);
-
-                                }
-                            });
-                            break;
-                    case 4:case 5:case 6:
-                        solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
-                            @Override
-                            public void onChanged(InformeEtapaDet informeEtapaDet) {
-                                if(informeEtapaDet!=null) {
-                                    rutafotoo = informeEtapaDet.getRuta_foto();
-
-                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-
-                                    fotoori1.setImageBitmap(bitmap1);
-                                }
-                                // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                                //fotoori1.setVisibility(View.VISIBLE);
-
-                            }
-                        });
-                        break;
-                    case 2:
-                        String producto="";
-                        InformeCompraDetalle corrige=null;
-                        if(solicitud.getDescripcionFoto().equals("foto_atributoa")){
-                            //busco las otras fotos
-                            //busco el informe
-                            corrige=solViewModel.buscarInformeFoto(solicitud.getInformesId(), solicitud.getNumFoto(),Constantes.INDICEACTUAL);
-                            int numfoto2=corrige.getFoto_atributob();
-
-                            int numfoto3=corrige.getFoto_atributoc();
-                            int numfoto4=0;
-                            if(corrige.getFoto_atributod()!=null)
-                                 numfoto4=corrige.getFoto_atributod();
-                            //pongo datos del producto
-                           //  producto=corrige.getProducto()+" "+corrige.getPresentacion();
-                            solViewModel.buscarImagenCom(numfoto2).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                                @Override
-                                public void onChanged(ImagenDetalle imagenDetalle) {
-                                    if(imagenDetalle!=null) {
-                                        rutafotoo2 = imagenDetalle.getRuta();
-
-                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 80, 80);
-                                        if(bitmap1!=null)
-                                            fotoori2.setImageBitmap(bitmap1);
-
-                                        fotoori2.setVisibility(View.VISIBLE);
-                                        root.findViewById(R.id.gpocfototo2).setVisibility(View.VISIBLE);
-
-                                    }
-                                    //como consigo las otras?
-                                }
-                            });
-                            solViewModel.buscarImagenCom(numfoto3).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                                @Override
-                                public void onChanged(ImagenDetalle imagenDetalle) {
-                                    if(imagenDetalle!=null) {
-                                        rutafotoo3 = imagenDetalle.getRuta();
-
-                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 80, 80);
-                                        if(bitmap1!=null)
-                                           fotoori3.setImageBitmap(bitmap1);
-                                        root.findViewById(R.id.gpofotoo3).setVisibility(View.VISIBLE);
-                                        fotoori3.setVisibility(View.VISIBLE);
-                                    }
-                                    //como consigo las otras?
-                                }
-                            });
-                            solViewModel.buscarImagenCom(numfoto4).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                                @Override
-                                public void onChanged(ImagenDetalle imagenDetalle) {
-                                    if(imagenDetalle!=null) {
-                                        rutafotoo4 = imagenDetalle.getRuta();
-
-                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo4, 80, 80);
-                                        if(bitmap1!=null)
-                                            fotoori4.setImageBitmap(bitmap1);
-                                        root.findViewById(R.id.gpofotoo4).setVisibility(View.VISIBLE);
-                                        fotoori4.setVisibility(View.VISIBLE);
-                                    }
-
-                                }
-                            });
-                            fotoori2.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    verImagen(rutafotoo2);
-                                }
-                            });
-                            fotoori3.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    verImagen(rutafotoo3);
-                                }
-                            });
-                            fotoori4.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    verImagen(rutafotoo4);
-                                }
-                            });
-                        }else
-                        {
-                           if(solicitud.getDescripcionId()==9||solicitud.getDescripcionId()==7)
-                            //busco el producto
-                            corrige= solViewModel.buscarInformeByFoto(solicitud.getInformesId(), solicitud.getNumFoto(),solicitud.getDescripcionId());
-                          }
-                        if(corrige!=null) {
-                            producto = corrige.getProducto() + " "+corrige.getPresentacion()+" "+corrige.getEmpaque() ;
-                            Log.e(TAG, "qqq" + producto);
-                            ((NuevoInfEtapaActivity) getActivity()).actualizarAtributo3(producto);
-                            ((NuevoInfEtapaActivity) getActivity()).actualizarAtributo4(corrige.getNombreAnalisis());
-                        }
-                        solViewModel.buscarImagenCom(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                            @Override
-                            public void onChanged(ImagenDetalle imagenDetalle) {
-                                if(imagenDetalle!=null) {
-                                    rutafotoo = imagenDetalle.getRuta();
-                                    Log.d(TAG,"buscando "+rutafotoo);
-                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-                                    if(bitmap1!=null)
-                                        fotoori1.setImageBitmap(bitmap1);
-                                }
-                                //como consigo las otras?
-                            }
-                        });
-                        break;
-                }
+                buscarFoto();
                 fotoori1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -329,88 +175,134 @@ public class NvaCorreccionFragment extends Fragment {
     private void buscarFoto(){
         //BUSCO LA FOTO ORIGINAL que tambien puede ser la ultima correccion
         //en donde la busco
-
+        List<Correccion> listaCorrecciones=mViewModel.getCorreccionxsolicitudDesc(solicitudSel,solicitud.getNumFoto());
         switch (solicitud.getEtapa()){
             case 1:
-                solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
-                    @Override
-                    public void onChanged(InformeEtapaDet informeEtapaDet) {
-                        rutafotoo=informeEtapaDet.getRuta_foto();
-                        Bitmap bitmap1= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-                        fotoori1.setImageBitmap(bitmap1);
-                    }
-                });
+                if(listaCorrecciones==null||listaCorrecciones.size()<1||solicitud.getEstatus()==4&&(listaCorrecciones.size()==1)) {//uso la original
+
+                    solViewModel.buscarEtapaDet(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<InformeEtapaDet>() {
+                        @Override
+                        public void onChanged(InformeEtapaDet informeEtapaDet) {
+                            rutafotoo = informeEtapaDet.getRuta_foto();
+                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+                            fotoori1.setImageBitmap(bitmap1);
+                        }
+                    });
+                }else
+                {
+                    buscarFotoCorreccion(listaCorrecciones,solicitud.getEstatus());
+                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+                    fotoori1.setImageBitmap(bitmap1);
+                }
+
                 break;
 
             case 2:
                 String producto="";
                 InformeCompraDetalle corrige=null;
-                List<Correccion> correcciones= mViewModel.getCorreccionxsolicitudDesc(solicitudSel,solicitud.getNumFoto());
-                if(correcciones!=null&&correcciones.size()>0) //ya hay alguna correccion
+
+                if(listaCorrecciones!=null&&listaCorrecciones.size()>0) //ya hay alguna correccion
                 {
+                    buscarFotoCorreccion(listaCorrecciones,solicitud.getEstatus());
+                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+                    fotoori1.setImageBitmap(bitmap1);
                     if(solicitud.getDescripcionFoto().equals("foto_atributoa")){
+                        corrige = solViewModel.buscarInformeFoto(solicitud.getInformesId(), solicitud.getNumFoto(), Constantes.INDICEACTUAL);
+
+                        Bitmap bitmap2= ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 80, 80);
+                        if(bitmap2!=null)
+                            fotoori2.setImageBitmap(bitmap2);
+
+                        fotoori2.setVisibility(View.VISIBLE);
+                        root.findViewById(R.id.gpocfototo2).setVisibility(View.VISIBLE);
+                        Bitmap bitmap3 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 80, 80);
+                        if(bitmap3!=null)
+                            fotoori3.setImageBitmap(bitmap3);
+                        root.findViewById(R.id.gpofotoo3).setVisibility(View.VISIBLE);
+                        fotoori3.setVisibility(View.VISIBLE);
+                        Bitmap bitmap4 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo4, 80, 80);
+                        if(bitmap4!=null)
+                            fotoori4.setImageBitmap(bitmap4);
+                        root.findViewById(R.id.gpofotoo4).setVisibility(View.VISIBLE);
+                        fotoori4.setVisibility(View.VISIBLE);
+                    }
+
+                }else {  //pongo original
+                    if (solicitud.getDescripcionFoto().equals("foto_atributoa")) {
+                        //busco las otras fotos
+                        //busco el informe
+                        corrige = solViewModel.buscarInformeFoto(solicitud.getInformesId(), solicitud.getNumFoto(), Constantes.INDICEACTUAL);
+                        int numfoto2 = corrige.getFoto_atributob();
+
+                        int numfoto3 = corrige.getFoto_atributoc();
+                        int numfoto4 = 0;
+                        if (corrige.getFoto_atributod() != null)
+                            numfoto4 = corrige.getFoto_atributod();
+                        //pongo datos del producto
+                        //  producto=corrige.getProducto()+" "+corrige.getPresentacion();
+                        solViewModel.buscarImagenCom(numfoto2).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                            @Override
+                            public void onChanged(ImagenDetalle imagenDetalle) {
+                                if (imagenDetalle != null) {
+                                    rutafotoo2 = imagenDetalle.getRuta();
+
+                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 80, 80);
+                                    if (bitmap1 != null)
+                                        fotoori2.setImageBitmap(bitmap1);
+
+                                    fotoori2.setVisibility(View.VISIBLE);
+                                    root.findViewById(R.id.gpocfototo2).setVisibility(View.VISIBLE);
+
+                                }
+                                //como consigo las otras?
+                            }
+                        });
+                        solViewModel.buscarImagenCom(numfoto3).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                            @Override
+                            public void onChanged(ImagenDetalle imagenDetalle) {
+                                if (imagenDetalle != null) {
+                                    rutafotoo3 = imagenDetalle.getRuta();
+
+                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 80, 80);
+                                    if (bitmap1 != null)
+                                        fotoori3.setImageBitmap(bitmap1);
+                                    root.findViewById(R.id.gpofotoo3).setVisibility(View.VISIBLE);
+                                    fotoori3.setVisibility(View.VISIBLE);
+                                }
+                                //como consigo las otras?
+                            }
+                        });
+                        solViewModel.buscarImagenCom(numfoto4).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                            @Override
+                            public void onChanged(ImagenDetalle imagenDetalle) {
+                                if (imagenDetalle != null) {
+                                    rutafotoo4 = imagenDetalle.getRuta();
+
+                                    Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo4, 80, 80);
+                                    if (bitmap1 != null)
+                                        fotoori4.setImageBitmap(bitmap1);
+                                    root.findViewById(R.id.gpofotoo4).setVisibility(View.VISIBLE);
+                                    fotoori4.setVisibility(View.VISIBLE);
+                                }
+
+                            }
+                        });
 
                     }
-                }else
-                if(solicitud.getDescripcionFoto().equals("foto_atributoa")){
-                    //busco las otras fotos
-                    //busco el informe
-                    corrige=solViewModel.buscarInformeFoto(solicitud.getInformesId(), solicitud.getNumFoto(),Constantes.INDICEACTUAL);
-                    int numfoto2=corrige.getFoto_atributob();
-
-                    int numfoto3=corrige.getFoto_atributoc();
-                    int numfoto4=0;
-                    if(corrige.getFoto_atributod()!=null)
-                        numfoto4=corrige.getFoto_atributod();
-                    //pongo datos del producto
-                    //  producto=corrige.getProducto()+" "+corrige.getPresentacion();
-                    solViewModel.buscarImagenCom(numfoto2).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                    solViewModel.buscarImagenCom(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
                         @Override
                         public void onChanged(ImagenDetalle imagenDetalle) {
                             if(imagenDetalle!=null) {
-                                rutafotoo2 = imagenDetalle.getRuta();
-
-                                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo2, 80, 80);
+                                rutafotoo = imagenDetalle.getRuta();
+                                Log.d(TAG,"buscando "+rutafotoo);
+                                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
                                 if(bitmap1!=null)
-                                    fotoori2.setImageBitmap(bitmap1);
-
-                                fotoori2.setVisibility(View.VISIBLE);
-                                root.findViewById(R.id.gpocfototo2).setVisibility(View.VISIBLE);
-
-                            }
-                            //como consigo las otras?
-                        }
-                    });
-                    solViewModel.buscarImagenCom(numfoto3).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                        @Override
-                        public void onChanged(ImagenDetalle imagenDetalle) {
-                            if(imagenDetalle!=null) {
-                                rutafotoo3 = imagenDetalle.getRuta();
-
-                                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo3, 80, 80);
-                                if(bitmap1!=null)
-                                    fotoori3.setImageBitmap(bitmap1);
-                                root.findViewById(R.id.gpofotoo3).setVisibility(View.VISIBLE);
-                                fotoori3.setVisibility(View.VISIBLE);
-                            }
-                            //como consigo las otras?
-                        }
-                    });
-                    solViewModel.buscarImagenCom(numfoto4).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                        @Override
-                        public void onChanged(ImagenDetalle imagenDetalle) {
-                            if(imagenDetalle!=null) {
-                                rutafotoo4 = imagenDetalle.getRuta();
-
-                                Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo4, 80, 80);
-                                if(bitmap1!=null)
-                                    fotoori4.setImageBitmap(bitmap1);
-                                root.findViewById(R.id.gpofotoo4).setVisibility(View.VISIBLE);
-                                fotoori4.setVisibility(View.VISIBLE);
+                                    fotoori1.setImageBitmap(bitmap1);
                             }
 
                         }
                     });
+                }
                     fotoori2.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -429,36 +321,47 @@ public class NvaCorreccionFragment extends Fragment {
                             verImagen(rutafotoo4);
                         }
                     });
-                }else
-                {
+
                     if(solicitud.getDescripcionId()==9||solicitud.getDescripcionId()==7)
                         //busco el producto
                         corrige= solViewModel.buscarInformeByFoto(solicitud.getInformesId(), solicitud.getNumFoto(),solicitud.getDescripcionId());
-                }
+
                 if(corrige!=null) {
                     producto = corrige.getProducto() + " "+corrige.getPresentacion()+" "+corrige.getEmpaque() ;
                     Log.e(TAG, "qqq" + producto);
                     ((NuevoInfEtapaActivity) getActivity()).actualizarAtributo3(producto);
                     ((NuevoInfEtapaActivity) getActivity()).actualizarAtributo4(corrige.getNombreAnalisis());
                 }
-                solViewModel.buscarImagenCom(solicitud.getNumFoto()).observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                    @Override
-                    public void onChanged(ImagenDetalle imagenDetalle) {
-                        if(imagenDetalle!=null) {
-                            rutafotoo = imagenDetalle.getRuta();
-                            Log.d(TAG,"buscando "+rutafotoo);
-                            Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-                            if(bitmap1!=null)
-                                fotoori1.setImageBitmap(bitmap1);
-                        }
-                        //como consigo las otras?
-                    }
-                });
+
                 break;
         }
     }
 
+    public void buscarFotoCorreccion(List<Correccion> listaCorreccion, int estatusFoto){
+        //uso la penultima correccion
+        int i=0;
+        String imagenRuta;
+        for (Correccion correccion:listaCorreccion) {
 
+            if(i==0){
+
+                rutafotoo= correccion.getRuta_foto1();
+                if(solicitud.getDescripcionId()==4) //es de 3 fotos
+                {
+
+
+                    rutafotoo2=correccion.getRuta_foto2();
+                    rutafotoo3=correccion.getRuta_foto3();
+                    rutafotoo4=correccion.getRuta_foto4();
+
+
+                }
+
+                break;
+            }
+
+        }
+    }
     public void crearFormulario(){
 
         camposForm=new ArrayList<>();

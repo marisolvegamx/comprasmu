@@ -849,10 +849,10 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
         //List<Integer> listaimg=new ArrayList();
         // listaimg.add(envio.getInformeEnvioDet().getFotoSello());
         List<ImagenDetalle> imagenes=new ArrayList<>();
-
-        ImagenDetalle imagen=imagenDetRepository.findsimple(envio.getInformeEnvioDet().getFotoSello());
-        imagenes.add(imagen);
-
+        if(envio.getInformeEnvioDet()!=null) {
+            ImagenDetalle imagen = imagenDetRepository.findsimple(envio.getInformeEnvioDet().getFotoSello());
+            imagenes.add(imagen);
+        }
         envio.setImagenDetalles(imagenes);
         return envio;
     }

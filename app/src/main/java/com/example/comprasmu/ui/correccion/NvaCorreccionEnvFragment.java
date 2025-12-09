@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.SolicitudCor;
@@ -57,7 +58,6 @@ import java.util.List;
 /****correccion envio***/
 public class NvaCorreccionEnvFragment extends Fragment {
 
-
     CreadorFormulario cf;
     List<CampoForm> camposForm;
     LinearLayout sv,sv2,sv3;
@@ -65,18 +65,15 @@ public class NvaCorreccionEnvFragment extends Fragment {
     Button aceptar;
 
     private long lastClickTime = 0;
-    private final boolean yaestoyProcesando=false;
 
     int solicitudSel;
     EditText textoint,txtrutaim2,txtrutaim3;
-    ImageView fotomos,fotomos2,fotomos3, fotoori1,fotoori2,fotoori3;
+    ImageView fotomos,fotomos2,fotomos3, fotoori1;
     private ImageButton btnrotar,btnrotar2,btnrotar3;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
     public static int REQUEST_CODE2 = 2;
     public static int REQUEST_CODE3 = 3;
     String rutafotoo;
-    String rutafotoo3;
-    String rutafotoo2;
     private View root;
     private NvaCorreViewModel mViewModel;
     ListaSolsViewModel solViewModel;
@@ -108,10 +105,8 @@ public class NvaCorreccionEnvFragment extends Fragment {
         if(datosRecuperados!=null) {
             solicitudSel = datosRecuperados.getInt(NuevoInfEtapaActivity.INFORMESEL);
             numfoto = datosRecuperados.getInt(NuevoInfEtapaActivity.NUMFOTO);
-
         }
         fotoori1=root.findViewById(R.id.ivcoriginal);
-
         LiveData<SolicitudCor> solcorlive=solViewModel.getSolicitud(solicitudSel,numfoto);
         solcorlive.observe(getViewLifecycleOwner(), new Observer<SolicitudCor>() {
             @Override
@@ -126,30 +121,44 @@ public class NvaCorreccionEnvFragment extends Fragment {
 
                     if(informe!=null&&informe.infEnvioDet!=null){
                         Log.e(TAG,"estatus "+informe.infEnvioDet.getFotoSello());
-
                         crearFormulario();
-
-                        //BUSCO LA FOTO ORIGINAL
-                        //en donde la busco
-
-                        LiveData<ImagenDetalle> imagen=solViewModel.buscarImagenCom(informe.infEnvioDet.getFotoSello());
-                        imagen.observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                            @Override
-                            public void onChanged(ImagenDetalle imagenDetalle) {
-                                if(imagenDetalle!=null) {
-
-                                    rutafotoo = imagenDetalle.getRuta();
-
+                        List<Correccion> listaCorrecciones=mViewModel.getCorreccionxsolicitudDesc(solicitudSel,solicitud.getNumFoto());
+                        if(listaCorrecciones!=null&&listaCorrecciones.size()>0) //ya hay alguna correccion
+                        {
+                            //uso la penultima correccion
+                            int i=0;
+                            String imagenRuta;
+                            for (Correccion correccion:listaCorrecciones) {
+                                if (i == 0) {
+                                    rutafotoo = correccion.getRuta_foto1();
                                     Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-
                                     fotoori1.setImageBitmap(bitmap1);
-
-                                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                                    //fotoori1.setVisibility(View.VISIBLE);
-                                    imagen.removeObservers(getViewLifecycleOwner());
+                                    break;
                                 }
                             }
-                        });
+                        }else {
+                            //BUSCO LA FOTO ORIGINAL
+                            //en donde la busco
+
+                            LiveData<ImagenDetalle> imagen = solViewModel.buscarImagenCom(informe.infEnvioDet.getFotoSello());
+                            imagen.observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                                @Override
+                                public void onChanged(ImagenDetalle imagenDetalle) {
+                                    if (imagenDetalle != null) {
+
+                                        rutafotoo = imagenDetalle.getRuta();
+
+                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+
+                                        fotoori1.setImageBitmap(bitmap1);
+
+                                        // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                                        //fotoori1.setVisibility(View.VISIBLE);
+                                        imagen.removeObservers(getViewLifecycleOwner());
+                                    }
+                                }
+                            });
+                        }
                     }
 
                 }
@@ -170,26 +179,22 @@ public class NvaCorreccionEnvFragment extends Fragment {
                 long currentClickTime= SystemClock.elapsedRealtime();
                 // preventing double, using threshold of 1000 ms
                 if (currentClickTime - lastClickTime < 5500){
-                    //  Log.d(TAG,"doble click :("+lastClickTime);
+
                     return;
                 }
-
                 lastClickTime = currentClickTime;
 
-
-                    guardar();
+                guardar();
 
 
             }
         });
-
 
         return root;
     }
 
 
     public void crearFormulario(){
-
         camposForm=new ArrayList<>();
         CampoForm campo=new CampoForm();
         campo.label=solicitud.getMotivo();
@@ -202,7 +207,7 @@ public class NvaCorreccionEnvFragment extends Fragment {
         campo.nombre_campo="label";
         campo.type="label";
         camposForm.add(campo);
-         campo=new CampoForm();
+        campo=new CampoForm();
         campo.label=solicitud.getDescMostrar();
         campo.nombre_campo="foto";
         campo.type="agregarImagen";
@@ -225,7 +230,6 @@ public class NvaCorreccionEnvFragment extends Fragment {
                     rotar(1001,1);
                 }
             });
-
 
         camposForm.add(campo);
        // Log.d(TAG,"haciendo form");
@@ -356,7 +360,6 @@ public class NvaCorreccionEnvFragment extends Fragment {
 
             subirFotos(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto1());
 
-
             if(envio.getCorreccion().getRuta_foto2()!=null&&envio.getCorreccion().getRuta_foto2().length()>1)
                 subirFotos(getActivity(),envio.getCorreccion().getId(),envio.getCorreccion().getRuta_foto2());
             if(envio.getCorreccion().getRuta_foto3()!=null&&envio.getCorreccion().getRuta_foto3().length()>1)
@@ -483,7 +486,6 @@ public class NvaCorreccionEnvFragment extends Fragment {
                 Log.e(TAG,"Algo salió mal???");
             }
 
-
         }
         else
         {
@@ -492,7 +494,6 @@ public class NvaCorreccionEnvFragment extends Fragment {
     }
 
     public void mostrarFoto(EditText textorut,ImageView xfotomos, ImageButton xbtnrotar){
-
 
             textorut.setText(nombre_foto);
             if(ComprasUtils.getAvailableMemory(getActivity()).lowMemory)
@@ -508,7 +509,6 @@ public class NvaCorreccionEnvFragment extends Fragment {
                 xfotomos.setImageBitmap(bitmap1);
                 // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
                 xfotomos.setVisibility(View.VISIBLE);
-
                 xbtnrotar.setVisibility(View.VISIBLE);
                 xbtnrotar.setFocusableInTouchMode(true);
                 xbtnrotar.requestFocus();
@@ -518,6 +518,7 @@ public class NvaCorreccionEnvFragment extends Fragment {
 
 
     }
+
     public void salir(){
         //mViewModel.eliminarTblTemp();
         //me voy a la lista de informes
@@ -528,10 +529,7 @@ public class NvaCorreccionEnvFragment extends Fragment {
         getActivity().finish();
         // NavHostFragment.(this).navigate(R.id.action_selclientetolistacompras,bundle);
 
-
     }
-
-
 
 
     public static void subirFotos(Activity activity, int id, String ruta){
@@ -540,19 +538,12 @@ public class NvaCorreccionEnvFragment extends Fragment {
         Intent msgIntent = new Intent(activity, SubirFotoService.class);
         msgIntent.putExtra(SubirFotoService.EXTRA_IMAGE_ID,id);
         msgIntent.putExtra(SubirFotoService.EXTRA_IMG_PATH,ruta);
-
         msgIntent.putExtra(SubirFotoService.EXTRA_INDICE,Constantes.INDICEACTUAL);
         // Constantes.INDICEACTUAL
         Log.d(TAG,"subiendo fotos"+activity.getLocalClassName());
-
         msgIntent.setAction(SubirFotoService.ACTION_UPLOAD_COR);
 
-
         activity.startService(msgIntent);
-
-
-
-
 
 
     }
@@ -566,7 +557,6 @@ public class NvaCorreccionEnvFragment extends Fragment {
         camposForm=null;
         root=null;
         textoint=null;
-
         fotomos=null;
         sv=null;
         btnrotar=null;
@@ -574,9 +564,6 @@ public class NvaCorreccionEnvFragment extends Fragment {
         nombre_foto=null;
         archivofoto=null;
     }
-
-
-
 
 }
 

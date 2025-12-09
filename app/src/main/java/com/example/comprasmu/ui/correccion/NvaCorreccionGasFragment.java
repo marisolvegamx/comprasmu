@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.SubirCorreccionTask;
+import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
@@ -132,36 +133,51 @@ public class NvaCorreccionGasFragment extends Fragment {
                     ((NuevoInfEtapaActivity)getActivity()).actualizarBarraGas(informe.getCiudadNombre());
                     InformeGastoDet detallesInf=solViewModel.getByNumfoto(solicitudCor.getInformesId(), numfoto);
                   //  txtmotivo.setText(solicitud.getMotivo());
-                    if(informe!=null&&detallesInf!=null){
+                    if(informe!=null&&detallesInf!=null) {
 
                         crearFormulario();
-
-                        //BUSCO LA FOTO ORIGINAL
-                        //en donde la busco
-
-                        LiveData<ImagenDetalle> imagen=solViewModel.buscarImagenCom(detallesInf.getFotocomprob());
-                        clog.grabarError(TAG,"onCreateView ","buscando correccion"+detallesInf.getFotocomprob());
-
-                        imagen.observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
-                            @Override
-                            public void onChanged(ImagenDetalle imagenDetalle) {
-
-                                if(imagenDetalle!=null) {
-                                    rutafotoo = imagenDetalle.getRuta();
-
+                        //reviso si ya hay alguna correccion para mostrar la ultima
+                        List<Correccion> listaCorrecciones = mViewModel.getCorreccionxsolicitudDesc(solicitudSel, solicitud.getNumFoto());
+                        if (listaCorrecciones != null && listaCorrecciones.size() > 0) //ya hay alguna correccion
+                        {
+                            //uso la penultima correccion
+                            int i = 0;
+                            String imagenRuta;
+                            for (Correccion correccion : listaCorrecciones) {
+                                if (i == 0) {
+                                    rutafotoo = correccion.getRuta_foto1();
                                     Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
-
                                     fotoori1.setImageBitmap(bitmap1);
-
-                                    // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
-                                    //fotoori1.setVisibility(View.VISIBLE);
+                                    break;
                                 }
-                                else{
-                                    clog.grabarError(TAG,"onCreateView ","Hubo un error al buscar la imagen de correccion"+detallesInf.getFotocomprob());
-                                }
-                                imagen.removeObservers(getViewLifecycleOwner());
                             }
-                        });
+                        } else {
+                            //BUSCO LA FOTO ORIGINAL
+                            //en donde la busco
+
+                            LiveData<ImagenDetalle> imagen = solViewModel.buscarImagenCom(detallesInf.getFotocomprob());
+                            clog.grabarError(TAG, "onCreateView ", "buscando correccion" + detallesInf.getFotocomprob());
+
+                            imagen.observe(getViewLifecycleOwner(), new Observer<ImagenDetalle>() {
+                                @Override
+                                public void onChanged(ImagenDetalle imagenDetalle) {
+
+                                    if (imagenDetalle != null) {
+                                        rutafotoo = imagenDetalle.getRuta();
+
+                                        Bitmap bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + rutafotoo, 80, 80);
+
+                                        fotoori1.setImageBitmap(bitmap1);
+
+                                        // fotomos.setLayoutParams(new LinearLayout.LayoutParams(350,150));
+                                        //fotoori1.setVisibility(View.VISIBLE);
+                                    } else {
+                                        clog.grabarError(TAG, "onCreateView ", "Hubo un error al buscar la imagen de correccion" + detallesInf.getFotocomprob());
+                                    }
+                                    imagen.removeObservers(getViewLifecycleOwner());
+                                }
+                            });
+                        }
                     }
 
                 }
@@ -205,7 +221,7 @@ public class NvaCorreccionGasFragment extends Fragment {
         camposForm=new ArrayList<>();
         CampoForm campo=new CampoForm();
         campo.label=solicitud.getMotivo();
-        campo.nombre_campo="label";
+        campo.nombre_campo="motivo";
         campo.type="label";
         campo.style=R.style.formlabel2;
         camposForm.add(campo);

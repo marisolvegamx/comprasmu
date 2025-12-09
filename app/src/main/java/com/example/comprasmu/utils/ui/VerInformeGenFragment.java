@@ -612,13 +612,16 @@ public class VerInformeGenFragment extends Fragment {
                 campo.style = R.style.verinforme2;
                 campo.label = getString(R.string.foto_sello);
                 campo.type = "imagenView";
+                ImagenDetalle foto=null;
                 //busco la foto
-                ImagenDetalle foto= mViewModel.getFoto(infenvio.getFotoSello());
+                if(infenvio.getFotoSello()!=null)
+                    foto= mViewModel.getFoto(infenvio.getFotoSello());
                if(foto!=null) {
+                   ImagenDetalle finalFoto = foto;
                    campo.funcionOnClick = new View.OnClickListener() {
                        @Override
                        public void onClick(View view) {
-                           verImagen(foto.getRuta());
+                           verImagen(finalFoto.getRuta());
                        }
                    };
                    campo.value = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" +foto.getRuta();
