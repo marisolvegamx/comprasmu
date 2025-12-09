@@ -81,7 +81,7 @@
                     <TextView
                         android:id="@+id/ldprod"
 
-                        style="@style/textolista1"
+                        style="@style/textoprductolista"
                         android:layout_width="181dp"
                         android:layout_height="wrap_content"
                         android:text="@{detalle.productoNombre}" />
