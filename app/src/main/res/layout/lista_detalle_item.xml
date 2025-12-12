@@ -99,7 +99,7 @@
                 <TextView
                     android:id="@+id/txtldpres"
 
-                    style="@style/textolista1"
+                    style="@style/textoprductolista"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -242,6 +242,7 @@
 
                 <TextView
                     android:id="@+id/txtcodigos"
+                    style="@style/textolistagris"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text='@{mViewModel.ordenarCodigosNoPermitidos(detalle.codigosNoPermitidos,criteriobu,detalle,plantasel)}' />
