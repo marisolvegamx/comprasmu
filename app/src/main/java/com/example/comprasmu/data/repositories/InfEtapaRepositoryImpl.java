@@ -277,4 +277,9 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
 
 
     }
+    public List<InformeEtapa> getInformesx2EstatusSimple(String indice,int etapa, int estatus1, int estatus2) {
+        return icDao.getInformesx2EstatusSimple(indice,etapa,estatus1, estatus2);
+
+
+    }
 }

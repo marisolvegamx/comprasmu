@@ -63,6 +63,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
     ComprasLog milog;
     private  InfGastoDetRepositoryImpl gasdetrepo;
     MutableLiveData<Integer> totCancel;
+    MutableLiveData<Integer> totMuestraAdic;
     private int itotCancel;
 
     public ListaSolsViewModel(Application application) {
@@ -289,13 +290,13 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
         }
         else {  //esto es para cuando se reactiva
-            List<ListaCompra> listacomp = cargarClientesSimplxetReacsc(3, 1);
+            List<ListaCompra> listacomp = cargarClientesSimplxetReacsc(3, 1,3);
             if (listacomp != null && listacomp.size() > 0)
-                setEtiquetadoCancel(3, 6);
+                setEtiquetadoCancel(3, 6,4); //si es reactivacion sin comprar puede estar en estatus 4 para completar etiquetado
             else {
 
                     //veo si ya puedo hacer empaque
-                    listacomp = cargarClientesSimplxetReacsc(4, 1);
+                    listacomp = cargarClientesSimplxetReacsc(4, 1,3);
                     InformeEtapa nvoinf = new InformeEtapa();
                     List<InformeEtapa> listageneral = new ArrayList<>();
                     Log.d(TAG, "contarCanceladas- puedo hacer empaque?" + listacomp);
@@ -330,10 +331,10 @@ public class ListaSolsViewModel extends AndroidViewModel {
 
     }
 
-    private void setEtiquetadoCancel(int etapa, int estatus) {
+    private void setEtiquetadoCancel(int etapa, int estatus1, int estatus2) {
         List<InformeEtapa> listageneral=new ArrayList<>();
         //para ver si sigue etiquetado y empaque
-        List<InformeEtapa> informes=getInfEtapaxEstatusSim(Constantes.INDICEACTUAL,etapa,estatus);
+        List<InformeEtapa> informes=getInfEtapax2Estatus(Constantes.INDICEACTUAL,etapa,estatus1, estatus2);
         Log.d(TAG,"setEtiquetadoCancel-hayinforme"+informes);
         //paso de informe etapa a informe compra
         for (InformeEtapa infeta : informes
@@ -349,6 +350,72 @@ public class ListaSolsViewModel extends AndroidViewModel {
         }
        itotCancel=listageneral.size();
 
+    }
+    public MutableLiveData<Integer> contarMuestraAdic(){
+        totMuestraAdic=new MutableLiveData<>();
+        // lista de compra pendiente
+        List<ListaCompra> listacomp = cargarClientesSimplxetReacsc( 2,2,4);
+
+        if(listacomp.size()>0){
+            Log.d(TAG,"contarMuestraAdic-hey reactivacion");
+            int informesdetList=0;
+            //busco el detalle
+            for (ListaCompra compra:listacomp
+            ) {
+
+                List<ListaCompraDetalle> compraDetalles = getProductosPend(compra.getId());
+                if (compraDetalles != null && compraDetalles.size() > 0) {
+                    for (ListaCompraDetalle detalle : compraDetalles
+                    ) {
+
+                        informesdetList++;
+                    }
+                }
+            }
+
+            totMuestraAdic.setValue(informesdetList);
+
+        }else {
+            listacomp = cargarClientesSimplxetReacsc( 3,2,4);
+            if (listacomp != null && listacomp.size() > 0){
+                Log.i(TAG, "contarMuestraAdic esta en etiquetado");
+                //busco etiquetado
+                List<InformeEtapa> informes = getEtiquetadoAdicional(Constantes.INDICEACTUAL);
+                int informesfinal = 0;//contador para saber cuantos informes hay
+                Log.i(TAG, "contarMuestraAdic YA CARGÓ " + informes.size());
+                for (InformeEtapa infeta : informes
+                ) {
+                    //reviso que ya pueda hacer esa etapa
+                    //busco los clientes x ciudad
+                    listacomp = cargarClientesSimplxet(infeta.getCiudadNombre(), 3);
+                    if (listacomp != null && listacomp.size() > 0 && listacomp.get(0) != null && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
+
+                        informesfinal++;
+                    }
+                }
+                totMuestraAdic.setValue(informesfinal);
+            }else
+            //veo si ya puedo hacer empaque
+            {
+                listacomp =cargarClientesSimplxetReacsc( 4,2,4);
+                Log.i(TAG, "contarMuestraAdic puedo hacer empaque?"+listacomp!=null?(listacomp.size()+""):"0" );
+                int listageneral = 0; //para contar los informes
+                for(ListaCompra listaCompra:listacomp) {
+
+                    if (listacomp != null && listacomp.size() > 0 && listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 2) {
+                        Log.i(TAG, "contarMuestraAdic hay reactivacion");
+                        InformeEtapa informesEtapa = getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
+                        if (informesEtapa == null) {
+
+                            listageneral++;
+                        }
+                    }
+                }
+
+                totMuestraAdic.setValue(listageneral);
+            }
+        }
+        return totMuestraAdic;
     }
 
     public InformeEtapa getInformexPlantaEtaEst(int plantasId, int etapa, String indice,int estatus) {
@@ -383,9 +450,16 @@ public class ListaSolsViewModel extends AndroidViewModel {
     }
 
 
-    public  List<ListaCompra>  cargarClientesSimplxetReacsc(int etapa, int reactivado){
+    public  List<ListaCompra>  cargarClientesSimplxetReacsc(int etapa, int reactivado1, int reactivado2){
 
-        return lcrepo.getClieByIndiceSimplxetReac(Constantes.INDICEACTUAL,etapa,  reactivado);
+        return lcrepo.getClieByIndiceSimplxetReac(Constantes.INDICEACTUAL,etapa,  reactivado1, reactivado2);
+
+
+    }
+
+    public  List<ListaCompra>  getListaCompraSimplexetapaReac(int etapa, int reactivado){
+
+        return lcrepo.getListaCompraSimplexetapaReac(Constantes.INDICEACTUAL,etapa,  reactivado);
 
 
     }
@@ -415,6 +489,11 @@ public class ListaSolsViewModel extends AndroidViewModel {
         PeticionesServidor ps=new PeticionesServidor(Constantes.CLAVEUSUARIO);
 
        return ps.getNotificacionesGen(indice);
+
+    }
+    public List<InformeEtapa> getInfEtapax2Estatus(String indiceSel, int etapa, int estatus1, int estatus2 ){
+        Log.i(TAG,"indideSel:"+indiceSel+" etapa:"+etapa+" estatus:"+estatus1);
+        return infetarepo.getInformesx2EstatusSimple(indiceSel,etapa,estatus1, estatus2);
 
     }
 }

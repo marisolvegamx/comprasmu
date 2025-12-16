@@ -14,6 +14,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
@@ -93,10 +95,22 @@ public class SelNotifFragment extends ListaSelecFragment{
     }
     private void initializeCountDrawer(){
         contarCorrecc();
-        contarCanceladas();
-        contarMuestraAdic();
-        notificacionesGenerales();
-        convertirListaCor();
+        scViewModel.contarCanceladas();
+        scViewModel.getTotCancel().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer totcan) {
+                totCancel=totcan;
+                scViewModel.contarMuestraAdic().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+                    @Override
+                    public void onChanged(Integer total) {
+                        totMuestraAdic=total;
+                        notificacionesGenerales();
+                        convertirListaCor();
+                    }
+                });
+
+            }
+        });
 
     }
 
@@ -106,7 +120,7 @@ public class SelNotifFragment extends ListaSelecFragment{
     }
 
 
-    private void contarCanceladas(){
+   /* private void contarCanceladas(){
         ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
 
         //busco cancelados de preparacion
@@ -121,7 +135,7 @@ public class SelNotifFragment extends ListaSelecFragment{
                 continue;
             }
             else*/
-                itotCanceleta++;
+       /*         itotCanceleta++;
 
         }
 
@@ -174,8 +188,9 @@ public class SelNotifFragment extends ListaSelecFragment{
         }
         comprasLog.info(TAG,"contarCanceladas","totcancel:"+totCancel);
 
-    }
-    private void contarMuestraAdic(){
+    }*/
+
+    /*private void contarMuestraAdic(){
 
         // lista de compra pendiente
         List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReacsc(2,2);
@@ -242,8 +257,8 @@ public class SelNotifFragment extends ListaSelecFragment{
 
             }
         comprasLog.info(TAG,"contarMuestraAdic","totMuestraAdic:"+totMuestraAdic);
-    }
-    private void setEtiquetadoCancel(int etapa, int estatus) {
+    }*/
+   /* private void setEtiquetadoCancel(int etapa, int estatus) {
         List<InformeEtapa> listageneral=new ArrayList<>();
         //para ver si sigue etiquetado y empaque
         List<InformeEtapa> informes=scViewModel.getInfEtapaxEstatusSim(Constantes.INDICEACTUAL,etapa,estatus);
@@ -262,7 +277,7 @@ public class SelNotifFragment extends ListaSelecFragment{
             //totCancel=new MutableLiveData<>();
         totCancel=listageneral.size();
 
-    }
+    }*/
     public void siguiente(int i){
        // Log.d(TAG,"una planta "+tipoconsulta+"--"+listaSeleccionable.get(i).getId());
         int opcion=listaSeleccionable.get(i).getId();
