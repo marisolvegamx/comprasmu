@@ -584,71 +584,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     }
 
 
-    private void contarMuestraAdic(){
-
-        // lista de compra pendiente
-        List<ListaCompra> listacomp = scViewModel.cargarClientesSimplxetReacsc( 2,2);
-
-        if(listacomp.size()>0){
-            Log.d(TAG,"contarMuestraAdic-hey reactivacion");
-            int informesdetList=0;
-            //busco el detalle
-            for (ListaCompra compra:listacomp
-            ) {
-
-                List<ListaCompraDetalle> compraDetalles = scViewModel.getProductosPend(compra.getId());
-                if (compraDetalles != null && compraDetalles.size() > 0) {
-                    for (ListaCompraDetalle detalle : compraDetalles
-                    ) {
-
-                        informesdetList++;
-                    }
-                }
-            }
-            totMuestraAdic.setValue(informesdetList);
-
-        }else {
-            listacomp = scViewModel.cargarClientesSimplxetReacsc( 3,2);
-            if (listacomp != null && listacomp.size() > 0){
-                Log.i(TAG, "contarMuestraAdic esta en etiquetado");
-                //busco etiquetado
-                List<InformeEtapa> informes = scViewModel.getEtiquetadoAdicional(Constantes.INDICEACTUAL);
-                int informesfinal = 0;//contador para saber cuantos informes hay
-                Log.i(TAG, "contarMuestraAdic YA CARGÓ " + informes.size());
-                for (InformeEtapa infeta : informes
-                ) {
-                    //reviso que ya pueda hacer esa etapa
-                    //busco los clientes x ciudad
-                    listacomp = scViewModel.cargarClientesSimplxet(infeta.getCiudadNombre(), 3);
-                    if (listacomp != null && listacomp.size() > 0 && listacomp.get(0) != null && listacomp.get(0).getClientesId() == infeta.getClientesId()) {
-
-                        informesfinal++;
-                    }
-                }
-                totMuestraAdic.setValue(informesfinal);
-             }else
-            //veo si ya puedo hacer empaque
-            {
-                listacomp = scViewModel.cargarClientesSimplxetReacsc( 4,2);
-                Log.i(TAG, "contarMuestraAdic puedo hacer empaque?"+listacomp!=null?(listacomp.size()+""):"0" );
-                int listageneral = 0; //para contar los informes
-                for(ListaCompra listaCompra:listacomp) {
-
-                    if (listacomp != null && listacomp.size() > 0 && listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 2) {
-                        Log.i(TAG, "contarMuestraAdic hay reactivacion");
-                        ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
-                        InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
-                        if (informesEtapa == null) {
-
-                            listageneral++;
-                        }
-                    }
-                }
-
-                totMuestraAdic.setValue(listageneral);
-            }
-        }
-    }
 
     private void initializeCountDrawer(){
 
@@ -674,7 +609,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     @Override
                     public void onChanged(Integer totcan) {
                          // Log.i(TAG,"regresaron canceladas");
-                          contarMuestraAdic();
+                          totMuestraAdic=scViewModel.contarMuestraAdic();
                           totalNotifGen.observe(NavigationDrawerActivity.this, new Observer<Integer>() {
                           @Override
                           public void onChanged(Integer valor) {
