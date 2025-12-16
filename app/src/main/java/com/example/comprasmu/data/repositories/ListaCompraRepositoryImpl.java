@@ -236,12 +236,13 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
         return dao.getListaCompraByFiltrosSimple( sqlquery);
     }
 
-    public List<ListaCompra> getClieByIndiceSimplxetReac(String indice,int etapa, int reactivado) {
+    public List<ListaCompra> getClieByIndiceSimplxetReac(String indice,int etapa, int reactivado1, int reactivado2) {
         List<String> params= new ArrayList<>();
         params.add(indice);
-        String query="Select * from lista_compras where indice=? and lis_etapaactual=? and lis_reactivado=?";
+        String query="Select * from lista_compras where indice=? and lis_etapaactual=? and (lis_reactivado=? or lis_reactivado=?)";
         params.add(etapa+"");
-        params.add(reactivado+"");
+        params.add(reactivado1+"");
+        params.add(reactivado2+"");
         query=query+ " group by clientesId, ciudadNombre order by clientesId";
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()

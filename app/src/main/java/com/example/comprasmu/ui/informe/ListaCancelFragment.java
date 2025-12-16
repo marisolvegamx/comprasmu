@@ -145,13 +145,13 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
 
     private void setEtiquetado(int etapa, int estatus) {
         listageneral=new ArrayList<>();
-        //para ver si sigue etiquetado
-        LiveData<List<InformeEtapa>> listaInformes= mViewModel.getInfEtapaxEstatus(indice,etapa,estatus);
+        //para ver si sigue etiquetado ahora puede estar para completar o cancelado
+        LiveData<List<InformeEtapa>> listaInformes= mViewModel.getInfEtapax2Estatus(indice,etapa,estatus, 4);
         listaInformes.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
             @Override
             public void onChanged(List<InformeEtapa> informes) {
                 compraslog.info(TAG,"setEtiquetado", " si hay informe etiquetado"+informes);
-                //paso de informe etapa ainforme compra
+                //paso de informe etapa a informe compra
                 DetalleCancelado nvoinf = new DetalleCancelado();
                 for (InformeEtapa infeta : informes
                 ) {
@@ -163,7 +163,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
                     for(ListaCompra listaCompra:listacomp) {
 
                             compraslog.info(TAG, "setEtiquetado", "reactivado" + listaCompra.getLis_reactivado());
-                            if (listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1)
+                            if (listaCompra.getLis_reactivado() != null && (listaCompra.getLis_reactivado() == 1||listaCompra.getLis_reactivado() == 3))
                                 listageneral.add(infeta);
 
                     }
@@ -236,7 +236,7 @@ public class ListaCancelFragment extends Fragment implements CancelAdapter.Adapt
         InformeEtapa nvoinf2=new InformeEtapa();
         List<InformeEtapa> listageneral=new ArrayList<>();
         for(ListaCompra listaCompra:listacomp) {
-            if ( listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
+            if ( listaCompra.getLis_reactivado() != null && (listaCompra.getLis_reactivado() == 1||listaCompra.getLis_reactivado() == 3)) {
                 //veo que se haya cancelado
                 ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
 

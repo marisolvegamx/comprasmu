@@ -219,6 +219,12 @@ public class ListaInformesViewModel extends AndroidViewModel {
     public List<InformeEtapa> getInformesxEstatusSim( int etapa, String indice,int estatus) {
         return inferepo.getInformesxEstatusSim(indice,etapa,estatus);
     }
+    public LiveData<List<InformeEtapa>> getInfEtapax2Estatus(String indiceSel, int etapa, int estatus1, int estatus2 ){
+        Log.i(TAG,"indideSel:"+indiceSel+" etapa:"+etapa+" estatus:"+estatus1);
+        return inferepo.getInformesx2Estatus(indiceSel,etapa,estatus1, estatus2);
+
+    }
+
    /* public  LiveData<List<InformeCompra>>  cargarPestañas(){
         return repository.getClientesByIndice(Constantes.INDICEACTUAL, nombreTienda,ciudadSel,plantaSel,clienteSel);
 

@@ -272,5 +272,9 @@ public class InfEtapaRepositoryImpl extends BaseRepository<InformeEtapa> {
     public List<InformeEtapa> getInformeCanecladoxCli(int clienteSel, String indiceactual, String cd, int etapa) {
        return icDao.getInformesxCliEst(etapa,indiceactual,clienteSel,cd,0);
     }
+    public LiveData<List<InformeEtapa>> getInformesx2Estatus(String indice,int etapa, int estatus1, int estatus2) {
+        return icDao.getInformesx2Estatus(indice,etapa,estatus1, estatus2);
 
+
+    }
 }

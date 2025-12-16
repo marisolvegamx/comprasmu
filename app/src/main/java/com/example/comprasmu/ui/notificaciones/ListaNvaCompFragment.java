@@ -82,7 +82,7 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
 
     public void cargarLista(){
         // lista de compra pendiente
-        List<ListaCompra> listacomp = mViewModel.cargarClientesSimplxetReac( 2,2);
+        List<ListaCompra> listacomp = mViewModel.cargarClientesSimplxetReac( 2,2,4);
         if(listacomp.size()>0){
             List<InformeCompraDao.InformeCompravisita> informesList=new ArrayList<>();
             List<InformeCompraDetalle> informesdetList=new ArrayList<>();
@@ -144,7 +144,7 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
                     //busco los clientes x ciudad
                     List<ListaCompra> listacomp = mViewModel.cargarClientesSimplxet(infeta.getCiudadNombre(), 3);
                     for(ListaCompra listaCompra:listacomp) {
-                        if (listaCompra.getClientesId() == infeta.getClientesId()) {
+                        if (listaCompra.getClientesId() == infeta.getClientesId()&&listaCompra.getLis_reactivado()==2) {
 
                             informesfinal.add(infeta);
                         }
@@ -166,11 +166,11 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
         });
 
         //veo si ya puedo hacer empaque
-         listacomp = mViewModel.cargarClientesSimplxetReac( 4,2);
+         listacomp = mViewModel.cargarClientesSimplxetReac( 4,2,4);
         InformeEtapa nvoinf=new InformeEtapa();
         List<InformeEtapa> listageneral=new ArrayList<>();
         for(ListaCompra listaCompra:listacomp) {
-            if (listacomp != null && listacomp.size() > 0 && listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 2) {
+            if (listacomp != null && listacomp.size() > 0 && listaCompra.getLis_reactivado() != null ) {
                 ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
                 InformeEtapa informesEtapa = conViewModel.getInformeNoCancel(Constantes.INDICEACTUAL, 4,listaCompra.getCiudadNombre(),  listaCompra.getClientesId());
                 if (informesEtapa == null) {

@@ -81,9 +81,9 @@ public class ListaNotifEtiqViewModel extends AndroidViewModel {
 
 
     }
-    public  List<ListaCompra>  cargarClientesSimplxetReac( int etapa, int reactivado){
+    public  List<ListaCompra>  cargarClientesSimplxetReac( int etapa, int reactivado1, int reactivado2){
         Log.d(TAG,"xxxx"+etapa);
-        return lcrepo.getClieByIndiceSimplxetReac(Constantes.INDICEACTUAL,etapa,  reactivado);
+        return lcrepo.getClieByIndiceSimplxetReac(Constantes.INDICEACTUAL,etapa,  reactivado1, reactivado2);
 
 
     }
