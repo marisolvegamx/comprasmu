@@ -247,6 +247,8 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);
         if(informes!=null&&informes.size()>0) //no puede finalizar
         {
+            compraslog.info(TAG, "finalizar"," se elimina");
+
             if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())) {
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                 dialogo1.setTitle(R.string.importante);
@@ -285,6 +287,8 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         //puede que no esté guardado reviso si hay algo en la tabla temporal
         if(mViewModel.hayInfDetalleTemp()){
             if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())) {
+                compraslog.info(TAG, "finalizar"," se elimina");
+
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                 dialogo1.setTitle(R.string.importante);
                 dialogo1.setMessage(R.string.desea_finalizar);
@@ -325,6 +329,8 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                 {
 
                 }
+                compraslog.info(TAG, "finalizar"," finalizado");
+
                 Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
                 //paso al home
                 NavHostFragment.findNavController(ListaVisitasFragment.this).navigate(R.id.action_visitatohome);

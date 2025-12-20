@@ -117,10 +117,21 @@ public class DescRespInformesEta {
 
                 if (infoResp.getEtiq_cancel() != null && infoResp.getEtiq_cancel().size() > 0) {
                     for(InformeEtapaDet det:infoResp.getEtiq_cancel()){
+                        InformeEtapa informeapp=infrepo.findsimple(det.getInformeEtapaId());
                         //todo revisar si ya fue actualizada para no veolver a actualizar
                         //busco el informe
                         Log.i(TAG, "actualizando bd informes");
-                        InformeEtapa informeapp=infrepo.findsimple(det.getInformeEtapaId());
+                        //puede estar cancelado y pendiente de completar o sea reactivacion sin comprar
+                        if (infoResp.getEtiq_comp()!= null && infoResp.getEtiq_comp().size() > 0&&infoResp.getEtiq_comp().get(0).getId()==det.getInformeEtapaId()) {
+                            infdrepo.actEstatus(det.getId(), 0);
+
+                            //elimino las fotos de las cajas
+                            infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
+                            //vuelvo a abrir
+                            infrepo.actualizarEstatus(det.getInformeEtapaId(), 4);
+                            infrepo.actualizarEstatusSync(det.getInformeEtapaId(),0);
+                        }else
+
                         if(det.getEstatus()==2&&(informeapp==null||informeapp.getEstatusSync()==2)) //no se subió, pero ya se completó
                         {
                             infdrepo.actEstatus(det.getId(), 0);
@@ -131,6 +142,7 @@ public class DescRespInformesEta {
                             infrepo.actualizarEstatus(det.getInformeEtapaId(), 6);
                             infrepo.actualizarEstatusSync(det.getInformeEtapaId(),0);
                         }
+
                     }
 
                 }

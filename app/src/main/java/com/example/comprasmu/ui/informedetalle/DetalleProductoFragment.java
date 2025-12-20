@@ -196,7 +196,7 @@ public class DetalleProductoFragment extends Fragment {
 
     public void crearPregunta(){
 
-        compraslog.info(TAG,"crearPregunta","creando preg"+mViewModel.numMuestra);
+        compraslog.info(TAG,"crearPregunta","num muestra:"+mViewModel.numMuestra);
 
 
         try {
@@ -217,7 +217,7 @@ public class DetalleProductoFragment extends Fragment {
             ((ContinuarInformeActivity)getActivity()).noSalir(false);
 
             ultimares=dViewModel.buscarxNombreCam(this.preguntaAct.getNombreCampo(),mViewModel.numMuestra);
-            compraslog.info(TAG, "crearPregunta","1--cons" + Constantes.DP_CONSECUTIVO);
+            compraslog.info(TAG, "crearPregunta","cons:" + Constantes.DP_CONSECUTIVO);
             if(ultimares!=null) {    //es edicion
                 isEdicion = true;
                 if(preguntaAct.getId()==47||preguntaAct.getId()==48){
@@ -1029,7 +1029,7 @@ public class DetalleProductoFragment extends Fragment {
                 //la muestra la guarde en la 42
                 if(!preguntaview.getPregSiNoResp()) //se selecciono no
                 {
-                    compraslog.grabarError(TAG,"sigueinte","dice que no");
+                    compraslog.grabarError(TAG,"siguiente","dice que no");
 
                     //es la 43 //finalizo preinforme
                     finalizarPreinforme();
@@ -1423,7 +1423,7 @@ public class DetalleProductoFragment extends Fragment {
         }
         //busco el siguiente
         Reactivo nvoReac = dViewModel.buscarReactivoSimpl(sig);
-        compraslog.info(TAG, "avanzarpregunta","4-------------cons" + Constantes.DP_CONSECUTIVO+"--"+mViewModel.numMuestra);
+        compraslog.info(TAG, "avanzarpregunta","cons" + Constantes.DP_CONSECUTIVO+"--"+mViewModel.numMuestra);
         preguntaview=null;
         //creo uno nuevo
         preguntaview=new DetalleInfView(getContext());
