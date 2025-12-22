@@ -123,7 +123,7 @@ public class DescRespInformesEta {
                         Log.i(TAG, "actualizando bd informes");
                         //puede estar cancelado y pendiente de completar o sea reactivacion sin comprar
                         if (infoResp.getEtiq_comp()!= null && infoResp.getEtiq_comp().size() > 0&&infoResp.getEtiq_comp().get(0).getId()==det.getInformeEtapaId()) {
-                            infdrepo.actEstatus(det.getId(), 0);
+                            infdrepo.actEstatus(det.getId(), 4);
 
                             //elimino las fotos de las cajas
                             infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
@@ -178,14 +178,14 @@ public class DescRespInformesEta {
 
                             }
                         //cancelo detalle caja
-                        List<DetalleCaja> fotoscaja=cajarepo.getAllsimplexInf(infemp.getId());
+                      /*  List<DetalleCaja> fotoscaja=cajarepo.getAllsimplexInf(infemp.getId());
                         if(fotoscaja!=null&fotoscaja.size()>0) {
                             for (DetalleCaja foto:fotoscaja
                             ) {
 
                                 cajarepo.actualizarEstatus(foto.getId(), 0);
                             }
-                        }
+                        }*/
                         //ahora si cancelo el informe
 
                         infrepo.actualizarEstatus(infemp.getId(),0);
