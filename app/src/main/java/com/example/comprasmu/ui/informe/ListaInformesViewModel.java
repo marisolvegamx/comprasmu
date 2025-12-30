@@ -15,6 +15,8 @@ import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.dao.InformeCompraDao;
+import com.example.comprasmu.data.dao.ListaCompraDao;
+import com.example.comprasmu.data.dao.ListaCompraDao_Impl;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCancelar;
 import com.example.comprasmu.data.modelos.InformeCompra;
@@ -224,7 +226,13 @@ public class ListaInformesViewModel extends AndroidViewModel {
         return inferepo.getInformesx2Estatus(indiceSel,etapa,estatus1, estatus2);
 
     }
+    public  List<ListaCompra>  cargarClientesSimplxetReacsc( ListaCompraDao listaCompraDao,int etapa, int reactivado1, int reactivado2){
 
+        ListaCompraRepositoryImpl lcrepo=ListaCompraRepositoryImpl.getInstance(listaCompraDao);
+        return lcrepo.getClieByIndiceSimplxetReac(Constantes.INDICEACTUAL,etapa,  reactivado1, reactivado2);
+
+
+    }
    /* public  LiveData<List<InformeCompra>>  cargarPestañas(){
         return repository.getClientesByIndice(Constantes.INDICEACTUAL, nombreTienda,ciudadSel,plantaSel,clienteSel);
 

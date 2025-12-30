@@ -1,6 +1,5 @@
 package com.example.comprasmu;
 
-
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
@@ -382,6 +381,15 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
                         }
 
                     }
+            //muestras eliminada son las canceladas que no se reponen
+            if (corrResp.getEliminadas() != null)
+                for (MuestraCancelada cancel :
+                        corrResp.getEliminadas()) {
+                    {
+                        this.procesarEliminadas(cancel);
+                        //canceladas será 0
+                    }
+                }
 
         }
         return 1;
@@ -446,13 +454,22 @@ public class DescargaIniListener implements  IDescargaIniListener, IActualListen
                     }
                 }
 
-
-
-
             }
 
+    }
+
+    public void procesarEliminadas(MuestraCancelada cancelada){
+        InformeCompraDetalle det=infdrepo.findsimple(cancelada.getInd_id());
+        if(det!=null) {
+
+            det.setMotivoCancel(cancelada.getVas_observaciones());
+            det.setFechaCancel(cancelada.getVas_fecha());
+            det.setEstatus(6);
+            infdrepo.insert(det);
+            infdrepo.actualizarEstatus(det.getId(), 6);
 
         }
+    }
 
     @Override
     public void actualizarInformes(RespInformesResponse infoResp) {

@@ -122,15 +122,7 @@ public class DescRespInformesEta {
                         //busco el informe
                         Log.i(TAG, "actualizando bd informes");
                         //puede estar cancelado y pendiente de completar o sea reactivacion sin comprar
-                        if (infoResp.getEtiq_comp()!= null && infoResp.getEtiq_comp().size() > 0&&infoResp.getEtiq_comp().get(0).getId()==det.getInformeEtapaId()) {
-                            infdrepo.actEstatus(det.getId(), 0);
 
-                            //elimino las fotos de las cajas
-                            infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
-                            //vuelvo a abrir
-                            infrepo.actualizarEstatus(det.getInformeEtapaId(), 4);
-                            infrepo.actualizarEstatusSync(det.getInformeEtapaId(),0);
-                        }else
 
                         if(det.getEstatus()==2&&(informeapp==null||informeapp.getEstatusSync()==2)) //no se subió, pero ya se completó
                         {
@@ -145,6 +137,20 @@ public class DescRespInformesEta {
 
                     }
 
+                }
+                if (infoResp.getEtiq_elim()!= null && infoResp.getEtiq_elim().size() > 0) {
+                    for (InformeEtapaDet det : infoResp.getEtiq_elim()) {
+                        InformeEtapaDet informeapp=infdrepo.findsimple(det.getId());
+
+                        if(informeapp!=null||informeapp.getEstatus()!=0) //no se ha cancelado
+                        {
+                            infdrepo.actEstatus(det.getId(), 0);
+
+                            //elimino las fotos de las cajas
+                            infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
+                        }
+
+                    }
                 }
                 //por si se agregaron muestras
                 if (infoResp.getEtiq_comp()!= null && infoResp.getEtiq_comp().size() > 0) {
