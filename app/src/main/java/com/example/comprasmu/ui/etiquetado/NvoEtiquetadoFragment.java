@@ -1137,16 +1137,15 @@ public void iraReubicar(){
 
     }
 
- //ya se puede varios informes de etiquetado para la reactivacion
+ //ya se pueden varios informes de etiquetado para la reactivacion despues de envio
 
     private  void convertirLista(List<ListaCompra>lista, Integer[] clientesprev){
         listaClientes =new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
             Log.d(TAG,listaCompra.getPlantaNombre());
-            if( clientesprev!=null)
+            if( clientesprev!=null&&listaCompra.getLis_reactivado()!=4) //si es reactivacion despues de envio puede hacer otro informe
                 if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
-                {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
-                    Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
+                {
                     continue;}
             listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 

@@ -285,7 +285,8 @@ public class NvoGastoFragment extends Fragment {
                 //es nuevo
                 //reviso si ya tengo informe
                 List<InformeEtapa> informes = niviewModel.getInfGasto(Constantes.INDICEACTUAL,ciudadInf);
-               if(informes!=null&&informes.size()>0){
+
+                if(!niviewModel.isReactivacion()&&informes!=null&&informes.size()>0){
                    //no puede hacer más de 1
                    Toast.makeText(getActivity(),"Ya capturó su informe de gastos",Toast.LENGTH_SHORT).show();
                    salir();
