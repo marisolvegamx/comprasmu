@@ -799,6 +799,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
                             }
                         }
+                //muestras eliminada son las canceladas que no se reponen
+                if (corrResp.getEliminadas() != null)
+                    for (MuestraCancelada cancel :
+                            corrResp.getEliminadas()) {
+                       {
+                            scViewModel.procesarEliminadas(cancel);
+                            //canceladas será 0
+                        }
+                    }
 
             }
             return 1;

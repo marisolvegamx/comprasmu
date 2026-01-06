@@ -13,6 +13,7 @@ public class SolCorreResponse {
     private String data;
     private List<SolicitudCor> inserts;
     private List<MuestraCancelada> canceladas;
+    private List<MuestraCancelada> eliminadas;
     public List<TablaVersiones> getVersiones() {
         return versiones;
     }
@@ -61,5 +62,13 @@ public class SolCorreResponse {
 
     public void setCanceladas(List<MuestraCancelada> canceladas) {
         this.canceladas = canceladas;
+    }
+
+    public List<MuestraCancelada> getEliminadas() {
+        return eliminadas;
+    }
+
+    public void setEliminadas(List<MuestraCancelada> eliminadas) {
+        this.eliminadas = eliminadas;
     }
 }

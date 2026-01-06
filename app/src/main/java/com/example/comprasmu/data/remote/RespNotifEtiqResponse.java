@@ -7,16 +7,16 @@ import java.util.List;
 
 public class RespNotifEtiqResponse {
 
-    private List<InformeEtapa> etiq_elim;
+    private List<InformeEtapaDet> etiq_elim;
     private List<InformeEtapaDet> etiq_cancel;
     private List<InformeEtapa> emp_elim;
     private List<InformeEtapa> etiq_comp;
 
-    public List<InformeEtapa> getEtiq_elim() {
+    public List<InformeEtapaDet> getEtiq_elim() {
         return etiq_elim;
     }
 
-    public void setEtiq_elim(List<InformeEtapa> etiq_elim) {
+    public void setEtiq_elim(List<InformeEtapaDet> etiq_elim) {
         this.etiq_elim = etiq_elim;
     }
 

@@ -55,7 +55,7 @@ public class NvoGastoViewModel extends AndroidViewModel {
     private final InfGastoDetRepositoryImpl gasdetrepo;
     private final ImagenDetRepositoryImpl imagenDetRepository;
     private final InfEtapaRepositoryImpl infEtaRepository;
-
+    private boolean isReactivacion; //para saber si es reactivacion despues de envio
     TablaVersionesRepImpl tvRepo;
     ComprasLog compraslog;
     public NvoGastoViewModel(@NonNull Application application) {
@@ -188,6 +188,8 @@ public class NvoGastoViewModel extends AndroidViewModel {
             {
                 return false;
             }
+            if(lista.getLis_reactivado()==4)
+                isReactivacion=true;   //puede hacer otro informe
         }
         if(listacomp!=null)
             return true;
@@ -234,5 +236,13 @@ public class NvoGastoViewModel extends AndroidViewModel {
         PeticionesServidor.PeticionLista peticionLista=peticionesServidor.crearPeticion(null, null,Constantes.INDICEACTUAL);
         return peticionesServidor.pedirListaCompraxCiudad(peticionLista,Constantes.CIUDADTRABAJO, descargaListaCompraAuto);
 
+    }
+
+    public boolean isReactivacion() {
+        return isReactivacion;
+    }
+
+    public void setReactivacion(boolean reactivacion) {
+        isReactivacion = reactivacion;
     }
 }

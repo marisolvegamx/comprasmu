@@ -301,7 +301,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
                     List<InformeEtapa> listageneral = new ArrayList<>();
                     Log.d(TAG, "contarCanceladas- puedo hacer empaque?" + listacomp);
                     for (ListaCompra listaCompra : listacomp) {
-                        if (listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 1) {
+                        if (listaCompra.getLis_reactivado() != null) {
                             //veo que no haya hecho informe para no esperar a la supervisión
                             // ContInfEtaViewModel conViewModel = new ViewModelProvider(this).get(ContInfEtaViewModel.class);
                             Log.d(TAG, "contarCanceladas-hay reactivacion");
@@ -402,7 +402,7 @@ public class ListaSolsViewModel extends AndroidViewModel {
                 int listageneral = 0; //para contar los informes
                 for(ListaCompra listaCompra:listacomp) {
 
-                    if (listacomp != null && listacomp.size() > 0 && listaCompra.getLis_reactivado() != null && listaCompra.getLis_reactivado() == 2) {
+                    if (listacomp != null && listacomp.size() > 0 && listaCompra.getLis_reactivado() != null ) {
                         Log.i(TAG, "contarMuestraAdic hay reactivacion");
                         InformeEtapa informesEtapa = getInformeNoCancel(Constantes.INDICEACTUAL, 4, listaCompra.getCiudadNombre(), listaCompra.getClientesId());
                         if (informesEtapa == null) {
@@ -418,6 +418,18 @@ public class ListaSolsViewModel extends AndroidViewModel {
         return totMuestraAdic;
     }
 
+    public void procesarEliminadas(MuestraCancelada cancelada){
+        InformeCompraDetalle det=infcrepo.findsimple(cancelada.getInd_id());
+        if(det!=null) {
+
+            det.setMotivoCancel(cancelada.getVas_observaciones());
+            det.setFechaCancel(cancelada.getVas_fecha());
+            det.setEstatus(6);
+            infcrepo.insert(det);
+            infcrepo.actualizarEstatus(det.getId(), 6);
+
+        }
+    }
     public InformeEtapa getInformexPlantaEtaEst(int plantasId, int etapa, String indice,int estatus) {
         return infetarepo.getInformexPlantEst(indice,etapa,plantasId,0);
     }
