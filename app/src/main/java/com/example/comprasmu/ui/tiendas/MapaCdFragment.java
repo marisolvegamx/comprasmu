@@ -670,6 +670,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                             {
                                 if(plantasDisponibles!=null)
                                    plantasDisponibles=quitarPlanta(plantasDisponibles,estatus.getPlantasId());
+                               //con una planta que tenga esttus 2 ya no puedo comprar para ese cliente
                                 switch(estatus.getClientesId()){
                                     case 4:
                                         estatusPepsi=0;
