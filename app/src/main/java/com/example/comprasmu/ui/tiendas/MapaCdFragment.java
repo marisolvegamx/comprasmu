@@ -626,6 +626,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         martiendas=new ArrayList<>();
         LatLng japon2 = null;
 
+        int estatusPepsi;
+        int estatusElectro;
+        int estatusPeniafiel;
+        int estatusJumex;
 
 
         if(listiendas!=null) {
@@ -637,22 +641,20 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             HashMap<Integer,Integer> totalPlantas=lcviewModel.getTotalPlantasxCliente(Constantes.CIUDADTRABAJO);
             for (Tienda tienda : listiendas) {
                 Log.d(TAG,tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen());
-                //busco los estatus por cliente
-
-                tienda.setEstpep(lcviewModel.getEstatusCliente(tienda.getEstpep(),totalPlantas,4));
-                tienda.setEstpen(lcviewModel.getEstatusCliente(tienda.getEstpen(),totalPlantas,5));
-                tienda.setEstele(lcviewModel.getEstatusCliente(tienda.getEstele(),totalPlantas,6));
-                tienda.setEstjum(lcviewModel.getEstatusCliente(tienda.getEstjum(),totalPlantas,7));
-                Log.d(TAG,"despues"+tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen()+"--"+tienda.getEstele()+"--"+tienda.getEstjum());
 
                 //busco los estatus por planta
                 estatusTienda= lcviewModel.buscarEstatusTienda(tienda.getUne_id(),ComprasDataBase.getInstance(getActivity()).getTiendaEstatusClienteDao());
                 estatusClientes = new StringBuilder();
                 color="3";
+                estatusPepsi=1;
+                estatusPeniafiel=1;
+                estatusJumex=1;
+                estatusElectro=1;
                 //armo lista de plantas de la ciudad
                 plantasDisponibles=new ArrayList<>();
                 plantasDisponibles.addAll(listaPlantasEnv);
               //  Log.i(TAG,"size antes>>"+estatusTienda.size());
+
                 if(estatusTienda!=null)
 
                     for (TiendaEstatusCliente estatus:estatusTienda
@@ -661,13 +663,42 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                             color = validarColorTienda(estatus.getEstatus());
 
                         }
-                        //para poner en que tiendas puedo comprar
-                        if(plantasDisponibles!=null)
-                            plantasDisponibles=quitarPlanta(plantasDisponibles,estatus.getPlantasId());
+                        //para poner en que tiendas no puedo comprar
+
+
+                        if(estatus.getEstatus()==2)
+                        {
+                            if(plantasDisponibles!=null)
+                                plantasDisponibles=quitarPlanta(plantasDisponibles,estatus.getPlantasId());
+                            //con una planta que tenga esttus 2 ya no puedo comprar para ese cliente
+                            switch(estatus.getClientesId()){
+                                case 4:
+                                    estatusPepsi=0;
+                                    break;
+                                case 5:
+                                    estatusPeniafiel=0;
+                                    break;
+                                case 6:
+                                    estatusElectro=0;
+                                    break;
+                                case 7:
+                                    estatusJumex=0;
+                                    break;
+                            }
+
+                        }
 
 
                     }
-              //  Log.i(TAG,"size>>"+plantasDisponibles.size());
+                tienda.setEstpep(estatusPepsi);
+                tienda.setEstpen(estatusPeniafiel);
+                tienda.setEstele(estatusElectro);
+                tienda.setEstjum(estatusJumex);
+                //busco los estatus por cliente
+
+                Log.d(TAG,"despues"+tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen()+"--"+tienda.getEstele()+"--"+tienda.getEstjum());
+
+                //  Log.i(TAG,"size>>"+plantasDisponibles.size());
                 //el estatus es 1-rojo, 2 amarillo, 3.verde solo en verde puedo comprar o con 0
                 int i=0;
                 if (!plantasDisponibles.isEmpty()) {
