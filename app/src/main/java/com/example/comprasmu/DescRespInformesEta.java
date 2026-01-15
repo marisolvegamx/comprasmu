@@ -1,6 +1,6 @@
 package com.example.comprasmu;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.util.Log;
 import com.example.comprasmu.data.PeticionesServidor;
@@ -10,7 +10,6 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.TablaVersiones;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
-import com.example.comprasmu.data.remote.RespInformesResponse;
 import com.example.comprasmu.data.remote.RespNotifEtiqResponse;
 import com.example.comprasmu.data.repositories.DetalleCajaRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
@@ -117,21 +116,10 @@ public class DescRespInformesEta {
 
                 if (infoResp.getEtiq_cancel() != null && infoResp.getEtiq_cancel().size() > 0) {
                     for(InformeEtapaDet det:infoResp.getEtiq_cancel()){
-                        InformeEtapa informeapp=infrepo.findsimple(det.getInformeEtapaId());
                         //todo revisar si ya fue actualizada para no veolver a actualizar
                         //busco el informe
                         Log.i(TAG, "actualizando bd informes");
-                        //puede estar cancelado y pendiente de completar o sea reactivacion sin comprar
-                        if (infoResp.getEtiq_comp()!= null && infoResp.getEtiq_comp().size() > 0&&infoResp.getEtiq_comp().get(0).getId()==det.getInformeEtapaId()) {
-                            infdrepo.actEstatus(det.getId(), 4);
-
-                            //elimino las fotos de las cajas
-                            infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
-                            //vuelvo a abrir
-                            infrepo.actualizarEstatus(det.getInformeEtapaId(), 4);
-                            infrepo.actualizarEstatusSync(det.getInformeEtapaId(),0);
-                        }else
-
+                        InformeEtapa informeapp=infrepo.findsimple(det.getInformeEtapaId());
                         if(det.getEstatus()==2&&(informeapp==null||informeapp.getEstatusSync()==2)) //no se subió, pero ya se completó
                         {
                             infdrepo.actEstatus(det.getId(), 0);
@@ -142,9 +130,22 @@ public class DescRespInformesEta {
                             infrepo.actualizarEstatus(det.getInformeEtapaId(), 6);
                             infrepo.actualizarEstatusSync(det.getInformeEtapaId(),0);
                         }
-
                     }
 
+                }
+                if (infoResp.getEtiq_elim()!= null && infoResp.getEtiq_elim().size() > 0) {
+                    for (InformeEtapaDet det : infoResp.getEtiq_elim()) {
+                        InformeEtapaDet informeapp=infdrepo.findsimple(det.getId());
+
+                        if(informeapp!=null||informeapp.getEstatus()!=0) //no se ha cancelado
+                        {
+                            infdrepo.actEstatus(det.getId(), 0);
+
+                            //elimino las fotos de las cajas
+                            infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
+                        }
+
+                    }
                 }
                 //por si se agregaron muestras
                 if (infoResp.getEtiq_comp()!= null && infoResp.getEtiq_comp().size() > 0) {
@@ -178,14 +179,14 @@ public class DescRespInformesEta {
 
                             }
                         //cancelo detalle caja
-                      /*  List<DetalleCaja> fotoscaja=cajarepo.getAllsimplexInf(infemp.getId());
+                        List<DetalleCaja> fotoscaja=cajarepo.getAllsimplexInf(infemp.getId());
                         if(fotoscaja!=null&fotoscaja.size()>0) {
                             for (DetalleCaja foto:fotoscaja
                             ) {
 
                                 cajarepo.actualizarEstatus(foto.getId(), 0);
                             }
-                        }*/
+                        }
                         //ahora si cancelo el informe
 
                         infrepo.actualizarEstatus(infemp.getId(),0);
