@@ -145,18 +145,17 @@ public class DescargasListaCompraImpl {
 
         //si llego aqui, no lo encontré por lo que se eliminó
         //busco que no tenga informe
-
-        List<InformeCompraDetalle> prods=infdrepo.findByCompra(compra.getListaId(), compra.getId());
-        Log.d(TAG,"prbabbl elimine "+compra.getProductoNombre()+"--"+compra.getListaId()+"--"+ compra.getId());
-        if(prods==null||prods.size()<1)
+        //validar que si está cancelado pueda borrarlo
+      //  List<InformeCompraDetalle> prods=infdrepo.findByCompra(compra.getListaId(), compra.getId());
+       // Log.d(TAG,"prbabbl elimine "+compra.getProductoNombre()+"--"+compra.getListaId()+"--"+ compra.getId());
+        //if(prods==null||prods.size()<1)
             lcdrepo.delete(compra);
 
     }
     private void eliminarListaCompra(ListaCompra compra, List<ListaCompra> json, InformeComDetRepositoryImpl infdrepo, ListaCompraRepositoryImpl lcrepo){
         for (ListaCompra jcompra: json) {
-           // Log.d(TAG,"LOS QUE SE ELIMINARON json"+jcompra.getId()+"--"+compra.getId());
+
             if(jcompra.getId()==compra.getId()){
-                // Log.d(TAG,compra.getProductoNombre()+"--"+jcompra.getProductoNombre()+".."+compra.getListaId()+"--"+ compra.getId());
                 return;
             }
         }
