@@ -33,6 +33,7 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -77,6 +78,7 @@ public class MiCamaraActivity extends AppCompatActivity {
     public static int REQUEST_CODE_TAKE_PHOTO=300;
     private String archivo_foto;
     int resultact =1;
+    private long lastClickTime = 0;
     ComprasLog milog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,7 +234,14 @@ public class MiCamaraActivity extends AppCompatActivity {
             captureImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    long currentClickTime= SystemClock.elapsedRealtime();
+                    // preventing double, using threshold of 1000 ms
+                    if (currentClickTime - lastClickTime < 5000){
+                        //  Log.d(TAG,"doble click :("+lastClickTime);
+                        return;
+                    }
 
+                    lastClickTime = currentClickTime;
                     File file = new File(archivo_foto);
                     //  archivo_foto=file.getName();
                     ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(file).build();
@@ -439,6 +448,7 @@ public class MiCamaraActivity extends AppCompatActivity {
 
 
     private void vistaPrevia( ) {
+        lastClickTime = 0;
         Intent intento=new Intent(this, RevisarPrevActivity.class);
         intento.putExtra(RevisarPrevActivity.IMG_PATH1,archivo_foto);
         startActivityForResult(intento,REQUEST_CODE_TAKE_PHOTO);
