@@ -372,9 +372,13 @@ public class NvoEtiquetadoFragment extends Fragment {
                 mViewModel.preguntaAct = 3;
                 if (listaClientes != null && listaClientes.size() > 0)
                     cargarPlantas(listaClientes, infomeEdit.getClientesId() + "");
+                 totmuestras = mViewModel.getTotalMuestrasxCliXcd(infomeEdit.getClientesId(), Constantes.CIUDADTRABAJO);
+                infomeEdit.setTotal_muestras(totmuestras);
+
                 ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(infomeEdit);
                 mViewModel.setIdNuevo(informeSel);
-                totmuestras = infomeEdit.getTotal_muestras();
+
+                //totmuestras = infomeEdit.getTotal_muestras();
                 clienteSel = infomeEdit.getClientesId();
                 //  totcajas=mViewModel.getu
                 //veo si es de muestra o de cja

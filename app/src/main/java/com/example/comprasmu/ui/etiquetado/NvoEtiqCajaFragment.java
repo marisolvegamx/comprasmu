@@ -206,6 +206,8 @@ public class NvoEtiqCajaFragment extends Fragment {
             if(this.detalleEdit==null)
                 this.detalleEdit =niviewModel.getDetalleEtEdit(informeSel, 3);
            try {
+               int totmuestras = mViewModel.getTotalMuestrasxCliXcd(infomeEdit.getClientesId(), Constantes.CIUDADTRABAJO);
+                infomeEdit.setTotal_muestras(totmuestras);
                ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEtiq(infomeEdit);
            }catch(ClassCastException ex){
                //entre por notificacion
