@@ -30,19 +30,21 @@ public class ExoPlayerActivity extends AppCompatActivity {
 
             // Build the MediaItem
        // String videoUrl = "https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4";
-        String videoUrl = "https://muesmerc.com/comprasv1/videotutoriales/prueba2.mp4";
-        String liga;
+        String videoUrl = "https://muesmerc.com/comprasv1/videotutoriales/";
+        String liga = "";
         if (bundle != null) {  //pra tomar los que vienen del navhost selcleitefragment
             liga = bundle.getString(ARG_LIGAVIDEO);
-            Log.i(TAG,"nombre archivo:"+liga);
+           // Log.i(TAG,"nombre archivo:"+videoUrl+liga);
         }
-        Uri uri = Uri.parse(videoUrl);
-        MediaItem mediaItem = MediaItem.fromUri(uri);
-      //  https://www.youtube.com/watch?v=dQw4w9WgXcQ
-        // Prepare the player with the media item
-        player.setMediaItem(mediaItem);
-        player.prepare();
-        player.setPlayWhenReady(true); // Start playing when ready
+        if(!liga.equals("")) {
+            Uri uri = Uri.parse(videoUrl + liga);
+            MediaItem mediaItem = MediaItem.fromUri(uri);
+            //  https://www.youtube.com/watch?v=dQw4w9WgXcQ
+            // Prepare the player with the media item
+            player.setMediaItem(mediaItem);
+            player.prepare();
+            player.setPlayWhenReady(true); // Start playing when ready
+        }
     }
 
     @Override
