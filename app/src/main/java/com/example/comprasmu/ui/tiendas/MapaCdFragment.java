@@ -46,6 +46,7 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ListaCompraDao;
+import com.example.comprasmu.data.dao.TiendaEstatusClienteDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.Correccion;
@@ -630,7 +631,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         int estatusElectro;
         int estatusPeniafiel;
         int estatusJumex;
-
+        TiendaEstatusClienteDao tiendaEstatusClienteDao=ComprasDataBase.getInstance(getActivity()).getTiendaEstatusClienteDao();
 
         if(listiendas!=null) {
            // Log.d(TAG,"--tiendas"+listiendas.size());
@@ -643,7 +644,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 Log.d(TAG,tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen());
 
                 //busco los estatus por planta
-                estatusTienda= lcviewModel.buscarEstatusTienda(tienda.getUne_id(),ComprasDataBase.getInstance(getActivity()).getTiendaEstatusClienteDao());
+                estatusTienda= lcviewModel.buscarEstatusTienda(tienda.getUne_id(),tiendaEstatusClienteDao);
                 estatusClientes = new StringBuilder();
                 color="3";
                 estatusPepsi=1;
@@ -670,26 +671,18 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         {
                             if(plantasDisponibles!=null)
                                 plantasDisponibles=quitarPlanta(plantasDisponibles,estatus.getPlantasId());
-                            //con una planta que tenga esttus 2 ya no puedo comprar para ese cliente
-                            switch(estatus.getClientesId()){
-                                case 4:
-                                    estatusPepsi=0;
-                                    break;
-                                case 5:
-                                    estatusPeniafiel=0;
-                                    break;
-                                case 6:
-                                    estatusElectro=0;
-                                    break;
-                                case 7:
-                                    estatusJumex=0;
-                                    break;
-                            }
+
 
                         }
 
 
                     }
+                //validar estatuscliente
+                estatusPepsi=lcviewModel.getEstatusCliente(tienda.getUne_id(),totalPlantas,4,tiendaEstatusClienteDao);
+                estatusPeniafiel=lcviewModel.getEstatusCliente(tienda.getUne_id(),totalPlantas,5,tiendaEstatusClienteDao);
+                estatusElectro=lcviewModel.getEstatusCliente(tienda.getUne_id(),totalPlantas,6,tiendaEstatusClienteDao);
+                estatusJumex=lcviewModel.getEstatusCliente(tienda.getUne_id(),totalPlantas,7,tiendaEstatusClienteDao);
+
                 tienda.setEstpep(estatusPepsi);
                 tienda.setEstpen(estatusPeniafiel);
                 tienda.setEstele(estatusElectro);
@@ -927,6 +920,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         DescripcionGenerica elementoBorrar=null;
         for (DescripcionGenerica descipcion: listaPlantas
         ) {
+            Log.i(TAG,"<<<"+descipcion.getNombre());
             if(descipcion.getId()==planta) {
                 elementoBorrar=descipcion;
                 Log.i(TAG,"quitando:"+planta);

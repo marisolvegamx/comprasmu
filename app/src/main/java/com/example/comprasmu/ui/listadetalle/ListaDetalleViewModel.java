@@ -721,7 +721,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     public  HashMap<Integer,Integer> getTotalPlantasxCliente(String ciudad){
         HashMap<Integer,Integer> mapa=new HashMap<>();
-        List<ListaCompraDao.TotalPlantas> listaTotales=repository.getTotalPlantasxCliente(ciudad) ;
+        List<ListaCompraDao.TotalPlantas> listaTotales=repository.getTotalPlantasxCliente(ciudad,2) ;
         if(listaTotales!=null)
             for (ListaCompraDao.TotalPlantas total:listaTotales
                  ) {
@@ -730,12 +730,28 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         return mapa;
     }
     //devuelve 1 si puede comprar o 0 si no
-    public int getEstatusCliente(int totaltienda,HashMap<Integer,Integer> totalPlantas, int clienteId){
+    /*public int getEstatusCliente(int totaltienda,HashMap<Integer,Integer> totalPlantas, int clienteId){
 
         if(totalPlantas!=null)
         if(totalPlantas.get(clienteId)!=null&&totaltienda==totalPlantas.get(clienteId)){
             return 0;
         }
+        return 1;
+
+    }*/
+    //para que no pueda comprar todas las plantas del cliente estan en 2, de cualquier otra forma si puede comprar
+    public int getEstatusCliente(int idtienda,HashMap<Integer,Integer> totalPlantas, int clienteId, TiendaEstatusClienteDao tiendaEstatusClienteDao){
+        TiendaEstatusClienteRepositoryImpl tiendaEstatusRepo=TiendaEstatusClienteRepositoryImpl.getInstance(tiendaEstatusClienteDao);
+        //busco enla tabla si tengo en 2 de ese cliente
+        List<TiendaEstatusCliente> estatuscliente=tiendaEstatusRepo.getTiendaAmarillaxCliente(idtienda,clienteId);
+       int totaltienda=0;
+       if(estatuscliente!=null){
+           totaltienda=estatuscliente.size();
+       }
+        if(totalPlantas!=null)
+            if(totalPlantas.get(clienteId)!=null&&totaltienda==totalPlantas.get(clienteId)){
+                return 0; //todas estan en 2 debe ser amarilla
+            }
         return 1;
 
     }
