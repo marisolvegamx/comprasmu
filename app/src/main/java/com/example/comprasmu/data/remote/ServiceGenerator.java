@@ -1,18 +1,14 @@
 package com.example.comprasmu.data.remote;
 
 import android.os.Build;
-import android.util.Log;
 
 import com.example.comprasmu.utils.Constantes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -51,17 +47,9 @@ public class ServiceGenerator {
         OkHttpClient httpClient;
 
              httpClient = okbuilder
-                   /*  .addInterceptor(new Interceptor() {
-                         @Override
-                         public Response intercept(Chain chain) throws IOException {
-                             Response response = chain.proceed(chain.request());
-                             Log.w("Retrofit@Response", response.body().string());
-                             return response;
-                         }
-                     })*/
-                     .readTimeout(120, TimeUnit.SECONDS)
+                    .readTimeout(120, TimeUnit.SECONDS)
                     .connectTimeout(15, TimeUnit.SECONDS)
-                    .build() ;
+                    .build();
 
 
 

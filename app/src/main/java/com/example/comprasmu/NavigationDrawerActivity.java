@@ -269,21 +269,23 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 graph.setStartDestination(R.id.nav_home);
             }
             navController.setGraph(graph);
+            MenuItem itemTutoriales =(MenuItem) navigationView.getMenu().findItem(R.id.nav_tutoriales);
+          if(itemTutoriales!=null)
+              itemTutoriales.setVisible(false);
+            if(itemTutoriales!=null&&Constantes.CLAVEUSUARIO.equals("50"))
+                itemTutoriales.setVisible(true);
+          //  itemTutoriales.setVisible(true);
+         //  Log.e(TAG, "menu " + itemTutoriales.getTitle());
             //pongo canceladas x etapa
             if (Constantes.ETAPAACTUAL == 1) {
                 gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                         findItem(R.id.nav_notificaciongen));
             }
             if (Constantes.ETAPAACTUAL == 2) {
-
                 gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                         findItem(R.id.nav_notificaciongen));
-
-
             }
             if (Constantes.ETAPAACTUAL == 3) {
-
-
                 gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                         findItem(R.id.nav_notificaciongen));
             }
@@ -292,12 +294,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                         findItem(R.id.nav_notificaciongen));
             }
             if (Constantes.ETAPAACTUAL == 5) {
-
                 gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                         findItem(R.id.nav_notificaciongen));
             }
             if (Constantes.ETAPAACTUAL == 6) {
-
                 gallery = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                         findItem(R.id.nav_notificaciongen));
             }
@@ -333,7 +333,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         }catch(Exception ex){
 
-
+            ex.printStackTrace();
             flog.grabarError(TAG,"oncreate",ex.getMessage());
         }
 
