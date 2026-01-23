@@ -70,5 +70,9 @@ public class TiendaEstatusClienteRepositoryImpl extends BaseRepository<TiendaEst
     public List<TiendaEstatusCliente> findByTienda(int idTienda) {
         return dao.findByTienda(idTienda);
     }
+    public List<TiendaEstatusCliente> getTiendaAmarillaxCliente(int idTienda, int idCliente) {
+        return dao.getTiendaAmarillaxCliente(idTienda,idCliente);
+    }
+
 
 }

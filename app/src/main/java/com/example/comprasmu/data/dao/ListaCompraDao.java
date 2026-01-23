@@ -66,11 +66,11 @@ public abstract class ListaCompraDao  extends  BaseDao<ListaCompra> {
             " from" +
             " lista_compras" +
             " where" +
-            " trim(ciudadNombre)= trim(:ciudad)" +
+            " trim(ciudadNombre)= trim(:ciudad) and lis_etapaactual=:etapa" +
             " group by" +
             " clientesId," +
             " ciudadesId")
-    public abstract List<TotalPlantas> getTotalPlantasxCliente(String ciudad);
+    public abstract List<TotalPlantas> getTotalPlantasxClienteEtapa(String ciudad, int etapa);
 
     public class TotalPlantas{
         int clientesId;
