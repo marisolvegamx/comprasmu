@@ -36,7 +36,7 @@ public class ExoPlayerActivity extends AppCompatActivity {
             liga = bundle.getString(ARG_LIGAVIDEO);
            // Log.i(TAG,"nombre archivo:"+videoUrl+liga);
         }
-        if(!liga.equals("")) {
+        if(liga!=null&&!liga.equals("")) {
             Uri uri = Uri.parse(videoUrl + liga);
             MediaItem mediaItem = MediaItem.fromUri(uri);
             //  https://www.youtube.com/watch?v=dQw4w9WgXcQ
