@@ -75,8 +75,26 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ListaViews
 
 
         public void setCardView( MenuVideo cardView, Context context) {
-            if(cardView!=null)
+            if(cardView!=null) {
                 this.binding.txtmenopcion.setText(cardView.getVid_nombreopcion());
+                //mas espacio para la opcion de etapas
+                if(cardView.getVid_id()==28||cardView.getVid_id()==5){
+                    // Source - https://stackoverflow.com/a
+// Posted by dmnlk, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-01-26, License - CC BY-SA 3.0
+
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0,85,0,10);
+                    this.binding.txtmenopcion.setLayoutParams(params);
+
+                }
+                else   {
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0,40,0,10);
+                    this.binding.txtmenopcion.setLayoutParams(params);
+                }
+
+            }
 
             TextView txtsubopcion=new TextView(context);
             TextView txtmennombrearchivo=new TextView(context);
@@ -95,13 +113,14 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ListaViews
                     txtsubopcion=new TextView(context);
                     txtsubopcion.setText(subopcion.getVid_nombreopcion());
                     //txtsubopcion.setBackgroundResource(R.drawable.valuecellborder);
-                    txtsubopcion.setPadding(0,30,0,30);
+                    txtsubopcion.setPadding(0,30,0,20);
 
                     txtsubopcion.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             // view.setEnabled(false);
-                            callback.onClickVer(subopcion.getVid_liga());
+                            if(subopcion.getVid_liga()!=null&&!subopcion.getVid_liga().equals(""))
+                                callback.onClickVer(subopcion.getVid_liga());
                             Log.d("videos adapter","video"+subopcion.getVid_liga());
                         }
                     });

@@ -271,9 +271,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             navController.setGraph(graph);
             MenuItem itemTutoriales =(MenuItem) navigationView.getMenu().findItem(R.id.nav_tutoriales);
           if(itemTutoriales!=null)
-              itemTutoriales.setVisible(false);
-            if(itemTutoriales!=null&&Constantes.CLAVEUSUARIO.equals("50"))
-                itemTutoriales.setVisible(true);
+              itemTutoriales.setVisible(true);
+          //  if(itemTutoriales!=null&&Constantes.CLAVEUSUARIO.equals("50"))
+          //      itemTutoriales.setVisible(true);
           //  itemTutoriales.setVisible(true);
          //  Log.e(TAG, "menu " + itemTutoriales.getTitle());
             //pongo canceladas x etapa
