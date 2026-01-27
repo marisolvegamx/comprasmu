@@ -144,7 +144,7 @@ public class ListaNvaCompFragment extends Fragment implements CancelAdapter.Adap
                     //busco los clientes x ciudad
                     List<ListaCompra> listacomp = mViewModel.cargarClientesSimplxet(infeta.getCiudadNombre(), 3);
                     for(ListaCompra listaCompra:listacomp) {
-                        if (listaCompra.getClientesId() == infeta.getClientesId()&&listaCompra.getLis_reactivado()==2) {
+                        if (listaCompra.getClientesId() == infeta.getClientesId()&&listaCompra.getLis_reactivado()!=null&&listaCompra.getLis_reactivado()==2) {
 
                             informesfinal.add(infeta);
                         }
