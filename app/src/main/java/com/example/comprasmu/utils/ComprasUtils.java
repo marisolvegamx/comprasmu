@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -561,6 +562,15 @@ public class ComprasUtils {
             }
         }
         return null;
+    }
+
+    public static boolean distancia2puntos(double x,double y,double x1, double y1, double umbral) {
+
+        // return (Math.pow((x1-x),2) + Math.pow((y1-y),2) <= Math.pow(radio,2));
+        float[] results = new float[1];
+        Location.distanceBetween(x, y, x1, y1, results);
+        Log.d("tiendas res",results[0]+"");
+        return (results[0]) <= umbral;
     }
 }
 

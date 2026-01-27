@@ -502,6 +502,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 } else {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("nuevatienda", true);
+                    bundle.putString("coordenasmapa",lastKnownLocation.getLatitude()+","+
+                            lastKnownLocation.getLongitude() );  //ahora paso las coordenadas
+
                     NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
                     Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
                     if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
@@ -514,6 +517,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             }else{
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("nuevatienda", true);
+                bundle.putString("coordenasmapa",lastKnownLocation.getLatitude()+","+
+                        lastKnownLocation.getLongitude() );  //ahora paso las coordenadas
                 NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
                 Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
                 if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {

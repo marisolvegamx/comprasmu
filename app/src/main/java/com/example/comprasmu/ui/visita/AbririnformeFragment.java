@@ -205,6 +205,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     double ultlongitud, ultlatitud;
     ScrollView svprincipal;
     ComprasLog milog;
+    String coordenadasMapa; //me traigo las coordenas del mapa para compararlas con las de la fachada
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -296,7 +297,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                      locationStart();
                    return;
                 }
-
+                //comparo las coordenadas con la del mapa
                 tomarFoto(txtfotofachada, fotofac, REQUEST_CODE_TAKE_PHOTO);
 
             }
@@ -560,7 +561,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 locationStart();
 
                 nuevaTienda = getArguments().getBoolean("nuevatienda");
-
+                coordenadasMapa=getArguments().getString("coordenasmapa");
               //  Log.d(TAG, "datosrec " + nuevaTienda);
                 if (!nuevaTienda)// es una tienda existente
                 {
@@ -1471,7 +1472,21 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public void guardarUbicacion() {
 
         Log.d("AbrirInformeFragment", "presione boton");
-
+        //valido la ubicacion con las coordenadas del mapa
+        if(coordenadasMapa!=null&&!coordenadasMapa.equals("")){
+            String[] auxiliar=coordenadasMapa.split(",");
+            double x=Double.parseDouble(auxiliar[0]);
+            double y=Double.parseDouble(auxiliar[1]);
+            //uso un error de 2 metros
+            if(!ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,1));
+            {
+                //no es el mismo punto
+                Toast.makeText(getActivity(),getString(R.string.recomend_tienda),Toast.LENGTH_LONG);
+                txtaiultubic.setText(""); //borro la ubicacion para que se mueva
+                txtubicacion.setText("");
+                return;
+            }
+        }
         txtaiultubic.setText(txtubicacion.getText().toString());
         buscarDireccion();
 
