@@ -1,6 +1,6 @@
 package com.example.comprasmu.ui.gasto;
 
-import android.app.Activity;
+
 import android.app.Application;
 import android.os.Environment;
 import androidx.annotation.NonNull;
@@ -17,16 +17,15 @@ import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
 
 import com.example.comprasmu.data.modelos.Configuracion;
-import com.example.comprasmu.data.modelos.Contrato;
+
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 
-import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 
 import com.example.comprasmu.data.modelos.InformeGastoDet;
 
 import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.modelos.TablaVersiones;
+
 import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
@@ -36,7 +35,6 @@ import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfGastoDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
@@ -154,7 +152,7 @@ public class NvoGastoViewModel extends AndroidViewModel {
     public List<ImagenDetalle>  buscarImagenes(List<InformeGastoDet> informeEtapaDet) {
         List<ImagenDetalle> imagenes=new ArrayList<>();
         for(InformeGastoDet detalle:informeEtapaDet){
-            int fotoid=0;
+            int fotoid;
             try {
                 fotoid = detalle.getFotocomprob();
                 if(fotoid>0) {
@@ -191,9 +189,7 @@ public class NvoGastoViewModel extends AndroidViewModel {
             if(lista.getLis_reactivado()!=null&&lista.getLis_reactivado()==4)
                 isReactivacion=true;   //puede hacer otro informe
         }
-        if(listacomp!=null)
-            return true;
-        return false;
+        return listacomp != null;
     }
 
     public void guardarTotalmu(float respuesta) {
