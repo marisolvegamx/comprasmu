@@ -188,7 +188,7 @@ public class NvoGastoViewModel extends AndroidViewModel {
             {
                 return false;
             }
-            if(lista.getLis_reactivado()==4)
+            if(lista.getLis_reactivado()!=null&&lista.getLis_reactivado()==4)
                 isReactivacion=true;   //puede hacer otro informe
         }
         if(listacomp!=null)

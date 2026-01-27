@@ -47,6 +47,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
@@ -201,6 +202,12 @@ public class NvoGastoFragment extends Fragment {
 
             llcomentarios.setVisibility(View.GONE);
             getConceptos();
+            if (Constantes.CIUDADTRABAJO == null || Constantes.CIUDADTRABAJO.equals("")) {
+                //falta definir
+                Toast.makeText(getActivity(), "Falta definir ciudad de trabajo", Toast.LENGTH_SHORT).show();
+                salir();
+                 return root;
+            }
             ciudadInf=Constantes.CIUDADTRABAJO;
             if (getArguments() != null) {
                 // Log.d(TAG,"aqui");
@@ -383,7 +390,6 @@ public class NvoGastoFragment extends Fragment {
                     {
                         Toast.makeText(getActivity(),"Costo inválido, verifique",Toast.LENGTH_LONG).show();
 
-                        return;
                     }
 
 
