@@ -1475,16 +1475,24 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //valido la ubicacion con las coordenadas del mapa
         if(coordenadasMapa!=null&&!coordenadasMapa.equals("")){
             String[] auxiliar=coordenadasMapa.split(",");
-            double x=Double.parseDouble(auxiliar[0]);
-            double y=Double.parseDouble(auxiliar[1]);
-            //uso un error de 2 metros
-            if(!ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,1));
-            {
-                //no es el mismo punto
-                Toast.makeText(getActivity(),getString(R.string.recomend_tienda),Toast.LENGTH_LONG);
-                txtaiultubic.setText(""); //borro la ubicacion para que se mueva
-                txtubicacion.setText("");
+            try {
+                double x = Double.parseDouble(auxiliar[0]);
+                double y = Double.parseDouble(auxiliar[1]);
+                milog.info(TAG, "guardarUbicacion", "coordenadas:" + ultimaLoc.getLatitude() + "," + ultimaLoc.getLongitude() + "--" + x + "," + y);
+                Log.i(TAG,"coordenadas:" + ultimaLoc.getLatitude() + "," + ultimaLoc.getLongitude() + "--" + x + "," + y);
+                //uso un error de 1 metros
+                if (!ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(), x, y, 1)) {
+                    //no es el mismo punto
+                    Toast.makeText(getActivity(), getString(R.string.recomend_tienda), Toast.LENGTH_LONG).show();
+                    txtaiultubic.setText(""); //borro la ubicacion para que se mueva
+                    txtubicacion.setText("");
+                    return;
+                }
+            }catch(NumberFormatException ex){
+                milog.grabarError(TAG,"guardarUbicacion",ex.getMessage());
+                Toast.makeText(getActivity(), "Hubo un error intente de nuevo", Toast.LENGTH_SHORT).show();
                 return;
+
             }
         }
         txtaiultubic.setText(txtubicacion.getText().toString());

@@ -416,8 +416,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
                 fusedLocationClient=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
                 locallis=new miLocationListener();
-                // this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                final boolean networkEnabled = fusedLocationClient.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                 final boolean networkEnabled = fusedLocationClient.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
                 final boolean gpsEnabled = fusedLocationClient.isProviderEnabled(LocationManager.GPS_PROVIDER);
                 if (!gpsEnabled&&!networkEnabled) {
@@ -434,6 +433,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 }
                 if (fusedLocationClient.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
                     fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locallis);
+                    this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
                     Log.d(TAG, "3");
 
@@ -441,12 +441,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     //  if (Local == null) { //Validación que evita NullPointerException
                     //Requiere actualización
                     fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locallis);
+                    this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                     // }
                     Log.d(TAG, "4");
                 } else
                     Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
 
+                this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             }
         } catch (SecurityException e)  {
