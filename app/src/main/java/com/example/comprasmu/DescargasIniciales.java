@@ -194,7 +194,7 @@ public class DescargasIniciales {
     //actualiza todos los informes cada 10 seg con las ultimas modificaciones
     public void actualizarInformesAll(String indice){
         TablaVersiones comp = tvRepo.getVersionByNombreTablasmd(Contrato.TBLINFORMESDET, Constantes.INDICEACTUAL);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String version;
         if (comp != null && comp.getVersion() != null) {
             version = sdf.format(comp.getVersion());
@@ -211,7 +211,7 @@ public class DescargasIniciales {
             public void onChanged(CambiosInformesReponse cambiosInformesReponse) {
                 if(cambiosInformesReponse!=null) {
                     if (cambiosInformesReponse.getID() != null) {
-                        flog.info(TAG,"actualizarInformesAll","hubo cambios en informes"+cambiosInformesReponse.getID());
+                        flog.info(TAG,"actualizarInformesAll","hubo cambios en informes"+cambiosInformesReponse.getID().toString());
 
                         actualizarInformeCompraDet(cambiosInformesReponse.getID());
                     }
@@ -265,6 +265,43 @@ public class DescargasIniciales {
                     informeDetOrig.setAtributob(det.getAtributob());
                     informeDetOrig.setAtributoa(det.getAtributoc());
                     informeDetOrig.setAtributob(det.getAtributod());
+                    //ahora puede modificarse el producto
+                    if(informeDetOrig.getProductoId()!=det.getProductoId()||informeDetOrig.getEmpaquesId()!=det.getEmpaquesId()||informeDetOrig.getTamanioId()!=det.getTamanioId()){
+                        informeDetOrig.setProductoId(det.getProductoId());
+                        informeDetOrig.setProducto(det.getProducto());
+                        informeDetOrig.setTamanioId(det.getTamanioId());
+                        informeDetOrig.setEmpaquesId(det.getEmpaquesId());
+                        informeDetOrig.setEmpaque(det.getEmpaque());
+                        informeDetOrig.setPresentacion(det.getPresentacion());
+                        informeDetOrig.setTipoAnalisis(det.getTipoAnalisis());
+                        informeDetOrig.setNombreAnalisis(det.getNombreAnalisis());
+                        //si se modificó tambien se modificó la lista de compra
+                        ListaCompraDetalle compradet = lcdrepo.findsimple(informeDetOrig.getComprasId(), informeDetOrig.getComprasDetId());
+                        if (compradet != null) {
+                            //quito la comprada
+                            if (compradet.getComprados() > 0) {
+                                // Log.i(TAG,"procesarCanceladas",informeDetOrig.getId()+"--"+informeDetOrig.getInformesId());
+                                int cantidad = compradet.getComprados() - 1;
+                                lcdrepo.actualizarComprados(compradet.getId(), compradet.getListaId(), cantidad);
+                            }
+                        }
+                        compradet = lcdrepo.findsimple(det.getComprasId(), det.getComprasDetId());
+                        if (compradet != null) {
+                            //sumo la comprada
+                            // Log.i(TAG,"procesarCanceladas",informeDetOrig.getId()+"--"+informeDetOrig.getInformesId());
+                            int cantidad = compradet.getComprados() + 1;
+                            lcdrepo.actualizarComprados(compradet.getId(), compradet.getListaId(), cantidad);
+
+                        }
+                        if(informeDetOrig.getTipoMuestra()==3){
+                            informeDetOrig.setComprasDetIdbu(det.getComprasDetIdbu());
+                            informeDetOrig.setComprasIdbu(det.getComprasIdbu());
+                        }else{
+                            informeDetOrig.setComprasDetId(det.getComprasDetId());
+                            informeDetOrig.setComprasId(det.getComprasId());
+                        }
+
+                    }
                 }
                 else
                     informeDetOrig=det;
