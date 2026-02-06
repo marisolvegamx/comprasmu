@@ -564,12 +564,15 @@ public class ComprasUtils {
         return null;
     }
 
+    //umbral es en metros
+    //devuelve verdadero si la distancia es menor o igual al umbral
     public static boolean distancia2puntos(double x,double y,double x1, double y1, double umbral) {
 
         // return (Math.pow((x1-x),2) + Math.pow((y1-y),2) <= Math.pow(radio,2));
         float[] results = new float[1];
-        Location.distanceBetween(x, y, x1, y1, results);
-        Log.d("tiendas res",results[0]+"");
+        Location.distanceBetween(x, y, x1, y1, results);  //saca la distancia en metros
+
+        Log.d("ComprasUtils","distancia entre 2 puntos:"+results[0]+"--"+umbral);
         return (results[0]) <= umbral;
     }
 }
