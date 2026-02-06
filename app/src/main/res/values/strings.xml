@@ -382,7 +382,7 @@
     <string name="hetiquetado">3. ETIQUETADO</string>
     <string name="informe_enviado">El informe se envió correctamente</string>
     <string name="cargando">CARGANDO</string>
-    <string name="recomend_tienda">YA EXISTE UNA TIENDA REGISTRADA EN ESTA AREA. NO PUEDE INGRESAR UNA NUEVA EN 200 METROS A LA REDONDA</string>
+    <string name="recomend_tienda">YA EXISTE UNA TIENDA REGISTRADA EN ESTA AREA. NO PUEDE INGRESAR UNA NUEVA EN 100 METROS A LA REDONDA</string>
     <string name="anio">AÑO</string>
     <string name="tienda">TIENDA</string>
     <string name="error_guardar">Hubo un error al guardar el informe, intente de nuevo</string>
@@ -399,5 +399,6 @@
     <string name="title_activity_tutoriales">TUTORIALES</string>
     <string name="desea_finalizar">¿ESTA SEGURO DE ELIMINAR EL INFORME POR SER DE UNA FECHA POSTERIOR?</string>
     <string name="error_recuerde_no">RECUERDE QUE NO PUEDE COMPRAR EL MISMO PRODUCTO PARA EL MISMO ANALISIS EN LA MISMA TIENDA</string>
+    <string name="para_tomarfoto">Para tomar la foto acérquese a la tienda seleccionada</string>
 
 </resources>

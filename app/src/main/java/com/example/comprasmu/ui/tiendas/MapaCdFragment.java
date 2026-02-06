@@ -369,9 +369,12 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
         } else {
             Log.d(TAG, "no tengo  "+LOCATION_REQUEST_CODE);
+            if(alert.isMostrando())
+            alert.closeAlertDialog();
             // Solicitar permiso
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_REQUEST_CODE);
+
 
         }
 
@@ -433,14 +436,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     return;
                 }
                 if (fusedLocationClient.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locallis);
+                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 5, locallis);
 
                     Log.d(TAG, "3");
 
                 } else  if (fusedLocationClient.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
                     //  if (Local == null) { //Validación que evita NullPointerException
                     //Requiere actualización
-                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locallis);
+                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, locallis);
 
                     // }
                     Log.d(TAG, "4");
@@ -495,7 +498,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     mensajetienda.setVisibility(View.VISIBLE);
                     circleNuevaTienda = mMap.addCircle(new CircleOptions()
                             .center(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
-                            .radius(200)
+                            .radius(100)
                             .strokeColor(Color.RED));
 
 
@@ -973,8 +976,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         bundle.putInt("estele", tienda.getEstele());
         bundle.putInt("estjum", tienda.getEstjum());
         this.doubleBackToExitPressedOnce = false;
-        NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo,bundle);
-        //return false;
+        if(lastKnownLocation!=null) {
+            bundle.putString("coordenasmapa", tienda.getUne_coordenadasxy() );  //ahora paso las coordenadas
+            NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo, bundle);
+            //return false;
+        }else{
+        Toast.makeText(getActivity(),"Espere para registrar su ubicación",Toast.LENGTH_LONG).show();
+
+        }
     }
 
     @Override

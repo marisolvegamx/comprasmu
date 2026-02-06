@@ -810,12 +810,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
             //  if (Local == null) { //Validación que evita NullPointerException
             //Requiere actualización
-            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 8, Local);
+            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 3, Local);
             provedorgps = LocationManager.GPS_PROVIDER;
 
         } else
         if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 8, Local);
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 3, Local);
                 provedorgps = LocationManager.NETWORK_PROVIDER;
 
 
@@ -1477,11 +1477,17 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             String[] auxiliar=coordenadasMapa.split(",");
             double x=Double.parseDouble(auxiliar[0]);
             double y=Double.parseDouble(auxiliar[1]);
+            boolean resp=ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,50);
+            Log.i(TAG,"RESPUESTA DISTANCIA"+resp);
             //uso un error de 2 metros
-            if(!ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,1));
+            if(!resp)
             {
+                if(nuevaTienda)
                 //no es el mismo punto
-                Toast.makeText(getActivity(),getString(R.string.recomend_tienda),Toast.LENGTH_LONG);
+                     Toast.makeText(getActivity(),getString(R.string.recomend_tienda),Toast.LENGTH_LONG).show();
+               else
+                    Toast.makeText(getActivity(),getString(R.string.para_tomarfoto),Toast.LENGTH_LONG).show();
+
                 txtaiultubic.setText(""); //borro la ubicacion para que se mueva
                 txtubicacion.setText("");
                 return;
@@ -1993,7 +1999,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
     public class Localizacion implements LocationListener {
-
+        public Localizacion (){
+            super();
+            Log.e(TAG,"CREANDO OBJETO");
+        }
         public void desactivar() {
             if ( mlocManager!=null) {
                 Log.i(TAG,"desactivando");
