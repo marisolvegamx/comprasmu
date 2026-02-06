@@ -46,7 +46,7 @@ public class PeticionMapaCd {
         batch.enqueue(new Callback<TiendasResponse>() {
             @Override
             public void onResponse(@Nullable Call<TiendasResponse> call, @Nullable Response<TiendasResponse> response) {
-               Log.d(TAG,"llego algo"+response.body().toString());
+//               Log.d(TAG,"llego algo"+response.body().toString());
                 if (response.isSuccessful() && response.body() != null) {
                     TiendasResponse respuestaTiendas = response.body();
                     if(respuestaTiendas!=null) {
