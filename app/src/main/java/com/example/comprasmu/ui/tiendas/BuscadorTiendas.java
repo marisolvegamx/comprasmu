@@ -55,7 +55,7 @@ public class BuscadorTiendas {
     //x1, y1 es el centro de mi circunferencia ubicacion actual del usuario
     //devuelve true si está dentro de la circunferencia
    public boolean dentroDelCirculo(double x,double y,double x1, double y1) {
-        int radio=200;
+        int radio=100;
        // return (Math.pow((x1-x),2) + Math.pow((y1-y),2) <= Math.pow(radio,2));
        float[] results = new float[1];
        Location.distanceBetween(x, y, x1, y1, results);
