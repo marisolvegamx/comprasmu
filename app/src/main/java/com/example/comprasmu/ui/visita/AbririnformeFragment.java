@@ -810,12 +810,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
             //  if (Local == null) { //Validación que evita NullPointerException
             //Requiere actualización
-            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, Local);
+            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, Local);
             provedorgps = LocationManager.GPS_PROVIDER;
 
         } else
         if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, Local);
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3000, 5, Local);
                 provedorgps = LocationManager.NETWORK_PROVIDER;
 
 
