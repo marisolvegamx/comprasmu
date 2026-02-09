@@ -399,6 +399,6 @@
     <string name="title_activity_tutoriales">TUTORIALES</string>
     <string name="desea_finalizar">¿ESTA SEGURO DE ELIMINAR EL INFORME POR SER DE UNA FECHA POSTERIOR?</string>
     <string name="error_recuerde_no">RECUERDE QUE NO PUEDE COMPRAR EL MISMO PRODUCTO PARA EL MISMO ANALISIS EN LA MISMA TIENDA</string>
-    <string name="para_tomarfoto">Para tomar la foto acérquese a la tienda seleccionada</string>
+    <string name="para_tomarfoto">Para guardar la foto acérquese a la tienda seleccionada</string>
 
 </resources>

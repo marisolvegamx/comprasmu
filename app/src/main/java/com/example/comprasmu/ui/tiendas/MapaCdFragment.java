@@ -436,14 +436,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     return;
                 }
                 if (fusedLocationClient.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locallis);
+                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 4000, 10, locallis);
 
                     Log.d(TAG, "3");
 
                 } else  if (fusedLocationClient.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
                     //  if (Local == null) { //Validación que evita NullPointerException
                     //Requiere actualización
-                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locallis);
+                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4000, 10, locallis);
 
                     // }
                     Log.d(TAG, "4");
