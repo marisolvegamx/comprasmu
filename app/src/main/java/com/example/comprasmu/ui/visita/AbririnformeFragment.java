@@ -1490,6 +1490,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                 txtaiultubic.setText(""); //borro la ubicacion para que se mueva
                 txtubicacion.setText("");
+                //borro la foto de fachada para que vuelava a tomarla
+                txtfotofachada.setText("");
+                fotofac.setImageBitmap(null);
+
+                fotofac.setVisibility(View.GONE);
+                rotar.setVisibility(View.GONE);
                 return;
             }
         }
