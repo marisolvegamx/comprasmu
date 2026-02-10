@@ -141,7 +141,7 @@ public class DescRespInformesEta {
                     for (InformeEtapaDet det : infoResp.getEtiq_elim()) {
                         InformeEtapaDet informeapp=infdrepo.findsimple(det.getId());
 
-                        if(informeapp!=null||informeapp.getEstatus()!=0) //no se ha cancelado
+                        if(informeapp!=null) //no se ha cancelado
                         {
                             infdrepo.actEstatus(det.getId(), 0);
 
