@@ -115,6 +115,7 @@ public class DescRespInformesEta {
             if (infoResp != null) {
 
                 if (infoResp.getEtiq_cancel() != null && infoResp.getEtiq_cancel().size() > 0) {
+                    int informeEtapaId=0;
                     for(InformeEtapaDet det:infoResp.getEtiq_cancel()){
                         //todo revisar si ya fue actualizada para no veolver a actualizar
                         //busco el informe
@@ -126,11 +127,14 @@ public class DescRespInformesEta {
 
                             //elimino las fotos de las cajas
                             infdrepo.deleteCajaEtiq(det.getInformeEtapaId());
-                            //vuelvo a abrir
-                            infrepo.actualizarEstatus(det.getInformeEtapaId(), 6);
-                            infrepo.actualizarEstatusSync(det.getInformeEtapaId(),0);
                         }
+                        informeEtapaId=det.getInformeEtapaId();
+
                     }
+                    //vuelvo a abrir
+                    infrepo.actualizarEstatus(informeEtapaId, 6);
+                    infrepo.actualizarEstatusSync(informeEtapaId,0);
+
 
                 }
                 if (infoResp.getEtiq_elim()!= null && infoResp.getEtiq_elim().size() > 0) {
