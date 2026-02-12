@@ -206,6 +206,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     ScrollView svprincipal;
     ComprasLog milog;
     String coordenadasMapa; //me traigo las coordenas del mapa para compararlas con las de la fachada
+    ImageButton fotofachada;
+    Button btnubicar;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -285,7 +287,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 tomarFoto(txtfotoex1, fotoex1, REQUEST_CODE_PROD1);
             }
         });
-        ImageButton fotofachada = root.findViewById(R.id.btnaifotofachada);
+        fotofachada= root.findViewById(R.id.btnaifotofachada);
 
         fotofachada.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -386,7 +388,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 }
             }
         });
-        Button btnubicar = root.findViewById(R.id.btnaiubic);
+        btnubicar = root.findViewById(R.id.btnaiubic);
         btnubicar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -537,6 +539,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                         cargarClientes();
                         crearFormulario(visita);
                         ponerDatos(visita);
+                        if(visita.getGeolocalizacion()!=null&&!visita.getGeolocalizacion().equals("")){
+                            //ya tengo foto la bloqueo
+                            fotofachada.setEnabled(false);
+                            cbfotofac.setEnabled(false);
+                            btnubicar.setEnabled(false);
+                        }
                         LinearLayout sv = root.findViewById(R.id.content_main);
                         sv.addView(cf1.crearFormulario());
                         //   sv.addView(cf2.crearFormulario());
@@ -807,17 +815,18 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 alert.closeAlertDialog();
                 return;
             }
+
+        if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, Local);
+                provedorgps = LocationManager.NETWORK_PROVIDER;
+
+
+        } else
         if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
             //  if (Local == null) { //Validación que evita NullPointerException
             //Requiere actualización
-            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, Local);
+            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, Local);
             provedorgps = LocationManager.GPS_PROVIDER;
-
-        } else
-        if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3000, 5, Local);
-                provedorgps = LocationManager.NETWORK_PROVIDER;
-
 
         } else
                 Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
@@ -1484,13 +1493,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             {
                 if(nuevaTienda)
                 //no es el mismo punto
-                     Toast.makeText(getActivity(),getString(R.string.recomend_tienda),Toast.LENGTH_LONG).show();
+                     Toast.makeText(getActivity(),getString(R.string.usted_noseenc),Toast.LENGTH_LONG).show();
                else
                     Toast.makeText(getActivity(),getString(R.string.para_tomarfoto),Toast.LENGTH_LONG).show();
 
                 txtaiultubic.setText(""); //borro la ubicacion para que se mueva
                 txtubicacion.setText("");
-                //borro la foto de fachada para que vuelava a tomarla
+                //borro la foto de fachada para que vuelva a tomarla
                 txtfotofachada.setText("");
                 fotofac.setImageBitmap(null);
 
@@ -2005,10 +2014,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
 
     public class Localizacion implements LocationListener {
-        public Localizacion (){
-            super();
-            Log.e(TAG,"CREANDO OBJETO");
-        }
+
         public void desactivar() {
             if ( mlocManager!=null) {
                 Log.i(TAG,"desactivando");
