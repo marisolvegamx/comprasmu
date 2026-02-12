@@ -436,20 +436,21 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     return;
                 }
                 if (fusedLocationClient.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 4000, 10, locallis);
+                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locallis);
 
                     Log.d(TAG, "3");
 
                 } else  if (fusedLocationClient.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
                     //  if (Local == null) { //Validación que evita NullPointerException
                     //Requiere actualización
-                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4000, 10, locallis);
+                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locallis);
 
                     // }
                     Log.d(TAG, "4");
                 } else
                     Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
 
+                this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             }
         } catch (SecurityException e)  {
