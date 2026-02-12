@@ -1147,7 +1147,7 @@ public void iraReubicar(){
         listaClientes =new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
             Log.d(TAG,listaCompra.getPlantaNombre());
-            if( clientesprev!=null&&listaCompra.getLis_reactivado()!=4) //si es reactivacion despues de envio puede hacer otro informe
+            if( clientesprev!=null&&listaCompra.getLis_reactivado()!=null&&listaCompra.getLis_reactivado()!=4) //si es reactivacion despues de envio puede hacer otro informe
                 if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
                 {
                     continue;}

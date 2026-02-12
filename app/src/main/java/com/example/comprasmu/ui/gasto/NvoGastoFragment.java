@@ -109,7 +109,7 @@ public class NvoGastoFragment extends Fragment {
     private boolean yaestoyProcesando=false;
     ImageView fotomos;
 
-    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5, aceptar6, aceptar7, aceptar8,guardar;
+    Button aceptar1,aceptar2,aceptar3,aceptar4,aceptar5, aceptar6, aceptar7, guardar;
     private ImageButton btnrotar;
     public static  int REQUEST_CODE_TAKE_PHOTO=1;
     private View root;
@@ -117,10 +117,6 @@ public class NvoGastoFragment extends Fragment {
     private int  informeSel;
     private String ciudadInf;
     ComprasLog compraslog;
-
-
-    List<ListaCompra> listacomp;
-    private  ArrayList<DescripcionGenerica> listaClientes; //otra vez lista clientes
     public final static String ARG_PREGACT="comprasmu.nga_pregact";
     public final static String ARG_ESEDI="comprasmu.nga_esedi";
     public final static String ARG_INFORMESEL = "comprasmu.ngainfsel";
@@ -132,7 +128,7 @@ public class NvoGastoFragment extends Fragment {
     InformeGastoDet detalleEdit;
     int totalgastos;
     int totalotros; //solo puede capturar 5
-    int etapa=6;
+
     float totalval;
     private ImageButton btntomarf;
     NvoGastoViewModel niviewModel;
@@ -201,6 +197,12 @@ public class NvoGastoFragment extends Fragment {
 
             llcomentarios.setVisibility(View.GONE);
             getConceptos();
+            if (Constantes.CIUDADTRABAJO == null || Constantes.CIUDADTRABAJO.equals("")) {
+                //falta definir
+                Toast.makeText(getActivity(), "Falta definir ciudad de trabajo", Toast.LENGTH_SHORT).show();
+                salir();
+                 return root;
+            }
             ciudadInf=Constantes.CIUDADTRABAJO;
             if (getArguments() != null) {
                 // Log.d(TAG,"aqui");
@@ -383,7 +385,6 @@ public class NvoGastoFragment extends Fragment {
                     {
                         Toast.makeText(getActivity(),"Costo inválido, verifique",Toast.LENGTH_LONG).show();
 
-                        return;
                     }
 
 
@@ -464,7 +465,7 @@ public class NvoGastoFragment extends Fragment {
              cliente.setBackgroundResource(R.drawable.valuecellborder);
              numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
              numuestra.setBackgroundResource(R.drawable.valuecellborder);
-             costo.setText(Constantes.SIMBOLOMON+""+new DecimalFormat("#.00").format(detalle.getCosto()));
+             costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.00").format(detalle.getCosto()));
              costo.setBackgroundResource(R.drawable.valuecellborder);
            //  cliente.setTextAppearance(context, R.style.mystyle);
              cliente.setPadding(30,10,30,10);
@@ -491,7 +492,7 @@ public class NvoGastoFragment extends Fragment {
         txtgatotnum.setBackgroundResource(R.drawable.valuecellborder);
         tableRow=new TableRow(getContext());
         tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-        txttotal.setText("TOTAL");
+        txttotal.setText(getString(R.string.total));
         txttotal.setPadding(30,10,30,10);
         txtgatotnum.setPadding(30,10,30,10);
         txtgastotmue.setPadding(30,10,30,10);
@@ -569,13 +570,6 @@ public class NvoGastoFragment extends Fragment {
                 case 4: //costo
                     lldescripcion.setVisibility(View.GONE);
                     llcosto.setVisibility(View.VISIBLE);
-
-                    try {
-                        String conceptosel = ((CatalogoDetalle) mBinding.spgasconcep.getSelectedItem()).getCad_descripcionesp();
-                      //  mBinding.txtgascosto.setText("COSTO " +conceptosel);
-                    }catch(Exception ex){
-
-                    }
                     preguntaAct = preguntaAct + 2; //la foto se hace obligatoria ya no pregunta si hay comprobante
 
                     break;
