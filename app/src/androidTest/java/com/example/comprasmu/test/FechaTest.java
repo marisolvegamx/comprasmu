@@ -24,6 +24,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @RunWith(AndroidJUnit4.class)
 public class FechaTest {
@@ -32,9 +33,11 @@ public class FechaTest {
 
     @Test
     public void convertirFechaTest() {
-        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yy HH:mm");
-
+        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yy");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Log.d("PRUEBAS", "termine:" +new Date(1781240400000L)+"--"+(new Date()).getTime());
+        Log.d("PRUEBAS", "termine:" +sdf.format(new Date(1781240400000L)));
+
         LocalDate fechaActual = Instant.ofEpochMilli(1781240400000L).atOffset(                        // Convert from `Instant` (always in UTC, an offset of zero) to `OffsetDateTime` which can have any offset.
                         ZoneOffset.UTC                // A constant representing an offset of zero hours-minutes-seconds, that is, UTC itself.
                 )                                 // Returns a `OffsetDateTime` object.
