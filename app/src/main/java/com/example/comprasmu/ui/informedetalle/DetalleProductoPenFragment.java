@@ -186,6 +186,7 @@ public class DetalleProductoPenFragment extends Fragment {
             }
             preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
             Log.d(TAG,"creando fragment "+preguntaAct.getId());
+            compraslog.info(TAG,"create","creando fragment "+preguntaAct.getId());
 
             if(preguntaAct.getTabla().equals("I"))
                 mViewModel.numMuestra=0;
@@ -195,10 +196,6 @@ public class DetalleProductoPenFragment extends Fragment {
             dViewModel.reactivoAct=preguntaAct.getId();
             if(ultimares!=null) {    //es edicion
                isEdicion = true;
-            //    if(preguntaAct.getId()==52||preguntaAct.getId()==53||preguntaAct.getId()==54){
-               //     {
-                        //reviso si ya tengo muestra
-                Log.d(TAG,"mmmmmmmmmmm"+preguntaAct.getId());
 
            }
            else
@@ -529,7 +526,7 @@ public class DetalleProductoPenFragment extends Fragment {
             campo.value
 
         }*/
-            camposForm.add(campo);
+        camposForm.add(campo);
 
         cf=new CreadorFormulario(camposForm,getContext());
         sv.addView(cf.crearFormulario());
@@ -601,6 +598,7 @@ public class DetalleProductoPenFragment extends Fragment {
             mViewModel.numMuestra = 4;
         }
         Log.e(TAG, "--nuevo nummuestras:" + mViewModel.numMuestra);
+        compraslog.info(TAG,"iniciarNumMuestra","--nuevo nummuestras:" + mViewModel.numMuestra);
 
     }
     public void cargarClientes(CampoForm campo) {
@@ -615,6 +613,7 @@ public class DetalleProductoPenFragment extends Fragment {
         List<ListaCompra> listacomp= lcviewModel.cargarPestanasxEtaSimp(Constantes.CIUDADTRABAJO);
         clientesAsig = convertirListaaPlantas(listacomp, clientesprev, mViewModel.visita.getTiendaId());
         Log.d(TAG, "*regresó de la consulta de clientes " + clientesAsig.size());
+        compraslog.info(TAG,"buscarClientes","*regresó de la consulta de clientes " + clientesAsig.size());
 
 
     }
@@ -1090,6 +1089,8 @@ public class DetalleProductoPenFragment extends Fragment {
             //necestio saber si ya habia guardado informe
             //veo si ya existe el informe o hay que crearlo
             Log.d(TAG, "primero guardando informe nummuestra"+mViewModel.numMuestra+"-- id informe"+mViewModel.getIdInformeNuevo());
+            compraslog.info(TAG, "guardarMuestra","primero guardando informe nummuestra"+mViewModel.numMuestra+"-- id informe"+mViewModel.getIdInformeNuevo());
+
             if(mViewModel.numMuestra==2)
                  sigmuestra="terceraMuestra";
             if(mViewModel.numMuestra==3)

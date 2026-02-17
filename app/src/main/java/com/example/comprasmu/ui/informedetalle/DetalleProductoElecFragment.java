@@ -534,6 +534,8 @@ public class DetalleProductoElecFragment extends DetalleProductoPenFragment{
                         //la muestra la guarde en la 42
 
                         Log.d(TAG,"dice que no");
+                        compraslog.info(TAG,"siguiente","no hay mas cliente finaliza visita "+mViewModel.visita.getId());
+
                         //es la 43 //finalizo preinforme
                         mViewModel.finalizarVisita(mViewModel.visita.getId());
                         mViewModel.eliminarTblTemp();
