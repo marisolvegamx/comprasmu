@@ -186,7 +186,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void>  {
         {
             version = "1999-09-09"; //una fecha muy antigua
         }
-
+        version = "1999-09-09";
         InfEtapaDetRepoImpl infEtapaDetRepo=new InfEtapaDetRepoImpl(this.act);
         PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         LiveData<CambiosInformesReponse> lcambiosInformesResponse=peticionesServidor.getCambiosInformes(indice,version);
@@ -413,7 +413,9 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void>  {
                     //modifico
                     informeDetOrig.setOrigen(det.getOrigen());
                     informeDetOrig.setQr(det.getQr());
+                    flog.info(TAG,"actualizarInformeCompraDet","hubo cambios en informes"+det.getId()+" caducidad:"+det.getCaducidad());
                     informeDetOrig.setCaducidad(det.getCaducidad());
+                    flog.info(TAG,"actualizarInformeCompraDet","fecha despues:"+informeDetOrig.getCaducidad());
                     informeDetOrig.setCodigo(det.getCodigo());
                     informeDetOrig.setCosto(det.getCosto());
                     informeDetOrig.setAtributoa(det.getAtributoa());
