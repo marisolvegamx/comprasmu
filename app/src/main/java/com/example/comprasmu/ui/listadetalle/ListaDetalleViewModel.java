@@ -59,6 +59,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 public class ListaDetalleViewModel extends AndroidViewModel {
 
@@ -406,6 +407,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
         public String ordenarCodigosNoPermitidos( String noPermitidos, int criterio,  ListaDetalleBu detalle,int plantasel) {
         SimpleDateFormat sdfcodigo= new SimpleDateFormat("dd-MM-yy");
+        sdfcodigo.setTimeZone(TimeZone.getTimeZone("UTC"));
         List<String> otodo= new ArrayList<String>();
         List<Date> fechas=new ArrayList<Date>();
         String resultado = "";

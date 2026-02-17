@@ -45,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 public class VerInformeDetFragment extends Fragment {
     public LiveData<InformeCompraDetalle> informeSel;
@@ -102,6 +103,7 @@ public class VerInformeDetFragment extends Fragment {
         Log.d("VerInformeDFragment1","creando fragment");
 
         sdf=new SimpleDateFormat("dd-MM-yy");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         // Inflate the layout for this fragment
         startui();
 
