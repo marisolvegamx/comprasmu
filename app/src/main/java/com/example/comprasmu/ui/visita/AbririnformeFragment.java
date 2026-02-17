@@ -1486,7 +1486,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             String[] auxiliar=coordenadasMapa.split(",");
             double x=Double.parseDouble(auxiliar[0]);
             double y=Double.parseDouble(auxiliar[1]);
-            boolean resp=ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,50);
+            milog.info(TAG,"guardarUbicacion", "coordenadas:"+ultimaLoc.getLatitude()+","+ ultimaLoc.getLongitude()+"--"+x+","+y);
+            boolean resp=ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,60);
             Log.i(TAG,"RESPUESTA DISTANCIA"+resp);
             //uso un error de 2 metros
             if(!resp)
