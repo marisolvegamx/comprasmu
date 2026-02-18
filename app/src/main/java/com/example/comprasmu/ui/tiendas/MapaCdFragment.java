@@ -370,11 +370,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         } else {
             Log.d(TAG, "no tengo  "+LOCATION_REQUEST_CODE);
             if(alert.isMostrando())
-            alert.closeAlertDialog();
+                alert.closeAlertDialog();
             // Solicitar permiso
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_REQUEST_CODE);
-
 
         }
 
@@ -436,21 +435,20 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     return;
                 }
                 if (fusedLocationClient.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locallis);
+                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 1, locallis);
 
                     Log.d(TAG, "3");
 
                 } else  if (fusedLocationClient.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
                     //  if (Local == null) { //Validación que evita NullPointerException
                     //Requiere actualización
-                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locallis);
+                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, locallis);
 
                     // }
                     Log.d(TAG, "4");
                 } else
                     Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
 
-                this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             }
         } catch (SecurityException e)  {
@@ -499,7 +497,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     mensajetienda.setVisibility(View.VISIBLE);
                     circleNuevaTienda = mMap.addCircle(new CircleOptions()
                             .center(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
-                            .radius(100)
+                            .radius(200)
                             .strokeColor(Color.RED));
 
 
@@ -977,11 +975,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         bundle.putInt("estele", tienda.getEstele());
         bundle.putInt("estjum", tienda.getEstjum());
         this.doubleBackToExitPressedOnce = false;
-//
-        bundle.putString("coordenasmapa", tienda.getUne_coordenadasxy() );  //ahora paso las coordenadas
-        NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo, bundle);
-            //return false;
-
+        NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo,bundle);
+        //return false;
     }
 
     @Override

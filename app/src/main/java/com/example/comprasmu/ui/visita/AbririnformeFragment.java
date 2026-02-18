@@ -205,10 +205,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     double ultlongitud, ultlatitud;
     ScrollView svprincipal;
     ComprasLog milog;
-    String coordenadasMapa; //me traigo las coordenas del mapa para compararlas con las de la fachada
-    ImageButton fotofachada;
-    Button btnubicar;
-    @Override
+     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         mViewModel =
@@ -287,7 +284,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 tomarFoto(txtfotoex1, fotoex1, REQUEST_CODE_PROD1);
             }
         });
-        fotofachada= root.findViewById(R.id.btnaifotofachada);
+        ImageButton fotofachada = root.findViewById(R.id.btnaifotofachada);
 
         fotofachada.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -388,7 +385,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 }
             }
         });
-        btnubicar = root.findViewById(R.id.btnaiubic);
+        Button btnubicar = root.findViewById(R.id.btnaiubic);
         btnubicar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -539,12 +536,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                         cargarClientes();
                         crearFormulario(visita);
                         ponerDatos(visita);
-                        if(visita.getGeolocalizacion()!=null&&!visita.getGeolocalizacion().equals("")){
-                            //ya tengo foto la bloqueo
-                            fotofachada.setEnabled(false);
-                            cbfotofac.setEnabled(false);
-                            btnubicar.setEnabled(false);
-                        }
                         LinearLayout sv = root.findViewById(R.id.content_main);
                         sv.addView(cf1.crearFormulario());
                         //   sv.addView(cf2.crearFormulario());
@@ -569,7 +560,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 locationStart();
 
                 nuevaTienda = getArguments().getBoolean("nuevatienda");
-                coordenadasMapa=getArguments().getString("coordenasmapa");
+
               //  Log.d(TAG, "datosrec " + nuevaTienda);
                 if (!nuevaTienda)// es una tienda existente
                 {
@@ -817,15 +808,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             }
 
         if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, Local);
+                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 1, Local);
                 provedorgps = LocationManager.NETWORK_PROVIDER;
 
 
-        } else
-        if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+        } else   if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
             //  if (Local == null) { //Validación que evita NullPointerException
             //Requiere actualización
-            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, Local);
+            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, Local);
             provedorgps = LocationManager.GPS_PROVIDER;
 
         } else
@@ -1481,34 +1471,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public void guardarUbicacion() {
 
         Log.d("AbrirInformeFragment", "presione boton");
-        //valido la ubicacion con las coordenadas del mapa
-        if(coordenadasMapa!=null&&!coordenadasMapa.equals("")){
-            String[] auxiliar=coordenadasMapa.split(",");
-            double x=Double.parseDouble(auxiliar[0]);
-            double y=Double.parseDouble(auxiliar[1]);
-            milog.info(TAG,"guardarUbicacion", "coordenadas:"+ultimaLoc.getLatitude()+","+ ultimaLoc.getLongitude()+"--"+x+","+y);
-            boolean resp=ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,60);
-            Log.i(TAG,"RESPUESTA DISTANCIA"+resp);
-            //uso un error de 2 metros
-            if(!resp)
-            {
-                if(nuevaTienda)
-                //no es el mismo punto
-                     Toast.makeText(getActivity(),getString(R.string.usted_noseenc),Toast.LENGTH_LONG).show();
-               else
-                    Toast.makeText(getActivity(),getString(R.string.para_tomarfoto),Toast.LENGTH_LONG).show();
-
-                txtaiultubic.setText(""); //borro la ubicacion para que se mueva
-                txtubicacion.setText("");
-                //borro la foto de fachada para que vuelva a tomarla
-                txtfotofachada.setText("");
-                fotofac.setImageBitmap(null);
-
-                fotofac.setVisibility(View.GONE);
-                rotar.setVisibility(View.GONE);
-                return;
-            }
-        }
         txtaiultubic.setText(txtubicacion.getText().toString());
         buscarDireccion();
 
