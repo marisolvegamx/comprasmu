@@ -346,9 +346,11 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
         mBinding.row1.setVisibility(View.GONE);
 
         this.actualizarAtributo1(nvoInf.getClienteNombre());
-       this.actualizarAtributo2(ComprasUtils.indiceLetra(nvoInf.getIndice()));
-        this.actualizarAtributo3("TOT. MUESTRAS:"+mues);
-        this.actualizarAtributo4("TOT. CAJAS:"+cajas);
+        this.actualizarAtributo2(nvoInf.getCiudadNombre());
+       this.actualizarAtributo3(ComprasUtils.indiceLetra(nvoInf.getIndice()));
+
+        this.actualizarAtributo4("TOT. MUESTRAS:"+mues);
+        this.actualizarAtributo5("TOT. CAJAS:"+cajas);
     }
 
     public void actualizarBarraGas(String ciudad) {
@@ -443,6 +445,10 @@ public class NuevoInfEtapaActivity extends AppCompatActivity  {
     public void actualizarAtributo4(String atributo) {
         mBinding.txtnieatr4.setText(atributo);
         mBinding.row4.setVisibility(View.VISIBLE);
+    }
+    public void actualizarAtributo5(String atributo) {
+        mBinding.txtnieatr5.setText(atributo);
+        mBinding.row5.setVisibility(View.VISIBLE);
     }
 
 

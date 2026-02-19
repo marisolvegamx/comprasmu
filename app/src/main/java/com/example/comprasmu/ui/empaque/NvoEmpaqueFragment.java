@@ -406,7 +406,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
                     dialogo1.show();
                 }
-                //busco si tengo varios clientes x ciudad
+                //busco lalista de clientes que ya estan en etapa empaque para la cd
                 //   listainfetiq = mViewModel.getClientesconInf(Constantes.INDICEACTUAL,Constantes.CIUDADTRABAJO);
                 listacomp = lcViewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO,this.etapa);
 
@@ -1203,11 +1203,15 @@ public class NvoEmpaqueFragment extends Fragment {
         listaClientes =new ArrayList<DescripcionGenerica>();
         for (ListaCompra listaCompra: lista ) {
             Log.d(TAG,listaCompra.getPlantaNombre());
-           if( clientesprev!=null&&listaCompra.getLis_reactivado()!=null&&listaCompra.getLis_reactivado()!=4) //si no es reactivacion despues de envio
-                if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId()))
-                {     //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
-                    Log.d(TAG,"estoy aqui"+Arrays.asList(clientesprev));
-                    continue;}
+           if( clientesprev!=null)
+                if(Arrays.asList(clientesprev).contains(listaCompra.getClientesId())) {
+                    if (listaCompra.getLis_reactivado() == null || listaCompra.getLis_reactivado() != 4) //si no es reactivacion despues de envio
+                    {
+                        //&&IntStream.of(clientesprev).anyMatch(n -> n == listaCompra.getClientesId()))
+                        Log.d(TAG, "estoy aqui" + Arrays.asList(clientesprev));
+                        continue;
+                    }
+                }
             listaClientes.add(new DescripcionGenerica(listaCompra.getClientesId(), listaCompra.getClienteNombre()));
 
         }
