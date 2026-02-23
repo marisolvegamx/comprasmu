@@ -435,6 +435,7 @@ public class NvoEmpaqueFragment extends Fragment {
                     informetemp.setClientesId(clienteId);
                     informetemp.setIndice(Constantes.INDICEACTUAL);
                     mViewModel.setNvoinforme(informetemp);
+                    informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
                     //busco total de muestras y cajas
                     mViewModel.getCajasEtiqCdCli(ciudadInf,clienteId,Constantes.INDICEACTUAL);
                     mViewModel.totCajasEmp=mViewModel.resumenEtiq.size();
@@ -671,6 +672,7 @@ public class NvoEmpaqueFragment extends Fragment {
                 informetemp.setClienteNombre(clienteNombre);
                 informetemp.setClientesId(clienteId);
                 informetemp.setIndice(Constantes.INDICEACTUAL);
+                informetemp.setCiudadNombre(Constantes.CIUDADTRABAJO);
                 mViewModel.setNvoinforme(informetemp);
                 Log.d(TAG,"clientesel"+clienteId);
                 //busco total de muestras y cajas
