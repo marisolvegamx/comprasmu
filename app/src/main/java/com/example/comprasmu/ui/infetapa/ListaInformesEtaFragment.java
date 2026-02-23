@@ -139,7 +139,7 @@ public class ListaInformesEtaFragment extends Fragment implements InformeGenAdap
                 else if(etapa==1)
                     listainfs=mViewModel.cargarPreparacion(indice);
                         else
-                            listainfs=mViewModel.cargarEtapaAll(etapa,indice);
+                            listainfs=mViewModel.cargarEtapaAll(etapa,indice); //aqui no recuerdo bien porque es lo de informes activos y no con estatus 2 finalizados
             listainfs.observe(getViewLifecycleOwner(), new Observer<List<InformeEtapa>>() {
                 @Override
                 public void onChanged(List<InformeEtapa> informeEtapas) {
