@@ -16,21 +16,17 @@ import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Environment;
-import android.os.Parcelable;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,9 +83,12 @@ import com.example.comprasmu.utils.CreadorFormulario;
 
 import com.example.comprasmu.utils.Preguntasino;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.PolyUtil;
@@ -172,7 +171,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     private TextView mensajedir;
     LocationManager mlocManager;
     String provedorgps;
-    Localizacion Local;
+
     Location ultimaLoc;
     File rutaArchivo;
     EditText txtcomplemento; // para complemento direccion
@@ -205,9 +204,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     double ultlongitud, ultlatitud;
     ScrollView svprincipal;
     ComprasLog milog;
-    String coordenadasMapa; //me traigo las coordenas del mapa para compararlas con las de la fachada
-    ImageButton fotofachada;
-    Button btnubicar;
+    private LocationCallback locationCallback;
+    private boolean requestingLocationUpdates = false;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -287,7 +285,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 tomarFoto(txtfotoex1, fotoex1, REQUEST_CODE_PROD1);
             }
         });
-        fotofachada= root.findViewById(R.id.btnaifotofachada);
+        ImageButton fotofachada = root.findViewById(R.id.btnaifotofachada);
 
         fotofachada.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -295,7 +293,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                 if (txtubicacion.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
-                   if (Local==null)
+
                      locationStart();
                    return;
                 }
@@ -388,7 +386,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 }
             }
         });
-        btnubicar = root.findViewById(R.id.btnaiubic);
+        Button btnubicar = root.findViewById(R.id.btnaiubic);
         btnubicar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -539,12 +537,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                         cargarClientes();
                         crearFormulario(visita);
                         ponerDatos(visita);
-                        if(visita.getGeolocalizacion()!=null&&!visita.getGeolocalizacion().equals("")){
-                            //ya tengo foto la bloqueo
-                            fotofachada.setEnabled(false);
-                            cbfotofac.setEnabled(false);
-                            btnubicar.setEnabled(false);
-                        }
                         LinearLayout sv = root.findViewById(R.id.content_main);
                         sv.addView(cf1.crearFormulario());
                         //   sv.addView(cf2.crearFormulario());
@@ -569,7 +561,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 locationStart();
 
                 nuevaTienda = getArguments().getBoolean("nuevatienda");
-                coordenadasMapa=getArguments().getString("coordenasmapa");
+
               //  Log.d(TAG, "datosrec " + nuevaTienda);
                 if (!nuevaTienda)// es una tienda existente
                 {
@@ -793,9 +785,13 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
      }*/
     private void locationStart() {
 
-        mlocManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Local = new Localizacion();
+        // 1. Crear la solicitud de ubicación
+        createLocationRequest();
 
+        // 2. Crear el Callback para recibir las actualizaciones
+        createLocationCallback();
+
+        mlocManager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         final boolean networkEnabled = mlocManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -816,23 +812,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 return;
             }
 
-        if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, Local);
-                provedorgps = LocationManager.NETWORK_PROVIDER;
-
-
-        } else
-        if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
-            //  if (Local == null) { //Validación que evita NullPointerException
-            //Requiere actualización
-            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, Local);
-            provedorgps = LocationManager.GPS_PROVIDER;
-
-        } else
-                Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
-
-        Log.i(TAG,"quedo esta "+ provedorgps);
-       // }
+        startLocationUpdates();
 
     }
 
@@ -962,22 +942,19 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     @Override
     public void onPause() {
         super.onPause();
-      /*  if (Local != null)
-            Local.desactivar();*/
+        stopLocationUpdates();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (Local != null)
-            Local.desactivar();
+        stopLocationUpdates();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (Local != null)
-            Local.desactivar();
+        stopLocationUpdates();
 
 
         mViewModel=null;
@@ -1481,34 +1458,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public void guardarUbicacion() {
 
         Log.d("AbrirInformeFragment", "presione boton");
-        //valido la ubicacion con las coordenadas del mapa
-        if(coordenadasMapa!=null&&!coordenadasMapa.equals("")){
-            String[] auxiliar=coordenadasMapa.split(",");
-            double x=Double.parseDouble(auxiliar[0]);
-            double y=Double.parseDouble(auxiliar[1]);
-            milog.info(TAG,"guardarUbicacion", "coordenadas:"+ultimaLoc.getLatitude()+","+ ultimaLoc.getLongitude()+"--"+x+","+y);
-            boolean resp=ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,60);
-            Log.i(TAG,"RESPUESTA DISTANCIA"+resp);
-            //uso un error de 2 metros
-            if(!resp)
-            {
-                if(nuevaTienda)
-                //no es el mismo punto
-                     Toast.makeText(getActivity(),getString(R.string.usted_noseenc),Toast.LENGTH_LONG).show();
-               else
-                    Toast.makeText(getActivity(),getString(R.string.para_tomarfoto),Toast.LENGTH_LONG).show();
-
-                txtaiultubic.setText(""); //borro la ubicacion para que se mueva
-                txtubicacion.setText("");
-                //borro la foto de fachada para que vuelva a tomarla
-                txtfotofachada.setText("");
-                fotofac.setImageBitmap(null);
-
-                fotofac.setVisibility(View.GONE);
-                rotar.setVisibility(View.GONE);
-                return;
-            }
-        }
         txtaiultubic.setText(txtubicacion.getText().toString());
         buscarDireccion();
 
@@ -1756,8 +1705,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         lastClickTime=0;
         if(guardar()) {
 
-            if(Local!=null)
-                Local.desactivar();
+            stopLocationUpdates();
             NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
         }
     }
@@ -2013,58 +1961,44 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         mListAdapter.notifyDataSetChanged();
     }
 
+    private void createLocationRequest() {
+        locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000) // Intervalo deseado de 10 segundos
+                .setWaitForAccurateLocation(false)
+                .setMinUpdateIntervalMillis(5000) // Intervalo mínimo de 5 segundos
+                .build();
+    }
 
-    public class Localizacion implements LocationListener {
-
-        public void desactivar() {
-            if ( mlocManager!=null) {
-                Log.i(TAG,"desactivando");
-                mlocManager.removeUpdates(Local);
+    private void createLocationCallback() {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if(getActivity()!=null&&txtubicacion!=null) {
+                    for (Location location : locationResult.getLocations()) {
+                        mostrarPosicion(location);
+                    }
+                }
             }
-            if(alert.isMostrando())
-                alert.closeAlertDialog();
-            mlocManager=null;
-            Local=null;
+        };
+    }
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // La comprobación de permisos ya se hizo, pero es requerida por el linter
+            return;
         }
+        fusedLocationClient.requestLocationUpdates(locationRequest,
+                locationCallback,
+                Looper.getMainLooper()); // El Looper en el que se ejecutarán los callbacks
+        requestingLocationUpdates = true;
+        Log.d(TAG, "Iniciando actualizaciones de ubicación");
+    }
 
-        @Override
-        public void onLocationChanged(Location loc) {
-            // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
-            // debido a la deteccion de un cambio de ubicacion
-            if(getActivity()!=null&&txtubicacion!=null) {
-
-                mostrarPosicion(loc);
-
-            }
-
-        }
-        @Override
-        public void onProviderDisabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es desactivado
-          //  Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "---------------gps desactivado");
-        }
-        @Override
-        public void onProviderEnabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es activado
-            Log.i(TAG, "---------------gps activado");
-        }
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            switch (status) {
-                case LocationProvider.AVAILABLE:
-                    Log.d("debug", "LocationProvider.AVAILABLE");
-                    break;
-                case LocationProvider.OUT_OF_SERVICE:
-                    Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
-                    break;
-                case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                    Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
-                    break;
-            }
-        }
-
-
+    private void stopLocationUpdates() {
+        if(requestingLocationUpdates)
+        fusedLocationClient.removeLocationUpdates(locationCallback);
+        requestingLocationUpdates = false;
+        if(alert!=null&&alert.isMostrando())
+            alert.closeAlertDialog();
+        Log.d(TAG, "Deteniendo actualizaciones de ubicación");
     }
     public void mostrarPosicion(Location location){
         if(alert.isMostrando())
@@ -2200,6 +2134,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public void onResume() {
         super.onResume();
         Log.d(TAG,"Estoy aqui ptra vez");
+        if (requestingLocationUpdates) {
+            startLocationUpdates();
+        }
     }
 
     @Override
