@@ -499,7 +499,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     mensajetienda.setVisibility(View.VISIBLE);
                     circleNuevaTienda = mMap.addCircle(new CircleOptions()
                             .center(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
-                            .radius(100)
+                            .radius(200)
                             .strokeColor(Color.RED));
 
 
