@@ -450,7 +450,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 } else
                     Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
 
-                this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             }
         } catch (SecurityException e)  {
@@ -977,11 +976,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         bundle.putInt("estele", tienda.getEstele());
         bundle.putInt("estjum", tienda.getEstjum());
         this.doubleBackToExitPressedOnce = false;
-//
-        bundle.putString("coordenasmapa", tienda.getUne_coordenadasxy() );  //ahora paso las coordenadas
-        NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo, bundle);
-            //return false;
-
+        NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo,bundle);
+        //return false;
     }
 
     @Override
