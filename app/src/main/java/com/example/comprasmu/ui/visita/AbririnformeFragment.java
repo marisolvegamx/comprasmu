@@ -13,8 +13,6 @@ import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -85,6 +83,7 @@ import com.example.comprasmu.utils.Preguntasino;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationRequest.;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
