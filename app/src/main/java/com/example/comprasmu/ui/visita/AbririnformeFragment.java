@@ -16,21 +16,17 @@ import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Environment;
-import android.os.Parcelable;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,9 +83,12 @@ import com.example.comprasmu.utils.CreadorFormulario;
 
 import com.example.comprasmu.utils.Preguntasino;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.PolyUtil;
@@ -172,7 +171,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     private TextView mensajedir;
     LocationManager mlocManager;
     String provedorgps;
-    Localizacion Local;
+
     Location ultimaLoc;
     File rutaArchivo;
     EditText txtcomplemento; // para complemento direccion
@@ -205,7 +204,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     double ultlongitud, ultlatitud;
     ScrollView svprincipal;
     ComprasLog milog;
-     @Override
+    private LocationCallback locationCallback;
+    private boolean requestingLocationUpdates = false;
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         mViewModel =
@@ -256,7 +257,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         ImageButton fotoexhibido = root.findViewById(R.id.btnaifotoexhibido);
         guardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                    v.setEnabled(false);
+                v.setEnabled(false);
                 long currentClickTime= SystemClock.elapsedRealtime();
                 // preventing double, using threshold of 1000 ms
                 if (currentClickTime - lastClickTime < 5000){
@@ -292,9 +293,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                 if (txtubicacion.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
-                   if (Local==null)
-                     locationStart();
-                   return;
+
+                    locationStart();
+                    return;
                 }
                 //comparo las coordenadas con la del mapa
                 tomarFoto(txtfotofachada, fotofac, REQUEST_CODE_TAKE_PHOTO);
@@ -442,7 +443,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         }
 
-       // locationStart();
+        // locationStart();
         Bundle datosRecuperados = getArguments();
         if (datosRecuperados != null && getArguments().getInt(EXTRAPREINFORME_ID) > 0) {
             // No hay datos, manejar excepción
@@ -504,7 +505,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 //es edicion
                 isEdicion = true;
                 alert=new LoadingAlert(getActivity());
-             //   alert.setMensaje(getString(R.string.validando_ubicacion));
+                //   alert.setMensaje(getString(R.string.validando_ubicacion));
                 //  alert.startAlert();
                 locationStart();
                 nuevoId = mViewModel.start(categoryId, getActivity());
@@ -550,8 +551,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 //reviso si no hay visitas abiertas
                 boolean abierto = mViewModel.informesAbiertos();
                 if (abierto){
-                            alertaAbierto();
-                            return;
+                    alertaAbierto();
+                    return;
                 }
 
                 alert=new LoadingAlert(getActivity());
@@ -561,7 +562,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                 nuevaTienda = getArguments().getBoolean("nuevatienda");
 
-              //  Log.d(TAG, "datosrec " + nuevaTienda);
+                //  Log.d(TAG, "datosrec " + nuevaTienda);
                 if (!nuevaTienda)// es una tienda existente
                 {
 
@@ -603,9 +604,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             boolean abierto = mViewModel.informesAbiertos();
 
             if (abierto){
-                        alertaAbierto();
-                        return;
-                }
+                alertaAbierto();
+                return;
+            }
 
             nuevoId = mViewModel.start(0, getActivity());
             estatusPepsi =estatusPen=estatusElec=estatusJum= 1;
@@ -649,12 +650,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             //las fotos exhib
             // for(ProductoExhibidoDao.ProductoExhibidoFoto fotoe:fotosExh) {
             if (fotosExh != null && fotosExh.size() > 0) {
-            //    Log.d(TAG, "fotos exh----" + fotosExh.size());
-            //    Log.d(TAG, "fotos exh ruta" + fotosExh.get(0).ruta);
+                //    Log.d(TAG, "fotos exh----" + fotosExh.size());
+                //    Log.d(TAG, "fotos exh ruta" + fotosExh.get(0).ruta);
                 if(fotosExh.get(0).imagenId==0){
                     cbfotoex.setChecked(true);
                 }else
-                cargarFotos(fotosExh.get(0).ruta, txtfotoex1, btnrotar1, fotoex1);
+                    cargarFotos(fotosExh.get(0).ruta, txtfotoex1, btnrotar1, fotoex1);
                 //  Log.d(TAG,);
 //                 Log.d(TAG,"a ver"+fotosExh.get(0).clienteId+"-"+Constantes.clientesAsignados.indexOf(fotosExh.get(0).clienteId));
                 int pos = buscarEnClientes(fotosExh.get(0).clienteId, clientesAsignados);
@@ -684,7 +685,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 if(fotosExh.get(1).imagenId==0){
                     cbfotoex2.setChecked(true);
                 }else
-                cargarFotos(fotosExh.get(1).ruta, txtfotoex2, btnrotar2, fotoex2);
+                    cargarFotos(fotosExh.get(1).ruta, txtfotoex2, btnrotar2, fotoex2);
                 int pos = buscarEnClientes(fotosExh.get(1).clienteId, clientesAsignados2);
                 if (pos > -1) {
                     spinn2.setSelection(pos, true);
@@ -705,7 +706,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 if(fotosExh.get(2).imagenId==0){
                     cbfotoex3.setChecked(true);
                 }else
-                cargarFotos(fotosExh.get(2).ruta, txtfotoex3, btnrotar3, fotoex3);
+                    cargarFotos(fotosExh.get(2).ruta, txtfotoex3, btnrotar3, fotoex3);
                 int pos = buscarEnClientes(fotosExh.get(2).clienteId, clientesAsignados3);
                 if (pos > -1)
                     spinn3.setSelection(pos, true);
@@ -737,32 +738,32 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     }
 
     public int buscarEnClientes(int seleccion, List<DescripcionGenerica> listaclientes) {
-      if(listaclientes!=null)
-        for (int i = 0; i < listaclientes.size(); i++) {
-          //  Log.d(TAG, "clientesas " + listaclientes.get(i).getId() + "--" + seleccion);
-            if (listaclientes.get(i).getId() == seleccion)
-                return i;
-        }
+        if(listaclientes!=null)
+            for (int i = 0; i < listaclientes.size(); i++) {
+                //  Log.d(TAG, "clientesas " + listaclientes.get(i).getId() + "--" + seleccion);
+                if (listaclientes.get(i).getId() == seleccion)
+                    return i;
+            }
         return -1;
     }
     public List<DescripcionGenerica>  buscarEnClientesAtr( List<DescripcionGenerica> listaclientes) {
-      //busco la seleccion anterior
+        //busco la seleccion anterior
         DescripcionGenerica cliente = (DescripcionGenerica) spinn.getSelectedItem();
-       int seleccion=cliente.getId();
-       int pos=buscarEnClientes(seleccion,listaclientes);
-       if(pos>-1)
-        listaclientes.remove(pos);
-       cliente = (DescripcionGenerica) spinn2.getSelectedItem();
-       seleccion=cliente.getId();
-       pos=buscarEnClientes(seleccion,listaclientes);
+        int seleccion=cliente.getId();
+        int pos=buscarEnClientes(seleccion,listaclientes);
         if(pos>-1)
             listaclientes.remove(pos);
-         cliente = (DescripcionGenerica) spinn3.getSelectedItem();
-         seleccion=cliente.getId();
-         pos=buscarEnClientes(seleccion,listaclientes);
+        cliente = (DescripcionGenerica) spinn2.getSelectedItem();
+        seleccion=cliente.getId();
+        pos=buscarEnClientes(seleccion,listaclientes);
         if(pos>-1)
             listaclientes.remove(pos);
-      return listaclientes;
+        cliente = (DescripcionGenerica) spinn3.getSelectedItem();
+        seleccion=cliente.getId();
+        pos=buscarEnClientes(seleccion,listaclientes);
+        if(pos>-1)
+            listaclientes.remove(pos);
+        return listaclientes;
     }
     public void cargarFotos(String s, EditText txtruta, ImageButton boton, ImageView iv) {
         txtruta.setText(s);
@@ -784,45 +785,34 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
      }*/
     private void locationStart() {
 
-        mlocManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Local = new Localizacion();
+        // 1. Crear la solicitud de ubicación
+        createLocationRequest();
 
+        // 2. Crear el Callback para recibir las actualizaciones
+        createLocationCallback();
+
+        mlocManager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         final boolean networkEnabled = mlocManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         if (!gpsEnabled&&!networkEnabled) {
             Log.i(TAG, "gps inactivo");
-                Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(settingsIntent);
+            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(settingsIntent);
             if(alert.isMostrando())
                 alert.closeAlertDialog();
-                return;
-            }
+            return;
+        }
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+                && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
             if(alert.isMostrando())
                 alert.closeAlertDialog();
-                return;
-            }
+            return;
+        }
 
-        if (mlocManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 1, Local);
-                provedorgps = LocationManager.NETWORK_PROVIDER;
-
-
-        } else   if (mlocManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
-            //  if (Local == null) { //Validación que evita NullPointerException
-            //Requiere actualización
-            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, Local);
-            provedorgps = LocationManager.GPS_PROVIDER;
-
-        } else
-                Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
-
-        Log.i(TAG,"quedo esta "+ provedorgps);
-       // }
+        startLocationUpdates();
 
     }
 
@@ -836,7 +826,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         if (estatusPepsi == 0) {
 
             for (ListaCompra compra:data
-                 ) {
+            ) {
                 if(compra.getClientesId()==4) //quito pepsi
                     continue;
                 nvadata.add(compra);
@@ -890,7 +880,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             return;
         }
-     //   Log.d(TAG, "regresó de la consulta " + totClientes);
+        //   Log.d(TAG, "regresó de la consulta " + totClientes);
 
         clientesAsignados = ComprasUtils.convertirListaaClientes(data);
         if (totClientes > 1) {
@@ -952,22 +942,19 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     @Override
     public void onPause() {
         super.onPause();
-      /*  if (Local != null)
-            Local.desactivar();*/
+        stopLocationUpdates();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (Local != null)
-            Local.desactivar();
+        stopLocationUpdates();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (Local != null)
-            Local.desactivar();
+        stopLocationUpdates();
 
 
         mViewModel=null;
@@ -1318,7 +1305,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
                         mostrarOcultarlayout(View.VISIBLE, ll4);
                         DescripcionGenerica cliente = (DescripcionGenerica) spinn3.getSelectedItem();
-                         spinn3.setEnabled(false);
+                        spinn3.setEnabled(false);
 
 
                         clientesAsignados4=buscarEnClientesAtr(clientesAsignados4);
@@ -1443,7 +1430,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
       }*/
     public void onSaveInstanceState(Bundle savedInstanceState) {
-       super.onSaveInstanceState(savedInstanceState);
+        super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt(KEY_ETAPAACT,Constantes.ETAPAACTUAL );
         savedInstanceState.putString(KEY_USUARIO, Constantes.CLAVEUSUARIO );
         savedInstanceState.putString(KEY_INDICEACT, Constantes.INDICEACTUAL );
@@ -1453,7 +1440,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         savedInstanceState.putInt(CODEREQ,globrequestcode );
         if(ultimaLoc!=null)
         { savedInstanceState.putDouble(BLATITUD,ultimaLoc.getLatitude() );
-        savedInstanceState.putDouble(BLONGITUD,ultimaLoc.getLongitude() );}
+            savedInstanceState.putDouble(BLONGITUD,ultimaLoc.getLongitude() );}
 
     }
 
@@ -1476,85 +1463,85 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
     }
     public boolean guardar(){
-      try {
-        EditText input7 = root.findViewById(1007);
-        EditText input8 = root.findViewById(1008);
-        EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
+        try {
+            EditText input7 = root.findViewById(1007);
+            EditText input8 = root.findViewById(1008);
+            EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
 
-        Log.d(TAG,"foto fachada"+fotofachada.getText().toString());
-       // EditText input13 = root.findViewById(1013);
-        mViewModel.visita=new Visita();
-        mViewModel.visita.setId(nuevoId);
-        EditText input1;
-        if(nuevaTienda){
-            input1 = root.findViewById(1001);
-            if(input1.getText().toString().equals("")) {
-                Toast.makeText(getActivity(), getString(R.string.error_nombre_tienda), Toast.LENGTH_SHORT).show();
-                guardar.setEnabled(true);
-                return false;
-            }
-            //tipo tienda
-            Spinner tipotien = root.findViewById(1005);
-            if(tipotien!=null) {
-                int op=(int)tipotien.getSelectedItemId();
-
-                if (op<1){
-                    Toast.makeText(getActivity(), "Seleccione el tipo de tienda", Toast.LENGTH_SHORT).show();
+            Log.d(TAG,"foto fachada"+fotofachada.getText().toString());
+            // EditText input13 = root.findViewById(1013);
+            mViewModel.visita=new Visita();
+            mViewModel.visita.setId(nuevoId);
+            EditText input1;
+            if(nuevaTienda){
+                input1 = root.findViewById(1001);
+                if(input1.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), getString(R.string.error_nombre_tienda), Toast.LENGTH_SHORT).show();
                     guardar.setEnabled(true);
                     return false;
                 }
+                //tipo tienda
+                Spinner tipotien = root.findViewById(1005);
+                if(tipotien!=null) {
+                    int op=(int)tipotien.getSelectedItemId();
+
+                    if (op<1){
+                        Toast.makeText(getActivity(), "Seleccione el tipo de tienda", Toast.LENGTH_SHORT).show();
+                        guardar.setEnabled(true);
+                        return false;
+                    }
+                }
             }
-        }
             if (Build.PRODUCT.contains ("sdk")) {//pruebas y el lenovo//entro rapido
                 txtaiultubic.setText("ubicacion reg");
             }
-        if (txtaiultubic.getText().toString().equals("")) {
-            Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
-            guardar.setEnabled(true);
-            return false;
-        }
-        if (fotofachada.getText().toString().equals("")&&!cbfotofac.isChecked()) {
-            Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
-            guardar.setEnabled(true);
-            return false;
-        }
-        //Log.d(TAG,"xxxxxx"+txtfotoex1.getText().toString());
-        if(estatusPepsi==0)//no puedo comprar pepsi{
-        {
-            DescripcionGenerica cliente=(DescripcionGenerica)spinn.getSelectedItem();
-            Log.d(TAG,"valor combolist"+cliente.getId());
-            if(cliente.getId()==4){
-                Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+            if (txtaiultubic.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
                 guardar.setEnabled(true);
-                return false ;
+                return false;
             }
-            if(spinn2!=null) {
-                DescripcionGenerica cliente2 = (DescripcionGenerica) spinn2.getSelectedItem();
-                if (cliente2!=null&&cliente2.getId() == 4) {
+            if (fotofachada.getText().toString().equals("")&&!cbfotofac.isChecked()) {
+                Toast.makeText(getActivity(), "Falta foto de fachada o activar casilla de \"No se permite tomar foto\"", Toast.LENGTH_SHORT).show();
+                guardar.setEnabled(true);
+                return false;
+            }
+            //Log.d(TAG,"xxxxxx"+txtfotoex1.getText().toString());
+            if(estatusPepsi==0)//no puedo comprar pepsi{
+            {
+                DescripcionGenerica cliente=(DescripcionGenerica)spinn.getSelectedItem();
+                Log.d(TAG,"valor combolist"+cliente.getId());
+                if(cliente.getId()==4){
                     Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
                     guardar.setEnabled(true);
-                    return false;
+                    return false ;
                 }
-            }
-            if(spinn3!=null) {
-                DescripcionGenerica cliente3 = (DescripcionGenerica) spinn3.getSelectedItem();
-                if (cliente3!=null&&cliente3.getId() == 4) {
-                    Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
-                    guardar.setEnabled(true);
-                    return false;
+                if(spinn2!=null) {
+                    DescripcionGenerica cliente2 = (DescripcionGenerica) spinn2.getSelectedItem();
+                    if (cliente2!=null&&cliente2.getId() == 4) {
+                        Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                        guardar.setEnabled(true);
+                        return false;
+                    }
                 }
-            }
-            if(spinn4!=null) {
-                DescripcionGenerica cliente4 = (DescripcionGenerica) spinn4.getSelectedItem();
-                if (cliente4!=null&&cliente4.getId() == 4) {
-                    Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
-                    guardar.setEnabled(true);
-                    return false;
+                if(spinn3!=null) {
+                    DescripcionGenerica cliente3 = (DescripcionGenerica) spinn3.getSelectedItem();
+                    if (cliente3!=null&&cliente3.getId() == 4) {
+                        Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                        guardar.setEnabled(true);
+                        return false;
+                    }
                 }
-            }
+                if(spinn4!=null) {
+                    DescripcionGenerica cliente4 = (DescripcionGenerica) spinn4.getSelectedItem();
+                    if (cliente4!=null&&cliente4.getId() == 4) {
+                        Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                        guardar.setEnabled(true);
+                        return false;
+                    }
+                }
 
 
-        }
+            }
 
 
             if(nuevaTienda){
@@ -1634,8 +1621,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             mViewModel.visita.setClaveUsuario(Constantes.CLAVEUSUARIO);
 
-         //   EditText input2 = root.findViewById(1001);
-        //    mViewModel.informe.setNombreTemporal(nombreTemporal.getText().toString());
+            //   EditText input2 = root.findViewById(1001);
+            //    mViewModel.informe.setNombreTemporal(nombreTemporal.getText().toString());
             mViewModel.visita.setEstatus(1);
             mViewModel.visita.setEstatusSync(0);
             mViewModel.visita.setCreatedAt(new Date());
@@ -1643,44 +1630,44 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
             MutableLiveData<Integer> resv=mViewModel.guardarVisita(getActivity(),this);
             resv.observe(this, new Observer<Integer>() {
-               @Override
-               public void onChanged(Integer integer) {
-                   mViewModel.eliminarTblTemp();
-                   limpiarVariables();
-                   guardado=true;
+                @Override
+                public void onChanged(Integer integer) {
+                    mViewModel.eliminarTblTemp();
+                    limpiarVariables();
+                    guardado=true;
 
-                       if(!cbfotoex.isChecked()) {
-                           guardarFotoEx(txtfotoex1.getText().toString(), nuevoId, spinn);
-                       } else
+                    if(!cbfotoex.isChecked()) {
+                        guardarFotoEx(txtfotoex1.getText().toString(), nuevoId, spinn);
+                    } else
 
-                           guardarsinFotoEx( nuevoId, spinn);
+                        guardarsinFotoEx( nuevoId, spinn);
 
-                       if (snmascli1 != null && snmascli1.getRespuesta()&&!cbfotoex2.isChecked()) {
-                               Log.d(TAG, "entre aqui" + spinn.getId() + "--" + spinn2.getId());
-                               guardarFotoEx(txtfotoex2.getText().toString(), nuevoId, spinn2);
-                           }
-                       else  if (snmascli1 != null && snmascli1.getRespuesta())
-                           guardarsinFotoEx( nuevoId, spinn2);
+                    if (snmascli1 != null && snmascli1.getRespuesta()&&!cbfotoex2.isChecked()) {
+                        Log.d(TAG, "entre aqui" + spinn.getId() + "--" + spinn2.getId());
+                        guardarFotoEx(txtfotoex2.getText().toString(), nuevoId, spinn2);
+                    }
+                    else  if (snmascli1 != null && snmascli1.getRespuesta())
+                        guardarsinFotoEx( nuevoId, spinn2);
 
-                       if (snmascli2 != null && snmascli2.getRespuesta()&&!cbfotoex3.isChecked()) {
-                               guardarFotoEx(txtfotoex3.getText().toString(), nuevoId, spinn3);
-                           }
-                       else   if (snmascli2 != null && snmascli2.getRespuesta()) {
-                           guardarsinFotoEx( nuevoId, spinn3);
-                       }
-                   if (snmascli3 != null && snmascli3.getRespuesta()&&!cbfotoex4.isChecked()) {
-                       guardarFotoEx(txtfotoex4.getText().toString(), nuevoId, spinn4);
-                   } else   if (snmascli3 != null && snmascli3.getRespuesta()) {
-                           guardarsinFotoEx( nuevoId, spinn4);
-                       }
+                    if (snmascli2 != null && snmascli2.getRespuesta()&&!cbfotoex3.isChecked()) {
+                        guardarFotoEx(txtfotoex3.getText().toString(), nuevoId, spinn3);
+                    }
+                    else   if (snmascli2 != null && snmascli2.getRespuesta()) {
+                        guardarsinFotoEx( nuevoId, spinn3);
+                    }
+                    if (snmascli3 != null && snmascli3.getRespuesta()&&!cbfotoex4.isChecked()) {
+                        guardarFotoEx(txtfotoex4.getText().toString(), nuevoId, spinn4);
+                    } else   if (snmascli3 != null && snmascli3.getRespuesta()) {
+                        guardarsinFotoEx( nuevoId, spinn4);
+                    }
 
 
 
-               }
-           });
-           }catch(Exception ex){
+                }
+            });
+        }catch(Exception ex){
             ex.printStackTrace();
-          //  Log.e(TAG,ex.getMessage());
+            //  Log.e(TAG,ex.getMessage());
             Toast.makeText(getActivity(), "Hubo un error al guardar intente de nuevo", Toast.LENGTH_LONG).show();
 
         }
@@ -1693,12 +1680,12 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         DescripcionGenerica cliente=(DescripcionGenerica)spinnx.getSelectedItem();
 
         //    Log.d(TAG, "guardarfoto cliente" + cliente.getId());
-            NuevoinformeViewModel ninfViewModel =
-                    new ViewModelProvider(this).get(NuevoinformeViewModel.class);
+        NuevoinformeViewModel ninfViewModel =
+                new ViewModelProvider(this).get(NuevoinformeViewModel.class);
 
-            feviewModel.guardarFoto(ruta1, cliente.getId(), cliente.getNombre(), visitasId, getActivity(), ninfViewModel);
-          //  Toast.makeText(getActivity(), "Se agregó la foto", Toast.LENGTH_LONG).show();
-            //  getActivity().finish();
+        feviewModel.guardarFoto(ruta1, cliente.getId(), cliente.getNombre(), visitasId, getActivity(), ninfViewModel);
+        //  Toast.makeText(getActivity(), "Se agregó la foto", Toast.LENGTH_LONG).show();
+        //  getActivity().finish();
 
 
     }
@@ -1708,8 +1695,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
         Log.d(TAG, "guardarfoto cliente" + cliente.getId());
         if(cliente!=null)
-        feviewModel.guardarsinFoto(cliente.getId(), cliente.getNombre(), visitasId);
-      //  Toast.makeText(getActivity(), "Se agregó la foto", Toast.LENGTH_LONG).show();
+            feviewModel.guardarsinFoto(cliente.getId(), cliente.getNombre(), visitasId);
+        //  Toast.makeText(getActivity(), "Se agregó la foto", Toast.LENGTH_LONG).show();
         //  getActivity().finish();
 
 
@@ -1718,8 +1705,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         lastClickTime=0;
         if(guardar()) {
 
-            if(Local!=null)
-                Local.desactivar();
+            stopLocationUpdates();
             NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
         }
     }
@@ -1729,7 +1715,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     //se puede consultar el catalogo en MapdaCDFragment
     public int buscarZona(String puntotxt){
 
-       // puntotxt=" 14.5928099,-90.5060026";
+        // puntotxt=" 14.5928099,-90.5060026";
         milog.info(TAG,"buscarZona","punto "+puntotxt);
         if(puntotxt.equals("")){
             return 0;
@@ -1738,37 +1724,37 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         try {
             LatLng punto = new LatLng(Double.parseDouble(auxp[0]), Double.parseDouble(auxp[1]));
 
-        //busco las zonas de la ciudad de trabajo
-        GeocercaRepositoryImpl georep=GeocercaRepositoryImpl.getInstance(ComprasDataBase.getInstance(getContext()).getGeocercaDao());
-        List<Geocerca> zonas=georep.findsimplexCd(Constantes.CIUDADTRABAJO);
-      //  Log.i(TAG,Constantes.CIUDADTRABAJO+"--"+zonas.size());
-        LatLng p1;
-        LatLng p2;
-        LatLng p3;
-        LatLng p4;
-        if(zonas!=null)
-          for(Geocerca geo:zonas){
-            Log.d(TAG,"probando "+geo.getGeo_region());
+            //busco las zonas de la ciudad de trabajo
+            GeocercaRepositoryImpl georep=GeocercaRepositoryImpl.getInstance(ComprasDataBase.getInstance(getContext()).getGeocercaDao());
+            List<Geocerca> zonas=georep.findsimplexCd(Constantes.CIUDADTRABAJO);
+            //  Log.i(TAG,Constantes.CIUDADTRABAJO+"--"+zonas.size());
+            LatLng p1;
+            LatLng p2;
+            LatLng p3;
+            LatLng p4;
+            if(zonas!=null)
+                for(Geocerca geo:zonas){
+                    Log.d(TAG,"probando "+geo.getGeo_region());
 
-            milog.grabarError("probando geocercas buscar zona"+geo.getGeo_region());
-            String[] aux =geo.getGeo_p1().split(",");
-             p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
-            String[] aux2 =geo.getGeo_p2().split(",");
-             p2 =new LatLng(Double.parseDouble(aux2[0]), Double.parseDouble(aux2[1]));
-            String[] aux3 =geo.getGeo_p3().split(",");
-             p3 =new LatLng(Double.parseDouble(aux3[0]), Double.parseDouble(aux3[1]));
-            String[] aux4 =geo.getGeo_p4().split(",");
-             p4 =new LatLng(Double.parseDouble(aux4[0]), Double.parseDouble(aux4[1]));
-            List<LatLng> poly=new ArrayList<>();
-            poly.add(p1);
-            poly.add(p2);
-            poly.add(p3);
-            poly.add(p4);
-            //mMap.addPolygon(new PolygonOptions()
+                    milog.grabarError("probando geocercas buscar zona"+geo.getGeo_region());
+                    String[] aux =geo.getGeo_p1().split(",");
+                    p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+                    String[] aux2 =geo.getGeo_p2().split(",");
+                    p2 =new LatLng(Double.parseDouble(aux2[0]), Double.parseDouble(aux2[1]));
+                    String[] aux3 =geo.getGeo_p3().split(",");
+                    p3 =new LatLng(Double.parseDouble(aux3[0]), Double.parseDouble(aux3[1]));
+                    String[] aux4 =geo.getGeo_p4().split(",");
+                    p4 =new LatLng(Double.parseDouble(aux4[0]), Double.parseDouble(aux4[1]));
+                    List<LatLng> poly=new ArrayList<>();
+                    poly.add(p1);
+                    poly.add(p2);
+                    poly.add(p3);
+                    poly.add(p4);
+                    //mMap.addPolygon(new PolygonOptions()
 
-           if(PolyUtil.containsLocation(punto,poly,true))
-               return geo.getGeo_region();
-        }
+                    if(PolyUtil.containsLocation(punto,poly,true))
+                        return geo.getGeo_region();
+                }
         }catch(NumberFormatException ex){
             Log.e(TAG,"Error de formato "+ex.getMessage());
             Toast.makeText(getContext(), "Error de formato", Toast.LENGTH_SHORT).show();
@@ -1780,79 +1766,79 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         EditText fotofachada = root.findViewById(R.id.txtaifotofachada);
         EditText input1;
         try{
-        if(nuevaTienda){
-             input1 = root.findViewById(1001);
-             if(input1.getText().toString().equals("")) {
-                 Toast.makeText(getActivity(), getString(R.string.error_nombre_tienda), Toast.LENGTH_SHORT).show();
-                 guardar.setEnabled(true);
-                 return;
-             }
-            Spinner tipotien = root.findViewById(1005);
-            if(tipotien!=null) {
-                int op=(int)tipotien.getSelectedItemId();
+            if(nuevaTienda){
+                input1 = root.findViewById(1001);
+                if(input1.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), getString(R.string.error_nombre_tienda), Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
+                    return;
+                }
+                Spinner tipotien = root.findViewById(1005);
+                if(tipotien!=null) {
+                    int op=(int)tipotien.getSelectedItemId();
 
-                if (op<1){
-                    Toast.makeText(getActivity(), "Seleccione el tipo de tienda", Toast.LENGTH_SHORT).show();
+                    if (op<1){
+                        Toast.makeText(getActivity(), "Seleccione el tipo de tienda", Toast.LENGTH_SHORT).show();
+                        guardar.setEnabled(true);
+                        return ;
+                    }
+                }
+            }
+            if (txtaiultubic.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
+                guardar.setEnabled(true);
+                return;
+            }
+            if (fotofachada.getText().toString().equals("")&&!cbfotofac.isChecked()) {
+
+                Toast.makeText(getActivity(), "Falta foto de fachada", Toast.LENGTH_SHORT).show();
+                guardar.setEnabled(true);
+                return ;
+            }
+            if(estatusPepsi==0)//no puedo comprar pepsi{
+            {
+                DescripcionGenerica cliente=(DescripcionGenerica)spinn.getSelectedItem();
+                if(cliente.getId()==4){
+                    Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
                     guardar.setEnabled(true);
                     return ;
                 }
-            }
-        }
-        if (txtaiultubic.getText().toString().equals("")) {
-            Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
-            guardar.setEnabled(true);
-            return;
-        }
-        if (fotofachada.getText().toString().equals("")&&!cbfotofac.isChecked()) {
-
-            Toast.makeText(getActivity(), "Falta foto de fachada", Toast.LENGTH_SHORT).show();
-            guardar.setEnabled(true);
-            return ;
-        }
-        if(estatusPepsi==0)//no puedo comprar pepsi{
-        {
-            DescripcionGenerica cliente=(DescripcionGenerica)spinn.getSelectedItem();
-            if(cliente.getId()==4){
-                Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
-                guardar.setEnabled(true);
-                return ;
-            }
-            if(spinn2!=null) {
-                DescripcionGenerica cliente2 = (DescripcionGenerica) spinn2.getSelectedItem();
-                if (cliente2!=null&&cliente2.getId() == 4) {
-                    Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
-                    guardar.setEnabled(true);
-                    return;
+                if(spinn2!=null) {
+                    DescripcionGenerica cliente2 = (DescripcionGenerica) spinn2.getSelectedItem();
+                    if (cliente2!=null&&cliente2.getId() == 4) {
+                        Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                        guardar.setEnabled(true);
+                        return;
+                    }
                 }
-            }
-            if(spinn3!=null) {
-                DescripcionGenerica cliente3 = (DescripcionGenerica) spinn3.getSelectedItem();
-                if (cliente3!=null&&cliente3.getId() == 4) {
-                    Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
-                    guardar.setEnabled(true);
-                    return;
+                if(spinn3!=null) {
+                    DescripcionGenerica cliente3 = (DescripcionGenerica) spinn3.getSelectedItem();
+                    if (cliente3!=null&&cliente3.getId() == 4) {
+                        Toast.makeText(getActivity(), "En esta tienda no puede comprar producto de Pepsi", Toast.LENGTH_SHORT).show();
+                        guardar.setEnabled(true);
+                        return;
+                    }
                 }
+
+
             }
+            if(txtfotoex1.getText().toString().equals("")&&!cbfotoex.isChecked()){
 
-
-        }
-        if(txtfotoex1.getText().toString().equals("")&&!cbfotoex.isChecked()){
-
-            Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
-            guardar.setEnabled(true);
-            return ;
-        }if(snmascli1.getRespuesta())//veo que tenga foto etc
-            if(txtfotoex2.getText().toString().equals("")&&!cbfotoex2.isChecked()){
                 Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
                 guardar.setEnabled(true);
                 return ;
-            }
-        if(snmascli2!=null&&snmascli2.getRespuesta())//veo que tenga foto etc
-            if(txtfotoex3.getText().toString().equals("")&&!cbfotoex3.isChecked()){
-                Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
-                guardar.setEnabled(true);
-                return ;
-            }
+            }if(snmascli1.getRespuesta())//veo que tenga foto etc
+                if(txtfotoex2.getText().toString().equals("")&&!cbfotoex2.isChecked()){
+                    Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
+                    return ;
+                }
+            if(snmascli2!=null&&snmascli2.getRespuesta())//veo que tenga foto etc
+                if(txtfotoex3.getText().toString().equals("")&&!cbfotoex3.isChecked()){
+                    Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+                    guardar.setEnabled(true);
+                    return ;
+                }
 
             if(snmascli3!=null&&snmascli3.getRespuesta())//veo que tenga foto etc
                 if(txtfotoex4.getText().toString().equals("")&&!cbfotoex4.isChecked()){
@@ -1860,103 +1846,103 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                     guardar.setEnabled(true);
                     return ;
                 }
-        //actualizo campos
-        if(nuevaTienda){
-             input1 = root.findViewById(1001); //nombre de la tienda
-            EditText input2 = root.findViewById(1002);
+            //actualizo campos
+            if(nuevaTienda){
+                input1 = root.findViewById(1001); //nombre de la tienda
+                EditText input2 = root.findViewById(1002);
 
-            EditText input4 = root.findViewById(1004);
-            Spinner input5 = root.findViewById(1005);
-            EditText input6 = root.findViewById(1006);
-
-
-
-            visitaEdi.setTiendaNombre(input1.getText().toString());
-            visitaEdi.setTipoTienda((input5.getSelectedItem()).toString());
-
-            visitaEdi.setTipoId((int)input5.getSelectedItemId());
-           // visitaEdi.setDireccion(input2.getText().toString());
-
-            //visitaEdi.setCadenaComercial(input6.getText().toString());
-            int punto=0;
-            try {
-                 punto = buscarZona(txtaiultubic.getText().toString());
-              }catch (Exception ex){
-            ex.printStackTrace();
-            Log.e(TAG,ex.getMessage());
-        }
-            Log.d(TAG,"encontré la zona "+punto);
-            visitaEdi.setPuntoCardinal(punto+"");
+                EditText input4 = root.findViewById(1004);
+                Spinner input5 = root.findViewById(1005);
+                EditText input6 = root.findViewById(1006);
 
 
-        }
 
-        EditText input3 = root.findViewById(R.id.txtaicomplementodir);
-        visitaEdi.setComplementodireccion(input3.getText().toString());
-        if(!cbfotofac.isChecked()) {
-            if(efotoFachada!=null) {
-                mViewModel.fotoFachada = efotoFachada;
-                mViewModel.fotoFachada.setRuta(fotofachada.getText().toString());
-                mViewModel.fotoFachada.setEstatus(1);
-                mViewModel.fotoFachada.setEstatusSync(0);
-                mViewModel.fotoFachada.setUpdatedAt(new Date());
-            }
-            else
-            {
-                mViewModel.fotoFachada = new ImagenDetalle();
-                mViewModel.fotoFachada.setRuta(fotofachada.getText().toString());
-                mViewModel.fotoFachada.setDescripcion("Foto fachada");
-                mViewModel.fotoFachada.setEstatus(1);
-                mViewModel.fotoFachada.setIndice(Constantes.INDICEACTUAL);
-                mViewModel.fotoFachada.setEstatusSync(0);
-                mViewModel.fotoFachada.setCreatedAt(new Date());
+                visitaEdi.setTiendaNombre(input1.getText().toString());
+                visitaEdi.setTipoTienda((input5.getSelectedItem()).toString());
+
+                visitaEdi.setTipoId((int)input5.getSelectedItemId());
+                // visitaEdi.setDireccion(input2.getText().toString());
+
+                //visitaEdi.setCadenaComercial(input6.getText().toString());
+                int punto=0;
+                try {
+                    punto = buscarZona(txtaiultubic.getText().toString());
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    Log.e(TAG,ex.getMessage());
+                }
+                Log.d(TAG,"encontré la zona "+punto);
+                visitaEdi.setPuntoCardinal(punto+"");
+
 
             }
 
-        }
-        //la ciudad y el pais en el que está se definen en las propiedades
+            EditText input3 = root.findViewById(R.id.txtaicomplementodir);
+            visitaEdi.setComplementodireccion(input3.getText().toString());
+            if(!cbfotofac.isChecked()) {
+                if(efotoFachada!=null) {
+                    mViewModel.fotoFachada = efotoFachada;
+                    mViewModel.fotoFachada.setRuta(fotofachada.getText().toString());
+                    mViewModel.fotoFachada.setEstatus(1);
+                    mViewModel.fotoFachada.setEstatusSync(0);
+                    mViewModel.fotoFachada.setUpdatedAt(new Date());
+                }
+                else
+                {
+                    mViewModel.fotoFachada = new ImagenDetalle();
+                    mViewModel.fotoFachada.setRuta(fotofachada.getText().toString());
+                    mViewModel.fotoFachada.setDescripcion("Foto fachada");
+                    mViewModel.fotoFachada.setEstatus(1);
+                    mViewModel.fotoFachada.setIndice(Constantes.INDICEACTUAL);
+                    mViewModel.fotoFachada.setEstatusSync(0);
+                    mViewModel.fotoFachada.setCreatedAt(new Date());
 
-        visitaEdi.setEstatusPepsi(estatusPepsi);
-        visitaEdi.setEstatusPen(estatusPen);
-        visitaEdi.setEstatusElec(estatusElec);
-        visitaEdi.setEstatusJum(estatusJum);
-        //   EditText input2 = root.findViewById(1001);
-        //    mViewModel.informe.setNombreTemporal(nombreTemporal.getText().toString());
-        visitaEdi.setEstatus(1);
-        visitaEdi.setEstatusSync(0);
+                }
 
-        visitaEdi.setUpdatedAt(new Date());
-        visitaEdi.setGeolocalizacion(txtaiultubic.getText().toString());
-        Log.d(TAG,"editando"+visitaEdi.getCiudad()+"--"+visitaEdi.getCiudadId());
-        mViewModel.visita=visitaEdi;
-        mViewModel.actualizarVisita();
-        //borro las fotos y vuelvo a insertar
+            }
+            //la ciudad y el pais en el que está se definen en las propiedades
 
-        for (ProductoExhibidoDao.ProductoExhibidoFoto foto : fotosExh) {
+            visitaEdi.setEstatusPepsi(estatusPepsi);
+            visitaEdi.setEstatusPen(estatusPen);
+            visitaEdi.setEstatusElec(estatusElec);
+            visitaEdi.setEstatusJum(estatusJum);
+            //   EditText input2 = root.findViewById(1001);
+            //    mViewModel.informe.setNombreTemporal(nombreTemporal.getText().toString());
+            visitaEdi.setEstatus(1);
+            visitaEdi.setEstatusSync(0);
+
+            visitaEdi.setUpdatedAt(new Date());
+            visitaEdi.setGeolocalizacion(txtaiultubic.getText().toString());
+            Log.d(TAG,"editando"+visitaEdi.getCiudad()+"--"+visitaEdi.getCiudadId());
+            mViewModel.visita=visitaEdi;
+            mViewModel.actualizarVisita();
+            //borro las fotos y vuelvo a insertar
+
+            for (ProductoExhibidoDao.ProductoExhibidoFoto foto : fotosExh) {
                 feviewModel.eliminarFoto(foto);
                 //
-        }
+            }
             //Log.d(TAG,"**CLIENTES ASIG "+Constantes.clientesAsignados.size());
-        if(!cbfotoex.isChecked()) {
-            guardarFotoEx(txtfotoex1.getText().toString(), nuevoId, spinn);
-        }else
-            guardarsinFotoEx( nuevoId, spinn);
+            if(!cbfotoex.isChecked()) {
+                guardarFotoEx(txtfotoex1.getText().toString(), nuevoId, spinn);
+            }else
+                guardarsinFotoEx( nuevoId, spinn);
 
-        if (snmascli1.getRespuesta()&&!cbfotoex2.isChecked())
+            if (snmascli1.getRespuesta()&&!cbfotoex2.isChecked())
                 guardarFotoEx(txtfotoex2.getText().toString(), nuevoId, spinn2);
-        else    if (snmascli1.getRespuesta())
-            guardarsinFotoEx( nuevoId, spinn2);
+            else    if (snmascli1.getRespuesta())
+                guardarsinFotoEx( nuevoId, spinn2);
 
-        if (snmascli2 != null && snmascli2.getRespuesta()&&!cbfotoex3.isChecked())
+            if (snmascli2 != null && snmascli2.getRespuesta()&&!cbfotoex3.isChecked())
                 guardarFotoEx(txtfotoex3.getText().toString(), nuevoId, spinn3);
-        else if (snmascli2 != null && snmascli2.getRespuesta())
-            guardarsinFotoEx( nuevoId, spinn3);
+            else if (snmascli2 != null && snmascli2.getRespuesta())
+                guardarsinFotoEx( nuevoId, spinn3);
             if (snmascli3 != null && snmascli3.getRespuesta()&&!cbfotoex4.isChecked())
                 guardarFotoEx(txtfotoex4.getText().toString(), nuevoId, spinn4);
             else if (snmascli3 != null && snmascli3.getRespuesta())
                 guardarsinFotoEx( nuevoId, spinn4);
-        guardado=true;
-        NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
+            guardado=true;
+            NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
         }catch(Exception ex){
             ex.printStackTrace();
             //  Log.e(TAG,ex.getMessage());
@@ -1975,58 +1961,44 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         mListAdapter.notifyDataSetChanged();
     }
 
+    private void createLocationRequest() {
+        locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000) // Intervalo deseado de 10 segundos
+                .setWaitForAccurateLocation(false)
+                .setMinUpdateIntervalMillis(5000) // Intervalo mínimo de 5 segundos
+                .build();
+    }
 
-    public class Localizacion implements LocationListener {
-
-        public void desactivar() {
-            if ( mlocManager!=null) {
-                Log.i(TAG,"desactivando");
-                mlocManager.removeUpdates(Local);
+    private void createLocationCallback() {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if(getActivity()!=null&&txtubicacion!=null) {
+                    for (Location location : locationResult.getLocations()) {
+                        mostrarPosicion(location);
+                    }
+                }
             }
-            if(alert.isMostrando())
-                alert.closeAlertDialog();
-            mlocManager=null;
-            Local=null;
+        };
+    }
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // La comprobación de permisos ya se hizo, pero es requerida por el linter
+            return;
         }
+        fusedLocationClient.requestLocationUpdates(locationRequest,
+                locationCallback,
+                Looper.getMainLooper()); // El Looper en el que se ejecutarán los callbacks
+        requestingLocationUpdates = true;
+        Log.d(TAG, "Iniciando actualizaciones de ubicación");
+    }
 
-        @Override
-        public void onLocationChanged(Location loc) {
-            // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
-            // debido a la deteccion de un cambio de ubicacion
-            if(getActivity()!=null&&txtubicacion!=null) {
-
-                mostrarPosicion(loc);
-
-            }
-
-        }
-        @Override
-        public void onProviderDisabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es desactivado
-          //  Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "---------------gps desactivado");
-        }
-        @Override
-        public void onProviderEnabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es activado
-            Log.i(TAG, "---------------gps activado");
-        }
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            switch (status) {
-                case LocationProvider.AVAILABLE:
-                    Log.d("debug", "LocationProvider.AVAILABLE");
-                    break;
-                case LocationProvider.OUT_OF_SERVICE:
-                    Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
-                    break;
-                case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                    Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
-                    break;
-            }
-        }
-
-
+    private void stopLocationUpdates() {
+        if(requestingLocationUpdates)
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+        requestingLocationUpdates = false;
+        if(alert!=null&&alert.isMostrando())
+            alert.closeAlertDialog();
+        Log.d(TAG, "Deteniendo actualizaciones de ubicación");
     }
     public void mostrarPosicion(Location location){
         if(alert.isMostrando())
@@ -2079,7 +2051,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
 
     @Override
     public void onValidationSucceeded() {
-       guardar();
+        guardar();
     }
 
     @Override
@@ -2122,14 +2094,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         try{
 
 
-                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-                String dateString = format.format(new Date());
+            String dateString = format.format(new Date());
 
 
-                nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
-                foto = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), nombre_foto);
-                Log.d(TAG, "****"+foto.getAbsolutePath());
+            nombre_foto = "img_" +Constantes.CLAVEUSUARIO+"_"+ dateString + ".jpg";
+            foto = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), nombre_foto);
+            Log.d(TAG, "****"+foto.getAbsolutePath());
 
 
             Uri photoURI = FileProvider.getUriForFile(activity,
@@ -2140,10 +2112,10 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             intento1.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if(destino!=null) {
 
-                 destino.setVisibility(View.VISIBLE);
+                destino.setVisibility(View.VISIBLE);
 
-                 startActivityForResult(intento1, REQUEST_CODE);
-             }
+                startActivityForResult(intento1, REQUEST_CODE);
+            }
 
         } catch (OutOfMemoryError  ex) {
             ex.printStackTrace();
@@ -2162,6 +2134,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public void onResume() {
         super.onResume();
         Log.d(TAG,"Estoy aqui ptra vez");
+        if (requestingLocationUpdates) {
+            startLocationUpdates();
+        }
     }
 
     @Override
@@ -2344,7 +2319,5 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         Constantes.DP_CONSECUTIVO=0;
 
     }
-
-
 
 }
