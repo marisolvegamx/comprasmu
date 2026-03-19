@@ -91,9 +91,9 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 if (ultimares.getNombre_campo().equals("ticket_noemiten")) {
                     //me muevo a la anterior
                     ultimares = dViewModel.buscarTempxId(ultimares.getId() - 1);
-               if(ultimares==null){
-                   ultimares = dViewModel.getPenultimoTemp();
-               }
+                   if(ultimares==null){
+                       ultimares = dViewModel.getPenultimoTemp();
+                   }
                 }
                 if (ultimares.getNombre_campo().equals("causaSustId")) {
                     //me muevo a la anterior
@@ -281,9 +281,9 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         //Log.d(TAG, "informe creado=" + idinformeSel);
         //busco la visita
         visitaCont=nviewModel.buscarVisitaSimpl(idinformeSel);
-                ValidadorDatos valdat=new ValidadorDatos();
-              //  Constantes.DP_TIPOTIENDA=visita.getTipoId();
-                if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
+        ValidadorDatos valdat=new ValidadorDatos();
+        //  Constantes.DP_TIPOTIENDA=visita.getTipoId();
+        if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())){
                     //es un informe de ayer no puede continuar
                     //avisar
                     AlertDialog.Builder dialogo1 = new AlertDialog.Builder(ContinuarInformeActivity.this);
@@ -300,11 +300,11 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
                 });
                 dialogo1.show();
                 }
-                Constantes.DP_TIPOTIENDA = visitaCont.getTipoId();
-                Log.d(TAG, "VISITA " + visitaCont.getCreatedAt());
-                Log.d(TAG, "tipo tienda -----------*" + Constantes.DP_TIPOTIENDA);
-                nviewModel.visita = visitaCont;
-                mBinding.setVisita(visitaCont);
+        Constantes.DP_TIPOTIENDA = visitaCont.getTipoId();
+        Log.d(TAG, "VISITA " + visitaCont.getCreatedAt());
+        Log.d(TAG, "tipo tienda -----------*" + Constantes.DP_TIPOTIENDA);
+        nviewModel.visita = visitaCont;
+        mBinding.setVisita(visitaCont);
 
     }
 
