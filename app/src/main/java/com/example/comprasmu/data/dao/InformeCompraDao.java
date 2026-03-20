@@ -62,10 +62,10 @@ public interface InformeCompraDao {
     @Query("SELECT max(id) as ultimo " +
             "FROM informe_compras ")
     int getUltimoId();
-
+   /*19-03-26 se agrega validacion de estatus que ya esté finalizado el informe porque tomaba en cuenta el mismo informe que se estaba creando*/
    @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +
             "FROM informe_compras inner join visitas on visitasId=visitas.id " +
-            "where indice=:indice and plantasId=:planta and (causa_nocompra is null or causa_nocompra!='4') ")
+            "where indice=:indice and plantasId=:planta and (causa_nocompra is null or causa_nocompra!='4') and informe_compras.estatus>1")
     int getLastConsecutivoInforme(String indice, int planta);
 
    /* @Query("SELECT COALESCE(max(consecutivo),0) as ultimo " +
