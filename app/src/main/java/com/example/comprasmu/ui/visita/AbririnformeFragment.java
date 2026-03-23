@@ -206,6 +206,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     ComprasLog milog;
     private LocationCallback locationCallback;
     private boolean requestingLocationUpdates = false;
+    private String coordenadasMapa;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -294,7 +296,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 if (txtubicacion.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Espere se active la ubicación antes de tomar la foto", Toast.LENGTH_SHORT).show();
 
-                    locationStart();
+                   // locationStart();
                     return;
                 }
                 //comparo las coordenadas con la del mapa
@@ -561,6 +563,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                 locationStart();
 
                 nuevaTienda = getArguments().getBoolean("nuevatienda");
+                coordenadasMapa=getArguments().getString("coordenasmapa");
 
                 //  Log.d(TAG, "datosrec " + nuevaTienda);
                 if (!nuevaTienda)// es una tienda existente
@@ -1458,6 +1461,27 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     public void guardarUbicacion() {
 
         Log.d("AbrirInformeFragment", "presione boton");
+        //valido la ubicacion con las coordenadas del mapa
+        if(coordenadasMapa!=null&&!coordenadasMapa.equals("")){
+            String[] auxiliar=coordenadasMapa.split(",");
+            double x=Double.parseDouble(auxiliar[0]);
+            double y=Double.parseDouble(auxiliar[1]);
+            //uso un error de 2 metros
+            if(!ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,500));
+            {
+                //no es el mismo punto
+                Toast.makeText(getActivity(),getString(R.string.recomend_tienda),Toast.LENGTH_LONG).show();
+                txtaiultubic.setText(""); //borro la ubicacion para que se mueva
+                txtubicacion.setText("");
+                //borro la foto de fachada para que vuelva a tomarla
+                txtfotofachada.setText("");
+                fotofac.setImageBitmap(null);
+
+                fotofac.setVisibility(View.GONE);
+                rotar.setVisibility(View.GONE);
+                return;
+            }
+        }
         txtaiultubic.setText(txtubicacion.getText().toString());
         buscarDireccion();
 
@@ -1962,7 +1986,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     }
 
     private void createLocationRequest() {
-        locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000) // Intervalo deseado de 10 segundos
+        locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 3000) // Intervalo deseado de 10 segundos
                 .setWaitForAccurateLocation(false)
                 .setMinUpdateIntervalMillis(5000) // Intervalo mínimo de 5 segundos
                 .build();

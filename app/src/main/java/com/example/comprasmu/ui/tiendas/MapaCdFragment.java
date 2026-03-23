@@ -374,6 +374,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             // Solicitar permiso
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_REQUEST_CODE);
+            getDeviceLocation();
 
         }
 
@@ -383,28 +384,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         // Get the current location of the device and set the position of the map.
 
     }
-
-
-
-    @SuppressLint("MissingPermission")
-    public void onRequestPermissionsRes(int requestCode, @NonNull String[] permissions,
-                                        @NonNull int[] grantResults) {
-        // super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //  if (requestCode == LOCATION_REQUEST_CODE) {
-        // ¿Permisos asignados?
-        if (permissions.length > 0 &&
-                permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-            getDeviceLocation();
-        } else {
-            //    Toast.makeText(getContext(), "Error de permisos", Toast.LENGTH_LONG).show();
-            cerrar();
-        }
-
-        // }
-    }
-
 
 
     private void getDeviceLocation() {
@@ -501,11 +480,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                             .strokeColor(Color.RED));
 
 
-                } else {
+                }
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("nuevatienda", true);
-                    bundle.putString("coordenasmapa",lastKnownLocation.getLatitude()+","+
-                            lastKnownLocation.getLongitude() );  //ahora paso las coordenadas
 
                     NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
                     Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
@@ -515,12 +492,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
                     }
 
-                }
+
             }else{
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("nuevatienda", true);
-                bundle.putString("coordenasmapa",lastKnownLocation.getLatitude()+","+
-                        lastKnownLocation.getLongitude() );  //ahora paso las coordenadas
                 NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
                 Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
                 if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
@@ -662,38 +637,66 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 plantasDisponibles=new ArrayList<>();
                 plantasDisponibles.addAll(listaPlantasEnv);
                 //  Log.i(TAG,"size antes>>"+estatusTienda.size());
+                //veo si tengo estatus rojo
 
-                if(estatusTienda!=null)
+                 //busco que cliente es la planta seleecionada
+               String nombreCliente= this.buscarCliente(plantaId);
+               switch (nombreCliente){
+                   case "PEPSI": if(tienda.getEstpep()==2){
+                                       color="1";
 
-                    for (TiendaEstatusCliente estatus:estatusTienda
-                    ) {
-                        if(estatus.getPlantasId()==plantaId) {
-                            color = validarColorTienda(estatus.getEstatus());
+                                   }
+                                   break;
+                   case "PEÑAFIEL": if(tienda.getEstpen()==2){
+                                       color="1";
 
-                        }
-                        //para poner en que tiendas no puedo comprar
+                                   }
+                                       break;
+                   case "ELECTROPURA": if(tienda.getEstele()==2){
+                                           color="1";
+
+                                       }
+                                     break;
+                   case "JUMEX": if(tienda.getEstjum()==2){
+                                       color="1";
+
+                                   }
+                                    break;
+               }
+               if(tienda.getEstpep()==2||tienda.getEstele()==2||tienda.getEstpen()==2||tienda.getEstjum()==2){
+
+               }else {
+                   if (estatusTienda != null)
+
+                       for (TiendaEstatusCliente estatus : estatusTienda
+                       ) {
+                           if (estatus.getPlantasId() == plantaId) {
+                               color = validarColorTienda(estatus.getEstatus());
+
+                           }
+                           //para poner en que tiendas no puedo comprar
 
 
-                        if(estatus.getEstatus()==2)
-                        {
-                            if(plantasDisponibles!=null)
-                                plantasDisponibles=quitarPlanta(plantasDisponibles,estatus.getPlantasId());
+                           if (estatus.getEstatus() == 2) {
+                               if (plantasDisponibles != null)
+                                   plantasDisponibles = quitarPlanta(plantasDisponibles, estatus.getPlantasId());
 
 
-                        }
+                           }
 
 
-                    }
-                //validar estatuscliente
-                estatusPepsi=lcviewModel.getEstatusCliente(tienda.getUne_id(),totalPlantas,4,tiendaEstatusClienteDao);
-                estatusPeniafiel=lcviewModel.getEstatusCliente(tienda.getUne_id(),totalPlantas,5,tiendaEstatusClienteDao);
-                estatusElectro=lcviewModel.getEstatusCliente(tienda.getUne_id(),totalPlantas,6,tiendaEstatusClienteDao);
-                estatusJumex=lcviewModel.getEstatusCliente(tienda.getUne_id(),totalPlantas,7,tiendaEstatusClienteDao);
+                       }
+                   //validar estatuscliente
+                   estatusPepsi = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 4, tiendaEstatusClienteDao);
+                   estatusPeniafiel = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 5, tiendaEstatusClienteDao);
+                   estatusElectro = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 6, tiendaEstatusClienteDao);
+                   estatusJumex = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 7, tiendaEstatusClienteDao);
 
-                tienda.setEstpep(estatusPepsi);
-                tienda.setEstpen(estatusPeniafiel);
-                tienda.setEstele(estatusElectro);
-                tienda.setEstjum(estatusJumex);
+                   tienda.setEstpep(estatusPepsi);
+                   tienda.setEstpen(estatusPeniafiel);
+                   tienda.setEstele(estatusElectro);
+                   tienda.setEstjum(estatusJumex);
+               }
                 //busco los estatus por cliente
 
                 Log.d(TAG,"despues"+tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen()+"--"+tienda.getEstele()+"--"+tienda.getEstjum());
@@ -821,10 +824,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     }
     public void buscarPlantas(String ciudadNombre){
         //para buscar las plantas
-
-
         LiveData<List<ListaCompra>> listacomp = lcviewModel.cargarPestañasEta(ciudadNombre);
-
         // Create the observer which updates the UI.
         final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
             @Override
@@ -914,14 +914,6 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         }
 
     }
-    public boolean existeCliente(int id){
-        for (DescripcionGenerica des: clientesAsignados
-        ) {
-            if(des.getId()==id)
-                return true;
-        }
-        return false;
-    }
 
     public ArrayList<DescripcionGenerica> quitarPlanta(ArrayList<DescripcionGenerica> listaPlantas,int planta){
         DescripcionGenerica elementoBorrar=null;
@@ -937,16 +929,18 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         listaPlantas.remove(elementoBorrar);
         return listaPlantas;
     }
-    public void cargarIndices(){
-        String[] indiceslist={"SEPTIEMBRE 2021","OCTUBRE 2021","NOVIEMBRE 2021","DICIEMBRE 2021","ENERO 2022","FEBRERO 2022","MARZO 2022","ABRIL 2022","MAYO 2022","JUNIO 2022","JULIO 2022","AGOSTO 2022"};
-        ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,indiceslist);
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ArrayAdapter aa2 = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,indiceslist);
-        aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+    public String buscarCliente(int planta){
+        DescripcionGenerica elementoBorrar=null;
+        for (DescripcionGenerica descripcion: listaPlantasEnv
+        ) {
+            Log.i(TAG,"<<<"+descripcion.getNombre());
+            if(descripcion.getId()==planta) {
+              return descripcion.getDescripcion();
+            }
+        }
+       return "";
     }
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -975,8 +969,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         bundle.putInt("estele", tienda.getEstele());
         bundle.putInt("estjum", tienda.getEstjum());
         this.doubleBackToExitPressedOnce = false;
-        NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo,bundle);
-        //return false;
+        if(lastKnownLocation!=null) {
+            bundle.putString("coordenasmapa", tienda.getUne_coordenadasxy() );  //ahora paso las coordenadas
+            NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo, bundle);
+            //return false;
+        }else{
+            Toast.makeText(getActivity(),"Espere para registrar su ubicación",Toast.LENGTH_LONG).show();
+
+        }
     }
 
     @Override
