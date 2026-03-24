@@ -1473,7 +1473,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             if(!respuesta)
             {
                 //no es el mismo punto
-                Toast.makeText(getActivity(),getString(R.string.usted_noseenc),Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),getString(R.string.para_tomarfoto),Toast.LENGTH_LONG).show();
                 txtaiultubic.setText(""); //borro la ubicacion para que se mueva
                 txtubicacion.setText("");
                 //borro la foto de fachada para que vuelva a tomarla
