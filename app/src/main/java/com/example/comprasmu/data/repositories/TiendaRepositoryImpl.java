@@ -48,10 +48,14 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
                 " tienda.une_cadenacomercial," +
                 " tienda.une_dir_referencia," +
                 " tienda_estatuscliente.clientesId ," +
-                " sum(case tienda_estatuscliente.clientesId when 4 then 1 else 0 end) estpep," +
-                " sum( case tienda_estatuscliente.clientesId when 5 then 1 else 0 end) estpen," +
-                " sum(case tienda_estatuscliente.clientesId when 6 then 1 else 0 end) estele," +
-                " sum( case tienda_estatuscliente.clientesId when 7 then 1 else 0 end) estjum ," +
+               /* " case when estpep<>2 then sum(case tienda_estatuscliente.clientesId when 4 then 1 else 0 end)  else 2 end estpep," +
+                " case when estpen<>2 then sum( case tienda_estatuscliente.clientesId when 5 then 1 else 0 end) else 2 end estpen," +
+                " case when estele<>2 then sum(case tienda_estatuscliente.clientesId when 6 then 1 else 0 end)  else 2 end estele," +
+                " case when estjum<>2 then sum( case tienda_estatuscliente.clientesId when 7 then 1 else 0 end) else 2 end estjum ," +*/
+                " estpep," +
+                " estpen," +
+                " estele," +
+                " estjum," +
                 " tienda_estatuscliente.plantasId" +
                 " from" +
                 " tienda" +

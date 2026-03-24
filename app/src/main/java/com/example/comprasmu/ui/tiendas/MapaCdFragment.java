@@ -623,50 +623,51 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             ArrayList<DescripcionGenerica> plantasDisponibles;
             HashMap<Integer,Integer> totalPlantas=lcviewModel.getTotalPlantasxCliente(Constantes.CIUDADTRABAJO);
             for (Tienda tienda : listiendas) {
-                Log.d(TAG,tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen());
+                Log.d(TAG, tienda.getUne_id() + "--" + tienda.getUne_descripcion() + "--" + tienda.getEstpep() + "--" + tienda.getEstpen());
 
                 //busco los estatus por planta
-                estatusTienda= lcviewModel.buscarEstatusTienda(tienda.getUne_id(),tiendaEstatusClienteDao);
+                estatusTienda = lcviewModel.buscarEstatusTienda(tienda.getUne_id(), tiendaEstatusClienteDao);
                 estatusClientes = new StringBuilder();
-                color="3";
-                estatusPepsi=1;
-                estatusPeniafiel=1;
-                estatusJumex=1;
-                estatusElectro=1;
+                color = "3";
+                estatusPepsi = 1;
+                estatusPeniafiel = 1;
+                estatusJumex = 1;
+                estatusElectro = 1;
                 //armo lista de plantas de la ciudad
-                plantasDisponibles=new ArrayList<>();
+                plantasDisponibles = new ArrayList<>();
                 plantasDisponibles.addAll(listaPlantasEnv);
                 //  Log.i(TAG,"size antes>>"+estatusTienda.size());
                 //veo si tengo estatus rojo
 
-                 //busco que cliente es la planta seleecionada
-               String nombreCliente= this.buscarCliente(plantaId);
-               switch (nombreCliente){
-                   case "PEPSI": if(tienda.getEstpep()==2){
-                                       color="1";
+                //busco el cliente de la planta seleecionada
+                String nombreCliente = this.buscarCliente(plantaId);
+                switch (nombreCliente) {
+                    case "PEPSI":
+                        if (tienda.getEstpep() == 2) {
+                            color = "1";
 
-                                   }
-                                   break;
-                   case "PEÑAFIEL": if(tienda.getEstpen()==2){
-                                       color="1";
+                        }
+                        break;
+                    case "PEÑAFIEL":
+                        if (tienda.getEstpen() == 2) {
+                            color = "1";
 
-                                   }
-                                       break;
-                   case "ELECTROPURA": if(tienda.getEstele()==2){
-                                           color="1";
+                        }
+                        break;
+                    case "ELECTROPURA":
+                        if (tienda.getEstele() == 2) {
+                            color = "1";
 
-                                       }
-                                     break;
-                   case "JUMEX": if(tienda.getEstjum()==2){
-                                       color="1";
+                        }
+                        break;
+                    case "JUMEX":
+                        if (tienda.getEstjum() == 2) {
+                            color = "1";
 
-                                   }
-                                    break;
-               }
-               if(tienda.getEstpep()==2||tienda.getEstele()==2||tienda.getEstpen()==2||tienda.getEstjum()==2){
-
-               }else {
-                   if (estatusTienda != null)
+                        }
+                        break;
+                }
+                if (estatusTienda != null)
 
                        for (TiendaEstatusCliente estatus : estatusTienda
                        ) {
@@ -686,17 +687,30 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
 
                        }
-                   //validar estatuscliente
-                   estatusPepsi = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 4, tiendaEstatusClienteDao);
-                   estatusPeniafiel = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 5, tiendaEstatusClienteDao);
-                   estatusElectro = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 6, tiendaEstatusClienteDao);
-                   estatusJumex = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 7, tiendaEstatusClienteDao);
+                if(tienda.getEstpep()!=null&&tienda.getEstpep()==2) {
 
-                   tienda.setEstpep(estatusPepsi);
-                   tienda.setEstpen(estatusPeniafiel);
-                   tienda.setEstele(estatusElectro);
-                   tienda.setEstjum(estatusJumex);
-               }
+                }else{
+                    //validar estatuscliente
+                    estatusPepsi = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 4, tiendaEstatusClienteDao);
+                    tienda.setEstpep(estatusPepsi);
+                }
+                if(tienda.getEstpen()!=null&&tienda.getEstpen()==2) {
+
+                }else{
+                    estatusPeniafiel = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 5, tiendaEstatusClienteDao);
+                    tienda.setEstpen(estatusPeniafiel);
+                }
+                if(tienda.getEstele()!=null&&tienda.getEstele()==2) {
+
+                }else{
+                    estatusElectro = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 6, tiendaEstatusClienteDao);
+                    tienda.setEstele(estatusElectro);
+                }
+                if(tienda.getEstjum()!=null&&tienda.getEstjum()==2) {
+                }else{
+                    estatusJumex = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 7, tiendaEstatusClienteDao);
+                    tienda.setEstjum(estatusJumex);
+                }
                 //busco los estatus por cliente
 
                 Log.d(TAG,"despues"+tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen()+"--"+tienda.getEstele()+"--"+tienda.getEstjum());
