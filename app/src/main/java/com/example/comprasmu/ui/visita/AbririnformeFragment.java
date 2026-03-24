@@ -1466,11 +1466,14 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
             String[] auxiliar=coordenadasMapa.split(",");
             double x=Double.parseDouble(auxiliar[0]);
             double y=Double.parseDouble(auxiliar[1]);
+
             //uso un error de 2 metros
-            if(!ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,500));
+            boolean respuesta=ComprasUtils.distancia2puntos(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(),x,y,500);
+        //    Log.d("AbrirInformeFragment", x+" presione boton "+y);
+            if(!respuesta)
             {
                 //no es el mismo punto
-                Toast.makeText(getActivity(),getString(R.string.recomend_tienda),Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),getString(R.string.usted_noseenc),Toast.LENGTH_LONG).show();
                 txtaiultubic.setText(""); //borro la ubicacion para que se mueva
                 txtubicacion.setText("");
                 //borro la foto de fachada para que vuelva a tomarla
