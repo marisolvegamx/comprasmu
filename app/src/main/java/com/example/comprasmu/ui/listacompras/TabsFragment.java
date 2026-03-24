@@ -25,7 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
-
+/*parece que no se usa esta clase tiende a desaparecer solo se usa ARG_CLIENTESEL en detallesproducto**/
 public class TabsFragment extends Fragment {
     private static final String TAG = "TabsFragment";
     TabLayout tabs;

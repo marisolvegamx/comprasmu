@@ -87,6 +87,7 @@ import java.util.List;
 import java.util.Locale;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
 import static android.app.Activity.RESULT_OK;
+//todo quitar este arg de tabs porque no se usas y ver a donde pasarlo
 import static com.example.comprasmu.ui.listacompras.TabsFragment.ARG_CLIENTESEL;
 
 /***clase para mostrar los campos que faltan de capturar de la muestra uno por pantalla***/

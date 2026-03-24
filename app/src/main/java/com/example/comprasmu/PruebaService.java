@@ -1,5 +1,7 @@
 package com.example.comprasmu;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -69,7 +71,7 @@ public class PruebaService extends Service implements  PruebaListener{
                 .setWhen(System.currentTimeMillis());//trae la fecha actual
         Intent intent2 = new Intent(this, MainActivity.class);
         intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent intPendiente = PendingIntent.getActivity(this, 0, intent2, 0);
+        PendingIntent intPendiente = PendingIntent.getActivity(this, 0, intent2, FLAG_IMMUTABLE);
         notificacion.setContentIntent(intPendiente);
         notificacion.setAutoCancel(true); //quitar la alerta cunado se presiona
         nm.notify(ID_NOTIFICACION_CREAR,notificacion.build());
