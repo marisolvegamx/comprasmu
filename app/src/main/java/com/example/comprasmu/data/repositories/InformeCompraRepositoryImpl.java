@@ -234,6 +234,10 @@ public class InformeCompraRepositoryImpl   {
         return  icDao.getByVisitaPend(visitaId, estatusSyn);
 
     }
+    public List<InformeCompra> getPendienteFinalizar(int visitaId, int estatus) {
+        return  icDao.getByVisitaPendFinalizar(visitaId, estatus);
+
+    }
 
 
    /* public LiveData<List<InformeCompraDao.InformeCompravisita>> getInformesVisitas (String indice, String nombretienda, String ciudad, int planta, int cliente) {
