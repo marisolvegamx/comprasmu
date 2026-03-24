@@ -41,6 +41,7 @@ import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 
 import com.example.comprasmu.ui.informedetalle.ValidadorDatos;
+import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
 import com.example.comprasmu.utils.Event;
@@ -861,9 +862,9 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         this.ticket_compra = ticket_compra;
     }
 
-    public boolean validarQr( String qr){
+    public boolean validarQr(String qr, ComprasLog compraslog){
         ValidadorDatos valdat = new ValidadorDatos();
-        return valdat.validarQr(qr,this.application);
+        return valdat.validarQr(qr,this.application, compraslog);
 
     }
 

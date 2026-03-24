@@ -666,7 +666,7 @@ public class NvaPreparacionViewModel extends AndroidViewModel {
     //DEVUELVE TRUE SI hay muestra, false si no
     public boolean validarQrCompra( String qr){
         ValidadorDatos valdat = new ValidadorDatos();
-        return valdat.validarQr(qr,this.application);
+        return valdat.validarQr(qr,this.application, this.compraslog);
 
     }
     public List<InformeEtapa>  buscarInformesEtiq(String indice) {
