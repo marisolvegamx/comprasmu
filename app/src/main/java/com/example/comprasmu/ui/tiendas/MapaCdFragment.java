@@ -493,17 +493,36 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         lastKnownLocation.getLongitude(), compraslog)) {
                     compraslog.info(TAG, ".nuevatienda ", "ya existe");
                     //solo informativo te recomendamos visitar una tienda existente
-                    mensajetienda.setVisibility(View.VISIBLE);
+                    new AlertDialog.Builder(getActivity())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle(R.string.importante)
+                            .setMessage(getString(R.string.recomend_tienda))
+                            .setPositiveButton(R.string.nueva_tienda, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putBoolean("nuevatienda", true);
+                                    //  bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
+                                    NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
+                                    Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
+                                    if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
+
+                                        nav.navigate(R.id.action_buscartonuevo, bundle);
+                                        //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
+                                    }
+
+                                }
+                            })
+                            .setNegativeButton(R.string.regresar, null)
+                            .show();
                     circleNuevaTienda = mMap.addCircle(new CircleOptions()
                             .center(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
                             .radius(200)
                             .strokeColor(Color.RED));
 
 
-                }
+            }else {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("nuevatienda", true);
-
                     NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
                     Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
                     if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
@@ -511,7 +530,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         nav.navigate(R.id.action_buscartonuevo, bundle);
                         //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
                     }
-
+                }
 
             }else{
                 Bundle bundle = new Bundle();
