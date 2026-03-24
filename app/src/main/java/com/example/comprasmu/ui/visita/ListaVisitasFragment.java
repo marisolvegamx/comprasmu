@@ -124,7 +124,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
 
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_searchinforme:
@@ -140,7 +140,7 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
         }
 
         return false;
-    }
+    }*/
 
     @Override
     public void onClickAgregar(int idvisita) {
@@ -242,9 +242,10 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                return;
            }
         }
-        //reviso si ya se enviaron los informes
+        //ahora puede finalizarse y el recolector lo enviará después
 
-        List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);
+/*
+        List<InformeCompra> informes=mViewModel.tieneInformePend()
         if(informes!=null&&informes.size()>0) //no puede finalizar
         {
             compraslog.info(TAG, "finalizar"," se elimina");
@@ -277,13 +278,21 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                         return;
                     }
         }
+*/
+      /*  if(visitaCont.getEstatusSync()==0) {
+            Toast.makeText(getActivity(), getString(R.string.no_finalizar), Toast.LENGTH_SHORT).show();
 
-        if(visitaCont.getEstatusSync()==0) {
+            return;
+        }*/
+        //reviso si tiene almenos un informe pendiente de finalizar
+
+        List<InformeCompra> informesPendientes=mViewModel.tieneInformesPendFinalizar(idvisita);
+        if(informesPendientes!=null&&informesPendientes.size()>0) {
+
             Toast.makeText(getActivity(), getString(R.string.no_finalizar), Toast.LENGTH_SHORT).show();
 
             return;
         }
-
         //puede que no esté guardado reviso si hay algo en la tabla temporal
         if(mViewModel.hayInfDetalleTemp()){
             if(valdat.compararFecha(visitaCont.getCreatedAt(),new Date())) {
@@ -313,38 +322,44 @@ public class ListaVisitasFragment extends Fragment implements VisitaAdapter.Adap
                 return;
             }
         }
-        //pregunto si habrá más clientes
-        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
-        dialogo1.setTitle(R.string.importante);
-        dialogo1.setMessage(R.string.conf_finalizar);
-        dialogo1.setCancelable(false);
-        dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogo1, int id) {
-                //Es hora de cerrar el preinforme
-                NuevoinformeViewModel niViewModel =
-                        new ViewModelProvider(ListaVisitasFragment.this).get(NuevoinformeViewModel.class);
-                niViewModel.finalizarVisita(idvisita);
-                List<InformeCompra> informes=mViewModel.tieneInformePend(idvisita);
-                if(informes!=null&&informes.size()>0) //no puede finalizar
-                {
+        List<InformeCompra> informes=mViewModel.tieneInformes(idvisita);
+        if(informes!=null&&informes.size()>0) {
+            //pregunto si habrá más clientes
+            AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+            dialogo1.setTitle(R.string.importante);
+            dialogo1.setMessage(R.string.conf_finalizar);
+            dialogo1.setCancelable(false);
+            dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogo1, int id) {
+                    //Es hora de cerrar el preinforme
+                    NuevoinformeViewModel niViewModel =
+                            new ViewModelProvider(ListaVisitasFragment.this).get(NuevoinformeViewModel.class);
+                    niViewModel.finalizarVisita(idvisita);
+                    List<InformeCompra> informes = mViewModel.tieneInformePend(idvisita);
+                    if (informes != null && informes.size() > 0) //no puede finalizar
+                    {
+
+                    }
+                    compraslog.info(TAG, "finalizar", " finalizado");
+
+                    Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
+                    //paso al home
+                    NavHostFragment.findNavController(ListaVisitasFragment.this).navigate(R.id.action_visitatohome);
 
                 }
-                compraslog.info(TAG, "finalizar"," finalizado");
+            });
+            dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogo1, int id) {
+                    //no hago nada
+                    dialogo1.cancel();
 
-                Toast.makeText(getActivity(), getString(R.string.informe_finalizado),Toast.LENGTH_SHORT).show();
-                //paso al home
-                NavHostFragment.findNavController(ListaVisitasFragment.this).navigate(R.id.action_visitatohome);
+                }
+            });
+            dialogo1.show();
+        }else{
+            Toast.makeText(getActivity(), getString(R.string.no_finalizar), Toast.LENGTH_SHORT).show();
 
-            }
-        });
-        dialogo1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogo1, int id) {
-                //no hago nada
-                dialogo1.cancel();
-
-            }
-        });
-        dialogo1.show();
+        }
     }
 
     public void eliminarInformexFecha(List<InformeCompra> informes) {
