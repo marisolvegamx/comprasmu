@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -413,21 +414,40 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     Log.d(TAG, "2");
                     return;
                 }
-                if (fusedLocationClient.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                    fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 1, locallis);
+                if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)) {//pruebas y el lenovo//entro rapido
+                    //primero gps
+                    if (fusedLocationClient.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+                        //  if (Local == null) { //Validación que evita NullPointerException
+                        //Requiere actualización
+                        fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, locallis);
 
-                    Log.d(TAG, "3");
+                        // }
+                        Log.d(TAG, "4");
+                    } else if (fusedLocationClient.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+                        fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 1, locallis);
 
-                } else  if (fusedLocationClient.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
-                    //  if (Local == null) { //Validación que evita NullPointerException
-                    //Requiere actualización
-                    fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, locallis);
+                        Log.d(TAG, "3");
 
-                    // }
-                    Log.d(TAG, "4");
-                } else
-                    Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
 
+                }else {
+
+                    if (fusedLocationClient.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+                        fusedLocationClient.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 1, locallis);
+
+                        Log.d(TAG, "3");
+
+                    } else if (fusedLocationClient.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+                        //  if (Local == null) { //Validación que evita NullPointerException
+                        //Requiere actualización
+                        fusedLocationClient.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 1, locallis);
+
+                        // }
+                        Log.d(TAG, "4");
+                    } else
+                        Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
+                }
 
             }
         } catch (SecurityException e)  {
@@ -643,25 +663,25 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 String nombreCliente = this.buscarCliente(plantaId);
                 switch (nombreCliente) {
                     case "PEPSI":
-                        if (tienda.getEstpep() == 2) {
+                        if (tienda.getEstpep()!=null&&tienda.getEstpep() == 2) {
                             color = "1";
 
                         }
                         break;
                     case "PEÑAFIEL":
-                        if (tienda.getEstpen() == 2) {
+                        if (tienda.getEstpen()!=null&&tienda.getEstpen() == 2) {
                             color = "1";
 
                         }
                         break;
                     case "ELECTROPURA":
-                        if (tienda.getEstele() == 2) {
+                        if (tienda.getEstele()!=null&&tienda.getEstele() == 2) {
                             color = "1";
 
                         }
                         break;
                     case "JUMEX":
-                        if (tienda.getEstjum() == 2) {
+                        if (tienda.getEstjum()!=null&&tienda.getEstjum() == 2) {
                             color = "1";
 
                         }
