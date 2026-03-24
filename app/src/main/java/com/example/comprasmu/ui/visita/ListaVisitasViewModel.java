@@ -230,6 +230,20 @@ public class ListaVisitasViewModel extends AndroidViewModel {
         InformeTempRepositoryImpl itemprepo=new InformeTempRepositoryImpl(application);
         itemprepo.deleteAll();
     }
+    public List<InformeCompra> tieneInformes(int idvisita){
+
+        InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(application);
+        return infoRepo.getAllByVisitasimple(idvisita);
+
+
+    }
+    public List<InformeCompra> tieneInformesPendFinalizar(int idvisita){
+
+        InformeCompraRepositoryImpl infoRepo=new InformeCompraRepositoryImpl(application);
+        return infoRepo.getPendienteFinalizar(idvisita,1);
+
+
+    }
     public LiveData<List<Visita>> getListas() {
         return listas;
     }
