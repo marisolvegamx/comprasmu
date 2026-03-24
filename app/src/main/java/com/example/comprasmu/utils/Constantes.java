@@ -57,14 +57,14 @@ public class Constantes {
     public static String[] ETAPAS={"0","PREPARACION","COMPRA","ETIQUETADO","EMPAQUE","ENVIO","GASTOS"};
     public static boolean varciudades;
     public static List<DescripcionGenerica> clientesAsignados;
-    public static String modelo="2006C3MG";
+    public static String modelo="xx2006C3MG";
     public static String URLSERV="https://muesmerc.com/comprasv1/";
     //local
     //  public static String URLPRUEBAS1="https://muesmerc.com/comprasv1/";
 
-  //  public static String URLPRUEBAS1="http://10.0.2.2/comprasv1/";
+    public static String URLPRUEBAS1="http://10.0.2.2/comprasv1/";
     //muesmerc
-      public static String URLPRUEBAS1="http://192.168.1.223/comprasv1/";
+     // public static String URLPRUEBAS1="http://192.168.1.223/comprasv1/";
     // public static String URLPRUEBAS1="https://phpstack-1150317-4003300.cloudwaysapps.com/comprasv1/";
     public static String ni_clientesel;
     public static int ni_plantasel;
