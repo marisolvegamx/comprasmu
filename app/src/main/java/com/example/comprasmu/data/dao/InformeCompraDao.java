@@ -108,7 +108,8 @@ public interface InformeCompraDao {
 
     @Query("SELECT * FROM informe_compras WHERE visitasId=:visita and estatusSync=:estatussyn")
     List<InformeCompra> getByVisitaPend(int visita, int estatussyn);
-
+    @Query("SELECT * FROM informe_compras WHERE visitasId=:visita and estatus=:estatus")
+    List<InformeCompra> getByVisitaPendFinalizar(int visita, int estatus);
 
     @DatabaseView("SELECT informe_compras.id as idinforme, " +
             "informe_compras.visitasId, " +
