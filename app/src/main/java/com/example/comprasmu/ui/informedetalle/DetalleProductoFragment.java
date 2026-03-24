@@ -812,7 +812,7 @@ public class DetalleProductoFragment extends Fragment {
                 break;
             case Contrato.TablaInformeDet.QR:
                 String  valor2 = preguntaview.getTextoint().toString();
-                resp=mViewModel.validarQr(valor2);
+                resp=mViewModel.validarQr(valor2, compraslog);
                 if(resp){
                     Toast.makeText(getActivity(),"EL QR YA SE CAPTURO, VERIFIQUE",Toast.LENGTH_LONG).show();
                     resp=false;

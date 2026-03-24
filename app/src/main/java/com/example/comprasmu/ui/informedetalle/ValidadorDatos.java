@@ -14,6 +14,7 @@ import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
+import com.example.comprasmu.utils.ComprasLog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -210,14 +211,16 @@ public class ValidadorDatos {
 
     //devuelve true si ya existe
     //false si no existe
-    public boolean validarQr(String qr, Context context){
+    public boolean validarQr(String qr, Context context, ComprasLog compraslog){
 
         InformeComDetRepositoryImpl  infcomrepo=new InformeComDetRepositoryImpl(context);
         InformeCompraDetalle comp=infcomrepo.getByqr(qr);
         Log.d("ValidadorDatos","validarqr"+comp);
-        if(comp!=null&&comp.getId()>0){
+         if(comp!=null&&comp.getId()>0){
                     //ya existe el qr
-            return true;
+             compraslog.info("VALIDADORDATOS", "validarQr","encontré muestra idcompdet:"+comp.getId()+" con qr:"+qr);
+
+             return true;
         }
         else
             return false;
