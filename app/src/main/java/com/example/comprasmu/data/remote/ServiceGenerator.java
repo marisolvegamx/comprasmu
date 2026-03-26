@@ -54,6 +54,7 @@ public class ServiceGenerator {
 
 
         Gson gson = new GsonBuilder()
+                .setLenient()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
 

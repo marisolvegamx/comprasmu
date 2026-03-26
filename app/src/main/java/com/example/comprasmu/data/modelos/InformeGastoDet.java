@@ -3,7 +3,9 @@ package com.example.comprasmu.data.modelos;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-    @Entity(tableName = "informe_gasto_det")
+import com.google.gson.annotations.JsonAdapter;
+
+@Entity(tableName = "informe_gasto_det")
     public class InformeGastoDet {
 
         @PrimaryKey(autoGenerate = true)
@@ -13,6 +15,7 @@ import androidx.room.PrimaryKey;
         private String concepto;
         private float importe;
         private String descripcion;
+        @JsonAdapter(IntegerToBooleanAdapter.class)
         private boolean comprobante;
         private int fotocomprob;
         private int estatus; //1-abierto 2-finalizado 0-cancelado
