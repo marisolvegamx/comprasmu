@@ -1020,7 +1020,7 @@ public class NvoEmpaqueFragment extends Fragment {
 
         }   else
         {
-            compraslog.grabarError(TAG+"Algo salió muy mal");
+            compraslog.grabarError(TAG+"Algo salió muy mal request code:"+requestCode+" resultcode:"+resultCode);
         }
 
     }
