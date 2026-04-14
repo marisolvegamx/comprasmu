@@ -62,6 +62,7 @@ import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.listacompras.SelClienteFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasLog;
@@ -138,7 +139,7 @@ public class DetalleProductoFragment extends Fragment {
     private boolean yaestoyProcesando=false;
     public int estatusPepsi, estatusPen,estatusElec,estatusJum;
     DetalleInfView preguntaview;
-
+    LoadingAlert alert;
     public DetalleProductoFragment() {
 
     }
@@ -800,29 +801,70 @@ public class DetalleProductoFragment extends Fragment {
                 else {
                     //le quito la ,
                     valor=valor.replace(",","");
-                    resp=true;}
+                    resp=true;
+
+
+                }
+                continuarSiguiente(resp);
                 break;
             case Contrato.TablaInformeDet.SIGLAS:
                 resp=validarSiglas();
+                continuarSiguiente(resp);
                 break;
 
             case Contrato.TablaInformeDet.CADUCIDAD:
                 resp=validarFecha();
                 if(resp)
                     resp=validarCodigoprod();
+                continuarSiguiente(resp);
                 break;
             case Contrato.TablaInformeDet.QR:
                 String  valor2 = preguntaview.getTextoint().toString();
+                //pongo una ventanita porque ahora será mas tardada la validacion se hará en el servidor
+
                 resp=mViewModel.validarQr(valor2, compraslog);
                 if(resp){
                     Toast.makeText(getActivity(),"EL QR YA SE CAPTURO, VERIFIQUE",Toast.LENGTH_LONG).show();
                     resp=false;
                 }
-                else resp=true;
+                else {
+                    //valido en el servidor y compruebo que tenga conexion
+                    if(dViewModel.productoSel!=null&&ComprasUtils.isOnlineNet(getContext())){
+                        alert = new LoadingAlert(getActivity());
+                        alert.startAlert();
+                        mViewModel.validarQrHistorico(valor2,dViewModel.productoSel.compraSel,dViewModel.productoSel.compradetalleSel).observe(this.getViewLifecycleOwner(), new Observer<Boolean>() {
+                            @Override
+                            public void onChanged(Boolean aBoolean) {
+
+                                alert.closeAlertDialog();
+                                if(aBoolean==null||aBoolean) {
+                                    continuarSiguiente(true);
+
+                                }
+                                else{
+                                    Toast.makeText(getActivity(),"EL QR YA SE CAPTURO, VERIFIQUE",Toast.LENGTH_LONG).show();
+
+                                }
+                            }
+                        });
+                    }else {
+                        resp = true;
+                        continuarSiguiente(true);
+                        return;
+                    }
+                }
+
                 break;
-            default: resp=true; break;
+            default: resp=true;
+                continuarSiguiente(resp);
+            break;
         }
 
+
+    }
+
+    public void continuarSiguiente( boolean resp){
+        Log.d(TAG, preguntaAct.getNombreCampo()+"en continuar siguiente"+preguntaAct.getId());
         if(resp)
         {
 
@@ -1046,10 +1088,8 @@ public class DetalleProductoFragment extends Fragment {
                 avanzarPregunta(preguntaAct.getSigId());
             }
         }
-     //   preguntaview.aceptarSetEnabled(true);
+        //   preguntaview.aceptarSetEnabled(true);
     }
-
-
 
     public void finalizar() {
 

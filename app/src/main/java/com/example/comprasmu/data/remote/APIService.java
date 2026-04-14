@@ -1,5 +1,7 @@
 package com.example.comprasmu.data.remote;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.HistoricoMuestras;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
@@ -234,5 +236,10 @@ public interface APIService {
     Call< List<HistoricoMuestras>> getHistoricoMuestras(@Query("indice") String indice, @Query("usuario") String usuario, @Query("planta") int plantaId);
     @GET("videos")
     Call< List<MenuVideo>> getVideos();
+
+    @GET("validarQr")
+    Call<PostResponse> validarQr(@Query("idlis") int idListaCompra, @Query("det") int idListaCompraDet, @Query("qr") String qr);
+
+
 
 }

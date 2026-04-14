@@ -1419,4 +1419,49 @@ public class PeticionesServidor {
         });
         return lista;
     }
+
+    //se validará en el servidor que no haya usado ese qr
+    //todo validar que haya conexion a internet antes, envio la lista de compra y el qr
+    //devuelve true si no existe registro con ese qr o false si existe
+    public MutableLiveData<Boolean> validarIds(int idListaCompra,int idListaDetalle, String qr){
+        MutableLiveData<Boolean> resultado=new MutableLiveData<>();
+        Log.d("PeticionesServidor","validarIds usuario:"+qr);
+
+        final Call< PostResponse> batch = ServiceGenerator.getApiService().validarQr(idListaCompra, idListaDetalle,qr);
+
+        batch.enqueue(new Callback< PostResponse>() {
+            @Override
+            public void onResponse(@Nullable Call< PostResponse> call, @Nullable Response< PostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    PostResponse respuesta = response.body();
+
+                    if(respuesta!=null&&respuesta.getStatus().equals("ok"))
+                    {
+                        resultado.setValue(Boolean.valueOf(respuesta.getData()));
+
+                    }
+                    else //aviso al usuario //solo si esta desde descargar lista
+                    {
+                        Log.d("PeticionesServidor validarIds","hubo un error");
+                        lista.setValue(null);
+                    }
+
+                }else //aviso al usuario //solo si esta desde descargar lista
+                {
+
+                    lista.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@Nullable Call< PostResponse> call, @Nullable Throwable t) {
+                if (t != null) {
+
+                    Log.e(TAG+" validarIds", t.getMessage());
+                    lista.setValue(null);
+                }
+            }
+        });
+        return resultado;
+    }
 }

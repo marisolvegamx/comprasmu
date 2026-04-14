@@ -867,6 +867,14 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         return valdat.validarQr(qr,this.application, compraslog);
 
     }
+    //devuelve true si no existe registro con ese qr o false si existe
+    public MutableLiveData<Boolean> validarQrHistorico(String qr, int idListaCompra, int idListaCompraDet){
+        PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
+
+       return peticionesServidor.validarIds(idListaCompra,idListaCompraDet,qr);
+
+
+    }
 
     public int getIdInformeNuevo() {
         return idInformeNuevo;
