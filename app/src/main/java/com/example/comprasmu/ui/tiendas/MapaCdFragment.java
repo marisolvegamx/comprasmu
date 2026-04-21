@@ -972,10 +972,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         DescripcionGenerica elementoBorrar=null;
         for (DescripcionGenerica descipcion: listaPlantas
         ) {
-            Log.i(TAG,"<<<"+descipcion.getNombre());
+          //  Log.i(TAG,"<<<"+descipcion.getNombre());
             if(descipcion.getId()==planta) {
                 elementoBorrar=descipcion;
-                Log.i(TAG,"quitando:"+planta);
+          //      Log.i(TAG,"quitando:"+planta);
                 break;
             }
         }
@@ -987,7 +987,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         DescripcionGenerica elementoBorrar=null;
         for (DescripcionGenerica descripcion: listaPlantasEnv
         ) {
-            Log.i(TAG,"<<<"+descripcion.getNombre());
+         //   Log.i(TAG,"<<<"+descripcion.getNombre());
             if(descripcion.getId()==planta) {
               return descripcion.getDescripcion();
             }
