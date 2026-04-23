@@ -35,7 +35,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
     public  abstract  void deleteAll();
 
     /*por si es segunda cancelacion*/
-    @Query("SELECT * FROM informe_detalle inner join informe_compras on informesId=informe_compras.id where qr=:qr and (informe_detalle.estatus<>2 or informe_detalle.estatus<>4) ")
+    @Query("SELECT * FROM informe_detalle inner join informe_compras on informesId=informe_compras.id where qr=:qr and (informe_detalle.estatus<>2 and informe_detalle.estatus<>4) ")
     public abstract InformeCompraDetalle getByqr( String qr); //no está cancelada
 
     @Query("update  informe_detalle set estatus=2, estatusSync=0 where informesId=:informe")
@@ -204,7 +204,7 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
 
     @Transaction
     public void insertaActcant(List<InformeCompraDetalle> detalles) {
-       insertAll(detalles);
+        insertAll(detalles);
         // Anything inside this method runs in a single transaction.
        /* for(ListaCompraDetalle det:detalles){
             actualizarLista(det.getProductosId(), det.getProductoNombre(), det.getTamanio(), det.getEmpaque(),
