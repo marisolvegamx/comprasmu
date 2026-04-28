@@ -199,32 +199,42 @@ public class DetalleProductoFragment extends Fragment {
                                     if (ultimares.getClienteSel() == 4) {
                                         if(Constantes.NM_TOTALISTA>=16&&mViewModel.numMuestra ==3||Constantes.NM_TOTALISTA<16&&mViewModel.numMuestra ==2) //ya terminé
                                         {
+                                            preguntaAct = dViewModel.buscarReactivoxId(5);
 
                                         }else {
                                             preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 1);
-                                            mViewModel.setIdInformeNuevo(informeCompraPlan.getId());
-                                            mViewModel.consecutivo = informeCompraPlan.getConsecutivo();
-                                        }
 
+                                        }
 
                                     }
                                     if (ultimares.getClienteSel() == 5 ) {
-                                        if (mViewModel.numMuestra != 3) {
+                                        if (mViewModel.numMuestra <3) {
                                             preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 51);
-                                        } else
-                                            preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 67);
+                                        }  else if (mViewModel.numMuestra <5)
+                                            preguntaAct = dViewModel.buscarReactivoxId( 67);
+                                        else
+                                            preguntaAct = dViewModel.buscarReactivoxId(55);
+
+
                                     }
                                     if ( ultimares.getClienteSel() == 7) {
-                                        if (mViewModel.numMuestra != 3) {
+                                        if (mViewModel.numMuestra < 3) {
                                             preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 51);
-                                        } else
-                                            preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 67);
+                                        } else  if (mViewModel.numMuestra <5)
+                                            preguntaAct = dViewModel.buscarReactivoxId( 67);
+                                        else
+                                            preguntaAct = dViewModel.buscarReactivoxId(55);
+
                                     }
                                     if (ultimares.getClienteSel() == 6)
+                                    {     if (mViewModel.numMuestra < 3) {
                                         preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 71);
-
-
+                                    }    else
+                                        preguntaAct = dViewModel.buscarReactivoxId(75);
+                                    }
                                 }
+                                mViewModel.setIdInformeNuevo(informeCompraPlan.getId());
+                                mViewModel.consecutivo = informeCompraPlan.getConsecutivo();
 
 
                             }
