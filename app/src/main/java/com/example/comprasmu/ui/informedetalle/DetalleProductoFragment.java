@@ -181,7 +181,56 @@ public class DetalleProductoFragment extends Fragment {
 
                     int num_pregact = getArguments().getInt(ARG_PREGACT);
                     this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
-                    preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
+                    preguntaAct = dViewModel.buscarReactivoSimpl(num_pregact);
+                    if(isEdicion) {
+                        ultimares = dViewModel.getUltimoTemp();
+                        //ahora para saber el numero de muestra primero reviso si ya tengo un informe con esa visita y en que numero de muestra voy
+                        InformeTemp inf = dViewModel.buscarxNombreCam("plantasId");
+                        if (ultimares.getTabla().equals("I") && inf != null) {
+                            Constantes.ni_plantasel = Integer.parseInt(inf.getValor());
+
+
+                            //busco el informe con esa planta y visita
+                            InformeCompra informeCompraPlan = mViewModel.getInformeCompraxPlanta(mViewModel.visita.getId(), Constantes.ni_plantasel);
+                            if (informeCompraPlan != null) {
+                                mViewModel.numMuestra = mViewModel.getTotalMuestras(informeCompraPlan.getId()) + 1;
+                                //depende del numero de muestra me voy a mover a la pregunta
+                                if (mViewModel.numMuestra > 0) {
+                                    if (ultimares.getClienteSel() == 4) {
+                                        if(Constantes.NM_TOTALISTA>=16&&mViewModel.numMuestra ==3||Constantes.NM_TOTALISTA<16&&mViewModel.numMuestra ==2) //ya terminé
+                                        {
+
+                                        }else {
+                                            preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 1);
+                                            mViewModel.setIdInformeNuevo(informeCompraPlan.getId());
+                                            mViewModel.consecutivo = informeCompraPlan.getConsecutivo();
+                                        }
+
+
+                                    }
+                                    if (ultimares.getClienteSel() == 5 ) {
+                                        if (mViewModel.numMuestra != 3) {
+                                            preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 51);
+                                        } else
+                                            preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 67);
+                                    }
+                                    if ( ultimares.getClienteSel() == 7) {
+                                        if (mViewModel.numMuestra != 3) {
+                                            preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 51);
+                                        } else
+                                            preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 67);
+                                    }
+                                    if (ultimares.getClienteSel() == 6)
+                                        preguntaAct = dViewModel.buscarReactivoxId(mViewModel.numMuestra + 71);
+
+
+                                }
+
+
+                            }
+
+                        }
+                    }
                 }
             crearPregunta();
             Log.d(TAG,"consecutivo>>>>>"+Constantes.DP_CONSECUTIVO);

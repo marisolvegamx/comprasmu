@@ -238,7 +238,9 @@ public class InformeCompraRepositoryImpl   {
         return  icDao.getByVisitaPendFinalizar(visitaId, estatus);
 
     }
-
+    public InformeCompra getInformexPlanta(int idVisita, int idPlanta){
+        return icDao.getInformexPlanta(idVisita, idPlanta);
+    }
 
    /* public LiveData<List<InformeCompraDao.InformeCompravisita>> getInformesVisitas (String indice, String nombretienda, String ciudad, int planta, int cliente) {
         String query="SELECT indice, createdAt as fecha,clienteNombre, plantaNombre,nombreTienda, " +

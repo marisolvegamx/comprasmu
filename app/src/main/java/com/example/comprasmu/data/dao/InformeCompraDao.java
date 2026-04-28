@@ -111,6 +111,10 @@ public interface InformeCompraDao {
     @Query("SELECT * FROM informe_compras WHERE visitasId=:visita and estatus=:estatus")
     List<InformeCompra> getByVisitaPendFinalizar(int visita, int estatus);
 
+    @Query("SELECT * FROM informe_compras where visitasId=:visita and plantasId=:planta")
+    InformeCompra getInformexPlanta(int visita, int planta);
+
+
     @DatabaseView("SELECT informe_compras.id as idinforme, " +
             "informe_compras.visitasId, " +
             "informe_compras.consecutivo, " +
