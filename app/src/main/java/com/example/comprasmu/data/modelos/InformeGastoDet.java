@@ -15,7 +15,7 @@ import com.google.gson.annotations.JsonAdapter;
         private String concepto;
         private float importe;
         private String descripcion;
-        @JsonAdapter(IntegerToBooleanAdapter.class)
+
         private boolean comprobante;
         private int fotocomprob;
         private int estatus; //1-abierto 2-finalizado 0-cancelado

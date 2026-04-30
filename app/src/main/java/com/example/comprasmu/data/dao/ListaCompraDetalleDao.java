@@ -128,6 +128,9 @@ public abstract class ListaCompraDetalleDao extends BaseDao<ListaCompraDetalle> 
     @Query("SELECT * FROM lista_compras_detalle WHERE listaId =:uuid and comprados<cantidad")
     public abstract List<ListaCompraDetalle> getPendientes(int uuid);
 
+    @Query("SELECT sum(cantidad) FROM lista_compras_detalle WHERE listaId =:listaId")
+    public abstract int getTotalSolicitados(int listaId);
+
     /*  public class MinimalLstaDet{
         public int productosId;
         public String productoNombre;

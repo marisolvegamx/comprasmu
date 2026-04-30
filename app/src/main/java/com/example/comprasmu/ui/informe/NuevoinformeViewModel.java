@@ -19,12 +19,15 @@ import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
 import com.example.comprasmu.data.dao.ImagenDetalleDao;
+import com.example.comprasmu.data.dao.ListaCompraDao;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.InformeWithDetalle;
 
+import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.ListaDetalleBu;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Visita;
 
@@ -37,6 +40,8 @@ import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.repositories.InformeTempRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 
@@ -94,6 +99,7 @@ public class NuevoinformeViewModel extends AndroidViewModel {
     public int prefimagen;
     public int prefcons;
     Application application;
+    ListaCompraRepositoryImpl listaCompraRepository;
 
     public NuevoinformeViewModel(@NonNull Application application) {
         super(application);
@@ -908,6 +914,19 @@ public class NuevoinformeViewModel extends AndroidViewModel {
         if(detalles!=null)
             return detalles.size();
         return 0;
+    }
+    public int gettotalListaCompra(int planta, String indice){
+         ListaCompraDao listaCompraDao=ComprasDataBase.getInstance(application).getListaCompraDao();
+        listaCompraRepository=ListaCompraRepositoryImpl.getInstance(listaCompraDao);
+        ListaCompraDetRepositoryImpl listaCompraDetRepo=new ListaCompraDetRepositoryImpl(application);
+        List<ListaCompra> listaCompra= listaCompraRepository.getByPlanta(planta, indice);
+        int total=0;
+        if(listaCompra!=null&&listaCompra.size()>0) {
+            total = listaCompraDetRepo.getTotalSolicitados(listaCompra.get(0).getId());
+        }
+        return total;
+
+
     }
     public class EnvioListener {
         Activity actividad;

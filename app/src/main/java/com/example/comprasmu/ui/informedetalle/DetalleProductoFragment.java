@@ -52,6 +52,7 @@ import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeTemp;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.ListaDetalleBu;
 import com.example.comprasmu.data.modelos.ProductoExhibido;
 import com.example.comprasmu.data.modelos.Reactivo;
 import com.example.comprasmu.data.remote.InformeEnvio;
@@ -182,7 +183,7 @@ public class DetalleProductoFragment extends Fragment {
                     int num_pregact = getArguments().getInt(ARG_PREGACT);
                     this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
                     preguntaAct = dViewModel.buscarReactivoSimpl(num_pregact);
-                    if(isEdicion) {
+                    if(isEdicion&&preguntaAct.getId()!=5&&preguntaAct.getId()!=6&&preguntaAct.getId()!=7) {
                         ultimares = dViewModel.getUltimoTemp();
                         //ahora para saber el numero de muestra primero reviso si ya tengo un informe con esa visita y en que numero de muestra voy
                         InformeTemp inf = dViewModel.buscarxNombreCam("plantasId");
@@ -197,7 +198,10 @@ public class DetalleProductoFragment extends Fragment {
                                 //depende del numero de muestra me voy a mover a la pregunta
                                 if (mViewModel.numMuestra > 0) {
                                     if (ultimares.getClienteSel() == 4) {
-                                        if(Constantes.NM_TOTALISTA>=16&&mViewModel.numMuestra ==3||Constantes.NM_TOTALISTA<16&&mViewModel.numMuestra ==2) //ya terminé
+                                        //busco el total de la lista
+                                        Constantes.NM_TOTALISTA=mViewModel.gettotalListaCompra(Constantes.ni_plantasel,Constantes.INDICEACTUAL);
+                                        Log.i(TAG,"total de la lista:"+Constantes.NM_TOTALISTA+" nummuestra:"+mViewModel.numMuestra);
+                                        if((Constantes.NM_TOTALISTA>=16&&mViewModel.numMuestra ==4)||(Constantes.NM_TOTALISTA<16&&mViewModel.numMuestra ==3)) //ya terminé
                                         {
                                             preguntaAct = dViewModel.buscarReactivoxId(5);
 
@@ -1272,7 +1276,6 @@ public class DetalleProductoFragment extends Fragment {
                             if (nuevoid > 0&&dViewModel.icdNuevo!=null) {
                                 dViewModel.setIddetalleNuevo(nuevoid);
                                 //si ya se guardó lo agrego en la lista de compra
-                                ListaDetalleViewModel lcviewModel = new ViewModelProvider(DetalleProductoFragment.this).get(ListaDetalleViewModel.class);
                                 compraslog.info(TAG,"guardando muestra","qqqqqqqqqqqqqqq"+dViewModel.icdNuevo+"--"+dViewModel.icdNuevo.getCaducidad());
                                 int res=lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getTipoMuestra(),dViewModel.icdNuevo.getComprasIdbu(),dViewModel.icdNuevo.getComprasDetIdbu(),4);
                                 //limpiar tabla temp
@@ -1341,7 +1344,7 @@ public class DetalleProductoFragment extends Fragment {
                 if (nuevoid > 0) {
                     dViewModel.setIddetalleNuevo(nuevoid);
                     //si ya se guardó lo agrego en la lista de compra
-                    ListaDetalleViewModel lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
+
                     compraslog.info(TAG,"guardarMuestra","fecha cad"+dViewModel.icdNuevo.getCaducidad());
                     int res=lcviewModel.comprarMuestraPepsi(dViewModel.icdNuevo.getComprasId(), dViewModel.icdNuevo.getComprasDetId(), sdfcodigo.format(dViewModel.icdNuevo.getCaducidad()), dViewModel.icdNuevo.getTipoMuestra(),dViewModel.icdNuevo.getComprasIdbu(),dViewModel.icdNuevo.getComprasDetIdbu(),4);
                     //limpiar tabla temp

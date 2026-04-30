@@ -52,7 +52,7 @@ public class ServiceGenerator {
                     .build();
 
 
-
+       //todo aqui hay que crear el typadapter de json para serealizar y deserealizar los gastos detalle y el boolean https://stackoverflow.com/questions/59513826/how-to-register-custom-typeadapter-or-jsondeserializer-with-gson-in-retrofit
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")

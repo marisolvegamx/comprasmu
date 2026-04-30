@@ -518,4 +518,8 @@ public class ListaCompraDetRepositoryImpl {
     public List<ListaCompraDetalle> getPendientes(int listasId) {
         return dao.getPendientes(listasId);
     }
+
+    public int getTotalSolicitados(int listaId) {
+        return dao.getTotalSolicitados(listaId);
+    }
 }
