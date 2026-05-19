@@ -53,6 +53,7 @@ import com.example.comprasmu.utils.ui.ListaSelecViewModel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Primero selecciona el cliente y luego
@@ -267,9 +268,9 @@ public class DescargarFragment extends Fragment {
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setTitle("DESCARGA DOCUMENTOS"); // Title for notification.
-
+        milog.info(TAG,"descargando el pdf",MY_URL);
         request.setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_PICTURES, nombrearch+".pdf");  // Storage directory path
-        archact=((DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
+        archact=((DownloadManager) requireActivity().getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
         // return 0;
     }
     public void irAcdSel(){
