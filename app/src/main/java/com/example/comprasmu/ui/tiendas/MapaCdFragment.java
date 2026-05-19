@@ -21,6 +21,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -148,6 +149,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     TextView txtcerrarmensaje;
     Circle circleNuevaTienda;
     Button btnvatienda;
+    int contadorBotonNvaTienda=0;
     public MapaCdFragment() {
     }
 
@@ -184,6 +186,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         mensajetienda.setVisibility(View.GONE);
         btnverfil=view.findViewById(R.id.btnmfiltros);
         btnvatienda.setEnabled(false);
+        BuscadorTiendas buscador=new BuscadorTiendas();
+       // Log.d(TAG,"res "+buscador.dentroDelCirculo(16.7648672,-93.0821975,16.764111,-93.081486));
         btnverfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -493,11 +497,11 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         lastKnownLocation.getLongitude(), compraslog)) {
                     compraslog.info(TAG, ".nuevatienda ", "ya existe");
                     //solo informativo te recomendamos visitar una tienda existente
-                    new AlertDialog.Builder(getActivity())
+                    AlertDialog nuevaTiendaDialog= new AlertDialog.Builder(getActivity())
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle(R.string.importante)
                             .setMessage(getString(R.string.recomend_tienda))
-                            .setPositiveButton(R.string.nueva_tienda, new DialogInterface.OnClickListener() {
+                         /*   .setPositiveButton(R.string.nueva_tienda, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Bundle bundle = new Bundle();
                                     bundle.putBoolean("nuevatienda", true);
@@ -511,9 +515,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                                     }
 
                                 }
-                            })
+                            })*/
+
                             .setNegativeButton(R.string.regresar, null)
-                            .show();
+                            .create();
+                    nuevaTiendaDialog.show();
+                    Window window = nuevaTiendaDialog.getWindow();
+                    if(window!=null)
+                        window.setGravity(Gravity.TOP);
+                    if(circleNuevaTienda!=null)
+                        circleNuevaTienda.remove();
                     circleNuevaTienda = mMap.addCircle(new CircleOptions()
                             .center(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
                             .radius(200)
