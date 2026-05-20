@@ -497,7 +497,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         lastKnownLocation.getLongitude(), compraslog)) {
                     compraslog.info(TAG, ".nuevatienda ", "ya existe");
                     //solo informativo te recomendamos visitar una tienda existente
-                    AlertDialog nuevaTiendaDialog= new AlertDialog.Builder(getActivity())
+                  /*  AlertDialog nuevaTiendaDialog= new AlertDialog.Builder(getActivity())
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle(R.string.importante)
                             .setMessage(getString(R.string.recomend_tienda))
@@ -517,12 +517,13 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                                 }
                             })*/
 
-                            .setNegativeButton(R.string.regresar, null)
+                       /*     .setNegativeButton(R.string.regresar, null)
                             .create();
                     nuevaTiendaDialog.show();
                     Window window = nuevaTiendaDialog.getWindow();
                     if(window!=null)
-                        window.setGravity(Gravity.TOP);
+                        window.setGravity(Gravity.TOP);*/
+                    mensajetienda.setVisibility(View.VISIBLE);
                     if(circleNuevaTienda!=null)
                         circleNuevaTienda.remove();
                     circleNuevaTienda = mMap.addCircle(new CircleOptions()
