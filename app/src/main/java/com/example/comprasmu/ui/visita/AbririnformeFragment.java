@@ -2171,8 +2171,6 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         //super.onActivityResult(requestCode, resultCode, data);
         try {
             if ((requestCode == REQUEST_CODE_TAKE_PHOTO || requestCode == REQUEST_CODE_PROD1 || requestCode == REQUEST_CODE_PROD2 || requestCode == REQUEST_CODE_PROD3 || requestCode == REQUEST_CODE_PROD4) && resultCode == RESULT_OK) {
-
-
                 String state = Environment.getExternalStorageState();
                 String baseDir;
                 if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -2192,14 +2190,11 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                         if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
                             //es la de fachada
                             Log.d(TAG, "*****" + file.exists() + "--" + file.getAbsolutePath());
-
                             yaTengoFoto = false;
-
                             txtfotofachada.setText(nombre_foto);
                             ComprasUtils cu = new ComprasUtils();
                             Bitmap bitmap1 = cu.comprimirImagen(file.getAbsolutePath());
                             bitmap1 = ComprasUtils.decodeSampledBitmapFromResource(file.getAbsolutePath(), 100, 100);
-
                             fotofac.setImageBitmap(bitmap1);
                             fotofac.setVisibility(View.VISIBLE);
                             rotar.setVisibility(View.VISIBLE);
