@@ -150,6 +150,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     Circle circleNuevaTienda;
     Button btnvatienda;
     int contadorBotonNvaTienda=0;
+    private TextView txtnuevatmensaje;
+
     public MapaCdFragment() {
     }
 
@@ -170,6 +172,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         btnvatienda=view.findViewById(R.id.btnmcdnvati);
         mensajetienda=view.findViewById(R.id.llmapamensajetienda);
         txtcerrarmensaje=view.findViewById(R.id.txtmapcerrarmensaje);
+        txtnuevatmensaje=view.findViewById(R.id.txtmapnvatiendamsj);
         verfiltros=false;
         compraslog=ComprasLog.getSingleton();
         spplantas=view.findViewById(R.id.spmcdplanta);
@@ -321,8 +324,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             public void onClick(View view) {
                 mensajetienda.setVisibility(View.GONE);
                 circleNuevaTienda.remove();
+                btnvatienda.setEnabled(true);
 
-
+            }
+        });
+        txtnuevatmensaje.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iraAbrirInforme();
             }
         });
         return  view;
@@ -524,6 +533,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     if(window!=null)
                         window.setGravity(Gravity.TOP);*/
                     mensajetienda.setVisibility(View.VISIBLE);
+                    btnvatienda.setEnabled(false);
                     if(circleNuevaTienda!=null)
                         circleNuevaTienda.remove();
                     circleNuevaTienda = mMap.addCircle(new CircleOptions()
@@ -1106,7 +1116,17 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     public MutableLiveData<Boolean> descargarTiendas(String ciudad, String ffin){
         return lcviewModel.descargarTiendas(ciudad,ffin,getViewLifecycleOwner());
     }
+    public void iraAbrirInforme(){
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("nuevatienda", true);
+        //  bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
+        NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
+        Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
+        if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
 
+            nav.navigate(R.id.action_buscartonuevo, bundle);
+        }
+    }
     public class miLocationListener implements LocationListener {
         public void desactivar() {
             if ( fusedLocationClient!=null) {
