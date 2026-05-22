@@ -12,6 +12,8 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/******* conexion de retrofit que se usa para las peticiones de texto  servidor
+ * los archivos de fotos se suben con servicegeneratorim********/
 public class ServiceGenerator {
 
     //  private static final String BASE_URL = "http://192.168.1.79/comprasv1/api/public/";
