@@ -16,11 +16,12 @@ public class ServiceGeneratorIm {
 
     //  private static final String BASE_URL = "http://192.168.1.79/comprasv1/api/public/";
 
-    private static APIService servicio;
+    private static APIService servicio = null;
+    private static OkHttpClient httpClient = null;
 
-    public static APIService getApiService() {
+    public static synchronized APIService getApiService() {
 
-
+        if (servicio == null) {
         String BASE_URL;
         if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)){//pruebas y el lenovo
             //nam
@@ -31,23 +32,26 @@ public class ServiceGeneratorIm {
         }
 
 
-        OkHttpClient httpClient =new OkHttpClient.Builder()
-                .readTimeout(120, TimeUnit.SECONDS)
-                .writeTimeout(360,TimeUnit.SECONDS)
-                .connectTimeout(360, TimeUnit.SECONDS)
-                .build();
+            if (httpClient == null) {
+                httpClient = new OkHttpClient.Builder()
+                        .readTimeout(120, TimeUnit.SECONDS)
+                        .writeTimeout(360, TimeUnit.SECONDS)
+                        .connectTimeout(15, TimeUnit.SECONDS)
+                        .retryOnConnectionFailure(true) // Agregado para estabilidad
+                        .build();
+            }
+                Gson gson = new GsonBuilder()
+                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                        .create();
 
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                .create();
 
-        if (servicio == null) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(httpClient) // <-- usamos el log level
-                    .build();
-            servicio = retrofit.create(APIService.class);
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .client(httpClient) // <-- usamos el log level
+                        .build();
+                servicio = retrofit.create(APIService.class);
+
         }
 
         return servicio;

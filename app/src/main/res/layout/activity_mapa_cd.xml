@@ -164,8 +164,10 @@
             android:id="@+id/llmapamensajetienda"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="vertical">
+            android:background="#F8F878"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
             <TextView
                 android:id="@+id/tap_text"
@@ -175,16 +177,36 @@
                 android:layout_marginEnd="10dp"
                 android:text="@string/recomend_tienda" />
 
-            <TextView
-                android:id="@+id/txtmapcerrarmensaje"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:gravity="center"
-                android:paddingEnd="30dp"
-                android:text="@string/aceptar"
-                android:textColor="@color/blue_title" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtmapcerrarmensaje"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingEnd="30dp"
+                    android:text="@string/cerrar"
+                    android:textColor="@color/blue_title" />
+
+                <TextView
+                    android:id="@+id/txtmapnvatiendamsj"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingEnd="30dp"
+                    android:text="@string/nueva_tienda"
+                    android:textColor="@color/blue_title" />
+
+            </LinearLayout>
 
         </LinearLayout>
         <androidx.fragment.app.FragmentContainerView

@@ -382,7 +382,7 @@
     <string name="hetiquetado">3. ETIQUETADO</string>
     <string name="informe_enviado">El informe se envió correctamente</string>
     <string name="cargando">CARGANDO</string>
-    <string name="recomend_tienda">YA EXISTE UNA TIENDA REGISTRADA EN ESTA AREA. VERFIQUE EL NOMBRE DE LAS TIENDAS DENTRO DEL CERCO DE 200 M. A LA REDONDA PARA EVITAR DUPLICIDAD. TOME EN CUENTA QUE SE SUPERVISARÁ Y PODRÁ SER CANCELADA EN CASO DE SER UNA TIENDA REPETIDA</string>
+    <string name="recomend_tienda">YA EXISTE UNA TIENDA REGISTRADA EN ESTA ÁREA. VERFIQUE EL NOMBRE DE LAS TIENDAS (PRESIONANDO LOS GLOBOS) DENTRO DEL CERCO DE 200 M. A LA REDONDA PARA EVITAR DUPLICIDAD. TOME EN CUENTA QUE SE SUPERVISARÁ Y SERÁ CANCELADA EN CASO DE SER UNA TIENDA REPETIDA</string>
     <string name="anio">AÑO</string>
     <string name="tienda">TIENDA</string>
     <string name="error_guardar">Hubo un error al guardar el informe, intente de nuevo</string>
