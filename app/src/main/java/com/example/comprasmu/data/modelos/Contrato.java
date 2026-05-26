@@ -61,6 +61,7 @@ public  class Contrato {
         String CAUSA_SUSTITUCIONID = "causaSustId";
         String CAUSA_SUSTITUCION = "causaSustitucion";
         String QR = "qr";
+        String causa_nocompraotras = "causa_nocompraotras";
     }
     public static class TablaInformeDet
             implements  ColumnasInformeDetalle {

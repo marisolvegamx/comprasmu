@@ -183,7 +183,7 @@ public class DetalleProductoFragment extends Fragment {
                     int num_pregact = getArguments().getInt(ARG_PREGACT);
                     this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
                     preguntaAct = dViewModel.buscarReactivoSimpl(num_pregact);
-                    if(isEdicion&&preguntaAct.getId()!=5&&preguntaAct.getId()!=6&&preguntaAct.getId()!=7) {
+                    if(isEdicion&&preguntaAct.getId()!=5&&preguntaAct.getId()!=6&&preguntaAct.getId()!=7&&preguntaAct.getId()!=47) {
                         ultimares = dViewModel.getUltimoTemp();
                         //ahora para saber el numero de muestra primero reviso si ya tengo un informe con esa visita y en que numero de muestra voy
                         InformeTemp inf = dViewModel.buscarxNombreCam("plantasId");
@@ -194,8 +194,9 @@ public class DetalleProductoFragment extends Fragment {
                             //busco el informe con esa planta y visita
                             InformeCompra informeCompraPlan = mViewModel.getInformeCompraxPlanta(mViewModel.visita.getId(), Constantes.ni_plantasel);
                             if (informeCompraPlan != null) {
-                                mViewModel.numMuestra = mViewModel.getTotalMuestras(informeCompraPlan.getId()) + 1;
-                                //depende del numero de muestra me voy a mover a la pregunta
+                                  mViewModel.numMuestra = mViewModel.getTotalMuestras(informeCompraPlan.getId()) + 1;
+                                    //depende del numero de muestra me voy a mover a la pregunta
+
                                 if (mViewModel.numMuestra > 0) {
                                     if (ultimares.getClienteSel() == 4) {
                                         //busco el total de la lista
