@@ -725,6 +725,15 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             nuevo.setSinproducto(true);
             nuevo.setCausa_nocompra(inft.getValor());
         }
+        inft=buscarCampo(Contrato.TablaInformeDet.causa_nocompraotras,temps);
+        //    Log.d(TAG,"causa no compra="+inft.getNombre_campo());
+        if(inft!=null) {
+            try {
+                nuevo.setCausa_nocompraotras(Integer.parseInt(inft.getValor()));
+            } catch (NumberFormatException e) {
+              Log.e(TAG,e.getMessage());
+            }
+        }
         for(InformeTemp info:temps){
 
             nuevo.setVisitasId(info.getVisitasId());
