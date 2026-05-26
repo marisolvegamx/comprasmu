@@ -1074,7 +1074,7 @@ public class DetalleProductoFragment extends Fragment {
                     return;
                 loadingDialog = new LoadingDialog(getActivity());
                 loadingDialog.startLoadingDialog();
-                guardarResp();
+
                 //para otras si genero consecutivo
                 // RadioGroup rg = (RadioGroup) respgen;
                 String valor=null;
@@ -1088,8 +1088,13 @@ public class DetalleProductoFragment extends Fragment {
 
 
                 if(valor!=null)
-                    if(valor.equals("7")) //es otras
+                    if(!valor.equals("4")) //es otras
                     {
+                        //guardo causa no compra
+                        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "7", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
+                       //guardo en otras
+                        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), valor,"causa_nocompraotras" , preguntaAct.getTabla(), mViewModel.consecutivo, false);
+
                         //generar consecutivo tienda
                         int consecutivo=mViewModel.getConsecutivo(Constantes.ni_plantasel,getActivity(), this);
 
@@ -1110,6 +1115,8 @@ public class DetalleProductoFragment extends Fragment {
 
 
                     }else {
+                        //guardo causa no compra
+                        guardarResp();
                         mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",0,false);
                         mViewModel.guardarResp(0,0,Constantes.ni_plantanombre,"plantaNombre","I",0,false);
                         mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",0,false);
@@ -1118,10 +1125,7 @@ public class DetalleProductoFragment extends Fragment {
                         loadingDialog.dismisDialog();
                     }
 
-
-
                 // avanzarPregunta(preguntaAct.getSigId());
-
 
             }else
             if(preguntaAct.getId()==23){ //son la siglas y ya seleccioné producto

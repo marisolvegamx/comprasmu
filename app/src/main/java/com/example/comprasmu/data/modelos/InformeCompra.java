@@ -26,6 +26,7 @@ public class InformeCompra {
     private boolean sinproducto;
     private String causa_nocompra;
     private int ticket_noemiten;
+    private Integer causa_nocompraotras;
     public String getClienteNombre() {
         return clienteNombre;
     }
@@ -171,5 +172,13 @@ public class InformeCompra {
 
     public void setTicket_noemiten(int ticket_noemiten) {
         this.ticket_noemiten = ticket_noemiten;
+    }
+
+    public Integer getCausa_nocompraotras() {
+        return causa_nocompraotras;
+    }
+
+    public void setCausa_nocompraotras(Integer causa_nocompraotras) {
+        this.causa_nocompraotras = causa_nocompraotras;
     }
 }

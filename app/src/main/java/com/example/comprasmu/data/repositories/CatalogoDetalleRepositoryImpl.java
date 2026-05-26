@@ -46,7 +46,7 @@ public class CatalogoDetalleRepositoryImpl  extends BaseRepository<CatalogoDetal
                 break;
             case "causas":
                 idcat=Contrato.CatalogosId.CAUSAS;
-                break;
+                return dao.findCausasNoCompra();
             case "cadena_comercial":
                 idcat=Contrato.CatalogosId.CADENACOMER;
                 break;
