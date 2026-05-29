@@ -713,10 +713,10 @@ public class NuevoinformeViewModel extends AndroidViewModel {
             nuevo.setClientesId(Integer.parseInt(inft.getValor()));
         inft=buscarCampo("clienteNombre",temps);
         if(inft!=null)
-        nuevo.setClienteNombre(inft.getValor());
+            nuevo.setClienteNombre(inft.getValor());
          inft=buscarCampo("comentarios",temps);
         if(inft!=null)
-        nuevo.setComentarios(inft.getValor());
+            nuevo.setComentarios(inft.getValor());
 
 
          inft=buscarCampo(Contrato.TablaInformeDet.causa_nocompra,temps);
