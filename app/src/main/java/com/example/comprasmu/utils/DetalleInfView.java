@@ -456,6 +456,9 @@ public class DetalleInfView extends LinearLayout {
     public void setPregSINoOnChange(RadioGroup.OnCheckedChangeListener listener){
         preguntasino.setOnCheckedChangeListener(listener);
     }
+    public void setAceptarVisibility(boolean valor){
+        aceptar.setVisibility(valor?View.VISIBLE:View.GONE);
+    }
 
     public int getIdCampo() {
         return idCampo;
