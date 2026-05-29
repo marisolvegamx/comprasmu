@@ -360,7 +360,7 @@ public class ContinuarInformeActivity extends AppCompatActivity  {
         }*/
 
         //veo que pregunta es
-        if(numpreg==4||numpreg==3||numpreg==5||numpreg==43||numpreg==7||numpreg==47)
+        if(numpreg==4||numpreg==3||numpreg==5||numpreg==43||numpreg==7)
         {
             return; //no puedo regresar
         }
