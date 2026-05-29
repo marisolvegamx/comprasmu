@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -140,11 +141,13 @@ public class DetalleProductoPenFragment extends Fragment {
     protected int plantaSel;
     protected String NOMBREPLANTASEL;
     protected long lastClickTime = 0;
-   protected boolean yaestoyProcesando=false;
+    protected boolean yaestoyProcesando=false;
     List<DescripcionGenerica> clientesAsig;
     CheckBox nopermiso;
     protected ComprasLog compraslog;
-
+    LinearLayout linearLayoutCausas;
+    RadioGroup radioGroupCausas;
+    Button aceptarCausas;
     public DetalleProductoPenFragment() {
 
     }
@@ -176,6 +179,7 @@ public class DetalleProductoPenFragment extends Fragment {
             sv = root.findViewById(R.id.content_generic);
             aceptar = root.findViewById(R.id.btngaceptar);
             validar=root.findViewById(R.id.btngvalidar);
+            linearLayoutCausas=root.findViewById(R.id.fgslllistacausas);
          //   mViewModel.cargarCatsContinuar();
             //si es la misma
             //reviso si es edicion o es nueva
@@ -355,6 +359,7 @@ public class DetalleProductoPenFragment extends Fragment {
 
                 });
             }
+
             if(pregunta!=null){
                 pregunta.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
@@ -392,6 +397,67 @@ public class DetalleProductoPenFragment extends Fragment {
 
                 }
             });
+            if(Contrato.TablaInformeDet.causa_nocompra.equals(preguntaAct.getNombreCampo())) {
+                Log.d(TAG,"llenando causas");
+
+                llenarCausasNoCompraOtras();
+                respgen=root.findViewById(1001);
+                if(respgen!=null) {
+                    RadioGroup botones = (RadioGroup) respgen;
+                    Log.d(TAG,"ENCONTRE RADIOBUTON");
+
+                    botones.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+                            int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                            Log.d(TAG, "click en causas " + selectedRadioButtonId);
+                            if (selectedRadioButtonId == 7) //seleccionó otras y pongo las demas opciones
+                            {
+                                aceptar.setEnabled(false);
+                                aceptar.setVisibility(View.GONE);
+                                radioGroupCausas = root.findViewById(R.id.fgsrgpopcionesnocompra);
+                                radioGroupCausas.setVisibility(View.VISIBLE);
+
+                                aceptarCausas = root.findViewById(R.id.fgsbtnaceptarcausas);
+                                aceptarCausas.setVisibility(View.VISIBLE);
+                                aceptarCausas.setEnabled(false);
+                                linearLayoutCausas.setVisibility(View.VISIBLE);
+                                aceptarCausas.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        aceptarCausas.setEnabled(false);
+                                        long currentClickTime = SystemClock.elapsedRealtime();
+                                        // preventing double, using threshold of 1000 ms
+                                        if (currentClickTime - lastClickTime < 5500) {
+                                            //  Log.d(TAG,"doble click :("+lastClickTime);
+                                            return;
+                                        }
+
+
+                                        linearLayoutCausas.setVisibility(View.GONE);
+                                        lastClickTime = currentClickTime;
+                                        siguiente();
+                                    }
+                                });
+
+                                radioGroupCausas.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                                        aceptarCausas.setEnabled(true);
+                                    }
+                                });
+                            } else {
+                                aceptar.setEnabled(true);
+                                aceptar.setVisibility(View.VISIBLE);
+                                linearLayoutCausas.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                }
+
+
+            }
             prodSel=dViewModel.productoSel;
             if(preguntaAct.isBotonMicro()) {
 
@@ -938,6 +1004,15 @@ public class DetalleProductoPenFragment extends Fragment {
                     if(valor!=null)
                         if(valor.equals("7")) //es otras
                         {
+                            //busco la causa
+                            radioGroupCausas =root.findViewById(R.id.fgsrgpopcionesnocompra);
+
+                            int checkedId=radioGroupCausas.getCheckedRadioButtonId();
+                            //guardo causa no compra
+                            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "7", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
+                            //guardo en otras
+                            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), checkedId+"","causa_nocompraotras" , preguntaAct.getTabla(), mViewModel.consecutivo, false);
+
                             //generar consecutivo tienda
                             int consecutivo=mViewModel.getConsecutivo(Constantes.ni_plantasel,getActivity(), this);
                             Log.d(TAG,"*genere cons="+consecutivo);
@@ -1917,6 +1992,34 @@ public class DetalleProductoPenFragment extends Fragment {
             Constantes.ni_plantanombre=inf.getValor();
 
         }
+    }
+    public void llenarCausasNoCompraOtras(){
+
+        RadioGroup radioGroup =root.findViewById(R.id.fgsrgpopcionesnocompra);
+        getCausasSust();
+
+        radioGroup.removeAllViews();
+        for (CatalogoDetalle item : causassust) {
+            RadioButton rb = new RadioButton(getContext());
+
+            // Configuramos el texto que verá el usuario
+            rb.setText(item.getCad_descripcionesp());
+
+            // Usamos el ID del catálogo como ID del componente para identificarlo luego
+            rb.setId(item.getCad_idopcion());
+
+            // Opcional: Ajustar estilo o márgenes
+            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.MATCH_PARENT,
+                    RadioGroup.LayoutParams.WRAP_CONTENT
+            );
+            rb.setLayoutParams(params);
+
+            // Agregamos el RadioButton al RadioGroup
+            radioGroup.addView(rb);
+        }
+
+
     }
     class BotonTextWatcher implements TextWatcher {
 

@@ -71,6 +71,7 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
             sv = root.findViewById(R.id.content_generic);
             aceptar = root.findViewById(R.id.btngaceptar);
             validar=root.findViewById(R.id.btngvalidar);
+        linearLayoutCausas=root.findViewById(R.id.fgslllistacausas);
             int num_pregact=0;
             if (getArguments() != null) {
                 num_pregact = getArguments().getInt(ARG_PREGACTJ);
@@ -287,7 +288,67 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
 
                     }
             });
-            prodSel=dViewModel.productoSel;
+                if(Contrato.TablaInformeDet.causa_nocompra.equals(preguntaAct.getNombreCampo())) {
+                    Log.d(TAG, "llenando causas");
+
+                    llenarCausasNoCompraOtras();
+                    respgen = root.findViewById(1001);
+                    if (respgen != null) {
+                        RadioGroup botones = (RadioGroup) respgen;
+                        Log.d(TAG, "ENCONTRE RADIOBUTON");
+
+                        botones.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+                                int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                                Log.d(TAG, "click en causas " + selectedRadioButtonId);
+                                if (selectedRadioButtonId == 7) //seleccionó otras y pongo las demas opciones
+                                {
+                                    aceptar.setEnabled(false);
+                                    aceptar.setVisibility(View.GONE);
+                                    radioGroupCausas = root.findViewById(R.id.fgsrgpopcionesnocompra);
+                                    radioGroupCausas.setVisibility(View.VISIBLE);
+
+                                    aceptarCausas = root.findViewById(R.id.fgsbtnaceptarcausas);
+                                    aceptarCausas.setVisibility(View.VISIBLE);
+                                    aceptarCausas.setEnabled(false);
+                                    linearLayoutCausas.setVisibility(View.VISIBLE);
+                                    aceptarCausas.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            aceptarCausas.setEnabled(false);
+                                            long currentClickTime = SystemClock.elapsedRealtime();
+                                            // preventing double, using threshold of 1000 ms
+                                            if (currentClickTime - lastClickTime < 5500) {
+                                                //  Log.d(TAG,"doble click :("+lastClickTime);
+                                                return;
+                                            }
+
+
+                                            linearLayoutCausas.setVisibility(View.GONE);
+                                            lastClickTime = currentClickTime;
+                                            siguiente();
+                                        }
+                                    });
+
+                                    radioGroupCausas.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                                            aceptarCausas.setEnabled(true);
+                                        }
+                                    });
+                                } else {
+                                    aceptar.setEnabled(true);
+                                    aceptar.setVisibility(View.VISIBLE);
+                                    linearLayoutCausas.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
+                }
+
+                prodSel=dViewModel.productoSel;
             if(preguntaAct.isBotonMicro()) {
 
                     micbtn=root.findViewById(R.id.btnmicsiglas);
@@ -561,6 +622,15 @@ public class DetalleProductoJumFragment extends DetalleProductoPenFragment{
                 if(valor!=null)
                     if(valor.equals("7")) //es otras
                     {
+                        //busco la causa
+                        radioGroupCausas =root.findViewById(R.id.fgsrgpopcionesnocompra);
+
+                        int checkedId=radioGroupCausas.getCheckedRadioButtonId();
+                        //guardo causa no compra
+                        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "7", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
+                        //guardo en otras
+                        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), checkedId+"","causa_nocompraotras" , preguntaAct.getTabla(), mViewModel.consecutivo, false);
+
                         //generar consecutivo tienda
                         int consecutivo=mViewModel.getConsecutivo(Constantes.ni_plantasel,getActivity(), this);
                         Log.d(TAG,"*genere cons="+consecutivo);
