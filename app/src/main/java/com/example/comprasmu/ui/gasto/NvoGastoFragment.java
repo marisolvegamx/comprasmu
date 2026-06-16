@@ -470,7 +470,8 @@ public class NvoGastoFragment extends Fragment {
              numuestra.setBackgroundResource(R.drawable.valuecellborder);
              costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.00").format(detalle.getCosto()));
              costo.setBackgroundResource(R.drawable.valuecellborder);
-           //  cliente.setTextAppearance(context, R.style.mystyle);
+             cliente.setTextColor(R.color.black);
+             costo.setTextColor(R.color.black);
              cliente.setPadding(30,10,30,10);
              numuestra.setPadding(30,10,30,10);
              costo.setPadding(30,10,30,10);
