@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="texto_principal">#FFFFFF</color> <!-- Blanco para fondo oscuro -->
+    <color name="fondo_tarjeta">#121212</color>
+</resources>

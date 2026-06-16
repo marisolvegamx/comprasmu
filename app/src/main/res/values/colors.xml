@@ -27,4 +27,6 @@
     <color name="green_pas">#FFCDF4C8</color>
     <color name="yellow_pas">#FFF8F3C1</color>
     <color name="black_50">#44403F</color>
+    <color name="texto_principal">#212121</color>
+    <color name="fondo_tarjeta">#FFFFFF</color>
 </resources>

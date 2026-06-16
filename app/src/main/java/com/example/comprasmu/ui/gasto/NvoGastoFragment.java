@@ -42,6 +42,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -464,6 +465,8 @@ public class NvoGastoFragment extends Fragment {
              cliente.setText(detalle.getCliente()+" "+detalle.getPlanta());
              cliente.setBackgroundResource(R.drawable.valuecellborder);
              numuestra.setText(detalle.getMues_reembolsadas()+"/"+detalle.getNum_muestras()+"/"+detalle.getMues_solicitadas());
+
+
              numuestra.setBackgroundResource(R.drawable.valuecellborder);
              costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.00").format(detalle.getCosto()));
              costo.setBackgroundResource(R.drawable.valuecellborder);
@@ -660,7 +663,7 @@ public class NvoGastoFragment extends Fragment {
             public View getView(int position, View convertView, ViewGroup parent) {
                 // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
                 TextView label = (TextView) super.getView(position, convertView, parent);
-                label.setTextColor(Color.BLACK);
+                label.setTextColor(ContextCompat.getColor(getContext(), R.color.texto_principal));
                 // Then you can get the current item using the values array (Users array) and the current position
                 // You can NOW reference each method you has created in your bean object (User class)
                 CatalogoDetalle item = getItem(position);
@@ -677,7 +680,7 @@ public class NvoGastoFragment extends Fragment {
             public View getDropDownView(int position, View convertView,
                                         ViewGroup parent) {
                 TextView label = (TextView) super.getDropDownView(position, convertView, parent);
-                label.setTextColor(Color.BLACK);
+                label.setTextColor(ContextCompat.getColor(getContext(), R.color.texto_principal));
                 CatalogoDetalle item = getItem(position);
                 label.setText(item.getCad_descripcionesp());
 

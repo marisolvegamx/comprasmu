@@ -31,6 +31,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -44,18 +45,23 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.comprasmu.BuildConfig;
 import com.example.comprasmu.R;
 import com.example.comprasmu.databinding.ActivityMicamaraBinding;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
+import com.example.comprasmu.utils.Constantes;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -337,18 +343,36 @@ public class MiCamaraActivity extends AppCompatActivity {
     }
 
 
-    public void rotateImage(String filePath, float angle) {
+    public void rotateImage(String filePath,  Matrix matrix) {
         Bitmap source = BitmapFactory.decodeFile(filePath);//get file path from intent when you take iamge.
         if(source==null){
             milog.grabarError(TAG,"rorateImage","Error al tomar la foto");
             return;
         }
+        milog.grabarError(TAG,"rorateImage","Config: " + source.getConfig());
+        Log.i(TAG,"rorateImage Config: " + source.getConfig());
+        // IMPORTANTE: Fuerza ARGB_8888 para evitar líneas por dithering
+        if (source.getConfig() != Bitmap.Config.ARGB_8888) {
+            source = source.copy(Bitmap.Config.ARGB_8888, true);
+        }
         milog.grabarError(TAG,"rotateImage","rotando imagen "+filePath);
 
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        Bitmap rotatedBitmap = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+
+
+        Bitmap rotatedBitmap;
+        try{
+             rotatedBitmap = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
+        } catch (OutOfMemoryError e) {
+            milog.grabarError(TAG,"rotateImage","OOM al rotar: " + e.getMessage());
+            return; // Dejas la original
+        }
+        // 1. Guarda copia de la original antes de sobreescribir
+        if (Constantes.CLAVEUSUARIO.equals("30")) {
+            File originalCopy = new File(filePath + "_original_debug.jpg");
+            copyFile(new File(filePath), originalCopy);
+            milog.grabarError(TAG,"rotateImage","Original guardada en: " + originalCopy.getAbsolutePath());
+        }
         //comprimir imagen
         File file = new File(filePath);
         OutputStream os = null;
@@ -359,7 +383,7 @@ public class MiCamaraActivity extends AppCompatActivity {
             //   Toast.makeText(this, getResources().getString(R.string.errorImagen), Toast.LENGTH_SHORT).show();
             resultact=0;
         }
-        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, os);
 
     }
     private static float exifToDegrees(float exifOrientation) {
@@ -378,32 +402,49 @@ public class MiCamaraActivity extends AppCompatActivity {
         int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                 ExifInterface.ORIENTATION_UNDEFINED);
         System.out.println(">>>"+orientation);
-
+        Matrix matrix = new Matrix();
         int rotate=0;
         switch (orientation) {
 
             case ExifInterface.ORIENTATION_ROTATE_90: //6
                 rotate=90;
-
+                matrix.postRotate(rotate);
                 break;
 
             case ExifInterface.ORIENTATION_ROTATE_180: //3
                 // rotatedBitmap = rotateImage(bitmap, 180);
                 rotate=180;
+                matrix.postRotate(rotate);
                 break;
 
             case ExifInterface.ORIENTATION_ROTATE_270: //8
                 //rotatedBitmap = rotateImage(bitmap, 270);
                 rotate=270;
+                matrix.postRotate(rotate);
                 break;
-
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL: // 2 - Solo frontal
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL: // 4
+                matrix.postScale(1, -1);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE: // 5 - Este es el que da líneas
+                matrix.postRotate(90);
+                matrix.postScale(-1, 1); // flip horizontal
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE: // 7
+                matrix.postRotate(270);
+                matrix.postScale(-1, 1);
+                break;
 
             default:
                 System.out.println("sepa");
                 rotate=0;
         }
+        milog.grabarError(TAG,"rotateImage","Orientacion EXIF: " + rotate + " para " + Build.MODEL);
+        Log.i(TAG,"rotateImage Orientacion EXIF: " + rotate + " para " + Build.MODEL);
         if(rotate!=0){
-            rotateImage(photoPath, rotate);
+            rotateImage(photoPath,  matrix);
         }
     }
     //para el caso de que no funcione rotar 2
@@ -417,32 +458,49 @@ public class MiCamaraActivity extends AppCompatActivity {
                 ExifInterface.ORIENTATION_UNDEFINED);
         System.out.println(">>>"+orientation);
         System.out.println(">>>"+orientation);
-
+        Matrix matrix = new Matrix();
         int rotate=0;
         switch (orientation) {
 
             case ExifInterface.ORIENTATION_ROTATE_90: //6
                 rotate=0;
-
+                matrix.postRotate(rotate);
                 break;
 
             case ExifInterface.ORIENTATION_ROTATE_180: //3
                 // rotatedBitmap = rotateImage(bitmap, 180);
                 rotate=270;
+                matrix.postRotate(rotate);
                 break;
 
             case ExifInterface.ORIENTATION_ROTATE_270: //8
                 //rotatedBitmap = rotateImage(bitmap, 270);
                 rotate=180;
+                matrix.postRotate(rotate);
                 break;
 
-
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL: // 2 - Solo frontal
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL: // 4
+                matrix.postScale(1, -1);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE: // 5 - Este es el que da líneas
+                matrix.postRotate(90);
+                matrix.postScale(-1, 1); // flip horizontal
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE: // 7
+                matrix.postRotate(270);
+                matrix.postScale(-1, 1);
+                break;
             default:
                 System.out.println("sepa"); //para normal y undefined
                 rotate=90;
         }
+        milog.grabarError(TAG,"rotateImage","Orientacion EXIF: " + rotate + " para " + Build.MODEL);
+        Log.i(TAG,"rotateImageOrientacion EXIF: " + rotate + " para " + Build.MODEL);
         if(rotate!=0){
-            rotateImage(photoPath, rotate);
+            rotateImage(photoPath, matrix);
         }
     }
 
@@ -489,5 +547,28 @@ public class MiCamaraActivity extends AppCompatActivity {
 
     public void cancelar() {
            finish();
+    }
+
+    private void copyFile(File source, File dest) {
+        FileInputStream is = null;
+        FileOutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[4096]; // 4KB chunks
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            milog.grabarError(TAG, "copyFile", "Error copiando: " + e.getMessage());
+        } finally {
+            try {
+                if (is!= null) is.close();
+                if (os!= null) os.close();
+            } catch (IOException e) {
+                milog.grabarError(TAG, "copyFile", "Error cerrando streams: " + e.getMessage());
+            }
+        }
     }
 }
