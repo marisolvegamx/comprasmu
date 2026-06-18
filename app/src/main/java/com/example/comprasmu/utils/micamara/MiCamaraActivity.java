@@ -441,8 +441,8 @@ public class MiCamaraActivity extends AppCompatActivity {
                 System.out.println("sepa");
                 rotate=0;
         }
-        milog.grabarError(TAG,"rotateImage","Orientacion EXIF: " + rotate + " para " + Build.MODEL);
-        Log.i(TAG,"rotateImage Orientacion EXIF: " + rotate + " para " + Build.MODEL);
+        milog.grabarError(TAG,"getRotacion2","Orientacion EXIF: " + rotate + " para " + Build.MODEL);
+        Log.i(TAG,"getRotacion2 Orientacion EXIF: " + rotate + " para " + Build.MODEL);
         if(rotate!=0){
             rotateImage(photoPath,  matrix);
         }
@@ -497,8 +497,8 @@ public class MiCamaraActivity extends AppCompatActivity {
                 System.out.println("sepa"); //para normal y undefined
                 rotate=90;
         }
-        milog.grabarError(TAG,"rotateImage","Orientacion EXIF: " + rotate + " para " + Build.MODEL);
-        Log.i(TAG,"rotateImageOrientacion EXIF: " + rotate + " para " + Build.MODEL);
+        milog.grabarError(TAG,"getRotacionConf","Orientacion EXIF: " + rotate + " para " + Build.MODEL);
+        Log.i(TAG,"getRotacionConf Orientacion EXIF: " + rotate + " para " + Build.MODEL);
         if(rotate!=0){
             rotateImage(photoPath, matrix);
         }
