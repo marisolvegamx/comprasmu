@@ -108,7 +108,8 @@
                                 android:paddingTop="10dp"
                                 android:paddingRight="10dp"
                                 android:paddingBottom="10dp"
-                                android:text="@string/cliente" />
+                                android:text="@string/cliente"
+                              />
 
                             <TextView
                                 android:id="@+id/textView43"
@@ -116,7 +117,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/valuecellborder"
-                                android:text="@string/num_muestras" />
+                                android:text="@string/num_muestras"
+                               />
 
                             <TextView
                                 android:id="@+id/textView44"
@@ -124,7 +126,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/valuecellborder"
-                                android:text="@string/costo_m" />
+                                android:text="@string/costo_m"
+                               />
                         </TableRow>
 
                     </TableLayout>

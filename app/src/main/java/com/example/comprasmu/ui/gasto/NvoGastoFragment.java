@@ -1,102 +1,67 @@
 package com.example.comprasmu.ui.gasto;
 
 import static android.app.Activity.RESULT_OK;
-
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
-import com.example.comprasmu.SubirInformeEnvTask;
 import com.example.comprasmu.SubirInformeGastoTask;
-import com.example.comprasmu.data.ComprasDataBase;
-import com.example.comprasmu.data.PeticionesServidor;
-import com.example.comprasmu.data.dao.ListaCompraDao;
-import com.example.comprasmu.data.modelos.Atributo;
 import com.example.comprasmu.data.modelos.CatalogoDetalle;
-import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
-import com.example.comprasmu.data.modelos.InformeEnvioDet;
-import com.example.comprasmu.data.modelos.InformeEnvioPaq;
 import com.example.comprasmu.data.modelos.InformeEtapa;
-import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.InformeGastoDet;
-import com.example.comprasmu.data.modelos.ListaCompra;
-import com.example.comprasmu.data.remote.InformeEnvPaqEnv;
 import com.example.comprasmu.data.remote.InformeGastoEnv;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
-import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
-import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
-import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.databinding.FragmentNvogastoBinding;
-import com.example.comprasmu.databinding.VerEmpaqueFragmentBinding;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.ui.RevisarFotoActivity;
 import com.example.comprasmu.ui.infetapa.NuevoInfEtapaActivity;
-import com.example.comprasmu.ui.infetapa.NuevoInfEtapaViewModel;
-import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.ui.preparacion.NvaPreparacionViewModel;
 import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
 import com.example.comprasmu.utils.Constantes;
-import com.example.comprasmu.utils.CreadorFormulario;
 import com.example.comprasmu.utils.CurrencyTextWatcher;
 import com.example.comprasmu.utils.micamara.MiCamaraActivity;
-import com.example.comprasmu.utils.ui.DatePickerFragment;
-import com.google.common.collect.Table;
 import com.google.gson.Gson;
-
 import java.io.File;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,7 +69,7 @@ import java.util.List;
 public class NvoGastoFragment extends Fragment {
 
     private int preguntaAct;
-    LinearLayout llresumen,llpreg1,llconce, lldescripcion,llcosto,llcompr,llfoto,lltotal, llcomentarios;
+    LinearLayout llresumen,llpreg1,llconce, lldescripcion,llcosto,llcompr,llfoto, llcomentarios;
     private static final String TAG = "NvoGastoFragment";
     private long lastClickTime = 0;
     private boolean yaestoyProcesando=false;
@@ -470,10 +435,11 @@ public class NvoGastoFragment extends Fragment {
              numuestra.setBackgroundResource(R.drawable.valuecellborder);
              costo.setText(Constantes.SIMBOLOMON+new DecimalFormat("#.00").format(detalle.getCosto()));
              costo.setBackgroundResource(R.drawable.valuecellborder);
-             cliente.setTextColor(R.color.black);
-             costo.setTextColor(R.color.black);
+            // cliente.setTextColor(ContextCompat.getColor(getContext(),R.color.black));
+
              cliente.setPadding(30,10,30,10);
              numuestra.setPadding(30,10,30,10);
+
              costo.setPadding(30,10,30,10);
              tableRow.addView(cliente);
              tableRow.addView(numuestra);
