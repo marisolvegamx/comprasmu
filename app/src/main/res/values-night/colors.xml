@@ -2,4 +2,6 @@
 <resources>
     <color name="texto_principal">#FFFFFF</color> <!-- Blanco para fondo oscuro -->
     <color name="fondo_tarjeta">#121212</color>
+    <color name="green_pas">#064709</color>
+    <color name="yellow_pas">#FFC107</color>
 </resources>
