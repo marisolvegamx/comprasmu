@@ -84,7 +84,8 @@
                         style="@style/textoprductolista"
                         android:layout_width="181dp"
                         android:layout_height="wrap_content"
-                        android:text="@{detalle.productoNombre}" />
+                        android:text="@{detalle.productoNombre}"
+                        android:textColor="@color/black" />
 
                     <TextView
                         android:id="@+id/txtldcantidad"
@@ -104,7 +105,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
 
-                    android:text="@{detalle.tamanio+' '+detalle.empaque}" />
+                    android:text="@{detalle.tamanio+' '+detalle.empaque}"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/txtldcomprados"

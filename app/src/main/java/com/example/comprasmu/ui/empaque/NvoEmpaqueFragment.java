@@ -439,8 +439,8 @@ public class NvoEmpaqueFragment extends Fragment {
                     //busco total de muestras y cajas
                     mViewModel.getCajasEtiqCdCli(ciudadInf,clienteId,Constantes.INDICEACTUAL);
                     mViewModel.totCajasEmp=mViewModel.resumenEtiq.size();
-
-                    mViewModel.cajaAct=mViewModel.resumenEtiq.get(0);
+                    if (mViewModel.totCajasEmp>0)
+                        mViewModel.cajaAct=mViewModel.resumenEtiq.get(0);
                     ((NuevoInfEtapaActivity) getActivity()).actualizarBarraEmp(informetemp,mViewModel.numMuestras,mViewModel.totCajasEmp);
                     mViewModel.buscarReactivo(93).observe(getViewLifecycleOwner(), new Observer<Reactivo>() {
                         @Override
