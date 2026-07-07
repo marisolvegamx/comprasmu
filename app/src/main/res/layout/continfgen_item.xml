@@ -118,14 +118,14 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btncigborrar"
-                    style="@style/imbutton"
+                    style="@style/btnverde"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:visibility='@{(Constantes.CLAVEUSUARIO.equals("41")&amp;&amp;detalle.id==99)||detalle.estatusSync==0?View.VISIBLE:View.GONE}'
-                    app:srcCompat="@drawable/ic_baseline_white_close_24" />
+                    android:text="@string/eliminar"
+                    android:visibility='@{(Constantes.CLAVEUSUARIO.equals("41")&amp;&amp;detalle.id==99)||detalle.estatusSync==0?View.VISIBLE:View.GONE}' />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btncigagregar"
