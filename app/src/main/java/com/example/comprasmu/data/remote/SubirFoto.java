@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.remote;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.example.comprasmu.data.ComprasDataBase;
@@ -10,6 +11,8 @@ import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.services.SubirFotoService;
 import com.example.comprasmu.utils.ComprasLog;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -256,6 +259,52 @@ public class SubirFoto implements ImageUploadCallback {
 
     }
 
+
+    // Nuevo método para WorkManager
+    public boolean subirFotoSync(String idusuario, String dir, ImagenDetalle imagen, String indice, Context context) {
+        try {
+            String uploadFileArrayList = dir + imagen.getRuta();
+            milog.info(TAG,"subir foto", " ahora si voy a subir" + uploadFileArrayList);
+            Log.d(TAG,"subir foto"+uploadFileArrayList+"--"+idusuario);
+            File file = new File(uploadFileArrayList);
+            if(!file.exists()){
+                throw new Exception("No se encontró el archivo");
+            }
+
+          //  RequestBody fileBody = RequestBody.create(MultipartBody.FORM, file);
+            ProgressRequestBody fileBody = new ProgressRequestBody(file, "image", this);
+
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
+
+            // MultipartBody.Part is used to send also the actual file name
+
+            // add another part within the multipart request
+            RequestBody ridlocalim =
+                    RequestBody.create(MultipartBody.FORM,imagen.getId()+"" );
+            RequestBody rruta =
+                    RequestBody.create(MultipartBody.FORM,imagen.getRuta() );
+
+            RequestBody rindice =
+                    RequestBody.create(MultipartBody.FORM,indice );
+
+            RequestBody rusuario =
+                    RequestBody.create(MultipartBody.FORM,idusuario );
+
+
+            // EJECUCIÓN SÍNCRONA
+            Response<PostResponse> response = ServiceGeneratorIm.getApiService()
+                    .uploadImage(filePart, rruta, ridlocalim, rusuario, rindice)
+                    .execute();
+
+            return response.isSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("SubirFoto","Error al subir....."+e.getMessage());
+
+            milog.grabarError("SubirFotoSync Error: " + e.getMessage());
+            return false;
+        }
+    }
 
 
 
