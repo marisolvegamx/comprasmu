@@ -83,9 +83,9 @@ y en el api service
 
         if (httpClient == null) {
             httpClient = new OkHttpClient.Builder()
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .connectTimeout(10, TimeUnit.SECONDS)
-                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(50, TimeUnit.SECONDS)
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(35, TimeUnit.SECONDS)
                     .retryOnConnectionFailure(true) // Agregado para estabilidad
                     .build();
         }
