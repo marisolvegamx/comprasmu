@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -25,7 +27,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
@@ -137,14 +141,18 @@ GoogleMap.OnInfoWindowClickListener,
     Circle circleNuevaTienda;
     Button btnvatienda;
     private TextView txtnuevatmensaje;
+    Toolbar myChildToolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_cd);
+        myChildToolbar =findViewById(R.id.toolbarmapa);
+        setSupportActionBar(myChildToolbar);
+        // Get a support ActionBar corresponding to this toolbar
+        //ActionBar ab = getSupportActionBar();
 
+        // Enable the Up button
+   //     ab.setDisplayHomeAsUpEnabled(true);
         SupportMapFragment mapFragment = FirstMapFragment.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
@@ -537,7 +545,10 @@ GoogleMap.OnInfoWindowClickListener,
                     }*/
 
                     Intent intent = new Intent(this, NavigationDrawerActivity.class);
-                    intent.putExtra("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("nuevatienda", true);
+                    bundle.putInt("NAV_DESTINATION", R.id.nav_nuevoinforme);
+                    intent.putExtras(bundle);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
                     finish();
@@ -545,7 +556,10 @@ GoogleMap.OnInfoWindowClickListener,
 
             }else{
                 Intent intent = new Intent(this, NavigationDrawerActivity.class);
-                intent.putExtra("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("nuevatienda", true);
+                bundle.putInt("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
+                intent.putExtras(bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 finish();
@@ -1026,13 +1040,14 @@ GoogleMap.OnInfoWindowClickListener,
         bundle.putInt("estpen", tienda.getEstpen());
         bundle.putInt("estele", tienda.getEstele());
         bundle.putInt("estjum", tienda.getEstjum());
+        bundle.putInt("NAV_DESTINATION", R.id.nav_nuevoinforme);
         this.doubleBackToExitPressedOnce = false;
         if(lastKnownLocation!=null) {
             bundle.putString("coordenasmapa", tienda.getUne_coordenadasxy() );  //ahora paso las coordenadas
          /*   NavHostFragment.findNavController(MapaCdActivity.this).navigate(R.id.action_buscartonuevo, bundle);*/
             Intent intent = new Intent(this, NavigationDrawerActivity.class);
-            intent.putExtra("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
-            intent.putExtra("NAV_ARGS", bundle);  //ahora paso las coordenadas)
+            // id del fragment en nav_graph
+            intent.putExtras( bundle);  //ahora paso las coordenadas)
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
             startActivity(intent);
@@ -1117,10 +1132,34 @@ GoogleMap.OnInfoWindowClickListener,
         }*/
 
         Intent intent = new Intent(this, NavigationDrawerActivity.class);
-        intent.putExtra("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("nuevatienda", true);
+        bundle.putInt("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
+        intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_continuar, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.csalir:
+                finish();
+        }
+        return true;
     }
     public class miLocationListener implements LocationListener {
         public void desactivar() {
