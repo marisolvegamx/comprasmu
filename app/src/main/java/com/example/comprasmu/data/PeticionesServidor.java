@@ -1321,7 +1321,7 @@ public class PeticionesServidor {
             public void onFailure(@Nullable Call<CambiosInformesReponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     t.printStackTrace();
-                   Log.e (TAG,".getCambiosInformes"+ t.getMessage());
+                   Log.e (TAG,".getCambiosInformes hubo un error"+ t.getMessage());
                     informeEtapaLiveData.setValue(null);
                  // throw new NullPointerException("esto es horrible");
                 }

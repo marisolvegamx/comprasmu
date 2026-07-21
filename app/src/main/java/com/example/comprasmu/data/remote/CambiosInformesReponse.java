@@ -1,6 +1,7 @@
 package com.example.comprasmu.data.remote;
 
 import com.example.comprasmu.data.modelos.DetalleCaja;
+import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -14,6 +15,7 @@ public class CambiosInformesReponse {
     private List<DetalleCaja> DC;
     private List<InformeEtapaDet> IED;
     private List<InformeGastoDet> IGD;
+    private List<InformeCompra> IC; //se utilizará para eliminación de informes
 
     public List<InformeCompraDetalle> getID() {
         return ID;
@@ -45,5 +47,13 @@ public class CambiosInformesReponse {
 
     public void setIGD(List<InformeGastoDet> IGD) {
         this.IGD = IGD;
+    }
+
+    public List<InformeCompra> getIC() {
+        return IC;
+    }
+
+    public void setIC(List<InformeCompra> IC) {
+        this.IC = IC;
     }
 }

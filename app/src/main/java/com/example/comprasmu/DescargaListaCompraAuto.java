@@ -8,25 +8,35 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
+import com.example.comprasmu.data.modelos.ImagenDetalle;
+import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
+import com.example.comprasmu.data.modelos.ProductoExhibido;
+import com.example.comprasmu.data.modelos.Visita;
 import com.example.comprasmu.data.remote.ListaCompraResponse;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
 import com.example.comprasmu.data.repositories.AtributoRepositoryImpl;
 import com.example.comprasmu.data.repositories.CatalogoDetalleRepositoryImpl;
 import com.example.comprasmu.data.repositories.GeocercaRepositoryImpl;
+import com.example.comprasmu.data.repositories.ImagenDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.InfEtapaDetRepoImpl;
 import com.example.comprasmu.data.repositories.InfEtapaRepositoryImpl;
 import com.example.comprasmu.data.repositories.InformeComDetRepositoryImpl;
+import com.example.comprasmu.data.repositories.InformeCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
+import com.example.comprasmu.data.repositories.ProductoExhibidoRepositoryImpl;
 import com.example.comprasmu.data.repositories.SiglaRepositoryImpl;
 import com.example.comprasmu.data.repositories.SustitucionRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
+import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.utils.ComprasLog;
+import com.google.android.material.tabs.TabLayout;
 
+import java.io.File;
 import java.util.List;
 
 public class DescargaListaCompraAuto  {
@@ -186,7 +196,102 @@ public class DescargaListaCompraAuto  {
 
 
     }
+    public static void eliminarInforme(ComprasLog miLog, VisitaRepositoryImpl visitaRepository, ProductoExhibidoRepositoryImpl prodeRepository,InformeCompraRepositoryImpl infrepo, InformeCompra inf, ImagenDetRepositoryImpl imdRepository, InformeComDetRepositoryImpl idrepo, ListaCompraDetRepositoryImpl lcRepository, String directorio){
 
+        //reviso si es el unico de la visita, para borrar la visita
+        List<InformeCompra>  masinformes=infrepo.getAllByVisitasimple(inf.getVisitasId());
+
+        if(masinformes!=null&&masinformes.size()==1) {
+            //solo hay 1 informe y puedo eliminar la visita
+            Log.i("dESCARGAlISTAcOMPRA","elimino la visita"+inf.getVisitasId());
+            miLog.info("dESCARGAlISTAcOMPRA","eliminarInforme","elimino la visita"+inf.getVisitasId());
+            Visita eliminar= visitaRepository.findsimple(inf.getVisitasId());
+            eliminarVisita(eliminar,visitaRepository,imdRepository,prodeRepository,directorio);
+        }
+        Log.i("DescagaListaCompraAuto","elimino el informe"+inf.getId());
+        infrepo.deleteInformeCompra(inf.getId());
+        borrarImagenesxInforme(miLog,inf,imdRepository,idrepo,lcRepository,directorio);
+    }
+
+    public static void eliminarVisita(Visita eliminar, VisitaRepositoryImpl visitaRepository, ImagenDetRepositoryImpl imdRepository, ProductoExhibidoRepositoryImpl prodeRepository, String directorio){
+        if(eliminar!=null) {
+
+            ImagenDetalle img1=imdRepository.findsimple(eliminar.getFotoFachada());
+            if(img1!=null) {//borro el archivo
+                File fdelete = new File(directorio+img1.getRuta());
+                if (fdelete.exists())
+                    fdelete.delete();
+            }
+            //elimino las imagenes
+            imdRepository.deleteById(eliminar.getFotoFachada());
+            List<ProductoExhibido> prods= prodeRepository.getAllByVisitaSimple(eliminar.getId());
+
+            //elimino prods
+            if(prods!=null&&prods.size()>0)
+                for (ProductoExhibido prod:prods) {
+
+                    ImagenDetalle img2=imdRepository.findsimple(eliminar.getFotoFachada());
+                    if(img2!=null)
+                    { //borro el archivo
+                        File fdelete2 = new File(directorio+img2.getRuta());
+                        if (fdelete2.exists())
+                            fdelete2.delete();}
+                    imdRepository.deleteById(prod.getImagenId());
+                }
+            prodeRepository.deleteAllByVisita(eliminar.getId());
+
+            visitaRepository.delete(eliminar);
+
+
+        }
+    }
+    public static  void borrarImagenesxInforme(ComprasLog miLog,InformeCompra inf, ImagenDetRepositoryImpl imdRepository,InformeComDetRepositoryImpl idrepo, ListaCompraDetRepositoryImpl lcRepository, String directorio){
+       // String directorio=application.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
+        ImagenDetalle img1 = imdRepository.findsimple(inf.getTicket_compra());
+        if(img1!=null) {//borro el archivo
+            File fdelete = new File(directorio+img1.getRuta());
+            if (fdelete.exists())
+                fdelete.delete();
+        }
+        img1 = imdRepository.findsimple(inf.getCondiciones_traslado());
+        //borro el archivo
+        if(img1!=null) {
+            File fdelete = new File(directorio+img1.getRuta());
+            if (fdelete.exists())
+                fdelete.delete();
+        }
+        //busco los detalles
+        List<InformeCompraDetalle> det=idrepo.getAllSencillo(inf.getId());
+        if(det!=null)
+            for (InformeCompraDetalle infd : det) {
+                List<ImagenDetalle> fotos= imdRepository.getFotosInfDet(infd);
+                if(fotos!=null)
+                    for(ImagenDetalle img:fotos){
+                        if(img!=null) {
+                            File fdelete = new File(directorio+img.getRuta());
+                            if (fdelete.exists())
+                                fdelete.delete();
+                        }
+                    }
+                Log.d("DEScargaListaCompraAuto","eliminando detalles inf compra:"+infd.getComprasId()+"--det:"+infd.getComprasDetId());
+                miLog.info("DEScargaListaCompraAuto","borrarImagenesxInforme","eliminando detalles inf compra:"+infd.getComprasId()+"--det:"+infd.getComprasDetId());
+
+                //ajusto cantidades
+                //solo si es normal
+                if(infd.getTipoMuestra()!=3) {
+                    ListaCompraDetalle compradet = lcRepository.findsimple(infd.getComprasId(), infd.getComprasDetId());
+                    if (compradet != null && compradet.getComprados() > 0) {
+                        int nvacant = compradet.getComprados() - 1;
+                        Log.d("DEScargaListaCompraAuto","actualizando comprados compradet:"+ infd.getComprasDetId()+" compraid:" +infd.getComprasId());
+                        miLog.info("DEScargaListaCompraAuto","borrarImagenesxInforme","actualizando comprados compradet:"+ infd.getComprasDetId()+" compraid:" +infd.getComprasId());
+
+                        lcRepository.actualizarComprados(infd.getComprasDetId(), infd.getComprasId(), nvacant);
+                    }
+                }
+                //borro los detalles
+                idrepo.delete(infd);
+            }
+    }
 
 
 }

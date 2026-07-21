@@ -18,6 +18,7 @@ import com.example.comprasmu.data.dao.ImagenDetalleDao;
 import com.example.comprasmu.data.modelos.Contrato;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.Geocerca;
+import com.example.comprasmu.data.modelos.InformeCompra;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapa;
 
@@ -59,6 +60,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/*******AsyncTask para hacer la peticion al servidor de los datos y actualizar la base de datos local
+ * de manera asincorona
+ *
+ */
 public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void>  {
 
     CatalogoDetalleRepositoryImpl cdrepo;
@@ -186,7 +191,7 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void>  {
         {
             version = "1999-09-09"; //una fecha muy antigua
         }
-        version = "1999-09-09";
+        version = "2026-01-09";
         InfEtapaDetRepoImpl infEtapaDetRepo=new InfEtapaDetRepoImpl(this.act);
         PeticionesServidor peticionesServidor=new PeticionesServidor(Constantes.CLAVEUSUARIO);
         LiveData<CambiosInformesReponse> lcambiosInformesResponse=peticionesServidor.getCambiosInformes(indice,version);
@@ -211,6 +216,21 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void>  {
                         RespInfEtapaResponse infoResponse = new RespInfEtapaResponse();
                         infoResponse.setInformeEtapaDet(cambiosInformesReponse.getIED());
                         DescargaListaCompraAuto.actualizarInformeDetalle(infEtapaDetRepo, infoResponse);
+                    }
+                    if (cambiosInformesReponse.getIC() != null) {  //para cambios en informes compra, por ahora es solo si se eliminan
+                        Log.d(TAG,"actualizarInformesAll hubo cambios");
+                        flog.info(TAG,"actualizarInformesAll","hubo cambios en informes compras");
+                        String directorioImagenes=act.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+"/";
+                        infrepo = new InformeCompraRepositoryImpl(act);
+                        infdrepo = new InformeComDetRepositoryImpl(act);
+                        ImagenDetalleDao imagenDetalleDao= ComprasDataBase.getInstance(act).getImagenDetalleDao();
+                        visRepo=new VisitaRepositoryImpl(act);
+                        prodrepo=new ProductoExhibidoRepositoryImpl(act);
+                        imagenDetRepo= ImagenDetRepositoryImpl.getInstance(imagenDetalleDao);
+                        for (InformeCompra informeCompra:cambiosInformesReponse.getIC()
+                             ) {
+                            DescargaListaCompraAuto.eliminarInforme(flog,visRepo,prodrepo,infrepo,informeCompra,imagenDetRepo,infdrepo,lcdrepo,directorioImagenes);
+                        }
                     }
                     lcambiosInformesResponse.removeObserver(this);
                     //actualizo en tabla versiones la fecha

@@ -32,6 +32,11 @@ import com.example.comprasmu.utils.Constantes;
 
 import java.util.List;
 
+/****Se activa desde el menu actualizar y cuando inicia sesion
+ * utiliza DescargasIniAsyncTask
+ * proceso que pide la mayoria de los datos al servidor y actualiza la bd
+ *  actualizo lista de compras catalogos einformes****/
+
 public class DescargarLisFragment extends Fragment implements DescargasIniAsyncTask.ProgresoListener {
     TextView textView;
 
