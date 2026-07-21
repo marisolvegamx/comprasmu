@@ -16,7 +16,9 @@ import com.example.comprasmu.DescargasIniAsyncTask;
 import com.example.comprasmu.R;
 import com.example.comprasmu.data.ComprasDataBase;
 import com.example.comprasmu.data.PeticionesServidor;
+import com.example.comprasmu.data.dao.ConfiguracionRepositoryImpl;
 import com.example.comprasmu.data.dao.ListaCompraDao;
+import com.example.comprasmu.data.modelos.Configuracion;
 import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.ImagenDetalle;
 import com.example.comprasmu.data.modelos.InformeEtapaDet;
@@ -44,7 +46,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-/***procesos iniciales y descarga de info va despues del login y antes al home***/
+/***procesos iniciales y descarga de info va despues del login y antes al home
+ * valida si hubo cambio de indice, si si manda a borrarativity***/
 public class PruebasActivity  extends AppCompatActivity  implements    DescargasIniAsyncTask.ProgresoListener  {
 
     ProgressDialog progreso;
@@ -77,7 +80,6 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains ("2006C3MG2")){//pruebas y el lenovo
             DOWNLOAD_PATH = Constantes.URLPRUEBAS1+"fotografias";
             //    DOWNLOAD_PATH = Constantes.URLPRUEBAS2+"fotografias";
-
         }
 
         //se definirá en el servidor
@@ -100,6 +102,20 @@ public class PruebasActivity  extends AppCompatActivity  implements    Descargas
         }
 
         buscarEtapa();
+
+        // Inserción de la versión en la tabla configuración
+        ConfiguracionRepositoryImpl configRepo = new ConfiguracionRepositoryImpl(this);
+        //reviso si ya existe el campo
+        Configuracion config=configRepo.findsimple("VERSION");
+        if(config!=null) {
+            config.setValor(getString(R.string.version_app));
+        }else {
+            config = new Configuracion();
+            config.setClave("VERSION");
+            config.setValor(getString(R.string.version_app));
+        }
+        configRepo.insert(config);
+
 
     }
 

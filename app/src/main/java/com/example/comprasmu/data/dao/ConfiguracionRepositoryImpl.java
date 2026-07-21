@@ -71,7 +71,7 @@ public class ConfiguracionRepositoryImpl extends BaseRepository<Configuracion> {
 
     @Override
     public void delete(Configuracion object) {
-
+        dao.delete(object);
     }
 
 }
