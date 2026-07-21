@@ -147,7 +147,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.tiendas.FirstMapActivity"
+            android:name=".ui.tiendas.MapaCdActivity"
             android:label="@string/buscar_tienda"
             android:screenOrientation="portrait" />
         <activity

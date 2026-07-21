@@ -1,13 +1,9 @@
 package com.example.comprasmu.ui.tiendas;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,15 +11,12 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
+
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -32,16 +25,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.comprasmu.DescargarListaAsyncTask;
 import com.example.comprasmu.NavigationDrawerActivity;
 import com.example.comprasmu.R;
@@ -63,7 +56,6 @@ import com.example.comprasmu.data.repositories.ListaCompraDetRepositoryImpl;
 import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.services.DescAutomaticasServiceManager;
-import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
 import com.example.comprasmu.utils.ComprasLog;
 import com.example.comprasmu.utils.ComprasUtils;
@@ -82,28 +74,23 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
+public class MapaCdActivity extends AppCompatActivity implements OnMapReadyCallback ,
         GoogleMap.OnInfoWindowCloseListener,
-        GoogleMap.OnMapClickListener,
-        GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnInfoWindowClickListener,
-        DescargarListaAsyncTask.ProgresoDLListener{
-    public static final String EXTRA_LATITUD = "extra_latitud";
-    public static final String EXTRA_LONGITUD ="extra_longitud" ;
-
+GoogleMap.OnMapClickListener,
+GoogleMap.OnMarkerClickListener,
+GoogleMap.OnInfoWindowClickListener,
+        DescargarListaAsyncTask.ProgresoDLListener {
     private static final int LOCATION_REQUEST_CODE = 1;
-    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
-    private NuevoDetalleViewModel dViewModel;
     private GoogleMap mMap;
     String[] coloreszon={"#1E90FF","#FF1493", "#32CD32", "#FF8C00", "#4B0082"};
     Map<String,Float> coloresTienda;
-    private  final String TAG="MapaCdFragment";
+    private  final String TAG="MapaCdActivity";
     private ArrayList<DescripcionGenerica> listaPlantasEnv;
     LiveData<List<Tienda>> listatiendas;
     List<Tienda> nollistatiendas;
@@ -134,7 +121,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-    View view;
+
     private int cliente;
     private int plantaId;
     private Spinner sptipoti, spcadena, spfecha,spseleccion;
@@ -143,54 +130,55 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     LoadingAlert alert;
     private LocationCallback locationCallback;
     private LocationManager fusedLocationClient;
-    private miLocationListener locallis;
+    private MapaCdActivity.miLocationListener locallis;
     ComprasLog compraslog;
     LinearLayout mensajetienda;
     TextView txtcerrarmensaje;
     Circle circleNuevaTienda;
     Button btnvatienda;
-    int contadorBotonNvaTienda=0;
     private TextView txtnuevatmensaje;
-
-    public MapaCdFragment() {
-    }
-
-    public static MapaCdFragment newInstance() {
-        return new MapaCdFragment();
-    }
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_mapa_cd, parent, false);
-        SupportMapFragment supportMapFragment = SupportMapFragment.newInstance();
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapcd_container);
+    protected void onCreate(Bundle savedInstanceState) {
+
+
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_mapa_cd);
+
+        SupportMapFragment mapFragment = FirstMapFragment.newInstance();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.mapcd_container, mapFragment)
+                .commit();
+        mapFragment.getMapAsync(this);
         lcviewModel = new ViewModelProvider(this).get(ListaDetalleViewModel.class);
         if (savedInstanceState != null) {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             //   cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
         mapFragment.getMapAsync(this);
-        btnvatienda=view.findViewById(R.id.btnmcdnvati);
-        mensajetienda=view.findViewById(R.id.llmapamensajetienda);
-        txtcerrarmensaje=view.findViewById(R.id.txtmapcerrarmensaje);
-        txtnuevatmensaje=view.findViewById(R.id.txtmapnvatiendamsj);
+        btnvatienda=findViewById(R.id.btnmcdnvati);
+        mensajetienda=findViewById(R.id.llmapamensajetienda);
+        txtcerrarmensaje=findViewById(R.id.txtmapcerrarmensaje);
+        txtnuevatmensaje=findViewById(R.id.txtmapnvatiendamsj);
         verfiltros=false;
         compraslog=ComprasLog.getSingleton();
-        spplantas=view.findViewById(R.id.spmcdplanta);
-        spcadena=view.findViewById(R.id.spmccadenati);
-        sptipoti=view.findViewById(R.id.spmctipoti);
-        // spfecha=view.findViewById(R.id.spmctiempo);
-        spseleccion=view.findViewById(R.id.spmcdseltienda);
-        llfiltros=view.findViewById(R.id.llmfiltros);
-        // llcancel=view.findViewById(R.id.llmcancel);
-        lltipotienda=view.findViewById(R.id.llmcdtipotienda);
-        llcadena=view.findViewById(R.id.llmcdcadena);
+        spplantas=findViewById(R.id.spmcdplanta);
+        spcadena=findViewById(R.id.spmccadenati);
+        sptipoti=findViewById(R.id.spmctipoti);
+        // spfecha=findViewById(R.id.spmctiempo);
+        spseleccion=findViewById(R.id.spmcdseltienda);
+        llfiltros=findViewById(R.id.llmfiltros);
+        // llcancel=findViewById(R.id.llmcancel);
+        lltipotienda=findViewById(R.id.llmcdtipotienda);
+        llcadena=findViewById(R.id.llmcdcadena);
         llfiltros.setVisibility(View.GONE);
         // llcancel.setVisibility(View.GONE);
         mensajetienda.setVisibility(View.GONE);
-        btnverfil=view.findViewById(R.id.btnmfiltros);
+        btnverfil=findViewById(R.id.btnmfiltros);
         btnvatienda.setEnabled(false);
         BuscadorTiendas buscador=new BuscadorTiendas();
-       // Log.d(TAG,"res "+buscador.dentroDelCirculo(16.7648672,-93.0821975,16.764111,-93.081486));
+        // Log.d(TAG,"res "+buscador.dentroDelCirculo(16.7648672,-93.0821975,16.764111,-93.081486));
         btnverfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -206,14 +194,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 if(markerSel!=null) {
                     Tienda tiendaSel=(Tienda)markerSel.getTag();
                     if(tiendaSel!=null) {
-                        new AlertDialog.Builder(getActivity())
+                        new AlertDialog.Builder(this)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setTitle(R.string.importante)
                                 .setMessage(getString(R.string.cancelar_tienda) + " " + tiendaSel.getUne_descripcion() + "?")
                                 .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         //hago la peticion en el servidor y recargo
-                                        //getActivity().finish();
+                                        //this.finish();
                                         PeticionMapaCd petmap = new PeticionMapaCd(Constantes.CLAVEUSUARIO);
                                         petmap.cancelTienda(tiendaSel.getUne_id());
                                         //  martiendas.remove(markerSel);
@@ -228,7 +216,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             }
         });
 */
-        if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
             getDeviceLocation();
@@ -247,7 +235,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         cargarCatalogos();
 
         //  cargarIndices();
-        Button btnbuscar=view.findViewById(R.id.btnmcdbuscar);
+        Button btnbuscar=findViewById(R.id.btnmcdbuscar);
         btnbuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -276,18 +264,13 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         coloresTienda.put("3",BitmapDescriptorFactory.HUE_GREEN);//verde
         coloresTienda.put("2",BitmapDescriptorFactory.HUE_YELLOW);//amarillo
         coloresTienda.put("1",BitmapDescriptorFactory.HUE_RED);
-        //ArrayList<DescripcionGenerica> listaFecha;
-        //listaFecha=new ArrayList<DescripcionGenerica>();
-        //listaFecha.add(new DescripcionGenerica(1,"1 "+getString(R.string.anio)));
-        //listaFecha.add(new DescripcionGenerica(2,"2 "+getString(R.string.anio)+"S"));
-        //listaFecha.add(new DescripcionGenerica(3,"3 "+getString(R.string.anio)+"S"));
-        // CreadorFormulario.cargarSpinnerDescr(getContext(),spfecha,listaFecha);
+
         ArrayList<DescripcionGenerica> listaop;
         listaop=new ArrayList<DescripcionGenerica>();
         listaop.add(new DescripcionGenerica(0,"SELECCIONAR OPCION"));
         listaop.add(new DescripcionGenerica(1,"POR TIPO TIENDA"));
         listaop.add(new DescripcionGenerica(2,"POR CADENA"));
-        CreadorFormulario.cargarSpinnerDescr(getContext(),spseleccion,listaop);
+        CreadorFormulario.cargarSpinnerDescr(this,spseleccion,listaop);
         spseleccion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -334,26 +317,26 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 iraAbrirInforme();
             }
         });
-        return  view;
+
 
     }
 
     private void actualizarListaCompra() {
         //desactivo descargas automaticas
         DescAutomaticasServiceManager.getInstancia().pausarServicio();
-        if (NavigationDrawerActivity.isOnlineNet(getActivity())) {
-            alert = new LoadingAlert(getActivity());
+        if (NavigationDrawerActivity.isOnlineNet(this)) {
+            alert = new LoadingAlert(this);
             alert.startAlert();
-            TablaVersionesRepImpl tvRepo = new TablaVersionesRepImpl(getContext());
-            ListaCompraDao dao = ComprasDataBase.getInstance(getContext()).getListaCompraDao();
-            ListaCompraDetRepositoryImpl lcdrepo = new ListaCompraDetRepositoryImpl(getContext());
+            TablaVersionesRepImpl tvRepo = new TablaVersionesRepImpl(this);
+            ListaCompraDao dao = ComprasDataBase.getInstance(this).getListaCompraDao();
+            ListaCompraDetRepositoryImpl lcdrepo = new ListaCompraDetRepositoryImpl(this);
             ListaCompraRepositoryImpl lcrepo = ListaCompraRepositoryImpl.getInstance(dao);
             PeticionesServidor ps = new PeticionesServidor(Constantes.CLAVEUSUARIO);
-            DescargarListaAsyncTask task = new DescargarListaAsyncTask(getActivity(), tvRepo, lcdrepo, lcrepo, this, ps, Constantes.CIUDADTRABAJO);
+            DescargarListaAsyncTask task = new DescargarListaAsyncTask(this, tvRepo, lcdrepo, lcrepo, this, ps, Constantes.CIUDADTRABAJO);
             task.execute("");
         }
         else{
-            Toast.makeText(getActivity(),"Esta acción requiere conexión a internet, verifique",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Esta acción requiere conexión a internet, verifique",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -375,7 +358,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
         Log.d(TAG, "mapa listo ");
         mMap = googleMap;
-        if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
             mMap.setMyLocationEnabled(true);
@@ -409,8 +392,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         try {
             if (locationPermissionGranted) {
 
-                fusedLocationClient=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-                locallis=new miLocationListener();
+                fusedLocationClient=(LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+                locallis=new MapaCdActivity.miLocationListener();
                 // this.lastKnownLocation=fusedLocationClient.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 final boolean networkEnabled = fusedLocationClient.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
@@ -421,9 +404,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     startActivity(settingsIntent);
                     return;
                 }
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
                     Log.d(TAG, "2");
                     return;
                 }
@@ -442,7 +425,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         Log.d(TAG, "3");
 
                     } else
-                        Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No hay gps?", Toast.LENGTH_SHORT).show();
 
                 }else {
 
@@ -459,7 +442,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         // }
                         Log.d(TAG, "4");
                     } else
-                        Toast.makeText(getActivity(), "No hay gps?", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No hay gps?", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -506,7 +489,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         lastKnownLocation.getLongitude(), compraslog)) {
                     compraslog.info(TAG, ".nuevatienda ", "ya existe");
                     //solo informativo te recomendamos visitar una tienda existente
-                  /*  AlertDialog nuevaTiendaDialog= new AlertDialog.Builder(getActivity())
+                  /*  AlertDialog nuevaTiendaDialog= new AlertDialog.Builder(this)
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle(R.string.importante)
                             .setMessage(getString(R.string.recomend_tienda))
@@ -542,45 +525,40 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                             .strokeColor(Color.RED));
 
 
-            }else {
-                    Bundle bundle = new Bundle();
+                }else {
+                   /* Bundle bundle = new Bundle();
                     bundle.putBoolean("nuevatienda", true);
-                    NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
+                    NavController nav = NavHostFragment.findNavController(MapaCdActivity.this);
                     Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
                     if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
 
-                     //   nav.navigate(R.id.action_buscartonuevo, bundle);
+                        nav.navigate(R.id.action_buscartonuevo, bundle);
                         //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
-                    }
+                    }*/
+
+                    Intent intent = new Intent(this, NavigationDrawerActivity.class);
+                    intent.putExtra("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                    finish();
                 }
 
             }else{
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("nuevatienda", true);
-                NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
-                Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
-                if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
-
-                   // nav.navigate(R.id.action_buscartonuevo, bundle);
-                    //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
-                }
+                Intent intent = new Intent(this, NavigationDrawerActivity.class);
+                intent.putExtra("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
 
 
             }
 
         }else{
-            Toast.makeText(getActivity(),"Espere para registrar su ubicación",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Espere para registrar su ubicación",Toast.LENGTH_LONG).show();
 
         }
     }
-    public void cerrar(){
-        Toast.makeText(getActivity(),"Es necesario dar permiso para utilizar esta opción",Toast.LENGTH_LONG).show();
-        NavHostFragment navHostFragment =
-                (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        NavController navController = navHostFragment.getNavController();
-        if(navController!=null)
-            navController.popBackStack();
-    }
+
     public void verFiltros(){
         if(!verfiltros){
             btnverfil.setText("OCULTAR FILTROS");
@@ -649,7 +627,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             dibujarZonas(listageocercas);
         }
         //observo
-        this.listatiendas.observe(getViewLifecycleOwner(), new Observer<List<Tienda>>() {
+        this.listatiendas.observe(this, new Observer<List<Tienda>>() {
             @Override
             public void onChanged(List<Tienda> tiendas) {
 
@@ -657,7 +635,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 dibujarTiendas(tiendas, planta);
 
                 //   alert.closeAlertDialog();
-                listatiendas.removeObservers(getViewLifecycleOwner());
+                listatiendas.removeObservers(MapaCdActivity.this);
             }
         });
 
@@ -674,7 +652,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         int estatusElectro;
         int estatusPeniafiel;
         int estatusJumex;
-        TiendaEstatusClienteDao tiendaEstatusClienteDao=ComprasDataBase.getInstance(getActivity()).getTiendaEstatusClienteDao();
+        TiendaEstatusClienteDao tiendaEstatusClienteDao=ComprasDataBase.getInstance(this).getTiendaEstatusClienteDao();
 
         if(listiendas!=null) {
             // Log.d(TAG,"--tiendas"+listiendas.size());
@@ -730,24 +708,24 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 }
                 if (estatusTienda != null)
 
-                       for (TiendaEstatusCliente estatus : estatusTienda
-                       ) {
-                           if (estatus.getPlantasId() == plantaId) {
-                               color = validarColorTienda(estatus.getEstatus());
+                    for (TiendaEstatusCliente estatus : estatusTienda
+                    ) {
+                        if (estatus.getPlantasId() == plantaId) {
+                            color = validarColorTienda(estatus.getEstatus());
 
-                           }
-                           //para poner en que tiendas no puedo comprar
-
-
-                           if (estatus.getEstatus() == 2) {
-                               if (plantasDisponibles != null)
-                                   plantasDisponibles = quitarPlanta(plantasDisponibles, estatus.getPlantasId());
+                        }
+                        //para poner en que tiendas no puedo comprar
 
 
-                           }
+                        if (estatus.getEstatus() == 2) {
+                            if (plantasDisponibles != null)
+                                plantasDisponibles = quitarPlanta(plantasDisponibles, estatus.getPlantasId());
 
 
-                       }
+                        }
+
+
+                    }
                 if(tienda.getEstpep()!=null&&tienda.getEstpep()==2) {
 
                 }else{
@@ -815,7 +793,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                             @Override
                             public View getInfoContents(Marker marker) {
 
-                                Context context = getActivity(); //or getActivity(), YourActivity.this, etc.
+                                Context context = MapaCdActivity.this; //or this, YourActivity.this, etc.
 
                                 LinearLayout info = new LinearLayout(context);
                                 info.setOrientation(LinearLayout.VERTICAL);
@@ -879,7 +857,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
         Log.d(TAG, "regresó de la consulta de clientes " + data.size()+"--"+Constantes.CIUDADTRABAJO);
         clientesAsignados = convertirListaaClientes(data);
-        // CreadorFormulario.cargarSpinnerDescr(getContext(),spclientes,clientesAsignados);
+        // CreadorFormulario.cargarSpinnerDescr(this,spclientes,clientesAsignados);
     }
 
     public  List<DescripcionGenerica> convertirListaaClientes(List<ListaCompra> lista){
@@ -911,7 +889,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 Log.d(TAG,"------- "+lista.size());
                 if(lista.size()>0) {
                     //cargo el spinner
-                    CreadorFormulario.cargarSpinnerDescr(getActivity(),spplantas,listaPlantasEnv);
+                    CreadorFormulario.cargarSpinnerDescr(MapaCdActivity.this,spplantas,listaPlantasEnv);
                     DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
                     if(plantasel==null) {
                         //busco el 1o de la lista
@@ -927,13 +905,14 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 }
                 else
                     Log.d(TAG,"algo salió mal con la consulta de listas");
-                listacomp.removeObservers(getViewLifecycleOwner());
+                listacomp.removeObservers(MapaCdActivity.this);
+
             }
         };
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
-        listacomp.observe(getViewLifecycleOwner(),nameObserver);
+        listacomp.observe(MapaCdActivity.this,nameObserver);
 
 
     }
@@ -951,7 +930,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         if(listacadena.size()>0) {
             //cargo el spinner
 
-            CreadorFormulario.cargarSpinnerCat(getActivity(),spcadena,listacadena);
+            CreadorFormulario.cargarSpinnerCat(this,spcadena,listacadena);
         }
         List<CatalogoDetalle> listatipo=new ArrayList<>();
         ins.setCad_idcatalogo(Contrato.CatalogosId.CADENACOMER);
@@ -960,23 +939,27 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         if(listatipo.size()>0) {
             //cargo el spinner
 
-            CreadorFormulario.cargarSpinnerCat(getActivity(),sptipoti,listatipo);
+            CreadorFormulario.cargarSpinnerCat(this,sptipoti,listatipo);
         }
     }
 
     /* public void setupListAdapter() {
-         adaptadorLista = new ListaSelecFragment.AdaptadorListas((AppCompatActivity) getActivity(),mViewModel);
+         adaptadorLista = new ListaSelecFragment.AdaptadorListas((AppCompatActivity) this,mViewModel);
 
          objetosLV.setAdapter(adaptadorLista);
 
      }*/
     public void irAcdSel(){
-        NavHostFragment navHostFragment =
-                (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+      /*  NavHostFragment navHostFragment =
+                (NavHostFragment) this.getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
-       // if(navController!=null)
-          //  navController.navigate(R.id.action_buscartocdtrab);
-
+        if(navController!=null)
+            navController.navigate(R.id.action_buscartocdtrab);*/
+        Intent intent = new Intent(this, NavigationDrawerActivity.class);
+        intent.putExtra("NAV_DESTINATION", R.id.nav_ciudad_trabajo); // id del fragment en nav_graph
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
     private  void convertirLista(List<ListaCompra>lista){
         listaPlantasEnv=new ArrayList<DescripcionGenerica>();
@@ -994,10 +977,10 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         DescripcionGenerica elementoBorrar=null;
         for (DescripcionGenerica descipcion: listaPlantas
         ) {
-          //  Log.i(TAG,"<<<"+descipcion.getNombre());
+            //  Log.i(TAG,"<<<"+descipcion.getNombre());
             if(descipcion.getId()==planta) {
                 elementoBorrar=descipcion;
-          //      Log.i(TAG,"quitando:"+planta);
+                //      Log.i(TAG,"quitando:"+planta);
                 break;
             }
         }
@@ -1009,12 +992,12 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         DescripcionGenerica elementoBorrar=null;
         for (DescripcionGenerica descripcion: listaPlantasEnv
         ) {
-         //   Log.i(TAG,"<<<"+descripcion.getNombre());
+            //   Log.i(TAG,"<<<"+descripcion.getNombre());
             if(descripcion.getId()==planta) {
-              return descripcion.getDescripcion();
+                return descripcion.getDescripcion();
             }
         }
-       return "";
+        return "";
     }
     @Override
     public void onResume() {
@@ -1046,10 +1029,16 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         this.doubleBackToExitPressedOnce = false;
         if(lastKnownLocation!=null) {
             bundle.putString("coordenasmapa", tienda.getUne_coordenadasxy() );  //ahora paso las coordenadas
-          //  NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo, bundle);
-            //return false;
+         /*   NavHostFragment.findNavController(MapaCdActivity.this).navigate(R.id.action_buscartonuevo, bundle);*/
+            Intent intent = new Intent(this, NavigationDrawerActivity.class);
+            intent.putExtra("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
+            intent.putExtra("NAV_ARGS", bundle);  //ahora paso las coordenadas)
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            startActivity(intent);
+            finish();
         }else{
-            Toast.makeText(getActivity(),"Espere para registrar su ubicación",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Espere para registrar su ubicación",Toast.LENGTH_LONG).show();
 
         }
     }
@@ -1089,12 +1078,12 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
     @Override
     public void todoBien(RespInfEtapaResponse maininfoetaResp, RespInformesResponse maininfoResp, List<Correccion> mainRespcor) {
-        if(getView()!=null) {
+        if(this!=null) {
 
 
             String ffin= "";
             ffin= ComprasUtils.indiceaFecha2(Constantes.INDICEACTUAL);
-            descargarTiendas(Constantes.CIUDADTRABAJO,ffin).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            descargarTiendas(Constantes.CIUDADTRABAJO,ffin).observe(MapaCdActivity.this, new Observer<Boolean>() {
                 @Override
                 public void onChanged(Boolean aBoolean) {
 
@@ -1114,18 +1103,24 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     }
     //descarga las tiendas del servidor, ffin en el indice actual
     public MutableLiveData<Boolean> descargarTiendas(String ciudad, String ffin){
-        return lcviewModel.descargarTiendas(ciudad,ffin,getViewLifecycleOwner());
+        return lcviewModel.descargarTiendas(ciudad,ffin,MapaCdActivity.this);
     }
     public void iraAbrirInforme(){
-        Bundle bundle = new Bundle();
+     /*   Bundle bundle = new Bundle();
         bundle.putBoolean("nuevatienda", true);
         //  bundle.putString("ciudadNombre", listaSeleccionable.get(i).getNombre());
         NavController nav = NavHostFragment.findNavController(MapaCdFragment.this);
         Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
         if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
 
-           // nav.navigate(R.id.action_buscartonuevo, bundle);
-        }
+            nav.navigate(R.id.action_buscartonuevo, bundle);
+        }*/
+
+        Intent intent = new Intent(this, NavigationDrawerActivity.class);
+        intent.putExtra("NAV_DESTINATION", R.id.nav_nuevoinforme); // id del fragment en nav_graph
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
     public class miLocationListener implements LocationListener {
         public void desactivar() {
@@ -1147,7 +1142,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         @Override
         public void onProviderDisabled(String provider) {
             // Este metodo se ejecuta cuando el GPS es desactivado
-            //  Toast.makeText(getActivity(), "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
+            //  Toast.makeText(this, "Falta foto de producto exhibido", Toast.LENGTH_SHORT).show();
 
         }
         @Override
