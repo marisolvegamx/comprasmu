@@ -59,7 +59,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -113,8 +112,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private MutableLiveData<Integer> totalNotifGen;
     MutableLiveData<List<NotificacionGen>> listaNotificacionesGen;
     Toolbar toolbar;
-    NavController navController;
-    DrawerLayout drawer;
     private boolean pausado = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,13 +221,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             //navigationView.setNavigationItemSelectedListener(this);
             // Passing each menu ID as a set of Ids because each
             // menu should be considered as top level destinations.
-             drawer = findViewById(R.id.drawer_layout);
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
             mAppBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.mobile_navigation)
                     .setDrawerLayout(drawer)
                     .build();
             //inicio el log
-
+            NavController navController;
 
             navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
@@ -329,8 +326,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     .getInstance(this)
                     .enqueueUniquePeriodicWork("comprassync_worker2", ExistingPeriodicWorkPolicy.KEEP,simpleRequest);
 */
-            // Procesa el intent inicial
-            navigateIfNeeded(getIntent());
             DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
          //elimino todos los procesos que se hayan iniciado primera version
             WorkManager
@@ -943,34 +938,5 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
         totalNotifGen.setValue(totalnotif);
     }
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        navigateIfNeeded(intent);
-    }
-
-    private void navigateIfNeeded(Intent intent) {
-        if (intent != null && intent.hasExtra("NAV_DESTINATION")) {
-            int destinationId = intent.getIntExtra("NAV_DESTINATION", 0);
-            Bundle args =   getIntent().getExtras();
-
-
-            if (destinationId != 0) {
-                // Evita navegar si ya estás en ese destino
-                if (navController.getCurrentDestination() != null
-                        && navController.getCurrentDestination().getId() != destinationId) {
-                    Log.d(TAG,"abriendo fragment"+ args.toString());
-                    // Limpia el backstack y navega
-                    navController.popBackStack(R.id.home, false);
-                    navController.navigate(destinationId,args);
-                }
-
-                // Cierra el drawer por si acaso
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        }
-    }
-
 
 }

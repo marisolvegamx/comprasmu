@@ -549,7 +549,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
                     if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
 
-                     //   nav.navigate(R.id.action_buscartonuevo, bundle);
+                        nav.navigate(R.id.action_buscartonuevo, bundle);
                         //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
                     }
                 }
@@ -561,7 +561,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
                 if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
 
-                   // nav.navigate(R.id.action_buscartonuevo, bundle);
+                    nav.navigate(R.id.action_buscartonuevo, bundle);
                     //  NavHostFragment.findNavController(this).navigate(R.id.action_ciudadtohome);
                 }
 
@@ -974,8 +974,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         NavHostFragment navHostFragment =
                 (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
-       // if(navController!=null)
-          //  navController.navigate(R.id.action_buscartocdtrab);
+        if(navController!=null)
+            navController.navigate(R.id.action_buscartocdtrab);
 
     }
     private  void convertirLista(List<ListaCompra>lista){
@@ -1046,7 +1046,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         this.doubleBackToExitPressedOnce = false;
         if(lastKnownLocation!=null) {
             bundle.putString("coordenasmapa", tienda.getUne_coordenadasxy() );  //ahora paso las coordenadas
-          //  NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo, bundle);
+            NavHostFragment.findNavController(MapaCdFragment.this).navigate(R.id.action_buscartonuevo, bundle);
             //return false;
         }else{
             Toast.makeText(getActivity(),"Espere para registrar su ubicación",Toast.LENGTH_LONG).show();
@@ -1124,7 +1124,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         Log.d(TAG, nav.getCurrentDestination().getId() + "--" + R.id.nav_tiendas);
         if (nav.getCurrentDestination().getId() == R.id.nav_tiendas) {
 
-           // nav.navigate(R.id.action_buscartonuevo, bundle);
+            nav.navigate(R.id.action_buscartonuevo, bundle);
         }
     }
     public class miLocationListener implements LocationListener {

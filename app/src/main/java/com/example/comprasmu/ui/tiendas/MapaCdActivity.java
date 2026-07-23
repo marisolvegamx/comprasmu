@@ -146,7 +146,7 @@ GoogleMap.OnInfoWindowClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_cd);
-        myChildToolbar =findViewById(R.id.toolbarmapa);
+       // myChildToolbar =findViewById(R.id.toolbarmapa);
         setSupportActionBar(myChildToolbar);
         // Get a support ActionBar corresponding to this toolbar
         //ActionBar ab = getSupportActionBar();
