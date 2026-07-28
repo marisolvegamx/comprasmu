@@ -41,6 +41,7 @@ import com.example.comprasmu.data.repositories.ListaCompraRepositoryImpl;
 import com.example.comprasmu.data.repositories.TablaVersionesRepImpl;
 import com.example.comprasmu.data.repositories.TiendaEstatusClienteRepositoryImpl;
 import com.example.comprasmu.data.repositories.TiendaRepositoryImpl;
+import com.example.comprasmu.data.repositories.VisitaRepositoryImpl;
 import com.example.comprasmu.services.DescargaHistoricoMuestras;
 import com.example.comprasmu.ui.informedetalle.NuevoDetalleViewModel;
 import com.example.comprasmu.ui.informedetalle.ValidadorDatos;
@@ -755,6 +756,13 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 return 0; //todas estan en 2 debe ser amarilla
             }
         return 1;
+
+    }
+
+    public LiveData<List<Tienda>> getTiendasActuales(String ciudad, int periodo, int tipo, int cadena) {
+        TiendaRepositoryImpl tiendaRepository = TiendaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaDao());
+
+        return tiendaRepository.getTiendasIndiceAct(ciudad, periodo, tipo, cadena);
 
     }
 }

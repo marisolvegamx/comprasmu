@@ -148,6 +148,7 @@ public class DetalleProductoPenFragment extends Fragment {
     LinearLayout linearLayoutCausas;
     RadioGroup radioGroupCausas;
     Button aceptarCausas;
+    int num_pregact=0;
     public DetalleProductoPenFragment() {
 
     }
@@ -183,12 +184,14 @@ public class DetalleProductoPenFragment extends Fragment {
          //   mViewModel.cargarCatsContinuar();
             //si es la misma
             //reviso si es edicion o es nueva
-            int num_pregact=0;
+
             if (getArguments() != null) {
                 num_pregact = getArguments().getInt(ARG_PREGACTP);
                 this.isEdicion = getArguments().getBoolean(ARG_ESEDIP);
             }
-            preguntaAct= dViewModel.buscarReactivoSimpl(num_pregact);
+
+            preguntaAct = dViewModel.buscarReactivoSimpl(num_pregact);
+
             Log.d(TAG,"creando fragment "+preguntaAct.getId());
             compraslog.info(TAG,"create","creando fragment "+preguntaAct.getId());
 
@@ -209,10 +212,6 @@ public class DetalleProductoPenFragment extends Fragment {
             if(isEdicion) {
                 aceptar.setEnabled(true);
                 mViewModel.consecutivo=ultimares.getConsecutivo();
-                Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
-                //  ya lo busco en la actividad
-                //   InformeTemp inf= dViewModel.buscarxNombreCam("numMuestra");
-                //     mViewModel.numMuestra=inf==null?0:Integer.parseInt(inf.getValor());
 
                 reiniciarDatos();
                 //busco el total de prods en la lista
@@ -613,7 +612,7 @@ public class DetalleProductoPenFragment extends Fragment {
             //  nviewModel.informe.setClientesId(ultimares.getValor());
             mViewModel.informe.setConsecutivo(ultimares.getConsecutivo());
             mViewModel.consecutivo=ultimares.getConsecutivo();
-            Constantes.DP_CONSECUTIVO=mViewModel.consecutivo;
+
             //  mViewModel.consecutivo=ultimares.getConsecutivo();
             dViewModel.fromTemp(); //guardo datos del producto selec
             ((ContinuarInformeActivity)getActivity()).actualizarCliente(mViewModel.informe);
@@ -1449,20 +1448,7 @@ public class DetalleProductoPenFragment extends Fragment {
             // Cambiar
                         fragmentTransaction.commit();
                     }else {
-                     Bundle args = new Bundle();
-                     args.putInt(ARG_PREGACTP,reactivo.getId() );
-                     args.putBoolean(ARG_ESEDIP,false);
-                     DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment();
-                     nvofrag.setArguments(args);
-                     //DetalleProductoPenFragment nvofrag = new DetalleProductoPenFragment(reactivo, false);
-                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-// Definir una transacción
-                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-// Remplazar el contenido principal por el fragmento
-                     fragmentTransaction.replace(R.id.continf_fragment, nvofrag);
-                  //   fragmentTransaction.addToBackStack(null);
-// Cambiar
-                     fragmentTransaction.commit();
+                  mostrarPreguntaActual();
                  }
             }
         });
@@ -2020,6 +2006,14 @@ public class DetalleProductoPenFragment extends Fragment {
         }
 
 
+    }
+    private void mostrarPreguntaActual() {
+
+
+        // Limpiar el contenedor antes de agregar el nuevo tipo de respuesta
+        sv.removeAllViews();
+
+        crearFormulario();
     }
     class BotonTextWatcher implements TextWatcher {
 
