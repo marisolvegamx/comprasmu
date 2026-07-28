@@ -723,7 +723,7 @@
         android:id="@+id/nav_tutoriales"
         android:name="com.example.comprasmu.ui.ayuda.AyudaActivity"
         android:label="@string/menu_tutoriales"
-        tools:layout="@layout/fragment_ayuda" >
+        tools:layout="@layout/activity_ayuda" >
 
     </activity>
     <activity
