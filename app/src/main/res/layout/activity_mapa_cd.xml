@@ -232,23 +232,32 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         tools:layout_conversion_absoluteHeight="48dp"
-        tools:layout_conversion_absoluteWidth="379dp">
+        tools:layout_conversion_absoluteWidth="379dp"
+        android:baselineAligned="false">
 
 
         <Button
             android:id="@+id/btnmfiltros"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
             android:layout_weight="1"
             android:text="Ver filtros" />
 
         <Button
             android:id="@+id/btnmcdnvati"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/nueva_tienda" />
+
+        <Button
+            android:id="@+id/btnmcdtemp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:text="@string/recorrido" />
 
     </LinearLayout>
 
