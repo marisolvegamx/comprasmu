@@ -81,7 +81,7 @@
     <string name="added_informe_message">El informe se guardó correctamente</string>
     <string name="added_informe_error">No se guardó intente de nuevo</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment"></string>
+
     <string name="error_imagen">Error al subir la imagen</string>
     <string name="action_subirfotos">Enviar</string>
     <string name="pregunta_eliminar_mensaje">¿ESTÁ SEGURO DE ELIMINAR ESTE INFORME?</string>

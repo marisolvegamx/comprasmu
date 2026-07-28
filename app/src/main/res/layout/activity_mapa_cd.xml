@@ -240,7 +240,7 @@
             android:id="@+id/btnmfiltros"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:text="Ver filtros" />
 
@@ -255,7 +255,7 @@
             android:id="@+id/btnmcdtemp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:text="@string/recorrido" />
 
