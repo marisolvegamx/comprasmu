@@ -9,7 +9,7 @@ public class TiendaEstatusCliente {
     private int clientesId;
     private int plantasId;
     private String plantasNombre;
-    private int estatus;
+    private int estatus; //2-amarillo, 3-verde
    // private int periodo;
 
     public int getUne_id() {

@@ -175,52 +175,45 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
         return dao.insert(object);
     }
 
-    public LiveData<List<Tienda>> getTiendasIndiceAct( String ciudad, int periodo, int tipo, int cadena) {
+    public LiveData<List<Tienda>> getTiendasIndiceAct( int planta, int periodo, int tipo, int cadena) {
         List<String> params= new ArrayList<>();
 
         String query="select" +
-                " tiendas.une_id," +
-                " tiendas.une_descripcion," +
-                " tiendas.une_tipotienda," +
-                " tiendas.une_direccion," +
-                " tiendas.ciudad," +
-                " tiendas.une_cla_ciudad," +
-                " tiendas.pais," +
-                " tiendas.une_cla_pais," +
-                " tiendas.une_puntocardinal," +
-                " tiendas.une_coordenadasxy," +
-                " tiendas.une_cadenacomercial," +
-                " tiendas.une_dir_referencia," +
-                " tienda_estatuscliente.clientesId ," +
+                " tienda.une_id," +
+                " tienda.une_descripcion," +
+                " tienda.une_tipotienda," +
+                " tienda.une_direccion," +
+                " tienda.ciudad," +
+                " tienda.une_cla_ciudad," +
+                " tienda.pais," +
+                " tienda.une_cla_pais," +
+                " tienda.une_puntocardinal," +
+                " tienda.une_coordenadasxy," +
+                " tienda.une_cadenacomercial," +
+                " tienda.une_dir_referencia," +
+                " tienda.color," +
                 " estpep," +
                 " estpen," +
                 " estele," +
                 " estjum," +
-                " tienda_estatuscliente.plantasId" +
-                " from" +
-                " (select * from visitas inner join " +
-                "                 tienda on tiendaid= tienda.une_id" +
-                "                      group by  tienda.une_id) as tiendas " +
-                "                 left join tienda_estatuscliente on" +
-                "                 tiendas.une_id = tienda_estatuscliente.une_id" +
-                " where" +
-                " trim(ciudad)= trim(?)" +
-                " and (periodo <= ?" +
-                "  or periodo is null) " ;
+                " informe_compras.plantasId" +
+                " from visitas inner join  tienda on tiendaid= tienda.une_id  and (visitas.estatus is null or visitas.estatus>0 ) " +
+                " inner join informe_compras on informe_compras.plantasId=?   and informe_compras.visitasId=visitas.id " +
+                "         and (informe_compras.estatus  is null or informe_compras.estatus>0)" ;
 
-        params.add(ciudad+"");
-        params.add(periodo+"");
+        params.add(planta+"");
+       // params.add(periodo+"");
 
         if(tipo>0) {
-            query = query + " and tiendas.une_tipotienda=?";
+            query = query + " and tienda.une_tipotienda=?";
             params.add(tipo+"");
         }
         if(cadena>0) {
-            query = query + " and tiendas.une_cadenacomercial=?";
+            query = query + " and tienda.une_cadenacomercial=?";
             params.add(cadena+"");
         }
-        query=query+" group by tiendas.une_id" +
-                "     order by tiendas.une_id" ;
+        query=query+" group by tienda.une_id" +
+                "     order by tienda.une_id" ;
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );

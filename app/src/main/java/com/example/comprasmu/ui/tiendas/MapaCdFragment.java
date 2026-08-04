@@ -1131,19 +1131,20 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         int cadena=((CatalogoDetalle)spcadena.getSelectedItem()).getCad_idopcion();
         compraslog.info(TAG, ".buscarTiendasActuales ", "pLANTA: "+planta+"-tipo:"+tipo+"-cadena:"+cadena+"-cliente:"+cliente);
         mMap.clear();
-        this.listatiendas=lcviewModel.getTiendasActuales(ciudad,anios, tipo,cadena);
+        this.listatiendas=lcviewModel.getTiendasActuales(planta,anios, tipo,cadena);
         this.listageocercas= lcviewModel.getGeocercas(ciudad);
         if(listageocercas!=null&&listageocercas.size()>0) {
 
             dibujarZonas(listageocercas);
         }
+        String nombreCliente = this.buscarCliente(planta);
         //observo
         this.listatiendas.observe(getViewLifecycleOwner(), new Observer<List<Tienda>>() {
             @Override
             public void onChanged(List<Tienda> tiendas) {
 
                 //  Log.d(TAG," antes de dibujar"+(new Date()));
-                dibujarTiendas(tiendas, planta);
+                dibujarTiendasActuales(tiendas,nombreCliente);
 
                 //   alert.closeAlertDialog();
                 listatiendas.removeObservers(getViewLifecycleOwner());
@@ -1151,8 +1152,194 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         });
 
 
+    }
+
+    public void dibujarTiendasActuales(List<Tienda> listiendas,  String nombreCliente){
+        martiendas=new ArrayList<>();
+        LatLng japon2 = null;
+
+        int estatusPepsi;
+        int estatusElectro;
+        int estatusPeniafiel;
+        int estatusJumex;
+        TiendaEstatusClienteDao tiendaEstatusClienteDao=ComprasDataBase.getInstance(getActivity()).getTiendaEstatusClienteDao();
+
+        if(listiendas!=null) {
+            // Log.d(TAG,"--tiendas"+listiendas.size());
+            List<TiendaEstatusCliente> estatusTienda;
+            StringBuilder estatusClientes = new StringBuilder();
+            String color="3";
+            ArrayList<DescripcionGenerica> plantasDisponibles;
+            HashMap<Integer,Integer> totalPlantas=lcviewModel.getTotalPlantasxCliente(Constantes.CIUDADTRABAJO);
+            for (Tienda tienda : listiendas) {
+                Log.d(TAG, tienda.getUne_id() + "--" + tienda.getUne_descripcion() + "--" + tienda.getEstpep() + "--" + tienda.getEstpen());
+
+                //busco los estatus por planta
+                estatusTienda = lcviewModel.buscarEstatusTienda(tienda.getUne_id(), tiendaEstatusClienteDao);
+                estatusClientes = new StringBuilder();
+                color = "3";
+                estatusPepsi = 1;
+                estatusPeniafiel = 1;
+                estatusJumex = 1;
+                estatusElectro = 1;
+                //armo lista de plantas de la ciudad
+                plantasDisponibles = new ArrayList<>();
+                plantasDisponibles.addAll(listaPlantasEnv);
+                //  Log.i(TAG,"size antes>>"+estatusTienda.size());
+                //veo si tengo estatus rojo
+
+                //busco el cliente de la planta seleecionada
+
+                switch (nombreCliente) {
+                    case "PEPSI":
+                        if (tienda.getEstpep()!=null&&tienda.getEstpep() == 2) {
+                            color = "1";
+
+                        }
+                        break;
+                    case "PEÑAFIEL":
+                        if (tienda.getEstpen()!=null&&tienda.getEstpen() == 2) {
+                            color = "1";
+
+                        }
+                        break;
+                    case "ELECTROPURA":
+                        if (tienda.getEstele()!=null&&tienda.getEstele() == 2) {
+                            color = "1";
+
+                        }
+                        break;
+                    case "JUMEX":
+                        if (tienda.getEstjum()!=null&&tienda.getEstjum() == 2) {
+                            color = "1";
+
+                        }
+                        break;
+                }
+                if (estatusTienda != null)
+
+                    for (TiendaEstatusCliente estatus : estatusTienda
+                    ) {
+                        if (estatus.getPlantasId() == plantaId) {
+                            color = validarColorTienda(estatus.getEstatus());
+
+                        }
+                        //para poner en que tiendas no puedo comprar
+                        if (estatus.getEstatus() == 2) {
+                            if (plantasDisponibles != null)
+                                plantasDisponibles = quitarPlanta(plantasDisponibles, estatus.getPlantasId());
+
+                        }
 
 
+                    }
+                if(tienda.getEstpep()!=null&&tienda.getEstpep()==2) {
+
+                }else{
+                    //validar estatuscliente
+                    estatusPepsi = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 4, tiendaEstatusClienteDao);
+                    tienda.setEstpep(estatusPepsi);
+                }
+                if(tienda.getEstpen()!=null&&tienda.getEstpen()==2) {
+
+                }else{
+                    estatusPeniafiel = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 5, tiendaEstatusClienteDao);
+                    tienda.setEstpen(estatusPeniafiel);
+                }
+                if(tienda.getEstele()!=null&&tienda.getEstele()==2) {
+
+                }else{
+                    estatusElectro = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 6, tiendaEstatusClienteDao);
+                    tienda.setEstele(estatusElectro);
+                }
+                if(tienda.getEstjum()!=null&&tienda.getEstjum()==2) {
+                }else{
+                    estatusJumex = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 7, tiendaEstatusClienteDao);
+                    tienda.setEstjum(estatusJumex);
+                }
+                //busco los estatus por cliente
+
+                Log.d(TAG,"despues"+tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen()+"--"+tienda.getEstele()+"--"+tienda.getEstjum());
+
+                //  Log.i(TAG,"size>>"+plantasDisponibles.size());
+                //el estatus es 1-rojo, 2 amarillo, 3.verde solo en verde puedo comprar o con 0
+                int i=0;
+                if (!plantasDisponibles.isEmpty()) {
+                    for (DescripcionGenerica descripcion:plantasDisponibles
+                    ) {
+                        estatusClientes.append(", ");
+                        estatusClientes.append(descripcion.getNombre());
+                        i++;
+                    }
+
+                    estatusClientes = new StringBuilder(estatusClientes.substring(2, estatusClientes.length()));
+                }
+                tienda.setColor(color);
+
+                //latitud es x longitud es y
+                //  Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
+                if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
+                    String[] aux = tienda.getUne_coordenadasxy().split(",");
+
+                    try {
+                        japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+                        MarkerOptions moptions = new MarkerOptions();
+                        moptions.position(japon2)
+                                .title(tienda.getUne_descripcion())
+                                .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color)));
+                        if (estatusClientes.length() > 0) {
+                            moptions.snippet(estatusClientes.toString());
+                        }
+                        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                            @Override
+                            public View getInfoWindow(Marker arg0) {
+                                return null;
+                            }
+
+                            @Override
+                            public View getInfoContents(Marker marker) {
+
+                                Context context = getActivity(); //or getActivity(), YourActivity.this, etc.
+
+                                LinearLayout info = new LinearLayout(context);
+                                info.setOrientation(LinearLayout.VERTICAL);
+
+                                TextView title = new TextView(context);
+                                title.setTextColor(Color.BLACK);
+                                title.setGravity(Gravity.CENTER);
+                                title.setTypeface(null, Typeface.BOLD);
+                                title.setText(marker.getTitle());
+
+                                TextView snippet = new TextView(context);
+                                snippet.setTextColor(Color.GRAY);
+                                snippet.setTextSize(10);
+                                snippet.setText(marker.getSnippet());
+
+                                info.addView(title);
+                                info.addView(snippet);
+
+                                return info;
+                            }
+                        });
+                        Marker marker = mMap.addMarker(moptions
+                        );
+                        marker.setTag(tienda);
+
+                        martiendas.add(marker);
+                    } catch (NumberFormatException ex) {
+                        Log.e(TAG, "error de formato " + ex.getMessage() + "  " + tienda.getUne_descripcion());
+                    }
+
+                }
+
+            }
+        }
+        if(japon2!=null)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,10));
+        else
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 4));
+        btnvatienda.setEnabled(true);
     }
 
     public class miLocationListener implements LocationListener {
