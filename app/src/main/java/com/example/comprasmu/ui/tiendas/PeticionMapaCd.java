@@ -62,6 +62,7 @@ public class PeticionMapaCd {
             public void onFailure(@Nullable Call<TiendasResponse> call, @Nullable Throwable t) {
                 if (t != null) {
                     Log.e(TAG, "error engetTiendas "+t.getMessage());
+                    listatiendas.setValue(null);
                 }
             }
         });

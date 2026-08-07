@@ -326,7 +326,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     .getInstance(this)
                     .enqueueUniquePeriodicWork("comprassync_worker2", ExistingPeriodicWorkPolicy.KEEP,simpleRequest);
 */
-            DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
+            //DescAutomaticasServiceManager.getInstancia().iniciarServicio(this);
          //elimino todos los procesos que se hayan iniciado primera version
             WorkManager
                     .getInstance(this).cancelAllWorkByTag("comprassync_worker2");

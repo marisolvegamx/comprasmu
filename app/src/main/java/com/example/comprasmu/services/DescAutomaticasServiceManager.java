@@ -13,9 +13,11 @@ public class DescAutomaticasServiceManager {
     private DescAutomaticasServiceManager() {}
 
     public static DescAutomaticasServiceManager getInstancia() {
+
         if (instancia == null) {
             instancia = new DescAutomaticasServiceManager();
         }
+
         return instancia;
     }
 
@@ -34,7 +36,7 @@ public class DescAutomaticasServiceManager {
       //  Log.i("DescAutomaticasServiceManager",Constantes.CLAVEUSUARIO);
 
             if (!servicioIniciado) {
-
+                Log.d("DescAutomaticasServiceManager","iniciando servicio"+System.identityHashCode(instancia));
                 Intent intent = new Intent(context, DescargasAutomaticasService.class);
                 context.startService(intent);
                 servicioIniciado = true;

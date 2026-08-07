@@ -653,14 +653,21 @@ public class ListaDetalleViewModel extends AndroidViewModel {
                 @Override
                 public void onChanged(List<TiendaJson> tiendas) {
                     //guardo en la tabla local
-                    if(tiendas!=null&& tiendas.size()>0)
-                        for (TiendaJson tienda: tiendas
-                             ) {
-                            tiendaRepository.insert(tienda.crearTienda());
-                            if(tienda.getTiendaEstatusCliente()!=null&&tienda.getTiendaEstatusCliente().size()>0){
-                                tiendaEstatusRepository.insertAll(tienda.getTiendaEstatusCliente());
+                    if(tiendas!=null) {
+                        if (tiendas.size() > 0)
+                            for (TiendaJson tienda : tiendas
+                            ) {
+                                tiendaRepository.insert(tienda.crearTienda());
+                                if (tienda.getTiendaEstatusCliente() != null && tienda.getTiendaEstatusCliente().size() > 0) {
+                                    tiendaEstatusRepository.insertAll(tienda.getTiendaEstatusCliente());
+                                }
                             }
-                        }
+                    }else{
+                        finProceso.setValue(false);
+                    }
+
+
+
                     finProceso.setValue(true);
                 }
             });

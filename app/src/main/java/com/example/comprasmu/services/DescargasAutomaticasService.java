@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -23,6 +24,7 @@ public class DescargasAutomaticasService extends Service {
         super.onCreate();
         flog= ComprasLog.getSingleton();
         flog.grabarError("DescargasAutomaticasService","oncreate","iniciando ");
+        Log.d("DescargasAutomaticasService","oncreate iniciando...");
         DescAutomaticasServiceManager.getInstancia().setServicio(this);
         handler = new Handler();
         pausado=false;
@@ -30,6 +32,7 @@ public class DescargasAutomaticasService extends Service {
             @Override
             public void run() {
                 if (!pausado) {
+                    Log.d("DescargasAutomaticasService","ejecutando descargas");
                     DescargasIniciales descini=new DescargasIniciales(getApplication());
                     descini.ejecutar();
                 }
@@ -69,12 +72,14 @@ public class DescargasAutomaticasService extends Service {
 
     public void pausar() {
         flog.grabarError("DescargasAutomaticasService","pausando"," ");
-
+        Log.d("DescargasAutomaticasService","pausando");
         pausado = true;
     }
 
     public void reanudar() {
+
         pausado = false;
+        Log.d("DescargasAutomaticasService","pausado"+pausado);
     }
 
     public void detenerServicio() {

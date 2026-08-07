@@ -1088,6 +1088,8 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                     buscarClientes();
 
                     alert.closeAlertDialog();
+                    if(!aBoolean)
+                        Toast.makeText(getActivity(),"Hubo un error en la consulta de tiendas, revise su conexión a internet e intente de nuevo",Toast.LENGTH_LONG).show();
                 }
             });
         }
