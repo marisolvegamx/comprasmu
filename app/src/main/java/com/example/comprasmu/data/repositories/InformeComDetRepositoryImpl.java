@@ -13,6 +13,7 @@ import com.example.comprasmu.data.dao.InformeCompraDao;
 import com.example.comprasmu.data.dao.InformeCompraDetDao;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
+import com.example.comprasmu.data.modelos.MuestrasxZona;
 
 
 import java.util.ArrayList;
@@ -212,6 +213,8 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
         return 0;
     }
 
-
+    public List<MuestrasxZona> getMuestrasxZona(int plantaId, String indice, int totalMuestras) {
+       return dao.getMuestrasxZona(plantaId,indice, totalMuestras);
+    }
 }
 

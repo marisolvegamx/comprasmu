@@ -7,9 +7,12 @@ import androidx.room.RawQuery;
 import androidx.room.Transaction;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
+import com.example.comprasmu.data.modelos.CatalogoDetalle;
 import com.example.comprasmu.data.modelos.InformeCompraDetalle;
+import com.example.comprasmu.data.modelos.MuestrasxZona;
 
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 @Dao
@@ -241,5 +244,10 @@ public abstract class InformeCompraDetDao extends  BaseDao<InformeCompraDetalle>
             " group by caducidad order by caducidad desc" )
     public abstract List<InformeCompraDetalle> getByProductoAnalisisxInf(String indice, int informeId,int producto, int analisis, int empaque, String presentacion);
 
-
+    @Query("select puntoCardinal as zona,ROUND(CAST(COUNT(informe_detalle.id) AS REAL) / :totalmuestras*100, 2) as muestras from informe_detalle " +
+            " inner join informe_compras on informesId=informe_compras.id" +
+            " inner join visitas on visitasId=visitas.id" +
+            "  where plantasId=:plantaId and visitas.indice=:indice and (informe_detalle.estatus<>2 and informe_detalle.estatus<>4 and informe_detalle.estatus<>6)" +
+            "  group by puntoCardinal")
+    public abstract List<MuestrasxZona> getMuestrasxZona(int plantaId, String indice, int totalmuestras);
 }
