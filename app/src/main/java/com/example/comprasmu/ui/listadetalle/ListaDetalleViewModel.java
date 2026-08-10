@@ -27,6 +27,7 @@ import com.example.comprasmu.data.modelos.InformeEtapa;
 import com.example.comprasmu.data.modelos.ListaCompra;
 import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.ListaDetalleBu;
+import com.example.comprasmu.data.modelos.MuestrasxZona;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.modelos.TiendaEstatusCliente;
 import com.example.comprasmu.data.modelos.TiendaJson;
@@ -770,6 +771,26 @@ public class ListaDetalleViewModel extends AndroidViewModel {
         TiendaRepositoryImpl tiendaRepository = TiendaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaDao());
 
         return tiendaRepository.getTiendasIndiceAct(planta, periodo, tipo, cadena);
+
+    }
+
+    public List<MuestrasxZona> getMuestrasxZona(int plantaId, String indice){
+        InformeComDetRepositoryImpl informeCompraDetRepository=new InformeComDetRepositoryImpl(context);
+        //busco el total de muestras
+        int totalMuestras=gettotalListaCompra(plantaId,indice);
+        if(totalMuestras>0)
+        return informeCompraDetRepository.getMuestrasxZona(plantaId, indice,totalMuestras);
+        else return null;
+    }
+    public int gettotalListaCompra(int planta, String indice){
+
+        List<ListaCompra> listaCompra= repository.getByPlanta(planta, indice);
+        int total=0;
+        if(listaCompra!=null&&listaCompra.size()>0) {
+            total = detRepo.getTotalSolicitados(listaCompra.get(0).getId());
+        }
+        return total;
+
 
     }
 }
