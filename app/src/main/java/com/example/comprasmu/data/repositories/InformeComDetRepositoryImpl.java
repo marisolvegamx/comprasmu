@@ -212,7 +212,8 @@ public  class InformeComDetRepositoryImpl extends BaseRepository<InformeCompraDe
             return muestras.size();
         return 0;
     }
-
+    /*calculo porcentaje de muestrasc ompradas por zonas, entre total de muestras solicitadas*/
+    /**que no estén canceladas**/
     public List<MuestrasxZona> getMuestrasxZona(int plantaId, String indice, int totalMuestras) {
        return dao.getMuestrasxZona(plantaId,indice, totalMuestras);
     }
