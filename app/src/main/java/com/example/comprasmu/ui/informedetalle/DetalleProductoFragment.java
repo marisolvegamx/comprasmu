@@ -199,7 +199,7 @@ public class DetalleProductoFragment extends Fragment {
                             if (informeCompraPlan != null) {
                                   mViewModel.numMuestra = mViewModel.getTotalMuestras(informeCompraPlan.getId()) + 1;
                                     //depende del numero de muestra me voy a mover a la pregunta
-
+                                compraslog.info(TAG,"create","ya tengo informe"+mViewModel.visita.getId()+"--"+ Constantes.ni_plantasel);
                                 if (mViewModel.numMuestra > 0) {
                                     if (ultimares.getClienteSel() == 4) {
                                         //busco el total de la lista
@@ -251,7 +251,7 @@ public class DetalleProductoFragment extends Fragment {
                     }
                 }
             crearPregunta();
-            Log.d(TAG,"consecutivo>>>>>"+Constantes.DP_CONSECUTIVO);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1154,7 +1154,7 @@ public class DetalleProductoFragment extends Fragment {
                     //  valor=valor.toUpperCase();
                     valor = selectedRadioButtonId + "";
                 }
-
+                compraslog.info(TAG,"siguiente","ano hubo producto"+valor);
                 if(valor!=null)
                     if(!valor.equals("4")) //es otras
                     {
@@ -1243,7 +1243,7 @@ public class DetalleProductoFragment extends Fragment {
             InformeEnvio informe=this.preparaInforme();
             SubirInformeTask miTareaAsincrona = new SubirInformeTask(true,informe,getActivity(),mViewModel);
             miTareaAsincrona.execute();
-
+            compraslog.grabarError(TAG,"finalizar","subirfotos");
 
             subirFotos(getActivity(),informe);
         }catch(Exception ex){
@@ -1394,6 +1394,7 @@ public class DetalleProductoFragment extends Fragment {
                         }else {
                             dViewModel.setIddetalleNuevo(0);
                             dViewModel.icdNuevo = null;
+                            compraslog.info(TAG, "guardarMuestra","guardando muestra sin producto");
                             //guardo el numinforme para cuando se creen los coment
                             mViewModel.guardarResp( mViewModel.getIdInformeNuevo() ,0, mViewModel.getIdInformeNuevo()+"" ,"informeid","I",mViewModel.consecutivo,false);
                             yaestoyProcesando=false;
