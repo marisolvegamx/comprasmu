@@ -1284,7 +1284,7 @@ public class DetalleProductoFragment extends Fragment {
         dialogo1.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogo1, int id) {
                 //Es hora de cerrar el preinforme
-                compraslog.info(TAG,"finalizarPreinforme","finalizando visita");
+                compraslog.info(TAG,"finalizarPreinforme","finalizando visita"+mViewModel.visita.getId());
 
                 mViewModel.finalizarVisita(mViewModel.visita.getId());
                 // mViewModel.eliminarTblTemp();
