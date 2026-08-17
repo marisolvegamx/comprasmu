@@ -183,7 +183,7 @@ public class NvoGastoFragment extends Fragment {
 
                 this.isEdicion = getArguments().getBoolean(ARG_ESEDI);
             }
-            this.buscarTotalesMuestra();
+
             totalgastos=totalotros=0;
             totalval=0;
             actualizarListaCompra();
@@ -199,6 +199,7 @@ public class NvoGastoFragment extends Fragment {
 
                 }
             });
+            this.buscarTotalesMuestra();
 
             //deshabilito botones de aceptar
             aceptar1.setEnabled(true); //resumen
