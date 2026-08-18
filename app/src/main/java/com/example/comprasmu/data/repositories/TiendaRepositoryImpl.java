@@ -178,42 +178,46 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
     public LiveData<List<Tienda>> getTiendasIndiceAct( int planta, int periodo, int tipo, int cadena) {
         List<String> params= new ArrayList<>();
 
-        String query="select" +
-                " tienda.une_id," +
-                " tienda.une_descripcion," +
-                " tienda.une_tipotienda," +
-                " tienda.une_direccion," +
-                " tienda.ciudad," +
-                " tienda.une_cla_ciudad," +
-                " tienda.pais," +
-                " tienda.une_cla_pais," +
-                " tienda.une_puntocardinal," +
-                " tienda.une_coordenadasxy," +
-                " tienda.une_cadenacomercial," +
-                " tienda.une_dir_referencia," +
+        String query="select ifnull(une_id,-1) une_id," +
+                " tiendaNombre une_descripcion," +
+                " visitas.tipotienda une_tipotienda," +
+                " visitas.direccion une_direccion," +
+                " visitas.ciudad," +
+                " visitas.ciudadId une_cla_ciudad," +
+                " visitas.pais," +
+                " visitas.paisId une_cla_pais," +
+                " visitas.puntocardinal une_puntocardinal," +
+                " visitas.geolocalizacion une_coordenadasxy," +
+                " visitas.cadenacomercial une_cadenacomercial," +
+                " visitas.complementodireccion une_dir_referencia," +
                 " tienda.color," +
                 " estpep," +
                 " estpen," +
                 " estele," +
                 " estjum," +
                 " informe_compras.plantasId" +
-                " from visitas inner join  tienda on tiendaid= tienda.une_id  and (visitas.estatus is null or visitas.estatus>0 ) " +
-                " inner join informe_compras on informe_compras.plantasId=?   and informe_compras.visitasId=visitas.id " +
-                "         and (informe_compras.estatus  is null or informe_compras.estatus>0)" ;
+                " from" +
+                " visitas" +
+                " inner join informe_compras on" +
+                " informe_compras.plantasId =?" +
+                " and informe_compras.visitasId = visitas.id" +
+                " left join tienda on" +
+                " tiendaid = tienda.une_id" +
+                " and (visitas.estatus is null" +
+                "  or visitas.estatus>0 )";
 
         params.add(planta+"");
        // params.add(periodo+"");
 
         if(tipo>0) {
-            query = query + " and tienda.une_tipotienda=?";
+            query = query + " and visitas.tipotienda=?";
             params.add(tipo+"");
         }
         if(cadena>0) {
             query = query + " and tienda.une_cadenacomercial=?";
             params.add(cadena+"");
         }
-        query=query+" group by tienda.une_id" +
-                "     order by tienda.une_id" ;
+        query=query+"   order by tienda.une_id" ;
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
