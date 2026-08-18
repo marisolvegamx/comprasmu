@@ -1179,7 +1179,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                 //busco los estatus por planta
                 estatusTienda = lcviewModel.buscarEstatusTienda(tienda.getUne_id(), tiendaEstatusClienteDao);
                 estatusClientes = new StringBuilder();
-                color = "3";
+                color = "2";
                 estatusPepsi = 1;
                 estatusPeniafiel = 1;
                 estatusJumex = 1;
@@ -1235,6 +1235,9 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
 
 
                     }
+                else  {
+                    color="2";
+                }
                 if(tienda.getEstpep()!=null&&tienda.getEstpep()==2) {
 
                 }else{
