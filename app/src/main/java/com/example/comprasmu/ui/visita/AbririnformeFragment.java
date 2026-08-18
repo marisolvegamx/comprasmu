@@ -245,6 +245,7 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
         });
         if(savedInstanceState!=null){
             Log.d(TAG,"aqui");
+            milog.info(TAG,"oncreateView","en savedInstanceState");
             nombre_foto = savedInstanceState.getString(IMG_PATH);
             globrequestcode=savedInstanceState.getInt(CODEREQ);
             ultlatitud=savedInstanceState.getDouble(BLATITUD);
