@@ -349,7 +349,7 @@ public class ListaCompraRepositoryImpl extends BaseRepository<ListaCompra> {
     }
 
     //devuelve un arreglo de la forma [clientes][ciudad]
-    public List<ListaCompraDao.TotalPlantas> getTotalPlantasxCliente(String ciudad , int etapa){
-        return dao.getTotalPlantasxClienteEtapa( ciudad, etapa);
+    public List<ListaCompraDao.TotalPlantas> getTotalPlantasxCliente(String ciudad ){
+        return dao.getTotalPlantasxClienteEtapa( ciudad);
     }
 }

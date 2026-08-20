@@ -731,7 +731,7 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     public  HashMap<Integer,Integer> getTotalPlantasxCliente(String ciudad){
         HashMap<Integer,Integer> mapa=new HashMap<>();
-        List<ListaCompraDao.TotalPlantas> listaTotales=repository.getTotalPlantasxCliente(ciudad,2) ;
+        List<ListaCompraDao.TotalPlantas> listaTotales=repository.getTotalPlantasxCliente(ciudad) ;
         if(listaTotales!=null)
             for (ListaCompraDao.TotalPlantas total:listaTotales
                  ) {
