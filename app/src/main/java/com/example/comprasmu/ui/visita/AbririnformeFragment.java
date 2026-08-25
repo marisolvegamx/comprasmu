@@ -1689,6 +1689,8 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
                         guardarsinFotoEx( nuevoId, spinn4);
                     }
 
+                    stopLocationUpdates();
+                    NavHostFragment.findNavController(AbririnformeFragment.this).navigate(R.id.action_nuevotolista);
 
 
                 }
@@ -1731,11 +1733,9 @@ public class AbririnformeFragment extends Fragment implements Validator.Validati
     }
     public void sologuardar(){
         lastClickTime=0;
-        if(guardar()) {
+        guardar();
 
-            stopLocationUpdates();
-            NavHostFragment.findNavController(this).navigate(R.id.action_nuevotolista);
-        }
+
     }
 
     //con la geolocalizacion de la tienda se busca la zona en la que está
