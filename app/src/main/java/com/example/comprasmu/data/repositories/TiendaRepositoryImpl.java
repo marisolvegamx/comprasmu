@@ -204,13 +204,13 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
                 " left join tienda on" +
                 " tiendaid = tienda.une_id" +
                 " and (visitas.estatus is null" +
-                "  or visitas.estatus>0 )";
+                "  or visitas.estatus>0 ) where 1=1";
 
         params.add(planta+"");
        // params.add(periodo+"");
 
         if(tipo>0) {
-            query = query + " and visitas.tipotienda=?";
+            query = query + " and visitas.tipoId=?";
             params.add(tipo+"");
         }
         if(cadena>0) {
@@ -221,7 +221,7 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
         SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
                 query,params.toArray()
         );
-        Log.d("TiendaRepositoryImpl","query "+query);
+        Log.d("TiendaRepositoryImpl","query "+query+"--"+tipo);
         for (String param:params
         ) {
             Log.d("TiendaRepo","--zzzzzzzzzzzzz"+param);
