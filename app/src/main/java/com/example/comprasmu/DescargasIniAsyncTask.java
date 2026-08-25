@@ -164,12 +164,16 @@ public class DescargasIniAsyncTask extends AsyncTask<String, Void, Void>  {
 
                 Log.d(TAG,"no hagos resp 2 ni cor"+procesos);
             }
-            actualizarInformesAll(Constantes.INDICEACTUAL);
-            //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
-         //   DescRespInformesEta desetiq=new DescRespInformesEta( act,this,tvRepo);
+            if(getTotVisitas()==0) {
 
-         //   desetiq.getCambiosEtiq();
-            procesos_lev++;
+            }else {//si pido respaldo no actualizo los informes
+                actualizarInformesAll(Constantes.INDICEACTUAL);
+                //descargo actualizaciones de etiquetado //solo se modifica qr y estatus
+                //   DescRespInformesEta desetiq=new DescRespInformesEta( act,this,tvRepo);
+
+                //   desetiq.getCambiosEtiq();
+                procesos_lev++;
+            }
         }
 
         if(descargarNotificaciones){
