@@ -29,4 +29,5 @@
     <color name="black_50">#44403F</color>
     <color name="texto_principal">#212121</color>
     <color name="fondo_tarjeta">#FFFFFF</color>
+    <color name="boton_material">#2195F1</color>
 </resources>
