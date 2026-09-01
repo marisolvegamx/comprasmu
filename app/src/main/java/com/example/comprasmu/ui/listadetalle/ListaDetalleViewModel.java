@@ -766,10 +766,14 @@ public class ListaDetalleViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<List<Tienda>> getTiendasActuales(int planta, int periodo, int tipo, int cadena) {
+    public LiveData<List<Tienda>> getTiendasActuales(int planta, String indice, int tipo, int cadena) {
         TiendaRepositoryImpl tiendaRepository = TiendaRepositoryImpl.getInstance(ComprasDataBase.getInstance(context).getTiendaDao());
 
-        return tiendaRepository.getTiendasIndiceAct(planta, periodo, tipo, cadena);
+        return tiendaRepository.getTiendasIndiceAct2(planta, indice, tipo, cadena);
 
+    }
+
+    public List<ListaCompraDetalle> cargarDetallesSimple(int idListaCompra){
+        return detRepo.getAllByListasimple(idListaCompra);
     }
 }

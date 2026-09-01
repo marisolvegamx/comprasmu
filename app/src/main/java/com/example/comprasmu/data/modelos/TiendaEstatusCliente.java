@@ -10,7 +10,7 @@ public class TiendaEstatusCliente {
     private int plantasId;
     private String plantasNombre;
     private int estatus; //2-amarillo, 3-verde
-   // private int periodo;
+    private String ultimoindice; //para saber el ultimo indice en que se visito
 
     public int getUne_id() {
         return une_id;
@@ -51,4 +51,13 @@ public class TiendaEstatusCliente {
     public void setPlantasNombre(String plantasNombre) {
         this.plantasNombre = plantasNombre;
     }
+
+    public String getUltimoindice() {
+        return ultimoindice;
+    }
+
+    public void setUltimoindice(String ultimoindice) {
+        this.ultimoindice = ultimoindice;
+    }
+
 }

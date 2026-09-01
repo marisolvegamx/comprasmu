@@ -211,6 +211,11 @@ public class DescargasIniciales {
             @Override
             public void onChanged(CambiosInformesReponse cambiosInformesReponse) {
                 if(cambiosInformesReponse!=null) {
+                    if(cambiosInformesReponse.getV()!=null){
+                        flog.info(TAG,"actualizarInformesAll","hubo cambios en visitas"+cambiosInformesReponse.getV().toString());
+                        actualizarVisitas(cambiosInformesReponse.getV());
+
+                    }
                     if (cambiosInformesReponse.getID() != null) {
                         flog.info(TAG,"actualizarInformesAll","hubo cambios en informes"+cambiosInformesReponse.getID().toString());
 
@@ -318,9 +323,33 @@ public class DescargasIniciales {
         }
 
     }
+    public void actualizarVisitas(List<Visita> visitas ) {
+        // Log.d(TAG, "actualizando bd informes");
+        //primero los inserts
 
 
-public class DescargaIniListener implements  IDescargaIniListener, IActualListener, IListenerRevRec, DescRespInformesEta.ProgresoRespIEListener {
+        for (Visita vis : visitas) {
+
+                //busco la visita
+            Visita original=visRepo.findsimple(vis.getId());
+            original.setTiendaNombre(vis.getTiendaNombre());
+            original.setCadenaComercial(vis.getCadenaComercial());
+            original.setTipoId(vis.getTipoId());
+            original.setTipoTienda(vis.getTipoTienda());
+            original.setComplementodireccion(vis.getComplementodireccion());
+            original.setDireccion(vis.getDireccion());
+            original.setGeolocalizacion(vis.getGeolocalizacion());
+            original.setPuntoCardinal(vis.getPuntoCardinal());
+
+            visRepo.insert(original); //inserto blblbl
+
+        }
+
+    }
+
+
+
+    public class DescargaIniListener implements  IDescargaIniListener, IActualListener, IListenerRevRec, DescRespInformesEta.ProgresoRespIEListener {
     public DescargaIniListener(){
 
 

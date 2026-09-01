@@ -229,4 +229,62 @@ public class TiendaRepositoryImpl extends BaseRepository<Tienda> {
         return dao.getTiendasByFiltros( sqlquery);
     }
 
+    public LiveData<List<Tienda>> getTiendasIndiceAct2( int planta, String indice, int tipo, int cadena) {
+        List<String> params= new ArrayList<>();
+
+        String query="select" +
+                " tienda.une_id," +
+                " tienda.une_descripcion," +
+                " tienda.une_tipotienda," +
+                " tienda.une_direccion," +
+                " tienda.ciudad," +
+                " tienda.une_cla_ciudad," +
+                " tienda.pais," +
+                " tienda.une_cla_pais," +
+                " tienda.une_puntocardinal," +
+                " tienda.une_coordenadasxy," +
+                " tienda.une_cadenacomercial," +
+                " tienda.une_dir_referencia," +
+                " tienda_estatuscliente.clientesId ," +
+               /* " case when estpep<>2 then sum(case tienda_estatuscliente.clientesId when 4 then 1 else 0 end)  else 2 end estpep," +
+                " case when estpen<>2 then sum( case tienda_estatuscliente.clientesId when 5 then 1 else 0 end) else 2 end estpen," +
+                " case when estele<>2 then sum(case tienda_estatuscliente.clientesId when 6 then 1 else 0 end)  else 2 end estele," +
+                " case when estjum<>2 then sum( case tienda_estatuscliente.clientesId when 7 then 1 else 0 end) else 2 end estjum ," +*/
+                " estpep," +
+                " estpen," +
+                " estele," +
+                " estjum," +
+                " tienda_estatuscliente.plantasId" +
+                " from" +
+                " tienda" +
+                " inner join tienda_estatuscliente on" +
+                " tienda.une_id = tienda_estatuscliente.une_id" +
+                " where" +
+                " plantasId=?" +
+                " and ultimoindice = ?";
+
+        params.add(planta+"");
+        params.add(indice);
+        if(tipo>0) {
+            query = query + " and tienda.une_tipotienda=?";
+            params.add(tipo+"");
+        }
+        if(cadena>0) {
+            query = query + " and tienda.une_cadenacomercial=?";
+            params.add(cadena+"");
+        }
+        query=query+" group by tienda.une_id" +
+                "     order by tienda.une_id" ;
+        SimpleSQLiteQuery sqlquery = new SimpleSQLiteQuery(
+                query,params.toArray()
+        );
+        Log.d("TiendaRepositoryImpl","query "+query);
+        for (String param:params
+        ) {
+            Log.d("TiendaRepo","--zzzzzzzzzzzzz"+param);
+        }
+        return dao.getTiendasByFiltros( sqlquery);
+    }
+
+
 }
