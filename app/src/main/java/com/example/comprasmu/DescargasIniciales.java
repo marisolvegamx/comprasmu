@@ -330,18 +330,21 @@ public class DescargasIniciales {
 
         for (Visita vis : visitas) {
 
-                //busco la visita
-            Visita original=visRepo.findsimple(vis.getId());
-            original.setTiendaNombre(vis.getTiendaNombre());
-            original.setCadenaComercial(vis.getCadenaComercial());
-            original.setTipoId(vis.getTipoId());
-            original.setTipoTienda(vis.getTipoTienda());
-            original.setComplementodireccion(vis.getComplementodireccion());
-            original.setDireccion(vis.getDireccion());
-            original.setGeolocalizacion(vis.getGeolocalizacion());
-            original.setPuntoCardinal(vis.getPuntoCardinal());
+            //busco la visita
+            Visita original = visRepo.findsimple(vis.getId());
+            if (original != null) {
+                original.setTiendaNombre(vis.getTiendaNombre());
+                original.setCadenaComercial(vis.getCadenaComercial());
+                original.setTipoId(vis.getTipoId());
+                original.setTipoTienda(vis.getTipoTienda());
+                original.setComplementodireccion(vis.getComplementodireccion());
+                original.setDireccion(vis.getDireccion());
+                original.setGeolocalizacion(vis.getGeolocalizacion());
+                original.setPuntoCardinal(vis.getPuntoCardinal());
 
-            visRepo.insert(original); //inserto blblbl
+
+                visRepo.insert(original); //inserto blblbl
+            }
 
         }
 
