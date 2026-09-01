@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 
 import android.graphics.Typeface;
@@ -154,7 +155,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
     Button btnvatienda;
     int contadorBotonNvaTienda=0;
     private TextView txtnuevatmensaje;
-
+    Button botonRecorrido;
     public MapaCdFragment() {
     }
 
@@ -248,7 +249,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         actualizarListaCompra();
 
         cargarCatalogos();
-
+        botonRecorrido=view.findViewById(R.id.btnmcdtemp);
         //  cargarIndices();
         Button btnbuscar=view.findViewById(R.id.btnmcdbuscar);
         btnbuscar.setOnClickListener(new View.OnClickListener() {
@@ -256,6 +257,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
             public void onClick(View view) {
                 DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
                 viendoRecorrido=false;
+                botonRecorrido.setSelected(false);
                 if(plantasel!=null) {
                     plantaId = plantasel.id;
                     //calculo indice fin
@@ -275,12 +277,13 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
                         nuevaTienda();
             }
         });
-        Button botonRecorrido=view.findViewById(R.id.btnmcdtemp);
+
         botonRecorrido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
                 viendoRecorrido=true;
+                botonRecorrido.setSelected(true);
                 if(plantasel!=null) {
                     plantaId = plantasel.id;
 
@@ -619,7 +622,7 @@ public class MapaCdFragment extends Fragment implements OnMapReadyCallback ,
         //usaria la ciudad de trabajo
 
         markerSel=null;
-
+        botonRecorrido.setSelected(false);
         // llcancel.setVisibility(View.GONE);
         //calculo el fin
         //cambio 29/09/25 siempre es 1
