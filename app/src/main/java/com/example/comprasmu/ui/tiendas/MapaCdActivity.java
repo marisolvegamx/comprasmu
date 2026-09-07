@@ -1469,7 +1469,7 @@ GoogleMap.OnInfoWindowClickListener,
             latitud += punto.latitude;
             longitud += punto.longitude;
         }
-        return new LatLng(latitud / puntos.size(), longitud / puntos.size());
+        return new LatLng((latitud / puntos.size())+.02, longitud / puntos.size());
     }
 
     private void dibujarPorcentajes(List<Geocerca> zonas){
