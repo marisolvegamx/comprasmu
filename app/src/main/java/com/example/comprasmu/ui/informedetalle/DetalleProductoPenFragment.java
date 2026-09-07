@@ -69,6 +69,7 @@ import com.example.comprasmu.ui.informe.NuevoinformeViewModel;
 import com.example.comprasmu.ui.listacompras.SelClienteFragment;
 import com.example.comprasmu.ui.listadetalle.ListaCompraFragment;
 import com.example.comprasmu.ui.listadetalle.ListaDetalleViewModel;
+import com.example.comprasmu.ui.tiendas.LoadingAlert;
 import com.example.comprasmu.ui.visita.AbririnformeFragment;
 import com.example.comprasmu.utils.CampoForm;
 import com.example.comprasmu.utils.ComprasLog;
@@ -148,6 +149,7 @@ public class DetalleProductoPenFragment extends Fragment {
     LinearLayout linearLayoutCausas;
     RadioGroup radioGroupCausas;
     Button aceptarCausas;
+    LoadingAlert alert;
     public DetalleProductoPenFragment() {
 
     }
@@ -845,20 +847,51 @@ public class DetalleProductoPenFragment extends Fragment {
                       Toast.makeText(getActivity(),"EL QR YA SE CAPTURO, VERIFIQUE",Toast.LENGTH_LONG).show();
                       resp=false;
                   }
-                  else resp=true;
-            break;
+                  else {
+                      //valido en el servidor y compruebo que tenga conexion
+                      if(dViewModel.productoSel!=null&&ComprasUtils.isOnlineNet(getContext())){
+                          alert = new LoadingAlert(getActivity());
+                          alert.startAlert();
+                          mViewModel.validarQrHistorico(valor2,dViewModel.productoSel.compraSel,dViewModel.productoSel.compradetalleSel).observe(this.getViewLifecycleOwner(), new Observer<Boolean>() {
+                              @Override
+                              public void onChanged(Boolean aBoolean) {
+
+                                  alert.closeAlertDialog();
+                                  if(aBoolean==null||aBoolean) {
+                                      continuarSiguiente(true);
+
+                                  }
+                                  else{
+                                      Toast.makeText(getActivity(),"EL QR YA SE CAPTURO, VERIFIQUE",Toast.LENGTH_LONG).show();
+
+                                  }
+                              }
+                          });
+                      }else {
+                          resp = true;
+                          continuarSiguiente(true);
+                          return;
+                      }
+                  }
+                  return;
+
 
              default: resp=true; break;
         }
+        continuarSiguiente(resp);
 
+
+    }
+
+    private void continuarSiguiente(boolean resp){
         if(resp)
         {
 
             if(preguntaAct.getId()==60 ) {
-                 String  valor = textoint.getText().toString();
+                String  valor = textoint.getText().toString();
 
-            //guardo el atributo para mostrarlo despues
-            ((ContinuarInformeActivity)getActivity()).actualizarCodProd(valor);
+                //guardo el atributo para mostrarlo despues
+                ((ContinuarInformeActivity)getActivity()).actualizarCodProd(valor);
 
             }else
 
@@ -928,7 +961,7 @@ public class DetalleProductoPenFragment extends Fragment {
                     compraslog.grabarError(TAG+" finalizando buscando clientes ");
                     if (clientesAsig != null && clientesAsig.size() > 0) {
                         loadingDialog.dismisDialog();
-                         yaestoyProcesando=false;
+                        yaestoyProcesando=false;
                         avanzarPregunta(preguntaAct.getSigId());
 
                     } else {
@@ -942,13 +975,13 @@ public class DetalleProductoPenFragment extends Fragment {
                         //   mViewModel.eliminarTblTemp();
                         loadingDialog.dismisDialog();
                         Toast.makeText(getActivity(), getString(R.string.informe_finalizado), Toast.LENGTH_SHORT).show();
-                          yaestoyProcesando=false;
+                        yaestoyProcesando=false;
                         salir();
                         //  aceptar.setEnabled(true);
                         return;
 
                     }
-                    }
+                }
                 catch(Exception ex){
                     ex.printStackTrace();
                     loadingDialog.dismisDialog();
@@ -1001,38 +1034,38 @@ public class DetalleProductoPenFragment extends Fragment {
 
                 //busco planta
 
-                    if(valor!=null)
-                        if(valor.equals("7")) //es otras
-                        {
-                            //busco la causa
-                            radioGroupCausas =root.findViewById(R.id.fgsrgpopcionesnocompra);
+                if(valor!=null)
+                    if(valor.equals("7")) //es otras
+                    {
+                        //busco la causa
+                        radioGroupCausas =root.findViewById(R.id.fgsrgpopcionesnocompra);
 
-                            int checkedId=radioGroupCausas.getCheckedRadioButtonId();
-                            //guardo causa no compra
-                            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "7", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
-                            //guardo en otras
-                            mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), checkedId+"","causa_nocompraotras" , preguntaAct.getTabla(), mViewModel.consecutivo, false);
+                        int checkedId=radioGroupCausas.getCheckedRadioButtonId();
+                        //guardo causa no compra
+                        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), "7", preguntaAct.getNombreCampo(), preguntaAct.getTabla(), mViewModel.consecutivo, true);
+                        //guardo en otras
+                        mViewModel.guardarResp(mViewModel.getIdInformeNuevo(), dViewModel.getIddetalleNuevo(), checkedId+"","causa_nocompraotras" , preguntaAct.getTabla(), mViewModel.consecutivo, false);
 
-                            //generar consecutivo tienda
-                            int consecutivo=mViewModel.getConsecutivo(Constantes.ni_plantasel,getActivity(), this);
-                            Log.d(TAG,"*genere cons="+consecutivo);
-                            mViewModel.informe.setConsecutivo(consecutivo);
-                            mViewModel.consecutivo=consecutivo;
-                            Constantes.DP_CONSECUTIVO = consecutivo;
-                            mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",  Constantes.DP_CONSECUTIVO ,false);
-                            mViewModel.guardarResp(0,0,Constantes.ni_plantanombre+"","plantaNombre","I",  Constantes.DP_CONSECUTIVO ,false);
-                            mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",  Constantes.DP_CONSECUTIVO ,false);
-                            guardarMuestra(preguntaAct.getSigId());
-                            loadingDialog.dismisDialog();
-                            //  consecutivo.removeObservers(DetalleProductoFragment.this);
+                        //generar consecutivo tienda
+                        int consecutivo=mViewModel.getConsecutivo(Constantes.ni_plantasel,getActivity(), this);
+                        Log.d(TAG,"*genere cons="+consecutivo);
+                        mViewModel.informe.setConsecutivo(consecutivo);
+                        mViewModel.consecutivo=consecutivo;
+                        Constantes.DP_CONSECUTIVO = consecutivo;
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",  Constantes.DP_CONSECUTIVO ,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantanombre+"","plantaNombre","I",  Constantes.DP_CONSECUTIVO ,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",  Constantes.DP_CONSECUTIVO ,false);
+                        guardarMuestra(preguntaAct.getSigId());
+                        loadingDialog.dismisDialog();
+                        //  consecutivo.removeObservers(DetalleProductoFragment.this);
 
-                        }else {
-                            mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",0,false);
-                            mViewModel.guardarResp(0,0,Constantes.ni_plantanombre+"","plantaNombre","I",0,false);
-                            mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",0,false);
-                            guardarMuestra(preguntaAct.getSigId());
-                            loadingDialog.dismisDialog();
-                        }
+                    }else {
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantasel+"","plantasId","I",0,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_plantanombre+"","plantaNombre","I",0,false);
+                        mViewModel.guardarResp(0,0,Constantes.ni_clientesel,"clienteNombre","I",0,false);
+                        guardarMuestra(preguntaAct.getSigId());
+                        loadingDialog.dismisDialog();
+                    }
 
 
 
@@ -1067,7 +1100,7 @@ public class DetalleProductoPenFragment extends Fragment {
             }
             else{
                 if(preguntaAct.getId()>50)
-                      guardarResp();
+                    guardarResp();
                 avanzarPregunta(preguntaAct.getSigId());
             }
         }
