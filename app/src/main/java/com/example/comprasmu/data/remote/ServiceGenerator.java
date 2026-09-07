@@ -70,11 +70,12 @@ y en el api service
         * */
         if (servicio == null) {
         String BASE_URL;
+        int conectiontimeout=30;
         if (Build.PRODUCT.contains ("sdk")||Build.MODEL.contains (Constantes.modelo)){//pruebas y el lenovo
             //nam
 
            BASE_URL = Constantes.URLPRUEBAS1+ "api/public/";
-
+            conectiontimeout=90;
        }else
         {
             BASE_URL = Constantes.URLSERV+"api/public/";
@@ -84,7 +85,7 @@ y en el api service
         if (httpClient == null) {
             httpClient = new OkHttpClient.Builder()
                     .readTimeout(50, TimeUnit.SECONDS)
-                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .connectTimeout(conectiontimeout, TimeUnit.SECONDS)
                     .writeTimeout(35, TimeUnit.SECONDS)
                     .retryOnConnectionFailure(true) // Agregado para estabilidad
                     .build();
