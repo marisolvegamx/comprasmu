@@ -55,6 +55,7 @@ import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.ListaCompraDetalle;
 import com.example.comprasmu.data.modelos.MuestrasxZona;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.modelos.TiendaEstatusCliente;
@@ -86,6 +87,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -96,6 +98,7 @@ GoogleMap.OnMarkerClickListener,
 GoogleMap.OnInfoWindowClickListener,
         DescargarListaAsyncTask.ProgresoDLListener {
     private static final int LOCATION_REQUEST_CODE = 1;
+    private static  boolean viendoRecorrido =false;
     private GoogleMap mMap;
     String[] coloreszon={"#1E90FF","#FF1493", "#32CD32", "#FF8C00", "#4B0082"};
     Map<String,Float> coloresTienda;
@@ -118,7 +121,7 @@ GoogleMap.OnInfoWindowClickListener,
     private final long lastClickTime = 0;
     private static final int DEFAULT_ZOOM = 4;
     Spinner spplantas;
-    List<DescripcionGenerica>clientesAsignados;
+  //  List<DescripcionGenerica>clientesAsignados;
 
     private boolean locationPermissionGranted;
     private final LatLng defaultLocation = new LatLng(19.36884,  -99.16410);
@@ -146,7 +149,9 @@ GoogleMap.OnInfoWindowClickListener,
     Circle circleNuevaTienda;
     Button btnvatienda;
     private TextView txtnuevatmensaje;
-    Toolbar myChildToolbar;
+    Button botonRecorrido;
+    private Toolbar myChildToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -246,13 +251,15 @@ GoogleMap.OnInfoWindowClickListener,
         actualizarListaCompra();
 
         cargarCatalogos();
-
+        botonRecorrido=findViewById(R.id.btnmcdtemp);
         //  cargarIndices();
         Button btnbuscar=findViewById(R.id.btnmcdbuscar);
         btnbuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
+                viendoRecorrido=false;
+                botonRecorrido.setSelected(false);
                 if(plantasel!=null) {
                     plantaId = plantasel.id;
                     //calculo indice fin
@@ -268,14 +275,17 @@ GoogleMap.OnInfoWindowClickListener,
             @Override
             public void onClick(View view) {
                 if(mensajetienda.getVisibility()==View.GONE)
-                    nuevaTienda();
+                    if(!viendoRecorrido) //desde el recorrido ya no se puede hacer una nueva tienda es solo consulta
+                        nuevaTienda();
             }
         });
-        Button boton=findViewById(R.id.btnmcdtemp);
-        boton.setOnClickListener(new View.OnClickListener() {
+
+        botonRecorrido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
+                viendoRecorrido=true;
+                botonRecorrido.setSelected(true);
                 if(plantasel!=null) {
                     plantaId = plantasel.id;
 
@@ -604,7 +614,6 @@ GoogleMap.OnInfoWindowClickListener,
 
     public void dibujarZonas(List<Geocerca> zonas){
         regionPolygon=new ArrayList<Polygon>();
-        List<LatLng> puntos=new ArrayList<>();
 
         for(Geocerca geo:zonas){
             String[] aux =geo.getGeo_p1().split(",");
@@ -615,11 +624,6 @@ GoogleMap.OnInfoWindowClickListener,
             LatLng p3 =new LatLng(Double.parseDouble(aux3[0]), Double.parseDouble(aux3[1]));
             String[] aux4 =geo.getGeo_p4().split(",");
             LatLng p4 =new LatLng(Double.parseDouble(aux4[0]), Double.parseDouble(aux4[1]));
-            puntos=new ArrayList<>();
-            puntos.add(p1);
-            puntos.add(p2);
-            puntos.add(p3);
-            puntos.add(p4);
 
             regionPolygon.add( mMap.addPolygon(new PolygonOptions()
                     .add(p1,p2,p3,p4)
@@ -640,7 +644,7 @@ GoogleMap.OnInfoWindowClickListener,
         //usaria la ciudad de trabajo
 
         markerSel=null;
-
+        botonRecorrido.setSelected(false);
         // llcancel.setVisibility(View.GONE);
         //calculo el fin
         //cambio 29/09/25 siempre es 1
@@ -879,7 +883,7 @@ GoogleMap.OnInfoWindowClickListener,
         else
             return "3";
     }
-    public void buscarClientes(){
+   /* public void buscarClientes(){
         //   Log.d(TAG,"cd "+Constantes.CIUDADTRABAJO);
         if(Constantes.CIUDADTRABAJO==null||Constantes.CIUDADTRABAJO.equals("")){
 
@@ -890,11 +894,21 @@ GoogleMap.OnInfoWindowClickListener,
             return;
         }
         List<ListaCompra> data=lcviewModel.cargarClientesSimplxet(Constantes.CIUDADTRABAJO, 2);
+        List<ListaCompraDetalle> listaDetalle;
+        //para cada cliente reviso si le falta comprar
+        for (ListaCompra listaCompra: data
+             ) {
+            listaDetalle=lcviewModel.cargarDetallesSimple(listaCompra.getId());
+            if(listaDetalle!=null)
+                if(!calcularTotales(listaDetalle)) //ya termino de comprar
+                    //lo saco de la lista
+                    data.remove(listaCompra);
 
+        }
         Log.d(TAG, "regresó de la consulta de clientes " + data.size()+"--"+Constantes.CIUDADTRABAJO);
-        clientesAsignados = convertirListaaClientes(data);
-        // CreadorFormulario.cargarSpinnerDescr(this,spclientes,clientesAsignados);
-    }
+       // clientesAsignados = convertirListaaClientes(data);
+        // CreadorFormulario.cargarSpinnerDescr(getContext(),spclientes,clientesAsignados);
+    }*/
 
     public  List<DescripcionGenerica> convertirListaaClientes(List<ListaCompra> lista){
         int i=0;
@@ -913,21 +927,32 @@ GoogleMap.OnInfoWindowClickListener,
     }
     public void buscarPlantas(String ciudadNombre){
         //para buscar las plantas
-        LiveData<List<ListaCompra>> listacomp = lcviewModel.cargarPestañasEta(ciudadNombre);
-        // Create the observer which updates the UI.
-        final Observer< List<ListaCompra>> nameObserver = new Observer< List<ListaCompra>>() {
-            @Override
-            public void onChanged(@Nullable List<ListaCompra> lista) {
+        List<ListaCompra> listacomp = lcviewModel.cargarPestanasxEtaSimp(ciudadNombre);
 
-                convertirLista(lista);
-                // setLista(listaClientesEnv);
-                // siguiente(0);
-                Log.d(TAG,"------- "+lista.size());
-                if(lista.size()>0) {
+
+        List<ListaCompraDetalle> listaDetalle;
+        //para cada cliente reviso si le falta comprar
+
+        Iterator<ListaCompra> iterator = listacomp.iterator();
+
+        while (iterator.hasNext()) {
+            ListaCompra listaCompra = iterator.next();
+            listaDetalle=lcviewModel.cargarDetallesSimple(listaCompra.getId());
+            if(listaDetalle!=null)
+                if(!calcularTotales(listaDetalle)) //ya termino de comprar
+                            //lo saco de la lista
+                    iterator.remove();
+
+        }
+        convertirLista(listacomp);
+        // setLista(listaClientesEnv);
+        // siguiente(0);
+        Log.d(TAG,"------- "+listacomp.size());
+        if(listacomp.size()>0) {
                     //cargo el spinner
-                    CreadorFormulario.cargarSpinnerDescr(MapaCdActivity.this,spplantas,listaPlantasEnv);
-                    DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
-                    if(plantasel==null) {
+            CreadorFormulario.cargarSpinnerDescr(this,spplantas,listaPlantasEnv);
+            DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
+            if(plantasel==null) {
                         //busco el 1o de la lista
                         DescripcionGenerica primero=listaPlantasEnv.get(0);
                         buscarTiendas(primero.id);
@@ -941,14 +966,6 @@ GoogleMap.OnInfoWindowClickListener,
                 }
                 else
                     Log.d(TAG,"algo salió mal con la consulta de listas");
-                listacomp.removeObservers(MapaCdActivity.this);
-
-            }
-        };
-
-        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        //   lcrepo.getClientesByIndiceCiudad(Constantes.INDICEACTUAL,ciudadNombre).observe(getViewLifecycleOwner(), nameObserver);
-        listacomp.observe(MapaCdActivity.this,nameObserver);
 
 
     }
@@ -1048,7 +1065,10 @@ GoogleMap.OnInfoWindowClickListener,
     public void onInfoWindowClick(@NonNull Marker marker) {
         //reviso si hay mas clientes si no no tiene caso
         Tienda tienda=(Tienda)marker.getTag();
-        if(tienda.getColor()=="2"&&clientesAsignados.size()==0){
+        if(viendoRecorrido){
+            return;
+        }
+        if(tienda.getColor()=="2"){
             return;
         }
         Bundle bundle = new Bundle();
@@ -1120,14 +1140,16 @@ GoogleMap.OnInfoWindowClickListener,
 
             String ffin= "";
             ffin= ComprasUtils.indiceaFecha2(Constantes.INDICEACTUAL);
-            descargarTiendas(Constantes.CIUDADTRABAJO,ffin).observe(MapaCdActivity.this, new Observer<Boolean>() {
+            descargarTiendas(Constantes.CIUDADTRABAJO,ffin).observe(this, new Observer<Boolean>() {
                 @Override
                 public void onChanged(Boolean aBoolean) {
 
                     buscarPlantas(Constantes.CIUDADTRABAJO);
-                    buscarClientes();
+                    //buscarClientes();
 
                     alert.closeAlertDialog();
+                    if(!aBoolean)
+                        Toast.makeText(MapaCdActivity.this,"Hubo un error en la consulta de tiendas, revise su conexión a internet e intente de nuevo",Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -1201,7 +1223,7 @@ GoogleMap.OnInfoWindowClickListener,
         int cadena=((CatalogoDetalle)spcadena.getSelectedItem()).getCad_idopcion();
         compraslog.info(TAG, ".buscarTiendasActuales ", "pLANTA: "+planta+"-tipo:"+tipo+"-cadena:"+cadena+"-cliente:"+cliente);
         mMap.clear();
-        this.listatiendas=lcviewModel.getTiendasActuales(planta,anios, tipo,cadena);
+        this.listatiendas=lcviewModel.getTiendasActuales(planta,Constantes.INDICEACTUAL, tipo,cadena);
         this.listageocercas= lcviewModel.getGeocercas(ciudad);
         if(listageocercas!=null&&listageocercas.size()>0) {
 
@@ -1249,7 +1271,7 @@ GoogleMap.OnInfoWindowClickListener,
                 //busco los estatus por planta
                 estatusTienda = lcviewModel.buscarEstatusTienda(tienda.getUne_id(), tiendaEstatusClienteDao);
                 estatusClientes = new StringBuilder();
-                color = "3";
+                color = "2";
                 estatusPepsi = 1;
                 estatusPeniafiel = 1;
                 estatusJumex = 1;
@@ -1305,6 +1327,9 @@ GoogleMap.OnInfoWindowClickListener,
 
 
                     }
+                else  {
+                    color="2";
+                }
                 if(tienda.getEstpep()!=null&&tienda.getEstpep()==2) {
 
                 }else{
@@ -1359,9 +1384,9 @@ GoogleMap.OnInfoWindowClickListener,
                         moptions.position(japon2)
                                 .title(tienda.getUne_descripcion())
                                 .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color)));
-                        if (estatusClientes.length() > 0) {
+                     /*   if (estatusClientes.length() > 0) {
                             moptions.snippet(estatusClientes.toString());
-                        }
+                        }*/
                         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                             @Override
@@ -1412,6 +1437,24 @@ GoogleMap.OnInfoWindowClickListener,
         else
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 4));
         btnvatienda.setEnabled(true);
+    }
+
+    public boolean calcularTotales(List<ListaCompraDetalle> detalles)
+    {
+        int totalPedidos=0;
+        int totalcomprados=0;
+        for(ListaCompraDetalle detalle:detalles){
+
+            totalcomprados=totalcomprados+detalle.getComprados();
+            totalPedidos=totalPedidos+detalle.getCantidad();
+        }
+        Log.i(TAG,"calcularTotales comprados:"+totalcomprados+"--pedidos:"+totalPedidos);
+
+        if(totalcomprados<totalPedidos)
+            return true; //puedo seguir comprando
+        return false;
+
+
     }
     private BitmapDescriptor crearIconoCuadro(String texto) {
         int tamanoCuadro = 100; // Tamaño en píxeles
