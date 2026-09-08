@@ -92,7 +92,7 @@
         tools:layout="@layout/fragment_abririnforme">
         <action android:id="@+id/action_nuevotolista"
             app:destination="@id/nav_listarvisitas"
-            app:popUpTo="@id/nav_nuevoinforme"
+
             app:popUpToInclusive="true"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -179,8 +179,11 @@
 
 
     </fragment>
-
-  <fragment
+    <activity
+        android:id="@+id/nav_tiendas"
+        android:name="com.example.comprasmu.ui.tiendas.MapaCdActivity"
+        android:label="@string/seleccionar_tienda" />
+  <!--  <fragment
         android:id="@+id/nav_tiendas"
         android:name="com.example.comprasmu.ui.tiendas.MapaCdFragment"
         android:label="@string/seleccionar_tienda"
@@ -199,7 +202,7 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
-    </fragment>
+    </fragment>-->
     <fragment
         android:id="@+id/nav_solcor2"
         android:name="com.example.comprasmu.ui.solcorreccion.ListaSolCorreFragment"
@@ -318,7 +321,8 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
     </fragment>
-    <!--para preparacion-->
+
+
 
     <activity
         android:id="@+id/nav_nvoprep"

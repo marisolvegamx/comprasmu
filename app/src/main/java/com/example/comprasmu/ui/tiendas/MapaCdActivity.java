@@ -3,7 +3,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
@@ -52,6 +55,7 @@ import com.example.comprasmu.data.modelos.Correccion;
 import com.example.comprasmu.data.modelos.DescripcionGenerica;
 import com.example.comprasmu.data.modelos.Geocerca;
 import com.example.comprasmu.data.modelos.ListaCompra;
+import com.example.comprasmu.data.modelos.MuestrasxZona;
 import com.example.comprasmu.data.modelos.Tienda;
 import com.example.comprasmu.data.modelos.TiendaEstatusCliente;
 import com.example.comprasmu.data.remote.RespInfEtapaResponse;
@@ -70,6 +74,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -146,7 +151,7 @@ GoogleMap.OnInfoWindowClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_cd);
-       // myChildToolbar =findViewById(R.id.toolbarmapa);
+        myChildToolbar =findViewById(R.id.toolbarmapa);
         setSupportActionBar(myChildToolbar);
         // Get a support ActionBar corresponding to this toolbar
         //ActionBar ab = getSupportActionBar();
@@ -266,7 +271,18 @@ GoogleMap.OnInfoWindowClickListener,
                     nuevaTienda();
             }
         });
+        Button boton=findViewById(R.id.btnmcdtemp);
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DescripcionGenerica plantasel=(DescripcionGenerica)spplantas.getSelectedItem();
+                if(plantasel!=null) {
+                    plantaId = plantasel.id;
 
+                    buscarTiendasActuales(plantaId);
+                }
+            }
+        });
         //inicio colores tienda
         coloresTienda=new HashMap<>();
         coloresTienda.put("3",BitmapDescriptorFactory.HUE_GREEN);//verde
@@ -373,7 +389,7 @@ GoogleMap.OnInfoWindowClickListener,
             getDeviceLocation();
 
         } else {
-            Log.d(TAG, "no tengo  "+LOCATION_REQUEST_CODE);
+            Log.d(TAG, "no tengo ubicaacion "+LOCATION_REQUEST_CODE);
             if(alert.isMostrando())
                 alert.closeAlertDialog();
             // Solicitar permiso
@@ -588,6 +604,7 @@ GoogleMap.OnInfoWindowClickListener,
 
     public void dibujarZonas(List<Geocerca> zonas){
         regionPolygon=new ArrayList<Polygon>();
+        List<LatLng> puntos=new ArrayList<>();
 
         for(Geocerca geo:zonas){
             String[] aux =geo.getGeo_p1().split(",");
@@ -598,6 +615,11 @@ GoogleMap.OnInfoWindowClickListener,
             LatLng p3 =new LatLng(Double.parseDouble(aux3[0]), Double.parseDouble(aux3[1]));
             String[] aux4 =geo.getGeo_p4().split(",");
             LatLng p4 =new LatLng(Double.parseDouble(aux4[0]), Double.parseDouble(aux4[1]));
+            puntos=new ArrayList<>();
+            puntos.add(p1);
+            puntos.add(p2);
+            puntos.add(p3);
+            puntos.add(p4);
 
             regionPolygon.add( mMap.addPolygon(new PolygonOptions()
                     .add(p1,p2,p3,p4)
@@ -1160,6 +1182,334 @@ GoogleMap.OnInfoWindowClickListener,
                 finish();
         }
         return true;
+    }
+
+    //todo se tendrá que agregar al otro activity
+    public void buscarTiendasActuales( int planta){
+
+
+        markerSel=null;
+
+        //cambio 29/09/25 siempre es 1
+        int anios=1;
+
+        //busco el pais y cd de la planta
+        int[] aux =lcviewModel.buscarClienCdxPlan(planta, Constantes.INDICEACTUAL);
+        cliente=aux[0];
+        String ciudad=Constantes.CIUDADTRABAJO;
+        int tipo=((CatalogoDetalle)sptipoti.getSelectedItem()).getCad_idopcion();
+        int cadena=((CatalogoDetalle)spcadena.getSelectedItem()).getCad_idopcion();
+        compraslog.info(TAG, ".buscarTiendasActuales ", "pLANTA: "+planta+"-tipo:"+tipo+"-cadena:"+cadena+"-cliente:"+cliente);
+        mMap.clear();
+        this.listatiendas=lcviewModel.getTiendasActuales(planta,anios, tipo,cadena);
+        this.listageocercas= lcviewModel.getGeocercas(ciudad);
+        if(listageocercas!=null&&listageocercas.size()>0) {
+
+            dibujarZonas(listageocercas);
+
+            dibujarPorcentajes(listageocercas);
+        }
+        String nombreCliente = this.buscarCliente(planta);
+        //observo
+        this.listatiendas.observe(this, new Observer<List<Tienda>>() {
+            @Override
+            public void onChanged(List<Tienda> tiendas) {
+
+                //  Log.d(TAG," antes de dibujar"+(new Date()));
+                dibujarTiendasActuales(tiendas,nombreCliente);
+
+                //   alert.closeAlertDialog();
+                listatiendas.removeObservers(MapaCdActivity.this);
+            }
+        });
+
+
+    }
+
+    public void dibujarTiendasActuales(List<Tienda> listiendas,  String nombreCliente){
+        martiendas=new ArrayList<>();
+        LatLng japon2 = null;
+
+        int estatusPepsi;
+        int estatusElectro;
+        int estatusPeniafiel;
+        int estatusJumex;
+        TiendaEstatusClienteDao tiendaEstatusClienteDao=ComprasDataBase.getInstance(this).getTiendaEstatusClienteDao();
+
+        if(listiendas!=null) {
+            // Log.d(TAG,"--tiendas"+listiendas.size());
+            List<TiendaEstatusCliente> estatusTienda;
+            StringBuilder estatusClientes = new StringBuilder();
+            String color="3";
+            ArrayList<DescripcionGenerica> plantasDisponibles;
+            HashMap<Integer,Integer> totalPlantas=lcviewModel.getTotalPlantasxCliente(Constantes.CIUDADTRABAJO);
+            for (Tienda tienda : listiendas) {
+               // Log.d(TAG, tienda.getUne_id() + "--" + tienda.getUne_descripcion() + "--" + tienda.getEstpep() + "--" + tienda.getEstpen());
+
+                //busco los estatus por planta
+                estatusTienda = lcviewModel.buscarEstatusTienda(tienda.getUne_id(), tiendaEstatusClienteDao);
+                estatusClientes = new StringBuilder();
+                color = "3";
+                estatusPepsi = 1;
+                estatusPeniafiel = 1;
+                estatusJumex = 1;
+                estatusElectro = 1;
+                //armo lista de plantas de la ciudad
+                plantasDisponibles = new ArrayList<>();
+                plantasDisponibles.addAll(listaPlantasEnv);
+                //  Log.i(TAG,"size antes>>"+estatusTienda.size());
+                //veo si tengo estatus rojo
+
+                //busco el cliente de la planta seleecionada
+
+                switch (nombreCliente) {
+                    case "PEPSI":
+                        if (tienda.getEstpep()!=null&&tienda.getEstpep() == 2) {
+                            color = "1";
+
+                        }
+                        break;
+                    case "PEÑAFIEL":
+                        if (tienda.getEstpen()!=null&&tienda.getEstpen() == 2) {
+                            color = "1";
+
+                        }
+                        break;
+                    case "ELECTROPURA":
+                        if (tienda.getEstele()!=null&&tienda.getEstele() == 2) {
+                            color = "1";
+
+                        }
+                        break;
+                    case "JUMEX":
+                        if (tienda.getEstjum()!=null&&tienda.getEstjum() == 2) {
+                            color = "1";
+
+                        }
+                        break;
+                }
+                if (estatusTienda != null)
+
+                    for (TiendaEstatusCliente estatus : estatusTienda
+                    ) {
+                        if (estatus.getPlantasId() == plantaId) {
+                            color = validarColorTienda(estatus.getEstatus());
+
+                        }
+                        //para poner en que tiendas no puedo comprar
+                        if (estatus.getEstatus() == 2) {
+                            if (plantasDisponibles != null)
+                                plantasDisponibles = quitarPlanta(plantasDisponibles, estatus.getPlantasId());
+
+                        }
+
+
+                    }
+                if(tienda.getEstpep()!=null&&tienda.getEstpep()==2) {
+
+                }else{
+                    //validar estatuscliente
+                    estatusPepsi = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 4, tiendaEstatusClienteDao);
+                    tienda.setEstpep(estatusPepsi);
+                }
+                if(tienda.getEstpen()!=null&&tienda.getEstpen()==2) {
+
+                }else{
+                    estatusPeniafiel = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 5, tiendaEstatusClienteDao);
+                    tienda.setEstpen(estatusPeniafiel);
+                }
+                if(tienda.getEstele()!=null&&tienda.getEstele()==2) {
+
+                }else{
+                    estatusElectro = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 6, tiendaEstatusClienteDao);
+                    tienda.setEstele(estatusElectro);
+                }
+                if(tienda.getEstjum()!=null&&tienda.getEstjum()==2) {
+                }else{
+                    estatusJumex = lcviewModel.getEstatusCliente(tienda.getUne_id(), totalPlantas, 7, tiendaEstatusClienteDao);
+                    tienda.setEstjum(estatusJumex);
+                }
+                //busco los estatus por cliente
+
+              //  Log.d(TAG,"despues"+tienda.getUne_id()+"--"+tienda.getUne_descripcion()+"--"+tienda.getEstpep()+"--"+tienda.getEstpen()+"--"+tienda.getEstele()+"--"+tienda.getEstjum());
+
+                //  Log.i(TAG,"size>>"+plantasDisponibles.size());
+                //el estatus es 1-rojo, 2 amarillo, 3.verde solo en verde puedo comprar o con 0
+                int i=0;
+                if (!plantasDisponibles.isEmpty()) {
+                    for (DescripcionGenerica descripcion:plantasDisponibles
+                    ) {
+                        estatusClientes.append(", ");
+                        estatusClientes.append(descripcion.getNombre());
+                        i++;
+                    }
+
+                    estatusClientes = new StringBuilder(estatusClientes.substring(2, estatusClientes.length()));
+                }
+                tienda.setColor(color);
+
+                //latitud es x longitud es y
+                //  Log.d(TAG,"--"+tienda.getUne_descripcion()+tienda.getCiudad()+".."+tienda.getUne_descripcion());
+                if (tienda.getUne_coordenadasxy() != null && tienda.getUne_coordenadasxy().length() > 0) {
+                    String[] aux = tienda.getUne_coordenadasxy().split(",");
+
+                    try {
+                        japon2 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+                        MarkerOptions moptions = new MarkerOptions();
+                        moptions.position(japon2)
+                                .title(tienda.getUne_descripcion())
+                                .icon(BitmapDescriptorFactory.defaultMarker(coloresTienda.get(color)));
+                        if (estatusClientes.length() > 0) {
+                            moptions.snippet(estatusClientes.toString());
+                        }
+                        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                            @Override
+                            public View getInfoWindow(Marker arg0) {
+                                return null;
+                            }
+
+                            @Override
+                            public View getInfoContents(Marker marker) {
+
+                                Context context = MapaCdActivity.this    ; //or getActivity(), YourActivity.this, etc.
+
+                                LinearLayout info = new LinearLayout(context);
+                                info.setOrientation(LinearLayout.VERTICAL);
+
+                                TextView title = new TextView(context);
+                                title.setTextColor(Color.BLACK);
+                                title.setGravity(Gravity.CENTER);
+                                title.setTypeface(null, Typeface.BOLD);
+                                title.setText(marker.getTitle());
+
+                                TextView snippet = new TextView(context);
+                                snippet.setTextColor(Color.GRAY);
+                                snippet.setTextSize(10);
+                                snippet.setText(marker.getSnippet());
+
+                                info.addView(title);
+                                info.addView(snippet);
+
+                                return info;
+                            }
+                        });
+                        Marker marker = mMap.addMarker(moptions
+                        );
+                        marker.setTag(tienda);
+
+                        martiendas.add(marker);
+                    } catch (NumberFormatException ex) {
+                        Log.e(TAG, "error de formato " + ex.getMessage() + "  " + tienda.getUne_descripcion());
+                    }
+
+                }
+
+            }
+        }
+        if(japon2!=null)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(japon2,10));
+        else
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 4));
+        btnvatienda.setEnabled(true);
+    }
+    private BitmapDescriptor crearIconoCuadro(String texto) {
+        int tamanoCuadro = 100; // Tamaño en píxeles
+        Bitmap bitmap = Bitmap.createBitmap(tamanoCuadro, tamanoCuadro, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        // 1. Dibujar el fondo del cuadro (Rectángulo)
+        Paint paintFondo = new Paint();
+        paintFondo.setColor(Color.BLUE); // Puedes cambiar el color
+        paintFondo.setStyle(Paint.Style.FILL);
+        canvas.drawRect(0, 0, tamanoCuadro, tamanoCuadro, paintFondo);
+
+        // 2. Dibujar el borde del cuadro
+        Paint paintBorde = new Paint();
+        paintBorde.setColor(Color.WHITE);
+        paintBorde.setStyle(Paint.Style.STROKE);
+        paintBorde.setStrokeWidth(5);
+        canvas.drawRect(0, 0, tamanoCuadro, tamanoCuadro, paintBorde);
+
+        // 3. Dibujar el texto (Número)
+        Paint paintTexto = new Paint();
+        paintTexto.setColor(Color.WHITE);
+        paintTexto.setTextSize(30);
+        paintTexto.setTextAlign(Paint.Align.CENTER);
+        paintTexto.setFakeBoldText(true);
+
+        // Centrar el texto verticalmente
+        float xPos = tamanoCuadro / 2f;
+        float yPos = (tamanoCuadro / 2f) - ((paintTexto.descent() + paintTexto.ascent()) / 2f);
+
+        canvas.drawText(texto, xPos, yPos, paintTexto);
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+    public void dibujarCuadrosEnZonas( List<LatLng> puntos , String textoAMostrar ) {
+        // las listas de puntos que usaste en dibujarzonas()
+
+        LatLng centro = obtenerCentroide(puntos);
+
+
+        mMap.addMarker(new MarkerOptions()
+                        .position(centro)
+                        .icon(crearIconoCuadro(textoAMostrar))
+                        .anchor(0.5f, 0.5f) // Centra el marcador exactamente
+                        .flat(true)); // Hace que el cuadro rote con el mapa
+
+
+    }
+
+    private LatLng obtenerCentroide(List<LatLng> puntos) {
+        double latitud = 0;
+        double longitud = 0;
+        for (LatLng punto : puntos) {
+            latitud += punto.latitude;
+            longitud += punto.longitude;
+        }
+        return new LatLng((latitud / puntos.size())+.02, longitud / puntos.size());
+    }
+
+    private void dibujarPorcentajes(List<Geocerca> zonas){
+        int banderaPorcentaje=0;
+        List<LatLng> puntos;
+        //busco las muestras x zonas
+        List<MuestrasxZona> muestrasxZona=lcviewModel.getMuestrasxZona(plantaId,Constantes.INDICEACTUAL);
+
+        //busco el porcentaje
+        for (Geocerca geocerca:zonas
+             ) {
+
+            String[] aux = geocerca.getGeo_p1().split(",");
+            LatLng p1 = new LatLng(Double.parseDouble(aux[0]), Double.parseDouble(aux[1]));
+            String[] aux2 = geocerca.getGeo_p2().split(",");
+            LatLng p2 = new LatLng(Double.parseDouble(aux2[0]), Double.parseDouble(aux2[1]));
+            String[] aux3 = geocerca.getGeo_p3().split(",");
+            LatLng p3 = new LatLng(Double.parseDouble(aux3[0]), Double.parseDouble(aux3[1]));
+            String[] aux4 = geocerca.getGeo_p4().split(",");
+            LatLng p4 = new LatLng(Double.parseDouble(aux4[0]), Double.parseDouble(aux4[1]));
+            puntos = new ArrayList<>();
+            puntos.add(p1);
+            puntos.add(p2);
+            puntos.add(p3);
+            puntos.add(p4);
+            banderaPorcentaje = 0;
+            if (muestrasxZona != null)
+                for (MuestrasxZona zona : muestrasxZona
+                ) {
+                    if (zona.getZona() == geocerca.getGeo_region()) {
+                        dibujarCuadrosEnZonas(puntos, zona.getMuestras() + "%");
+                        banderaPorcentaje = 1;
+                        break;
+                    }
+
+                }
+            //puede ser que no hacomprado nada. Pongo 0
+            if (banderaPorcentaje == 0)
+                dibujarCuadrosEnZonas(puntos, "0%");
+        }
+
     }
     public class miLocationListener implements LocationListener {
         public void desactivar() {
